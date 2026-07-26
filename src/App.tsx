@@ -1,121 +1,66 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { applyTheme, type Theme } from './design'
+import { Badge, Button, IconButton, Input, Textarea } from './components/ui'
 import './App.css'
 
+/** Slice 0: token/primitive smoke surface + shell slots. Real IA lands in Slice A. */
 function App() {
-  const [count, setCount] = useState(0)
+  const [theme, setTheme] = useState<Theme>('dark')
+
+  function toggleTheme() {
+    const next: Theme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    applyTheme(next)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
+    <div className="app">
+      <header className="app__topbar">
+        <h1 className="app__title">Storylint</h1>
+        <Badge tone="accent">Slice 0</Badge>
+        <div className="app__spacer" />
+        <IconButton label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} onClick={toggleTheme}>
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 1.5V13.5a5.5 5.5 0 0 1 0-11Z" />
           </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        </IconButton>
+      </header>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <div className="app__body">
+        <aside className="app__panel app__panel--binder" aria-label="Binder">
+          <h2 className="app__section-label">Binder</h2>
+          <p className="app__note">Chapters and bible sheets — Slice A.</p>
+        </aside>
+
+        <main className="app__manuscript" aria-label="Manuscript">
+          <div className="app__measure">
+            <p>
+              Manuscript slot. Measure, size, and leading come from the manuscript tokens; a{' '}
+              <mark className="app__mark--yellow">soft drift span</mark> and a{' '}
+              <mark className="app__mark--red">hard conflict span</mark> render from mark tokens
+              only.
+            </p>
+          </div>
+        </main>
+
+        <aside className="app__panel app__panel--agent" aria-label="Agent panel">
+          <h2 className="app__section-label">Agent</h2>
+          <div className="app__row">
+            <Badge>neutral</Badge>
+            <Badge tone="success">accepted</Badge>
+            <Badge tone="pending">pending</Badge>
+            <Badge tone="danger">conflict</Badge>
+          </div>
+          <Input placeholder="Context chip…" aria-label="Context" />
+          <Textarea placeholder="Ask about this chapter…" aria-label="Composer" rows={3} />
+          <div className="app__row">
+            <Button variant="primary">Accept</Button>
+            <Button>Edit</Button>
+            <Button variant="danger">Reject</Button>
+          </div>
+        </aside>
+      </div>
+    </div>
   )
 }
 
