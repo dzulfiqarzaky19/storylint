@@ -16,6 +16,7 @@ Writing **IDE** for serial / world-heavy fiction + **project-aware agent panel**
 | [docs/design/README.md](docs/design/README.md) | Design-system folder + Tailwind policy |
 | [docs/design/TOKENS.md](docs/design/TOKENS.md) | **Canonical** colors, type, space, radii — port this |
 | [docs/design/REFERENCES.md](docs/design/REFERENCES.md) | URLs + pattern defs (“Obsidian focus” etc.) — **not** their hex |
+| [docs/design/STITCH.md](docs/design/STITCH.md) | Google Stitch screen prompts (visual ref) |
 | [docs/04-agents.md](docs/04-agents.md) | Agent capabilities + apply boundaries |
 | [docs/05-tech.md](docs/05-tech.md) | Tech stub / ADR backlog |
 | [docs/fixtures/continuity-sample.md](docs/fixtures/continuity-sample.md) | Fixture prose for continuity QA |

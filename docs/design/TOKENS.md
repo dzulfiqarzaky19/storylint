@@ -60,10 +60,16 @@ Scale: mobile font boost uses the same names, different density profile if neede
 | `color.accentSubtle` | `#6EA8FE22` | Selected row wash (dark); light use `#6EA8FE18` |
 | `color.primary` | `#243B63` | Solid primary button fill (dark UI) |
 | `color.primary` (light) | `#2F5AA8` | Solid primary button fill (light UI) |
+| `color.onPrimary` | `#E7ECF5` | Label on `color.primary` fill (dark UI) |
+| `color.onPrimary` (light) | `#FFFFFF` | Label on `color.primary` fill (light UI) |
 
 **Primary vs accent:**  
 - `primary` = filled button background  
 - `accent` = ink/focus/link highlight  
+
+**Why `onPrimary` exists:** neither `text` nor `textInverse` clears 4.5:1 on `primary` in *both* themes
+(`text` fails on light `#2F5AA8`; `textInverse` fails on dark `#243B63`). `onPrimary` is the one
+per-theme pair that passes both. Ports map it like any other color token.
 
 ### 1.4 Semantic (continuity + status) — **do not reuse for chrome**
 
@@ -298,6 +304,7 @@ Use one naming scheme everywhere:
   --color-accent-muted: #3d5a80;
   --color-accent-subtle: #6ea8fe22;
   --color-primary: #243b63;
+  --color-on-primary: #e7ecf5;
   --color-mark-yellow: #c9a227;
   --color-mark-yellow-bg: #c9a22747;
   --color-mark-red: #e35d6a;
@@ -352,7 +359,7 @@ Light theme overrides only the color block under `[data-theme="light"]`.
 | UI bit | Tokens |
 |--------|--------|
 | Top bar bg | `color.surface` + bottom `color.border` |
-| Primary button | bg `color.primary`, border `color.accentMuted`, text `color.text`, radius `radius.md`, height `size.controlHeight` |
+| Primary button | bg `color.primary`, border `color.accentMuted`, text `color.onPrimary`, radius `radius.md`, height `size.controlHeight` |
 | Ghost button | bg transparent, border `color.border`, text `color.text` |
 | Danger button | text/border from `color.danger` / `color.dangerBg` |
 | List row active | bg `color.surfaceRaised`, border `color.border` |
@@ -389,3 +396,4 @@ When adding Android/iOS/desktop:
 | Date | Change |
 |------|--------|
 | 2026-07-26 | Initial concrete token set (Wave 0) |
+| 2026-07-27 | Add `color.onPrimary` (per-theme primary-button label; contrast) — Slice 0 port |

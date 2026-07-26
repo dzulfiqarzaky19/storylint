@@ -2,6 +2,7 @@
 
 **Canonical values:** [TOKENS.md](./TOKENS.md)  
 **External inspiration (URLs + what we mean):** [REFERENCES.md](./REFERENCES.md)  
+**Google Stitch prompts:** [STITCH.md](./STITCH.md)  
 **Product shell / IA:** [../03-ux.md](../03-ux.md)
 
 ## Agent rules (non-negotiable)
