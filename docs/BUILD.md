@@ -48,7 +48,7 @@ One slice per coding session when possible.
 | Editor P1 | `textarea` + mark overlay (no TipTap yet) |
 | Styling | `src/design/tokens.css` from TOKENS.md; Tailwind only if theme is token-generated |
 | Agent panel P1 | Real shell + chat UI; Continuity as first tool; co-write Apply can stub |
-| LLM | `LLM_API_KEY` etc. server-side; fixture mode without key for tests |
+| LLM | OpenAI-compatible router via server-only `LLM_PROVIDER`, `LLM_MODEL`, `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MAX_TOKENS`; `POST {base}/chat/completions`; fixture mode when model/base are unset or `STORYLINT_FIXTURE_LLM=1` |
 | Sheet kinds | `character` \| `lore` \| `world` \| `organization` (frozen P1) |
 | Confidence default | `0.7` |
 | Agent panel default | Open on desktop width ≥ `bp.lg` |
