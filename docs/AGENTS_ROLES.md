@@ -70,7 +70,7 @@ Fresh context. Diff + docs only — don’t re-implement.
 | Live-LLM-only | Continuity tests require real API key / no fixture |
 | Auth | Login/session added |
 | Editor chrome | Gen buttons in manuscript surface |
-| Keys | `LLM_API_KEY` exposed to client bundle or logged |
+| LLM config | Any `LLM_*` secret exposed to the client bundle/logs, or live calls bypassing the server-only OpenAI-compatible adapter |
 
 ### Also check
 

@@ -11,7 +11,7 @@ Formal ADR files still optional; **BUILD table wins** if conflict until ADR supe
 |------------|-----|
 | Auth | **None** — local, you are first user |
 | Multi-tenant | No |
-| LLM | BYOK (env / local config) |
+| LLM | Provider-neutral OpenAI-compatible router (`LLM_*` env); local or hosted |
 | Agent UI | First-class panel in shell |
 | Canon / MS writes | Accept / Apply only |
 | Tests | Unit + integration + local e2e — lock behavior so coding agents don’t re-derive |
@@ -81,7 +81,7 @@ Scripts: `test`, `test:unit`, `test:integration`, `test:e2e` (names flexible).
 
 ## Privacy copy (must ship with P1 UI)
 
-Continuity / agent runs that call the model **send chapter text + bible digest** to the configured provider. Document in README + settings.
+Continuity / agent runs send chapter text + bible digest to the configured `LLM_BASE_URL` OpenAI-compatible endpoint. Sheet assistance sends the selected chapter, sheet names, and user request. Document in README + settings.
 
 ---
 

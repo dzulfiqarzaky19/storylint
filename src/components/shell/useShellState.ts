@@ -1,0 +1,141 @@
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+
+/** TOKENS.md §7: `< bp.md` drawers; `>= bp.lg` dual rail OK. Literals because
+ *  custom properties are illegal in media-query conditions. */
+const BP_MD = '(min-width: 768px)'
+const BP_LG = '(min-width: 1024px)'
+
+export type ShellLayout = 'compact' | 'medium' | 'wide'
+export type ShellRegion = 'binder' | 'agent'
+
+const queries = new Map<string, MediaQueryList>()
+
+function mql(query: string): MediaQueryList {
+  let list = queries.get(query)
+  if (!list) {
+    list = window.matchMedia(query)
+    queries.set(query, list)
+  }
+  return list
+}
+
+function useMediaQuery(query: string): boolean {
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const list = mql(query)
+      list.addEventListener('change', onChange)
+      return () => list.removeEventListener('change', onChange)
+    },
+    [query],
+  )
+  // server snapshot: assume wide so SSR/prerender emits the full IDE shell
+  return useSyncExternalStore(
+    subscribe,
+    () => mql(query).matches,
+    () => true,
+  )
+}
+
+export type ShellVisibility = {
+  layout: ShellLayout
+  focus: boolean
+  rails: Record<ShellRegion, boolean>
+  drawer: ShellRegion | null
+}
+
+/** A region may hold an inline rail only where the layout has room for it (TOKENS.md §7). */
+export function railAllowedAt(layout: ShellLayout, region: ShellRegion): boolean {
+  return region === 'binder' ? layout !== 'compact' : layout === 'wide'
+}
+
+/**
+ * Pure visibility policy — the single source of truth for what the shell shows.
+ * Focus wins over everything: manuscript only, at every width.
+ */
+export function regionVisibility(
+  state: ShellVisibility,
+  region: ShellRegion,
+): { rail: boolean; drawer: boolean } {
+  if (state.focus) return { rail: false, drawer: false }
+  return {
+    rail: railAllowedAt(state.layout, region) && state.rails[region],
+    drawer: state.drawer === region,
+  }
+}
+
+export type ShellState = {
+  layout: ShellLayout
+  focus: boolean
+  /** Region occupies an inline rail right now. */
+  railVisible: (region: ShellRegion) => boolean
+  /** Region is showing at all — rail or overlay drawer. */
+  isOpen: (region: ShellRegion) => boolean
+  /** Region is currently presented as an overlay drawer. */
+  drawerOpen: (region: ShellRegion) => boolean
+  toggle: (region: ShellRegion) => void
+  closeDrawer: () => void
+  toggleFocus: () => void
+}
+
+/**
+ * Shell visibility. Rails and drawers are tracked separately on purpose: a region
+ * opened as a rail at desktop width must not reappear as a popped-open overlay
+ * after a resize down.
+ */
+export function useShellState(): ShellState {
+  const atMd = useMediaQuery(BP_MD)
+  const atLg = useMediaQuery(BP_LG)
+  const layout: ShellLayout = atLg ? 'wide' : atMd ? 'medium' : 'compact'
+
+  const [focus, setFocus] = useState(false)
+  const [rails, setRails] = useState<Record<ShellRegion, boolean>>({
+    binder: true,
+    // BUILD.md locked default: agent panel open at >= bp.lg
+    agent: true,
+  })
+  const [drawer, setDrawer] = useState<ShellRegion | null>(null)
+
+  const railAllowed = useCallback(
+    (region: ShellRegion) => railAllowedAt(layout, region),
+    [layout],
+  )
+
+  // an overlay must never survive into a layout that has room for the rail
+  useEffect(() => {
+    if (drawer && railAllowed(drawer)) setDrawer(null)
+  }, [drawer, railAllowed])
+
+  useEffect(() => {
+    if (focus) setDrawer(null)
+  }, [focus])
+
+  useEffect(() => {
+    if (!focus) return
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setFocus(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [focus])
+
+  return useMemo(() => {
+    const snapshot: ShellVisibility = { layout, focus, rails, drawer }
+    const railVisible = (region: ShellRegion) => regionVisibility(snapshot, region).rail
+    const drawerOpen = (region: ShellRegion) => regionVisibility(snapshot, region).drawer
+
+    return {
+      layout,
+      focus,
+      railVisible,
+      drawerOpen,
+      isOpen: (region) => railVisible(region) || drawerOpen(region),
+      toggle: (region) => {
+        if (focus) setFocus(false)
+        if (railAllowed(region)) setRails((prev) => ({ ...prev, [region]: !prev[region] }))
+        else setDrawer((prev) => (prev === region ? null : region))
+      },
+      closeDrawer: () => setDrawer(null),
+      toggleFocus: () => setFocus((prev) => !prev),
+    }
+  }, [layout, focus, rails, drawer, railAllowed])
+}

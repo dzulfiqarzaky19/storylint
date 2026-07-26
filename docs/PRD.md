@@ -47,7 +47,7 @@ Like VS Code + Claude, for your novel — clean page to write; agent that knows 
 6. Author can **ask the agent to help create/fill** character and other sheets → proposals → Accept (not silent canon)  
 7. Light **newbie recommendations** via agent (optional, non-blocking)  
 8. Bible changes only via **Accept / Edit / Reject** (or manual edit)  
-9. BYOK LLM config (env/local); no account system  
+9. Provider-neutral OpenAI-compatible router config (`LLM_*`, local or hosted); no account system  
 10. Tests for domain continuity so behavior is locked without re-prompting agents  
 11. **Portable design system foundation** (tokens + primitives + adaptive shell slots) so UI can later ship on Windows / macOS / Linux / Android / iOS without a redesign rewrite — web is MVP host only  
 
@@ -100,7 +100,7 @@ Like VS Code + Claude, for your novel — clean page to write; agent that knows 
 - [ ] Fresh install: no auth wall; project loads locally  
 - [ ] Create chapter, type, reload → content persists  
 - [ ] Create sheet + fact manually → persists  
-- [ ] Continuity run without API key → clear error, no corruption  
+- [ ] Continuity run without `LLM_MODEL` / `LLM_BASE_URL` → deterministic fixture path, no corruption  
 - [ ] Continuity run with key → marks and/or proposals from prose  
 - [ ] Accept proposal → bible updates; Reject → no bible write  
 - [ ] Agent-assisted **sheet create/fill** produces proposals only until Accept  
@@ -108,7 +108,7 @@ Like VS Code + Claude, for your novel — clean page to write; agent that knows 
 - [ ] Agent panel visible in shell, toggle hide/show; focus mode hides chrome  
 - [ ] No gen widgets inside manuscript surface  
 - [ ] Unit tests cover lint gates + accept boundary  
-- [ ] README explains BYOK and that continuity sends prose + bible digest to the model  
+- [ ] README explains `LLM_*` router setup and that continuity sends prose + bible digest to the configured endpoint  
 
 ---
 

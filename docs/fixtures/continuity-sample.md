@@ -1,6 +1,6 @@
 # Continuity fixture (human-readable)
 
-Used by fixture extractor / manual QA when `LLM_API_KEY` is unset.
+Used by fixture extractor / manual QA when `LLM_MODEL` or `LLM_BASE_URL` is unset, or `STORYLINT_FIXTURE_LLM=1`.
 
 ## Bible (seed)
 

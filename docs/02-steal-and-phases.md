@@ -42,7 +42,7 @@
 - **Agent “create/fill sheet with me”** → proposal packs → Accept  
 - Light **newbie recommendations** in agent (on request / empty state)  
 - Accept / Edit / Reject for bible  
-- BYOK LLM; no auth  
+- OpenAI-compatible router through server-only `LLM_*` config; no app auth  
 - Domain unit tests for gates + accept  
 - Facts model allows `relationship` statements early (graph-ready later)  
 

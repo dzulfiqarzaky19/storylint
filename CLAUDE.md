@@ -29,6 +29,7 @@ Writing **IDE** for serial / world-heavy fiction + **project-aware agent panel**
 4. Agent panel is first-class IA (not an afterthought button-only app)  
 5. MVP: **no auth / no multi-user** — local dogfood  
 6. Domain logic pure; **test-first** for gates/accept/API contracts (see docs/BUILD.md); don’t re-implement gates in UI; fixture LLM path for CI  
+6a. **LLM adapter:** provider-neutral OpenAI-compatible `POST {LLM_BASE_URL}/chat/completions`; server-only `LLM_PROVIDER`, `LLM_MODEL`, `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MAX_TOKENS`; `LLM_PROVIDER` is diagnostic only; no vendor SDK or client-side key  
 7. Smallest change; no suite creep ahead of phase  
 8. **Design tokens only:** colors/spacing/type from [docs/design/TOKENS.md](docs/design/TOKENS.md) — never hard-code hex/px; never invent “Obsidian/VS Code colors” from memory  
 9. **Patterns ≠ paint:** “Obsidian focus”, “Cursor agent panel” = behavior in [docs/design/REFERENCES.md](docs/design/REFERENCES.md) (with URLs); skin always TOKENS  
