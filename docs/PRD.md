@@ -1,6 +1,6 @@
 # Storylint — PRD (MVP spine)
 
-**Status:** P1 shipped in repo; P1b Apply landing; UI = Kobo paper tokens (see design/TOKENS.md)  
+**Status:** complete in-tree through H (P1, P1b Apply, portraits/tags, P2 Review, P3 Research); UI = Kobo paper tokens (see design/TOKENS.md)
 **First user:** you (local dogfood)  
 **Auth:** none — no login, no session, no multi-tenant  
 
@@ -144,6 +144,6 @@ Detail: [02-steal-and-phases](./02-steal-and-phases.md), [04-agents](./04-agents
 | 3 | Confidence | 0.7 |
 | 4 | Name | Storylint |
 | 5 | Visual | Kobo paper + warm chrome ([design/TOKENS.md](./design/TOKENS.md)) |
-| 6 | Next slice | **F** after E verified ([BUILD.md](./BUILD.md)) |
+| 6 | Next roadmap slice | **I graph** — not started; autonomous build stopped after H ([BUILD.md](./BUILD.md)) |
 
 Roles: [AGENTS_ROLES.md](./AGENTS_ROLES.md).

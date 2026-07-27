@@ -44,10 +44,12 @@ Commits/pushes: disabled by latest user instruction.
 - Pin persists a research note only; no manuscript or bible write.
 - Propose creates a pending lore proposal; canon changes only through existing Accept.
 - Invalid/uncited results cannot be pinned or proposed.
-- `npm test`: 65 passed.
+- `npm test`: 67 passed.
 - `npm run build`: passed (50 modules).
+- Final audit fixes: server chapter revisions reject stale tabs; local drafts survive immediate reload; sheet metadata saves preserve facts; citations are URL-validated and labeled unverified; Apply cards lock duplicate clicks.
+- Final independent review: **APPROVE THROUGH H**; no remaining shared save/Accept/Apply blocker.
 - `npm run lint`: passed.
-- Edge smoke passed: `e2e/output/slice-h-smoke.png`.
+- Edge smoke passed: `e2e/output/slice-h-research.png`, `e2e/output/slice-h-smoke.png`.
 
 ## Complete
 

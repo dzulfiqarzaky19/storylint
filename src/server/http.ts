@@ -74,7 +74,13 @@ export function createServer(store: ProjectStore) {
       handle: async ([id], body) => {
         const chapter = parseChapter(body)
         if (chapter.id !== routeSegment(id)) throw new Error('Chapter id does not match route')
-        return store.update((project) => upsertChapter(project, chapter))
+        return store.update((project) => {
+          const existing = project.chapters.find((candidate) => candidate.id === chapter.id)
+          if (existing && existing.revision !== chapter.revision) {
+            throw new ConflictError(`Chapter changed in another session: ${chapter.id}`)
+          }
+          return upsertChapter(project, { ...chapter, revision: chapter.revision + 1 })
+        })
       },
     },
     {
@@ -89,7 +95,13 @@ export function createServer(store: ProjectStore) {
       handle: async ([id], body) => {
         const sheet = parseSheet(body)
         if (sheet.id !== routeSegment(id)) throw new Error('Sheet id does not match route')
-        return store.update((project) => upsertSheet(project, sheet))
+        return store.update((project) => {
+          const existing = project.sheets.find((candidate) => candidate.id === sheet.id)
+          return upsertSheet(project, {
+            ...sheet,
+            facts: existing?.facts ?? sheet.facts,
+          })
+        })
       },
     },
     {
@@ -206,9 +218,15 @@ export function createServer(store: ProjectStore) {
               chapter.body.slice(applyTarget.start, applyTarget.end) !== raw.expectedText) {
             throw new ConflictError('Chapter changed since this suggestion was generated')
           }
-          return patchChapter(project, id, {
+          const next = patchChapter(project, id, {
             body: applyManuscriptText(chapter.body, applyTarget, raw.text as string),
           })
+          return {
+            ...next,
+            chapters: next.chapters.map((candidate) =>
+              candidate.id === id ? { ...candidate, revision: candidate.revision + 1 } : candidate,
+            ),
+          }
         })
       },
     },

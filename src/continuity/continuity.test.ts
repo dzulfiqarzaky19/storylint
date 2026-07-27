@@ -16,6 +16,7 @@ function project(): Project {
       title: 'Chapter One',
       body: 'Aria looked up, her blue eyes wide. Kael drew his sword beside her.',
       craftTags: [],
+      revision: 0,
     }],
     sheets: [{
       id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '',

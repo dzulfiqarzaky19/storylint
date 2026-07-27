@@ -69,6 +69,7 @@ export function ResearchPanel({
             <article className="research-card" key={result.id}>
               <div className="proposal-card__heading"><strong>{result.title}</strong><Badge>{mode}</Badge></div>
               <p>{result.summary}</p>
+              <p className="continuity-privacy">Model-provided citations — Storylint has not fetched or verified these links.</p>
               <ul className="research-card__sources" aria-label="Sources">
                 {result.sources.map((source) => (
                   <li key={source.url}>

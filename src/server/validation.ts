@@ -75,6 +75,7 @@ export function parseChapter(value: unknown): Chapter {
     id: string(raw.id, 'chapter.id'),
     title: string(raw.title, 'chapter.title'),
     body: string(raw.body, 'chapter.body'),
+    revision: raw.revision === undefined ? 0 : number(raw.revision, 'chapter.revision'),
     craftTags: raw.craftTags === undefined
       ? []
       : stringArray(raw.craftTags, 'chapter.craftTags').map((tag) => oneOf(tag, CRAFT_TAGS, 'chapter.craftTags')),

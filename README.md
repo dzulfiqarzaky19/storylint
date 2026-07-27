@@ -49,8 +49,10 @@ Live wire: `POST {LLM_BASE_URL}/chat/completions`. Empty model/base or `STORYLIN
 3. Sheets/facts in binder; Accept/Reject proposals only.  
 4. **Continuity** (fixture or live); marks use paper-safe mark tokens.  
 5. Agent: sheet packs, Continue / Rewrite / Brainstorm → **Apply** cards only.  
-6. **Paper color:** bookmark/seal on the manuscript (Day/Sepia/Mint/Night). Theme icon = chrome only.  
-7. **Focus** = manuscript only. Under 1366 paper is full-bleed; from 1366 centered page + ribbon.
+6. **Review chapter** / **Craft check** → neutral panel findings; add suggested tags explicitly.
+7. **Research** mode → cited cards; Pin stores a note, Propose creates a pending lore proposal, Accept alone changes canon.
+8. **Paper color:** bookmark/seal on the manuscript (Day/Sepia/Mint/Night). Theme icon = chrome only.
+9. **Focus** = manuscript only. Under 1366 paper is full-bleed; from 1366 centered page + ribbon.
 
 ## Verify
 

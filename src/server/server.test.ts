@@ -11,7 +11,7 @@ function seedProject(): Project {
   return {
     schemaVersion: 1,
     title: 'Storylint',
-    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [] }],
+    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
     sheets: [],
     proposals: [],
     rejectedFingerprints: [],
@@ -393,6 +393,41 @@ test('research persistence rejects unsafe citations and colliding note IDs', asy
     })
     assert.equal(collision.status, 409)
     assert.equal((await store.load()).researchNotes[0].title, 'First')
+  })
+})
+
+test('stale chapter PUT and stale sheet metadata cannot overwrite newer content', async () => {
+  await withServer(async (baseUrl, store) => {
+    const initial = await store.load()
+    const chapter = initial.chapters[0]
+    const first = await requestJson<Project>(`${baseUrl}/api/chapters/${chapter.id}`, {
+      method: 'PUT', body: JSON.stringify({ ...chapter, body: 'new prose' }),
+    })
+    assert.equal(first.chapters[0].revision, chapter.revision + 1)
+    const stale = await fetch(`${baseUrl}/api/chapters/${chapter.id}`, {
+      method: 'PUT', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...chapter, body: 'stale prose' }),
+    })
+    assert.equal(stale.status, 409)
+    assert.equal((await store.load()).chapters[0].body, 'new prose')
+
+    const sheet: Sheet = {
+      id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '', facts: [],
+    }
+    await requestJson<Project>(`${baseUrl}/api/sheets/aria`, {
+      method: 'PUT', body: JSON.stringify(sheet),
+    })
+    const fact: Fact = {
+      id: 'fact-1', key: 'oath', value: 'guard', statement: 'Aria swore to guard', claimKind: 'attribute',
+    }
+    await requestJson<Project>(`${baseUrl}/api/sheets/aria/facts/fact-1`, {
+      method: 'PUT', body: JSON.stringify(fact),
+    })
+    const metadata = await requestJson<Project>(`${baseUrl}/api/sheets/aria`, {
+      method: 'PUT', body: JSON.stringify({ ...sheet, summary: 'Updated metadata', facts: [] }),
+    })
+    assert.equal(metadata.sheets[0].facts.length, 1)
+    assert.equal(metadata.sheets[0].summary, 'Updated metadata')
   })
 })
 
