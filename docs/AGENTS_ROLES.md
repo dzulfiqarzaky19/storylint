@@ -1,86 +1,70 @@
 # Coder · Reviewer · Verifier
 
-How to split work on Storylint without thrash.
-
----
-
 ## Shared
 
 | | |
 |--|--|
-| Product truth | [PRD.md](./PRD.md) |
-| Hard rules | [../CLAUDE.md](../CLAUDE.md) |
-| Build order | [BUILD.md](./BUILD.md) |
-| Skin | [design/TOKENS.md](./design/TOKENS.md) only |
-| Patterns/URLs | [design/REFERENCES.md](./design/REFERENCES.md) |
+| Product | [PRD.md](./PRD.md) |
+| Rules | [../CLAUDE.md](../CLAUDE.md) |
+| Slices / status | [BUILD.md](./BUILD.md) |
+| Skin | [design/TOKENS.md](./design/TOKENS.md) — Kobo paper, **not** AI blue |
+| UI e2e | [E2E.md](./E2E.md) |
 | Apply/Accept | [04-agents.md](./04-agents.md) |
 
-**Phase:** Only the active BUILD slice. No P2/P3 “while we’re here.”
+**Phase:** only the assigned BUILD slice (see status table).
 
 ---
 
 ## Coder
 
-### Before coding
+### Before
 
-1. Name the slice (0 / A / B / C / D)  
-2. Read PRD acceptance + BUILD slice **In/Out**  
-3. Read TOKENS + design README if UI  
-4. List files you will touch (confirm multi-file surface if large)
+1. Read BUILD **status** — don’t rebuild Done slices  
+2. Read slice In/Out  
+3. UI work → TOKENS + 03-ux + E2E  
 
-### While coding
+### While
 
-- Domain pure; gates not copied into React  
-- No hex/px outside `src/design/tokens.css`  
-- No auth, no auto-apply  
-- **Logic = test-first:** failing test → implement → green (see [BUILD.md](./BUILD.md) “Tests before code”)  
-- Every new gate/accept/API contract ships **with** tests in the same slice  
-- Fixture path for continuity — never CI-only live LLM  
+- Domain pure; test-first for gates/accept/apply/API  
+- Fixture LLM path for Continuity/co-write tests  
+- **No hex/px/rem** outside `src/design/tokens.css`  
+- Layout sizes only via `var(--size-*)` / manuscript tokens  
+- No auth; no auto Apply/Accept  
+- UI slices: browser smoke per E2E (`channel: 'msedge'` here)  
 - Smallest diff  
 
-### Done means
+### Done
 
-- Slice **In** checklist complete  
-- Commands in slice Verify pass  
-- New domain behavior has tests that would fail if reverted  
-- No known acceptance regression  
-- Short note: what shipped + how to verify  
+- In checklist complete  
+- `npm test` + `npm run build` (+ lint)  
+- E2E screenshot if UI touched  
+- Short report: files, commands, blockers  
 
 ### Do not
 
-- Expand scope to co-write/review/research  
-- “Improve” identity away from IDE+agent panel  
-- Guess Obsidian/VS Code colors  
+- Past assigned slice  
+- Invent Obsidian/VS Code/AI-blue colors  
+- Hardcode rail/paper widths in shell CSS  
+- Skip E2E on UI changes  
 
 ---
 
 ## Reviewer
 
-Fresh context. Diff + docs only — don’t re-implement.
-
-### Always fail PR if
+Fail if:
 
 | Gate | |
 |------|--|
-| Scope | Files/features outside active slice or PRD non-goals |
-| Accept boundary | Any path writes sheets/facts/MS without Accept/Apply/manual user edit |
-| Tokens | New hex/raw palette in `features/` or components bypassing tokens |
-| Domain leak | Lint rules only in UI; domain untested |
-| Tests afterthought | New gate/accept/API behavior with zero tests, or tests added “later” |
-| Live-LLM-only | Continuity tests require real API key / no fixture |
-| Auth | Login/session added |
-| Editor chrome | Gen buttons in manuscript surface |
-| LLM config | Any `LLM_*` secret exposed to the client bundle/logs, or live calls bypassing the server-only OpenAI-compatible adapter |
+| Scope | Outside slice / PRD non-goals |
+| Accept/Apply | Writes MS/bible without user action |
+| Tokens | Hex/raw sizes outside tokens.css |
+| Domain | Gates only in UI; untested logic |
+| LLM tests | Live-key-only |
+| Auth / client secrets | |
+| Gen chips in manuscript | |
+| Layout magic numbers | |
 
-### Also check
-
-- Shell still has agent panel slot  
-- Focus mode behavior preserved if shell touched  
-- Naming/types strict (no `any` to silence)  
-- Atomic save / schemaVersion if persistence touched  
-- Privacy copy if live LLM path added  
-
-### Output shape
+Output:
 
 ```
 Verdict: approve | request changes
@@ -94,67 +78,33 @@ Non-blocking:
 
 ## Verifier
 
-Does not trust coder narrative. Runs commands + exercises path.
-
-### Baseline commands
-
 ```bash
 cd d:/dev/projects/storylint
+npm test
 npm run build
-npm test                 # or test:unit when split
-npm run typecheck        # when script exists
+npm run lint   # if present
 ```
 
-### Per-slice checks
-
-Copy from [BUILD.md](./BUILD.md) Verify section for the slice.
-
-### P1 full (after Slice D) — PRD §7
-
-1. Cold start, no auth wall  
-2. Type chapter → reload → persists  
-3. Manual sheet + fact → persists  
-4. Continuity without key → safe error or fixture  
-5. Continuity fixture/live → marks and/or proposals  
-6. Accept → bible grows; Reject → no write  
-7. Agent panel toggle + Focus mode  
-8. No gen chips in editor  
-9. Spot-check: no `#` hex in `src/components` / `src/features` (allow only `src/design/tokens.css`)  
-
-### Output shape
+UI slices: [E2E.md](./E2E.md) — boot servers, Playwright **msedge**, smoke Focus/paper/Continuity/Apply as relevant, `e2e/output/*.png`.
 
 ```
 Verdict: pass | fail
 Commands:
-- build: pass/fail
-- test: pass/fail (N tests)
-Manual:
-- … steps …
+- …
+Manual / e2e:
+- …
 Failures:
 - …
 ```
 
----
-
-## Suggested delegation prompts
-
-### Coder
-
-> Implement BUILD.md Slice {N} only. Follow CLAUDE.md + PRD. Tokens from docs/design/TOKENS.md. No P1b/P2. For domain/API: write failing tests first, then code. Fixture for continuity. End with verify commands you ran.
-
-### Reviewer
-
-> Review diff for Slice {N}. Use docs/AGENTS_ROLES.md fail gates. Verdict first. No drive-by refactors.
-
-### Verifier
-
-> Verify Slice {N} per BUILD.md + AGENTS_ROLES.md. Run build/test; manual checklist. Pass/fail only with evidence.
+No fixes in verifier role.
 
 ---
 
-## Human (you) before first coder
+## Prompt stubs
 
-- [ ] Skim PRD §3–7 — acceptance matches what you want  
-- [ ] Skim TOKENS — primary/accent OK  
-- [ ] Confirm BUILD locked defaults table  
-- [ ] Delegate **Slice 0** first (DS), not “build the whole MVP”  
+**Coder:** `BUILD slice {F|G|…} only. CLAUDE + TOKENS. Test-first domain. E2E if UI. Report commands.`
+
+**Reviewer:** `Slice {N}. AGENTS_ROLES fail gates. Diff only.`
+
+**Verifier:** `Slice {N}. BUILD + E2E evidence. Pass/fail only.`

@@ -6,9 +6,16 @@ import { deleteFact, patchChapter, upsertChapter, upsertFact, upsertSheet } from
 import { ProjectStore } from './store.ts'
 import { llmConfig } from './llmConfig.ts'
 import { LlmError } from './llm.ts'
+import { runCowrite } from '../cowrite/run.ts'
+import { applyManuscriptText, type ApplyTarget } from '../domain/apply.ts'
+import { runReview } from '../review/run.ts'
+import { researchProposal, runResearch } from '../research/run.ts'
+import { parseResearchNote } from './validation.ts'
 import { parseChapter, parseChapterPatch, parseFact, parseProject, parseProposalEdits, parseSheet } from './validation.ts'
 
 const MAX_BODY_BYTES = 1_000_000
+
+class ConflictError extends Error {}
 
 type Route = {
   method: string
@@ -99,6 +106,111 @@ export function createServer(store: ProjectStore) {
       pattern: /^\/api\/sheets\/([^/]+)\/facts\/([^/]+)$/,
       handle: async ([sheetId, factId]) =>
         store.update((project) => deleteFact(project, routeSegment(sheetId), routeSegment(factId))),
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/research$/,
+      handle: async (_params, body) => {
+        if (typeof body !== 'object' || body === null || !('query' in body) || typeof body.query !== 'string') {
+          throw new Error('research query is required')
+        }
+        return runResearch(await store.load(), body.query, llmConfig())
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/research\/pin$/,
+      handle: async (_params, body) => {
+        const note = parseResearchNote(body)
+        return store.update((project) => {
+          const existing = project.researchNotes.find((candidate) => candidate.id === note.id)
+          if (existing && JSON.stringify(existing) !== JSON.stringify(note)) {
+            throw new ConflictError(`Research note id already exists: ${note.id}`)
+          }
+          return existing ? project : { ...project, researchNotes: [...project.researchNotes, note] }
+        })
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/research\/propose$/,
+      handle: async (_params, body) => {
+        const note = parseResearchNote(body)
+        const proposal = researchProposal(note)
+        return store.update((project) => ({
+          ...project,
+          proposals: project.proposals.some((existing) => existing.fingerprint === proposal.fingerprint)
+            ? project.proposals
+            : [...project.proposals, proposal],
+        }))
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/review\/([^/]+)$/,
+      handle: async ([chapterId], body) => {
+        if (typeof body !== 'object' || body === null || !('kind' in body) ||
+            !['review', 'craft'].includes(String(body.kind))) {
+          throw new Error('review kind must be review or craft')
+        }
+        return runReview(
+          await store.load(),
+          routeSegment(chapterId),
+          body.kind as 'review' | 'craft',
+          llmConfig(),
+        )
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/cowrite$/,
+      handle: async (_params, body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('co-write request must be an object')
+        const raw = body as Record<string, unknown>
+        if (typeof raw.chapterId !== 'string' ||
+            !['continue', 'rewrite', 'brainstorm'].includes(String(raw.skill)) ||
+            typeof raw.instruction !== 'string' || typeof raw.start !== 'number' || typeof raw.end !== 'number') {
+          throw new Error('invalid co-write request')
+        }
+        return runCowrite(await store.load(), {
+          chapterId: raw.chapterId,
+          skill: raw.skill as 'continue' | 'rewrite' | 'brainstorm',
+          instruction: raw.instruction,
+          start: raw.start,
+          end: raw.end,
+        }, llmConfig())
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/chapters\/([^/]+)\/apply$/,
+      handle: async ([chapterId], body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('Apply request must be an object')
+        const raw = body as Record<string, unknown>
+        const target = raw.target
+        if (typeof raw.text !== 'string' || !raw.text || typeof raw.expectedBody !== 'string' ||
+            typeof raw.expectedText !== 'string' || typeof target !== 'object' || target === null) {
+          throw new Error('Invalid Apply request')
+        }
+        const parsed = target as Record<string, unknown>
+        if (!['insert', 'replace'].includes(String(parsed.mode)) ||
+            typeof parsed.start !== 'number' || typeof parsed.end !== 'number') {
+          throw new Error('Invalid Apply target')
+        }
+        const applyTarget = parsed as ApplyTarget
+        return store.update((project) => {
+          const id = routeSegment(chapterId)
+          const chapter = project.chapters.find((candidate) => candidate.id === id)
+          if (!chapter) throw new Error(`Chapter not found: ${id}`)
+          if (chapter.body !== raw.expectedBody ||
+              chapter.body.slice(applyTarget.start, applyTarget.end) !== raw.expectedText) {
+            throw new ConflictError('Chapter changed since this suggestion was generated')
+          }
+          return patchChapter(project, id, {
+            body: applyManuscriptText(chapter.body, applyTarget, raw.text as string),
+          })
+        })
+      },
     },
     {
       method: 'POST',
@@ -228,7 +340,10 @@ export function createServer(store: ProjectStore) {
       json(response, 200, await route.handle(match.slice(1), body))
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Request failed'
-      const status = error instanceof LlmError ? 502 : message.includes('not found') ? 404 : 400
+      const status = error instanceof LlmError ? 502
+        : error instanceof ConflictError ? 409
+        : message.includes('not found') ? 404
+        : 400
       json(response, status, { error: message })
     }
   })

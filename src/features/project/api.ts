@@ -1,4 +1,8 @@
 import type { Chapter, Fact, Project, Proposal, Sheet } from '../../domain/types.ts'
+import type { ApplyCard, CowriteRequest, CowriteResult } from '../../cowrite/types.ts'
+import type { ReviewKind, ReviewResult } from '../../review/types.ts'
+import type { ResearchNote } from '../../domain/types.ts'
+import type { ResearchResult } from '../../research/types.ts'
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
@@ -94,5 +98,39 @@ export type ChatResponse = {
 export function sendChat(chapterId: string, message: string): Promise<ChatResponse> {
   return request('/api/chat', {
     method: 'POST', body: JSON.stringify({ chapterId, message }),
+  })
+}
+
+export function requestResearch(query: string): Promise<ResearchResult> {
+  return request('/api/research', { method: 'POST', body: JSON.stringify({ query }) })
+}
+
+export function pinResearch(note: ResearchNote): Promise<Project> {
+  return request('/api/research/pin', { method: 'POST', body: JSON.stringify(note) })
+}
+
+export function proposeResearch(note: ResearchNote): Promise<Project> {
+  return request('/api/research/propose', { method: 'POST', body: JSON.stringify(note) })
+}
+
+export function requestReview(chapterId: string, kind: ReviewKind): Promise<ReviewResult> {
+  return request(`/api/review/${encodeURIComponent(chapterId)}`, {
+    method: 'POST', body: JSON.stringify({ kind }),
+  })
+}
+
+export function requestCowrite(input: CowriteRequest): Promise<CowriteResult> {
+  return request('/api/cowrite', { method: 'POST', body: JSON.stringify(input) })
+}
+
+export function applySuggestion(chapterId: string, card: ApplyCard): Promise<Project> {
+  return request(`/api/chapters/${encodeURIComponent(chapterId)}/apply`, {
+    method: 'POST',
+    body: JSON.stringify({
+      text: card.text,
+      target: card.target,
+      expectedBody: card.expectedBody,
+      expectedText: card.expectedText,
+    }),
   })
 }

@@ -1,6 +1,11 @@
 export const SHEET_KINDS = ['character', 'lore', 'world', 'organization'] as const
 export type SheetKind = (typeof SHEET_KINDS)[number]
 
+export const CRAFT_TAGS = [
+  'char-dev', 'plot-progress', 'twist', 'world-build', 'relationship', 'setup', 'payoff', 'breather',
+] as const
+export type CraftTag = (typeof CRAFT_TAGS)[number]
+
 export const CLAIM_KINDS = ['attribute', 'relationship', 'event', 'existence'] as const
 export type ClaimKind = (typeof CLAIM_KINDS)[number]
 
@@ -8,6 +13,7 @@ export type Chapter = {
   id: string
   title: string
   body: string
+  craftTags: CraftTag[]
 }
 
 export type Fact = {
@@ -27,6 +33,7 @@ export type Sheet = {
   aliases: string[]
   summary: string
   notes: string
+  portrait?: string
   facts: Fact[]
 }
 
@@ -80,6 +87,18 @@ export type Proposal = {
   toSheetId?: string
 }
 
+export type ResearchSource = {
+  title: string
+  url: string
+}
+
+export type ResearchNote = {
+  id: string
+  title: string
+  summary: string
+  sources: ResearchSource[]
+}
+
 export type Project = {
   schemaVersion: 1
   title: string
@@ -88,6 +107,7 @@ export type Project = {
   proposals: Proposal[]
   rejectedFingerprints: string[]
   marks: Mark[]
+  researchNotes: ResearchNote[]
 }
 
 export type LintResult = {

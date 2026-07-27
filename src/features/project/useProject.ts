@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Chapter, Fact, Project, Sheet } from '../../domain/types.ts'
+import type { ApplyCard } from '../../cowrite/types.ts'
 import * as api from './api.ts'
 
 export type SaveState = 'idle' | 'saving' | 'saved' | 'error'
@@ -9,7 +10,7 @@ export type ProjectController = {
   loading: boolean
   error: string | null
   saveState: SaveState
-  patchChapter: (chapterId: string, patch: Partial<Pick<Chapter, 'title' | 'body'>>) => void
+  patchChapter: (chapterId: string, patch: Partial<Pick<Chapter, 'title' | 'body' | 'craftTags'>>) => void
   addChapter: () => void
   saveSheet: (sheet: Sheet) => Promise<void>
   saveFact: (sheetId: string, fact: Fact) => Promise<void>
@@ -21,6 +22,8 @@ export type ProjectController = {
   rejectProposal: (id: string) => Promise<void>
   applyServerProject: (project: Project) => void
   flushChapter: (chapterId: string) => Promise<void>
+  applying: boolean
+  applySuggestion: (card: ApplyCard) => Promise<Project>
 }
 
 /** API-backed project state. Chapter writes debounce; structured bible edits save explicitly. */
@@ -36,17 +39,38 @@ export function useProject(): ProjectController {
   })
   const projectRef = useRef<Project | null>(null)
   const continuityRunningRef = useRef(false)
+  const applyingRef = useRef(false)
+  const [applying, setApplying] = useState(false)
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+  const inFlightSaves = useRef(new Map<string, Promise<void>>())
   const revisions = useRef(new Map<string, number>())
+  const savedRevisions = useRef(new Map<string, number>())
 
   function setCurrent(next: Project): void {
     projectRef.current = next
     setProject(next)
   }
 
+  /** Keep only dirty local chapters; otherwise trust server (avoids stale tabs wiping prose). */
   function mergeServerProject(next: Project): void {
     const current = projectRef.current
-    setCurrent(current ? { ...next, chapters: current.chapters } : next)
+    if (!current) {
+      setCurrent(next)
+      return
+    }
+    const serverIds = new Set(next.chapters.map((chapter) => chapter.id))
+    const chapters = next.chapters.map((serverChapter) => {
+      const clientChapter = current.chapters.find((chapter) => chapter.id === serverChapter.id)
+      if (!clientChapter) return serverChapter
+      const revision = revisions.current.get(serverChapter.id) ?? 0
+      const savedRevision = savedRevisions.current.get(serverChapter.id) ?? 0
+      const dirty = timers.current.has(serverChapter.id) || revision > savedRevision
+      return dirty ? clientChapter : serverChapter
+    })
+    for (const clientChapter of current.chapters) {
+      if (!serverIds.has(clientChapter.id)) chapters.push(clientChapter)
+    }
+    setCurrent({ ...next, chapters })
   }
 
   useEffect(() => {
@@ -55,6 +79,12 @@ export function useProject(): ProjectController {
       .loadProject(controller.signal)
       .then((loaded) => {
         setCurrent(loaded)
+        revisions.current.clear()
+        savedRevisions.current.clear()
+        for (const chapter of loaded.chapters) {
+          revisions.current.set(chapter.id, 0)
+          savedRevisions.current.set(chapter.id, 0)
+        }
         setError(null)
       })
       .catch((caught: unknown) => {
@@ -70,22 +100,33 @@ export function useProject(): ProjectController {
     }
   }, [])
 
-  const persistChapter = useCallback(async (chapter: Chapter, revision: number) => {
+  const persistChapter = useCallback((chapter: Chapter, revision: number): Promise<void> => {
     setSaveState('saving')
-    try {
-      const saved = await api.saveChapter(chapter)
-      if (revisions.current.get(chapter.id) !== revision) return
-      mergeServerProject(saved)
-      setSaveState('saved')
-      setError(null)
-    } catch (caught) {
-      setSaveState('error')
-      setError(caught instanceof Error ? caught.message : 'Failed to save chapter')
-    }
+    const previous = inFlightSaves.current.get(chapter.id) ?? Promise.resolve()
+    const operation = previous.then(async () => {
+      try {
+        const saved = await api.saveChapter(chapter)
+        savedRevisions.current.set(chapter.id, Math.max(savedRevisions.current.get(chapter.id) ?? 0, revision))
+        if (revisions.current.get(chapter.id) !== revision) return
+        mergeServerProject(saved)
+        setSaveState('saved')
+        setError(null)
+      } catch (caught) {
+        setSaveState('error')
+        setError(caught instanceof Error ? caught.message : 'Failed to save chapter')
+        throw caught
+      }
+    })
+    inFlightSaves.current.set(chapter.id, operation)
+    void operation.finally(() => {
+      if (inFlightSaves.current.get(chapter.id) === operation) inFlightSaves.current.delete(chapter.id)
+    }).catch(() => undefined)
+    return operation
   }, [])
 
   const patchChapter = useCallback(
-    (chapterId: string, patch: Partial<Pick<Chapter, 'title' | 'body'>>) => {
+    (chapterId: string, patch: Partial<Pick<Chapter, 'title' | 'body' | 'craftTags'>>) => {
+      if (applyingRef.current) return
       const current = projectRef.current
       const chapter = current?.chapters.find((candidate) => candidate.id === chapterId)
       if (!current || !chapter) return
@@ -105,7 +146,7 @@ export function useProject(): ProjectController {
         chapterId,
         setTimeout(() => {
           timers.current.delete(chapterId)
-          void persistChapter(nextChapter, revision)
+          void persistChapter(nextChapter, revision).catch(() => undefined)
         }, 500),
       )
     },
@@ -119,6 +160,7 @@ export function useProject(): ProjectController {
       id: `chapter-${Date.now()}`,
       title: `Chapter ${current.chapters.length + 1}`,
       body: '',
+      craftTags: [],
     }
     setSaveState('saving')
     void api
@@ -165,13 +207,51 @@ export function useProject(): ProjectController {
   }, [])
 
   const flushChapter = useCallback(async (chapterId: string) => {
-    const pending = timers.current.get(chapterId)
-    if (!pending) return
-    clearTimeout(pending)
-    timers.current.delete(chapterId)
-    const chapter = projectRef.current?.chapters.find((candidate) => candidate.id === chapterId)
-    if (chapter) await persistChapter(chapter, revisions.current.get(chapterId) ?? 0)
+    while (true) {
+      const timer = timers.current.get(chapterId)
+      if (timer) {
+        clearTimeout(timer)
+        timers.current.delete(chapterId)
+        const chapter = projectRef.current?.chapters.find((candidate) => candidate.id === chapterId)
+        if (chapter) await persistChapter(chapter, revisions.current.get(chapterId) ?? 0)
+        continue
+      }
+      const inFlight = inFlightSaves.current.get(chapterId)
+      if (inFlight) {
+        await inFlight
+        continue
+      }
+      const revision = revisions.current.get(chapterId) ?? 0
+      if ((savedRevisions.current.get(chapterId) ?? 0) < revision) {
+        const chapter = projectRef.current?.chapters.find((candidate) => candidate.id === chapterId)
+        if (!chapter) throw new Error(`Chapter not found: ${chapterId}`)
+        await persistChapter(chapter, revision)
+        continue
+      }
+      return
+    }
   }, [persistChapter])
+
+  const applySuggestion = useCallback(async (card: ApplyCard): Promise<Project> => {
+    if (applyingRef.current) throw new Error('An Apply is already running')
+    applyingRef.current = true
+    setApplying(true)
+    try {
+      await flushChapter(card.chapterId)
+      const committed = await api.applySuggestion(card.chapterId, card)
+      const timer = timers.current.get(card.chapterId)
+      if (timer) clearTimeout(timer)
+      timers.current.delete(card.chapterId)
+      const revision = (revisions.current.get(card.chapterId) ?? 0) + 1
+      revisions.current.set(card.chapterId, revision)
+      savedRevisions.current.set(card.chapterId, revision)
+      setCurrent(committed)
+      return committed
+    } finally {
+      applyingRef.current = false
+      setApplying(false)
+    }
+  }, [flushChapter])
 
   const runContinuity = useCallback(async (chapterId: string) => {
     if (continuityRunningRef.current) return null
@@ -228,5 +308,7 @@ export function useProject(): ProjectController {
     deleteFact, continuity, runContinuity, acceptProposal, editProposal, rejectProposal,
     applyServerProject: mergeServerProject,
     flushChapter,
+    applying,
+    applySuggestion,
   }
 }

@@ -37,3 +37,4 @@ Thumbs.db
 # test / coverage
 coverage
 *.tsbuildinfo
+e2e/output/

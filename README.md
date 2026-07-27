@@ -2,7 +2,9 @@
 
 Fiction IDE for serial and world-heavy novels: clean manuscript editor, project-aware agent panel, continuity diagnostics, and accept-gated bible changes.
 
-Nothing enters the manuscript or canon without explicit Apply or Accept.
+Nothing enters the manuscript or canon without explicit **Apply** or **Accept**.
+
+**Look:** Kobo-style paper reading profiles (Day / Sepia / Mint / Night) + warm chrome — not cool AI-blue. Tokens: [docs/design/TOKENS.md](docs/design/TOKENS.md).
 
 ## Run locally
 
@@ -12,20 +14,22 @@ Requires Node.js 24+.
 npm install
 ```
 
-Start the local API and Vite app in separate terminals:
+Two terminals:
 
 ```bash
-npm run dev:server
-npm run dev
+STORYLINT_FIXTURE_LLM=1 npm run dev:server   # API http://127.0.0.1:4174
+npm run dev                                  # UI http://localhost:5173/
 ```
 
-Open the Vite URL printed by the second command. There is no login.
+No login.
 
 ## LLM configuration
 
-Storylint uses an OpenAI-compatible HTTP adapter, so it works with 9-router, LM Studio, Ollama, OpenRouter, LiteLLM, and equivalent routers.
+OpenAI-compatible adapter (9-router, LM Studio, Ollama, OpenRouter, etc.).
 
-Copy `.env.example` to `.env` and configure:
+```bash
+cp .env.example .env   # if present
+```
 
 ```env
 LLM_PROVIDER=9-router
@@ -36,25 +40,17 @@ LLM_MAX_TOKENS=20000
 STORYLINT_FIXTURE_LLM=0
 ```
 
-`LLM_PROVIDER` is a diagnostic label; the live wire contract is `POST {LLM_BASE_URL}/chat/completions`. Local servers that do not require authentication may leave `LLM_API_KEY` empty.
-
-Leave `LLM_MODEL` empty or set `STORYLINT_FIXTURE_LLM=1` for deterministic fixture mode. Tests never require a live model.
+Live wire: `POST {LLM_BASE_URL}/chat/completions`. Empty model/base or `STORYLINT_FIXTURE_LLM=1` → fixture Continuity (no external call). Keys stay on the server — never `VITE_*` secrets.
 
 ## Dogfood flow
 
-1. Start both processes and open Storylint.
-2. Create or select a chapter and type prose. Wait for the top bar to show **Saved**, then reload to confirm persistence.
-3. Create a character, lore, world, or organization sheet in the binder. Add/edit/delete a fact and reload.
-4. With no model configured, use **Continuity** from the top bar or agent panel. Fixture prose from `docs/fixtures/continuity-sample.md` produces a red `blue eyes` diagnostic and a Kael proposal.
-5. Review proposal cards in the agent panel. **Accept** writes canon; **Reject** does not. Edit before accepting when needed.
-6. Ask the agent: `Draft a character sheet for Kael`. Review the structured proposal pack; it remains non-canon until **Accept pack**.
-7. Toggle binder and agent regions. Use **Focus** to verify the manuscript is the only content region.
-
-## Privacy
-
-Live Continuity sends the selected chapter and a bible digest to the configured model provider. Live sheet assistance sends the selected chapter, existing sheet names, and your request. Fixture mode sends nothing externally.
-
-API keys stay in the server process. Never use `VITE_*` variables for secrets.
+1. Start API + Vite; open Storylint.  
+2. Edit a chapter; wait for **Saved**; reload.  
+3. Sheets/facts in binder; Accept/Reject proposals only.  
+4. **Continuity** (fixture or live); marks use paper-safe mark tokens.  
+5. Agent: sheet packs, Continue / Rewrite / Brainstorm → **Apply** cards only.  
+6. **Paper color:** bookmark/seal on the manuscript (Day/Sepia/Mint/Night). Theme icon = chrome only.  
+7. **Focus** = manuscript only. Under 1366 paper is full-bleed; from 1366 centered page + ribbon.
 
 ## Verify
 
@@ -64,4 +60,21 @@ npm run build
 npm run lint
 ```
 
-Product/build documentation lives under `docs/`; agent rules are in `CLAUDE.md`.
+UI browser smoke: [docs/E2E.md](docs/E2E.md) (Playwright + system **msedge** on this machine).
+
+## Docs (agents)
+
+| Doc | |
+|-----|--|
+| [CLAUDE.md](CLAUDE.md) | Hard rules + current state |
+| [docs/PRD.md](docs/PRD.md) | Product spine |
+| [docs/BUILD.md](docs/BUILD.md) | Slices + next work |
+| [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier |
+| [docs/03-ux.md](docs/03-ux.md) | IA + reading profiles + layout |
+| [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (source of truth) |
+| [docs/04-agents.md](docs/04-agents.md) | Agent model |
+| [docs/E2E.md](docs/E2E.md) | UI e2e |
+
+## Privacy
+
+Live Continuity / agent calls send chapter + bible digest (and related context) to the configured endpoint. Fixture mode sends nothing.

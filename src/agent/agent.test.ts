@@ -6,8 +6,8 @@ import { runAgent } from './run.ts'
 const project: Project = {
   schemaVersion: 1,
   title: 'Storylint',
-  chapters: [{ id: 'chapter-1', title: 'Opening', body: 'Aria meets Kael.' }],
-  sheets: [], proposals: [], rejectedFingerprints: [], marks: [],
+  chapters: [{ id: 'chapter-1', title: 'Opening', body: 'Aria meets Kael.', craftTags: [] }],
+  sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
 }
 
 const fixtureConfig = {

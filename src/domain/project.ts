@@ -9,7 +9,7 @@ function replaceById<T extends { id: string }>(items: readonly T[], item: T): T[
 export function patchChapter(
   project: Project,
   chapterId: string,
-  patch: Partial<Pick<Chapter, 'title' | 'body'>>,
+  patch: Partial<Pick<Chapter, 'title' | 'body' | 'craftTags'>>,
 ): Project {
   if (!project.chapters.some((chapter) => chapter.id === chapterId)) {
     throw new Error(`Chapter not found: ${chapterId}`)

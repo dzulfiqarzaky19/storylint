@@ -1,6 +1,6 @@
 # Storylint — PRD (MVP spine)
 
-**Status:** Wave 0 product lock  
+**Status:** P1 shipped in repo; P1b Apply landing; UI = Kobo paper tokens (see design/TOKENS.md)  
 **First user:** you (local dogfood)  
 **Auth:** none — no login, no session, no multi-tenant  
 
@@ -135,14 +135,15 @@ Detail: [02-steal-and-phases](./02-steal-and-phases.md), [04-agents](./04-agents
 
 ---
 
-## 10. Open questions — **defaults locked for P1** (override only by human edit)
+## 10. Defaults locked
 
-| # | Question | P1 default |
-|---|----------|------------|
-| 1 | Agent panel default | **Open** at width ≥ `bp.lg`; user can hide |
-| 2 | Sheet kinds | **Frozen:** character, lore, world, organization |
-| 3 | Confidence threshold | **0.7** |
-| 4 | Product name | **Storylint** |
-| 5 | First build slice | **Slice 0** design tokens ([BUILD.md](./BUILD.md)) |
+| # | Topic | Default |
+|---|--------|---------|
+| 1 | Agent panel | Open ≥ `bp.lg`; hideable |
+| 2 | Sheet kinds | character, lore, world, organization |
+| 3 | Confidence | 0.7 |
+| 4 | Name | Storylint |
+| 5 | Visual | Kobo paper + warm chrome ([design/TOKENS.md](./design/TOKENS.md)) |
+| 6 | Next slice | **F** after E verified ([BUILD.md](./BUILD.md)) |
 
-Build/verify roles: [AGENTS_ROLES.md](./AGENTS_ROLES.md).
+Roles: [AGENTS_ROLES.md](./AGENTS_ROLES.md).
