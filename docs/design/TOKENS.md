@@ -1,7 +1,8 @@
 # Design tokens — source of truth for every port
 
 **Purpose:** When we ship web, then Windows / macOS / Linux / Android / iOS, we **port these values**, not vibes.  
-**Rule:** Feature UI never invents a hex, px, or font size. It only references token names.
+**Rule:** Feature UI never invents a hex, px, rem, or font size. It only references token names (`var(--…)` / theme map).  
+Layout chrome (rails, topbar, reading control) = `size.*` in this file → `src/design/tokens.css` → components. **No parallel magic numbers in CSS/TSX.**
 
 See also: [README.md](./README.md) (folders + Tailwind) · [REFERENCES.md](./REFERENCES.md) (Obsidian/VS Code **patterns + URLs**, not their colors).
 
@@ -20,83 +21,104 @@ Scale: mobile font boost uses the same names, different density profile if neede
 
 ## 1. Color
 
-### 1.1 Neutrals (dark = default theme)
+**Doctrine:** Kobo / paper reader — not cool “AI IDE” blue-gray.  
+Two layers: **chrome** (binder, agent, top bar) + **manuscript paper** (reading surface).
+
+### 1.1 Reading profiles (manuscript page)
+
+| Profile | Paper bg | Ink | When |
+|---------|----------|-----|------|
+| `day` | `#F4F1EA` Book White | `#2C2D30` soft charcoal | Default daylight |
+| `sepia` | `#EFE6D5` aged page | `#2C2D30` | Cozy / dim indoor |
+| `mint` | `#E5EADF` low-fatigue green | `#2C2D30` | Harsh fluorescent |
+| `night` | `#121212` Obsidian | `#E3E5E8` milky silver | Dark room |
+
+Tokens: `color.paper`, `color.paperInk` (set by `data-reading` on `<html>`).  
+Never pure `#000` on cream; never pure `#FFF` body on night paper.
+
+### 1.2 Chrome neutrals — night (default app shell)
 
 | Token | Hex | Role |
 |-------|-----|------|
-| `color.canvas` | `#0F1115` | App background behind panels |
-| `color.surface` | `#161A22` | Binder, agent, top bar |
-| `color.surfaceRaised` | `#1C2230` | Cards, inputs, elevated rows |
-| `color.surfaceOverlay` | `#1C2230E6` | Drawers/modals (90% opacity) |
-| `color.border` | `#2A3142` | Default borders / dividers |
-| `color.borderStrong` | `#3D4660` | Focused well / active rail edge |
-| `color.text` | `#E7ECF5` | Primary text |
-| `color.textMuted` | `#8B95A8` | Secondary labels, meta |
-| `color.textSubtle` | `#6B7588` | Placeholder, disabled label |
-| `color.textInverse` | `#0F1115` | Text on accent solid buttons |
+| `color.canvas` | `#0E0E0E` | Desk behind panels |
+| `color.surface` | `#1A1A1A` | Binder, agent, top bar |
+| `color.surfaceRaised` | `#242424` | Cards, inputs |
+| `color.surfaceOverlay` | `#1A1A1AE6` | Drawers |
+| `color.border` | `#2E2E2E` | Dividers |
+| `color.borderStrong` | `#3F3F3F` | Active edge |
+| `color.text` | `#E3E5E8` | UI primary (matches night ink) |
+| `color.textMuted` | `#9A9CA0` | Meta |
+| `color.textSubtle` | `#6E7074` | Placeholder |
+| `color.textInverse` | `#121212` | On light chips if needed |
 
-### 1.2 Neutrals (light theme)
+Default manuscript in night shell: `paper` `#121212`, `paperInk` `#E3E5E8`.
+
+### 1.3 Chrome neutrals — day shell (`data-theme="light"`)
 
 | Token | Hex |
 |-------|-----|
-| `color.canvas` | `#F4F6FA` |
-| `color.surface` | `#FFFFFF` |
-| `color.surfaceRaised` | `#EEF1F7` |
-| `color.surfaceOverlay` | `#FFFFFFE6` |
-| `color.border` | `#D5DBE8` |
-| `color.borderStrong` | `#A8B3C9` |
-| `color.text` | `#141820` |
-| `color.textMuted` | `#5C6578` |
-| `color.textSubtle` | `#8B95A8` |
-| `color.textInverse` | `#FFFFFF` |
+| `color.canvas` | `#E8E4DB` warm desk |
+| `color.surface` | `#F7F4ED` |
+| `color.surfaceRaised` | `#FFFFFF` |
+| `color.surfaceOverlay` | `#F7F4EDE6` |
+| `color.border` | `#D4CFC4` |
+| `color.borderStrong` | `#B8B2A6` |
+| `color.text` | `#2C2D30` |
+| `color.textMuted` | `#5C5E62` |
+| `color.textSubtle` | `#8A8C90` |
+| `color.textInverse` | `#F4F1EA` |
 
-### 1.3 Brand / action (same both themes unless noted)
+Default manuscript in day shell: `paper` `#F4F1EA`, `paperInk` `#2C2D30`.
 
-| Token | Hex | Role |
-|-------|-----|------|
-| `color.accent` | `#6EA8FE` | Links, active tab, primary focus ring companion |
-| `color.accentHover` | `#8BBCFF` | Hover/pressed primary |
-| `color.accentMuted` | `#3D5A80` | Primary button border / dim accent |
-| `color.accentSubtle` | `#6EA8FE22` | Selected row wash (dark); light use `#6EA8FE18` |
-| `color.primary` | `#243B63` | Solid primary button fill (dark UI) |
-| `color.primary` (light) | `#2F5AA8` | Solid primary button fill (light UI) |
-| `color.onPrimary` | `#E7ECF5` | Label on `color.primary` fill (dark UI) |
-| `color.onPrimary` (light) | `#FFFFFF` | Label on `color.primary` fill (light UI) |
+### 1.4 Brand / action — ink + stone (not muddy brown CTAs)
 
-**Primary vs accent:**  
-- `primary` = filled button background  
-- `accent` = ink/focus/link highlight  
+| Token | Night | Day | Role |
+|-------|-------|-----|------|
+| `color.accent` | `#C4A574` soft brass | `#6B6358` warm stone | Links, focus |
+| `color.accentHover` | `#D4BC94` | `#4A453E` | Hover |
+| `color.accentMuted` | `#5C5348` | `#B0A898` | Dim border |
+| `color.accentSubtle` | `#C4A57422` | `#6B635818` | Selected wash |
+| `color.primary` | `#2A2A2A` charcoal | `#2C2D30` ink | Filled button (print density) |
+| `color.onPrimary` | `#E3E5E8` | `#F4F1EA` | Label on primary |
 
-**Why `onPrimary` exists:** neither `text` nor `textInverse` clears 4.5:1 on `primary` in *both* themes
-(`text` fails on light `#2F5AA8`; `textInverse` fails on dark `#243B63`). `onPrimary` is the one
-per-theme pair that passes both. Ports map it like any other color token.
+**Primary vs accent:** primary = ink block (Kobo-like), accent = quiet metal — **not** chocolate brown buttons. No `#6EA8FE`.
 
-### 1.4 Semantic (continuity + status) — **do not reuse for chrome**
+### 1.5 Semantic (continuity) — retuned for paper
 
 | Token | Hex | Role |
 |-------|-----|------|
-| `color.markYellow` | `#C9A227` | Soft continuity drift underline |
-| `color.markYellowBg` | `#C9A22747` | ~28% wash on span |
-| `color.markRed` | `#E35D6A` | Hard continuity conflict underline |
-| `color.markRedBg` | `#E35D6A52` | ~32% wash on span |
-| `color.success` | `#3DD68C` | Accept success, LLM ready |
-| `color.successMuted` | `#2A5A44` | Success badge border |
-| `color.danger` | `#E35D6A` | Destructive text/button (same hue family as mark red OK) |
-| `color.dangerBg` | `#6B3038` | Danger button border/bg dark |
-| `color.warning` | `#C9A227` | Non-mark warnings only if needed |
-| `color.pending` | `#8B95A8` | Pending proposal meta |
+| `color.markYellow` | `#A67C2A` | Soft drift (less neon) |
+| `color.markYellowBg` | `#A67C2A33` | Wash on paper |
+| `color.markRed` | `#B54A4A` | Hard conflict |
+| `color.markRedBg` | `#B54A4A2E` | Wash |
+| `color.success` | `#5A8F6A` | Accept / ready |
+| `color.successMuted` | `#2F4A38` | Badge border night |
+| `color.danger` | `#B54A4A` | Destructive |
+| `color.dangerBg` | `#5C2A2A` | Danger chrome night |
+| `color.warning` | `#A67C2A` | Non-mark warn |
+| `color.pending` | `#9A9CA0` | Proposal meta |
 
-Mark tokens are **diagnostics only**. Buttons use `primary` / `danger` / `accent`, not `markYellow`.
+Marks = diagnostics only — never primary buttons.
 
-### 1.5 Focus / state
+### 1.6 Focus / state
 
-| Token | Value | Role |
-|-------|-------|------|
-| `color.focusRing` | `#6EA8FE` | Keyboard focus outline |
-| `focus.ringWidth` | `2px` | |
-| `focus.ringOffset` | `2px` | |
-| `opacity.disabled` | `0.5` | Disabled controls |
-| `opacity.muted` | `0.72` | De-emphasized icons |
+| Token | Value |
+|-------|-------|
+| `color.focusRing` | same as `color.accent` |
+| `focus.ringWidth` | `2px` |
+| `focus.ringOffset` | `2px` |
+| `opacity.disabled` | `0.5` |
+| `opacity.muted` | `0.72` |
+
+### 1.7 How themes combine
+
+| Attr on `<html>` | Meaning |
+|------------------|---------|
+| (default) | Night chrome + night paper |
+| `data-theme="light"` | Day chrome + day paper defaults |
+| `data-reading="day\|sepia\|mint\|night"` | Overrides **paper + paperInk only** (and manuscript text) |
+
+Reading profile can differ from chrome (e.g. night shell + sepia page later); v1 toggle cycles reading on both.
 
 ---
 
@@ -186,12 +208,25 @@ Ports: map `font.ui` → San Francisco (iOS), Roboto/system (Android), Segoe UI 
 | Token | px | Role |
 |-------|-----|------|
 | `size.topbarHeight` | 48 | Top bar |
-| `size.binderWidth` | 220 | Default left rail |
-| `size.binderWidthMin` | 180 | |
-| `size.binderWidthMax` | 320 | |
-| `size.agentWidth` | 360 | Default agent panel |
-| `size.agentWidthMin` | 300 | |
-| `size.agentWidthMax` | 480 | |
+| `size.readingBtn` | 76 | Desk ribbon width (Day/Sepia/Mint/Night) |
+| `size.readingSeal` | 44 | Compact in-paper circle control |
+| `size.binderWidth` | 300 | Base left rail (snug) |
+| `size.binderWidthLg` | 340 | ≥1024 |
+| `size.binderWidthXl` | 380 | ≥1440 |
+| `size.binderWidth2xl` | 420 | ≥1920 |
+| `size.agentWidth` | 300 | Base right rail (= binder) |
+| `size.agentWidthLg` | 340 | |
+| `size.agentWidthXl` | 380 | |
+| `size.agentWidth2xl` | 420 | |
+| `manuscript.pageMaxW` | 36rem | Max page width (not physical A4 mm) |
+| `manuscript.pageMaxWLg` | 40rem | ≥1366 desk |
+| `manuscript.pageMaxWXl` | 44rem | ≥1440 |
+| `manuscript.pageMaxW2xl` | 48rem | ≥1920 |
+| `manuscript.pageRatio` | 1.414… | A4 portrait **ratio** — `min-height: 100cqw * ratio` |
+| `manuscript.gutter` | 16px | Desk pad around page |
+| `manuscript.gutterLg` | 20px | |
+| `manuscript.gutterXl` | 28px | |
+| `manuscript.gutter2xl` | 36px | |
 | `size.icon` | 16 | Default icon |
 | `size.iconSm` | 14 | |
 | `size.iconLg` | 20 | |
@@ -337,7 +372,8 @@ Use one naming scheme everywhere:
 
   /* layout */
   --size-topbar: 48px;
-  --size-binder: 220px;
+  --size-reading-btn: 76px;
+  --size-binder: 360px;
   --size-agent: 360px;
   --size-touch-min: 44px;
   --size-control: 32px;
@@ -396,4 +432,9 @@ When adding Android/iOS/desktop:
 | Date | Change |
 |------|--------|
 | 2026-07-26 | Initial concrete token set (Wave 0) |
+| 2026-07-27 | Kobo/paper doctrine: kill AI blue; stone/brass accent; paper/ink + 4 reading profiles |
+| 2026-07-27 | Responsive rails/paper tokens; snap gutter; reading-btn size token; docs agent-sync |
+| 2026-07-27 | Bookmark ribbon right-edge; full swatch+ink per reading profile |
+| 2026-07-27 | Desk breakpoint **1366**; seal&lt;1366; A4 ratio via cqw; docs fully synced |
+| 2026-07-27 | Light chrome: ink primary not muddy brown; `size.readingBtn` token; binder empty rows not pills |
 | 2026-07-27 | Add `color.onPrimary` (per-theme primary-button label; contrast) — Slice 0 port |

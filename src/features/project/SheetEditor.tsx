@@ -13,6 +13,17 @@ export type SheetEditorProps = {
 
 const EMPTY_KIND: SheetKind = 'character'
 
+function isImageSource(value: string): boolean {
+  return /^(?:https?:\/\/|data:image\/|\/{1,2}|\.\.?\/)/i.test(value.trim())
+}
+
+const FIELD_HINTS: Record<SheetKind, readonly string[]> = {
+  character: ['appearance', 'wound', 'oath', 'faction'],
+  lore: ['origin', 'rule', 'cost', 'exception'],
+  world: ['climate', 'custom', 'danger', 'resource'],
+  organization: ['purpose', 'leader', 'symbol', 'rival'],
+}
+
 export function SheetEditor({
   sheet,
   onSaveSheet,
@@ -21,16 +32,22 @@ export function SheetEditor({
   onBack,
 }: SheetEditorProps) {
   const [draft, setDraft] = useState<Sheet>(() => sheet ?? emptySheet())
+  const [portraitFailed, setPortraitFailed] = useState(false)
   const [fact, setFact] = useState({ id: '', key: '', value: '', statement: '' })
 
   useEffect(() => {
     setDraft(sheet ?? emptySheet())
+    setPortraitFailed(false)
     setFact({ id: '', key: '', value: '', statement: '' })
   }, [sheet])
 
   async function submitSheet(event: FormEvent) {
     event.preventDefault()
-    await onSaveSheet({ ...draft, name: draft.name.trim() })
+    await onSaveSheet({
+      ...draft,
+      name: draft.name.trim(),
+      facts: sheet?.facts ?? draft.facts,
+    })
   }
 
   async function submitFact(event: FormEvent) {
@@ -54,6 +71,26 @@ export function SheetEditor({
     <div className="sheet-editor">
       <Button onClick={onBack}>Back to binder</Button>
       <form className="sheet-editor__form" onSubmit={(event) => void submitSheet(event)}>
+        <div className="sheet-editor__identity">
+          <div className="sheet-editor__portrait" aria-label="Sheet portrait or icon">
+            {draft.portrait && isImageSource(draft.portrait) && !portraitFailed ? (
+              <img src={draft.portrait} alt="" onError={() => setPortraitFailed(true)} />
+            ) : (
+              draft.portrait?.trim() || draft.name.trim().slice(0, 2).toUpperCase() || '✦'
+            )}
+          </div>
+          <label className="sheet-editor__field">
+            <span>Portrait / icon</span>
+            <Input
+              value={draft.portrait ?? ''}
+              onChange={(event) => {
+                setPortraitFailed(false)
+                setDraft((current) => ({ ...current, portrait: event.target.value }))
+              }}
+              placeholder="Emoji, local path, or URL"
+            />
+          </label>
+        </div>
         <label className="sheet-editor__field">
           <span>Name</span>
           <Input
@@ -141,6 +178,13 @@ export function SheetEditor({
               </div>
             </div>
           ))}
+          <div className="sheet-editor__hints" aria-label="Optional lore field hints">
+            {FIELD_HINTS[draft.kind].map((hint) => (
+              <Button key={hint} onClick={() => setFact((current) => ({ ...current, key: hint }))}>
+                {hint}
+              </Button>
+            ))}
+          </div>
           <form className="sheet-editor__form" onSubmit={(event) => void submitFact(event)}>
             <label className="sheet-editor__field">
               <span>Key</span>
@@ -177,6 +221,7 @@ function emptySheet(): Sheet {
     aliases: [],
     summary: '',
     notes: '',
+    portrait: '',
     facts: [],
   }
 }

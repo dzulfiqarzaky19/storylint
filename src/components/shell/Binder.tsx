@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Fact, Sheet } from '../../domain/types.ts'
 import { SheetEditor } from '../../features/project/SheetEditor.tsx'
-import { Badge, Button, IconButton, ListRow } from '../ui'
+import { Button, IconButton, ListRow } from '../ui'
 import type { Chapter, SheetKind } from './workspace'
 import { SHEET_KINDS, SHEET_KIND_LABEL } from './workspace'
 import './shell.css'
@@ -74,7 +74,9 @@ export function Binder({
                 <section className="panel__group" key={kind} aria-labelledby={`binder-${kind}`}>
                   <h3 className="panel__label" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h3>
                   {forKind.length === 0 ? (
-                    <Badge tone="pending">none yet</Badge>
+                    <div className="panel__empty-row" role="status">
+                      None yet
+                    </div>
                   ) : (
                     forKind.map((sheet) => (
                       <ListRow key={sheet.id} meta={String(sheet.facts.length)} onClick={() => setEditingSheetId(sheet.id)}>

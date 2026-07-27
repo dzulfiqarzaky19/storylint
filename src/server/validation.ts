@@ -1,11 +1,13 @@
 import {
   CLAIM_KINDS,
+  CRAFT_TAGS,
   SHEET_KINDS,
   type Chapter,
   type Fact,
   type Mark,
   type Project,
   type Proposal,
+  type ResearchNote,
   type Sheet,
 } from '../domain/types.ts'
 
@@ -53,13 +55,16 @@ export function parseProposalEdits(value: unknown): Partial<Pick<Proposal, 'enti
   return edits
 }
 
-export function parseChapterPatch(value: unknown): Partial<Pick<Chapter, 'title' | 'body'>> {
+export function parseChapterPatch(value: unknown): Partial<Pick<Chapter, 'title' | 'body' | 'craftTags'>> {
   const raw = object(value, 'chapter patch')
-  const patch: Partial<Pick<Chapter, 'title' | 'body'>> = {}
+  const patch: Partial<Pick<Chapter, 'title' | 'body' | 'craftTags'>> = {}
   if (raw.title !== undefined) patch.title = string(raw.title, 'title')
   if (raw.body !== undefined) patch.body = string(raw.body, 'body')
-  if (patch.title === undefined && patch.body === undefined) {
-    throw new Error('chapter patch requires title or body')
+  if (raw.craftTags !== undefined) {
+    patch.craftTags = stringArray(raw.craftTags, 'craftTags').map((tag) => oneOf(tag, CRAFT_TAGS, 'craftTags'))
+  }
+  if (patch.title === undefined && patch.body === undefined && patch.craftTags === undefined) {
+    throw new Error('chapter patch requires title, body, or craftTags')
   }
   return patch
 }
@@ -70,6 +75,9 @@ export function parseChapter(value: unknown): Chapter {
     id: string(raw.id, 'chapter.id'),
     title: string(raw.title, 'chapter.title'),
     body: string(raw.body, 'chapter.body'),
+    craftTags: raw.craftTags === undefined
+      ? []
+      : stringArray(raw.craftTags, 'chapter.craftTags').map((tag) => oneOf(tag, CRAFT_TAGS, 'chapter.craftTags')),
   }
 }
 
@@ -96,7 +104,31 @@ export function parseSheet(value: unknown): Sheet {
     aliases: stringArray(raw.aliases, 'sheet.aliases'),
     summary: string(raw.summary, 'sheet.summary'),
     notes: string(raw.notes, 'sheet.notes'),
+    portrait: optionalString(raw.portrait, 'sheet.portrait'),
     facts: raw.facts.map(parseFact),
+  }
+}
+
+export function parseResearchNote(value: unknown): ResearchNote {
+  const raw = object(value, 'research note')
+  if (!Array.isArray(raw.sources) || raw.sources.length === 0) {
+    throw new Error('research note requires sources')
+  }
+  const id = string(raw.id, 'researchNote.id').trim()
+  const title = string(raw.title, 'researchNote.title').trim()
+  const summary = string(raw.summary, 'researchNote.summary').trim()
+  if (!id || !title || !summary) throw new Error('research note fields cannot be empty')
+  return {
+    id,
+    title,
+    summary,
+    sources: raw.sources.map((entry) => {
+      const source = object(entry, 'research source')
+      const sourceTitle = string(source.title, 'researchSource.title').trim()
+      const url = string(source.url, 'researchSource.url').trim()
+      if (!sourceTitle || !/^https?:\/\//i.test(url)) throw new Error('research source requires http(s) URL')
+      return { title: sourceTitle, url }
+    }),
   }
 }
 
@@ -171,5 +203,6 @@ export function parseProject(value: unknown): Project {
     proposals: raw.proposals.map(parseProposal),
     rejectedFingerprints: stringArray(raw.rejectedFingerprints, 'project.rejectedFingerprints'),
     marks: Array.isArray(raw.marks) ? raw.marks.map(parseMark) : [],
+    researchNotes: Array.isArray(raw.researchNotes) ? raw.researchNotes.map(parseResearchNote) : [],
   }
 }

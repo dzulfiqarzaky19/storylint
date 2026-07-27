@@ -15,6 +15,7 @@ function project(): Project {
       id: 'chapter-1',
       title: 'Chapter One',
       body: 'Aria looked up, her blue eyes wide. Kael drew his sword beside her.',
+      craftTags: [],
     }],
     sheets: [{
       id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '',
@@ -23,6 +24,7 @@ function project(): Project {
     proposals: [],
     rejectedFingerprints: [],
     marks: [],
+    researchNotes: [],
   }
 }
 

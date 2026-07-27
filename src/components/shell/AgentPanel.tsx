@@ -2,6 +2,12 @@ import { useState } from 'react'
 import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
+import { ApplyCard } from '../../features/agent/ApplyCard.tsx'
+import type { CowriteSkill } from '../../cowrite/types.ts'
+import type { CraftTag, Project } from '../../domain/types.ts'
+import { ResearchPanel } from '../../features/research/ResearchPanel.tsx'
+import type { ReviewKind } from '../../review/types.ts'
+import { ReviewCard } from '../../features/agent/ReviewCard.tsx'
 import type { ProposalEdits } from '../../features/project/api.ts'
 import { Badge, Button, EmptyState, IconButton, Textarea } from '../ui'
 import type { TranscriptEntry } from './workspace'
@@ -9,6 +15,8 @@ import './shell.css'
 
 export type AgentPanelProps = {
   transcript: TranscriptEntry[]
+  project: Project | null
+  onProject: (project: Project) => void
   chapterTitle: string
   proposals: Proposal[]
   continuityRunning: boolean
@@ -20,16 +28,24 @@ export type AgentPanelProps = {
   sending: boolean
   tipsDismissed: boolean
   onDismissTips: () => void
+  selection: { start: number; end: number; text: string }
+  onGenerateCowrite: (skill: CowriteSkill, instruction: string) => Promise<void>
+  onApplyCard: (id: string) => Promise<void>
+  onDismissCard: (id: string) => void
+  onRunReview: (kind: ReviewKind) => Promise<void>
+  onAddCraftTags: (tags: CraftTag[]) => void
   onSend: (text: string) => void
   onClose?: () => void
 }
 
 export function AgentPanel({
-  transcript, chapterTitle, proposals, continuityRunning, continuityMode,
+  transcript, project, onProject, chapterTitle, proposals, continuityRunning, continuityMode,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, tipsDismissed,
-  onDismissTips, onSend, onClose,
+  onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
+  onRunReview, onAddCraftTags, onSend, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
+  const [panelMode, setPanelMode] = useState<'agent' | 'research'>('agent')
   const packs = [...new Set(proposals.flatMap((proposal) => proposal.packId ? [proposal.packId] : []))]
   const standalone = proposals.filter((proposal) => !proposal.packId)
 
@@ -40,13 +56,25 @@ export function AgentPanel({
     setDraft('')
   }
 
+  function generate(skill: CowriteSkill) {
+    if (sending) return
+    const instruction = draft.trim() || (skill === 'rewrite' ? 'Rewrite this selection' : `${skill} this scene`)
+    void onGenerateCowrite(skill, instruction).then(() => setDraft('')).catch(() => undefined)
+  }
+
   return (
     <div className="panel">
       <div className="panel__header">
-        <h2 className="panel__title">Agent</h2>
+        <h2 className="panel__title">{panelMode === 'agent' ? 'Agent' : 'Research'}</h2>
+        <Button aria-pressed={panelMode === 'agent'} onClick={() => setPanelMode('agent')}>Agent</Button>
+        <Button aria-pressed={panelMode === 'research'} onClick={() => setPanelMode('research')}>Research</Button>
         {onClose ? <IconButton label="Close agent panel" onClick={onClose}>✕</IconButton> : null}
       </div>
 
+      {panelMode === 'research' ? (
+        <ResearchPanel project={project} onProject={onProject} />
+      ) : (
+        <>
       <div className="agent__transcript" aria-label="Agent transcript">
         <Button variant="primary" disabled={continuityRunning} onClick={() => void onRunContinuity().catch(() => undefined)}>
           {continuityRunning ? 'Running…' : 'Run Continuity'}
@@ -89,6 +117,10 @@ export function AgentPanel({
               <span className="agent__message-role">Continuity · {entry.mode}</span>
               <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} proposals</strong>
             </article>
+          ) : entry.role === 'apply' ? (
+            <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} />
+          ) : entry.role === 'review' ? (
+            <ReviewCard key={entry.id} result={entry.result} onAddTags={onAddCraftTags} />
           ) : (
             <div key={entry.id} className={`agent__message agent__message--${entry.role}`}>
               <span className="agent__message-role">{entry.role}</span>{entry.text}
@@ -109,12 +141,27 @@ export function AgentPanel({
           aria-label="Message the agent"
           rows={3}
         />
+        <div className="agent__cowrite-actions" aria-label="Review tools">
+          <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>
+            Review chapter
+          </Button>
+          <Button disabled={sending} onClick={() => void onRunReview('craft').catch(() => undefined)}>
+            Craft check
+          </Button>
+        </div>
+        <div className="agent__cowrite-actions" aria-label="Co-write skills">
+          <Button disabled={sending} onClick={() => generate('continue')}>Continue</Button>
+          <Button disabled={sending || selection.start === selection.end} onClick={() => generate('rewrite')}>Rewrite selection</Button>
+          <Button disabled={sending} onClick={() => generate('brainstorm')}>Brainstorm beats</Button>
+        </div>
         <div className="agent__composer-actions">
           <Button variant="primary" onClick={send} disabled={sending || draft.trim().length === 0}>
             {sending ? 'Sending…' : 'Send'}
           </Button>
         </div>
       </div>
+        </>
+      )}
     </div>
   )
 }

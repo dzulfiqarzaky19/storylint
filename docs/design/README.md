@@ -1,52 +1,44 @@
 # Design system
 
-**Canonical values:** [TOKENS.md](./TOKENS.md)  
-**External inspiration (URLs + what we mean):** [REFERENCES.md](./REFERENCES.md)  
-**Google Stitch prompts:** [STITCH.md](./STITCH.md)  
-**Product shell / IA:** [../03-ux.md](../03-ux.md)
+| Doc | |
+|-----|--|
+| [TOKENS.md](./TOKENS.md) | **Source of truth** — Kobo paper + warm chrome |
+| [REFERENCES.md](./REFERENCES.md) | Patterns/URLs (behavior only) |
+| [STITCH.md](./STITCH.md) | Stitch prompts — **outdated AI-blue**; do not ship skin from it |
+| [../03-ux.md](../03-ux.md) | IA, reading profiles, snap layout |
+| [../E2E.md](../E2E.md) | Browser verify |
 
-## Agent rules (non-negotiable)
+## Doctrine (agents)
 
-1. **Never hard-code** hex, raw `px` font sizes, or ad-hoc greys in feature UI.  
-2. **Never invent** “Obsidian colors” / “VS Code purple” from memory.  
-3. **Only** use token **names** from TOKENS.md (`color.accent`, `space.3`, `text.manuscript`, …).  
-4. If a token is missing, **add it to TOKENS.md first**, then use it — don’t freestyle in a component.  
-5. Tailwind (if enabled) is a **consumer** of tokens, not a second palette.  
-6. “Steal from X” means **interaction/IA pattern** from REFERENCES.md — **skin is always ours**.
+1. **Never hard-code** hex, px, or rem in `components/` / `features/`.  
+2. **Never** restore sky-blue AI palette (`#6EA8FE` etc.).  
+3. Change values in **TOKENS.md** then **`src/design/tokens.css`**.  
+4. Manuscript uses `color.paper` / `color.paperInk`; chrome uses surface/canvas/text.  
+5. Rails and paper width scale via size/measure/gutter tokens — uniformity over one-off CSS.  
+6. Steal **patterns** from REFERENCES; skin always ours.
 
-## Folder layout (code — create in tech wave)
+## Folders
 
 ```
-docs/design/                 # this folder — human + agent truth
-  README.md
-  TOKENS.md                  # colors, type, space, radii (port bible)
-  REFERENCES.md              # URLs + pattern definitions
-
-src/design/                  # runtime design system (web)
-  tokens.css                 # :root CSS vars 1:1 with TOKENS.md
-  tokens.ts                  # optional typed map / theme helper
-  tw-theme.ts                # optional: Tailwind theme.extend from tokens only
-  index.ts                   # public exports
-
-src/components/ui/           # primitives only (Button, Input, …) — token refs
-src/components/shell/        # binder / editor / agent layout slots
-src/features/                # product features — compose ui/*, no raw colors
+docs/design/           truth
+src/design/tokens.css  runtime vars
+src/design/index.ts    applyTheme / applyReading
+src/components/ui/     primitives → var(--*)
+src/components/shell/  layout → var(--size-*) only
 ```
 
-**Do not** put one-off colors in `src/features/**` or `App.css`.  
-**Do not** scatter `bg-[#0f1115]` / `text-gray-400` — map through tokens.
+## Reading profiles
 
-## Tailwind policy
+`data-reading=day|sepia|mint|night` on `<html>` → paper/ink only.  
+Control is **on the paper** (not top bar):
 
-| Allowed | Forbidden |
-|---------|-----------|
-| `bg-canvas`, `text-muted`, `p-3` if those utilities are **generated from TOKENS** | `bg-[#123]` / `text-sky-500` / default Tailwind palette for brand |
-| `className` on primitives built on tokens | Feature files defining new hex |
-| Changing TOKENS.md → regenerate theme | Forking a second grey scale in tailwind.config by eye |
+| Viewport | Control | Tokens |
+|----------|---------|--------|
+| **&lt;1366** | Round **seal** top-right *inside* page | `--size-reading-seal` |
+| **≥1366** | Right-edge **ribbon** (may peek) | `--size-reading-btn` |
 
-Core brand **does not change** when Tailwind is added/removed. Tokens stay the core; Tailwind is optional sugar.
+Page = A4 **ratio** (`min-height: 100cqw × √2`), width `manuscript.pageMaxW*` — not physical mm.
 
 ## Port
 
-Android / iOS / desktop shells read **TOKENS.md names + values**.  
-They do not read Tailwind class strings.
+Mobile/desktop adapters consume **token names**, not Tailwind or Stitch hex.
