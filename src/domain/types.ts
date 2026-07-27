@@ -14,6 +14,7 @@ export type Chapter = {
   title: string
   body: string
   craftTags: CraftTag[]
+  revision: number
 }
 
 export type Fact = {

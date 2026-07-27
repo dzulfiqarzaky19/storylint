@@ -89,7 +89,7 @@ export function useAgent(
         ...current,
         { id: `apply-error-${Date.now()}`, role: 'assistant', text: `Could not apply that draft: ${message}` },
       ])
-      return null
+      throw caught
     }
   }
 

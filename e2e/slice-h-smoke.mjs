@@ -15,11 +15,12 @@ try {
   await page.getByRole('button', { name: 'Research', exact: true }).click()
   await page.getByLabel('Research query').fill(`medieval archive access customs smoke-${Date.now()}`)
   await page.locator('form').getByRole('button', { name: 'Research', exact: true }).click()
-  await page.getByText('Controlled archive access').waitFor({ timeout: 10000 })
-  await page.getByText('International Council on Archives — Principles of Access').waitFor({ timeout: 5000 })
-  await page.getByRole('button', { name: 'Pin' }).click()
+  const card = page.locator('.research-card').first()
+  await card.getByText('Controlled archive access').waitFor({ timeout: 10000 })
+  await card.getByText('International Council on Archives — Principles of Access').waitFor({ timeout: 5000 })
+  await card.getByRole('button', { name: 'Pin' }).click()
   await page.getByText('Pinned notes').waitFor({ timeout: 5000 })
-  await page.getByRole('button', { name: 'Propose to sheet' }).click()
+  await card.getByRole('button', { name: 'Propose to sheet' }).click()
   await page.waitForFunction(
     (count) => fetch('/api/project').then((response) => response.json()).then((project) => project.proposals.length > count),
     before.proposals.length,
@@ -33,6 +34,7 @@ try {
     throw new Error('Propose did not create pending lore proposal')
   }
 
+  await page.screenshot({ path: 'e2e/output/slice-h-research.png', fullPage: true })
   await page.getByRole('button', { name: 'Agent', exact: true }).click()
   await page.getByRole('button', { name: 'Accept' }).first().waitFor({ timeout: 5000 })
   await page.screenshot({ path: 'e2e/output/slice-h-smoke.png', fullPage: true })

@@ -33,6 +33,7 @@ export function saveChapter(chapter: Chapter): Promise<Project> {
   return request(`/api/chapters/${encodeURIComponent(chapter.id)}`, {
     method: 'PUT',
     body: JSON.stringify(chapter),
+    keepalive: true,
   })
 }
 

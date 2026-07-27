@@ -10,6 +10,7 @@ const project: Project = {
     id: 'chapter-1', title: 'Opening',
     body: 'Aria enters the sealed archive but meets no resistance and leaves unchanged.',
     craftTags: ['plot-progress'],
+    revision: 0,
   }],
   sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
 }

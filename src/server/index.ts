@@ -7,7 +7,7 @@ const root = resolve(fileURLToPath(new URL('../../', import.meta.url)))
 const store = new ProjectStore(resolve(root, 'data/project.json'), {
   schemaVersion: 1,
   title: 'Storylint',
-  chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [] }],
+  chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
   sheets: [],
   proposals: [],
   rejectedFingerprints: [],

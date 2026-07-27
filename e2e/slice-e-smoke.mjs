@@ -17,9 +17,16 @@ try {
   const body = manuscript.getByLabel('Chapter text')
   await manuscript.waitFor()
 
+  const emergencyDraft = `Unsaved reload recovery ${Date.now()}`
+  await body.fill(emergencyDraft)
+  await page.reload({ waitUntil: 'networkidle' })
+  await manuscript.waitFor()
+  if (await body.inputValue() !== emergencyDraft) throw new Error('Pending draft was lost on immediate reload')
+  await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
+
   const source = 'Aria opened the iron door. Kael waited outside.'
   await body.fill(source)
-  await page.getByText('Saved').waitFor({ timeout: 5000 })
+  await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
   await body.focus()
   await body.press('Home')
   await body.press('ArrowRight')
@@ -39,7 +46,7 @@ try {
     { selector: 'main[aria-label="Manuscript"] textarea', original: source },
     { timeout: 10000 },
   )
-  await page.getByText('Saved').waitFor({ timeout: 5000 })
+  await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
 
   const beforeDismiss = await body.inputValue()
   await body.evaluate((element) => {

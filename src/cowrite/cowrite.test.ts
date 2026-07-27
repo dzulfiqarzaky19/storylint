@@ -5,7 +5,7 @@ import { runCowrite } from './run.ts'
 
 const project: Project = {
   schemaVersion: 1, title: 'Storylint',
-  chapters: [{ id: 'ch-1', title: 'Opening', body: 'Aria opened the door. Kael waited outside.', craftTags: [] }],
+  chapters: [{ id: 'ch-1', title: 'Opening', body: 'Aria opened the door. Kael waited outside.', craftTags: [], revision: 0 }],
   sheets: [{ id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '', facts: [] }],
   proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
 }

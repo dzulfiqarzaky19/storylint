@@ -12,8 +12,8 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   const body = page.getByRole('main', { name: 'Manuscript' }).getByLabel('Chapter text')
-  await body.fill('Aria enters the sealed archive but meets no resistance and leaves unchanged.')
-  await page.getByText('Saved').waitFor({ timeout: 5000 })
+  await body.fill(`Aria enters the sealed archive but meets no resistance and leaves unchanged. ${Date.now()}`)
+  await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
   const before = await body.inputValue()
   const marksBefore = await page.locator('.manuscript__mark').count()
 

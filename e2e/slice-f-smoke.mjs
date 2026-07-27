@@ -22,7 +22,7 @@ try {
     undefined,
     { timeout: 5000 },
   )
-  await page.getByText('Saved').waitFor({ timeout: 5000 })
+  await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
 
   const sheetName = `Moon Archive ${Date.now()}`
   await page.getByRole('button', { name: 'New sheet' }).click()

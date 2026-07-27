@@ -5,6 +5,41 @@ import * as api from './api.ts'
 
 export type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 
+const DRAFT_PREFIX = 'storylint:chapter-draft:'
+
+function storeDraft(chapter: Chapter): void {
+  try {
+    localStorage.setItem(`${DRAFT_PREFIX}${chapter.id}`, JSON.stringify(chapter))
+  } catch {
+    // Persistence continues through the server path when browser storage is unavailable.
+  }
+}
+
+function removeDraft(chapterId: string): void {
+  try {
+    localStorage.removeItem(`${DRAFT_PREFIX}${chapterId}`)
+  } catch {
+    // A stale recovery copy is safer than turning a successful server save into an error.
+  }
+}
+
+function readDraft(chapter: Chapter): Chapter | null {
+  try {
+    const value = localStorage.getItem(`${DRAFT_PREFIX}${chapter.id}`)
+    if (!value) return null
+    const draft = JSON.parse(value) as unknown
+    if (typeof draft !== 'object' || draft === null) return null
+    const candidate = draft as Record<string, unknown>
+    return candidate.id === chapter.id && candidate.revision === chapter.revision &&
+      typeof candidate.title === 'string' && typeof candidate.body === 'string' &&
+      Array.isArray(candidate.craftTags)
+      ? candidate as Chapter
+      : null
+  } catch {
+    return null
+  }
+}
+
 export type ProjectController = {
   project: Project | null
   loading: boolean
@@ -45,6 +80,7 @@ export function useProject(): ProjectController {
   const inFlightSaves = useRef(new Map<string, Promise<void>>())
   const revisions = useRef(new Map<string, number>())
   const savedRevisions = useRef(new Map<string, number>())
+  const serverRevisions = useRef(new Map<string, number>())
 
   function setCurrent(next: Project): void {
     projectRef.current = next
@@ -65,7 +101,7 @@ export function useProject(): ProjectController {
       const revision = revisions.current.get(serverChapter.id) ?? 0
       const savedRevision = savedRevisions.current.get(serverChapter.id) ?? 0
       const dirty = timers.current.has(serverChapter.id) || revision > savedRevision
-      return dirty ? clientChapter : serverChapter
+      return dirty ? { ...clientChapter, revision: serverChapter.revision } : serverChapter
     })
     for (const clientChapter of current.chapters) {
       if (!serverIds.has(clientChapter.id)) chapters.push(clientChapter)
@@ -73,41 +109,18 @@ export function useProject(): ProjectController {
     setCurrent({ ...next, chapters })
   }
 
-  useEffect(() => {
-    const controller = new AbortController()
-    api
-      .loadProject(controller.signal)
-      .then((loaded) => {
-        setCurrent(loaded)
-        revisions.current.clear()
-        savedRevisions.current.clear()
-        for (const chapter of loaded.chapters) {
-          revisions.current.set(chapter.id, 0)
-          savedRevisions.current.set(chapter.id, 0)
-        }
-        setError(null)
-      })
-      .catch((caught: unknown) => {
-        if (caught instanceof DOMException && caught.name === 'AbortError') return
-        setError(caught instanceof Error ? caught.message : 'Failed to load project')
-      })
-      .finally(() => setLoading(false))
-
-    const scheduled = timers.current
-    return () => {
-      controller.abort()
-      for (const timer of scheduled.values()) clearTimeout(timer)
-    }
-  }, [])
-
   const persistChapter = useCallback((chapter: Chapter, revision: number): Promise<void> => {
     setSaveState('saving')
     const previous = inFlightSaves.current.get(chapter.id) ?? Promise.resolve()
     const operation = previous.then(async () => {
       try {
-        const saved = await api.saveChapter(chapter)
+        const expectedRevision = serverRevisions.current.get(chapter.id) ?? chapter.revision
+        const saved = await api.saveChapter({ ...chapter, revision: expectedRevision })
+        const savedChapter = saved.chapters.find((candidate) => candidate.id === chapter.id)
+        if (savedChapter) serverRevisions.current.set(chapter.id, savedChapter.revision)
         savedRevisions.current.set(chapter.id, Math.max(savedRevisions.current.get(chapter.id) ?? 0, revision))
         if (revisions.current.get(chapter.id) !== revision) return
+        removeDraft(chapter.id)
         mergeServerProject(saved)
         setSaveState('saved')
         setError(null)
@@ -124,6 +137,48 @@ export function useProject(): ProjectController {
     return operation
   }, [])
 
+  useEffect(() => {
+    const controller = new AbortController()
+    api
+      .loadProject(controller.signal)
+      .then((loaded) => {
+        const drafts = new Map(loaded.chapters.map((chapter) => [chapter.id, readDraft(chapter)]))
+        const restored = {
+          ...loaded,
+          chapters: loaded.chapters.map((chapter) => drafts.get(chapter.id) ?? chapter),
+        }
+        setCurrent(restored)
+        revisions.current.clear()
+        savedRevisions.current.clear()
+        serverRevisions.current.clear()
+        for (const chapter of loaded.chapters) {
+          serverRevisions.current.set(chapter.id, chapter.revision)
+          const dirty = drafts.get(chapter.id) !== null
+          revisions.current.set(chapter.id, dirty ? 1 : 0)
+          savedRevisions.current.set(chapter.id, 0)
+          if (dirty) {
+            timers.current.set(chapter.id, setTimeout(() => {
+              timers.current.delete(chapter.id)
+              const draft = projectRef.current?.chapters.find((candidate) => candidate.id === chapter.id)
+              if (draft) void persistChapter(draft, 1).catch(() => undefined)
+            }, 0))
+          }
+        }
+        setError(null)
+      })
+      .catch((caught: unknown) => {
+        if (caught instanceof DOMException && caught.name === 'AbortError') return
+        setError(caught instanceof Error ? caught.message : 'Failed to load project')
+      })
+      .finally(() => setLoading(false))
+
+    const scheduled = timers.current
+    return () => {
+      controller.abort()
+      for (const timer of scheduled.values()) clearTimeout(timer)
+    }
+  }, [persistChapter])
+
   const patchChapter = useCallback(
     (chapterId: string, patch: Partial<Pick<Chapter, 'title' | 'body' | 'craftTags'>>) => {
       if (applyingRef.current) return
@@ -131,6 +186,7 @@ export function useProject(): ProjectController {
       const chapter = current?.chapters.find((candidate) => candidate.id === chapterId)
       if (!current || !chapter) return
       const nextChapter = { ...chapter, ...patch }
+      storeDraft(nextChapter)
       setCurrent({
         ...current,
         chapters: current.chapters.map((candidate) =>
@@ -161,11 +217,14 @@ export function useProject(): ProjectController {
       title: `Chapter ${current.chapters.length + 1}`,
       body: '',
       craftTags: [],
+      revision: 0,
     }
     setSaveState('saving')
     void api
       .saveChapter(chapter)
       .then((saved) => {
+        const savedChapter = saved.chapters.find((candidate) => candidate.id === chapter.id)
+        if (savedChapter) serverRevisions.current.set(chapter.id, savedChapter.revision)
         setCurrent(saved)
         setSaveState('saved')
         setError(null)
@@ -239,13 +298,16 @@ export function useProject(): ProjectController {
     try {
       await flushChapter(card.chapterId)
       const committed = await api.applySuggestion(card.chapterId, card)
+      const committedChapter = committed.chapters.find((candidate) => candidate.id === card.chapterId)
+      if (committedChapter) serverRevisions.current.set(card.chapterId, committedChapter.revision)
       const timer = timers.current.get(card.chapterId)
       if (timer) clearTimeout(timer)
       timers.current.delete(card.chapterId)
       const revision = (revisions.current.get(card.chapterId) ?? 0) + 1
       revisions.current.set(card.chapterId, revision)
       savedRevisions.current.set(card.chapterId, revision)
-      setCurrent(committed)
+      removeDraft(card.chapterId)
+      mergeServerProject(committed)
       return committed
     } finally {
       applyingRef.current = false
