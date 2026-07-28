@@ -7,12 +7,14 @@ import {
   type Theme,
 } from '../../design'
 import { useProject } from '../../features/project/useProject.ts'
+import { ProjectSwitcher } from '../../features/project/ProjectSwitcher.tsx'
 import { useAgent } from '../../features/agent/useAgent.ts'
 import { Button, Drawer, EmptyState, IconButton } from '../ui'
 import { AgentIcon, BinderIcon, FocusIcon, ThemeIcon } from './icons'
 import { AgentPanel } from './AgentPanel'
 import { Binder } from './Binder'
 import { Manuscript, type EditorSelection } from './Manuscript'
+import { RelationshipGraph } from '../../features/graph/RelationshipGraph.tsx'
 import { useShellState } from './useShellState'
 import './shell.css'
 
@@ -21,10 +23,18 @@ const EMPTY_CHAPTERS: never[] = []
 export function Shell() {
   const shell = useShellState()
   const project = useProject()
-  const agentState = useAgent(project.applyServerProject, project.applySuggestion)
+  const agentState = useAgent(
+    project.applyServerProject,
+    project.applySuggestion,
+    project.projectGeneration,
+    project.trackMutation,
+    project.beginMutation,
+  )
   const [theme, setTheme] = useState<Theme>('dark')
   const [reading, setReading] = useState<ReadingProfile>('night')
   const [activeChapterId, setActiveChapterId] = useState<string | null>(null)
+  const [workspaceMode, setWorkspaceMode] = useState<'manuscript' | 'graph'>('manuscript')
+  const [requestedSheetId, setRequestedSheetId] = useState<string | null>(null)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
@@ -43,10 +53,31 @@ export function Shell() {
     applyReading(reading)
   }, [reading])
 
+  useEffect(() => {
+    if (shell.focus) setWorkspaceMode('manuscript')
+  }, [shell.focus])
+
+  useEffect(() => {
+    setActiveChapterId(null)
+    setRequestedSheetId(null)
+    setWorkspaceMode('manuscript')
+  }, [project.activeProjectId])
+
+  async function switchProject(id: string) {
+    await project.switchProject(id)
+    agentState.reset()
+  }
+
+  async function createProject(id: string, title: string) {
+    await project.createProject(id, title)
+    agentState.reset()
+  }
+
   async function runContinuity() {
     if (!activeChapter) return
+    const session = agentState.session()
     const result = await project.runContinuity(activeChapter.id)
-    if (result) agentState.addContinuityCard(result.mode, result.counts)
+    if (result) agentState.addContinuityCard(result.mode, result.counts, session)
   }
 
   function toggleTheme() {
@@ -73,6 +104,8 @@ export function Shell() {
         onSaveSheet={project.saveSheet}
         onSaveFact={project.saveFact}
         onDeleteFact={project.deleteFact}
+        requestedSheetId={requestedSheetId}
+        onRequestedSheetHandled={() => setRequestedSheetId(null)}
         onClose={onClose}
       />
     ) : null
@@ -82,6 +115,8 @@ export function Shell() {
       transcript={agentState.transcript}
       project={project.project}
       onProject={project.applyServerProject}
+      beginMutation={project.beginMutation}
+      trackMutation={project.trackMutation}
       chapterTitle={activeChapter?.title ?? 'chapter'}
       proposals={(project.project?.proposals ?? []).filter((proposal) => proposal.status === 'pending')}
       continuityRunning={project.continuity.running}
@@ -96,14 +131,14 @@ export function Shell() {
       selection={selection}
       onGenerateCowrite={async (skill, instruction) => {
         if (!activeChapter) return
-        await project.flushChapter(activeChapter.id)
+        const chapterId = activeChapter.id
         await agentState.generateCowrite({
-          chapterId: activeChapter.id,
+          chapterId,
           skill,
           instruction,
           start: selection.start,
           end: selection.end,
-        })
+        }, () => project.flushChapter(chapterId))
       }}
       onApplyCard={async (id) => {
         const appliedChapterId = await agentState.applyCard(id)
@@ -114,8 +149,8 @@ export function Shell() {
       onDismissCard={agentState.dismissCard}
       onRunReview={async (kind) => {
         if (!activeChapter) return
-        await project.flushChapter(activeChapter.id)
-        await agentState.runReview(activeChapter.id, kind)
+        const chapterId = activeChapter.id
+        await agentState.runReview(chapterId, kind, () => project.flushChapter(chapterId))
       }}
       onAddCraftTags={(tags) => {
         if (!activeChapter) return
@@ -123,9 +158,11 @@ export function Shell() {
           craftTags: [...new Set([...activeChapter.craftTags, ...tags])],
         })
       }}
-      onSend={(text) => activeChapter && void project.flushChapter(activeChapter.id)
-        .then(() => agentState.send(activeChapter.id, text))
-        .catch(() => undefined)}
+      onSend={(text) => {
+        if (!activeChapter) return
+        const chapterId = activeChapter.id
+        void agentState.send(chapterId, text, () => project.flushChapter(chapterId))
+      }}
       onClose={onClose}
     />
   )
@@ -141,6 +178,13 @@ export function Shell() {
           <BinderIcon />
         </IconButton>
         <h1 className="shell__project">{project.project?.title ?? 'Storylint'}</h1>
+        <ProjectSwitcher
+          projects={project.projects}
+          activeProjectId={project.activeProjectId}
+          onSwitch={switchProject}
+          onCreate={createProject}
+          onExport={project.exportProject}
+        />
         <span className="shell__breadcrumb">{activeChapter?.title ?? 'Loading…'}</span>
         <span className="project-status" aria-live="polite">
           {project.saveState === 'saving' ? 'Saving…' : project.saveState === 'saved' ? 'Saved' : ''}
@@ -148,6 +192,14 @@ export function Shell() {
         <div className="shell__topbar-spacer" />
         <div className="shell__topbar-actions">
           <Button
+            className="shell__action-graph"
+            aria-pressed={workspaceMode === 'graph'}
+            onClick={() => setWorkspaceMode((current) => current === 'graph' ? 'manuscript' : 'graph')}
+          >
+            {workspaceMode === 'graph' ? 'Editor' : 'Graph'}
+          </Button>
+          <Button
+            className="shell__action-continuity"
             variant="primary"
             disabled={!activeChapter || project.continuity.running}
             onClick={() => void runContinuity().catch(() => undefined)}
@@ -155,15 +207,18 @@ export function Shell() {
             {project.continuity.running ? 'Running…' : 'Continuity'}
           </Button>
           <IconButton
+            className="shell__action-focus"
             label={shell.focus ? 'Exit focus mode' : 'Focus mode'}
             aria-pressed={shell.focus}
             onClick={shell.toggleFocus}
           ><FocusIcon /></IconButton>
           <IconButton
+            className="shell__action-theme"
             label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} chrome`}
             onClick={toggleTheme}
           ><ThemeIcon /></IconButton>
           <IconButton
+            className="shell__action-agent"
             label={shell.isOpen('agent') ? 'Hide agent panel' : 'Show agent panel'}
             aria-pressed={shell.isOpen('agent')}
             onClick={() => shell.toggle('agent')}
@@ -184,6 +239,18 @@ export function Shell() {
           <main className="manuscript" aria-label="Manuscript">
             <div className="manuscript__sheet"><EmptyState title="Loading project…" /></div>
           </main>
+        ) : workspaceMode === 'graph' && project.project ? (
+          <RelationshipGraph
+            project={project.project}
+            onProject={project.applyServerProject}
+            projectGeneration={project.projectGeneration}
+            trackMutation={project.trackMutation}
+            beginMutation={project.beginMutation}
+            onOpenSheet={(sheetId) => {
+              setRequestedSheetId(sheetId)
+              if (!shell.isOpen('binder')) shell.toggle('binder')
+            }}
+          />
         ) : activeChapter ? (
           <Manuscript
             chapter={activeChapter}

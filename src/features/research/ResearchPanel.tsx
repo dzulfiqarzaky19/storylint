@@ -8,9 +8,13 @@ import './research.css'
 export function ResearchPanel({
   project,
   onProject,
+  beginMutation,
+  trackMutation,
 }: {
   project: Project | null
-  onProject: (project: Project) => void
+  onProject: (project: Project, generation?: number) => void
+  beginMutation: () => number | null
+  trackMutation: <T>(operation: Promise<T>) => Promise<T>
 }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<ResearchResultItem[]>([])
@@ -20,7 +24,7 @@ export function ResearchPanel({
 
   async function search(event: FormEvent) {
     event.preventDefault()
-    if (!query.trim() || running) return
+    if (!query.trim() || running || beginMutation() === null) return
     setRunning(true)
     setError(null)
     try {
@@ -35,11 +39,15 @@ export function ResearchPanel({
   }
 
   async function pin(note: ResearchNote) {
-    onProject(await pinResearch(note))
+    const generation = beginMutation()
+    if (generation === null) return
+    onProject(await trackMutation(pinResearch(note)), generation)
   }
 
   async function propose(note: ResearchNote) {
-    onProject(await proposeResearch(note))
+    const generation = beginMutation()
+    if (generation === null) return
+    onProject(await trackMutation(proposeResearch(note)), generation)
   }
 
   return (

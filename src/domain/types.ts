@@ -78,6 +78,7 @@ export type Proposal = {
   sheetKind: SheetKind
   sheetSummary?: string
   targetSheetId?: string
+  targetFactId?: string
   key: string
   value: string
   statement: string
