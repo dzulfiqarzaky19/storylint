@@ -6,12 +6,24 @@ import { parseProject } from './validation.ts'
 /** Serializes read-modify-write mutations and commits each project with atomic rename. */
 export class ProjectStore {
   #queue: Promise<void> = Promise.resolve()
-  readonly filePath: string
+  filePath: string
   private readonly fallback?: Project
 
   constructor(filePath: string, fallback?: Project) {
     this.filePath = filePath
     this.fallback = fallback
+  }
+
+  async switchFile(filePath: string): Promise<void> {
+    const run = async () => {
+      this.filePath = filePath
+    }
+    const next = this.#queue.then(run, run)
+    this.#queue = next.then(
+      () => undefined,
+      () => undefined,
+    )
+    await next
   }
 
   async load(): Promise<Project> {

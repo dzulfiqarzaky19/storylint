@@ -1,7 +1,10 @@
 import { createServer as createNodeServer, type IncomingMessage, type ServerResponse } from 'node:http'
+import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
 import { runContinuity } from '../continuity/run.ts'
 import { runAgent } from '../agent/run.ts'
 import { acceptProposal, rejectProposal } from '../domain/proposals.ts'
+import { claimFingerprint } from '../domain/fingerprint.ts'
 import { deleteFact, patchChapter, upsertChapter, upsertFact, upsertSheet } from '../domain/project.ts'
 import { ProjectStore } from './store.ts'
 import { llmConfig } from './llmConfig.ts'
@@ -11,11 +14,22 @@ import { applyManuscriptText, type ApplyTarget } from '../domain/apply.ts'
 import { runReview } from '../review/run.ts'
 import { researchProposal, runResearch } from '../research/run.ts'
 import { parseResearchNote } from './validation.ts'
+import { projectMarkdownFiles } from '../export/markdown.ts'
+import { createZip } from './zip.ts'
 import { parseChapter, parseChapterPatch, parseFact, parseProject, parseProposalEdits, parseSheet } from './validation.ts'
 
 const MAX_BODY_BYTES = 1_000_000
 
 class ConflictError extends Error {}
+class BinaryResponse {
+  readonly body: Buffer
+  readonly filename: string
+
+  constructor(body: Buffer, filename: string) {
+    this.body = body
+    this.filename = filename
+  }
+}
 
 type Route = {
   method: string
@@ -53,7 +67,115 @@ function routeSegment(value: string): string {
 }
 
 export function createServer(store: ProjectStore) {
+  const defaultProjectPath = store.filePath
+  const dataDirectory = dirname(defaultProjectPath)
+  const projectsDirectory = resolve(dataDirectory, 'projects')
+  const activeProjectFile = resolve(dataDirectory, 'active-project.txt')
+  let activeProjectId = 'default'
+  let initialization: Promise<void> | null = null
+
+  function projectPath(id: string): string {
+    if (id === 'default') return defaultProjectPath
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new Error('Invalid project id')
+    return resolve(projectsDirectory, `${id}.json`)
+  }
+
+  async function initializeActiveProject(): Promise<void> {
+    if (!initialization) {
+      initialization = (async () => {
+        try {
+          const id = (await readFile(activeProjectFile, 'utf8')).trim()
+          const path = projectPath(id)
+          await access(path)
+          activeProjectId = id
+          await store.switchFile(path)
+        } catch {
+          activeProjectId = 'default'
+        }
+      })()
+    }
+    await initialization
+  }
+
+  async function persistActiveProject(id: string): Promise<void> {
+    await mkdir(dataDirectory, { recursive: true })
+    await writeFile(activeProjectFile, `${id}\n`, 'utf8')
+  }
+
   const routes: Route[] = [
+    {
+      method: 'GET',
+      pattern: /^\/api\/projects$/,
+      handle: async () => {
+        await mkdir(projectsDirectory, { recursive: true })
+        const ids = ['default', ...(await readdir(projectsDirectory))
+          .filter((name) => name.endsWith('.json'))
+          .map((name) => name.slice(0, -5))]
+        const projects = []
+        for (const id of ids) {
+          try {
+            const project = await new ProjectStore(projectPath(id)).load()
+            projects.push({ id, title: project.title })
+          } catch {
+            // Ignore malformed project files; opening them would fail validation too.
+          }
+        }
+        return { activeProjectId, projects }
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/projects$/,
+      handle: async (_params, body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('project request must be an object')
+        const raw = body as Record<string, unknown>
+        if (typeof raw.id !== 'string' || typeof raw.title !== 'string' || !raw.title.trim()) {
+          throw new Error('project id and title are required')
+        }
+        const path = projectPath(raw.id)
+        await mkdir(projectsDirectory, { recursive: true })
+        try {
+          await access(path)
+          throw new ConflictError(`Project already exists: ${raw.id}`)
+        } catch (error) {
+          if (error instanceof ConflictError) throw error
+        }
+        const project = {
+          schemaVersion: 1 as const,
+          title: raw.title.trim(),
+          chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
+          sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
+        }
+        const created = new ProjectStore(path)
+        await created.save(project)
+        await store.switchFile(path)
+        activeProjectId = raw.id
+        await persistActiveProject(raw.id)
+        return project
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/projects\/([^/]+)\/activate$/,
+      handle: async ([id]) => {
+        const projectId = routeSegment(id)
+        const path = projectPath(projectId)
+        await access(path)
+        await store.switchFile(path)
+        activeProjectId = projectId
+        await persistActiveProject(projectId)
+        return store.load()
+      },
+    },
+    {
+      method: 'GET',
+      pattern: /^\/api\/export$/,
+      handle: async () => {
+        const project = await store.load()
+        const filename = `${project.title.toLocaleLowerCase('en-US').replaceAll(/[^a-z0-9]+/g, '-').replaceAll(/^-+|-+$/g, '') || 'storylint-project'}.zip`
+        return new BinaryResponse(createZip(projectMarkdownFiles(project)), filename)
+      },
+    },
     {
       method: 'GET',
       pattern: /^\/api\/project$/,
@@ -118,6 +240,71 @@ export function createServer(store: ProjectStore) {
       pattern: /^\/api\/sheets\/([^/]+)\/facts\/([^/]+)$/,
       handle: async ([sheetId, factId]) =>
         store.update((project) => deleteFact(project, routeSegment(sheetId), routeSegment(factId))),
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/graph\/proposals$/,
+      handle: async (_params, body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('graph proposal must be an object')
+        const raw = body as Record<string, unknown>
+        if (typeof raw.fromSheetId !== 'string' || typeof raw.toSheetId !== 'string' ||
+            typeof raw.key !== 'string' || !raw.key.trim() ||
+            typeof raw.statement !== 'string' || !raw.statement.trim() ||
+            raw.fromSheetId === raw.toSheetId) {
+          throw new Error('graph proposal requires distinct endpoints, key, and statement')
+        }
+        const fromSheetId = raw.fromSheetId
+        const toSheetId = raw.toSheetId
+        const key = raw.key.trim()
+        const statement = raw.statement.trim()
+        return store.update((project) => {
+          const from = project.sheets.find((sheet) => sheet.id === fromSheetId)
+          const to = project.sheets.find((sheet) => sheet.id === toSheetId)
+          if (!from || !to) throw new Error('Graph proposal endpoint not found')
+          const targetFactId = typeof raw.targetFactId === 'string' ? raw.targetFactId : undefined
+          if (targetFactId && !from.facts.some((fact) =>
+            fact.id === targetFactId && fact.claimKind === 'relationship')) {
+            throw new Error('Graph relationship fact not found')
+          }
+          const claim = {
+            entityName: from.name,
+            sheetKind: from.kind,
+            key,
+            value: to.name,
+            statement,
+            claimKind: 'relationship' as const,
+            confidence: 1,
+            fromSheetId: from.id,
+            toSheetId: to.id,
+            span: { chapterId: 'graph', start: 0, end: 0, text: '' },
+          }
+          const fingerprint = claimFingerprint(claim)
+          if (project.proposals.some((proposal) =>
+            proposal.status === 'pending' && proposal.fingerprint === fingerprint)) {
+            return project
+          }
+          return {
+            ...project,
+            proposals: [...project.proposals, {
+              id: `proposal-${fingerprint}`,
+              fingerprint,
+              status: 'pending' as const,
+              entityName: claim.entityName,
+              sheetKind: claim.sheetKind,
+              targetSheetId: from.id,
+              targetFactId,
+              key: claim.key,
+              value: claim.value,
+              statement: claim.statement,
+              claimKind: claim.claimKind,
+              confidence: 1,
+              source: claim.span,
+              fromSheetId: from.id,
+              toSheetId: to.id,
+            }],
+          }
+        })
+      },
     },
     {
       method: 'POST',
@@ -354,8 +541,20 @@ export function createServer(store: ProjectStore) {
     }
 
     try {
+      await initializeActiveProject()
       const body = request.method === 'GET' ? {} : await readBody(request)
-      json(response, 200, await route.handle(match.slice(1), body))
+      const result = await route.handle(match.slice(1), body)
+      if (result instanceof BinaryResponse) {
+        response.writeHead(200, {
+          'content-type': 'application/zip',
+          'content-disposition': `attachment; filename="${result.filename}"`,
+          'content-length': result.body.length,
+          'cache-control': 'no-store',
+        })
+        response.end(result.body)
+      } else {
+        json(response, 200, result)
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Request failed'
       const status = error instanceof LlmError ? 502

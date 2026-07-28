@@ -16,7 +16,9 @@ import './shell.css'
 export type AgentPanelProps = {
   transcript: TranscriptEntry[]
   project: Project | null
-  onProject: (project: Project) => void
+  onProject: (project: Project, generation?: number) => void
+  beginMutation: () => number | null
+  trackMutation: <T>(operation: Promise<T>) => Promise<T>
   chapterTitle: string
   proposals: Proposal[]
   continuityRunning: boolean
@@ -39,7 +41,7 @@ export type AgentPanelProps = {
 }
 
 export function AgentPanel({
-  transcript, project, onProject, chapterTitle, proposals, continuityRunning, continuityMode,
+  transcript, project, onProject, beginMutation, trackMutation, chapterTitle, proposals, continuityRunning, continuityMode,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, tipsDismissed,
   onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onClose,
@@ -72,7 +74,7 @@ export function AgentPanel({
       </div>
 
       {panelMode === 'research' ? (
-        <ResearchPanel project={project} onProject={onProject} />
+        <ResearchPanel project={project} onProject={onProject} beginMutation={beginMutation} trackMutation={trackMutation} />
       ) : (
         <>
       <div className="agent__transcript" aria-label="Agent transcript">

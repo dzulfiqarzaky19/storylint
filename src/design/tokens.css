@@ -153,6 +153,10 @@
   --size-touch-min: 44px;
   --size-row-min: 36px;
   --size-row-min-touch: 44px;
+  --size-graph-view-w: 800px;
+  --size-graph-view-h: 520px;
+  --size-graph-radius: 185px;
+  --size-graph-node: 76px;
 
   /* 5 radius */
   --radius-none: 0;
