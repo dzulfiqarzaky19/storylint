@@ -87,6 +87,17 @@ Commits: local only. Pushes: never.
 - `npm run lint`: passed.
 - Edge smoke: `e2e/output/k1-desktop.png`, `e2e/output/k1-narrow.png`.
 
+## Slice K2 — complete (landing)
+
+- Family view lays out character kinship as an orthogonal multi-generation tree (multi-parent/partner capable), separate from the radial network.
+- Kinship vocabulary is explicit and tested (`parent_of`/`child_of`/`spouse_of`/`sibling_of` and aliases); non-kinship edges stay in Network.
+- Subtle pointer-follow parallax on the family plane; disabled for touch and `prefers-reduced-motion`.
+- Propose/Accept boundary unchanged: pending relationships never render before Accept.
+- `npm test`: 85 passed.
+- `npm run build`: passed (55 modules).
+- `npm run lint`: passed.
+- Edge smoke: `e2e/output/slice-k-desktop.png`, `e2e/output/slice-k-narrow.png`.
+
 ## Next
 
-Slice K2 — DARK-inspired family-tree mode with subtle pointer-follow parallax; keep radial network for non-family edges; no native app scaffold.
+Shell adapter seams / further responsive hardening only if still needed after K1+K2; no native app scaffold.
