@@ -31,7 +31,9 @@
   font-size: var(--text-sm);
 }
 
-.graph__filters {
+.graph__toolbar,
+.graph__filters,
+.graph__view {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
@@ -48,13 +50,41 @@
   background: var(--color-surface);
 }
 
+.graph__family-stage {
+  position: relative;
+  width: 100%;
+  max-width: var(--manuscript-page-max-w-2xl);
+  min-height: calc(var(--size-control-touch) * 10);
+  margin: var(--space-3) auto;
+  overflow: auto;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.graph__family-plane {
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.graph__canvas--family {
+  max-width: none;
+  margin: var(--space-0);
+  border: 0;
+  background: transparent;
+}
+
 .graph__edge line {
   stroke: var(--color-border-strong);
   stroke-width: var(--border-width-strong);
 }
 
 .graph__edge path {
-  fill: var(--color-border-strong);
+  fill: none;
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width-strong);
 }
 
 .graph__edge text {
@@ -67,7 +97,9 @@
 }
 
 .graph__edge:focus-visible line,
-.graph__edge:hover line {
+.graph__edge:hover line,
+.graph__edge:focus-visible path,
+.graph__edge:hover path {
   stroke: var(--color-accent);
 }
 
@@ -75,15 +107,30 @@
   cursor: pointer;
 }
 
-.graph__node circle {
+.graph__node circle,
+.graph__node rect {
   fill: var(--color-surface-raised);
   stroke: var(--color-border-strong);
   stroke-width: var(--border-width-strong);
 }
 
 .graph__node:hover circle,
-.graph__node:focus-visible circle {
+.graph__node:focus-visible circle,
+.graph__node:hover rect,
+.graph__node:focus-visible rect {
   stroke: var(--color-focus-ring);
+}
+
+.graph__node--family {
+  min-width: var(--size-touch-min);
+  min-height: var(--size-touch-min);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graph__family-plane {
+    transform: none !important;
+    will-change: auto;
+  }
 }
 
 .graph__portrait,

@@ -22,7 +22,7 @@ Each slice: coder → reviewer → verifier ([AGENTS_ROLES.md](./AGENTS_ROLES.md
 | **H** P3 Research panel | **Done** |
 | **I** P4 Graph | **Done** (landing) |
 | **J** Export / multi-project | **Done** (landing) |
-| **K** Desktop/mobile shells | **Next** — lean spacing first, then family-tree mode |
+| **K** Desktop/mobile shells | **Done** (K1 lean spacing + K2 family tree) |
 
 ---
 
