@@ -232,6 +232,8 @@ export function Binder({
   }, [activeChapterId, chapters.length, draftActive, sheetDetailOpen])
 
   // F1: restore list scroll when popping the detail stack.
+  // Must win over focus-restore: focusing the opener row defaults to
+  // scrollIntoView and fights the saved scrollTop (AZ @68 sheets: 2080→1147).
   useLayoutEffect(() => {
     if (sheetDetailOpen) return
     const body = stackBodyRef.current
@@ -245,7 +247,8 @@ export function Binder({
     const wasOpen = wasDetailOpenRef.current
     wasDetailOpenRef.current = sheetDetailOpen
     if (!wasOpen && sheetDetailOpen) {
-      backBtnRef.current?.focus()
+      // Entering detail: preventScroll keeps the hidden list scrollTop intact.
+      backBtnRef.current?.focus({ preventScroll: true })
       const title =
         editingSheetId === 'new' ? 'New sheet' : editingSheet?.name?.trim() || 'Untitled sheet'
       setStackLiveText(`Editing ${title}`)
@@ -255,15 +258,28 @@ export function Binder({
       setStackLiveText('')
       const returnId = returnFocusIdRef.current
       returnFocusIdRef.current = null
+      const savedTop = listScrollTopRef.current
       const restore = () => {
+        const body = stackBodyRef.current
+        const focusOpts = { preventScroll: true } as const
         if (returnId === 'new') {
-          newSheetBtnRef.current?.focus()
-          return
+          newSheetBtnRef.current?.focus(focusOpts)
+        } else if (returnId) {
+          sheetRowRefs.current.get(returnId)?.focus(focusOpts)
         }
-        if (returnId) sheetRowRefs.current.get(returnId)?.focus()
+        // Re-assert list scroll after focus. Default focus scrolls the opener
+        // into view and overwrites F1 restore on long Canon lists (AZ).
+        if (body) body.scrollTop = savedTop
       }
       // List unhides in the same commit; focus after paint so the control is tabbable.
       queueMicrotask(restore)
+      // Double-rAF: some browsers apply scroll-on-focus after the microtask.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const body = stackBodyRef.current
+          if (body) body.scrollTop = savedTop
+        })
+      })
     }
   }, [sheetDetailOpen, editingSheetId, editingSheet?.name])
 
