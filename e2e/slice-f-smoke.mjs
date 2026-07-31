@@ -23,7 +23,7 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   const projectId = await ensureIsolatedProject(page)
-  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor()

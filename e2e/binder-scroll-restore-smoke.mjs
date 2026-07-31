@@ -101,7 +101,7 @@ async function main() {
       researchNotes: [],
       lab: { boards: [{ id: 'bench', title: 'Bench', cardIds: [] }], cards: [] },
     })
-    await page.goto(ui.endsWith('/') ? ui : `${ui}/`, { waitUntil: 'networkidle' })
+    await page.goto(ui.endsWith('/') ? ui : `${ui}/`, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     await reclaimIsolatedProject(projectId)
     await ensureCompanionOpen(page)
     await ensureBinderOpen(page)
