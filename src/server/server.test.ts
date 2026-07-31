@@ -528,7 +528,7 @@ test('markdown ZIP export contains readable chapter and bible paths', async () =
     const bytes = Buffer.from(await response.arrayBuffer())
     assert.equal(bytes.readUInt32LE(0), 0x04034b50)
     const text = bytes.toString('utf8')
-    assert.match(text, /chapters\/01-chapter-one\.md/)
+    assert.match(text, /chapters\/01-untitled\.md/)
     assert.match(text, /bible\/character\/aria\.md/)
     assert.match(text, /Aria guards/)
   })

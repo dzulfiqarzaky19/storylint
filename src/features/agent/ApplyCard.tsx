@@ -6,19 +6,17 @@ export function ApplyCard({
   card,
   onApply,
   onDismiss,
-  assistantBusy = false,
 }: {
   card: ApplyCardData
   onApply: (id: string) => Promise<void>
   onDismiss: (id: string) => void
-  /** Block Apply while another companion job owns the assistant. */
-  assistantBusy?: boolean
 }) {
+  // Author decision (ox jobs-vs-decisions): local busy only — never assistantBusy.
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   async function apply() {
-    if (busy || assistantBusy) return
+    if (busy) return
     setBusy(true)
     setError(null)
     try {
@@ -38,10 +36,10 @@ export function ApplyCard({
       </div>
       <pre className="apply-card__preview">{card.text}</pre>
       <div className="proposal-card__actions">
-        <Button variant="primary" disabled={busy || assistantBusy} aria-busy={busy || undefined} onClick={() => void apply()}>
+        <Button variant="primary" disabled={busy} aria-busy={busy || undefined} onClick={() => void apply()}>
           {busy ? 'Working…' : 'Apply'}
         </Button>
-        <Button disabled={busy || assistantBusy} onClick={() => onDismiss(card.id)}>Dismiss</Button>
+        <Button disabled={busy} onClick={() => onDismiss(card.id)}>Dismiss</Button>
       </div>
       <p className="apply-card__hint">
         {card.target.mode === 'replace' ? 'Replaces the current selection.' : 'Inserts at the current cursor.'}

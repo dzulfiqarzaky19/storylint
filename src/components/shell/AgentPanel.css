@@ -92,6 +92,52 @@
   color: var(--color-text, var(--color-fg));
 }
 
+
+/* AY/B3 Inbox: quiet count + calm fold; list owns the scrollport. */
+.panel[data-companion-face] {
+  overflow: hidden; /* face body scrolls; panel stays rail-bounded */
+}
+
+.shell__rail--agent > .panel,
+.shell__rail .panel[data-companion-face] {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.companion__inbox-summary {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--leading-sm, 1.35);
+  font-variant-numeric: tabular-nums;
+}
+
+.companion__inbox-more {
+  border: var(--border-width, 1px) solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface);
+  padding: var(--space-2) var(--space-3);
+}
+
+.companion__inbox-more-summary {
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--leading-sm, 1.35);
+  list-style: none;
+}
+
+.companion__inbox-more-summary::-webkit-details-marker {
+  display: none;
+}
+
+.companion__inbox-more-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block-start: var(--space-3);
+}
+
 /* Quiet secondary overflow face (single-item collapse; not a primary peer). */
 .companion__face-secondary {
   opacity: 0.82;
