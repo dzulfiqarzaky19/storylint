@@ -10,6 +10,8 @@ import {
   installFixtureLlmRoutes,
   openCompanionFace,
   ensureIsolatedProject,
+  requireUiOrigin,
+  setApiBase
 } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -18,6 +20,8 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 
 const clearHardTimeout = armHardTimeout('slice-h-smoke', 60_000)
 mkdirSync('e2e/output', { recursive: true })
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 
@@ -25,7 +29,7 @@ try {
   // Deterministic research path (default). Live path only with STORYLINT_E2E_LIVE_LLM=1.
   await installFixtureLlmRoutes(page)
   await ensureIsolatedProject(page)
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
   const before = await page.evaluate(() => fetch('/api/project').then((response) => response.json()))
   const companion = companionPanel(page)
 

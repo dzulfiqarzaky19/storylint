@@ -1,5 +1,5 @@
 /**
- * Shared Playwright helpers for feature smokes.
+ * Shared Playwright helpers for feature smokes and UI measurement gates.
  * Keep LLM-dependent paths deterministic: route-stub fixture payloads by default.
  * Opt into live LLM with STORYLINT_E2E_LIVE_LLM=1 (server must also be live).
  *
@@ -7,12 +7,60 @@
  *   writing primary tabs: Chat | Write | Check | Inbox{n?} | More
  *   Research is a role=menuitem under More (not a top tab).
  *   Face tabs are role=tab; match by accessible name, not position.
+ *
+ * Measurement rule:
+ *   Never measure UI until the target workspace/face precondition is proven.
+ *   Prefer gotoWorkspace / openCompanionFace(..., { require: true }) over raw clicks.
+ *   PreconditionError means "gate invalid", not a silent wrong-surface PASS.
  */
 
 export const DEFAULT_VIEWPORT = Object.freeze({ width: 1440, height: 900 })
 export const HARD_SMOKE_TIMEOUT_MS = 90_000
 export const LLM_UI_TIMEOUT_MS = 15_000
 export const SAVE_TIMEOUT_MS = 15_000
+export const PRECONDITION_TIMEOUT_MS = 8_000
+
+/** Thrown when a required UI surface/face did not become active. */
+export class PreconditionError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'PreconditionError'
+  }
+}
+
+/**
+ * Workspace modes used by shell ecosystems + companion context attrs.
+ * button: Workspace control label
+ * main: expected main aria-label pattern
+ * context: data-companion-context value when companion is open
+ */
+export const WORKSPACE_MODES = Object.freeze({
+  draft: Object.freeze({
+    key: 'draft',
+    button: 'Draft',
+    main: /^Draft$/,
+    context: 'writing',
+  }),
+  lab: Object.freeze({
+    key: 'lab',
+    button: 'Lab',
+    main: /^Lab$/,
+    context: 'lab',
+  }),
+  canon: Object.freeze({
+    key: 'canon',
+    button: 'Canon',
+    main: /^(Relationship graph|Family tree|Canon)$/,
+    context: 'graph',
+  }),
+})
+
+/** Face id stored on data-companion-face (lowercase) from accessible name. */
+export function companionFaceId(name) {
+  const normalized = String(name || '').trim().toLowerCase()
+  if (normalized.startsWith('inbox')) return 'inbox'
+  return normalized
+}
 
 /** Mirror of src/research/run.ts fixtureResearch — keep titles/sources in lockstep. */
 export function fixtureResearchPayload(query) {
@@ -228,8 +276,9 @@ function faceNamePattern(name) {
 /**
  * Click a companion face by accessible name.
  * Tries primary tab (role=tab or button) first, then More → menuitem overflow.
+ * When require=true, waits until data-companion-face matches or throws PreconditionError.
  */
-export async function openCompanionFace(companion, name, { timeout = 8000 } = {}) {
+export async function openCompanionFace(companion, name, { timeout = PRECONDITION_TIMEOUT_MS, require = false } = {}) {
   const faces = companion.getByRole('tablist', { name: 'Companion faces' })
   await faces.waitFor({ timeout })
   const pattern = faceNamePattern(name)
@@ -238,93 +287,621 @@ export async function openCompanionFace(companion, name, { timeout = 8000 } = {}
   const tab = faces.getByRole('tab', { name: pattern })
   if (await tab.count()) {
     await tab.first().click()
-    return
-  }
-  const button = faces.getByRole('button', { name: pattern })
-  if (await button.count()) {
-    await button.first().click()
-    return
-  }
-
-  // Overflow: More tab/button → menuitem (Research lives here under D6).
-  const moreTab = faces.getByRole('tab', { name: /^More/ })
-  const moreButton = faces.getByRole('button', { name: /^More/ })
-  const more = (await moreTab.count()) ? moreTab.first() : moreButton.first()
-  if (await more.count()) {
-    await more.click()
-    const menu = companion.page().getByRole('menu', { name: 'More companion faces' })
-      .or(companion.getByRole('menu'))
-      .or(companion.locator('.companion__more-menu'))
-    // Menuitem may render in a portal or inside the panel.
-    const itemInMenu = menu.getByRole('menuitem', { name: pattern })
-    const itemAnywhere = companion.page().getByRole('menuitem', { name: pattern })
-    if (await itemInMenu.count()) {
-      await itemInMenu.first().click()
-      return
+  } else {
+    const button = faces.getByRole('button', { name: pattern })
+    if (await button.count()) {
+      await button.first().click()
+    } else {
+      // Overflow: More tab/button → menuitem (Research lives here under D6).
+      const moreTab = faces.getByRole('tab', { name: /^More/ })
+      const moreButton = faces.getByRole('button', { name: /^More/ })
+      const more = (await moreTab.count()) ? moreTab.first() : moreButton.first()
+      if (await more.count()) {
+        await more.click()
+        const menu = companion.page().getByRole('menu', { name: 'More companion faces' })
+          .or(companion.getByRole('menu'))
+          .or(companion.locator('.companion__more-menu'))
+        // Menuitem may render in a portal or inside the panel.
+        const itemInMenu = menu.getByRole('menuitem', { name: pattern })
+        const itemAnywhere = companion.page().getByRole('menuitem', { name: pattern })
+        if (await itemInMenu.count()) {
+          await itemInMenu.first().click()
+        } else {
+          await itemAnywhere.first().click({ timeout })
+        }
+      } else {
+        // Last resort: any control with that accessible name inside the panel.
+        await companion.getByRole('tab', { name: pattern })
+          .or(companion.getByRole('button', { name: pattern }))
+          .first()
+          .click({ timeout })
+      }
     }
-    await itemAnywhere.first().click({ timeout })
-    return
   }
 
-  // Last resort: any control with that accessible name inside the panel.
-  await companion.getByRole('tab', { name: pattern })
-    .or(companion.getByRole('button', { name: pattern }))
-    .first()
-    .click({ timeout })
+  if (require) {
+    await assertCompanionFace(companion.page(), name, { timeout })
+  }
+}
+
+/** Resolve workspace mode key or alias (draft/manuscript/writing, canon/graph). */
+export function resolveWorkspaceMode(mode) {
+  const key = String(mode || '').trim().toLowerCase()
+  if (key === 'manuscript' || key === 'writing' || key === 'draft') return WORKSPACE_MODES.draft
+  if (key === 'lab') return WORKSPACE_MODES.lab
+  if (key === 'canon' || key === 'graph') return WORKSPACE_MODES.canon
+  throw new PreconditionError(`Unknown workspace mode: ${mode}`)
+}
+
+/** Snapshot of workspace button pressed state + main aria-label + companion attrs. */
+export async function readUiSurface(page) {
+  return page.evaluate(() => {
+    const workspace = document.querySelector('[aria-label="Workspace"]')
+    const pressed = workspace
+      ? [...workspace.querySelectorAll('button')].find((b) => b.getAttribute('aria-pressed') === 'true')
+      : null
+    const main = document.querySelector('main')
+    const panel = document.querySelector('.panel[data-companion-context]')
+    return {
+      workspace: (pressed?.textContent || '').trim() || null,
+      main: main?.getAttribute('aria-label') || null,
+      companionContext: panel?.getAttribute('data-companion-context') || null,
+      companionFace: panel?.getAttribute('data-companion-face') || null,
+    }
+  })
+}
+
+/**
+ * Browser-side visibility predicate source.
+ * Injected into page.evaluate — do not rely on getBoundingClientRect alone.
+ *
+ * Chromium still lays out children of closed <details>, so rect/offsetParent/
+ * display/visibility all lie. Prefer Element.checkVisibility; always treat
+ * non-summary descendants of closed <details> as hidden.
+ *
+ * Fail closed: if visibility cannot be determined, returns {visible:false, refuse:true}.
+ */
+export const BROWSER_IS_VISIBLE_SOURCE = `function isVisiblyPainted(el) {
+  if (!el || !(el instanceof Element)) {
+    return { visible: false, reason: 'no-el', refuse: true }
+  }
+  // Closed <details> content is not painted; <summary> still is.
+  let node = el
+  while (node && node !== document.documentElement) {
+    const parent = node.parentElement
+    if (parent && parent.tagName === 'DETAILS' && !parent.open) {
+      if (node.tagName === 'SUMMARY') break
+      return { visible: false, reason: 'closed-details' }
+    }
+    node = parent
+  }
+  if (typeof el.checkVisibility === 'function') {
+    try {
+      const visible = el.checkVisibility({
+        checkOpacity: true,
+        checkVisibilityCSS: true,
+        contentVisibilityAuto: true,
+      })
+      return { visible: !!visible, reason: visible ? 'checkVisibility' : 'checkVisibility-false' }
+    } catch (error) {
+      return {
+        visible: false,
+        reason: 'checkVisibility-error',
+        refuse: true,
+        error: error instanceof Error ? error.message : String(error),
+      }
+    }
+  }
+  return { visible: false, reason: 'no-checkVisibility', refuse: true }
+}
+function isVisibleEl(el) {
+  const result = isVisiblyPainted(el)
+  if (result.refuse) {
+    throw new Error('precondition not met: visibility undetermined (' + result.reason + ')')
+  }
+  return !!result.visible
+}
+`
+
+/** Desk breakpoint matching src/components/shell/useShellState defaultRailsAt. */
+export const DESK_RAIL_MIN_WIDTH = 1366
+
+/**
+ * Self-test: closed <details> children must NOT count as visible.
+ * Call once per browser session before any density/chrome count.
+ * Fail closed if Element.checkVisibility is missing or the predicate lies.
+ */
+export async function assertVisibilityPredicate(page) {
+  await page.setContent(`<!doctype html>
+<html><body>
+<details id="d">
+  <summary id="s">Tags</summary>
+  <button id="chip" type="button">char-dev</button>
+</details>
+</body></html>`)
+  const result = await page.evaluate((src) => {
+    // eslint-disable-next-line no-new-func
+    eval(src)
+    const hasCV = typeof Element.prototype.checkVisibility === 'function'
+    const chipClosed = isVisiblyPainted(document.getElementById('chip'))
+    const summary = isVisiblyPainted(document.getElementById('s'))
+    const details = document.getElementById('d')
+    details.open = true
+    // Force layout after open so checkVisibility sees painted content.
+    void details.offsetHeight
+    const chipOpen = isVisiblyPainted(document.getElementById('chip'))
+    return {
+      hasCV,
+      chip: chipClosed,
+      summary,
+      openChip: chipOpen,
+      detailsOpen: details.open,
+    }
+  }, BROWSER_IS_VISIBLE_SOURCE)
+
+  if (!result.hasCV) {
+    throw new PreconditionError(
+      'precondition not met: Element.checkVisibility unavailable — refuse rect-only visibility',
+    )
+  }
+  if (result.chip?.visible) {
+    throw new PreconditionError(
+      `visibility self-test failed: closed <details> child reported visible (${JSON.stringify(result.chip)})`,
+    )
+  }
+  if (!result.summary?.visible) {
+    throw new PreconditionError(
+      `visibility self-test failed: <summary> of closed details not visible (${JSON.stringify(result.summary)})`,
+    )
+  }
+  if (!result.openChip?.visible) {
+    throw new PreconditionError(
+      `visibility self-test failed: open <details> child not visible (${JSON.stringify(result.openChip)})`,
+    )
+  }
+  return result
+}
+
+/**
+ * Read binder/agent open state + whether the harness forced them.
+ * origin.binder|agent: 'default' | 'forced'
+ * Below DESK_RAIL_MIN_WIDTH, product default is companion closed / binder leads.
+ */
+export async function readRailState(page, { origin = {} } = {}) {
+  return page.evaluate((originMap) => {
+    const body = document.querySelector('.shell__body')
+    const binderEl = document.querySelector('.shell__rail--binder')
+    const agentEl = document.querySelector('.shell__rail--agent')
+    const binderAttr = body?.getAttribute('data-binder')
+    const agentAttr = body?.getAttribute('data-agent')
+    const binderRect = binderEl?.getBoundingClientRect?.()
+    const agentRect = agentEl?.getBoundingClientRect?.()
+    const binderOpen =
+      binderAttr === 'open' ||
+      (!!binderEl && (binderRect?.width || 0) > 40 && getComputedStyle(binderEl).display !== 'none')
+    const agentOpen =
+      agentAttr === 'open' ||
+      (!!agentEl && (agentRect?.width || 0) > 40 && getComputedStyle(agentEl).display !== 'none') ||
+      !!document.querySelector('.panel[data-companion-context]')
+    return {
+      binder: binderOpen ? 'open' : 'closed',
+      agent: agentOpen ? 'open' : 'closed',
+      origin: {
+        binder: originMap.binder === 'forced' ? 'forced' : 'default',
+        agent: originMap.agent === 'forced' ? 'forced' : 'default',
+      },
+      atDesk: window.innerWidth >= 1366,
+      vw: window.innerWidth,
+      bodyBinder: binderAttr || null,
+      bodyAgent: agentAttr || null,
+    }
+  }, origin)
+}
+
+export function formatRailState(railState) {
+  if (!railState) return 'rails=?'
+  return `rails binder=${railState.binder}/${railState.origin?.binder || '?'} agent=${railState.agent}/${railState.origin?.agent || '?'} atDesk=${railState.atDesk}`
+}
+
+/** Close drawer backdrops that block topbar / rails on narrow layouts. */
+export async function dismissDrawers(page) {
+  await page.evaluate(() => {
+    document.querySelectorAll('.ui-drawer__backdrop').forEach((el) => {
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+  }).catch(() => {})
+  await page.keyboard.press('Escape').catch(() => {})
+}
+
+/**
+ * Ensure companion rail/panel is open (no-op if already open or control missing).
+ * If track is provided and a Show click happens, sets track.agent = 'forced'.
+ */
+export async function ensureCompanionOpen(page, { track = null } = {}) {
+  await dismissDrawers(page)
+  const btn = page.getByRole('button', { name: /Show companion|Hide companion/i }).first()
+  if (!(await btn.count())) return false
+  const label = await btn.getAttribute('aria-label')
+  let forced = false
+  if (/Show companion/i.test(label || '')) {
+    await btn.click({ force: true })
+    forced = true
+    if (track) track.agent = 'forced'
+  }
+  await companionPanel(page).waitFor({ timeout: PRECONDITION_TIMEOUT_MS }).catch(() => {})
+  return forced
+}
+
+/**
+ * Ensure binder rail is open on desktop layouts.
+ * If track is provided and a Show click happens, sets track.binder = 'forced'.
+ */
+export async function ensureBinderOpen(page, { track = null } = {}) {
+  await dismissDrawers(page)
+  const btn = page.getByRole('button', { name: /Show binder|Hide binder/i }).first()
+  if (!(await btn.count())) return false
+  const label = await btn.getAttribute('aria-label')
+  let forced = false
+  if (/Show binder/i.test(label || '')) {
+    await btn.click({ force: true })
+    forced = true
+    if (track) track.binder = 'forced'
+  }
+  return forced
+}
+
+/**
+ * Prove workspace mode is active.
+ * Checks Workspace button aria-pressed and main aria-label.
+ * Optionally requires companion data-companion-context when companion is open.
+ */
+export async function assertWorkspace(page, mode, { timeout = PRECONDITION_TIMEOUT_MS, requireCompanionContext = false } = {}) {
+  const spec = resolveWorkspaceMode(mode)
+  const deadline = Date.now() + timeout
+  let last = null
+  while (Date.now() < deadline) {
+    last = await readUiSurface(page)
+    const workspaceOk = last.workspace === spec.button
+    const mainOk = last.main != null && spec.main.test(last.main)
+    const contextOk = !requireCompanionContext || last.companionContext === spec.context
+    if (workspaceOk && mainOk && contextOk) return last
+    await page.waitForTimeout(50)
+  }
+  throw new PreconditionError(
+    `precondition not met: workspace ${spec.key} `
+    + `(want button=${spec.button}, main~=${spec.main}, context=${requireCompanionContext ? spec.context : 'any'}; `
+    + `got ${JSON.stringify(last)})`,
+  )
+}
+
+/** Prove companion face is active via data-companion-face. */
+export async function assertCompanionFace(page, name, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  const expected = companionFaceId(name)
+  const deadline = Date.now() + timeout
+  let last = null
+  while (Date.now() < deadline) {
+    last = await readUiSurface(page)
+    if (last.companionFace === expected) return last
+    await page.waitForTimeout(50)
+  }
+  throw new PreconditionError(
+    `precondition not met: companion face ${expected} (got ${JSON.stringify(last)})`,
+  )
+}
+
+/**
+ * Switch workspace mode and prove it landed.
+ * mode: draft|lab|canon (aliases: manuscript/writing, graph)
+ */
+export async function gotoWorkspace(page, mode, {
+  timeout = PRECONDITION_TIMEOUT_MS,
+  ensureCompanion = false,
+  requireCompanionContext = false,
+} = {}) {
+  const spec = resolveWorkspaceMode(mode)
+  await dismissDrawers(page)
+  const group = page.getByRole('group', { name: 'Workspace' })
+  const btn = (await group.count())
+    ? group.getByRole('button', { name: spec.button, exact: true }).first()
+    : page.getByRole('button', { name: spec.button, exact: true }).first()
+  if (!(await btn.count())) {
+    throw new PreconditionError(`precondition not met: missing Workspace button ${spec.button}`)
+  }
+  await btn.click({ force: true })
+  if (ensureCompanion) await ensureCompanionOpen(page)
+  return assertWorkspace(page, spec.key, {
+    timeout,
+    requireCompanionContext: ensureCompanion || requireCompanionContext,
+  })
+}
+
+/**
+ * Open companion face and prove data-companion-face.
+ * Convenience wrapper around openCompanionFace(..., { require: true }).
+ */
+export async function requireCompanionFace(page, name, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  await ensureCompanionOpen(page)
+  const panel = companionPanel(page)
+  await openCompanionFace(panel, name, { timeout, require: true })
+  return readUiSurface(page)
+}
+
+let API_BASE = process.env.STORYLINT_API || 'http://127.0.0.1:4174'
+
+/** Point helpers at an owned/ephemeral API origin. Call before any apiJson use. */
+export function setApiBase(origin) {
+  if (!origin || typeof origin !== 'string') {
+    throw new PreconditionError('precondition not met: setApiBase requires a non-empty origin')
+  }
+  API_BASE = origin.replace(/\/$/, '')
+}
+
+export function getApiBase() {
+  return API_BASE
+}
+
+/**
+ * UI origin for browser gates/smokes.
+ * No default to :5173. Parent (all-smoke / calm) must own the stack and set STORYLINT_UI.
+ */
+export function requireUiOrigin() {
+  const ui = process.env.STORYLINT_UI || ''
+  if (!ui) {
+    throw new PreconditionError(
+      'precondition not met: STORYLINT_UI is unset. Run via npm run test:e2e (owned stack) or npm run calm. Refusing stranger default :5173.',
+    )
+  }
+  return ui.endsWith('/') ? ui : `${ui}/`
 }
 
 
-/** Ensure active project has a chapter and Draft editor is ready. */
-
-/** Activate/create a dedicated e2e project so concurrent agents don't thrash the active doc. */
-/** Activate/create a dedicated e2e project so concurrent agents don't thrash the active doc. */
-export async function ensureIsolatedProject(page, { id, title = 'E2E Health' } = {}) {
-  const projectId = id || `e2e-health-${process.pid}-${Date.now().toString(36)}`
-  let payload
+async function apiJson(path, init) {
+  const response = await fetch(`${API_BASE}${path}`, init)
+  const text = await response.text()
+  let body = null
   try {
-    payload = await fetch('http://127.0.0.1:4174/api/projects').then((r) => r.json())
+    body = text ? JSON.parse(text) : null
   } catch {
-    payload = null
+    body = text
   }
-  const exists = payload?.projects?.some((p) => p.id === projectId)
+  return { ok: response.ok, status: response.status, body, text }
+}
+
+/** Load active project document from the local API. */
+export async function fetchActiveProject() {
+  const result = await apiJson('/api/project')
+  if (!result.ok) {
+    throw new PreconditionError(`precondition not met: GET /api/project failed (${result.status})`)
+  }
+  return result.body
+}
+
+/** List projects from the local API. */
+export async function fetchProjects() {
+  const result = await apiJson('/api/projects')
+  if (!result.ok) {
+    throw new PreconditionError(`precondition not met: GET /api/projects failed (${result.status})`)
+  }
+  return result.body
+}
+
+/**
+ * Activate/create a dedicated per-run project.
+ * Never reuse shared fixture ids (doors2, default, etc).
+ * Returns the private project id — keep it and reclaim before measuring.
+ */
+export async function ensureIsolatedProject(page, { id, title = 'E2E Health' } = {}) {
+  const projectId = id || `e2e-${process.pid}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+  if (projectId === 'default' || /^doors/i.test(projectId)) {
+    throw new PreconditionError(`precondition not met: refused shared fixture project id ${projectId}`)
+  }
+
+  const listing = await fetchProjects().catch(() => null)
+  const exists = listing?.projects?.some((p) => p.id === projectId)
   if (!exists) {
-    const created = await fetch('http://127.0.0.1:4174/api/projects', {
+    const created = await apiJson('/api/projects', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ id: projectId, title: `${title} ${projectId.slice(-6)}` }),
     })
     if (!created.ok && created.status !== 409) {
-      const detail = await created.text()
-      throw new Error(`ensureIsolatedProject create failed: ${created.status} ${detail}`)
+      throw new Error(`ensureIsolatedProject create failed: ${created.status} ${created.text}`)
     }
   }
-  const activated = await fetch(`http://127.0.0.1:4174/api/projects/${encodeURIComponent(projectId)}/activate`, {
+
+  await reclaimIsolatedProject(projectId)
+  // Best-effort UI select if page already navigated.
+  if (page) {
+    try {
+      const select = page.getByLabel('Active project')
+      if (await select.count()) {
+        await select.selectOption(projectId).catch(() => {})
+      }
+    } catch {
+      // page may not be on app yet
+    }
+  }
+  return projectId
+}
+
+/**
+ * Re-activate a private project and prove the server active pointer matches.
+ * Call before every measurement block under concurrent agents.
+ */
+export async function reclaimIsolatedProject(projectId, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  if (!projectId) throw new PreconditionError('precondition not met: reclaimIsolatedProject requires projectId')
+  const activated = await apiJson(`/api/projects/${encodeURIComponent(projectId)}/activate`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: '{}',
   })
   if (!activated.ok) {
-    const detail = await activated.text()
-    throw new Error(`ensureIsolatedProject activate failed: ${activated.status} ${detail}`)
+    throw new PreconditionError(
+      `precondition not met: activate ${projectId} failed (${activated.status} ${activated.text})`,
+    )
   }
-  return projectId
+  return assertActiveProject(projectId, { timeout })
+}
+
+/**
+ * Prove the server's active project is still ours.
+ * Active id comes from GET /api/projects.activeProjectId (project doc has no id field).
+ * Optional page check against the Active project select when present.
+ */
+export async function assertActiveProject(projectId, { page = null, timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  const deadline = Date.now() + timeout
+  let last = null
+  while (Date.now() < deadline) {
+    try {
+      const listing = await fetchProjects()
+      const activeId = listing?.activeProjectId ?? null
+      last = { activeProjectId: activeId, title: listing?.projects?.find((p) => p.id === activeId)?.title ?? null }
+      if (activeId === projectId) {
+        if (page) {
+          const selected = await page.evaluate(() => {
+            const el = document.querySelector('select[aria-label="Active project"]')
+            return el?.value || null
+          }).catch(() => projectId) // if UI not mounted, server proof is enough
+          if (selected && selected !== projectId) {
+            last.ui = selected
+          } else {
+            return fetchActiveProject()
+          }
+        } else {
+          return fetchActiveProject()
+        }
+      }
+    } catch (error) {
+      last = { error: error instanceof Error ? error.message : String(error) }
+    }
+    await new Promise((r) => setTimeout(r, 50))
+  }
+  throw new PreconditionError(
+    `precondition not met: active project is not ${projectId} (got ${JSON.stringify(last)})`,
+  )
+}
+
+/**
+ * Prove the active project is empty of chapters and sheets.
+ * Does NOT create content. Activate the empty project first.
+ */
+export async function assertProjectEmpty({ projectId = null } = {}) {
+  if (projectId) {
+    const listing = await fetchProjects()
+    if (listing?.activeProjectId !== projectId) {
+      throw new PreconditionError(
+        `precondition not met: empty check on wrong project (want ${projectId}, got ${listing?.activeProjectId})`,
+      )
+    }
+  }
+  const project = await fetchActiveProject()
+  const chapters = project?.chapters?.length ?? 0
+  const sheets = project?.sheets?.length ?? 0
+  const labCards = project?.lab?.boards?.reduce((n, b) => n + (b.cards?.length || 0), 0)
+    ?? project?.lab?.cards?.length
+    ?? 0
+  if (chapters !== 0 || sheets !== 0) {
+    throw new PreconditionError(
+      `precondition not met: project not empty (chapters=${chapters}, sheets=${sheets}, labCards=${labCards}, active=${projectId || 'current'})`,
+    )
+  }
+  return project
+}
+
+/**
+ * Create/activate a fresh empty private project and prove emptiness after reload.
+ * For empty-surface measurements (Canon empty, binder empty). Never reuse doors fixtures.
+ */
+export async function claimEmptyProject(page, { id, title = 'E2E Empty' } = {}) {
+  const projectId = await ensureIsolatedProject(page, { id, title })
+  // ensureIsolatedProject may leave drafts from prior ensureDraftReady on same id — use unique id always.
+  // Prove empty; if not empty, mint a new id once.
+  try {
+    if (page) {
+      try { await page.reload({ waitUntil: 'networkidle' }) } catch { /* not on page */ }
+    }
+    await reclaimIsolatedProject(projectId)
+    await assertProjectEmpty({ projectId })
+    return projectId
+  } catch (firstError) {
+    const retryId = `${projectId}-empty-${Date.now().toString(36)}`
+    await ensureIsolatedProject(page, { id: retryId, title })
+    if (page) {
+      try { await page.reload({ waitUntil: 'networkidle' }) } catch { /* ok */ }
+    }
+    await reclaimIsolatedProject(retryId)
+    try {
+      await assertProjectEmpty({ projectId: retryId })
+      return retryId
+    } catch (secondError) {
+      throw new PreconditionError(
+        `precondition not met: claimEmptyProject could not obtain empty project `
+        + `(first=${firstError instanceof Error ? firstError.message : firstError}; `
+        + `second=${secondError instanceof Error ? secondError.message : secondError})`,
+      )
+    }
+  }
+}
+
+/**
+ * Reclaim + optional empty proof immediately before a measurement.
+ * On failure throws PreconditionError — callers must not measure.
+ */
+export async function beforeMeasure(page, {
+  projectId,
+  requireEmpty = false,
+  workspace = null,
+  companionFace = null,
+  ensureCompanion = false,
+} = {}) {
+  if (!projectId) throw new PreconditionError('precondition not met: beforeMeasure requires projectId')
+  await reclaimIsolatedProject(projectId)
+  if (page) {
+    try {
+      const select = page.getByLabel('Active project')
+      if (await select.count()) {
+        const value = await select.inputValue().catch(() => '')
+        if (value !== projectId) await select.selectOption(projectId)
+      }
+    } catch {
+      // UI may not expose select yet
+    }
+  }
+  if (requireEmpty) await assertProjectEmpty({ projectId })
+  if (workspace) {
+    await gotoWorkspace(page, workspace, {
+      ensureCompanion: ensureCompanion || Boolean(companionFace),
+      requireCompanionContext: ensureCompanion || Boolean(companionFace),
+    })
+  }
+  if (companionFace) {
+    await requireCompanionFace(page, companionFace)
+  }
+  // Final reclaim proof after UI switches (concurrent thief window).
+  await assertActiveProject(projectId, { page })
+  return fetchActiveProject()
 }
 
 /** Ensure active project has a chapter and Draft editor is ready. */
-export async function ensureDraftReady(page, { body = 'Aria opened the iron door.', title = 'Chapter One' } = {}) {
+export async function ensureDraftReady(page, {
+  body = 'Aria opened the iron door.',
+  title = 'Chapter One',
+  craftTags,
+} = {}) {
   async function loadProject() {
-    return fetch('http://127.0.0.1:4174/api/project').then((r) => r.json())
+    return fetchActiveProject()
   }
 
   async function putChapter(chapter, nextBody) {
-    return fetch(`http://127.0.0.1:4174/api/chapters/${encodeURIComponent(chapter.id)}`, {
+    const tags = Array.isArray(craftTags) ? craftTags : (chapter.craftTags ?? [])
+    return fetch(`${API_BASE}/api/chapters/${encodeURIComponent(chapter.id)}`, {
       method: 'PUT',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         id: chapter.id,
         title: chapter.title || title,
         body: nextBody,
-        craftTags: chapter.craftTags ?? [],
+        craftTags: tags,
         revision: chapter.revision,
       }),
     })
@@ -406,10 +983,10 @@ export async function fillChapterAndSave(page, text) {
   const response = await putPromise
   if (response && response.status() === 409) {
     // Resolve conflict via API with latest revision, then reload UI.
-    const project = await fetch('http://127.0.0.1:4174/api/project').then((r) => r.json())
+    const project = await fetchActiveProject()
     const chapter = project.chapters[0]
     if (!chapter) throw new Error('fillChapterAndSave: no chapter after 409')
-    const reset = await fetch(`http://127.0.0.1:4174/api/chapters/${encodeURIComponent(chapter.id)}`, {
+    const reset = await fetch(`${API_BASE}/api/chapters/${encodeURIComponent(chapter.id)}`, {
       method: 'PUT',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
