@@ -153,14 +153,28 @@ export function LabBench({
         </div>
       </header>
 
-      <div className="lab__filters" role="group" aria-label="Filter card kinds">
-        <Button aria-pressed={kindFilter === 'all'} onClick={() => setKindFilter('all')}>All</Button>
-        {LAB_CARD_KINDS.map((kind) => (
-          <Button key={kind} aria-pressed={kindFilter === kind} onClick={() => setKindFilter(kind)}>
-            {KIND_LABEL[kind]}
-          </Button>
-        ))}
-      </div>
+      {/* D3: kind picker lives in composer only; filter appears once cards exist. */}
+      {live.length > 0 ? (
+        <div className="lab__filters" role="group" aria-label="Filter card kinds">
+          <Button aria-pressed={kindFilter === 'all'} onClick={() => setKindFilter('all')}>All</Button>
+          <details className="lab__filter-more">
+            <summary className="lab__filter-summary ui-focusable">
+              {kindFilter === 'all' ? 'Kinds' : KIND_LABEL[kindFilter]}
+            </summary>
+            <div className="lab__filter-menu" role="group" aria-label="Card kinds">
+              {LAB_CARD_KINDS.map((kind) => (
+                <Button
+                  key={kind}
+                  aria-pressed={kindFilter === kind}
+                  onClick={() => setKindFilter(kind)}
+                >
+                  {KIND_LABEL[kind]}
+                </Button>
+              ))}
+            </div>
+          </details>
+        </div>
+      ) : null}
 
       <section className="lab__composer" aria-label="New lab card">
         <div className="lab__composer-kinds" role="group" aria-label="New card kind">

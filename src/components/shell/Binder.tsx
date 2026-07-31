@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Fact, Lab, Sheet } from '../../domain/types.ts'
 import { SheetEditor } from '../../features/project/SheetEditor.tsx'
 import { Button, IconButton, ListRow } from '../ui'
@@ -50,19 +50,51 @@ export function Binder({
   onClose,
 }: BinderProps) {
   const [editingSheetId, setEditingSheetId] = useState<string | 'new' | null>(null)
+  /** Park sheet detail when leaving Canon; restore on re-enter (D9). */
+  const [parkedSheetId, setParkedSheetId] = useState<string | null>(null)
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
   const boards = lab?.boards ?? []
 
   useEffect(() => {
     if (requestedSheetId && sheets.some((sheet) => sheet.id === requestedSheetId)) {
-      setEditingSheetId(requestedSheetId)
-      onEditSheet?.(requestedSheetId)
+      if (canonMode) {
+        setEditingSheetId(requestedSheetId)
+        setParkedSheetId(null)
+        onEditSheet?.(requestedSheetId)
+      } else {
+        // Outside Canon: remember for restore, keep binder as navigator.
+        setParkedSheetId(requestedSheetId)
+        setEditingSheetId(null)
+        onEditSheet?.(null)
+      }
       onRequestedSheetHandled?.()
     } else if (editingSheetId && editingSheetId !== 'new' && !sheets.some((sheet) => sheet.id === editingSheetId)) {
       setEditingSheetId(null)
       onEditSheet?.(null)
     }
-  }, [requestedSheetId, sheets, editingSheetId, onRequestedSheetHandled, onEditSheet])
+  }, [requestedSheetId, sheets, editingSheetId, canonMode, onRequestedSheetHandled, onEditSheet])
+
+  // Park sheet form only on Canon leave; restore parked sheet on Canon enter (D9).
+  const wasCanonRef = useRef(canonMode)
+  useEffect(() => {
+    const wasCanon = wasCanonRef.current
+    wasCanonRef.current = canonMode
+    if (wasCanon && !canonMode) {
+      if (editingSheetId && editingSheetId !== 'new') setParkedSheetId(editingSheetId)
+      if (editingSheetId) {
+        setEditingSheetId(null)
+        onEditSheet?.(null)
+      }
+      return
+    }
+    if (!wasCanon && canonMode) {
+      if (!editingSheetId && parkedSheetId && sheets.some((sheet) => sheet.id === parkedSheetId)) {
+        setEditingSheetId(parkedSheetId)
+        onEditSheet?.(parkedSheetId)
+        setParkedSheetId(null)
+      }
+    }
+  }, [canonMode, editingSheetId, parkedSheetId, sheets, onEditSheet])
 
   const draftSection = (
     <section className="panel__group" aria-labelledby="binder-draft">
