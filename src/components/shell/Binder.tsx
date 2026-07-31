@@ -77,8 +77,8 @@ export function Binder({
           />
         ) : (
           <>
-            <section className="panel__group" aria-labelledby="binder-chapters">
-              <h3 className="panel__label" id="binder-chapters">Chapters</h3>
+            <section className="panel__group" aria-labelledby="binder-draft">
+              <h3 className="panel__label" id="binder-draft">Draft</h3>
               {chapters.map((chapter, index) => (
                 <ListRow
                   key={chapter.id}
@@ -92,26 +92,29 @@ export function Binder({
               <Button onClick={onAddChapter}>New chapter</Button>
             </section>
 
-            {SHEET_KINDS.map((kind: SheetKind) => {
-              const forKind = sheets.filter((sheet) => sheet.kind === kind)
-              return (
-                <section className="panel__group" key={kind} aria-labelledby={`binder-${kind}`}>
-                  <h3 className="panel__label" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h3>
-                  {forKind.length === 0 ? (
-                    <div className="panel__empty-row" role="status">
-                      None yet
-                    </div>
-                  ) : (
-                    forKind.map((sheet) => (
-                      <ListRow key={sheet.id} meta={String(sheet.facts.length)} onClick={() => setEditingSheetId(sheet.id)}>
-                        {sheet.name}
-                      </ListRow>
-                    ))
-                  )}
-                </section>
-              )
-            })}
-            <Button variant="primary" onClick={() => setEditingSheetId('new')}>New sheet</Button>
+            <section className="panel__group" aria-labelledby="binder-canon">
+              <h3 className="panel__label" id="binder-canon">Canon</h3>
+              {SHEET_KINDS.map((kind: SheetKind) => {
+                const forKind = sheets.filter((sheet) => sheet.kind === kind)
+                return (
+                  <div className="binder__canon-kind" key={kind}>
+                    <h4 className="panel__sublabel" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h4>
+                    {forKind.length === 0 ? (
+                      <div className="panel__empty-row" role="status">
+                        None yet
+                      </div>
+                    ) : (
+                      forKind.map((sheet) => (
+                        <ListRow key={sheet.id} meta={String(sheet.facts.length)} onClick={() => setEditingSheetId(sheet.id)}>
+                          {sheet.name}
+                        </ListRow>
+                      ))
+                    )}
+                  </div>
+                )
+              })}
+              <Button variant="primary" onClick={() => setEditingSheetId('new')}>New sheet</Button>
+            </section>
 
             <section className="panel__group" aria-labelledby="binder-lab">
               <h3 className="panel__label" id="binder-lab">Lab</h3>

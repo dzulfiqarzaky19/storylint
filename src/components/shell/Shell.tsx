@@ -257,7 +257,7 @@ export function Shell() {
             aria-pressed={workspaceMode === 'manuscript'}
             onClick={() => setWorkspaceMode('manuscript')}
           >
-            Editor
+            Draft
           </Button>
           <Button
             className="shell__action-graph"
@@ -319,9 +319,9 @@ export function Shell() {
         ) : null}
 
         {project.loading ? (
-          <main id="workspace" className="manuscript" aria-label="Manuscript" tabIndex={-1}>
+          <main id="workspace" className="manuscript" aria-label="Draft" tabIndex={-1}>
             <div className="manuscript__sheet">
-              <EmptyState title="Loading project…" hint="Opening your binder and latest chapter." />
+              <EmptyState title="Loading project…" hint="Opening your binder and latest draft." />
             </div>
           </main>
         ) : workspaceMode === 'lab' && lab ? (
@@ -333,7 +333,14 @@ export function Shell() {
             onPatchCard={project.patchLabCard}
             onArchiveCard={project.archiveLabCard}
             onPinCard={project.pinLabCard}
-            onPromoteCard={project.promoteLabCard}
+            onPromoteCard={async (cardId, input) => {
+              const result = await project.promoteLabCard(cardId, input)
+              if (result.as === 'chapter-stub' && result.chapterId) {
+                setActiveChapterId(result.chapterId)
+                setWorkspaceMode('manuscript')
+              }
+              return result
+            }}
             onOpenAgent={() => {
               if (!shell.isOpen('agent')) shell.toggle('agent')
             }}
@@ -369,15 +376,20 @@ export function Shell() {
             }}
           />
         ) : (
-          <main id="workspace" className="manuscript" aria-label="Manuscript" tabIndex={-1}>
+          <main id="workspace" className="manuscript" aria-label="Draft" tabIndex={-1}>
             <div className="manuscript__sheet">
               <EmptyState
-                title="No chapters"
-                hint="Start the manuscript with one chapter. You can rename it anytime."
+                title="Start this project"
+                hint="Write a first draft chapter, or open Lab to try ideas first."
                 action={
-                  <Button variant="primary" onClick={project.addChapter} disabled={!project.project}>
-                    New chapter
-                  </Button>
+                  <div className="shell__empty-doors">
+                    <Button variant="primary" onClick={project.addChapter} disabled={!project.project}>
+                      Write
+                    </Button>
+                    <Button onClick={() => openLab()} disabled={!project.project}>
+                      Start in Lab
+                    </Button>
+                  </div>
                 }
               />
             </div>

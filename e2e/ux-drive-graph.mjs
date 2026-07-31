@@ -231,7 +231,7 @@ async function seedFullBible(request) {
 }
 
 async function openGraph(page) {
-  // Shell exposes Graph and Editor as distinct buttons (S1). Prefer Graph.
+  // Shell exposes Graph and Draft as distinct buttons (S1). Prefer Graph.
   const graphMain = page.getByRole('main', { name: 'Relationship graph' })
   if (await graphMain.count()) {
     await graphMain.waitFor({ timeout: 5000 })

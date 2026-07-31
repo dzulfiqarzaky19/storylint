@@ -54,7 +54,7 @@ async function proposeAndAccept(page) {
   await companion.getByRole('button', { name: /^Inbox/ }).click()
   const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
-  await graph.getByText('parent_of').first().waitFor({ timeout: 5000 })
+  await graph.locator('title', { hasText: 'parent_of' }).first().waitFor({ state: 'attached', timeout: 5000 })
   return graph
 }
 

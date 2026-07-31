@@ -108,7 +108,7 @@ export function Manuscript({
   }, [])
 
   return (
-    <main id="workspace" className="manuscript" aria-label="Manuscript" tabIndex={-1}>
+    <main id="workspace" className="manuscript" aria-label="Draft" tabIndex={-1}>
       <div className="manuscript__page">
         <div className="manuscript__sheet">
           <header className="manuscript__header">

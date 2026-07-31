@@ -109,9 +109,9 @@ try {
   page.setDefaultTimeout(12000)
 
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  const manuscript = page.getByRole('main', { name: 'Manuscript' })
+  const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor({ timeout: 15000 })
-  ok('shell: Manuscript main present')
+  ok('shell: Draft main present')
   checkpoint('shell-ready')
 
   await shot(page, '01-shell-default-desk')
@@ -378,7 +378,7 @@ try {
       await shot(page, '10-apply-card')
       const bodyMid = await body.inputValue()
       if (bodyMid !== beforeBody) {
-        fail('Manuscript changed before Apply')
+        fail('Draft changed before Apply')
         results.blockers.push('Co-write altered manuscript before explicit Apply')
       } else {
         ok('manuscript unchanged pre-Apply')
@@ -487,7 +487,7 @@ try {
   }
 
   const genInMs = await page.evaluate(() => {
-    const main = document.querySelector('[role="main"][aria-label="Manuscript"], main.manuscript, .manuscript')
+    const main = document.querySelector('[role="main"][aria-label="Draft"], main.manuscript, .manuscript')
     if (!main) return []
     return Array.from(main.querySelectorAll('button, [role="button"]'))
       .map((b) => (b.textContent || '').trim())
@@ -516,7 +516,7 @@ try {
 
   const narrow = await browser.newPage({ viewport: { width: 1280, height: 800 } })
   await narrow.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  await narrow.getByRole('main', { name: 'Manuscript' }).waitFor()
+  await narrow.getByRole('main', { name: 'Draft' }).waitFor()
   await shot(narrow, '14-width-1280')
   const sealInfo = await narrow.evaluate(() => {
     const bm = document.querySelector('.manuscript__bookmark')
@@ -587,7 +587,7 @@ try {
 
   const desk2 = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   await desk2.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  await desk2.getByRole('main', { name: 'Manuscript' }).waitFor()
+  await desk2.getByRole('main', { name: 'Draft' }).waitFor()
   const ribbon = await desk2.evaluate(() => {
     const bm = document.querySelector('.manuscript__bookmark')
     if (!bm) return null

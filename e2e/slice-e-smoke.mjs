@@ -34,7 +34,7 @@ try {
   if (!reset.ok) throw new Error(`Failed to normalize chapter: ${reset.status} ${await reset.text()}`)
 
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  const manuscript = page.getByRole('main', { name: 'Manuscript' })
+  const manuscript = page.getByRole('main', { name: 'Draft' })
   const body = manuscript.getByLabel('Chapter text')
   await manuscript.waitFor()
   const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
@@ -65,7 +65,7 @@ try {
   await apply.click()
   await page.waitForFunction(
     ({ selector, original }) => document.querySelector(selector)?.value !== original,
-    { selector: 'main[aria-label="Manuscript"] textarea', original: source },
+    { selector: 'main[aria-label="Draft"] textarea', original: source },
     { timeout: 10000 },
   )
   await waitSaved()

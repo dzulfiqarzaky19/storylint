@@ -40,7 +40,7 @@ try {
   await seedSheets(page.request)
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   await page.reload({ waitUntil: 'networkidle' })
-  const manuscriptBody = await page.getByRole('main', { name: 'Manuscript' }).getByLabel('Chapter text').inputValue()
+  const manuscriptBody = await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue()
   await page.getByRole('button', { name: 'Graph' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
@@ -75,11 +75,11 @@ try {
   await companion.getByRole('button', { name: /^Inbox/ }).click()
   const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
-  await graph.getByText(key).waitFor({ timeout: 5000 })
-  if (await page.getByRole('main', { name: 'Manuscript' }).count() !== 0) {
+  await graph.locator('title', { hasText: key }).waitFor({ state: 'attached', timeout: 5000 })
+  if (await page.getByRole('main', { name: 'Draft' }).count() !== 0) {
     throw new Error('Graph did not replace the center manuscript surface')
   }
-  await page.getByRole('button', { name: 'Editor' }).click()
+  await page.getByRole('button', { name: 'Draft' }).click()
   if (await page.getByLabel('Chapter text').inputValue() !== manuscriptBody) throw new Error('Graph round-trip changed manuscript')
 
   await page.screenshot({ path: 'e2e/output/slice-i-smoke.png', fullPage: true })

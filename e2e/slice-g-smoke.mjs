@@ -16,7 +16,7 @@ const LLM_TIMEOUT = 60000
 
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  const body = page.getByRole('main', { name: 'Manuscript' }).getByLabel('Chapter text')
+  const body = page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text')
   const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
   const chapter = `${NOVEL_CHAPTER}\n\n— e2e ${Date.now()}`
   await body.fill(chapter)

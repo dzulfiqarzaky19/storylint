@@ -180,7 +180,7 @@ page.setDefaultTimeout(12000)
 
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  await page.getByRole('main', { name: 'Manuscript' }).waitFor({ timeout: 15000 })
+  await page.getByRole('main', { name: 'Draft' }).waitFor({ timeout: 15000 })
   const newProj = page.getByRole('button', { name: /new project/i })
   if (await newProj.count()) {
     await newProj.click()

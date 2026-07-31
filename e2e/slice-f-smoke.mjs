@@ -12,11 +12,11 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  const manuscript = page.getByRole('main', { name: 'Manuscript' })
+  const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor()
 
-  const tag = manuscript.getByRole('button', { name: 'char-dev' })
-  await tag.click()
+  const craftTag = manuscript.getByRole('button', { name: 'char-dev' })
+  await craftTag.click()
   await page.waitForFunction(
     () => document.querySelector('.manuscript__craft-tag[aria-pressed="true"]') !== null,
     undefined,
@@ -24,8 +24,8 @@ try {
   )
   await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
 
-  const tag = Date.now().toString(36).slice(-4)
-  const sheetName = `Moon Archive-${tag}`
+  const suffix = Date.now().toString(36).slice(-4)
+  const sheetName = `Moon Archive-${suffix}`
   await page.getByRole('button', { name: 'New sheet' }).click()
   await page.getByLabel('Sheet portrait or icon').waitFor()
   await page.getByLabel('Name').fill(sheetName)
@@ -49,7 +49,7 @@ try {
   await page.screenshot({ path: 'e2e/output/slice-f-narrow.png', fullPage: true })
 
   await page.getByRole('button', { name: 'Focus mode' }).click()
-  if (await tag.isVisible()) throw new Error('Craft tags remain visible in Focus')
+  if (await craftTag.isVisible()) throw new Error('Craft tags remain visible in Focus')
   await page.getByRole('button', { name: 'Exit focus mode' }).click()
 
   console.log('PASS: portrait/icon persists; lore hints stay freeform; manual craft tags save/hide in Focus; reading profile and responsive paper render')
