@@ -11,7 +11,8 @@ function seedProject(): Project {
   return {
     schemaVersion: 2,
     title: 'Storylint',
-    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
+    // BD P1: factory seed uses empty title + Manuscript placeholder (not 'Chapter One').
+    chapters: [{ id: 'chapter-1', title: '', body: '', craftTags: [], revision: 0 }],
     sheets: [],
     proposals: [],
     rejectedFingerprints: [],
@@ -100,7 +101,7 @@ test('failed async update leaves the saved project unchanged', async () => {
 test('GET and PUT project persist schemaVersion 2', async () => {
   await withServer(async (baseUrl, store) => {
     const loaded = await requestJson<Project>(`${baseUrl}/api/project`)
-    assert.equal(loaded.chapters[0].title, 'Chapter One')
+    assert.equal(loaded.chapters[0].title, '') // BD P1: empty seed title
 
     const renamed = await requestJson<Project>(`${baseUrl}/api/project`, {
       method: 'PUT',
@@ -527,7 +528,7 @@ test('markdown ZIP export contains readable chapter and bible paths', async () =
     const bytes = Buffer.from(await response.arrayBuffer())
     assert.equal(bytes.readUInt32LE(0), 0x04034b50)
     const text = bytes.toString('utf8')
-    assert.match(text, /chapters\/01-chapter-one\.md/)
+    assert.match(text, /chapters\/01-untitled\.md/) // BD P1: empty seed title slugs to untitled
     assert.match(text, /bible\/character\/aria\.md/)
     assert.match(text, /Aria guards/)
   })

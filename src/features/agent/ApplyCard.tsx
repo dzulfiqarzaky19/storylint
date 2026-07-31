@@ -11,6 +11,7 @@ export function ApplyCard({
   onApply: (id: string) => Promise<void>
   onDismiss: (id: string) => void
 }) {
+  // Author decision (ox jobs-vs-decisions): local busy only — never assistantBusy.
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -35,8 +36,8 @@ export function ApplyCard({
       </div>
       <pre className="apply-card__preview">{card.text}</pre>
       <div className="proposal-card__actions">
-        <Button variant="primary" disabled={busy} onClick={() => void apply()}>
-          {busy ? 'Applying…' : 'Apply'}
+        <Button variant="primary" disabled={busy} aria-busy={busy || undefined} onClick={() => void apply()}>
+          {busy ? 'Working…' : 'Apply'}
         </Button>
         <Button disabled={busy} onClick={() => onDismiss(card.id)}>Dismiss</Button>
       </div>

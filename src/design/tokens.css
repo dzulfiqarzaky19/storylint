@@ -11,6 +11,8 @@
   --color-surface-overlay: #1a1a1ae6;
   --color-border: #2e2e2e;
   --color-border-strong: #3f3f3f;
+  /* Control silhouette (ghost buttons) — WCAG 1.4.11 ≥3:1 vs surface; not chrome hairlines */
+  --color-border-control: #757575;
   --color-text: #e3e5e8;
   --color-text-muted: #9a9ca0;
   --color-text-subtle: #6e7074;
@@ -231,6 +233,7 @@
   --color-surface-overlay: #f4f1eaf2;
   --color-border: #d9d2c6;
   --color-border-strong: #b9b1a3;
+  --color-border-control: #757575;
   --color-text: #2c2d30;
   --color-text-muted: #5c5e62;
   --color-text-subtle: #8a8c90;

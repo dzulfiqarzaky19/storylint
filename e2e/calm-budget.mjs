@@ -1,6 +1,6 @@
 /**
  * CALM_BUDGET executable checker.
- * Enforces HARD/WARN from docs/CALM_BUDGET.md (r2).
+ * Enforces HARD/WARN from docs/CALM_BUDGET.md (r3).
  *
  *   npm run calm
  *   node e2e/calm-budget.mjs
@@ -21,6 +21,13 @@ import { pathToFileURL } from 'node:url'
 import { createHash } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import {
+  reloadApp,
+  found,
+  notFound,
+  isFound,
+  isNotFound,
+  asMeasurement,
+  requireFound,
   armHardTimeout,
   assertVisibilityPredicate,
   beforeMeasure,
@@ -29,6 +36,8 @@ import {
   dismissDrawers,
   ensureBinderOpen,
   ensureCompanionOpen,
+  claimEmptyProject,
+  fetchActiveProject,
   ensureDraftReady,
   ensureIsolatedProject,
   formatRailState,
@@ -39,15 +48,23 @@ import {
   reclaimIsolatedProject,
   requireCompanionFace,
   resolveWorkspaceMode,
-  setApiBase,
+  setApiBase
 } from './helpers.mjs'
 import { resolveMeasurementTarget } from './owned-stack.mjs'
 
 /** Set after resolveMeasurementTarget — never default to a stranger on :5173. */
 let UI = ''
 const OUT_DIR = 'e2e/output'
-const OUT_MD = `${OUT_DIR}/calm-budget-run.md`
-const OUT_JSON = `${OUT_DIR}/calm-budget-run.json`
+// Default write is UNTRACKED so a run never dirties the tree / blocks checkout.
+// --record updates the tracked scoreboard (deliberate baseline commit).
+// A tool must not write a tracked path as a side effect of running (rat / crab).
+const RECORD_SCOREBOARD = process.argv.includes('--record')
+const OUT_MD = RECORD_SCOREBOARD
+  ? `${OUT_DIR}/calm-budget-run.md`
+  : `${OUT_DIR}/calm-budget-last.md`
+const OUT_JSON = RECORD_SCOREBOARD
+  ? `${OUT_DIR}/calm-budget-run.json`
+  : `${OUT_DIR}/calm-budget-last.json`
 
 /** Format every touch fail sample for console / measured (not just [0]). */
 function formatTouchSamples(samples) {
@@ -162,6 +179,27 @@ function notMeasuredFail(id, surface, reason) {
     'absence is not pass',
   )
 }
+
+/**
+ * Record a check only when the measurement is found.
+ * notFound → NOT-MEASURED HARD (never PASS).
+ * found → run pass(value). Intentional empty surfaces use found(0), not notFound.
+ */
+function judgeMeasured(id, sev, doc, surface, measurement, { pass, measured, threshold, note, samples } = {}) {
+  if (!isFound(measurement)) {
+    const reason = isNotFound(measurement)
+      ? measurement.reason
+      : (measurement?.reason || measurement?.status || 'measurement not found|found')
+    notMeasuredFail(id, surface, reason)
+    return false
+  }
+  const value = measurement.value
+  const ok = typeof pass === 'function' ? !!pass(value) : !!pass
+  const measuredText = typeof measured === 'function' ? measured(value) : String(measured ?? value)
+  add(id, sev, doc, surface, ok, measuredText, threshold, note, samples)
+  return ok
+}
+
 
 async function withSurface(id, surface, fn) {
   try {
@@ -604,6 +642,394 @@ async function measureFocus(page) {
   return { before, during, ok: during.focus === 'true' && !during.binder && during.work }
 }
 
+/**
+ * Viewport-wide solid primary count grouped by job key (ox one-primary-door-per-job).
+ * Same accessible name (or data-job) + solid/primary recipe across binder/fold/companion
+ * is one job. Expect at most one solid primary per job when dual-rail empty fixtures run.
+ *
+ * Letter vs spirit (ox empty-canon-send-proposal-weight): a historical canon-empty PASS with
+ * solids=2 was CORRECT by job grouping when those solids were map New sheet + Send proposal
+ * (different jobs). Do not "fix" that by collapsing distinct jobs. Product must omit solid
+ * Send while sheets<2; checker additionally asserts no Send primary on true-empty fold.
+ * Solids inside closed <details> are excluded (IM1 / not painted) — see self-test.
+ */
+async function measurePrimaryPerJob(page) {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
+
+    function regionOf(el) {
+      if (el.closest('.shell__rail--binder, [data-binder-stack], aside.shell__rail--binder')) return 'binder'
+      if (el.closest('.panel[data-companion-context], .shell__rail--agent, aside.shell__rail--agent')) return 'companion'
+      if (el.closest('.shell__topbar')) return 'topbar'
+      if (el.closest('main, #workspace, .graph, .shell__work, .manuscript, .lab')) return 'fold'
+      return 'other'
+    }
+
+    function jobKey(name, el) {
+      const dataJob = el.getAttribute('data-job')
+      if (dataJob) return dataJob.trim().toLowerCase()
+      const n = name.trim().replace(/\s+/g, ' ')
+      if (!n) return null
+      // Place switches / face tabs are wayfinding, not create jobs.
+      if (/^(Draft|Lab|Canon|Chat|Write|Check|Inbox|Research|Spark|Inspect|More)$/i.test(n)) return null
+      if (/^Inbox\s*\d+$/i.test(n)) return null
+      if (/hide binder|show binder|hide companion|show companion|focus|theme|project/i.test(n)) return null
+      // Create-chapter cluster (binder + companion + center empty door).
+      if (/^(new chapter|write first chapter|write)$/i.test(n)) return 'create-chapter'
+      // Create-sheet cluster (binder + map empty CTA).
+      if (/^new sheet$/i.test(n)) return 'create-sheet'
+      // Open lab is a different job from create-chapter.
+      if (/^(open lab|start in lab)$/i.test(n)) return 'open-lab'
+      // Remaining solid buttons keep their accessible name as job key.
+      return n.toLowerCase()
+    }
+
+    function insideClosedDetails(el) {
+      // IM1: closed <details> guts are not painted; never count as solid primaries.
+      let node = el
+      while (node && node !== document.documentElement) {
+        const parent = node.parentElement
+        if (parent && parent.tagName === 'DETAILS' && !parent.open) {
+          if (node.tagName === 'SUMMARY') return false
+          return true
+        }
+        node = parent
+      }
+      return false
+    }
+
+    const controls = [...document.querySelectorAll('button, [role="button"], a.ui-button')]
+    const solids = []
+    for (const el of controls) {
+      if (!isVisibleEl(el)) continue
+      if (insideClosedDetails(el)) continue
+      // Face tabs are role=tab — never job primaries even if painted primary.
+      if (el.getAttribute('role') === 'tab') continue
+      const cls = el.className?.toString?.() || ''
+      const isPrimary = cls.includes('ui-button--primary')
+        || cls.includes('--primary')
+        || el.getAttribute('data-variant') === 'primary'
+      if (!isPrimary) continue
+      const name = (el.getAttribute('aria-label') || el.textContent || '').trim().replace(/\s+/g, ' ')
+      const job = jobKey(name, el)
+      if (!job) continue
+      solids.push({
+        job,
+        name,
+        region: regionOf(el),
+      })
+    }
+
+    const byJob = new Map()
+    for (const item of solids) {
+      const list = byJob.get(item.job) || []
+      list.push(item)
+      byJob.set(item.job, list)
+    }
+    const jobs = [...byJob.entries()].map(([job, items]) => ({
+      job,
+      count: items.length,
+      items,
+    }))
+    const offenders = jobs.filter((j) => j.count > 1)
+    return {
+      solidCount: solids.length,
+      jobs,
+      offenders,
+      maxPerJob: jobs.reduce((m, j) => Math.max(m, j.count), 0),
+      graphEmpty: document.querySelector('[data-graph-empty]')?.getAttribute('data-graph-empty') || null,
+      canonEmpty: document.querySelector('[data-canon-empty]')?.getAttribute('data-canon-empty') || null,
+      hasDraftMain: !!document.querySelector('main[aria-label="Draft"]'),
+      hasCanonMain: !!(
+        document.querySelector('main[aria-label="Relationship graph"]')
+        || document.querySelector('[aria-label="Relationship graph"]')
+        || document.querySelector('.graph')
+      ),
+    }
+  }, BROWSER_IS_VISIBLE_SOURCE)
+}
+
+/**
+ * Empty-product fixtures for B6-primary-per-job (ox composition rule).
+ * Uses claimEmptyProject so zero-chapter / zero-sheet is a real New-project state (koala).
+ * Dual-rail @1440 only — that is where binder + fold + companion share one viewport.
+ */
+
+/**
+ * Measure Inbox face under a known pending volume.
+ * Wall signals (AV): many visible proposal cards packed on first screen,
+ * and/or panel grows with content (scrollH≈clientH) instead of internal scroll.
+ */
+async function measureInboxWall(page) {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl, isVisiblyPainted } = new Function(`${visSrc}; return { isVisibleEl, isVisiblyPainted }`)()
+    const panel = document.querySelector('.panel[data-companion-context], [data-companion-face]')
+    const face = panel?.getAttribute('data-companion-face') || null
+    const cards = [...document.querySelectorAll(
+      '.proposal-card, article.proposal, [data-proposal-id], [aria-label="Pending proposals"] article, [aria-label="Pending proposals"] li, .companion__inbox-list article, .companion__inbox-list li, .companion__inbox-more article, .companion__inbox-more li, [data-inbox-card]',
+    )]
+    const visibleCards = cards.filter((c) => {
+      try {
+        if (typeof isVisibleEl === 'function') return !!isVisibleEl(c)
+        return !!isVisiblyPainted(c).visible
+      } catch {
+        return false
+      }
+    })
+    const badge = [...document.querySelectorAll('button, [role="tab"]')]
+      .find((el) => /^Inbox/i.test((el.textContent || '').trim()))
+    const scrollH = panel?.scrollHeight ?? 0
+    const clientH = panel?.clientHeight ?? 0
+    const internalScroll = scrollH > clientH + 4
+    const denseCount = visibleCards.length >= 12
+    const growsNotScrolls = visibleCards.length >= 8 && !internalScroll
+    const inboxWall = denseCount || growsNotScrolls
+    return {
+      face,
+      cardDom: cards.length,
+      cardVisible: visibleCards.length,
+      badgeText: (badge?.textContent || '').trim() || null,
+      scrollH,
+      clientH,
+      internalScroll,
+      denseCount,
+      growsNotScrolls,
+      inboxWall,
+    }
+  }, BROWSER_IS_VISIBLE_SOURCE)
+}
+
+function makeVolumeProposals(count, chapterId) {
+  const proposals = []
+  for (let i = 0; i < count; i++) {
+    proposals.push({
+      id: 'prop-b3-wall-' + (i + 1),
+      fingerprint: 'fp-b3-wall-' + (i + 1),
+      status: 'pending',
+      entityName: 'Entity ' + (i + 1),
+      sheetKind: 'character',
+      key: 'attr_' + (i + 1),
+      value: 'value-' + (i + 1),
+      statement: 'Entity ' + (i + 1) + ' has attr ' + (i + 1),
+      claimKind: 'attribute',
+      confidence: 0.9,
+      source: { chapterId, start: 0, end: 4, text: 'Aria' },
+    })
+  }
+  return proposals
+}
+
+/**
+ * B3-inbox-wall at volume: private project + 30 pending proposals.
+ * Measures the Inbox face (not Chat). Expected HARD-red until product scrollport/fold lands.
+ */
+async function runInboxWallFixture(browser) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  page.setDefaultTimeout(12000)
+  const VOLUME = 30
+  try {
+    await installFixtureLlmRoutes(page)
+    const projectId = await ensureIsolatedProject(page, {
+      id: 'e2e-calm-inbox-wall-' + process.pid + '-' + Date.now().toString(36),
+      title: 'E2E Calm Inbox Wall',
+    })
+    await page.goto(UI, { waitUntil: 'networkidle' })
+    await reclaimIsolatedProject(projectId)
+    await ensureDraftReady(page, {
+      body: 'Aria opened the iron door for inbox wall measure.',
+      title: 'Chapter One',
+      craftTags: ['setup'],
+    })
+    const current = await fetchActiveProject()
+    const chapterId = current && current.chapters && current.chapters[0] && current.chapters[0].id
+    if (!chapterId) {
+      throw new PreconditionError('precondition not met: inbox-wall fixture needs a chapter')
+    }
+    const seeded = {
+      ...current,
+      proposals: [
+        ...(current.proposals || []).filter((p) => p.status !== 'pending'),
+        ...makeVolumeProposals(VOLUME, chapterId),
+      ],
+    }
+    const putResult = await page.evaluate(async (project) => {
+      const res = await fetch('/api/project', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(project),
+      })
+      const text = await res.text()
+      return { ok: res.ok, status: res.status, text: text.slice(0, 200) }
+    }, seeded)
+    if (!putResult.ok) {
+      throw new PreconditionError(
+        'precondition not met: seed 30 proposals failed (' + putResult.status + ' ' + putResult.text + ')',
+      )
+    }
+    await reclaimIsolatedProject(projectId)
+    await reloadApp(page)
+    await reclaimIsolatedProject(projectId)
+    await ensureCompanionOpen(page)
+    await enterWorkspaceForMeasure(page, 'draft', projectId)
+    await requireCompanionFace(page, 'Inbox')
+
+    const proof = await page.evaluate(async () => {
+      const project = await fetch('/api/project').then((r) => r.json())
+      return {
+        pending: (project.proposals || []).filter((p) => p.status === 'pending').length,
+      }
+    })
+    if (proof.pending < VOLUME) {
+      throw new PreconditionError(
+        'precondition not met: inbox-wall seed volume want ' + VOLUME + ' pending got ' + proof.pending,
+      )
+    }
+
+    const measured = await measureInboxWall(page)
+    // Measurement must distinguish: empty-and-ok vs could-not-find.
+    // pending>=8 with cardVisible===0 is NOT-MEASURED (octopus instance + class API).
+    // inboxWall===false alone at cardVisible===0 was pass-on-absence (rule 4).
+    // Selectors include companion inbox fold hooks (octopus 11463e4).
+    let inboxMeasure
+    if (measured.face && !/^inbox$/i.test(measured.face)) {
+      inboxMeasure = notFound('Inbox face not proven (face=' + measured.face + ')')
+    } else if (proof.pending >= 8 && measured.cardVisible === 0) {
+      inboxMeasure = notFound(
+        'pending=' + proof.pending + ' cardVisible=0 cardDom=' + measured.cardDom
+          + ' badge=' + measured.badgeText + ' (seeded proposals not seen)',
+      )
+    } else if (!measured.face && measured.cardDom === 0 && measured.cardVisible === 0) {
+      inboxMeasure = notFound('Inbox surface produced no face attr and no proposal cards')
+    } else {
+      inboxMeasure = found(measured)
+    }
+    // Honest red while product packs all cards / grows the panel.
+    // Pass criteria (ox AV): internal scrollport + not a dense first-screen wall.
+    judgeMeasured(
+      'B3-inbox-wall@volume',
+      'HARD',
+      'CALM_BUDGET.md B3-inbox-wall · Inbox at 30 pending is not a wall (internal scroll + calm fold)',
+      'companion Inbox@1440 volume=30',
+      inboxMeasure,
+      {
+        pass: (v) => v.inboxWall === false,
+        measured: (v) =>
+          'inboxWall=' + v.inboxWall
+          + ' cardVisible=' + v.cardVisible
+          + ' pending=' + proof.pending
+          + ' scrollH=' + v.scrollH
+          + ' clientH=' + v.clientH
+          + ' internalScroll=' + v.internalScroll
+          + ' badge=' + v.badgeText,
+        threshold: 'inboxWall=false at volume 30; cardVisible>0 when pending>=8',
+      },
+    )
+  } finally {
+    await page.close()
+  }
+}
+
+async function runEmptyPrimaryFixtures(browser) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  page.setDefaultTimeout(12000)
+  try {
+    await installFixtureLlmRoutes(page)
+    const emptyId = await claimEmptyProject(page, {
+      id: `e2e-calm-empty-${process.pid}-${Date.now().toString(36)}`,
+      title: 'E2E Calm Empty',
+    })
+    await page.goto(UI, { waitUntil: 'networkidle' })
+    await reclaimIsolatedProject(emptyId)
+    // Desk dual-rail: binder + companion open so composition is visible.
+    const railOrigin = { binder: 'default', agent: 'default' }
+    await ensureBinderOpen(page, { track: railOrigin })
+    await ensureCompanionOpen(page, { track: railOrigin })
+    const railNote = formatRailState(await readRailState(page, { origin: railOrigin }))
+
+    // --- Draft empty-project dual-rail ---
+    const draftOk = await withSurface('B6-primary-per-job@draft-empty', 'Draft empty@1440 dual-rail', async () => {
+      await beforeMeasure(page, {
+        projectId: emptyId,
+        requireEmpty: true,
+        workspace: 'draft',
+        ensureCompanion: true,
+      })
+      return true
+    })
+    if (draftOk) {
+      const draft = await measurePrimaryPerJob(page)
+      if (!draft.hasDraftMain) {
+        preconditionFail(
+          'B6-primary-per-job@draft-empty',
+          'Draft empty@1440 dual-rail',
+          new PreconditionError('precondition not met: Draft main missing on empty fixture'),
+        )
+      } else {
+        const offenders = (draft.offenders || [])
+          .map((o) => `${o.job}=${o.count}[${o.items.map((i) => `${i.region}:${i.name}`).join(' | ')}]`)
+          .join('; ')
+        add(
+          'B6-primary-per-job@draft-empty',
+          'HARD',
+          'CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job (empty Draft dual-rail)',
+          'Draft empty@1440 dual-rail',
+          (draft.maxPerJob || 0) <= 1,
+          `maxPerJob=${draft.maxPerJob || 0} solids=${draft.solidCount}${offenders ? ` offenders=${offenders}` : ''} · ${railNote}`,
+          '≤1 solid primary per job',
+        )
+      }
+    }
+
+    // --- Canon true-empty dual-rail ---
+    const canonOk = await withSurface('B6-primary-per-job@canon-empty', 'Canon true-empty@1440 dual-rail', async () => {
+      await beforeMeasure(page, {
+        projectId: emptyId,
+        requireEmpty: true,
+        workspace: 'canon',
+        ensureCompanion: true,
+      })
+      return true
+    })
+    if (canonOk) {
+      const canon = await measurePrimaryPerJob(page)
+      const trueEmpty = canon.graphEmpty === 'canon' || canon.canonEmpty === 'true'
+      if (!canon.hasCanonMain || !trueEmpty) {
+        preconditionFail(
+          'B6-primary-per-job@canon-empty',
+          'Canon true-empty@1440 dual-rail',
+          new PreconditionError(
+            `precondition not met: Canon true-empty not proven (hasCanon=${canon.hasCanonMain} graphEmpty=${canon.graphEmpty} canonEmpty=${canon.canonEmpty})`,
+          ),
+        )
+      } else {
+        const offenders = (canon.offenders || [])
+          .map((o) => `${o.job}=${o.count}[${o.items.map((i) => `${i.region}:${i.name}`).join(' | ')}]`)
+          .join('; ')
+        // Spirit (ox): on true-empty fold the only solid create door is New sheet.
+        // Send proposal must not be primary while sheets < 2 (omit in product).
+        const sendSolid = (canon.jobs || []).some((j) => /send proposal/i.test(j.job) && j.count > 0)
+        const sheetSolids = (canon.jobs || []).find((j) => j.job === 'create-sheet')
+        const emptyFoldOk = !sendSolid && (sheetSolids?.count || 0) <= 1
+        add(
+          'B6-primary-per-job@canon-empty',
+          'HARD',
+          'CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job; empty fold solid = New sheet only (no Send)',
+          'Canon true-empty@1440 dual-rail',
+          (canon.maxPerJob || 0) <= 1 && emptyFoldOk,
+          `maxPerJob=${canon.maxPerJob || 0} solids=${canon.solidCount} graphEmpty=${canon.graphEmpty} sendSolid=${sendSolid}${offenders ? ` offenders=${offenders}` : ''} · ${railNote}`,
+          '≤1/job; no Send primary while sheets<2',
+        )
+      }
+    }
+
+    return { emptyId }
+  } finally {
+    await page.close()
+  }
+}
+
 /** Enter workspace and prove companion context before any face measurement. */
 async function enterWorkspaceForMeasure(page, mode, projectId) {
   const spec = resolveWorkspaceMode(mode)
@@ -647,7 +1073,7 @@ async function runViewport(browser, width, height, label, projectId) {
       }
     })
     await reclaimIsolatedProject(projectId)
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
     await ensureDraftReady(page, {
       body: 'Aria opened the iron door for calm budget.',
       craftTags: ['char-dev', 'plot-progress', 'world-build', 'setup', 'relationship'],
@@ -731,43 +1157,61 @@ async function runViewport(browser, width, height, label, projectId) {
     }
 
     // --- B2 topbar ---
-    const top = await measureTopbar(page)
-    add(
+    const topRaw = await measureTopbar(page)
+    const topM = topRaw.missing
+      ? notFound('shell topbar missing')
+      : found(topRaw)
+    // Keep `top` for B6-top-job later in this viewport; only judge when found.
+    const top = isFound(topM) ? topM.value : { topJobPrimaryCount: undefined, missing: true }
+    judgeMeasured(
       `B2-job-primary@${label}`,
       'HARD',
       'CALM_BUDGET.md B2-job-primary · Continuity/Export/Research/Review/New top primary = 0',
       `topbar@${label}`,
-      (top.topJobPrimaryCount || 0) === 0,
-      `topJobPrimaryCount=${top.topJobPrimaryCount || 0}${top.jobPrimaryLabels?.length ? ` [${top.jobPrimaryLabels.join(',')}]` : ''}`,
-      '=0',
+      topM,
+      {
+        pass: (v) => (v.topJobPrimaryCount || 0) === 0,
+        measured: (v) =>
+          `topJobPrimaryCount=${v.topJobPrimaryCount || 0}${v.jobPrimaryLabels?.length ? ` [${v.jobPrimaryLabels.join(',')}]` : ''}`,
+        threshold: '=0',
+      },
     )
-    add(
+    judgeMeasured(
       `B2-ecosystem@${label}`,
       'HARD',
       'CALM_BUDGET.md B2-ecosystem · ecosystemVisible = 3',
       `topbar@${label}`,
-      top.ecosystemVisible === 3,
-      `ecosystemVisible=${top.ecosystemVisible} [${(top.ecoLabels || []).join(',')}]`,
-      '=3',
+      topM,
+      {
+        pass: (v) => v.ecosystemVisible === 3,
+        measured: (v) => `ecosystemVisible=${v.ecosystemVisible} [${(v.ecoLabels || []).join(',')}]`,
+        threshold: '=3',
+      },
     )
     if (width <= 400) {
-      add(
+      judgeMeasured(
         'B2-truncation',
         'HARD',
         'CALM_BUDGET.md B2-truncation · placeLabelClipped = 0 @390',
         'topbar@390',
-        (top.placeLabelClipped || 0) === 0,
-        `placeLabelClipped=${top.placeLabelClipped || 0}`,
-        '=0',
+        topM,
+        {
+          pass: (v) => (v.placeLabelClipped || 0) === 0,
+          measured: (v) => `placeLabelClipped=${v.placeLabelClipped || 0}`,
+          threshold: '=0',
+        },
       )
-      add(
+      judgeMeasured(
         'B2-top-count-warn',
         'WARN',
         'CALM_BUDGET.md B2-top-count-warn · top controls > 8 without overflow',
         'topbar@390',
-        (top.topControlCount || 0) <= 8,
-        `topControlCount=${top.topControlCount || 0}`,
-        '≤8',
+        topM,
+        {
+          pass: (v) => (v.topControlCount || 0) <= 8,
+          measured: (v) => `topControlCount=${v.topControlCount || 0}`,
+          threshold: '≤8',
+        },
       )
     }
 
@@ -804,10 +1248,12 @@ async function runViewport(browser, width, height, label, projectId) {
           `face=${facesChat.face} context=${facesChat.context}`,
           'chat',
         )
+        // Chat must not dump pending proposals (transcript, not Inbox).
+        // Named separately — B3-inbox-wall measures the Inbox face at volume.
         add(
-          `B3-inbox-wall@${label}`,
+          `B3-chat-proposals-wall@${label}`,
           'HARD',
-          'CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false',
+          'CALM_BUDGET.md B3-chat-proposals-wall · Chat has no proposal dump',
           `companion chat@${label}`,
           facesChat.chatProposalsWall === false,
           `chatProposalsWall=${facesChat.chatProposalsWall}`,
@@ -942,27 +1388,35 @@ async function runViewport(browser, width, height, label, projectId) {
       return true
     })
     if (labSurfaceOk) {
-      const lab = await measureLab(page)
-      if (!lab.missing) {
-        add(
-          `B4-lab-empty-filter@${label}`,
-          'HARD',
-          'CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0',
-          `Lab@${label}`,
-          lab.labFilterWhenEmpty === false,
-          `cards=${lab.cardCount} filterWhenEmpty=${lab.labFilterWhenEmpty}`,
-          'false',
-        )
-        add(
-          `B4-lab-kind-strips@${label}`,
-          'HARD',
-          'CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1',
-          `Lab@${label}`,
-          lab.kindFullStrips <= 1,
-          `kindFullStrips=${lab.kindFullStrips}`,
-          '≤1',
-        )
-      }
+      const labRaw = await measureLab(page)
+      const labM = labRaw.missing
+        ? notFound('Lab root missing')
+        : found(labRaw)
+      // cards===0 is intentional empty → found. Root missing → notFound.
+      judgeMeasured(
+        `B4-lab-empty-filter@${label}`,
+        'HARD',
+        'CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0',
+        `Lab@${label}`,
+        labM,
+        {
+          pass: (v) => v.labFilterWhenEmpty === false,
+          measured: (v) => `cards=${v.cardCount} filterWhenEmpty=${v.labFilterWhenEmpty}`,
+          threshold: 'false',
+        },
+      )
+      judgeMeasured(
+        `B4-lab-kind-strips@${label}`,
+        'HARD',
+        'CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1',
+        `Lab@${label}`,
+        labM,
+        {
+          pass: (v) => v.kindFullStrips <= 1,
+          measured: (v) => `kindFullStrips=${v.kindFullStrips}`,
+          threshold: '≤1',
+        },
+      )
     }
 
     // Craft on Draft
@@ -971,32 +1425,37 @@ async function runViewport(browser, width, height, label, projectId) {
       return true
     })
     if (draftCraftOk) {
-      const craft = await measureCraft(page)
-      if (craft.missing || craft.notMeasured || !craft.foundStrip) {
-        notMeasuredFail(
-          width >= 1200 ? 'B4-craft-desktop' : 'B4-craft-phone',
-          `Draft craft@${label}`,
-          craft.reason || 'craft surface not found',
-        )
-      } else if (width >= 1200) {
-        add(
+      const craftRaw = await measureCraft(page)
+      const craftM = (craftRaw.missing || craftRaw.notMeasured || !craftRaw.foundStrip)
+        ? notFound(craftRaw.reason || 'craft surface selectors matched nothing', { raw: craftRaw })
+        : found(craftRaw)
+      if (width >= 1200) {
+        judgeMeasured(
           'B4-craft-desktop',
           'HARD',
           'CALM_BUDGET.md B4-craft-desktop · craft visible ≤ 5 + overflow',
           'Draft craft@1440',
-          craft.chipVisibleCount <= 5,
-          `chipVisibleCount=${craft.chipVisibleCount} [${(craft.chipLabels || []).join(',')}] foundStrip=${craft.foundStrip}`,
-          '≤5',
+          craftM,
+          {
+            pass: (v) => v.chipVisibleCount <= 5,
+            measured: (v) =>
+              `chipVisibleCount=${v.chipVisibleCount} [${(v.chipLabels || []).join(',')}] foundStrip=${v.foundStrip}`,
+            threshold: '≤5',
+          },
         )
       } else {
-        add(
+        judgeMeasured(
           'B4-craft-phone',
           'HARD',
           'CALM_BUDGET.md B4-craft-phone · craft collapsed disclosure default @390',
           'Draft craft@390',
-          craft.craftCollapsedDefault === true,
-          `collapsed=${craft.craftCollapsedDefault} chips=${craft.chipVisibleCount} detailsOpen=${craft.detailsOpen}`,
-          'true (disclosure collapsed; absence ≠ pass)',
+          craftM,
+          {
+            pass: (v) => v.craftCollapsedDefault === true,
+            measured: (v) =>
+              `collapsed=${v.craftCollapsedDefault} chips=${v.chipVisibleCount} detailsOpen=${v.detailsOpen}`,
+            threshold: 'true (disclosure collapsed; absence ≠ pass)',
+          },
         )
       }
     }
@@ -1093,14 +1552,17 @@ async function runViewport(browser, width, height, label, projectId) {
     }
 
     if (width >= 1200) {
-      add(
+      judgeMeasured(
         'B6-top-job',
         'HARD',
         'CALM_BUDGET.md B6-top-job · solid job primaries = 0',
         'topbar',
-        (top.topJobPrimaryCount || 0) === 0,
-        `topJobPrimaryCount=${top.topJobPrimaryCount || 0}`,
-        '=0',
+        top.missing ? notFound('shell topbar missing') : found(top),
+        {
+          pass: (v) => (v.topJobPrimaryCount || 0) === 0,
+          measured: (v) => `topJobPrimaryCount=${v.topJobPrimaryCount || 0}`,
+          threshold: '=0',
+        },
       )
     }
 
@@ -1222,6 +1684,75 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
   await probe.close()
 }
 
+// B6 rule-3 self-test: closed details solid must NOT count; open details solid MUST count.
+// Uses the same isVisibleEl + insideClosedDetails path as measurePrimaryPerJob.
+{
+  const probe = await browser.newPage()
+  try {
+    await probe.setContent(`<!doctype html>
+<html><body>
+<style>.ui-button--primary{font-weight:700}</style>
+<details id="d">
+  <summary id="s">Propose new edge</summary>
+  <button id="send" type="button" class="ui-button ui-button--primary">Send proposal</button>
+</details>
+<button id="open-solid" type="button" class="ui-button ui-button--primary">New sheet</button>
+</body></html>`)
+    const result = await probe.evaluate((visSrc) => {
+      // eslint-disable-next-line no-new-func
+      const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
+      function insideClosedDetails(el) {
+        let node = el
+        while (node && node !== document.documentElement) {
+          const parent = node.parentElement
+          if (parent && parent.tagName === 'DETAILS' && !parent.open) {
+            if (node.tagName === 'SUMMARY') return false
+            return true
+          }
+          node = parent
+        }
+        return false
+      }
+      function countSolids() {
+        const out = []
+        for (const el of document.querySelectorAll('button, [role="button"], a.ui-button')) {
+          if (!isVisibleEl(el)) continue
+          if (insideClosedDetails(el)) continue
+          const cls = el.className?.toString?.() || ''
+          if (!cls.includes('ui-button--primary')) continue
+          out.push((el.textContent || '').trim())
+        }
+        return out
+      }
+      const closed = countSolids()
+      const details = document.getElementById('d')
+      details.open = true
+      void details.offsetHeight
+      const open = countSolids()
+      return { closed, open }
+    }, BROWSER_IS_VISIBLE_SOURCE)
+
+    const closedOk = result.closed.length === 1 && result.closed[0] === 'New sheet'
+      && !result.closed.includes('Send proposal')
+    const openOk = result.open.includes('Send proposal') && result.open.includes('New sheet')
+    if (!closedOk || !openOk) {
+      const detail = 'closed=' + JSON.stringify(result.closed) + ' open=' + JSON.stringify(result.open)
+      throw new PreconditionError(
+        'precondition not met: B6 closed-details primary self-test failed (' + detail + '; closed must drop Send, open must include Send)',
+      )
+    }
+    console.log('[b6-primary-visibility-self-test] ok (closed details solid excluded; open included)')
+  } catch (error) {
+    console.error('REFUSE (b6-primary-visibility): ' + (error instanceof Error ? error.message : String(error)))
+    try { await probe.close() } catch { /* ignore */ }
+    try { await browser.close() } catch { /* ignore */ }
+    try { await stack.stop() } catch { /* ignore */ }
+    clearHardTimeout()
+    process.exit(2)
+  }
+  await probe.close()
+}
+
 // One isolated project for the whole run so both viewports share stable state.
 let projectId = null
 try {
@@ -1234,6 +1765,10 @@ try {
 
   await runViewport(browser, 1440, 900, '1440', projectId)
   await runViewport(browser, 390, 844, '390', projectId)
+  // Empty fixtures after populated run so they own a clean zero-content project.
+  await runEmptyPrimaryFixtures(browser)
+  // Inbox wall at volume — measures Inbox face (not Chat). Honest red until product fold/scrollport.
+  await runInboxWallFixture(browser)
 } catch (error) {
   if (error instanceof PreconditionError || String(error?.message || error).includes('precondition not met')) {
     console.error('REFUSE (precondition): ' + (error instanceof Error ? error.message : String(error)))
@@ -1270,7 +1805,7 @@ writeFileSync(OUT_MD, md)
 // Determinism fingerprint ignores timestamps / project ids in measured paths that include them.
 const fingerprint = checks.map((c) => `${c.id}|${c.pass ? 'P' : c.sev === 'HARD' ? 'F' : 'W'}|${c.measured}|${c.threshold}`).join('\n')
 writeFileSync(OUT_JSON, JSON.stringify({ meta, checks, fingerprint }, null, 2))
-console.log(`\nWrote ${OUT_MD}`)
+console.log(`\nWrote ${OUT_MD}` + (RECORD_SCOREBOARD ? ' (tracked scoreboard --record)' : ' (untracked run artifact)'))
 console.log(`HARD fails: ${hardFails} / checks: ${checks.length}`)
 console.log(`FINGERPRINT ${hashFingerprint(fingerprint)}`)
 process.exit(hardFails > 0 ? 1 : 0)

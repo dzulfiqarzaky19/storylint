@@ -29,6 +29,93 @@ export class PreconditionError extends Error {
 }
 
 /**
+ * Reload after the app has already mounted.
+ *
+ * RULE: networkidle is SAFE on FIRST navigation and DANGEROUS on RELOAD.
+ * After mount, companion/LLM sockets keep the network busy forever on owned
+ * stacks, so waitUntil:'networkidle' burns the full ~30s Playwright timeout
+ * before continuing — a latent flake under load (slice-j paid 63s for this).
+ *
+ * Always use domcontentloaded, then wait for the state the caller actually needs
+ * (select attached, Draft editor, binder list, etc). Never treat idle as a proxy.
+ */
+export async function reloadApp(page, { timeout = 30_000, ready = null } = {}) {
+  if (!page) return
+  await page.reload({ waitUntil: 'domcontentloaded', timeout })
+  if (typeof ready === 'function') {
+    await ready(page)
+  } else if (ready) {
+    await page.locator(ready).first().waitFor({ state: 'attached', timeout: PRECONDITION_TIMEOUT_MS })
+  } else {
+    // Default shell landmark: Active project select is present once the app shell hydrates.
+    await page.getByLabel('Active project').waitFor({ state: 'attached', timeout: PRECONDITION_TIMEOUT_MS }).catch(() => {})
+  }
+}
+
+/**
+ * Measurement result — rule 4 structural close.
+ *
+ * Every gate measurement must return found(value) or notFound(reason).
+ * A check whose FAIL path is only `count >= N` PASSes at count 0 when the
+ * surface is missing — that is pass-on-absence (B4-craft-phone / B3-inbox-wall).
+ *
+ * Three outcomes must stay distinguishable:
+ *   1. thing absent and should be  → found(0) / found({ absent: true }) + predicate PASS
+ *   2. thing present within budget → found(value) + predicate PASS
+ *   3. could not find what we judge → notFound(reason) → NOT-MEASURED (HARD fail)
+ *
+ * Intentional absence is still *found* (we found the empty surface).
+ * notFound means the checker cannot name what it measured.
+ */
+export function found(value, extra = {}) {
+  return Object.freeze({ status: 'found', value, ...extra })
+}
+
+export function notFound(reason, extra = {}) {
+  return Object.freeze({
+    status: 'notFound',
+    reason: reason == null ? 'not found' : String(reason),
+    value: undefined,
+    ...extra,
+  })
+}
+
+export function isFound(m) {
+  return Boolean(m && m.status === 'found')
+}
+
+export function isNotFound(m) {
+  return Boolean(m && m.status === 'notFound')
+}
+
+/**
+ * Wrap a raw measure blob that uses missing/notMeasured flags.
+ * Prefer returning found()/notFound() from the measure itself when writing new code.
+ */
+export function asMeasurement(raw, { reason = 'surface missing or not measurable' } = {}) {
+  if (raw == null) return notFound(reason, { raw: null })
+  if (raw.status === 'found' || raw.status === 'notFound') return raw
+  if (raw.missing || raw.notMeasured || raw.found === false) {
+    return notFound(raw.reason || reason, { raw })
+  }
+  return found(raw, { raw })
+}
+
+/**
+ * Refuse a verdict when the measurement is notFound.
+ * Returns the found value, or null after calling onNotFound (caller records HARD).
+ */
+export function requireFound(measurement, onNotFound) {
+  if (isFound(measurement)) return measurement.value
+  const reason = isNotFound(measurement)
+    ? measurement.reason
+    : (measurement?.reason || 'measurement missing status found|notFound')
+  if (typeof onNotFound === 'function') onNotFound(reason, measurement)
+  return null
+}
+
+
+/**
  * Workspace modes used by shell ecosystems + companion context attrs.
  * button: Workspace control label
  * main: expected main aria-label pattern
@@ -246,14 +333,15 @@ export async function installFixtureLlmRoutes(page) {
 /** Companion root panel. Prefer heading filter (stable); data-attr is secondary. */
 /**
  * Leave an open Canon sheet and return to the binder list.
- * The affordance moved: SheetEditor is rendered with showBack={false}, and the control now lives
- * in the binder detail chrome as "Back". Assert the behaviour (list is showing again) rather than
- * a button label, so the next chrome change fails loudly instead of hanging on a missing name.
+ * SheetEditor uses showBack={false}; control lives in binder detail chrome.
+ * Locate via [data-binder-back] (stable hook). NEVER by accessible name —
+ * aria-label is "Back, editing {title}" for screen readers (product copy we do not own).
+ * Rule 3 applies to LOCATORS, not only assertions. After click, wait for list stack.
  */
 export async function closeSheetDetail(page) {
-  const detail = page.locator('[data-binder-detail="sheet"]')
-  if (await detail.count()) {
-    await detail.getByRole('button', { name: 'Back', exact: true }).click()
+  const back = page.locator('[data-binder-detail="sheet"] [data-binder-back], [data-binder-back]')
+  if (await back.count()) {
+    await back.first().click()
   } else {
     await page.keyboard.press('Escape')
   }
@@ -680,6 +768,64 @@ export function requireUiOrigin() {
   return ui.endsWith('/') ? ui : `${ui}/`
 }
 
+/**
+ * Select an Active project option only after THAT option exists.
+ * Waiting on the <select> alone races the project list populate and flakes
+ * with "did not find some options" while the control is already mounted.
+ * Assert the state you need (the option), not the container.
+ */
+export async function selectProjectByLabel(page, label, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  if (!label) throw new PreconditionError('precondition not met: selectProjectByLabel needs a label')
+  const select = page.getByLabel('Active project')
+  await select.waitFor({ state: 'attached', timeout })
+  await page.waitForFunction(
+    (expected) => {
+      const el = document.querySelector('select[aria-label="Active project"]')
+      if (!el) return false
+      return [...el.options].some((o) => (o.textContent || '').trim() === expected || (o.textContent || '').includes(expected))
+    },
+    label,
+    { timeout },
+  )
+  const value = await select.locator('option').filter({ hasText: label }).first().getAttribute('value')
+  if (!value) {
+    throw new PreconditionError(`precondition not met: Active project option "${label}" has no value`)
+  }
+  await select.selectOption(value)
+  await page.waitForFunction(
+    (expected) => {
+      const el = document.querySelector('select[aria-label="Active project"]')
+      const text = el?.selectedOptions?.[0]?.text || ''
+      return text === expected || text.includes(expected)
+    },
+    label,
+    { timeout },
+  )
+  return value
+}
+
+/** Select Active project by option value after that option is attached. */
+export async function selectProjectByValue(page, value, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  if (!value) throw new PreconditionError('precondition not met: selectProjectByValue needs a value')
+  const select = page.getByLabel('Active project')
+  await select.waitFor({ state: 'attached', timeout })
+  await page.waitForFunction(
+    (v) => {
+      const el = document.querySelector('select[aria-label="Active project"]')
+      return !!el && [...el.options].some((o) => o.value === v)
+    },
+    value,
+    { timeout },
+  )
+  await select.selectOption(value)
+  await page.waitForFunction(
+    (v) => document.querySelector('select[aria-label="Active project"]')?.value === v,
+    value,
+    { timeout },
+  )
+  return value
+}
+
 /** Binder root panel. Prefer heading filter (stable). */
 export function binderPanel(page) {
   return page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Binder' }) }).first()
@@ -867,7 +1013,7 @@ export async function claimEmptyProject(page, { id, title = 'E2E Empty' } = {}) 
   // Prove empty; if not empty, mint a new id once.
   try {
     if (page) {
-      try { await page.reload({ waitUntil: 'networkidle' }) } catch { /* not on page */ }
+      try { await reloadApp(page) } catch { /* not on page */ }
     }
     await reclaimIsolatedProject(projectId)
     await assertProjectEmpty({ projectId })
@@ -876,7 +1022,7 @@ export async function claimEmptyProject(page, { id, title = 'E2E Empty' } = {}) 
     const retryId = `${projectId}-empty-${Date.now().toString(36)}`
     await ensureIsolatedProject(page, { id: retryId, title })
     if (page) {
-      try { await page.reload({ waitUntil: 'networkidle' }) } catch { /* ok */ }
+      try { await reloadApp(page) } catch { /* ok */ }
     }
     await reclaimIsolatedProject(retryId)
     try {
@@ -990,7 +1136,7 @@ export async function ensureDraftReady(page, {
 
   // Land on Draft with a visible chapter editor.
   try {
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
   } catch {
     // not navigated yet
   }
@@ -1008,7 +1154,7 @@ export async function ensureDraftReady(page, {
       if (await door.count()) await door.first().click()
       else await page.getByRole('button', { name: 'Write', exact: true }).first().click()
     } else {
-      await page.reload({ waitUntil: 'networkidle' })
+      await reloadApp(page)
       if (await draftBtn.count()) {
         try { await draftBtn.click({ timeout: 2000 }) } catch { /* ok */ }
       }
@@ -1047,7 +1193,7 @@ export async function fillChapterAndSave(page, text) {
       }),
     })
     if (!reset.ok) throw new Error(`fillChapterAndSave API recovery failed: ${reset.status}`)
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
     await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').waitFor()
     if (await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue() !== text) {
       throw new Error('fillChapterAndSave recovery body mismatch')

@@ -54,7 +54,7 @@ const active = await page.request.post(`${API}/api/projects/${encodeURIComponent
 if (!active.ok()) throw new Error(`activate -> ${active.status()}`)
 
 await page.goto(UI, { waitUntil: 'networkidle' })
-await page.reload({ waitUntil: 'networkidle' })
+await page.reload({ waitUntil: 'domcontentloaded' })
 const canon = page.getByRole('button', { name: 'Canon', exact: true })
 if (await canon.count()) await canon.click()
 const graph = page.getByRole('main', { name: 'Relationship graph' })

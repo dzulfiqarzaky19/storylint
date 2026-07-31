@@ -74,6 +74,8 @@ export function Binder({
   const newSheetBtnRef = useRef<HTMLButtonElement | null>(null)
   const backBtnRef = useRef<HTMLButtonElement | null>(null)
   const wasDetailOpenRef = useRef(false)
+  /** AU-3: polite open announce once per enter; clear when closed. Not role=dialog. */
+  const [stackLiveText, setStackLiveText] = useState('')
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
   const boards = lab?.boards ?? []
   const draftActive = !labMode && !canonMode
@@ -230,6 +232,8 @@ export function Binder({
   }, [activeChapterId, chapters.length, draftActive, sheetDetailOpen])
 
   // F1: restore list scroll when popping the detail stack.
+  // Must win over focus-restore: focusing the opener row defaults to
+  // scrollIntoView and fights the saved scrollTop (AZ @68 sheets: 2080→1147).
   useLayoutEffect(() => {
     if (sheetDetailOpen) return
     const body = stackBodyRef.current
@@ -238,27 +242,46 @@ export function Binder({
   }, [sheetDetailOpen, canonMode, labMode])
 
   // Push-stack focus: enter detail → Back; leave detail → opener row/button.
+  // AU-3: also emit a single polite "Editing {title}" (not role=dialog — leave/Esc must stay free).
   useLayoutEffect(() => {
     const wasOpen = wasDetailOpenRef.current
     wasDetailOpenRef.current = sheetDetailOpen
     if (!wasOpen && sheetDetailOpen) {
-      backBtnRef.current?.focus()
+      // Entering detail: preventScroll keeps the hidden list scrollTop intact.
+      backBtnRef.current?.focus({ preventScroll: true })
+      const title =
+        editingSheetId === 'new' ? 'New sheet' : editingSheet?.name?.trim() || 'Untitled sheet'
+      setStackLiveText(`Editing ${title}`)
       return
     }
     if (wasOpen && !sheetDetailOpen) {
+      setStackLiveText('')
       const returnId = returnFocusIdRef.current
       returnFocusIdRef.current = null
+      const savedTop = listScrollTopRef.current
       const restore = () => {
+        const body = stackBodyRef.current
+        const focusOpts = { preventScroll: true } as const
         if (returnId === 'new') {
-          newSheetBtnRef.current?.focus()
-          return
+          newSheetBtnRef.current?.focus(focusOpts)
+        } else if (returnId) {
+          sheetRowRefs.current.get(returnId)?.focus(focusOpts)
         }
-        if (returnId) sheetRowRefs.current.get(returnId)?.focus()
+        // Re-assert list scroll after focus. Default focus scrolls the opener
+        // into view and overwrites F1 restore on long Canon lists (AZ).
+        if (body) body.scrollTop = savedTop
       }
       // List unhides in the same commit; focus after paint so the control is tabbable.
       queueMicrotask(restore)
+      // Double-rAF: some browsers apply scroll-on-focus after the microtask.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const body = stackBodyRef.current
+          if (body) body.scrollTop = savedTop
+        })
+      })
     }
-  }, [sheetDetailOpen])
+  }, [sheetDetailOpen, editingSheetId, editingSheet?.name])
 
   const setSheetRowRef = (sheetId: string): RefCallback<HTMLButtonElement> => (node) => {
     if (node) sheetRowRefs.current.set(sheetId, node)
@@ -272,7 +295,7 @@ export function Binder({
         <span className="binder__count" aria-label={`${chapters.length} chapters`}>{chapters.length}</span>
       </div>
       {chapters.length === 0 ? (
-        <div className="panel__empty-row" role="status">
+        <div className="panel__empty-row">
           No chapters yet. Start with New chapter.
         </div>
       ) : (
@@ -313,7 +336,7 @@ export function Binder({
         <span className="binder__count" aria-label={`${sheets.length} sheets`}>{sheets.length}</span>
       </div>
       {sheets.length === 0 ? (
-        <div className="panel__empty-row" role="status">
+        <div className="panel__empty-row">
           Add a sheet, or promote from Lab.
         </div>
       ) : null}
@@ -326,7 +349,7 @@ export function Binder({
               <span className="binder__count binder__count--kind" aria-hidden="true">{forKind.length}</span>
             </div>
             {forKind.length === 0 ? (
-              <div className="panel__empty-row" role="status">
+              <div className="panel__empty-row">
                 None yet
               </div>
             ) : (
@@ -367,7 +390,7 @@ export function Binder({
         <span className="binder__count" aria-label={`${boards.length} boards`}>{boards.length}</span>
       </div>
       {boards.length === 0 ? (
-        <div className="panel__empty-row" role="status">Open Lab to start a bench.</div>
+        <div className="panel__empty-row">Open Lab to start a bench.</div>
       ) : (
         boards.map((board) => {
           const live = (lab?.cards ?? []).filter(
@@ -414,6 +437,9 @@ export function Binder({
       </div>
 
       <div className="panel__body binder__stack" ref={stackBodyRef}>
+        <div className="sr-only" aria-live="polite" aria-atomic="true" data-au-live="binder-stack">
+          {stackLiveText}
+        </div>
         {/* F1: list stays mounted under the detail layer so Back restores scroll. */}
         <div
           className="binder__stack-list"
@@ -426,9 +452,16 @@ export function Binder({
         {sheetDetailOpen ? (
           <div className="binder__stack-detail" data-binder-detail="sheet">
             <div className="binder__detail-chrome">
-              <Button ref={backBtnRef} onClick={requestCloseSheetDetail}>Back</Button>
+              <Button
+                ref={backBtnRef}
+                data-binder-back=""
+                aria-label={`Back, editing ${sheetTitle}`}
+                onClick={requestCloseSheetDetail}
+              >
+                Back
+              </Button>
               <div className="binder__detail-meta">
-                <span className="binder__detail-title">{sheetTitle}</span>
+                <span className="binder__detail-title" id="binder-detail-title">{sheetTitle}</span>
                 <span className="binder__detail-kind">{sheetKindLabel}</span>
               </div>
             </div>
