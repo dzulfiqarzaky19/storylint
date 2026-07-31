@@ -26,10 +26,10 @@ try {
   await companion.getByRole('button', { name: 'Spark', exact: true }).click()
   await companion.getByRole('button', { name: 'Chat', exact: true }).click()
 
-  await lab.getByRole('button', { name: 'Place', exact: true }).first().click()
+  await lab.getByLabel('New card kind').getByRole('button', { name: 'Place', exact: true }).click()
   await lab.getByLabel('Lab card title').fill(cardTitle)
   await lab.getByLabel('Lab card body').fill('Outer arch where the first breach happens. Not canon.')
-  await lab.getByRole('button', { name: 'New card' }).click()
+  await lab.getByLabel('New lab card').getByRole('button', { name: 'New card' }).click()
   await lab.getByRole('heading', { name: cardTitle }).waitFor({ timeout: 5000 })
 
   const card = lab.locator('.lab__card').filter({ hasText: cardTitle })
