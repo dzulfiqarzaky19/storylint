@@ -1,11 +1,11 @@
 # Git workflow (locked)
 
-**Rule: never commit or push directly to `main`.** The founder owns `main`.
+**Rule: no direct commits to `main`.** `main` receives only merges from `dev`, done on the founder's account.
 
 ## Flow
 
 ```
-storylint/<topic>  →  dev  →  main (founder only)
+storylint/<topic>  →  dev  →  main (merge from dev only)
 ```
 
 1. Branch off `dev`: `git checkout dev && git pull && git checkout -b storylint/<topic>`
@@ -13,7 +13,9 @@ storylint/<topic>  →  dev  →  main (founder only)
 3. Push the branch: `git push -u origin storylint/<topic>`
 4. Merge to `dev` with a merge commit for readable history:
    `git checkout dev && git merge --no-ff storylint/<topic> && git push`
-5. `dev → main` is the founder's call (PR or local merge). Agents never do it.
+5. `dev → main`: agents may merge when dev is verified (tests + QA green), using the founder's account:
+   `git checkout main && git pull && git merge --no-ff dev -m "Merge dev: <milestone summary>" && git push`
+   Merge at milestones (a completed, verified batch), not per-commit. Never commit work directly on `main`.
 
 ## Branch naming
 
@@ -23,7 +25,7 @@ storylint/<topic>  →  dev  →  main (founder only)
 
 ## History rules (why "beautiful")
 
-- `--no-ff` merges into `dev` so each task reads as one bubble
+- `--no-ff` merges into `dev` so each task reads as one bubble; `--no-ff` merges into `main` so each milestone reads as one bubble
 - No direct-to-`dev` commits except the merge commits themselves
 - Rebase your branch on `dev` before merging if `dev` moved; never rebase `dev` or `main`
 - Delete merged remote branches unless they are release/backup refs
