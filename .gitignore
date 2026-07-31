@@ -39,9 +39,15 @@ coverage
 *.tsbuildinfo
 e2e/output/
 
-# AI assistant artifacts (local-only; keep out of git)
+# AI assistant harness (LOCAL ONLY — never commit / never push)
+# Reason: branch checkouts must not swap the agent's brain or skills.
+# Product docs about the in-app agent panel stay tracked (docs/04-agents.md, etc.).
+# Full rule: docs/AGENTS_ROLES.md § "AI harness stays local"
 .claude/
+CLAUDE.md
 CLAUDE.local.md
+AGENTS.md
+.agents/
 .cursor/
 .cursorignore
 .cursorrules
@@ -51,6 +57,10 @@ CLAUDE.local.md
 .gemini/
 .continue/
 .windsurf/
+.mcp.json
 .mcp.local.json
+.github/copilot-instructions.md
+.github/instructions/
+.github/prompts/
 __pycache__/
 *.py[cod]
