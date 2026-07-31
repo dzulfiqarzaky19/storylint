@@ -298,6 +298,7 @@ export function Shell() {
       onEditProposal={project.editProposal}
       onRejectProposal={project.rejectProposal}
       sending={agentState.sending}
+      busyOp={agentState.busyOp}
       llmMode={agentState.llmMode}
       selection={selection}
       onGenerateCowrite={async (skill, instruction) => {
@@ -329,10 +330,10 @@ export function Shell() {
           craftTags: [...new Set([...activeChapter.craftTags, ...tags])],
         })
       }}
-      onSend={(text) => {
+      onSend={(text, op = 'send') => {
         if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
-        void agentState.send(chapterId, text, () => project.flushChapter(chapterId))
+        void agentState.send(chapterId, text, () => project.flushChapter(chapterId), op)
       }}
       onSparkPreset={(kind) => {
         if (!activeChapter || project.continuity.running || agentState.sending) return
@@ -344,7 +345,7 @@ export function Shell() {
           'what-if': 'Fork a what-if for the Lab',
         }
         if (!shell.isOpen('agent')) shell.toggle('agent')
-        void agentState.send(chapterId, prompts[kind], () => project.flushChapter(chapterId))
+        void agentState.send(chapterId, prompts[kind], () => project.flushChapter(chapterId), kind)
       }}
       onAddChapter={project.addChapter}
       onClose={onClose}
