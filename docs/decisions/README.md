@@ -1,9 +1,12 @@
 # Decisions & reviews
 
 **Purpose:** durable **judgments** that must survive clone/clean.  
-**Not here:** screenshots, probe JSON, skill dumps, run progress — those stay under `e2e/output/` (gitignored) and are regenerable.
+**Also tracked (elsewhere):** measurements-over-time whose value is the **diff across commits** — today [`e2e/output/calm-budget-run.md`](../../e2e/output/calm-budget-run.md) (calm bar scoreboard at a known HEAD). Regenerable is not the test; a future reader cannot cheaply reconstruct product state at that commit.
 
-**Policy:** see root [.gitignore](../../.gitignore) section `e2e/output` — throwaway artifacts ignored; this folder is tracked.
+**Not tracked:** raw evidence dumps — screenshots, probe JSON/logs, skill dumps, drive scratch — under `e2e/output/` (gitignored except the scoreboard exception).
+
+**Policy:** see root [.gitignore](../../.gitignore) section `e2e/output`. This folder = judgments. Scoreboard = tracked measurement.
+
 
 **Related product locks:** [IA_MAP.md](../IA_MAP.md) · [CALM_BUDGET.md](../CALM_BUDGET.md) · [DOCTRINE_AUDIT.md](../DOCTRINE_AUDIT.md)
 
@@ -27,15 +30,18 @@
 
 ---
 
-## Left ignored (on purpose)
+## Split rule
 
-- calm-budget-run.md / .json — machine measurement runs (regenerable)
-- ux-progress.md / ux-graph-progress.md — drive progress scratch
-- ux-pro-max-*.md — skill dump regenerable
-- **/*.{png,webp,jpg,json,log,zip} under e2e/output — shots & probes regenerable
-- density/ and other shot folders — path cited from reviews, not committed
+| Keep tracked | Leave ignored |
+|---|---|
+| Judgments / adjudications / design reviews (this folder) | Screenshots, webp, shot folders |
+| **Measurements-over-time** — e.g. `e2e/output/calm-budget-run.md` scoreboard (diffable product-vs-bar at a commit) | Probe JSON / logs / zip (machine dumps) |
+| | `calm-budget-run.json` (full machine payload; .md is the canonical scoreboard) |
+| | ux-progress / ux-graph-progress scratch |
+| | ux-pro-max-* skill dumps |
 
-Former paths were mostly `e2e/output/<name>.md`. Prefer this folder for any new **ACCEPT / RETRACT / HARD bar / adjudication**. QA scripts may still write to `e2e/output/`; promote the markdown into `docs/decisions/` when the judgment is final.
+Former paths were mostly `e2e/output/<name>.md`. Prefer this folder for any new **ACCEPT / RETRACT / HARD bar / adjudication**. QA scripts may still write to `e2e/output/`; promote judgment markdown here when final. Re-run `npm run calm` and commit the updated `.md` scoreboard when the bar measurement is meant to land in history.
+
 
 ---
 
