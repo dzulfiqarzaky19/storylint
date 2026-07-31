@@ -31,9 +31,12 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
 
 ## History rules (why "beautiful")
 
-- `--no-ff` merges into `dev` so each task reads as one bubble; `--no-ff` merges into `main` so each milestone reads as one bubble
+- `--no-ff` merges into `dev` so each task reads as **one bubble per task**; `--no-ff` merges into `main` so each milestone reads as one bubble. "Beautiful history" means **one bubble per task**, not a linear topic branch. It never required a rebase onto a moving `dev`.
 - No direct-to-`dev` commits except the merge commits themselves
-- Rebase your **topic** branch on `origin/dev` before merging if `dev` moved; never rebase shared `dev` or `main`
+- If `dev` moved, **merge `origin/dev` INTO your topic branch**, then `merge --no-ff` the topic into `dev`. **Do not rebase onto a moving `dev`.** Rebasing is acceptable only on a private branch nobody has read, and never as a precondition for merging. A `--no-ff` merge from a slightly stale base is correct and expected under concurrency: git resolves it and the bubble records what happened honestly.
+- Never rebase shared `dev` or `main`
+
+**Observed failure (2026-07-31):** an agent rebased a docs-only branch four times chasing a tip that moved every few minutes, and merged zero times. Merging is what makes the tip stop moving.
 - Delete merged remote branches unless they are release/backup refs
 
 ## Hardening (session scars — 2026-07-31)
@@ -76,7 +79,7 @@ git push origin dev
 
 - **Never** `--force` to `dev` or `main`
 - **Never** rebase shared branches (`dev`, `main`)
-- Topic branches may be rebased onto `origin/dev` **before** anyone else builds on them; once pushed and shared, prefer merge
+- Topic branches: if `dev` moved under you, **merge** `origin/dev` into the topic (additive). Do not rebase a pushed/shared topic onto moving `dev`. Private-only rebase remains the rare exception, never a merge precondition.
 
 **Observed failure:** unpushed local merges stacked under other agents' work; force would have rewritten peer history.
 
@@ -136,7 +139,7 @@ git worktree remove D:/dev/projects/storylint-<topic>
 **Constraints:**
 
 - Git refuses the same branch checked out in two worktrees at once (`dev` included).
-- Workaround used by coordinator: **detached HEAD at `origin/dev`** (or a topic branch) inside a secondary worktree, merge there, push, then `git update-ref refs/heads/dev <merge>` only when no other worktree holds `dev`.
+- Standard move when another worktree holds `dev`: **detached HEAD at `origin/dev`** inside your worktree, `merge --no-ff` the topic, `git push origin HEAD:dev`, then `git fetch` and report `origin/dev`. Avoid `git update-ref` unless you own the shared ref and no other worktree holds `dev`.
 - Prefer `git worktree add <path> -b storylint/<topic> origin/dev` for long tasks so the shared tree stays free.
 - When done, remove spare worktrees **you** created: `git worktree remove <path>`.
 
