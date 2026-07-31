@@ -93,8 +93,8 @@ Companion faces are **modes of help**, not Level-2 places.
 | Companion | Help + gates | Hidden |
 
 **ships:** binder + center + agent + focus  
-**partial:** top bar overloaded (project title twice, Write/Graph/Lab/Continuity equal weight) — calm under S1 doctrine  
-**rename:** center “Write” → **Draft**; Graph should read as **Canon map**, not peer product
+**ships (steps 1–3):** calm top bar; Draft · Lab · Canon switch; Canon map entry  
+**open:** step 4 surface density polish
 
 ---
 
@@ -104,9 +104,9 @@ Only **one** center surface at a time. (Canon sheet is a Level-3 thing in the bi
 
 | Target surface | Ecosystem | Current | Primary content | Status |
 |----------------|-----------|---------|-----------------|--------|
-| Draft page | Draft | Manuscript | Chapter title + body + marks + reading | **ships** + **rename** |
+| Draft page | Draft | Manuscript (user: Draft) | Chapter title + body + marks + reading | **ships** |
 | Lab bench | Lab | LabBench | Boards + cards + promote | **ships** |
-| Canon map | Canon | RelationshipGraph | Network / family of **accepted** links | **ships** + **partial** (peer mode button) |
+| Canon map | Canon | RelationshipGraph under Canon entry | Network / family of **accepted** links | **ships** |
 
 ### 4.1 Draft (center)
 
@@ -148,8 +148,8 @@ Faces: Chat · Write · Check · Research · Inbox
 
 | Exit | Target | Current behavior | Status |
 |------|--------|------------------|--------|
-| **Send to Draft** | chapter stub in Draft | Promote beat → `chapter-stub` | **ships** + **rename** (button still “Promote”) |
-| **Promote to Canon** | pending sheet proposal → Accept | Promote character/place/lore → proposal pack | **ships** + **rename** (same Promote; copy already says Accept in Inbox) |
+| **Send to Draft** | chapter stub in Draft | beat → chapter-stub; jumps to Draft | **ships** |
+| **Promote to Canon** | pending sheet proposal → Accept | stays Lab; Accept in Inbox | **ships** |
 
 **Ruling — post-exit navigation:** **Send to Draft** jumps to the new stub in Draft. **Promote to Canon** stays in Lab; Accept happens via Inbox.
 
@@ -201,9 +201,7 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 | Lab | Lab boards + cards entry · Open Lab | Select board, open Lab |
 | Canon map / sheet | Sheets by kind · chapters secondary | Open sheet, kinds |
 
-**ships:** chapters, sheets by kind, Lab section, open Lab  
-**partial:** not clearly labeled Draft vs Canon sections in user language  
-**missing:** binder mode labels “Draft / Canon / Lab” as plain language groups
+**ships:** chapters, sheets by kind, Lab section, open Lab, **Draft / Lab / Canon** group labels
 
 ---
 
@@ -216,7 +214,7 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 | Binder toggle | Open navigation | **ships** |
 | Project switcher | Switch/create project | **ships** |
 | Save status | Saving… / Saved | **ships** |
-| Ecosystem switch | Draft · Lab · Canon | **partial** (Write · Graph · Lab today) |
+| Ecosystem switch | Draft · Lab · Canon | **ships** |
 | Focus | Hide rails | **ships** |
 | Theme | Chrome only | **ships** |
 | Companion toggle | Show agent | **ships** |
@@ -225,19 +223,19 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 
 | Control | When | Target treatment | Status |
 |---------|------|------------------|--------|
-| Continuity | Draft + has chapter | **Ruling:** Check is primary. Top Continuity stays as a Draft-only shortcut through S1, then demotes to overflow once Check is discoverable | **partial** (always top-level) |
-| Export / New project | Rare | Overflow under project switcher | **partial** (S1) |
-| Duplicate project title (h1 + switcher) | Never | Single identity | **partial** (S1) |
+| Continuity | Draft + has chapter | **Ruling:** Check is primary. Top Continuity is Draft-only shortcut (hidden on Lab/Canon); may later move to overflow | **ships** (Draft-only) + optional later demote |
+| Export / New project | Rare | Overflow under project switcher | **ships** |
+| Duplicate project title (h1 + switcher) | Never | Single identity | **ships** |
 
 ### 6.3 Target ecosystem switch labels
 
 | Target | Current button | Notes |
 |--------|----------------|-------|
-| **Draft** | Write | Default center |
+| **Draft** | Draft (was Write) | Default center |
 | **Lab** | Lab | Keep word Lab |
-| **Canon** | Graph (only map) | Canon entry should open sheets-or-map; map is one Canon view |
+| **Canon** | Canon (was Graph peer) | Map-first, then last Canon thing |
 
-**Ruling — Canon landing:** the single **Canon** entry lands on the **map** on first visit, then on the **last-opened Canon thing** (sheet or map). Map is one Canon view, never a peer mode. Entry itself is still **missing**.
+**Ruling — Canon landing:** the single **Canon** entry lands on the **map** on first visit, then on the **last-opened Canon thing** (sheet or map). Map is one Canon view, never a peer mode. **ships.**
 
 ---
 
@@ -295,7 +293,7 @@ Nothing silent-writes Draft body or Canon truth.
 | Step | Ecosystem | Center | Binder | Companion | Chrome | Status |
 |------|-----------|--------|--------|-----------|--------|--------|
 | 1 Open project | Home | — | — | — | Project switcher | **ships** |
-| 2 Land last chapter | Draft | Manuscript | Chapters | optional | Draft selected | **partial** (lands manuscript; not named Draft; empty-project chooser missing) |
+| 2 Land last chapter | Draft | Draft page | Chapters | optional | Draft selected | **ships** |
 | 3 Type → Saved | Draft | page | optional | hidden/Focus ok | Saved | **ships** |
 | 4 Optional Focus | Draft | page only | off | off | Focus on | **ships** |
 
@@ -306,10 +304,10 @@ Nothing silent-writes Draft body or Canon truth.
 | Step | Ecosystem | Center | Binder | Companion | Status |
 |------|-----------|--------|--------|-----------|--------|
 | 1 Open/create project | Home | — | — | — | **ships** |
-| 2 Start in Lab | Lab | LabBench | boards | Spark/Chat | **partial** (Lab openable; no empty-project “Start in Lab” chooser) |
+| 2 Start in Lab | Lab | LabBench | boards | Spark/Chat | **ships** |
 | 3 Messy cards | Lab | cards | boards | Spark | **ships** |
-| 4a Send to Draft | Lab→Draft | after promote stub | chapters | Inbox if needed | **ships** + **rename** |
-| 4b Promote to Canon | Lab→Canon | stays Lab; Inbox Accept | sheets | Inbox | **ships** + **rename** |
+| 4a Send to Draft | Lab→Draft | after promote stub | chapters | Inbox if needed | **ships** |
+| 4b Promote to Canon | Lab→Canon | stays Lab; Inbox Accept | sheets | Inbox | **ships** |
 | 5 Later return Draft | Draft | chapter | chapters | writing faces | **ships** |
 
 ### J3 — Continuity pass
@@ -330,8 +328,8 @@ Nothing silent-writes Draft body or Canon truth.
 
 | Choice | Lands | Status |
 |--------|-------|--------|
-| **Write** (Draft) | New/first chapter | **partial** (New chapter empty state only) |
-| **Start in Lab** | Lab bench | **missing** as first-run chooser |
+| **Write** (Draft) | New/first chapter | **ships** |
+| **Start in Lab** | Lab bench | **ships** |
 
 No wizard. Two doors max.
 
@@ -339,16 +337,16 @@ No wizard. Two doors max.
 
 ## 11. Naming alignment backlog (not new features)
 
-| Current UI word | Locked word | Priority |
-|-----------------|-------------|----------|
-| Write (mode) | **Draft** | high |
-| Manuscript (aria/labels) | **Draft** where user-facing | high |
-| Sheets / bible (mixed) | **Canon** in nav language; “sheet” ok inside Canon | medium |
-| Graph (top mode) | under **Canon** (Map) | medium |
-| Promote (both exits) | **Send to Draft** / **Promote to Canon** | high |
-| Companion faces | keep; they’re good | — |
+| Current UI word | Locked word | Status |
+|-----------------|-------------|--------|
+| Write (mode) | **Draft** | **done** |
+| Manuscript (user-facing) | **Draft** | **done** (code may still say manuscript) |
+| Sheets / bible (mixed) | **Canon** in nav; “sheet” inside Canon | **done** (nav) |
+| Graph (top mode) | under **Canon** (Map) | **done** |
+| Promote (both exits) | **Send to Draft** / **Promote to Canon** | **done** |
+| Companion faces | keep | keep |
 | Lab | Lab | keep |
-| Binder sections (unlabeled) | **Draft / Canon / Lab** group labels | high |
+| Binder sections | **Draft / Lab / Canon** group labels | **done** |
 
 ---
 
@@ -390,14 +388,16 @@ No wizard. Two doors max.
 
 ---
 
-## 15. Next build order (after this map)
+## 15. Build order
 
-1. **Naming + entry** — Draft label, Promote split copy, empty-project two doors, binder group labels  
-2. **Calm top bar** — S1 identity/overflow; Continuity demoted to Check-primary  
-3. **Canon entry** — Graph as Canon map, not peer kingdom  
-4. Only then polish density inside each surface  
+| # | Item | Status |
+|---|------|--------|
+| 1 | **Naming + entry** — Draft label, Promote split, two doors, binder groups | **done** @ `67592a1` `b68703e` `6a2a74b` |
+| 2 | **Calm top bar** — single identity, overflow New/Export, Continuity Draft-only | **done** @ `55b9033` `6a2a74b` |
+| 3 | **Canon entry** — map-first landing + last-thing memory | **done** @ `5bfe65e` |
+| 4 | **Surface density polish** | **open** — optional; user call |
 
-No new panels before 1–3.
+QA: `e2e/output/ia-final-qa.md` **PASS 14/14**. No new panels.
 
 ---
 
