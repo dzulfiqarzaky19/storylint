@@ -54,7 +54,26 @@
   background: var(--color-surface);
 }
 
+.lab__composer-actions {
+  align-items: center;
+}
+
 .lab__notice {
+  margin: var(--space-0);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+
+/* Resting bench: one quiet line under the composer, never a peer block. */
+.lab__rest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.lab__rest-note {
   margin: var(--space-0);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
@@ -143,11 +162,11 @@
   font-size: var(--text-sm);
 }
 
-.lab__filter-more {
+.lab__disclosure {
   position: relative;
 }
 
-.lab__filter-summary {
+.lab__disclosure-summary {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -163,20 +182,22 @@
   list-style: none;
 }
 
-.lab__filter-summary::-webkit-details-marker {
+.lab__disclosure-summary::-webkit-details-marker {
   display: none;
 }
 
-.lab__filter-summary::after {
+.lab__disclosure-summary::after {
   content: '+';
   color: var(--color-text-muted);
 }
 
-.lab__filter-more[open] .lab__filter-summary::after {
+.lab__disclosure[open] .lab__disclosure-summary::after {
   content: '−';
 }
 
-.lab__filter-menu {
+.lab__filter-menu,
+.lab__composer .lab__composer-kinds,
+.lab__card .lab__composer-kinds {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
