@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { cx } from './cx'
 import './ui.css'
 
@@ -8,12 +8,16 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
 }
 
-export function Button({ variant = 'ghost', className, type, ...rest }: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { variant = 'ghost', className, type, ...rest },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       type={type ?? 'button'}
       className={cx('ui-button', `ui-button--${variant}`, 'ui-focusable', className)}
       {...rest}
     />
   )
-}
+})

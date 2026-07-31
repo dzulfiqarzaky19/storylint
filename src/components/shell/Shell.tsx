@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   applyReading,
   applyTheme,
@@ -39,6 +39,23 @@ export function Shell() {
   const [requestedSheetId, setRequestedSheetId] = useState<string | null>(null)
   const [activeCanonSheetId, setActiveCanonSheetId] = useState<string | null>(null)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
+  /** Active Canon sheet leave guard from Binder (dirty identity). */
+  const requestSheetLeaveRef = useRef<((proceed: () => void) => void) | null>(null)
+  const registerSheetLeaveGuard = useCallback(
+    (requestLeave: ((proceed: () => void) => void) | null) => {
+      requestSheetLeaveRef.current = requestLeave
+    },
+    [],
+  )
+
+  function withSheetLeaveGuard(proceed: () => void) {
+    const guard = requestSheetLeaveRef.current
+    if (guard) {
+      guard(proceed)
+      return
+    }
+    proceed()
+  }
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
   const activeChapter =
@@ -209,6 +226,7 @@ export function Shell() {
           shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
           if (!shell.isOpen('binder')) shell.toggle('binder')
         }}
+        onRequestLeaveGuard={registerSheetLeaveGuard}
         onClose={onClose}
       />
     ) : null
@@ -331,21 +349,21 @@ export function Shell() {
             <Button
               className="shell__action-ecosystem"
               aria-pressed={workspaceMode === 'manuscript'}
-              onClick={() => setWorkspaceMode('manuscript')}
+              onClick={() => withSheetLeaveGuard(() => setWorkspaceMode('manuscript'))}
             >
               Draft
             </Button>
             <Button
               className="shell__action-ecosystem"
               aria-pressed={workspaceMode === 'lab'}
-              onClick={() => openLab()}
+              onClick={() => withSheetLeaveGuard(() => openLab())}
             >
               Lab
             </Button>
             <Button
               className="shell__action-ecosystem"
               aria-pressed={workspaceMode === 'graph'}
-              onClick={() => openCanon()}
+              onClick={() => withSheetLeaveGuard(() => openCanon())}
             >
               Canon
             </Button>
