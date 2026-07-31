@@ -1,0 +1,35 @@
+# T-003 arrival paths — binder scroll restore via non-list open
+
+**When:** 2026-07-31  
+**Agent:** buffalo  
+**Head:** `83eb2cb` (topic; later integrated on `origin/dev` @ `702cc59`)  
+**Probe:** throwaway `e2e/_t003_arrival_probe.mjs` (not shipped)
+
+## Mechanism (class, not three coincidences)
+
+All non-list Canon sheet opens share one door:
+
+- `Shell.openCanonSheet(sheetId)` → `setRequestedSheetId(sheetId)`
+- `Binder` effect on `requestedSheetId` saves `listScrollTopRef` when entering detail (if list body present and not already editing), then opens the sheet
+- Back path is the same F1 + focus-restore re-assert as list click
+
+Graph node click (`RelationshipGraph onOpenSheet`) and Inbox/companion routes that call `openCanonSheet` therefore share the **same scroll memo**, not a per-entry-point restore.
+
+## Transcript (owned-stack, rail@1440)
+
+| path | pre | after | delta | ok |
+|---|---:|---:|---:|---|
+| list-click (control) | 997 | 997 | 0 | yes |
+| graph-node Char 30 | 997 | 997 | 0 | yes |
+| graph-other-sheet-while-scrolled Char 05 | 997 | 997 | 0 | yes |
+
+Graph open via `svg [aria-label*="Char …"]`. Detail opened; Back restored list top.
+
+## Verdict
+
+Non-list **graph** arrival does not break restore on this tip. Class closed for the shared `openCanonSheet` / `requestedSheetId` door. Separate Inbox instrumentation not required for the mechanism claim; Inbox uses the same door.
+
+## Not claimed
+
+- Every future entry point that bypasses `openCanonSheet` / `requestedSheetId`
+- L2 density composition

@@ -72,6 +72,7 @@ const childEnv = {
   STORYLINT_UI: stack.ui,
   STORYLINT_API: stack.api,
   STORYLINT_ALLOW_EXTERNAL_UI: '1',
+  STORYLINT_HEAD: stack.shortHead,
 }
 console.log(`[owned=${stack.owned}] ui=${stack.ui} api=${stack.api} head=${stack.shortHead} shell=${stack.shellCss?.sha256_12}`)
 

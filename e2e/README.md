@@ -11,6 +11,7 @@ Deterministic browser smokes and gates for Storylint.
 | `npm run calm:record` | Same checker; updates **tracked** scoreboard `e2e/output/calm-budget-run.md` |
 | `npm run test:e2e:guard` | Convention guard: measurement scripts must use helpers |
 | `npm run test:green` | **ONE green:** guard + build + unit + owned smokes + calm |
+| `npm run test:l2` | **L2 composition:** guard + same-project Draft→Canon→Lab journey (not renamed all-smoke) |
 
 ## Provenance (what did we measure?)
 
@@ -257,6 +258,19 @@ await requireCompanionFace(page, 'Inspect')
 stop()
 ```
 
+## L2 composition
+
+Isolation green is not composition green.
+
+| `npm run test:green` / all-smoke | `npm run test:l2` |
+|--|--|
+| L1 change-level | Story/composition on integrated tip |
+| Each smoke mints its own project | **One** project shared across Draft, Canon, Lab |
+| Proves features alone | Proves body + sheet + active survive multi-surface use |
+
+Command: `npm run test:l2` → `e2e/guard-helpers.mjs` + `e2e/l2-composition.mjs`.
+Owned stack + provenance + fail-closed (same as test:green). Artifacts: `e2e/output/l2-composition-last.md`.
+Do not grow L2 by re-listing isolated smokes. Add checks only when they require a shared container.
 ## Feature smokes
 
 Listed in `constants.mjs` → `ALL_FEATURE_SMOKES`, run by `all-smoke.mjs` with per-smoke hard timeouts and a green/red summary.
