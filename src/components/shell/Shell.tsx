@@ -38,6 +38,7 @@ export function Shell() {
   const [activeBoardId, setActiveBoardId] = useState<string | null>(null)
   const [requestedSheetId, setRequestedSheetId] = useState<string | null>(null)
   const [activeCanonSheetId, setActiveCanonSheetId] = useState<string | null>(null)
+  const [researchRunning, setResearchRunning] = useState(false)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
   /** Active Canon sheet leave guard from Binder (dirty identity). */
   const requestSheetLeaveRef = useRef<((proceed: () => void) => void) | null>(null)
@@ -150,12 +151,13 @@ export function Shell() {
   async function createProject(id: string, title: string) {
     await project.createProject(id, title)
     agentState.reset()
+    setResearchRunning(false)
   }
 
   async function runContinuity() {
     if (!activeChapter) return
-    // One assistant, one job: do not start Continuity while an agent request is in flight.
-    if (agentState.sending) return
+    // One assistant, one job: do not start Continuity while agent/Research is in flight.
+    if (agentState.sending || researchRunning) return
     const session = agentState.session()
     const result = await project.runContinuity(activeChapter.id)
     if (result) agentState.addContinuityCard(result.mode, result.counts, session)
@@ -299,10 +301,12 @@ export function Shell() {
       onRejectProposal={project.rejectProposal}
       sending={agentState.sending}
       busyOp={agentState.busyOp}
+      researchRunning={researchRunning}
+      onResearchRunningChange={setResearchRunning}
       llmMode={agentState.llmMode}
       selection={selection}
       onGenerateCowrite={async (skill, instruction) => {
-        if (!activeChapter || project.continuity.running) return
+        if (!activeChapter || project.continuity.running || researchRunning) return
         const chapterId = activeChapter.id
         await agentState.generateCowrite({
           chapterId,
@@ -313,6 +317,7 @@ export function Shell() {
         }, () => project.flushChapter(chapterId))
       }}
       onApplyCard={async (id) => {
+        if (project.continuity.running || researchRunning || agentState.sending) return
         const appliedChapterId = await agentState.applyCard(id)
         if (appliedChapterId === activeChapter?.id) {
           setSelection({ start: 0, end: 0, text: '' })
@@ -320,7 +325,7 @@ export function Shell() {
       }}
       onDismissCard={agentState.dismissCard}
       onRunReview={async (kind) => {
-        if (!activeChapter || project.continuity.running) return
+        if (!activeChapter || project.continuity.running || researchRunning) return
         const chapterId = activeChapter.id
         await agentState.runReview(chapterId, kind, () => project.flushChapter(chapterId))
       }}
@@ -331,12 +336,12 @@ export function Shell() {
         })
       }}
       onSend={(text, op = 'send') => {
-        if (!activeChapter || project.continuity.running) return
+        if (!activeChapter || project.continuity.running || researchRunning) return
         const chapterId = activeChapter.id
         void agentState.send(chapterId, text, () => project.flushChapter(chapterId), op)
       }}
       onSparkPreset={(kind) => {
-        if (!activeChapter || project.continuity.running || agentState.sending) return
+        if (!activeChapter || project.continuity.running || agentState.sending || researchRunning) return
         const chapterId = activeChapter.id
         const prompts: Record<typeof kind, string> = {
           place: 'Brainstorm 3 places for the Lab bench',

@@ -88,6 +88,9 @@ export type AgentPanelProps = {
   sending: boolean
   /** Which control started the single in-flight agent job. Null when idle. */
   busyOp?: AgentBusyOp | null
+  /** Research query in flight (reported by ResearchPanel). */
+  researchRunning?: boolean
+  onResearchRunningChange?: (running: boolean) => void
   llmMode: 'fixture' | 'live' | null
   selection: { start: number; end: number; text: string }
   onGenerateCowrite: (skill: CowriteSkill, instruction: string) => Promise<void>
@@ -105,7 +108,7 @@ export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
-  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
+  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, researchRunning = false, onResearchRunningChange, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
@@ -191,8 +194,9 @@ export function AgentPanel({
     return bits.join(' · ')
   }, [continuityCounts, continuityError, continuityMode, continuityRunning, llmMode])
 
-  // One assistant, one job: agent lane and Continuity share a single busy gate.
-  const assistantBusy = sending || continuityRunning
+  // One assistant, one job: agent, Continuity, and Research mutate share one busy gate.
+  // Face switch, Inbox Accept/Edit/Reject, and idle composer typing stay free (AV perimeter).
+  const assistantBusy = sending || continuityRunning || researchRunning
   // AU-2/AU-6: agent-lane busy live mirrors Check Continuity. Continuity keeps face-local live;
   // suppress the shared line while Continuity runs so two polite regions do not queue the same fact.
   // Derive from busyOp so announce names only the real in-flight agent job (not Continuity).
@@ -457,7 +461,14 @@ export function AgentPanel({
       </div>
 
       {face === 'research' ? (
-        <ResearchPanel project={project} onProject={onProject} beginMutation={beginMutation} trackMutation={trackMutation} />
+        <ResearchPanel
+          project={project}
+          onProject={onProject}
+          beginMutation={beginMutation}
+          trackMutation={trackMutation}
+          assistantBusy={sending || continuityRunning}
+          onRunningChange={onResearchRunningChange}
+        />
       ) : face === 'inbox' ? (
         <div className="agent__transcript" aria-label="Companion inbox">
           {statusLine ? <p className="continuity-privacy" aria-live="polite">{statusLine}</p> : null}
@@ -468,7 +479,7 @@ export function AgentPanel({
               {proposals.length > 0 ? renderProposals(proposals) : null}
               {applyCards.map((entry) =>
                 entry.role === 'apply'
-                  ? <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} />
+                  ? <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} assistantBusy={assistantBusy} />
                   : null,
               )}
             </>
@@ -504,7 +515,6 @@ export function AgentPanel({
                 placeholder="Optional instruction for co-write…"
                 aria-label="Co-write instruction"
                 rows={2}
-                disabled={assistantBusy}
               />
               <div className="agent__cowrite-actions" aria-label="Co-write skills">
                 <Button

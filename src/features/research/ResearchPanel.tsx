@@ -10,11 +10,17 @@ export function ResearchPanel({
   onProject,
   beginMutation,
   trackMutation,
+  assistantBusy = false,
+  onRunningChange,
 }: {
   project: Project | null
   onProject: (project: Project, generation?: number) => void
   beginMutation: () => number | null
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
+  /** One assistant one job: block Research mutate while Continuity/agent runs. */
+  assistantBusy?: boolean
+  /** Report Research job running so other companion lanes can gate. */
+  onRunningChange?: (running: boolean) => void
 }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<ResearchResultItem[]>([])
@@ -22,10 +28,15 @@ export function ResearchPanel({
   const [running, setRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  function setResearchRunning(next: boolean) {
+    setRunning(next)
+    onRunningChange?.(next)
+  }
+
   async function search(event: FormEvent) {
     event.preventDefault()
-    if (!query.trim() || running || beginMutation() === null) return
-    setRunning(true)
+    if (!query.trim() || running || assistantBusy || beginMutation() === null) return
+    setResearchRunning(true)
     setError(null)
     try {
       const response = await requestResearch(query.trim())
@@ -34,17 +45,19 @@ export function ResearchPanel({
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Research failed')
     } finally {
-      setRunning(false)
+      setResearchRunning(false)
     }
   }
 
   async function pin(note: ResearchNote) {
+    if (assistantBusy || running) return
     const generation = beginMutation()
     if (generation === null) return
     onProject(await trackMutation(pinResearch(note)), generation)
   }
 
   async function propose(note: ResearchNote) {
+    if (assistantBusy || running) return
     const generation = beginMutation()
     if (generation === null) return
     onProject(await trackMutation(proposeResearch(note)), generation)
@@ -59,8 +72,13 @@ export function ResearchPanel({
           placeholder="Research a custom, place, or motif…"
           aria-label="Research query"
         />
-        <Button variant="primary" type="submit" disabled={running || !query.trim()}>
-          {running ? 'Researching…' : 'Research'}
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={running || assistantBusy || !query.trim()}
+          aria-busy={running || undefined}
+        >
+          {running ? 'Working…' : 'Research'}
         </Button>
       </form>
       <p className="continuity-privacy">
@@ -86,8 +104,8 @@ export function ResearchPanel({
                 ))}
               </ul>
               <div className="proposal-card__actions">
-                <Button onClick={() => void pin(result).catch(setResearchError)}>Pin</Button>
-                <Button variant="primary" onClick={() => void propose(result).catch(setResearchError)}>Propose to sheet</Button>
+                <Button disabled={assistantBusy || running} onClick={() => void pin(result).catch(setResearchError)}>Pin</Button>
+                <Button variant="primary" disabled={assistantBusy || running} onClick={() => void propose(result).catch(setResearchError)}>Propose to sheet</Button>
               </div>
             </article>
           ))}
