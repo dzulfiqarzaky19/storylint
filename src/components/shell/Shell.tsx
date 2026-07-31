@@ -327,23 +327,6 @@ export function Shell() {
               Canon
             </Button>
           </div>
-          {workspaceMode === 'manuscript' && activeChapter ? (
-            <Button
-              className="shell__action-continuity"
-              disabled={project.continuity.running}
-              data-continuity-state={
-                project.continuity.running
-                  ? 'running'
-                  : project.continuity.mode
-                    ? 'ready'
-                    : 'idle'
-              }
-              aria-busy={project.continuity.running}
-              onClick={() => void runContinuity().catch(() => undefined)}
-            >
-              {project.continuity.running ? 'Running…' : 'Continuity'}
-            </Button>
-          ) : null}
           <IconButton
             className="shell__action-focus"
             label={shell.focus ? 'Exit focus mode' : 'Focus mode'}
