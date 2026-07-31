@@ -191,15 +191,13 @@ export function LabBench({
         <div className="lab__empty">
           <EmptyState
             title="Nothing on the bench"
-            hint="Try a place, a beat, or a what-if. Nothing here is canon until you promote."
+            hint="Use the composer above for a place, beat, or what-if. Nothing here is canon until you promote."
             action={
-              <div className="lab__empty-actions">
-                <Button variant="primary" onClick={() => {
-                  setDraftKind('place')
-                  setDraftTitle('')
-                }}>New card</Button>
-                {onOpenAgent ? <Button onClick={onOpenAgent}>Ask agent to brainstorm…</Button> : null}
-              </div>
+              onOpenAgent ? (
+                <div className="lab__empty-actions">
+                  <Button onClick={onOpenAgent}>Ask agent to brainstorm…</Button>
+                </div>
+              ) : undefined
             }
           />
         </div>
