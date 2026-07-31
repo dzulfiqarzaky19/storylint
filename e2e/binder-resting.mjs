@@ -59,18 +59,33 @@ try {
             .reduce((max, el) => Math.max(max, el.getBoundingClientRect().bottom), 0)
         : 0
       const fill = body ? Math.round(((painted - body.getBoundingClientRect().top) / r.height) * 100) : 0
-      return { present: true, w: Math.round(r.width), h: Math.round(r.height), textLen: text.length, groups, fillPct: Math.max(0, fill) }
+      // Empty-state copy must fit one line at the settled rail width (ox nit, D1).
+      // Count real line boxes via Range rects — height math lies once padding is involved.
+      const wrapped = [...rail.querySelectorAll('.panel__empty-row')]
+        .map((row) => {
+          const range = document.createRange()
+          range.selectNodeContents(row)
+          const tops = []
+          for (const q of range.getClientRects()) {
+            if (q.width > 0 && q.height > 0 && !tops.some((t) => Math.abs(t - q.top) < 2)) tops.push(q.top)
+          }
+          return { text: (row.textContent || '').trim(), lines: Math.max(tops.length, 1) }
+        })
+        .filter((row) => row.lines > 1)
+      return { present: true, w: Math.round(r.width), h: Math.round(r.height), textLen: text.length, groups, fillPct: Math.max(0, fill), wrapped }
     })
 
     const labels = (state.groups || []).map((g) => g.label).filter(Boolean)
     const ctas = (state.groups || []).flatMap((g) => g.buttons)
     const emptyStates = (state.groups || []).reduce((n, g) => n + g.emptyRows, 0)
+    const wrapped = state.wrapped || []
     const ok =
-      state.present && labels.length >= 3 && ctas.length >= 3 && emptyStates >= 3 && state.textLen > 80
+      state.present && labels.length >= 3 && ctas.length >= 3 && emptyStates >= 3 && state.textLen > 80 && wrapped.length === 0
     if (!ok) failed += 1
     console.log(
-      `${ok ? '[PASS]' : '[FAIL]'} binder-resting@${mode}: groups=[${labels.join(', ')}] ctas=[${ctas.join(', ')}] emptyRows=${emptyStates} textLen=${state.textLen} fill=${state.fillPct}% width=${state.w}`,
+      `${ok ? '[PASS]' : '[FAIL]'} binder-resting@${mode}: groups=[${labels.join(', ')}] ctas=[${ctas.join(', ')}] emptyRows=${emptyStates} textLen=${state.textLen} fill=${state.fillPct}% width=${state.w} wrapped=${wrapped.length}`,
     )
+    for (const row of wrapped) console.log(`         wraps to ${row.lines} lines: "${row.text}"`)
     await page.screenshot({ path: `${OUT}/empty__${mode.toLowerCase()}__1440.png` })
   }
 } finally {
