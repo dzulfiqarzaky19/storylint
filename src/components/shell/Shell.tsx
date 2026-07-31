@@ -44,9 +44,12 @@ export function Shell() {
   const activeChapter =
     chapters.find((chapter) => chapter.id === activeChapterId) ?? chapters[0] ?? null
   const lab = project.project?.lab ?? null
-  const activeCanonSheetName = activeCanonSheetId
-    ? project.project?.sheets.find((sheet) => sheet.id === activeCanonSheetId)?.name ?? null
-    : null
+  const activeCanonSheetName =
+    activeCanonSheetId === 'new'
+      ? 'New sheet'
+      : activeCanonSheetId
+        ? project.project?.sheets.find((sheet) => sheet.id === activeCanonSheetId)?.name ?? null
+        : null
 
   const companionContext: CompanionContext =
     workspaceMode === 'lab'
@@ -155,13 +158,16 @@ export function Shell() {
     setWorkspaceMode('manuscript')
   }
 
+  // The binder is the navigator, not a chapter detail view: a project with no
+  // chapters yet still needs its structure and its first move (D1 resting state).
+  // Gating this on activeChapter left an empty project staring at a blank rail.
   const binder = (onClose?: () => void) =>
-    project.project && activeChapter ? (
+    project.project ? (
       <Binder
         chapters={project.project.chapters}
         sheets={project.project.sheets}
         lab={project.project.lab}
-        activeChapterId={activeChapter.id}
+        activeChapterId={activeChapter?.id ?? ''}
         activeBoardId={activeBoardId}
         labMode={workspaceMode === 'lab'}
         canonMode={workspaceMode === 'graph'}
@@ -175,17 +181,33 @@ export function Shell() {
         requestedSheetId={requestedSheetId}
         onRequestedSheetHandled={() => setRequestedSheetId(null)}
         onEditSheet={(sheetId) => {
-          if (!sheetId) {
-            setActiveCanonSheetId(null)
-            if (workspaceMode === 'graph') {
-              shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+          if (!sheetId || sheetId === 'new') {
+            // 'new' still counts as sheet-open for F2 quiet chrome; no real id yet.
+            if (!sheetId) {
+              setActiveCanonSheetId(null)
+              if (workspaceMode === 'graph') {
+                shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+              }
+            } else {
+              setActiveCanonSheetId('new')
             }
             return
           }
           // Sheet detail is a Canon Level-3 thing for landing memory.
-          // Keep Draft/Lab center; graph-node open still uses openCanonSheet.
           setActiveCanonSheetId(sheetId)
           shell.setCanonLastOpened(project.activeProjectId, { kind: 'sheet', sheetId })
+        }}
+        onOpenCanonSheet={(sheetId) => {
+          if (sheetId) {
+            openCanonSheet(sheetId)
+            return
+          }
+          // New sheet from Draft/Lab: enter Canon map, do not restore last sheet.
+          setWorkspaceMode('graph')
+          setActiveCanonSheetId(null)
+          setRequestedSheetId(null)
+          shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+          if (!shell.isOpen('binder')) shell.toggle('binder')
         }}
         onClose={onClose}
       />
@@ -271,7 +293,7 @@ export function Shell() {
   )
 
   return (
-    <div className="shell" data-focus={shell.focus}>
+    <div className="shell" data-focus={shell.focus} data-sheet-open={workspaceMode === 'graph' && activeCanonSheetId ? 'true' : 'false'}>
       <a className="sr-only" href="#workspace">
         Skip to workspace
       </a>
