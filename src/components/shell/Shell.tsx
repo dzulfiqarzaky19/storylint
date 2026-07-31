@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
-import { applyTheme, type Theme } from '../../design'
+import {
+  applyReading,
+  applyTheme,
+  nextReading,
+  type ReadingProfile,
+  type Theme,
+} from '../../design'
 import { useProject } from '../../features/project/useProject.ts'
 import { useAgent } from '../../features/agent/useAgent.ts'
 import { Button, Drawer, EmptyState, IconButton } from '../ui'
 import { AgentIcon, BinderIcon, FocusIcon, ThemeIcon } from './icons'
 import { AgentPanel } from './AgentPanel'
 import { Binder } from './Binder'
-import { Manuscript } from './Manuscript'
+import { Manuscript, type EditorSelection } from './Manuscript'
 import { useShellState } from './useShellState'
 import './shell.css'
 
@@ -15,9 +21,11 @@ const EMPTY_CHAPTERS: never[] = []
 export function Shell() {
   const shell = useShellState()
   const project = useProject()
-  const agentState = useAgent(project.applyServerProject)
+  const agentState = useAgent(project.applyServerProject, project.applySuggestion)
   const [theme, setTheme] = useState<Theme>('dark')
+  const [reading, setReading] = useState<ReadingProfile>('night')
   const [activeChapterId, setActiveChapterId] = useState<string | null>(null)
+  const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
   const activeChapter =
@@ -26,6 +34,14 @@ export function Shell() {
   useEffect(() => {
     if (!activeChapterId && chapters[0]) setActiveChapterId(chapters[0].id)
   }, [activeChapterId, chapters])
+
+  useEffect(() => {
+    setSelection({ start: 0, end: 0, text: '' })
+  }, [activeChapterId])
+
+  useEffect(() => {
+    applyReading(reading)
+  }, [reading])
 
   async function runContinuity() {
     if (!activeChapter) return
@@ -37,6 +53,13 @@ export function Shell() {
     const next: Theme = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
     applyTheme(next)
+    // Keep paper in sync with shell when flipping day/night chrome
+    const paper: ReadingProfile = next === 'light' ? 'day' : 'night'
+    setReading(paper)
+  }
+
+  function cycleReading() {
+    setReading((current) => nextReading(current))
   }
 
   const binder = (onClose?: () => void) =>
@@ -57,6 +80,8 @@ export function Shell() {
   const agent = (onClose?: () => void) => (
     <AgentPanel
       transcript={agentState.transcript}
+      project={project.project}
+      onProject={project.applyServerProject}
       chapterTitle={activeChapter?.title ?? 'chapter'}
       proposals={(project.project?.proposals ?? []).filter((proposal) => proposal.status === 'pending')}
       continuityRunning={project.continuity.running}
@@ -68,6 +93,36 @@ export function Shell() {
       sending={agentState.sending}
       tipsDismissed={agentState.tipsDismissed}
       onDismissTips={agentState.dismissTips}
+      selection={selection}
+      onGenerateCowrite={async (skill, instruction) => {
+        if (!activeChapter) return
+        await project.flushChapter(activeChapter.id)
+        await agentState.generateCowrite({
+          chapterId: activeChapter.id,
+          skill,
+          instruction,
+          start: selection.start,
+          end: selection.end,
+        })
+      }}
+      onApplyCard={async (id) => {
+        const appliedChapterId = await agentState.applyCard(id)
+        if (appliedChapterId === activeChapter?.id) {
+          setSelection({ start: 0, end: 0, text: '' })
+        }
+      }}
+      onDismissCard={agentState.dismissCard}
+      onRunReview={async (kind) => {
+        if (!activeChapter) return
+        await project.flushChapter(activeChapter.id)
+        await agentState.runReview(activeChapter.id, kind)
+      }}
+      onAddCraftTags={(tags) => {
+        if (!activeChapter) return
+        project.patchChapter(activeChapter.id, {
+          craftTags: [...new Set([...activeChapter.craftTags, ...tags])],
+        })
+      }}
       onSend={(text) => activeChapter && void project.flushChapter(activeChapter.id)
         .then(() => agentState.send(activeChapter.id, text))
         .catch(() => undefined)}
@@ -105,7 +160,7 @@ export function Shell() {
             onClick={shell.toggleFocus}
           ><FocusIcon /></IconButton>
           <IconButton
-            label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+            label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} chrome`}
             onClick={toggleTheme}
           ><ThemeIcon /></IconButton>
           <IconButton
@@ -134,6 +189,18 @@ export function Shell() {
             chapter={activeChapter}
             marks={(project.project?.marks ?? []).filter((mark) => mark.span.chapterId === activeChapter.id)}
             onChange={(patch) => project.patchChapter(activeChapter.id, patch)}
+            onSelectionChange={setSelection}
+            readOnly={project.applying}
+            reading={reading}
+            onCycleReading={cycleReading}
+            onToggleCraftTag={(tag) => {
+              const active = activeChapter.craftTags.includes(tag)
+              project.patchChapter(activeChapter.id, {
+                craftTags: active
+                  ? activeChapter.craftTags.filter((candidate) => candidate !== tag)
+                  : [...activeChapter.craftTags, tag],
+              })
+            }}
           />
         ) : (
           <main className="manuscript" aria-label="Manuscript">

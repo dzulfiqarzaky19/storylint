@@ -47,6 +47,8 @@
   gap: var(--space-1);
 }
 
+/* Reading control lives on the paper (.manuscript__bookmark), not top bar */
+
 /* Focus mode keeps the bar minimal: exit + reveal only */
 .shell[data-focus='true'] .shell__breadcrumb,
 .shell[data-focus='true'] .shell__project {
@@ -176,34 +178,312 @@
   gap: var(--space-2);
 }
 
-/* Manuscript */
+/* Empty binder groups — same geometry as ListRow, not pills */
+.panel__empty-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--size-row-min);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) dashed var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-subtle);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+
+/* Manuscript — A4 ratio page. Compact: full-bleed paper + corner seal (no sticking ribbon). */
 
 .manuscript {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   min-width: 0;
   min-height: 0;
   overflow: auto;
-  background: var(--color-canvas);
+  background: var(--color-paper);
+  padding: var(--space-0);
+}
+
+.manuscript__page {
+  container-type: inline-size;
+  container-name: manuscript-page;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  flex: 1 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .manuscript__sheet {
+  position: relative;
   width: 100%;
-  max-width: var(--manuscript-measure-max);
-  margin-inline: auto;
-  padding: var(--manuscript-padding-y) var(--manuscript-padding-x);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  flex: 1 0 auto;
+  min-height: 100%;
+  padding: var(--manuscript-padding-y) var(--manuscript-padding-x);
+  /* Corner seal sits inside paper */
+  padding-top: calc(var(--manuscript-padding-y) + var(--space-1));
+  padding-right: calc(var(--manuscript-padding-x) + var(--size-reading-seal) + var(--space-2));
+  background: var(--color-paper);
+  color: var(--color-paper-ink);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.manuscript__header {
+  display: flex;
+  align-items: flex-start;
+  flex: 0 0 auto;
+}
+
+.manuscript__header-main {
   flex: 1 1 auto;
-  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-right: var(--space-2);
+}
+
+/*
+ * Reading control — always on the paper.
+ * Compact: round seal top-right (inside). Wide desk: right-edge ribbon.
+ */
+.manuscript__bookmark {
+  position: absolute;
+  z-index: var(--z-rail);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-badge);
+  text-transform: uppercase;
+  transition: filter var(--motion-fast) var(--easing-standard),
+    transform var(--motion-fast) var(--easing-standard);
+}
+
+.manuscript__bookmark:focus,
+.manuscript__bookmark:focus-visible {
+  outline: none;
+}
+
+.manuscript__bookmark:focus-visible {
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--color-focus-ring);
+}
+
+.manuscript__bookmark:hover {
+  filter: brightness(1.06);
+}
+
+/* Default = compact seal (no hang-off) */
+.manuscript__bookmark {
+  top: var(--space-3);
+  right: var(--space-3);
+  width: var(--size-reading-seal);
+  min-width: var(--size-reading-seal);
+  max-width: var(--size-reading-seal);
+  height: var(--size-reading-seal);
+  min-height: var(--size-reading-seal);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+
+.manuscript__bookmark-tab {
+  width: 40%;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.manuscript__bookmark-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.04em;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.manuscript__bookmark[data-reading='day'] {
+  background: var(--color-reading-swatch-day);
+  color: var(--color-reading-swatch-day-ink);
+}
+
+.manuscript__bookmark[data-reading='sepia'] {
+  background: var(--color-reading-swatch-sepia);
+  color: var(--color-reading-swatch-sepia-ink);
+}
+
+.manuscript__bookmark[data-reading='mint'] {
+  background: var(--color-reading-swatch-mint);
+  color: var(--color-reading-swatch-mint-ink);
+}
+
+.manuscript__bookmark[data-reading='night'] {
+  background: var(--color-reading-swatch-night);
+  color: var(--color-reading-swatch-night-ink);
+}
+
+/* Rails only at lg — paper stays full-bleed + circle seal until desk */
+@media (min-width: 1024px) {
+  .shell__body[data-binder='rail'] {
+    grid-template-columns: var(--size-binder-lg) minmax(0, 1fr);
+  }
+
+  .shell__body[data-agent='rail'] {
+    grid-template-columns: minmax(0, 1fr) var(--size-agent-lg);
+  }
+
+  .shell__body[data-binder='rail'][data-agent='rail'] {
+    grid-template-columns: var(--size-binder-lg) minmax(0, 1fr) var(--size-agent-lg);
+  }
+}
+
+/* Desk ≥1366: centered ratio page + right ribbon */
+@media (min-width: 1366px) {
+  .manuscript {
+    align-items: center;
+    background: var(--color-canvas);
+    padding: var(--manuscript-gutter-lg);
+  }
+
+  .manuscript__page {
+    width: min(100%, var(--manuscript-page-max-w-lg));
+    margin-inline: auto;
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .manuscript__sheet {
+    flex: 0 0 auto;
+    min-height: calc(100cqw * var(--manuscript-page-ratio));
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--manuscript-radius);
+    box-shadow: var(--shadow-md);
+    padding: var(--manuscript-padding-y-lg) var(--manuscript-padding-x-lg);
+    padding-right: calc(var(--manuscript-padding-x-lg) + var(--size-reading-btn) * 0.4);
+  }
+
+  .manuscript__title {
+    font-size: var(--text-manuscript-title-lg);
+  }
+
+  .manuscript__body,
+  .manuscript__overlay {
+    font-size: var(--text-manuscript-lg);
+  }
+
+  .manuscript__bookmark {
+    top: var(--space-5);
+    right: 0;
+    width: var(--size-reading-btn);
+    min-width: var(--size-reading-btn);
+    max-width: var(--size-reading-btn);
+    height: auto;
+    min-height: 4.5rem;
+    padding: var(--space-3) var(--space-1) var(--space-4);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    transform: translateX(28%);
+    gap: var(--space-2);
+  }
+
+  .manuscript__bookmark:hover {
+    transform: translateX(16%);
+  }
+
+  .manuscript__bookmark-tab {
+    width: 55%;
+    height: 3px;
+  }
+
+  .manuscript__bookmark-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    max-height: 5rem;
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+  }
+}
+
+@media (min-width: 1440px) {
+  .shell__body[data-binder='rail'] {
+    grid-template-columns: var(--size-binder-xl) minmax(0, 1fr);
+  }
+
+  .shell__body[data-agent='rail'] {
+    grid-template-columns: minmax(0, 1fr) var(--size-agent-xl);
+  }
+
+  .shell__body[data-binder='rail'][data-agent='rail'] {
+    grid-template-columns: var(--size-binder-xl) minmax(0, 1fr) var(--size-agent-xl);
+  }
+
+  .manuscript {
+    padding: var(--manuscript-gutter-xl);
+  }
+
+  .manuscript__page {
+    width: min(100%, var(--manuscript-page-max-w-xl));
+  }
+
+  .manuscript__sheet {
+    padding: var(--manuscript-padding-y-xl) var(--manuscript-padding-x-xl);
+    padding-right: calc(var(--manuscript-padding-x-xl) + var(--size-reading-btn) * 0.35);
+  }
+
+  .manuscript__title {
+    font-size: var(--text-manuscript-title-xl);
+  }
+
+  .manuscript__body,
+  .manuscript__overlay {
+    font-size: var(--text-manuscript-xl);
+  }
+}
+
+@media (min-width: 1920px) {
+  .shell__body[data-binder='rail'] {
+    grid-template-columns: var(--size-binder-2xl) minmax(0, 1fr);
+  }
+
+  .shell__body[data-agent='rail'] {
+    grid-template-columns: minmax(0, 1fr) var(--size-agent-2xl);
+  }
+
+  .shell__body[data-binder='rail'][data-agent='rail'] {
+    grid-template-columns: var(--size-binder-2xl) minmax(0, 1fr) var(--size-agent-2xl);
+  }
+
+  .manuscript {
+    padding: var(--manuscript-gutter-2xl);
+  }
+
+  .manuscript__page {
+    width: min(100%, var(--manuscript-page-max-w-2xl));
+  }
 }
 
 .manuscript__title {
   width: 100%;
   border: none;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-paper-ink);
   font-family: var(--font-manuscript);
   font-size: var(--text-manuscript-title);
   line-height: var(--leading-manuscript-title);
@@ -215,23 +495,25 @@
   color: var(--color-text-subtle);
 }
 
+.manuscript__title:focus,
 .manuscript__title:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-focus-ring);
-  outline-offset: var(--focus-ring-offset);
-  border-radius: var(--radius-sm);
+  outline: none;
 }
 
+/* Fills remaining A4 page; grows with content beyond one page */
 .manuscript__editor {
   position: relative;
+  display: grid;
   flex: 1 1 auto;
-  min-height: 0;
+  min-height: 12rem;
+  width: 100%;
 }
 
 .manuscript__body,
 .manuscript__overlay {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
   width: 100%;
+  min-height: 12rem;
   height: 100%;
   margin: var(--space-0);
   padding: var(--space-0);
@@ -242,20 +524,38 @@
   white-space: pre-wrap;
   overflow-wrap: break-word;
   tab-size: 4;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .manuscript__overlay {
-  color: var(--color-text);
+  color: var(--color-paper-ink);
   pointer-events: none;
-  scrollbar-width: none;
+  height: 100%;
+}
+
+.manuscript__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+  color: var(--color-text-muted);
+  opacity: var(--opacity-muted);
+}
+
+.manuscript__meta-sep {
+  color: var(--color-text-subtle);
 }
 
 .manuscript__body {
   background: transparent;
   color: transparent;
-  caret-color: var(--color-text);
+  caret-color: var(--color-paper-ink);
   resize: none;
+  outline: none;
+  box-shadow: none;
 }
 
 .manuscript__body::selection {
@@ -281,10 +581,43 @@
   color: var(--color-text-subtle);
 }
 
+.manuscript__body:focus,
 .manuscript__body:focus-visible {
-  outline: var(--focus-ring-width) solid var(--color-focus-ring);
-  outline-offset: var(--focus-ring-offset);
-  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+.manuscript__editor:focus-within {
+  /* no blue ring — caret is the focus cue in the manuscript */
+  outline: none;
+  box-shadow: none;
+}
+
+.manuscript__craft-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.manuscript__craft-tag {
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  cursor: pointer;
+}
+
+.manuscript__craft-tag[aria-pressed='true'] {
+  background: var(--color-surface-raised);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.shell[data-focus='true'] .manuscript__craft-tags {
+  display: none;
 }
 
 /* Agent panel */
@@ -343,6 +676,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
+}
+
+.agent__cowrite-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .agent__composer-actions {

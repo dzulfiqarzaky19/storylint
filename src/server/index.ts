@@ -7,11 +7,12 @@ const root = resolve(fileURLToPath(new URL('../../', import.meta.url)))
 const store = new ProjectStore(resolve(root, 'data/project.json'), {
   schemaVersion: 1,
   title: 'Storylint',
-  chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '' }],
+  chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [] }],
   sheets: [],
   proposals: [],
   rejectedFingerprints: [],
   marks: [],
+  researchNotes: [],
 })
 const port = Number.parseInt(process.env.STORYLINT_PORT ?? '4174', 10)
 

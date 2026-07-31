@@ -1,43 +1,56 @@
-/* Ported 1:1 from docs/design/TOKENS.md — the ONLY file allowed raw hex/px.
-   Change TOKENS.md first, then mirror here. Section numbers match that doc. */
+/* Ported from docs/design/TOKENS.md — ONLY file allowed raw hex/px for colors.
+   Kobo / paper doctrine: warm reader, not AI sky-blue IDE. */
 
 :root {
   color-scheme: dark;
 
-  /* 1.1 neutrals — dark is default */
-  --color-canvas: #0f1115;
-  --color-surface: #161a22;
-  --color-surface-raised: #1c2230;
-  --color-surface-overlay: #1c2230e6;
-  --color-border: #2a3142;
-  --color-border-strong: #3d4660;
-  --color-text: #e7ecf5;
-  --color-text-muted: #8b95a8;
-  --color-text-subtle: #6b7588;
-  --color-text-inverse: #0f1115;
+  /* 1.2 chrome — night default */
+  --color-canvas: #0e0e0e;
+  --color-surface: #1a1a1a;
+  --color-surface-raised: #242424;
+  --color-surface-overlay: #1a1a1ae6;
+  --color-border: #2e2e2e;
+  --color-border-strong: #3f3f3f;
+  --color-text: #e3e5e8;
+  --color-text-muted: #9a9ca0;
+  --color-text-subtle: #6e7074;
+  --color-text-inverse: #121212;
 
-  /* 1.3 brand / action */
-  --color-accent: #6ea8fe;
-  --color-accent-hover: #8bbcff;
-  --color-accent-muted: #3d5a80;
-  --color-accent-subtle: #6ea8fe22;
-  --color-primary: #243b63;
-  --color-on-primary: #e7ecf5;
+  /* 1.1 paper — night reading default */
+  --color-paper: #121212;
+  --color-paper-ink: #e3e5e8;
+  /* Bookmark ribbon body + ink per reading profile */
+  --color-reading-swatch-day: #e8e0d0;
+  --color-reading-swatch-day-ink: #4a453e;
+  --color-reading-swatch-sepia: #d4bc94;
+  --color-reading-swatch-sepia-ink: #3d3428;
+  --color-reading-swatch-mint: #b8c9b6;
+  --color-reading-swatch-mint-ink: #2f3d30;
+  --color-reading-swatch-night: #3a3a3a;
+  --color-reading-swatch-night-ink: #e3e5e8;
 
-  /* 1.4 semantic — diagnostics/status only, never chrome */
-  --color-mark-yellow: #c9a227;
-  --color-mark-yellow-bg: #c9a22747;
-  --color-mark-red: #e35d6a;
-  --color-mark-red-bg: #e35d6a52;
-  --color-success: #3dd68c;
-  --color-success-muted: #2a5a44;
-  --color-danger: #e35d6a;
-  --color-danger-bg: #6b3038;
-  --color-warning: #c9a227;
-  --color-pending: #8b95a8;
+  /* 1.4 brand — warm stone (night); avoid loud bronze blocks */
+  --color-accent: #c4a574;
+  --color-accent-hover: #d4bc94;
+  --color-accent-muted: #5c5348;
+  --color-accent-subtle: #c4a57422;
+  --color-primary: #2a2a2a;
+  --color-on-primary: #e3e5e8;
 
-  /* 1.5 focus / state */
-  --color-focus-ring: #6ea8fe;
+  /* 1.5 semantic marks */
+  --color-mark-yellow: #a67c2a;
+  --color-mark-yellow-bg: #a67c2a33;
+  --color-mark-red: #b54a4a;
+  --color-mark-red-bg: #b54a4a2e;
+  --color-success: #5a8f6a;
+  --color-success-muted: #2f4a38;
+  --color-danger: #b54a4a;
+  --color-danger-bg: #5c2a2a;
+  --color-warning: #a67c2a;
+  --color-pending: #9a9ca0;
+
+  /* 1.6 focus */
+  --color-focus-ring: #c4a574;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --opacity-disabled: 0.5;
@@ -45,7 +58,7 @@
 
   /* 2.1 families */
   --font-ui: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-  --font-manuscript: var(--font-ui);
+  --font-manuscript: 'Georgia', 'Times New Roman', 'Literata', 'Source Serif 4', serif;
   --font-mono: 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
 
   /* 2.2 sizes */
@@ -71,18 +84,38 @@
   --weight-medium: 500;
   --weight-semibold: 600;
 
-  /* 2.3 manuscript measure */
-  --manuscript-measure-min: 65ch;
-  --manuscript-measure: 70ch;
-  --manuscript-measure-max: 75ch;
-  --manuscript-padding-x: 20px;
-  --manuscript-padding-y: 18px;
+  /*
+   2.3 Manuscript page = A4 *ratio* only (h/w ≈ √2), not physical 210mm paper.
+   Width = min(column, max-w token). min-height = actual width × ratio (container query).
+   Longer content grows past one “page”; outer .manuscript scrolls.
+*/
+  --manuscript-page-max-w: 36rem;
+  --manuscript-page-max-w-lg: 40rem;
+  --manuscript-page-max-w-xl: 44rem;
+  --manuscript-page-max-w-2xl: 48rem;
+  /* A4 portrait height/width = 297/210 */
+  --manuscript-page-ratio: 1.4142857143;
+  --manuscript-gutter: 16px;
+  --manuscript-gutter-lg: 20px;
+  --manuscript-gutter-xl: 28px;
+  --manuscript-gutter-2xl: 36px;
+  --manuscript-radius: 2px;
+  --text-manuscript-lg: 18px;
+  --text-manuscript-title-lg: 20px;
+  --text-manuscript-xl: 19px;
+  --text-manuscript-title-xl: 22px;
+  --manuscript-padding-x: 1.75rem;
+  --manuscript-padding-y: 1.5rem;
+  --manuscript-padding-x-lg: 2rem;
+  --manuscript-padding-y-lg: 1.75rem;
+  --manuscript-padding-x-xl: 2.25rem;
+  --manuscript-padding-y-xl: 2rem;
 
   /* 2.4 letter-spacing */
   --tracking-section: 0.06em;
   --tracking-badge: 0.04em;
 
-  /* 3 spacing — 4px base */
+  /* 3 spacing */
   --space-0: 0;
   --space-1: 4px;
   --space-2: 8px;
@@ -95,14 +128,23 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  /* 4 layout chrome */
+  /* 4 layout chrome — base rail; scale up at lg/xl/2xl (shell media sets these) */
   --size-topbar: 48px;
-  --size-binder: 220px;
-  --size-binder-min: 180px;
-  --size-binder-max: 320px;
-  --size-agent: 360px;
-  --size-agent-min: 300px;
-  --size-agent-max: 480px;
+  --size-reading-btn: 76px;
+  /* Compact corner seal (circle) on paper */
+  --size-reading-seal: 44px;
+  --size-binder: 300px;
+  --size-binder-min: 260px;
+  --size-binder-max: 520px;
+  --size-agent: 300px;
+  --size-agent-min: 260px;
+  --size-agent-max: 520px;
+  --size-binder-lg: 340px;
+  --size-agent-lg: 340px;
+  --size-binder-xl: 380px;
+  --size-agent-xl: 380px;
+  --size-binder-2xl: 420px;
+  --size-agent-2xl: 420px;
   --size-icon: 16px;
   --size-icon-sm: 14px;
   --size-icon-lg: 20px;
@@ -125,17 +167,18 @@
   --shadow-sm: 0 1px 2px #00000040;
   --shadow-md: 0 4px 16px #00000059;
 
-  /* 10 border width */
+  /* 10 border */
   --border-width: 1px;
   --border-width-strong: 2px;
 
-  /* 7 breakpoints — custom props are illegal inside @media, so media rules
-     repeat these literals; keep both sides in sync when TOKENS.md changes */
+  /* 7 breakpoints (literals repeated in @media) */
   --bp-sm: 640px;
   --bp-md: 768px;
   --bp-lg: 1024px;
-  --bp-xl: 1280px;
-  --bp-2xl: 1536px;
+  /* Desk paper (centered A4-ratio + ribbon) starts here — laptop 1366 class */
+  --bp-desk: 1366px;
+  --bp-xl: 1440px;
+  --bp-2xl: 1920px;
 
   /* 8 z-index */
   --z-base: 0;
@@ -153,30 +196,61 @@
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* 1.2 light theme — color block only */
+/* Day chrome shell — paper desk, ink actions (not muddy chocolate buttons) */
 [data-theme='light'] {
   color-scheme: light;
 
-  --color-canvas: #f4f6fa;
-  --color-surface: #ffffff;
-  --color-surface-raised: #eef1f7;
-  --color-surface-overlay: #ffffffe6;
-  --color-border: #d5dbe8;
-  --color-border-strong: #a8b3c9;
-  --color-text: #141820;
-  --color-text-muted: #5c6578;
-  --color-text-subtle: #8b95a8;
-  --color-text-inverse: #ffffff;
+  --color-canvas: #ebe6dc;
+  --color-surface: #f4f1ea;
+  --color-surface-raised: #fffcf7;
+  --color-surface-overlay: #f4f1eaf2;
+  --color-border: #d9d2c6;
+  --color-border-strong: #b9b1a3;
+  --color-text: #2c2d30;
+  --color-text-muted: #5c5e62;
+  --color-text-subtle: #8a8c90;
+  --color-text-inverse: #f4f1ea;
 
-  --color-accent-subtle: #6ea8fe18;
-  --color-primary: #2f5aa8;
-  --color-on-primary: #ffffff;
+  --color-paper: #f4f1ea;
+  --color-paper-ink: #2c2d30;
 
-  --shadow-sm: 0 1px 2px #14182014;
-  --shadow-md: 0 4px 16px #1418201f;
+  /* Soft stone accent — print-like, not brown CTA */
+  --color-accent: #6b6358;
+  --color-accent-hover: #4a453e;
+  --color-accent-muted: #b0a898;
+  --color-accent-subtle: #6b635818;
+  --color-primary: #2c2d30;
+  --color-on-primary: #f4f1ea;
+  --color-focus-ring: #6b6358;
+
+  --color-success-muted: #c5d9c8;
+  --color-danger-bg: #e8c8c8;
+
+  --shadow-sm: 0 1px 2px #2c2d3012;
+  --shadow-md: 0 4px 20px #2c2d3018;
 }
 
-/* 3 touch profile — hit targets >= 44px on coarse pointers */
+/* Reading profiles — paper + ink only (override chrome defaults) */
+[data-reading='day'] {
+  --color-paper: #f4f1ea;
+  --color-paper-ink: #2c2d30;
+}
+
+[data-reading='sepia'] {
+  --color-paper: #efe6d5;
+  --color-paper-ink: #2c2d30;
+}
+
+[data-reading='mint'] {
+  --color-paper: #e5eadf;
+  --color-paper-ink: #2c2d30;
+}
+
+[data-reading='night'] {
+  --color-paper: #121212;
+  --color-paper-ink: #e3e5e8;
+}
+
 @media (pointer: coarse) {
   :root {
     --size-control: var(--size-control-touch);
@@ -184,7 +258,6 @@
   }
 }
 
-/* 9 reduced motion — all durations 0 */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --motion-fast: 0ms;

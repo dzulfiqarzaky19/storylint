@@ -11,11 +11,12 @@ function seedProject(): Project {
   return {
     schemaVersion: 1,
     title: 'Storylint',
-    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '' }],
+    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [] }],
     sheets: [],
     proposals: [],
     rejectedFingerprints: [],
     marks: [],
+    researchNotes: [],
   }
 }
 
@@ -229,6 +230,169 @@ test('continuity after chat preserves one copy of each sheet-pack proposal', asy
     for (const id of packIds) {
       assert.equal(continuity.project.proposals.filter((proposal) => proposal.id === id).length, 1)
     }
+  })
+})
+
+test('co-write generation returns an Apply card without changing manuscript or bible', async () => {
+  await withServer(async (baseUrl, store) => {
+    const before = await store.load()
+    const result = await requestJson<{ card: { text: string; target: { mode: string } } }>(`${baseUrl}/api/cowrite`, {
+      method: 'POST',
+      body: JSON.stringify({
+        chapterId: 'chapter-1', skill: 'continue', instruction: 'Continue', start: 0, end: 0,
+      }),
+    })
+    assert.equal(result.card.target.mode, 'insert')
+    assert.ok(result.card.text.length > 0)
+    assert.deepEqual(await store.load(), before)
+  })
+})
+
+test('manuscript changes only after explicit Apply insert/replace', async () => {
+  await withServer(async (baseUrl, store) => {
+    const before = await store.load()
+    const inserted = await requestJson<Project>(`${baseUrl}/api/chapters/chapter-1/apply`, {
+      method: 'POST',
+      body: JSON.stringify({
+        text: 'New opening. ', target: { mode: 'insert', start: 0, end: 0 },
+        expectedBody: before.chapters[0].body, expectedText: '',
+      }),
+    })
+    assert.equal(inserted.chapters[0].body.startsWith('New opening. '), true)
+    assert.deepEqual(inserted.sheets, before.sheets)
+
+    const replaced = await requestJson<Project>(`${baseUrl}/api/chapters/chapter-1/apply`, {
+      method: 'POST',
+      body: JSON.stringify({
+        text: 'Replaced', target: { mode: 'replace', start: 0, end: 12 },
+        expectedBody: inserted.chapters[0].body,
+        expectedText: inserted.chapters[0].body.slice(0, 12),
+      }),
+    })
+    assert.equal(replaced.chapters[0].body.startsWith('Replaced'), true)
+    assert.deepEqual(replaced.sheets, before.sheets)
+  })
+})
+
+test('Apply rejects stale manuscript cards without writing', async () => {
+  await withServer(async (baseUrl, store) => {
+    const response = await fetch(`${baseUrl}/api/chapters/chapter-1/apply`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        text: 'x', target: { mode: 'insert', start: 0, end: 0 },
+        expectedBody: 'stale body', expectedText: '',
+      }),
+    })
+    assert.equal(response.status, 409)
+    assert.equal((await store.load()).chapters[0].body, '')
+  })
+})
+
+test('portrait and manual craft tags persist through existing project APIs', async () => {
+  await withServer(async (baseUrl, store) => {
+    const sheet: Sheet = {
+      id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '',
+      portrait: '🗡️', facts: [],
+    }
+    await requestJson<Project>(`${baseUrl}/api/sheets/aria`, {
+      method: 'PUT', body: JSON.stringify(sheet),
+    })
+    const tagged = await requestJson<Project>(`${baseUrl}/api/chapters/chapter-1`, {
+      method: 'PATCH', body: JSON.stringify({ craftTags: ['char-dev', 'setup'] }),
+    })
+    assert.equal(tagged.sheets[0].portrait, '🗡️')
+    assert.deepEqual(tagged.chapters[0].craftTags, ['char-dev', 'setup'])
+    assert.deepEqual((await store.load()).chapters[0].craftTags, ['char-dev', 'setup'])
+  })
+})
+
+test('invalid craft tags fail without modifying project', async () => {
+  await withServer(async (baseUrl, store) => {
+    const response = await fetch(`${baseUrl}/api/chapters/chapter-1`, {
+      method: 'PATCH', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ craftTags: ['ai-slop-score'] }),
+    })
+    assert.equal(response.status, 400)
+    assert.deepEqual((await store.load()).chapters[0].craftTags, [])
+  })
+})
+
+test('review and craft-check routes return neutral findings without project writes', async () => {
+  await withServer(async (baseUrl, store) => {
+    const before = await store.load()
+    const review = await requestJson<{ findings: Array<{ lens: string }>; suggestedTags: string[] }>(
+      `${baseUrl}/api/review/chapter-1`,
+      { method: 'POST', body: JSON.stringify({ kind: 'review' }) },
+    )
+    const craft = await requestJson<{ findings: Array<{ lens: string }> }>(
+      `${baseUrl}/api/review/chapter-1`,
+      { method: 'POST', body: JSON.stringify({ kind: 'craft' }) },
+    )
+    assert.ok(review.findings.some((finding) => finding.lens === 'plot'))
+    assert.equal(craft.findings.every((finding) => finding.lens === 'craft'), true)
+    assert.deepEqual(await store.load(), before)
+  })
+})
+
+test('research query is read-only; pin persists note; propose persists pending lore only', async () => {
+  await withServer(async (baseUrl, store) => {
+    const before = await store.load()
+    const research = await requestJson<{ results: Array<{ id: string; title: string; summary: string; sources: Array<{ title: string; url: string }> }> }>(
+      `${baseUrl}/api/research`,
+      { method: 'POST', body: JSON.stringify({ query: 'archive customs' }) },
+    )
+    assert.deepEqual(await store.load(), before)
+    const result = research.results[0]
+    const pinned = await requestJson<Project>(`${baseUrl}/api/research/pin`, {
+      method: 'POST', body: JSON.stringify(result),
+    })
+    assert.equal(pinned.researchNotes.length, 1)
+    assert.equal(pinned.sheets.length, 0)
+
+    const proposed = await requestJson<Project>(`${baseUrl}/api/research/propose`, {
+      method: 'POST', body: JSON.stringify(result),
+    })
+    assert.equal(proposed.proposals.some((proposal) =>
+      proposal.status === 'pending' && proposal.sheetKind === 'lore'), true)
+    assert.equal(proposed.sheets.length, 0)
+  })
+})
+
+test('uncited research notes cannot be pinned or proposed', async () => {
+  await withServer(async (baseUrl, store) => {
+    const response = await fetch(`${baseUrl}/api/research/pin`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id: 'uncited', title: 'Uncited', summary: 'No source', sources: [] }),
+    })
+    assert.equal(response.status, 400)
+    assert.equal((await store.load()).researchNotes.length, 0)
+  })
+})
+
+test('research persistence rejects unsafe citations and colliding note IDs', async () => {
+  await withServer(async (baseUrl, store) => {
+    const unsafe = await fetch(`${baseUrl}/api/research/pin`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        id: 'note-1', title: 'Unsafe', summary: 'Unsafe source',
+        sources: [{ title: 'Bad', url: 'javascript:alert(1)' }],
+      }),
+    })
+    assert.equal(unsafe.status, 400)
+
+    const first = {
+      id: 'note-1', title: 'First', summary: 'First note',
+      sources: [{ title: 'Safe', url: 'https://example.invalid/one' }],
+    }
+    await requestJson<Project>(`${baseUrl}/api/research/pin`, {
+      method: 'POST', body: JSON.stringify(first),
+    })
+    const collision = await fetch(`${baseUrl}/api/research/pin`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...first, title: 'Overwrite' }),
+    })
+    assert.equal(collision.status, 409)
+    assert.equal((await store.load()).researchNotes[0].title, 'First')
   })
 })
 

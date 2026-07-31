@@ -110,5 +110,5 @@
 
 ## Build order reminder
 
-Docs → **P1** (BUILD slices 0–D) → P1b → sheet portraits → P2 review → P3 research panel → P4 graph.  
-Do not build graph/research UI before P1 acceptance in [PRD](./PRD.md).
+**P1 (0–D) done.** Apply (E) landing. Next **F** (portraits/craft tags) → G review → H research → I graph.  
+Live status: [BUILD.md](./BUILD.md). Do not rebuild shipped slices.

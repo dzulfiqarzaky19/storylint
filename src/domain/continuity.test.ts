@@ -17,6 +17,7 @@ function fixtureProject(): Project {
         id: 'chapter-1',
         title: 'Chapter One',
         body: 'Aria looked up, her blue eyes wide. Kael drew his sword beside her.',
+        craftTags: [],
       },
     ],
     sheets: [
@@ -41,6 +42,7 @@ function fixtureProject(): Project {
     proposals: [],
     rejectedFingerprints: [],
     marks: [],
+    researchNotes: [],
   }
 }
 
