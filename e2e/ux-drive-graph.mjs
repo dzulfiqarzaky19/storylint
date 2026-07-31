@@ -474,9 +474,43 @@ try {
   await graph.getByRole('button', { name: 'Family', exact: true }).click()
   await page.waitForTimeout(250)
   await shot(page, '12-family-1024')
-  await page.setViewportSize({ width: 767, height: 800 })
+  await page.setViewportSize({ width: 390, height: 844 })
   await page.waitForTimeout(250)
-  await shot(page, '13-family-phone')
+  // Phone gate is max-width 640. .graph is overflow:auto — expand it so evidence shows tree + member list + collapsed Propose in one frame.
+  const phonePath = 'e2e/output/ux-graph-13-family-phone.png'
+  const graphMain = page.getByRole('main', { name: 'Relationship graph' })
+  const disclosure = graphMain.locator('details.graph__editor--disclosure')
+  await disclosure.waitFor({ timeout: 5000 })
+  await page.evaluate(() => {
+    const main = document.querySelector('main[aria-label="Relationship graph"]')
+    if (!main) throw new Error('graph main missing')
+    const d = main.querySelector('details.graph__editor--disclosure')
+    if (d) d.open = false
+    // Unlock nested scrollers so a single element shot includes full phone family chrome.
+    const unlock = (el) => {
+      if (!(el instanceof HTMLElement)) return
+      el.style.overflow = 'visible'
+      el.style.maxHeight = 'none'
+      el.style.height = 'auto'
+    }
+    unlock(main)
+    main.querySelectorAll('.graph__stage, .graph__canvas, .graph__family, .graph__family-list').forEach(unlock)
+    // Also relax shell ancestors that clip on phone.
+    let p = main.parentElement
+    while (p && p !== document.body) {
+      unlock(p)
+      p = p.parentElement
+    }
+    document.documentElement.style.overflow = 'visible'
+    document.body.style.overflow = 'visible'
+    window.scrollTo(0, 0)
+  })
+  await page.waitForTimeout(200)
+  // Element screenshot of expanded graph main (includes disclosure + list).
+  await graphMain.screenshot({ path: phonePath })
+  shots.push(phonePath)
+  log('SHOT: ' + phonePath)
+  checkpoint('shot:13-family-phone')
 
   await page.close()
   checkpoint('complete')
