@@ -13,7 +13,7 @@ export type DrawerProps = {
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
 
-/** Narrow-width overlay for binder/agent. Esc + backdrop close; focus moves in and returns out. */
+/** Nav overlay for binder/agent. Esc + backdrop (outside) dismiss; focus trap + restore. Not a blocking decision modal. */
 export function Drawer({ open, onClose, side = 'left', label, children }: DrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null)
   const restoreRef = useRef<HTMLElement | null>(null)

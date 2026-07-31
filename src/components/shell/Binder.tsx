@@ -4,6 +4,7 @@ import { SheetEditor, type SheetEditorHandle } from '../../features/project/Shee
 import { Button, IconButton, ListRow } from '../ui'
 import type { Chapter, SheetKind } from './workspace'
 import { SHEET_KINDS, SHEET_KIND_LABEL } from './workspace'
+import { chapterListLabel } from './chapterListLabel.ts'
 import './shell.css'
 
 export type BinderProps = {
@@ -312,7 +313,7 @@ export function Binder({
                 data-binder-chapter={current ? 'current' : undefined}
                 onClick={() => onSelectChapter(chapter.id)}
               >
-                {chapter.title || 'Untitled'}
+                {chapterListLabel(chapters, index)}
               </ListRow>
             )
           })}
