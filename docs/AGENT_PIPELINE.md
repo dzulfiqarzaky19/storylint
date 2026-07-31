@@ -77,7 +77,7 @@ Why both exist: a change can be perfectly reviewable and still not do what its t
    - **Isolation green ≠ composition green.** L1 pass does not close a story. L2 pass does (for that story). Tickets with `l2_required: yes` stay short of `done` until L2 is green on the integrated tip. L2 fail → reopen ≥ prior priority with shortest repro (never silent downgrade).
    - Artifacts (untracked): `e2e/output/l2-composition-last.md` + `.json`. Cite provenance: HEAD, owned flag, shell hash.
 
-4. **PR is optional review UI.** Opening a GitHub PR does not write `dev`. **Only `npm run land` writes `dev`.** Never `git push origin <topic>:dev`. Never squash-merge into `dev`.
+4. **PR is optional review UI.** Opening a GitHub PR does not write `dev`. **`npm run land` is the only *authorized* way to write `dev`** — and that is a **norm, not an enforcement**: git will still accept `git push origin HEAD:dev`, and [GIT_WORKFLOW](./GIT_WORKFLOW.md) documents a manual fallback for when the script itself is broken. There is no pre-receive hook. The rule holds because agents keep it, not because the repo stops you. Never `git push origin <topic>:dev` outside that documented fallback. Never squash-merge into `dev`.
 
 5. **`dev → main` only at milestones**, after L2 (and product verification) for the batch. Founder account. `--no-ff`. See GIT_WORKFLOW § Flow step 6.
 

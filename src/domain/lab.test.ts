@@ -98,6 +98,21 @@ test('promote beat creates chapter stub without body prose from lab', () => {
   assert.equal(project.sheets.length, 0)
 })
 
+test('promote beat with blank chapterTitle stores empty — never invents Untitled chapter', () => {
+  let project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Card working title',
+    body: 'Author left the promote chapter title blank on purpose',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, { chapterTitle: '   ' })
+  project = result.project
+  const chapter = project.chapters.find((candidate) => candidate.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, '')
+  assert.notEqual(chapter.title, 'Untitled chapter')
+  assert.notEqual(chapter.title, 'Untitled')
+  assert.equal(chapter.body, '')
+})
 test('what-if cannot promote to sheet or chapter', () => {
   const project = createLabCard(seed(), { kind: 'what-if', title: 'Treaty fails' })
   assert.throws(

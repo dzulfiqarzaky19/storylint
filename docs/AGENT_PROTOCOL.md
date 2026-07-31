@@ -51,6 +51,18 @@ When the same files are live in another agent's task:
 
 **Model:** pig→deer on C5 graph kind labels while D4 owned `RelationshipGraph` / `graph.css`.
 
+### 4a. Never work in the shared main worktree
+
+`D:\dev\projects\storylint` is shared. `git checkout` there **switches the branch under every other agent using it**, silently discarding uncommitted edits in the process.
+
+Give yourself your own worktree before you touch anything:
+
+```
+git worktree add -B storylint/<topic> D:\dev\projects\storylint-<you>-<topic> origin/dev
+```
+
+**Scar:** rat edited `AGENT_PIPELINE.md` in the shared tree; an agent checked out a feature branch there mid-edit; the change was gone at commit time with no error, only a confusing "nothing added to commit." Losing work is the mild failure. The dangerous one is committing to whichever branch happened to be checked out at that instant.
+
 ### 5. Report the ORIGIN hash, never local-only
 
 After merge: `git fetch origin && git log --oneline -1 origin/dev`.  
