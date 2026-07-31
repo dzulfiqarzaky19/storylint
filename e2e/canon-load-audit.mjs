@@ -20,7 +20,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync, writeFileSync } from 'node:fs'
-import { requireApiOrigin, requireUiOrigin } from './helpers.mjs'
+import { requireApiOrigin, requireUiOrigin, reloadApp } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -221,7 +221,7 @@ await setup.close()
 for (const [label, width, height] of [['1440', 1440, 900], ['390', 390, 844]]) {
   const page = await browser.newPage({ viewport: { width, height } })
   await page.goto(UI, { waitUntil: 'networkidle' })
-  await page.reload({ waitUntil: 'networkidle' })
+  await reloadApp(page)
   const canon = page.getByRole('button', { name: 'Canon', exact: true })
   if (await canon.count()) await canon.click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
