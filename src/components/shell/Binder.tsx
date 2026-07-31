@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Fact, Lab, Sheet } from '../../domain/types.ts'
 import { SheetEditor } from '../../features/project/SheetEditor.tsx'
 import { Button, IconButton, ListRow } from '../ui'
@@ -26,6 +26,11 @@ export type BinderProps = {
   onRequestedSheetHandled?: () => void
   /** Notify shell when a sheet enters/leaves the binder detail stack (Canon landing). */
   onEditSheet?: (sheetId: string | null) => void
+  /**
+   * Enter Canon from a binder sheet action outside Canon (F3).
+   * Pass sheetId to open that sheet; null/omit opens Canon map only.
+   */
+  onOpenCanonSheet?: (sheetId?: string | null) => void
   onClose?: () => void
 }
 
@@ -47,19 +52,67 @@ export function Binder({
   requestedSheetId,
   onRequestedSheetHandled,
   onEditSheet,
+  onOpenCanonSheet,
   onClose,
 }: BinderProps) {
   const [editingSheetId, setEditingSheetId] = useState<string | 'new' | null>(null)
   /** Park sheet detail when leaving Canon; restore on re-enter (D9). */
   const [parkedSheetId, setParkedSheetId] = useState<string | null>(null)
   const currentChapterRef = useRef<HTMLButtonElement | null>(null)
+  const stackBodyRef = useRef<HTMLDivElement | null>(null)
+  const listScrollTopRef = useRef(0)
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
   const boards = lab?.boards ?? []
   const draftActive = !labMode && !canonMode
+  /** F3 hard gate: form only while Canon is the place. */
+  const sheetDetailOpen = Boolean(canonMode && editingSheetId)
+  const sheetKindLabel =
+    editingSheetId === 'new'
+      ? 'New sheet'
+      : editingSheet
+        ? SHEET_KIND_LABEL[editingSheet.kind]
+        : 'Sheet'
+  const sheetTitle =
+    editingSheetId === 'new' ? 'New sheet' : editingSheet?.name?.trim() || 'Untitled sheet'
+
+  function openSheetFromList(sheetId: string) {
+    if (!canonMode) {
+      // F3: never mount sheet form in Draft/Lab. Route through Canon entry.
+      setParkedSheetId(sheetId)
+      setEditingSheetId(null)
+      onEditSheet?.(null)
+      onOpenCanonSheet?.(sheetId)
+      return
+    }
+    if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
+    setEditingSheetId(sheetId)
+    setParkedSheetId(null)
+    onEditSheet?.(sheetId)
+  }
+
+  function openNewSheet() {
+    if (!canonMode) {
+      // New sheet is a Canon L3 job. Enter Canon map; user hits New sheet there.
+      onOpenCanonSheet?.(null)
+      return
+    }
+    if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
+    setEditingSheetId('new')
+    // Signal detail-open for map quiet (F2); Shell ignores 'new' as a real sheet id for landing.
+    onEditSheet?.('new')
+  }
+
+  function closeSheetDetail() {
+    setEditingSheetId(null)
+    onEditSheet?.(null)
+  }
 
   useEffect(() => {
     if (requestedSheetId && sheets.some((sheet) => sheet.id === requestedSheetId)) {
       if (canonMode) {
+        if (stackBodyRef.current && !editingSheetId) {
+          listScrollTopRef.current = stackBodyRef.current.scrollTop
+        }
         setEditingSheetId(requestedSheetId)
         setParkedSheetId(null)
         onEditSheet?.(requestedSheetId)
@@ -98,11 +151,28 @@ export function Binder({
     }
   }, [canonMode, editingSheetId, parkedSheetId, sheets, onEditSheet])
 
+  // F3 belt: if somehow editing while not Canon, drop the form immediately.
+  useEffect(() => {
+    if (!canonMode && editingSheetId) {
+      if (editingSheetId !== 'new') setParkedSheetId(editingSheetId)
+      setEditingSheetId(null)
+      onEditSheet?.(null)
+    }
+  }, [canonMode, editingSheetId, onEditSheet])
+
   // Keep the active Draft chapter visible in long lists.
   useEffect(() => {
-    if (!draftActive || editingSheetId) return
+    if (!draftActive || sheetDetailOpen) return
     currentChapterRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-  }, [activeChapterId, chapters.length, draftActive, editingSheetId])
+  }, [activeChapterId, chapters.length, draftActive, sheetDetailOpen])
+
+  // F1: restore list scroll when popping the detail stack.
+  useLayoutEffect(() => {
+    if (sheetDetailOpen) return
+    const body = stackBodyRef.current
+    if (!body) return
+    body.scrollTop = listScrollTopRef.current
+  }, [sheetDetailOpen, canonMode, labMode])
 
   const draftSection = (
     <section className="panel__group" aria-labelledby="binder-draft">
@@ -166,10 +236,8 @@ export function Binder({
                 <ListRow
                   key={sheet.id}
                   meta={String(sheet.facts.length)}
-                  onClick={() => {
-                    setEditingSheetId(sheet.id)
-                    onEditSheet?.(sheet.id)
-                  }}
+                  active={canonMode && editingSheetId === sheet.id}
+                  onClick={() => openSheetFromList(sheet.id)}
                 >
                   {sheet.name}
                 </ListRow>
@@ -178,13 +246,7 @@ export function Binder({
           </div>
         )
       })}
-      <Button
-        variant="primary"
-        onClick={() => {
-          setEditingSheetId('new')
-          onEditSheet?.(null)
-        }}
-      >
+      <Button variant="primary" onClick={openNewSheet}>
         New sheet
       </Button>
     </section>
@@ -222,42 +284,60 @@ export function Binder({
     </section>
   )
 
+  const navigator = canonMode ? (
+    <>
+      {canonSection}
+      {draftSection}
+      {labSection}
+    </>
+  ) : (
+    <>
+      {draftSection}
+      {canonSection}
+      {labSection}
+    </>
+  )
+
   return (
-    <div className="panel">
+    <div className="panel" data-binder-stack={sheetDetailOpen ? 'detail' : 'list'}>
       <div className="panel__header">
         <h2 className="panel__title">Binder</h2>
         {onClose ? <IconButton label="Close binder" onClick={onClose}>✕</IconButton> : null}
       </div>
 
-      <div className="panel__body">
-        {editingSheetId ? (
-          <SheetEditor
-            sheet={editingSheet}
-            onSaveSheet={async (sheet) => {
-              await onSaveSheet(sheet)
-              setEditingSheetId(sheet.id)
-              onEditSheet?.(sheet.id)
-            }}
-            onSaveFact={onSaveFact}
-            onDeleteFact={onDeleteFact}
-            onBack={() => {
-              setEditingSheetId(null)
-              onEditSheet?.(null)
-            }}
-          />
-        ) : canonMode ? (
-          <>
-            {canonSection}
-            {draftSection}
-            {labSection}
-          </>
-        ) : (
-          <>
-            {draftSection}
-            {canonSection}
-            {labSection}
-          </>
-        )}
+      <div className="panel__body binder__stack" ref={stackBodyRef}>
+        {/* F1: list stays mounted under the detail layer so Back restores scroll. */}
+        <div
+          className="binder__stack-list"
+          hidden={sheetDetailOpen}
+          aria-hidden={sheetDetailOpen}
+        >
+          {navigator}
+        </div>
+
+        {sheetDetailOpen ? (
+          <div className="binder__stack-detail" data-binder-detail="sheet">
+            <div className="binder__detail-chrome">
+              <Button onClick={closeSheetDetail}>Back</Button>
+              <div className="binder__detail-meta">
+                <span className="binder__detail-title">{sheetTitle}</span>
+                <span className="binder__detail-kind">{sheetKindLabel}</span>
+              </div>
+            </div>
+            <SheetEditor
+              sheet={editingSheet}
+              showBack={false}
+              onSaveSheet={async (sheet) => {
+                await onSaveSheet(sheet)
+                setEditingSheetId(sheet.id)
+                onEditSheet?.(sheet.id)
+              }}
+              onSaveFact={onSaveFact}
+              onDeleteFact={onDeleteFact}
+              onBack={closeSheetDetail}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   )

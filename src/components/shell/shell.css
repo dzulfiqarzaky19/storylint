@@ -114,12 +114,25 @@
     white-space: nowrap;
   }
 
-  /* Touch targets ≥44 on narrow profile; desktop stays --size-control (D10). */
+  /* Touch targets ≥44 on narrow profile; desktop stays --size-control (D10/B5). */
   .shell__topbar .ui-icon-button {
     width: var(--size-touch-min);
     height: var(--size-touch-min);
     min-width: var(--size-touch-min);
     min-height: var(--size-touch-min);
+  }
+
+  /* Project menu (⋯) and any other topbar text buttons — B5 chrome @390. */
+  .shell__topbar button,
+  .shell__topbar .ui-button {
+    min-height: var(--size-touch-min);
+  }
+
+  .shell__topbar .project-switcher__menu > .ui-button {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+    width: var(--size-touch-min);
+    padding-inline: 0;
   }
 }
 
@@ -899,6 +912,57 @@
 .binder__chapter--current {
   box-shadow: inset 3px 0 0 var(--color-accent);
 }
+
+/* Binder L3 sheet stack (D5/F1): list stays mounted; detail pushes over it. */
+.binder__stack {
+  position: relative;
+}
+
+.binder__stack-list[hidden] {
+  display: none !important;
+}
+
+.binder__stack-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.binder__detail-chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-block: var(--space-1);
+  background: var(--color-surface);
+}
+
+.binder__detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.binder__detail-title {
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.binder__detail-kind {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+}
+
 
 .binder__canon-kind {
   display: flex;
