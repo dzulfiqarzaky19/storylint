@@ -1,6 +1,6 @@
 /**
  * CALM_BUDGET executable checker.
- * Enforces HARD/WARN from docs/CALM_BUDGET.md (r2).
+ * Enforces HARD/WARN from docs/CALM_BUDGET.md (r3).
  *
  *   npm run calm
  *   node e2e/calm-budget.mjs
@@ -29,6 +29,7 @@ import {
   dismissDrawers,
   ensureBinderOpen,
   ensureCompanionOpen,
+  claimEmptyProject,
   ensureDraftReady,
   ensureIsolatedProject,
   formatRailState,
@@ -602,6 +603,192 @@ async function measureFocus(page) {
     await page.waitForTimeout(200)
   }
   return { before, during, ok: during.focus === 'true' && !during.binder && during.work }
+}
+
+/**
+ * Viewport-wide solid primary count grouped by job key (ox one-primary-door-per-job).
+ * Same accessible name (or data-job) + solid/primary recipe across binder/fold/companion
+ * is one job. Expect at most one solid primary per job when dual-rail empty fixtures run.
+ */
+async function measurePrimaryPerJob(page) {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
+
+    function regionOf(el) {
+      if (el.closest('.shell__rail--binder, [data-binder-stack], aside.shell__rail--binder')) return 'binder'
+      if (el.closest('.panel[data-companion-context], .shell__rail--agent, aside.shell__rail--agent')) return 'companion'
+      if (el.closest('.shell__topbar')) return 'topbar'
+      if (el.closest('main, #workspace, .graph, .shell__work, .manuscript, .lab')) return 'fold'
+      return 'other'
+    }
+
+    function jobKey(name, el) {
+      const dataJob = el.getAttribute('data-job')
+      if (dataJob) return dataJob.trim().toLowerCase()
+      const n = name.trim().replace(/\s+/g, ' ')
+      if (!n) return null
+      // Place switches / face tabs are wayfinding, not create jobs.
+      if (/^(Draft|Lab|Canon|Chat|Write|Check|Inbox|Research|Spark|Inspect|More)$/i.test(n)) return null
+      if (/^Inbox\s*\d+$/i.test(n)) return null
+      if (/hide binder|show binder|hide companion|show companion|focus|theme|project/i.test(n)) return null
+      // Create-chapter cluster (binder + companion + center empty door).
+      if (/^(new chapter|write first chapter|write)$/i.test(n)) return 'create-chapter'
+      // Create-sheet cluster (binder + map empty CTA).
+      if (/^new sheet$/i.test(n)) return 'create-sheet'
+      // Open lab is a different job from create-chapter.
+      if (/^(open lab|start in lab)$/i.test(n)) return 'open-lab'
+      // Remaining solid buttons keep their accessible name as job key.
+      return n.toLowerCase()
+    }
+
+    const controls = [...document.querySelectorAll('button, [role="button"], a.ui-button')]
+    const solids = []
+    for (const el of controls) {
+      if (!isVisibleEl(el)) continue
+      // Face tabs are role=tab — never job primaries even if painted primary.
+      if (el.getAttribute('role') === 'tab') continue
+      const cls = el.className?.toString?.() || ''
+      const isPrimary = cls.includes('ui-button--primary')
+        || cls.includes('--primary')
+        || el.getAttribute('data-variant') === 'primary'
+      if (!isPrimary) continue
+      const name = (el.getAttribute('aria-label') || el.textContent || '').trim().replace(/\s+/g, ' ')
+      const job = jobKey(name, el)
+      if (!job) continue
+      solids.push({
+        job,
+        name,
+        region: regionOf(el),
+      })
+    }
+
+    const byJob = new Map()
+    for (const item of solids) {
+      const list = byJob.get(item.job) || []
+      list.push(item)
+      byJob.set(item.job, list)
+    }
+    const jobs = [...byJob.entries()].map(([job, items]) => ({
+      job,
+      count: items.length,
+      items,
+    }))
+    const offenders = jobs.filter((j) => j.count > 1)
+    return {
+      solidCount: solids.length,
+      jobs,
+      offenders,
+      maxPerJob: jobs.reduce((m, j) => Math.max(m, j.count), 0),
+      graphEmpty: document.querySelector('[data-graph-empty]')?.getAttribute('data-graph-empty') || null,
+      canonEmpty: document.querySelector('[data-canon-empty]')?.getAttribute('data-canon-empty') || null,
+      hasDraftMain: !!document.querySelector('main[aria-label="Draft"]'),
+      hasCanonMain: !!(
+        document.querySelector('main[aria-label="Relationship graph"]')
+        || document.querySelector('[aria-label="Relationship graph"]')
+        || document.querySelector('.graph')
+      ),
+    }
+  }, BROWSER_IS_VISIBLE_SOURCE)
+}
+
+/**
+ * Empty-product fixtures for B6-primary-per-job (ox composition rule).
+ * Uses claimEmptyProject so zero-chapter / zero-sheet is a real New-project state (koala).
+ * Dual-rail @1440 only — that is where binder + fold + companion share one viewport.
+ */
+async function runEmptyPrimaryFixtures(browser) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  page.setDefaultTimeout(12000)
+  try {
+    await installFixtureLlmRoutes(page)
+    const emptyId = await claimEmptyProject(page, {
+      id: `e2e-calm-empty-${process.pid}-${Date.now().toString(36)}`,
+      title: 'E2E Calm Empty',
+    })
+    await page.goto(UI, { waitUntil: 'networkidle' })
+    await reclaimIsolatedProject(emptyId)
+    // Desk dual-rail: binder + companion open so composition is visible.
+    const railOrigin = { binder: 'default', agent: 'default' }
+    await ensureBinderOpen(page, { track: railOrigin })
+    await ensureCompanionOpen(page, { track: railOrigin })
+    const railNote = formatRailState(await readRailState(page, { origin: railOrigin }))
+
+    // --- Draft empty-project dual-rail ---
+    const draftOk = await withSurface('B6-primary-per-job@draft-empty', 'Draft empty@1440 dual-rail', async () => {
+      await beforeMeasure(page, {
+        projectId: emptyId,
+        requireEmpty: true,
+        workspace: 'draft',
+        ensureCompanion: true,
+      })
+      return true
+    })
+    if (draftOk) {
+      const draft = await measurePrimaryPerJob(page)
+      if (!draft.hasDraftMain) {
+        preconditionFail(
+          'B6-primary-per-job@draft-empty',
+          'Draft empty@1440 dual-rail',
+          new PreconditionError('precondition not met: Draft main missing on empty fixture'),
+        )
+      } else {
+        const offenders = (draft.offenders || [])
+          .map((o) => `${o.job}=${o.count}[${o.items.map((i) => `${i.region}:${i.name}`).join(' | ')}]`)
+          .join('; ')
+        add(
+          'B6-primary-per-job@draft-empty',
+          'HARD',
+          'CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job (empty Draft dual-rail)',
+          'Draft empty@1440 dual-rail',
+          (draft.maxPerJob || 0) <= 1,
+          `maxPerJob=${draft.maxPerJob || 0} solids=${draft.solidCount}${offenders ? ` offenders=${offenders}` : ''} · ${railNote}`,
+          '≤1 solid primary per job',
+        )
+      }
+    }
+
+    // --- Canon true-empty dual-rail ---
+    const canonOk = await withSurface('B6-primary-per-job@canon-empty', 'Canon true-empty@1440 dual-rail', async () => {
+      await beforeMeasure(page, {
+        projectId: emptyId,
+        requireEmpty: true,
+        workspace: 'canon',
+        ensureCompanion: true,
+      })
+      return true
+    })
+    if (canonOk) {
+      const canon = await measurePrimaryPerJob(page)
+      const trueEmpty = canon.graphEmpty === 'canon' || canon.canonEmpty === 'true'
+      if (!canon.hasCanonMain || !trueEmpty) {
+        preconditionFail(
+          'B6-primary-per-job@canon-empty',
+          'Canon true-empty@1440 dual-rail',
+          new PreconditionError(
+            `precondition not met: Canon true-empty not proven (hasCanon=${canon.hasCanonMain} graphEmpty=${canon.graphEmpty} canonEmpty=${canon.canonEmpty})`,
+          ),
+        )
+      } else {
+        const offenders = (canon.offenders || [])
+          .map((o) => `${o.job}=${o.count}[${o.items.map((i) => `${i.region}:${i.name}`).join(' | ')}]`)
+          .join('; ')
+        add(
+          'B6-primary-per-job@canon-empty',
+          'HARD',
+          'CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job (Canon true-empty dual-rail)',
+          'Canon true-empty@1440 dual-rail',
+          (canon.maxPerJob || 0) <= 1,
+          `maxPerJob=${canon.maxPerJob || 0} solids=${canon.solidCount} graphEmpty=${canon.graphEmpty}${offenders ? ` offenders=${offenders}` : ''} · ${railNote}`,
+          '≤1 solid primary per job',
+        )
+      }
+    }
+
+    return { emptyId }
+  } finally {
+    await page.close()
+  }
 }
 
 /** Enter workspace and prove companion context before any face measurement. */
@@ -1234,6 +1421,8 @@ try {
 
   await runViewport(browser, 1440, 900, '1440', projectId)
   await runViewport(browser, 390, 844, '390', projectId)
+  // Empty fixtures after populated run so they own a clean zero-content project.
+  await runEmptyPrimaryFixtures(browser)
 } catch (error) {
   if (error instanceof PreconditionError || String(error?.message || error).includes('precondition not met')) {
     console.error('REFUSE (precondition): ' + (error instanceof Error ? error.message : String(error)))

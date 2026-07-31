@@ -507,7 +507,12 @@ export function Shell() {
                 hint="Write a first draft chapter, or open Lab to try ideas first."
                 action={
                   <div className="shell__empty-doors">
-                    <Button variant="primary" onClick={project.addChapter} disabled={!project.project}>
+                    {/* One primary per job (ox): binder New chapter owns create when rail open. */}
+                    <Button
+                      variant={binderRailOpen ? 'ghost' : 'primary'}
+                      onClick={project.addChapter}
+                      disabled={!project.project}
+                    >
                       Write
                     </Button>
                     <Button onClick={() => openLab()} disabled={!project.project}>
