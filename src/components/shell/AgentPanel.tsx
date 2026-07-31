@@ -83,8 +83,6 @@ export type AgentPanelProps = {
   onRejectProposal: (id: string) => Promise<void>
   sending: boolean
   llmMode: 'fixture' | 'live' | null
-  tipsDismissed: boolean
-  onDismissTips: () => void
   selection: { start: number; end: number; text: string }
   onGenerateCowrite: (skill: CowriteSkill, instruction: string) => Promise<void>
   onApplyCard: (id: string) => Promise<void>
@@ -101,8 +99,7 @@ export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts,
-  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, tipsDismissed: _tipsDismissed,
-  onDismissTips: _onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
+  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
