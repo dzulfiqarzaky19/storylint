@@ -17,7 +17,7 @@ export function ResearchPanel({
   onProject: (project: Project, generation?: number) => void
   beginMutation: () => number | null
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
-  /** One assistant one job: block Research mutate while Continuity/agent runs. */
+  /** One assistant one job: block Research QUERY while Continuity/agent runs. Pin/Propose are decisions. */
   assistantBusy?: boolean
   /** Report Research job running so other companion lanes can gate. */
   onRunningChange?: (running: boolean) => void
@@ -50,14 +50,14 @@ export function ResearchPanel({
   }
 
   async function pin(note: ResearchNote) {
-    if (assistantBusy || running) return
+    // Author decision (ox B): local only. Query job stays on assistantBusy; pin does not.
     const generation = beginMutation()
     if (generation === null) return
     onProject(await trackMutation(pinResearch(note)), generation)
   }
 
   async function propose(note: ResearchNote) {
-    if (assistantBusy || running) return
+    // Author decision (ox B): local only — free while Continuity/agent jobs run.
     const generation = beginMutation()
     if (generation === null) return
     onProject(await trackMutation(proposeResearch(note)), generation)
@@ -104,8 +104,8 @@ export function ResearchPanel({
                 ))}
               </ul>
               <div className="proposal-card__actions">
-                <Button disabled={assistantBusy || running} onClick={() => void pin(result).catch(setResearchError)}>Pin</Button>
-                <Button variant="primary" disabled={assistantBusy || running} onClick={() => void propose(result).catch(setResearchError)}>Propose to sheet</Button>
+                <Button onClick={() => void pin(result).catch(setResearchError)}>Pin</Button>
+                <Button variant="primary" onClick={() => void propose(result).catch(setResearchError)}>Propose to sheet</Button>
               </div>
             </article>
           ))}

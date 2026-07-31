@@ -1,24 +1,24 @@
 # CALM_BUDGET run
 
-**When:** 2026-07-31T20:35:16.396Z
-**UI:** http://127.0.0.1:52571/
-**HEAD:** e68f272 (e68f2724659d57fa23de69f3d77d0be4bf407d7a)
+**When:** 2026-07-31T21:41:34.246Z
+**UI:** http://127.0.0.1:54333/
+**HEAD:** 621933e (621933ee4f8e297681325ea6ae955225e9af9b72)
 **Owned:** yes (ephemeral stack)
-**UI:** http://127.0.0.1:52571/
-**API:** http://127.0.0.1:52570
-**Shell.css:** local#2c416be35924 served#2c416be35924
+**UI:** http://127.0.0.1:54333/
+**API:** http://127.0.0.1:54332
+**Shell.css:** local#5979c5710d75 served#5979c5710d75
 **Dirty tree:** yes
 **Helpers:** required e2e/helpers.mjs (no self-contained fallback)
-**Project:** e2e-calm-12044-ms9eis9a
+**Project:** e2e-calm-19708-ms9gw2al
 
 ## Summary
 
 | | Count |
 |--|--:|
-| PASS | 49 |
+| PASS | 50 |
 | WARN (fail band) | 0 |
 | HARD FAIL | 0 |
-| Total checks | 49 |
+| Total checks | 50 |
 
 **Exit:** zero (no HARD fail)
 
@@ -35,7 +35,7 @@
 | PASS | B2-ecosystem@1440 | HARD | ecosystemVisible=3 [Draft,Lab,Canon] | =3 | topbar@1440 | CALM_BUDGET.md B2-ecosystem · ecosystemVisible = 3 |
 | PASS | B3-writing-count@1440 | HARD | productFaces=5 [Chat · Write · Check · Inbox · Research] more=false context=writing | ≤5 | companion writing@1440 | CALM_BUDGET.md B3-writing-count · writing faces ≤ 5 |
 | PASS | B3-default-face@1440 | HARD | face=chat context=writing | chat | companion@1440 | CALM_BUDGET.md B3-default-face · writing default = Chat |
-| PASS | B3-inbox-wall@1440 | HARD | chatProposalsWall=false | false | companion chat@1440 | CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false |
+| PASS | B3-chat-proposals-wall@1440 | HARD | chatProposalsWall=false | false | companion chat@1440 | CALM_BUDGET.md B3-chat-proposals-wall · Chat has no proposal dump |
 | PASS | B3-footer-primary-chat@1440 | HARD | footerPrimary=1 | ≤1 | companion chat@1440 | CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1 |
 | PASS | B3-footer-total-chat@1440 | WARN | footerTotal=1 | ≤3 | companion chat@1440 | CALM_BUDGET.md B3-footer-total · ≤3 WARN, ≥4 HARD |
 | PASS | B3-rest@1440 | HARD | checkRestHasStatus=true | true | companion Check@1440 | CALM_BUDGET.md B3-rest · Check resting helper or last-run status |
@@ -56,7 +56,7 @@
 | PASS | B2-top-count-warn | WARN | topControlCount=7 | ≤8 | topbar@390 | CALM_BUDGET.md B2-top-count-warn · top controls > 8 without overflow |
 | PASS | B3-writing-count@390 | HARD | productFaces=5 [Chat · Write · Check · Inbox · Research] more=false context=writing | ≤5 | companion writing@390 | CALM_BUDGET.md B3-writing-count · writing faces ≤ 5 |
 | PASS | B3-default-face@390 | HARD | face=chat context=writing | chat | companion@390 | CALM_BUDGET.md B3-default-face · writing default = Chat |
-| PASS | B3-inbox-wall@390 | HARD | chatProposalsWall=false | false | companion chat@390 | CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false |
+| PASS | B3-chat-proposals-wall@390 | HARD | chatProposalsWall=false | false | companion chat@390 | CALM_BUDGET.md B3-chat-proposals-wall · Chat has no proposal dump |
 | PASS | B3-wrap | HARD | faceRows=1 labels=[Chat · Write · Check · Inbox · Research] | =1 | companion@390 | CALM_BUDGET.md B3-wrap · faceRows @390 = 1 |
 | PASS | B3-overflow-shape | HARD | rows=1 hasMore=false | one row; More ok | companion@390 | CALM_BUDGET.md B3-overflow-shape · extras behind one More |
 | PASS | B3-footer-primary-chat@390 | HARD | footerPrimary=1 | ≤1 | companion chat@390 | CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1 |
@@ -74,7 +74,8 @@
 | PASS | B5-touch-fail | HARD | touchFailChrome=0 | =0 | chrome@390 | CALM_BUDGET.md B5-touch-fail · touchFailChrome = 0 |
 | PASS | B5-overflow@390 | HARD | overflowX=false | false | shell@390 | CALM_BUDGET.md B5-overflow · overflowX = false |
 | PASS | B6-primary-per-job@draft-empty | HARD | maxPerJob=1 solids=1 · rails binder=open/default agent=open/default atDesk=true | ≤1 solid primary per job | Draft empty@1440 dual-rail | CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job (empty Draft dual-rail) |
-| PASS | B6-primary-per-job@canon-empty | HARD | maxPerJob=1 solids=2 graphEmpty=canon · rails binder=open/default agent=open/default atDesk=true | ≤1 solid primary per job | Canon true-empty@1440 dual-rail | CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job (Canon true-empty dual-rail) |
+| PASS | B6-primary-per-job@canon-empty | HARD | maxPerJob=1 solids=2 graphEmpty=canon sendSolid=false · rails binder=open/default agent=open/default atDesk=true | ≤1/job; no Send primary while sheets<2 | Canon true-empty@1440 dual-rail | CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job; empty fold solid = New sheet only (no Send) |
+| PASS | B3-inbox-wall@volume | HARD | inboxWall=false cardVisible=4 pending=30 scrollH=852 clientH=852 internalScroll=false badge=Inbox30 | inboxWall=false at volume 30 | companion Inbox@1440 volume=30 | CALM_BUDGET.md B3-inbox-wall · Inbox at 30 pending is not a wall (internal scroll + calm fold) |
 
 ## HARD failures
 

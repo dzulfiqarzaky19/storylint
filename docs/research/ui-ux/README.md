@@ -26,6 +26,7 @@ This folder is **evidence + practice synthesis**. When research and locks confli
 | 5 | [05-gates-and-trust.md](./05-gates-and-trust.md) | Apply / Accept / propose / staged change UX |
 | 6 | [06-storylint-implications.md](./06-storylint-implications.md) | What this means for Lab / Draft / Canon build order |
 | 7 | [07-overwhelm-evidence.md](./07-overwhelm-evidence.md) | **Dense evidence pack** — ~20 datapoints × major source clusters (CLT, Hick, choice overload, info overload, disclosure, split attention, Laws of UX, gates, creative-tool patterns) |
+| 8 | [08-false-state.md](./08-false-state.md) | **False state** — controls/checks/tests that assert something untrue; deliberate gaps (draft loss, Lab archive, single-lane busy) |
 
 ---
 

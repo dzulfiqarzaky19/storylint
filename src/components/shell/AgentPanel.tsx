@@ -74,6 +74,8 @@ export type AgentPanelProps = {
   beginMutation: () => number | null
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   chapterTitle: string
+  /** Open chapter body — gates Continuity primary until prose exists (seeded-default P1). */
+  chapterBody?: string
   companionContext?: CompanionContext
   contextLabel?: string
   proposals: Proposal[]
@@ -105,7 +107,7 @@ export type AgentPanelProps = {
 }
 
 export function AgentPanel({
-  transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
+  transcript, project, onProject, beginMutation, trackMutation, chapterTitle, chapterBody = '',
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, researchRunning = false, onResearchRunningChange, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
@@ -126,6 +128,8 @@ export function AgentPanel({
   const applyCards = transcript.filter((entry) => entry.role === 'apply')
   const pendingCount = proposals.length + applyCards.length
   const hasChapter = (project?.chapters?.length ?? 0) > 0
+  const hasProse = chapterBody.trim().length > 0
+  const continuityRunnable = hasChapter && hasProse
 
   useEffect(() => {
     const prev = prevPendingCountRef.current
@@ -194,8 +198,8 @@ export function AgentPanel({
     return bits.join(' · ')
   }, [continuityCounts, continuityError, continuityMode, continuityRunning, llmMode])
 
-  // One assistant, one job: agent, Continuity, and Research mutate share one busy gate.
-  // Face switch, Inbox Accept/Edit/Reject, and idle composer typing stay free (AV perimeter).
+  // One assistant, one job: agent, Continuity, and Research QUERY share one busy gate.
+  // Author decisions (Inbox Accept/Apply/Dismiss, Research Pin/Propose) use local busy only (ox B).
   const assistantBusy = sending || continuityRunning || researchRunning
   // AU-2/AU-6: agent-lane busy live mirrors Check Continuity. Continuity keeps face-local live;
   // suppress the shared line while Continuity runs so two polite regions do not queue the same fact.
@@ -249,26 +253,56 @@ export function AgentPanel({
 
   function renderProposals(list: Proposal[]) {
     const packIds = [...new Set(list.flatMap((proposal) => proposal.packId ? [proposal.packId] : []))]
-    const alone = list.filter((proposal) => !proposal.packId)
-    return (
-      <section className="proposal-list" aria-label="Pending proposals">
-        {packIds.map((packId) => (
+    const packs = packIds.map((packId) => ({
+      kind: 'pack' as const,
+      id: packId,
+      proposals: list.filter((proposal) => proposal.packId === packId),
+    }))
+    const alone = list
+      .filter((proposal) => !proposal.packId)
+      .map((proposal) => ({ kind: 'alone' as const, id: proposal.id, proposal }))
+    // AY/B3: calm first fold (~4 cards). Overflow stays in closed <details>
+    // so checkVisibility (and the eye) do not count a wall on first paint.
+    const items = [...packs, ...alone]
+    const foldAt = 4
+    const head = items.slice(0, foldAt)
+    const tail = items.slice(foldAt)
+
+    function renderItem(item: (typeof items)[number]) {
+      if (item.kind === 'pack') {
+        return (
           <SheetPackCard
-            key={packId}
-            proposals={list.filter((proposal) => proposal.packId === packId)}
+            key={item.id}
+            proposals={item.proposals}
             onAccept={onAcceptProposal}
             onEdit={onEditProposal}
             onReject={onRejectProposal}
           />
-        ))}
-        {alone.map((proposal) => (
-          <ProposalCard
-            key={proposal.id}
-            proposal={proposal}
-            onAccept={onAcceptProposal}
-            onReject={onRejectProposal}
-          />
-        ))}
+        )
+      }
+      return (
+        <ProposalCard
+          key={item.id}
+          proposal={item.proposal}
+          onAccept={onAcceptProposal}
+          onReject={onRejectProposal}
+        />
+      )
+    }
+
+    return (
+      <section className="proposal-list" aria-label="Pending proposals">
+        {head.map(renderItem)}
+        {tail.length > 0 ? (
+          <details className="companion__inbox-more">
+            <summary className="companion__inbox-more-summary">
+              {tail.length === 1 ? '1 more pending' : `${tail.length} more pending`}
+            </summary>
+            <div className="companion__inbox-more-list">
+              {tail.map(renderItem)}
+            </div>
+          </details>
+        ) : null}
       </section>
     )
   }
@@ -470,16 +504,19 @@ export function AgentPanel({
           onRunningChange={onResearchRunningChange}
         />
       ) : face === 'inbox' ? (
-        <div className="agent__transcript" aria-label="Companion inbox">
+        <div className="agent__transcript companion__inbox" aria-label="Companion inbox">
           {statusLine ? <p className="continuity-privacy" aria-live="polite">{statusLine}</p> : null}
           {pendingCount === 0 ? (
             <EmptyState title="Inbox clear" hint="Things arrive here from Continuity on Check, Send proposal in Canon, and Apply cards from co-write on Write. Accept/Edit/Reject stay gated until something is pending." />
           ) : (
             <>
+              <p className="companion__inbox-summary" data-inbox-pending={pendingCount}>
+                {pendingCount === 1 ? '1 pending' : `${pendingCount} pending`}
+              </p>
               {proposals.length > 0 ? renderProposals(proposals) : null}
               {applyCards.map((entry) =>
                 entry.role === 'apply'
-                  ? <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} assistantBusy={assistantBusy} />
+                  ? <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} />
                   : null,
               )}
             </>
@@ -579,8 +616,10 @@ export function AgentPanel({
                 </p>
               ) : (
                 <EmptyState
-                  title="Run Continuity on this chapter"
-                  hint="Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon."
+                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before Continuity'}
+                  hint={continuityRunnable
+                    ? 'Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon.'
+                    : 'Continuity checks this chapter against accepted Canon. It needs draft prose first — type in the paper, then run Continuity here.'}
                 />
               )}
               {renderTranscript({ apply: false, status: false })}
@@ -588,9 +627,11 @@ export function AgentPanel({
             <div className="panel__footer">
               <div className="agent__cowrite-actions" aria-label="Check tools">
                 <Button
-                  variant="primary"
-                  disabled={assistantBusy}
+                  variant={continuityRunnable || continuityRunning ? 'primary' : 'ghost'}
+                  disabled={assistantBusy || !continuityRunnable}
+                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before checking Continuity'}
                   data-continuity-state={continuityState}
+                  data-continuity-runnable={continuityRunnable ? 'true' : 'false'}
                   aria-busy={continuityRunning || undefined}
                   onClick={() => void onRunContinuity().catch(() => undefined)}
                 >
