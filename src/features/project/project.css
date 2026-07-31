@@ -92,9 +92,11 @@
 }
 
 .project-switcher {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  min-width: 0;
 }
 
 .project-switcher select {
@@ -105,20 +107,54 @@
   background: var(--color-surface-raised);
   color: var(--color-text);
   font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
 }
 
-.project-switcher .ui-input {
-  width: var(--size-binder-min);
+.project-switcher__menu {
+  position: relative;
+}
+
+.project-switcher__popover {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  inset-inline-start: 0;
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: calc(var(--size-control) * 5);
+  padding: var(--space-2);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.project-switcher__popover > .ui-button {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.project-switcher__create {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: var(--size-binder-min);
+}
+
+.project-switcher__create .ui-input {
+  width: 100%;
+}
+
+.project-switcher__create-actions {
+  display: flex;
+  gap: var(--space-1);
 }
 
 @media (max-width: 767px) {
-  .project-switcher > .ui-button,
-  .project-switcher > .ui-input {
-    display: none;
-  }
-
   .project-switcher select {
-    max-width: calc(var(--size-control-touch) * 3);
+    max-width: calc(var(--size-control-touch) * 4);
   }
 }
 

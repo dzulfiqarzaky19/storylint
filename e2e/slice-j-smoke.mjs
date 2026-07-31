@@ -13,7 +13,8 @@ const page = await context.newPage()
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   const title = `Project Smoke ${Date.now()}`
-  await page.getByRole('button', { name: 'New project' }).click()
+  await page.getByRole('button', { name: 'Project menu' }).click()
+  await page.getByRole('menuitem', { name: 'New project' }).click()
   await page.getByLabel('New project title').fill(title)
   await page.getByRole('button', { name: 'Create', exact: true }).click()
   await page.waitForFunction(
@@ -41,7 +42,8 @@ try {
   )
 
   const downloadPromise = page.waitForEvent('download')
-  await page.getByRole('button', { name: /^Export$|Export markdown/i }).click()
+  await page.getByRole('button', { name: 'Project menu' }).click()
+  await page.getByRole('menuitem', { name: /Export|Export markdown/i }).click()
   const download = await downloadPromise
   if (!download.suggestedFilename().endsWith('.zip')) throw new Error('Export is not a ZIP')
   await download.saveAs('e2e/output/slice-j-export.zip')

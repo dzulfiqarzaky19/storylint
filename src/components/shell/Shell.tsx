@@ -230,7 +230,6 @@ export function Shell() {
         >
           <BinderIcon />
         </IconButton>
-        <h1 className="shell__project">{project.project?.title ?? 'Storylint'}</h1>
         <ProjectSwitcher
           projects={project.projects}
           activeProjectId={project.activeProjectId}

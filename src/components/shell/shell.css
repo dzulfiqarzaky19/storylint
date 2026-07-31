@@ -19,14 +19,6 @@
   z-index: var(--z-rail);
 }
 
-.shell__project {
-  margin: var(--space-0);
-  font-size: var(--text-lg);
-  line-height: var(--leading-lg);
-  font-weight: var(--weight-semibold);
-  white-space: nowrap;
-}
-
 .shell__breadcrumb {
   min-width: 0;
   color: var(--color-text-muted);
@@ -50,13 +42,11 @@
 /* Reading control lives on the paper (.manuscript__bookmark), not top bar */
 
 /* Focus mode keeps the bar minimal: exit + reveal only */
-.shell[data-focus='true'] .shell__breadcrumb,
-.shell[data-focus='true'] .shell__project {
+.shell[data-focus='true'] .shell__breadcrumb {
   color: var(--color-text-muted);
 }
 
 @media (max-width: 767px) {
-  .shell__project,
   .shell__breadcrumb,
   .project-status,
   .shell__action-graph,
