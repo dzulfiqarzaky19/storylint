@@ -4,6 +4,7 @@ import { SheetEditor, type SheetEditorHandle } from '../../features/project/Shee
 import { Button, IconButton, ListRow } from '../ui'
 import type { Chapter, SheetKind } from './workspace'
 import { SHEET_KINDS, SHEET_KIND_LABEL } from './workspace'
+import { chapterListLabel } from './chapterListLabel.ts'
 import './shell.css'
 
 export type BinderProps = {
@@ -39,16 +40,6 @@ export type BinderProps = {
   onClose?: () => void
 }
 
-/** Display-only label for blank chapter titles. Never persist these strings. */
-function chapterListLabel(chapters: readonly { title: string }[], index: number): string {
-  const stored = chapters[index]?.title.trim() ?? ''
-  if (stored) return stored
-  let amongEmpty = 0
-  for (let i = 0; i <= index; i++) {
-    if (!(chapters[i]?.title.trim())) amongEmpty += 1
-  }
-  return amongEmpty <= 1 ? 'Untitled' : `Untitled ${amongEmpty}`
-}
 export function Binder({
   chapters,
   sheets,
