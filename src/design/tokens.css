@@ -129,23 +129,26 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  /* 4 layout chrome — base rail; scale up at lg/xl/2xl (shell media sets these) */
+  /* 4 layout chrome — base rail; scale up at lg/xl/2xl (shell media sets these).
+     Rail budget (D1, TOKENS.md §4): the manuscript is the work surface, so the two
+     rails together must stay well under half the desk. Rails grow far more slowly
+     than the viewport on purpose — extra pixels belong to the page, not to chrome. */
   --size-topbar: 48px;
   --size-reading-btn: 76px;
   /* Compact corner seal (circle) on paper */
   --size-reading-seal: 44px;
-  --size-binder: 300px;
+  --size-binder: 272px;
   --size-binder-min: 260px;
   --size-binder-max: 520px;
-  --size-agent: 300px;
+  --size-agent: 272px;
   --size-agent-min: 260px;
   --size-agent-max: 520px;
-  --size-binder-lg: 340px;
-  --size-agent-lg: 340px;
-  --size-binder-xl: 380px;
-  --size-agent-xl: 380px;
-  --size-binder-2xl: 420px;
-  --size-agent-2xl: 420px;
+  --size-binder-lg: 272px;
+  --size-agent-lg: 272px;
+  --size-binder-xl: 280px;
+  --size-agent-xl: 280px;
+  --size-binder-2xl: 320px;
+  --size-agent-2xl: 320px;
   --size-icon: 16px;
   --size-icon-sm: 14px;
   --size-icon-lg: 20px;

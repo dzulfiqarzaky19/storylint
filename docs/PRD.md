@@ -165,7 +165,7 @@ Detail: [02-steal-and-phases](./02-steal-and-phases.md), [04-agents](./04-agents
 
 | # | Topic | Default |
 |---|--------|---------|
-| 1 | Agent panel | Open ≥ `bp.lg`; hideable |
+| 1 | Agent panel | Rail available ≥ `bp.lg`; **open by default ≥ `bp.desk`** (rail budget, TOKENS.md §7); hideable |
 | 2 | Sheet kinds | character, lore, world, organization |
 | 3 | Confidence | 0.7 |
 | 4 | Name | Storylint |
