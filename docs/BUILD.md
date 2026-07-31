@@ -1,6 +1,6 @@
 # Build slices — coder order
 
-**Read first:** [PRD.md](./PRD.md) · [AGENTS_ROLES.md](./AGENTS_ROLES.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)
+**Read first:** [PRD.md](./PRD.md) · [AGENTS_ROLES.md](./AGENTS_ROLES.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)  
 **AI harness** (`CLAUDE.md`, `.claude/`) is local-only — never commit/push ([AGENTS_ROLES.md](./AGENTS_ROLES.md) § AI harness stays local).  
 One slice per coding session. Do not start G/H/I before F/E as listed.
 
@@ -26,6 +26,7 @@ If loops skipped review: run [REVIEW_CATCHUP.md](./REVIEW_CATCHUP.md) before new
 | **I** P4 Graph | **Done** (landing) |
 | **J** Export / multi-project | **Done** (landing) |
 | **K** Desktop/mobile shells | **Done** (K1 lean spacing + K2 family tree) |
+| **L** Lab (pre-canon bench) | **Spec ready** — [design/LAB.md](./design/LAB.md); not built |
 
 ---
 
@@ -108,6 +109,31 @@ Continue / rewrite / brainstorm → Apply card → insert/replace only on Apply;
 | I ✓ | P4 relationship graph/canvas |
 | J ✓ | MD export, multi-project |
 | K ✓ | Desktop/mobile shell adapters (K1 spacing + K2 family tree) |
+| **L** | **Lab** — pre-canon create/experiment ([design/LAB.md](./design/LAB.md)) |
+
+---
+
+## Slice L — Lab (next product slice)
+
+**Spec:** [design/LAB.md](./design/LAB.md) · **Companion faces:** [design/COMPANION.md](./design/COMPANION.md)  
+**Why:** Sheets/agent/continuity **improve** canon and draft. Authors still need a bench to **create and try** characters, places, beats, what-ifs without fake chapters or false bible. Right rail must stay **mode-shaped** (Writing vs Lab vs Details) so brains don’t overload.
+
+| In | Out |
+|----|-----|
+| Center mode `lab` + binder entry | Infinite canvas |
+| Boards + cards (kinds, pin, archive) | Continuity on Lab text |
+| Promote → sheet proposal / chapter stub | Graph nodes from Lab |
+| Agent brainstorm → Lab cards only | Auto-canon / auto-Apply |
+| Companion faces per context (Chat/Spark/…) | Kitchen-sink Agent+Research stack |
+| schemaVersion bump + tests on promote boundary | Research replacement |
+
+**Order:**  
+0. **Companion shell (Writing faces first)** — split today’s AgentPanel clutter; can ship before Lab domain  
+1. Domain+persist Lab → API → UI bench  
+2. Lab companion faces (Chat/Spark/Inbox)  
+3. Promote → agent fixture → E2E  
+
+**Do not start L coding on a dirty PR branch** — land or worktree first.
 
 ---
 
