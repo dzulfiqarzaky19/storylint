@@ -306,6 +306,7 @@ export function Shell() {
         if (!shell.isOpen('agent')) shell.toggle('agent')
         void agentState.send(chapterId, prompts[kind], () => project.flushChapter(chapterId))
       }}
+      onAddChapter={project.addChapter}
       onClose={onClose}
     />
   )

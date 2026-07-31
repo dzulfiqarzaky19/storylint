@@ -10,6 +10,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -348,7 +349,8 @@ try {
   await shot(page, '05-network-all-on-again')
 
   // —— C. Propose edge (pending must not draw), Accept, then Family
-  const editor = graph.locator('.graph__editor')
+  // D4: Propose is a collapsed disclosure at every width; summon it before filling fields.
+  const editor = await openProposeEditor(graph)
   const selects = editor.locator('select')
   if ((await selects.count()) >= 2) {
     await selects.nth(0).selectOption(ids.parent)
@@ -397,6 +399,7 @@ try {
   checkpoint('propose-accept')
 
   // Also link org membership for multi-kind density
+  await openProposeEditor(graph)
   if ((await selects.count()) >= 2) {
     await selects.nth(0).selectOption(ids.parent)
     await selects.nth(1).selectOption(ids.org)

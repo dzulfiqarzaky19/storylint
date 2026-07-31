@@ -28,6 +28,8 @@ try {
   await openCompanionFace(companion, 'Spark')
   await openCompanionFace(companion, 'Chat')
 
+  // Kind chooser rests as one disclosure naming the current kind (P2); open it to pick another.
+  await lab.getByLabel('New lab card').locator('summary').click()
   await lab.getByLabel('New card kind').getByRole('button', { name: 'Place', exact: true }).click()
   await lab.getByLabel('Lab card title').fill(cardTitle)
   await lab.getByLabel('Lab card body').fill('Outer arch where the first breach happens. Not canon.')

@@ -17,7 +17,8 @@
 | File | Kind | Author | Decided / use |
 |------|------|--------|----------------|
 | [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) | adjudication | ox | D5 sheet→center RETRACTED; IA_MAP §2/§4.4 binder Level-3 stack STANDS; residue F1/F2/F3 (Task V / octopus) |
-| [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) | design-authority | ox | CALM_BUDGET HARD/WARN rulings (B1≥40, faces≤5 ceiling not ≤3 gate, structure checks, etc.) |
+| [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) | design-authority | ox | How CALM numbers were judged (B1≥40 floor, faces≤5 ceiling not ≤3 gate, structure checks). Still useful history. |
+| [calm-budget-r3-ox.md](./calm-budget-r3-ox.md) | design-authority | ox | Green-vs-calm r3: false green/red, M1–M11, structure over ratios. **Live bar** = [../CALM_BUDGET.md](../CALM_BUDGET.md) r3 (Task AG) |
 | [density-audit-qa3.md](./density-audit-qa3.md) | audit | dolphin | Surface density fault list @ pre-fix head (historical). D5 center-sheet fix SUPERSEDED by adjudication-d5. Re-run before new D-tasks. |
 | [design-review-r1.md](./design-review-r1.md) | design-review | ox | Round-1 accept/reject by surface @ 8911406; drives calm budget + density follow-ups |
 | [design-review-d6.md](./design-review-d6.md) | design-review | ox | ACCEPT D6 companion face density (Chat/Write/Check + More/Inbox badge) |
@@ -25,6 +26,7 @@
 | [design-review-l2.md](./design-review-l2.md) | design-review | ox | ACCEPT L2 kind-label revert → Characters/Lore/World/Organizations |
 | [ia-final-qa.md](./ia-final-qa.md) | qa-record | qa (ia-final-qa.mjs) | PASS 14/14 J1/J2/J3 + Canon entry @ 6a2a74b |
 | [ia-step1-qa.md](./ia-step1-qa.md) | qa-record | qa (ia-step1-qa.mjs) | PASS with nits — IA step-1 naming/entry @ 67592a1/b68703e |
+| [milestone-density-pass.md](./milestone-density-pass.md) | milestone-notes | horse | Density-pass founder summary @ 4327572; holds = calm gate + Canon dirty-guard; deliberate non-goals |
 | [orchestrator-ux-faults.md](./orchestrator-ux-faults.md) | review-handoff | hamster | Priority UX fault queue for orchestrator (request changes) |
 | [ux-report.md](./ux-report.md) | review | hamster | Full UX drive report; paint doctrine Kobo/brass not skill OLED |
 
@@ -51,7 +53,7 @@ Former paths were mostly `e2e/output/<name>.md`. Prefer this folder for any new 
 |--------|--------|
 | [density-audit-qa3.md](./density-audit-qa3.md) | **Historical** pre-fix snapshot. D5 center-sheet **RETRACTED** → [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) + IA_MAP §2/§4.4 |
 | [design-review-task-l.md](./design-review-task-l.md) | Kind **renames REJECTED** — see [design-review-l2.md](./design-review-l2.md) + [../design/CANON-VOCABULARY.md](../design/CANON-VOCABULARY.md) |
-| [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) | Still authoritative for how numbers were judged; **live bar** = [../CALM_BUDGET.md](../CALM_BUDGET.md) |
+| [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) | Judgment method still useful; **live bar** = [../CALM_BUDGET.md](../CALM_BUDGET.md) **r3** via [calm-budget-r3-ox.md](./calm-budget-r3-ox.md) |
 | [ia-step1-qa.md](./ia-step1-qa.md) | Superseded as latest IA QA by [ia-final-qa.md](./ia-final-qa.md) (keep both) |
 
 Corpus entry: [../README.md](../README.md).
