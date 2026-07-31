@@ -75,6 +75,7 @@ export function ProjectSwitcher({
     <div className="project-switcher" ref={rootRef}>
       <select
         aria-label="Active project"
+        title={projects.find((project) => project.id === activeProjectId)?.title ?? 'Active project'}
         value={activeProjectId}
         disabled={busy}
         onChange={(event) => void onSwitch(event.target.value)}
