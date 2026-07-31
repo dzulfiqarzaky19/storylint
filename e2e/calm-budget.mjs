@@ -30,6 +30,7 @@ import {
   ensureBinderOpen,
   ensureCompanionOpen,
   claimEmptyProject,
+  fetchActiveProject,
   ensureDraftReady,
   ensureIsolatedProject,
   formatRailState,
@@ -718,6 +719,169 @@ async function measurePrimaryPerJob(page) {
  * Uses claimEmptyProject so zero-chapter / zero-sheet is a real New-project state (koala).
  * Dual-rail @1440 only — that is where binder + fold + companion share one viewport.
  */
+
+/**
+ * Measure Inbox face under a known pending volume.
+ * Wall signals (AV): many visible proposal cards packed on first screen,
+ * and/or panel grows with content (scrollH≈clientH) instead of internal scroll.
+ */
+async function measureInboxWall(page) {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl, isVisiblyPainted } = new Function(`${visSrc}; return { isVisibleEl, isVisiblyPainted }`)()
+    const panel = document.querySelector('.panel[data-companion-context], [data-companion-face]')
+    const face = panel?.getAttribute('data-companion-face') || null
+    const cards = [...document.querySelectorAll(
+      '.proposal-card, article.proposal, [data-proposal-id], [aria-label="Pending proposals"] article, [aria-label="Pending proposals"] li',
+    )]
+    const visibleCards = cards.filter((c) => {
+      try {
+        if (typeof isVisibleEl === 'function') return !!isVisibleEl(c)
+        return !!isVisiblyPainted(c).visible
+      } catch {
+        return false
+      }
+    })
+    const badge = [...document.querySelectorAll('button, [role="tab"]')]
+      .find((el) => /^Inbox/i.test((el.textContent || '').trim()))
+    const scrollH = panel?.scrollHeight ?? 0
+    const clientH = panel?.clientHeight ?? 0
+    const internalScroll = scrollH > clientH + 4
+    const denseCount = visibleCards.length >= 12
+    const growsNotScrolls = visibleCards.length >= 8 && !internalScroll
+    const inboxWall = denseCount || growsNotScrolls
+    return {
+      face,
+      cardDom: cards.length,
+      cardVisible: visibleCards.length,
+      badgeText: (badge?.textContent || '').trim() || null,
+      scrollH,
+      clientH,
+      internalScroll,
+      denseCount,
+      growsNotScrolls,
+      inboxWall,
+    }
+  }, BROWSER_IS_VISIBLE_SOURCE)
+}
+
+function makeVolumeProposals(count, chapterId) {
+  const proposals = []
+  for (let i = 0; i < count; i++) {
+    proposals.push({
+      id: 'prop-b3-wall-' + (i + 1),
+      fingerprint: 'fp-b3-wall-' + (i + 1),
+      status: 'pending',
+      entityName: 'Entity ' + (i + 1),
+      sheetKind: 'character',
+      key: 'attr_' + (i + 1),
+      value: 'value-' + (i + 1),
+      statement: 'Entity ' + (i + 1) + ' has attr ' + (i + 1),
+      claimKind: 'attribute',
+      confidence: 0.9,
+      source: { chapterId, start: 0, end: 4, text: 'Aria' },
+    })
+  }
+  return proposals
+}
+
+/**
+ * B3-inbox-wall at volume: private project + 30 pending proposals.
+ * Measures the Inbox face (not Chat). Expected HARD-red until product scrollport/fold lands.
+ */
+async function runInboxWallFixture(browser) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  page.setDefaultTimeout(12000)
+  const VOLUME = 30
+  try {
+    await installFixtureLlmRoutes(page)
+    const projectId = await ensureIsolatedProject(page, {
+      id: 'e2e-calm-inbox-wall-' + process.pid + '-' + Date.now().toString(36),
+      title: 'E2E Calm Inbox Wall',
+    })
+    await page.goto(UI, { waitUntil: 'networkidle' })
+    await reclaimIsolatedProject(projectId)
+    await ensureDraftReady(page, {
+      body: 'Aria opened the iron door for inbox wall measure.',
+      title: 'Chapter One',
+      craftTags: ['setup'],
+    })
+    const current = await fetchActiveProject()
+    const chapterId = current && current.chapters && current.chapters[0] && current.chapters[0].id
+    if (!chapterId) {
+      throw new PreconditionError('precondition not met: inbox-wall fixture needs a chapter')
+    }
+    const seeded = {
+      ...current,
+      proposals: [
+        ...(current.proposals || []).filter((p) => p.status !== 'pending'),
+        ...makeVolumeProposals(VOLUME, chapterId),
+      ],
+    }
+    const putResult = await page.evaluate(async (project) => {
+      const res = await fetch('/api/project', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(project),
+      })
+      const text = await res.text()
+      return { ok: res.ok, status: res.status, text: text.slice(0, 200) }
+    }, seeded)
+    if (!putResult.ok) {
+      throw new PreconditionError(
+        'precondition not met: seed 30 proposals failed (' + putResult.status + ' ' + putResult.text + ')',
+      )
+    }
+    await reclaimIsolatedProject(projectId)
+    await page.reload({ waitUntil: 'networkidle' })
+    await reclaimIsolatedProject(projectId)
+    await ensureCompanionOpen(page)
+    await enterWorkspaceForMeasure(page, 'draft', projectId)
+    await requireCompanionFace(page, 'Inbox')
+
+    const proof = await page.evaluate(async () => {
+      const project = await fetch('/api/project').then((r) => r.json())
+      return {
+        pending: (project.proposals || []).filter((p) => p.status === 'pending').length,
+      }
+    })
+    if (proof.pending < VOLUME) {
+      throw new PreconditionError(
+        'precondition not met: inbox-wall seed volume want ' + VOLUME + ' pending got ' + proof.pending,
+      )
+    }
+
+    const measured = await measureInboxWall(page)
+    if (measured.face && !/^inbox$/i.test(measured.face)) {
+      preconditionFail(
+        'B3-inbox-wall@volume',
+        'companion Inbox@1440 volume=30',
+        new PreconditionError('precondition not met: Inbox face not proven (face=' + measured.face + ')'),
+      )
+      return
+    }
+    // Honest red while product packs all cards / grows the panel.
+    // Pass criteria (ox AV): internal scrollport + not a dense first-screen wall.
+    add(
+      'B3-inbox-wall@volume',
+      'HARD',
+      'CALM_BUDGET.md B3-inbox-wall · Inbox at 30 pending is not a wall (internal scroll + calm fold)',
+      'companion Inbox@1440 volume=30',
+      measured.inboxWall === false,
+      'inboxWall=' + measured.inboxWall
+        + ' cardVisible=' + measured.cardVisible
+        + ' pending=' + proof.pending
+        + ' scrollH=' + measured.scrollH
+        + ' clientH=' + measured.clientH
+        + ' internalScroll=' + measured.internalScroll
+        + ' badge=' + measured.badgeText,
+      'inboxWall=false at volume 30',
+    )
+  } finally {
+    await page.close()
+  }
+}
+
 async function runEmptyPrimaryFixtures(browser) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   page.setDefaultTimeout(12000)
@@ -1017,10 +1181,12 @@ async function runViewport(browser, width, height, label, projectId) {
           `face=${facesChat.face} context=${facesChat.context}`,
           'chat',
         )
+        // Chat must not dump pending proposals (transcript, not Inbox).
+        // Named separately — B3-inbox-wall measures the Inbox face at volume.
         add(
-          `B3-inbox-wall@${label}`,
+          `B3-chat-proposals-wall@${label}`,
           'HARD',
-          'CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false',
+          'CALM_BUDGET.md B3-chat-proposals-wall · Chat has no proposal dump',
           `companion chat@${label}`,
           facesChat.chatProposalsWall === false,
           `chatProposalsWall=${facesChat.chatProposalsWall}`,
@@ -1518,6 +1684,8 @@ try {
   await runViewport(browser, 390, 844, '390', projectId)
   // Empty fixtures after populated run so they own a clean zero-content project.
   await runEmptyPrimaryFixtures(browser)
+  // Inbox wall at volume — measures Inbox face (not Chat). Honest red until product fold/scrollport.
+  await runInboxWallFixture(browser)
 } catch (error) {
   if (error instanceof PreconditionError || String(error?.message || error).includes('precondition not met')) {
     console.error('REFUSE (precondition): ' + (error instanceof Error ? error.message : String(error)))
