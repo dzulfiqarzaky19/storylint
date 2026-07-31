@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import { closeSheetDetail, companionPanel, openCompanionFace } from './helpers.mjs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -39,6 +40,8 @@ async function proposeAndAccept(page) {
   await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
+  // D4: Propose is collapsed by default at every width — open it before touching fields.
+  await openProposeEditor(graph)
   const selects = graph.locator('.graph__editor select')
   await selects.nth(0).selectOption(parentId)
   await selects.nth(1).selectOption(childId)
