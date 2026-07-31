@@ -74,6 +74,12 @@ const FORBIDDEN_IN_GATES = [
     id: 'ambient-data-project-json',
     re: /data\/project\.json|data\\project\.json/,
   },
+  {
+    // networkidle is safe on FIRST goto, dangerous on RELOAD after mount
+    // (companion/LLM sockets never idle → 30s latent timeout). Use reloadApp.
+    id: 'reload-networkidle',
+    re: /\.reload\s*\(\s*\{[^}]*waitUntil\s*:\s*['"`]networkidle['"`]/,
+  },
 ]
 
 function listScripts(dir, out = []) {

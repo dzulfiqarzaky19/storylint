@@ -19,16 +19,21 @@
 10. **Never filter the output of a command that mutates a remote.** Pipes and greps hide the mutation line; run mutators plain so the full transcript is the record.
 11. **A fix can be correct while its stated cause is wrong.** Ship the fix with an open question rather than a confident false mechanism — the wrong cause stops the next person looking. (rat scar: slice-j — [milestone-density-pass](./milestone-density-pass.md))
 
+## Class over instance
+
+12. **A defect found once is a hypothesis about a class.** Before fixing an instance, grep for the mechanism and count the sites. Report the count. The instance is almost always cheaper than the class — fixing only the instance leaves the class live. ([milestone-density-pass](./milestone-density-pass.md) § class-over-instance)
+13. **Reporter names the mechanism; fixer owns the sweep** (or hands the inventory to whoever does). "Look for more" is advice; naming + counting + sweep ownership is the procedure.
+
 ## Product chrome
 
-12. **One solid primary per job in the viewport**, counted across regions. Same verb + destination = one job; second door demotes or hides. ([one-primary-door-per-job](./one-primary-door-per-job.md)) — check **B6-primary-per-job** **LANDED** (empty Canon + Draft fixtures).
-13. **Build the control the current cardinality justifies.** One overflow target → plain control, not a one-item menu costume. Grow the menu when the second target exists. ([research-face-shape](./research-face-shape.md); APG full-menu greenlight **retracted**)
-14. **Companion is one assistant doing one thing.** Global busy; no run-id parallel lanes; one busy word family; face shows this run’s outcome, not stale success. ([companion-one-assistant](./companion-one-assistant.md))
-15. **Canon has exactly one write path and it is explicit** — Accept on a proposal, or Save on an author sheet edit (with leave guard). Never silent bible write; never Accept/Reject on author sheet edits. ([copy-audit-task-t](./copy-audit-task-t.md), [sheet-dirty-leave-guard](./sheet-dirty-leave-guard.md))
-16. **User-facing bible → Canon is full sweep or none** (half-rename is revert-class). Graph kinds use `SHEET_KIND_LABEL`. ([pack-b-canon-dialect-complete](./pack-b-canon-dialect-complete.md), [design-review-l2](./design-review-l2.md))
-17. **New project ≠ first boot.** Boot may seed Chapter One; New project stays empty. Same empty-door rules when empty. ([new-project-vs-first-boot](./new-project-vs-first-boot.md))
-18. **Sheet = binder Level-3 stack**, not center stage. ([adjudication-d5-sheet-binder](./adjudication-d5-sheet-binder.md))
-19. **Writing faces:** ≤3 primary peers (Chat·Write·Check) + Inbox badge + quiet Research/More — allow-list may be 5; not a ≤3 redesign gate. ([design-review-d6](./design-review-d6.md), [research-face-shape](./research-face-shape.md))
+14. **One solid primary per job in the viewport**, counted across regions. Same verb + destination = one job; second door demotes or hides. ([one-primary-door-per-job](./one-primary-door-per-job.md)) — check **B6-primary-per-job** **LANDED** (empty Canon + Draft fixtures).
+15. **Build the control the current cardinality justifies.** One overflow target → plain control, not a one-item menu costume. Grow the menu when the second target exists. ([research-face-shape](./research-face-shape.md); APG full-menu greenlight **retracted**)
+16. **Companion is one assistant doing one thing.** Global busy; no run-id parallel lanes; one busy word family; face shows this run’s outcome, not stale success. ([companion-one-assistant](./companion-one-assistant.md))
+17. **Canon has exactly one write path and it is explicit** — Accept on a proposal, or Save on an author sheet edit (with leave guard). Never silent bible write; never Accept/Reject on author sheet edits. ([copy-audit-task-t](./copy-audit-task-t.md), [sheet-dirty-leave-guard](./sheet-dirty-leave-guard.md))
+18. **User-facing bible → Canon is full sweep or none** (half-rename is revert-class). Graph kinds use `SHEET_KIND_LABEL`. ([pack-b-canon-dialect-complete](./pack-b-canon-dialect-complete.md), [design-review-l2](./design-review-l2.md))
+19. **New project ≠ first boot.** Boot may seed Chapter One; New project stays empty. Same empty-door rules when empty. ([new-project-vs-first-boot](./new-project-vs-first-boot.md))
+20. **Sheet = binder Level-3 stack**, not center stage. ([adjudication-d5-sheet-binder](./adjudication-d5-sheet-binder.md))
+21. **Writing faces:** ≤3 primary peers (Chat·Write·Check) + Inbox badge + quiet Research/More — allow-list may be 5; not a ≤3 redesign gate. ([design-review-d6](./design-review-d6.md), [research-face-shape](./research-face-shape.md))
 
 ## Gate
 

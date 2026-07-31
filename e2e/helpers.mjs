@@ -29,6 +29,30 @@ export class PreconditionError extends Error {
 }
 
 /**
+ * Reload after the app has already mounted.
+ *
+ * RULE: networkidle is SAFE on FIRST navigation and DANGEROUS on RELOAD.
+ * After mount, companion/LLM sockets keep the network busy forever on owned
+ * stacks, so waitUntil:'networkidle' burns the full ~30s Playwright timeout
+ * before continuing — a latent flake under load (slice-j paid 63s for this).
+ *
+ * Always use domcontentloaded, then wait for the state the caller actually needs
+ * (select attached, Draft editor, binder list, etc). Never treat idle as a proxy.
+ */
+export async function reloadApp(page, { timeout = 30_000, ready = null } = {}) {
+  if (!page) return
+  await page.reload({ waitUntil: 'domcontentloaded', timeout })
+  if (typeof ready === 'function') {
+    await ready(page)
+  } else if (ready) {
+    await page.locator(ready).first().waitFor({ state: 'attached', timeout: PRECONDITION_TIMEOUT_MS })
+  } else {
+    // Default shell landmark: Active project select is present once the app shell hydrates.
+    await page.getByLabel('Active project').waitFor({ state: 'attached', timeout: PRECONDITION_TIMEOUT_MS }).catch(() => {})
+  }
+}
+
+/**
  * Workspace modes used by shell ecosystems + companion context attrs.
  * button: Workspace control label
  * main: expected main aria-label pattern
@@ -926,7 +950,7 @@ export async function claimEmptyProject(page, { id, title = 'E2E Empty' } = {}) 
   // Prove empty; if not empty, mint a new id once.
   try {
     if (page) {
-      try { await page.reload({ waitUntil: 'networkidle' }) } catch { /* not on page */ }
+      try { await reloadApp(page) } catch { /* not on page */ }
     }
     await reclaimIsolatedProject(projectId)
     await assertProjectEmpty({ projectId })
@@ -935,7 +959,7 @@ export async function claimEmptyProject(page, { id, title = 'E2E Empty' } = {}) 
     const retryId = `${projectId}-empty-${Date.now().toString(36)}`
     await ensureIsolatedProject(page, { id: retryId, title })
     if (page) {
-      try { await page.reload({ waitUntil: 'networkidle' }) } catch { /* ok */ }
+      try { await reloadApp(page) } catch { /* ok */ }
     }
     await reclaimIsolatedProject(retryId)
     try {
@@ -1049,7 +1073,7 @@ export async function ensureDraftReady(page, {
 
   // Land on Draft with a visible chapter editor.
   try {
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
   } catch {
     // not navigated yet
   }
@@ -1067,7 +1091,7 @@ export async function ensureDraftReady(page, {
       if (await door.count()) await door.first().click()
       else await page.getByRole('button', { name: 'Write', exact: true }).first().click()
     } else {
-      await page.reload({ waitUntil: 'networkidle' })
+      await reloadApp(page)
       if (await draftBtn.count()) {
         try { await draftBtn.click({ timeout: 2000 }) } catch { /* ok */ }
       }
@@ -1106,7 +1130,7 @@ export async function fillChapterAndSave(page, text) {
       }),
     })
     if (!reset.ok) throw new Error(`fillChapterAndSave API recovery failed: ${reset.status}`)
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
     await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').waitFor()
     if (await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue() !== text) {
       throw new Error('fillChapterAndSave recovery body mismatch')

@@ -45,7 +45,7 @@ try {
       })
     }
   })
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   await page.waitForSelector('.shell')
 
   const agentToggle = page.getByRole('button', { name: /Show companion|Hide companion/i }).first()
@@ -170,7 +170,7 @@ try {
   // Reload to pick proposals if put ok, then measure live text after second put delta via UI accept path is heavy.
   // Instead: measure that live node exists and simulate count by checking after reload + second seed.
   if (report.inbox.putOk) {
-    await page.reload({ waitUntil: 'networkidle' })
+    await page.reload({ waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(300)
     if (/Show companion/i.test((await agentToggle.getAttribute('aria-label')) || '')) {
       await agentToggle.click(); await page.waitForTimeout(200)
