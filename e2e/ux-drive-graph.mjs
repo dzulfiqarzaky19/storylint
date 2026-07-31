@@ -19,6 +19,8 @@ mkdirSync('e2e/output', { recursive: true })
 
 const API = 'http://127.0.0.1:4174'
 const UI = 'http://localhost:5173/'
+/** Visible chip labels for sheet kinds (SHEET_KIND_LABEL); the map no longer renders raw enums. */
+const KIND_LABEL = { character: 'Characters', lore: 'Lore', world: 'World', organization: 'Organizations' }
 const KINDS = ['character', 'lore', 'world', 'organization']
 const stamp = Date.now()
 const tag = stamp.toString(36).slice(-4)
@@ -244,13 +246,13 @@ async function openGraph(page) {
 }
 
 async function ensureKindOn(graph, kind) {
-  const btn = graph.getByRole('button', { name: kind, exact: true })
+  const btn = graph.getByRole('button', { name: KIND_LABEL[kind] ?? kind, exact: true })
   const pressed = await btn.getAttribute('aria-pressed')
   if (pressed !== 'true') await btn.click()
 }
 
 async function ensureKindOff(graph, kind) {
-  const btn = graph.getByRole('button', { name: kind, exact: true })
+  const btn = graph.getByRole('button', { name: KIND_LABEL[kind] ?? kind, exact: true })
   const pressed = await btn.getAttribute('aria-pressed')
   if (pressed === 'true') await btn.click()
 }
@@ -361,7 +363,7 @@ try {
     await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
     const edgesBefore = await graph.locator('.graph__edge').count()
     await graph.getByRole('button', { name: 'Send proposal' }).click()
-    await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 8000 }).catch(() => null)
+    await graph.getByText(/proposal is pending/i).waitFor({ timeout: 8000 }).catch(() => null)
     const edgesPending = await graph.locator('.graph__edge').count()
     if (edgesPending === edgesBefore) {
       results.jobs.pendingHidden = true

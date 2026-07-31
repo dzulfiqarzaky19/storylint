@@ -51,7 +51,7 @@ export function parseClaims(value: unknown): RawClaim[] {
   })
 }
 
-function bibleDigest(project: Project): string {
+function canonDigest(project: Project): string {
   return project.sheets
     .map((sheet) => `${sheet.kind}: ${sheet.name}\n${sheet.facts.map((fact) => `- ${fact.key}=${fact.value}`).join('\n')}`)
     .join('\n\n')
@@ -60,14 +60,14 @@ function bibleDigest(project: Project): string {
 export async function extractLiveClaims(project: Project, chapterId: string, config: LlmConfig): Promise<Claim[]> {
   const chapter = project.chapters.find((candidate) => candidate.id === chapterId)
   if (!chapter) throw new Error(`Chapter not found: ${chapterId}`)
-  const digest = bibleDigest(project)
+  const digest = canonDigest(project)
   if (chapter.body.length + digest.length > MAX_PROVIDER_INPUT_CHARS) {
-    throw new Error('Chapter and bible digest are too large for a continuity run')
+    throw new Error('Chapter and Canon digest are too large for a continuity run')
   }
   const parsed = parseClaims(await completeJson(
     config,
     'Extract explicit continuity claims from fiction. Return JSON with a claims array. Every claim needs entityName, sheetKind, key, value, statement, claimKind, confidence, and spanText. claimKind must be one of "attribute", "relationship", "event", or "existence". sheetKind must be one of "character", "lore", "world", or "organization". spanText must be an exact unique substring. Do not invent canon.',
-    `Bible digest:\n${digest}\n\nChapter: ${chapter.title}\n${chapter.body}`,
+    `Canon digest:\n${digest}\n\nChapter: ${chapter.title}\n${chapter.body}`,
   ))
 
   return parsed.flatMap((raw): Claim[] => {

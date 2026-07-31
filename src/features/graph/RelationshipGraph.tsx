@@ -3,6 +3,7 @@ import { SHEET_KINDS, type Project, type SheetKind } from '../../domain/types.ts
 import { layoutFamilyTree } from '../../graph/familyTree.ts'
 import { projectGraph, type GraphEdge } from '../../graph/projectGraph.ts'
 import { proposeGraphEdge } from '../project/api.ts'
+import { SHEET_KIND_LABEL } from '../../components/shell/workspace.ts'
 import { Button, EmptyState, Input } from '../../components/ui'
 import './graph.css'
 
@@ -226,7 +227,7 @@ export function RelationshipGraph({
       if (generation !== projectGeneration()) return
       onProject(next, generation)
       setTargetFactId(undefined)
-      setNotice('Relationship proposal is pending in the agent panel. Accept is required for canon.')
+      setNotice('Relationship proposal is pending in the Companion Inbox. Accept is required for Canon.')
     } catch (caught) {
       if (generation !== projectGeneration()) return
       setNotice(caught instanceof Error ? caught.message : 'Could not propose relationship')
@@ -297,7 +298,7 @@ export function RelationshipGraph({
           </div>
           <div className="graph__filters" role="group" aria-label="Filter by sheet kind">
             {SHEET_KINDS.map((kind) => (
-              <Button key={kind} aria-pressed={kinds.has(kind)} onClick={() => toggleKind(kind)}>{kind}</Button>
+              <Button key={kind} aria-pressed={kinds.has(kind)} onClick={() => toggleKind(kind)}>{SHEET_KIND_LABEL[kind]}</Button>
             ))}
           </div>
         </div>
@@ -363,7 +364,7 @@ export function RelationshipGraph({
                 data-active={active ? 'true' : 'false'}
                 role="button"
                 tabIndex={0}
-                aria-label={`Open ${node.label} ${node.kind} sheet`}
+                aria-label={`Open ${node.label} ${SHEET_KIND_LABEL[node.kind]} sheet`}
                 transform={`translate(${position.x} ${position.y})`}
                 onPointerEnter={() => setActiveNodeId(node.id)}
                 onPointerLeave={() => setActiveNodeId((current) => current === node.id ? null : current)}
@@ -374,7 +375,7 @@ export function RelationshipGraph({
                   if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
                 }}
               >
-                <title>{node.label} · {node.kind}</title>
+                <title>{node.label} · {SHEET_KIND_LABEL[node.kind]}</title>
                 <circle r={geometry.networkNodeRadius} />
                 <text className="graph__portrait" textAnchor="middle" y="-4">{node.portrait || node.label.slice(0, 2).toUpperCase()}</text>
                 {showText ? (
@@ -382,7 +383,7 @@ export function RelationshipGraph({
                     <text className="graph__label" textAnchor="middle" y={geometry.networkLabelY}>
                       {truncateLabel(node.label, NETWORK_LABEL_MAX)}
                     </text>
-                    <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{node.kind}</text>
+                    <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{SHEET_KIND_LABEL[node.kind]}</text>
                   </>
                 ) : null}
               </g>
@@ -436,7 +437,7 @@ export function RelationshipGraph({
                   const labelY = phone ? geometry.familyNodeH * 0.78 : geometry.familyNodeH * 0.72
                   return (
                     <g key={node.id} className="graph__node graph__node--family" role="button" tabIndex={0}
-                      aria-label={`Open ${node.label} ${node.kind} sheet`}
+                      aria-label={`Open ${node.label} ${SHEET_KIND_LABEL[node.kind]} sheet`}
                       transform={`translate(${x} ${y})`}
                       onClick={() => onOpenSheet(node.id)} onKeyDown={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }

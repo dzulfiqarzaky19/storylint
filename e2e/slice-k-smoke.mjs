@@ -58,7 +58,7 @@ async function proposeAndAccept(page) {
   await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
   const edgesBefore = await graph.locator('.graph__edge').count()
   await graph.getByRole('button', { name: 'Send proposal' }).click()
-  await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 5000 })
+  await graph.getByText(/proposal is pending/i).waitFor({ timeout: 5000 })
   if (await graph.locator('.graph__edge').count() !== edgesBefore) {
     throw new Error('Pending kinship edge rendered before Accept')
   }

@@ -73,12 +73,12 @@ async function liveReview(
 ): Promise<RawReview> {
   const chapter = project.chapters.find((candidate) => candidate.id === chapterId)
   if (!chapter) throw new Error(`Chapter not found: ${chapterId}`)
-  const bible = project.sheets.map((sheet) => `${sheet.kind}: ${sheet.name} — ${sheet.summary}`).join('\n')
-  if (chapter.body.length + bible.length > 200_000) throw new Error('Chapter and bible context are too large for review')
+  const canon = project.sheets.map((sheet) => `${sheet.kind}: ${sheet.name} — ${sheet.summary}`).join('\n')
+  if (chapter.body.length + canon.length > 200_000) throw new Error('Chapter and Canon context are too large for review')
   return parseReview(await completeJson(
     config,
-    `You are an on-demand fiction ${kind === 'craft' ? 'craft coach' : 'review panel'}. Return JSON {"findings":[{"lens":"plot"|"culture"|"gap"|"craft","title":string,"detail":string}],"suggestedTags":["char-dev"|"plot-progress"|"twist"|"world-build"|"relationship"|"setup"|"payoff"|"breather"]}. Findings are neutral coaching in the agent panel, never continuity diagnostics. Do not rewrite prose or update canon.`,
-    `Chapter: ${chapter.title}\nTags: ${chapter.craftTags.join(', ')}\n${chapter.body}\n\nBible context:\n${bible}`,
+    `You are an on-demand fiction ${kind === 'craft' ? 'craft coach' : 'review panel'}. Return JSON {"findings":[{"lens":"plot"|"culture"|"gap"|"craft","title":string,"detail":string}],"suggestedTags":["char-dev"|"plot-progress"|"twist"|"world-build"|"relationship"|"setup"|"payoff"|"breather"]}. Findings are neutral coaching in the Companion panel, never continuity diagnostics. Do not rewrite prose or update canon.`,
+    `Chapter: ${chapter.title}\nTags: ${chapter.craftTags.join(', ')}\n${chapter.body}\n\nCanon context:\n${canon}`,
   ))
 }
 

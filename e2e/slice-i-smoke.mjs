@@ -68,10 +68,10 @@ try {
   if (await page.getByLabel('Name').inputValue() !== firstName) throw new Error('Node did not open its sheet')
   await closeSheetDetail(page)
 
-  await graph.getByRole('button', { name: 'lore', exact: true }).click()
+  await graph.getByRole('button', { name: 'Lore', exact: true }).click()
   const nodesFiltered = await graph.locator('.graph__node').count()
   if (nodesFiltered >= nodesBefore) throw new Error('Kind filter did not reduce graph nodes')
-  await graph.getByRole('button', { name: 'lore', exact: true }).click()
+  await graph.getByRole('button', { name: 'Lore', exact: true }).click()
 
   // D4: Propose is collapsed by default at every width - open it before touching fields.
   const editor = await openProposeEditor(graph)
@@ -84,7 +84,7 @@ try {
   await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
   const edgesBefore = await graph.locator('.graph__edge').count()
   await graph.getByRole('button', { name: 'Send proposal' }).click()
-  await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 5000 })
+  await graph.getByText(/proposal is pending/i).waitFor({ timeout: 5000 })
   if (await graph.locator('.graph__edge').count() !== edgesBefore) throw new Error('Pending edge rendered before Accept')
 
   const companion = companionPanel(page)

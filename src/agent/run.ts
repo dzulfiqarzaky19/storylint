@@ -115,10 +115,10 @@ function projectContext(project: Project, chapterId: string): string {
     'Manuscript:',
     clipped || '(empty)',
     '',
-    'Bible sheets:',
+    'Canon sheets:',
     sheets,
     '',
-    'Lab bench (pre-canon, not bible):',
+    'Lab bench (pre-canon, not Canon):',
     lab,
   ].join('\n')
 }
@@ -177,7 +177,7 @@ function fixtureResponse(project: Project, chapterId: string, message: string): 
   }
   const organization = /organization|order/i.test(message)
   return {
-    message: 'I prepared a proposal pack. Review it before accepting it into the bible.',
+    message: 'I prepared a proposal pack. Review it in the Companion Inbox before accepting it into Canon.',
     sheetPack: organization
       ? { name: 'Ember Order', kind: 'organization', summary: 'A disciplined order tied to the ember.', facts: [
           { key: 'purpose', value: 'guard the ember', statement: 'The Ember Order guards the ember' },
@@ -223,10 +223,10 @@ async function liveResponse(config: LlmConfig, project: Project, chapterId: stri
   const reply = await completeText(
     config,
     [
-      'You are the Storylint project agent — a sharp fiction writing partner in an IDE agent panel.',
-      'You know this project’s manuscript chapter, bible sheets, and Lab bench (context below).',
-      'Help with craft, continuity questions, brainstorming, and bible planning.',
-      'Lab text is pre-canon — never treat it as bible or manuscript.',
+      'You are the Storylint project agent — a sharp fiction writing partner in the Companion panel.',
+      'You know this project’s manuscript chapter, Canon sheets, and Lab bench (context below).',
+      'Help with craft, continuity questions, brainstorming, and Canon planning.',
+      'Lab text is pre-canon — never treat it as Canon or manuscript.',
       'Do not rewrite the manuscript in-place; suggest wording they can Apply via co-write tools if they want draft text.',
       'Do not treat pending ideas as accepted canon. Be concise and concrete.',
     ].join(' '),

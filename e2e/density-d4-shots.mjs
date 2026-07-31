@@ -86,6 +86,9 @@ function metrics(graph) {
       lede: root.querySelector('.graph__lede')?.textContent?.trim() ?? null,
       viewPressed: style(view?.querySelector('[aria-pressed="true"]')),
       filterPressed: style(filters?.querySelector('[aria-pressed="true"]')),
+      // C5: chips must read as plain language, never raw enum values.
+      filterLabels: [...(filters?.querySelectorAll('button') ?? [])].map((b) => b.textContent.trim()),
+      kindTexts: [...root.querySelectorAll('.graph__kind')].map((t) => t.textContent.trim()),
       filterHeights: [...(filters?.querySelectorAll('button') ?? [])].map((b) =>
         Math.round(b.getBoundingClientRect().height),
       ),
@@ -186,7 +189,17 @@ try {
     const c = m.collapsed
     check(c.editorIsDetails, `${label}: propose editor is not a disclosure`)
     check(c.editorOpen === false, `${label}: propose editor should default collapsed`)
-    check(c.lede === 'Accepted links only', `${label}: lede is "${c.lede}"`)
+    // C5: no raw enum may survive as a visible chip or node label.
+  const RAW_KINDS = ['character', 'lore', 'world', 'organization']
+  check(
+    c.filterLabels.length > 0 && !c.filterLabels.some((t) => RAW_KINDS.includes(t)),
+    `${label}: kind chips still show raw enums -> ${JSON.stringify(c.filterLabels)}`,
+  )
+  check(
+    !c.kindTexts.some((t) => RAW_KINDS.includes(t)),
+    `${label}: node kind text still shows raw enums -> ${JSON.stringify(c.kindTexts)}`,
+  )
+  check(c.lede === 'Accepted links only', `${label}: lede is "${c.lede}"`)
     check(c.canvas && c.editor && c.canvas.h > c.editor.h, `${label}: canvas must be taller than collapsed editor`)
     check(c.canvas && c.header && c.canvas.h >= c.header.h, `${label}: canvas must be at least header height`)
     check(m.open.editorOpen === true, `${label}: Enter on summary did not open propose`)

@@ -78,7 +78,7 @@ export type ProjectController = {
   promoteLabCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<api.PromoteLabResponse>
 }
 
-/** API-backed project state. Chapter writes debounce; structured bible edits save explicitly. */
+/** API-backed project state. Chapter writes debounce; structured Canon edits save explicitly. */
 export function useProject(): ProjectController {
   const [project, setProject] = useState<Project | null>(null)
   const [loading, setLoading] = useState(true)

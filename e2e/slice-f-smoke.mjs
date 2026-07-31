@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import {
+  closeSheetDetail,
   ensureIsolatedProject,
   ensureDraftReady,
   waitSaved,
@@ -40,7 +41,7 @@ try {
   // Sheet editor lives under Canon/binder; open Canon before New sheet.
   const canonBtn = page.getByRole('button', { name: 'Canon', exact: true })
   if (await canonBtn.count()) await canonBtn.click()
-  await page.getByRole('button', { name: 'New sheet' }).click()
+  await page.locator('.panel').getByRole('button', { name: 'New sheet', exact: true }).first().click()
   await page.getByLabel('Portrait / icon').waitFor()
   await page.getByLabel('Name', { exact: true }).fill(sheetName)
   await page.locator('select.sheet-editor__select').selectOption('lore')
@@ -49,7 +50,7 @@ try {
   await page.getByRole('button', { name: 'origin' }).waitFor({ timeout: 5000 })
   await page.getByRole('button', { name: 'origin' }).click()
   if (await page.getByLabel('Key').inputValue() !== 'origin') throw new Error('Lore hint did not fill freeform key')
-  await page.getByRole('button', { name: 'Back to binder' }).click()
+  await closeSheetDetail(page)
   // Binder list row (not graph node which also matches the sheet name).
   await page.locator('.ui-list-row').filter({ hasText: sheetName }).first().click()
   if (await page.getByLabel('Portrait / icon').inputValue() !== '🌙') throw new Error('Portrait did not persist')
