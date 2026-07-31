@@ -31,9 +31,12 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
 
 ## History rules (why "beautiful")
 
-- `--no-ff` merges into `dev` so each task reads as one bubble; `--no-ff` merges into `main` so each milestone reads as one bubble
+- `--no-ff` merges into `dev` so each task reads as **one bubble per task**; `--no-ff` merges into `main` so each milestone reads as one bubble. "Beautiful history" means **one bubble per task**, not a linear topic branch. It never required a rebase onto a moving `dev`.
 - No direct-to-`dev` commits except the merge commits themselves
-- Rebase your **topic** branch on `origin/dev` before merging if `dev` moved; never rebase shared `dev` or `main`
+- If `dev` moved, **merge `origin/dev` INTO your topic branch**, then `merge --no-ff` the topic into `dev`. **Do not rebase onto a moving `dev`.** Rebasing is acceptable only on a private branch nobody has read, and never as a precondition for merging. A `--no-ff` merge from a slightly stale base is correct and expected under concurrency: git resolves it and the bubble records what happened honestly.
+- Never rebase shared `dev` or `main`
+
+**Observed failure (2026-07-31):** an agent rebased a docs-only branch four times chasing a tip that moved every few minutes, and merged zero times. Merging is what makes the tip stop moving.
 - Delete merged remote branches unless they are release/backup refs
 
 ## Hardening (session scars — 2026-07-31)
@@ -76,7 +79,7 @@ git push origin dev
 
 - **Never** `--force` to `dev` or `main`
 - **Never** rebase shared branches (`dev`, `main`)
-- Topic branches may be rebased onto `origin/dev` **before** anyone else builds on them; once pushed and shared, prefer merge
+- Topic branches: if `dev` moved under you, **merge** `origin/dev` into the topic (additive). Do not rebase a pushed/shared topic onto moving `dev`. Private-only rebase remains the rare exception, never a merge precondition.
 
 **Observed failure:** unpushed local merges stacked under other agents' work; force would have rewritten peer history.
 
@@ -99,23 +102,65 @@ Do not treat `cat file` / editor buffers / a dirty worktree as the product of re
 
 **Observed failure:** coordinator read a reverted file from disk and nearly drew the wrong conclusion; a worker hit a worktree switch mid-task and momentarily lost a just-landed `dev` tip until recovered via `git show` / reflog-class commits.
 
-### 6. Worktrees in use (this machine)
+### 6. Own worktree per agent — never switch the shared tree
+
+`D:/dev/projects/storylint` is **common ground**. Other agents may be mid-edit there. **Do not** `git checkout` / `git switch` topic branches in a worktree you did not create.
+
+```
+# start a task
+git fetch origin
+git worktree add D:/dev/projects/storylint-<topic> -b storylint/<topic> origin/dev
+cd D:/dev/projects/storylint-<topic>
+# … work only here …
+
+# when done
+git worktree remove D:/dev/projects/storylint-<topic>
+```
+
+- Every agent works in **its own** worktree on **its own** topic branch.
+- The shared tree stays on `origin/dev` (or detached at that tip). Restore it there if you disturbed it.
+- Never assume the shared tree’s branch is yours.
+
+**Observed failure (2026-07-31):** an agent switched the shared tree onto `storylint/release-prep` and displaced another agent’s checkout mid-task.
+
+### 7. Worktrees in use (this machine — living table)
 
 | Path | Role |
 |------|------|
-| `D:/dev/projects/storylint` | Main worktree — **contended**; do not assume it is on `dev` |
+| `D:/dev/projects/storylint` | Shared main worktree — **contended**; leave on `origin/dev` |
 | `D:/dev/projects/storylint-base` | Detached / base experiments |
 | `D:/dev/projects/storylint-d4` | D4 Canon map chrome |
 | `D:/dev/projects/storylint-rail` | Rail budget |
-| `D:/dev/projects/storylint-e2e-health` | E2E suite health |
-| `D:/dev/projects/storylint-pig-docs` | Docs-only when main is busy |
+| `D:/dev/projects/storylint-e2e-health` | E2E / calm gate |
+| `D:/dev/projects/storylint-pig-docs` | Docs-only when shared is busy |
+| `D:/dev/projects/storylint-release` | Release readiness (AF) |
+| `D:/dev/projects/storylint-a11y` | a11y / dirty-guard |
 
 **Constraints:**
 
-- Git refuses `dev` checked out in two worktrees at once.
-- Workaround used by coordinator: **detached HEAD at `origin/dev`** (or a topic branch) inside a secondary worktree, merge there, push, then `git update-ref refs/heads/dev <merge>` only when no other worktree holds `dev`.
-- Prefer `git worktree add <path> -b storylint/<topic> origin/dev` for long tasks so the main tree stays free.
-- When done, remove spare worktrees you created: `git worktree remove <path>`.
+- Git refuses the same branch checked out in two worktrees at once (`dev` included).
+- Standard move when another worktree holds `dev`: **detached HEAD at `origin/dev`** inside your worktree, `merge --no-ff` the topic, `git push origin HEAD:dev`, then `git fetch` and report `origin/dev`. Avoid `git update-ref` unless you own the shared ref and no other worktree holds `dev`.
+- Prefer `git worktree add <path> -b storylint/<topic> origin/dev` for long tasks so the shared tree stays free.
+- When done, remove spare worktrees **you** created: `git worktree remove <path>`.
+
+### 8. How to check main↔dev divergence on this repo
+
+`--no-ff` merges into `main` leave a **merge bubble** on main that `dev` never carries as a tip. So:
+
+```
+git log origin/dev..origin/main          # often NON-empty — expected (merge commits only)
+```
+
+is **not** the divergence test. Real tests (both must be empty if main has no unique work):
+
+```
+git log --no-merges origin/dev..origin/main
+git diff --stat $(git merge-base origin/dev origin/main) origin/main
+```
+
+If either shows unique non-merge commits or a tree delta, stop and tell the coordinator. That is a real fork, not a bubble.
+
+**Observed false alarm (2026-07-31):** AF stopped on `184bb3e` (pure merge bubble; tree identical to second parent / merge-base). Cost real agent time; do not repeat.
 
 ## Swarm rules
 
@@ -133,3 +178,4 @@ Also follow [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md): report on state change, no
 3. Report: `branch` · `topic=<sha>` · `origin/dev=<sha>`
 4. Validation ran on the **merge result**
 5. No force-push; no shared rebase
+6. Work happened in **your** worktree; shared tree left on `origin/dev`
