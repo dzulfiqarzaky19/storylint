@@ -1,4 +1,4 @@
-import type { Chapter, Fact, Project, Proposal, Sheet } from '../../domain/types.ts'
+import type { Chapter, Fact, LabCardKind, Project, Proposal, Sheet, SheetKind } from '../../domain/types.ts'
 import type { ApplyCard, CowriteRequest, CowriteResult } from '../../cowrite/types.ts'
 import type { ReviewKind, ReviewResult } from '../../review/types.ts'
 import type { ResearchNote } from '../../domain/types.ts'
@@ -174,4 +174,55 @@ export function applySuggestion(chapterId: string, card: ApplyCard): Promise<Pro
       expectedText: card.expectedText,
     }),
   })
+}
+
+export function createLabCard(input: {
+  boardId?: string
+  kind: LabCardKind
+  title: string
+  body?: string
+}): Promise<Project> {
+  return request('/api/lab/cards', { method: 'POST', body: JSON.stringify(input) })
+}
+
+export function patchLabCard(cardId: string, patch: {
+  title?: string
+  body?: string
+  kind?: LabCardKind
+}): Promise<Project> {
+  return request(`/api/lab/cards/${encodeURIComponent(cardId)}`, {
+    method: 'PATCH', body: JSON.stringify(patch),
+  })
+}
+
+export function archiveLabCard(cardId: string): Promise<Project> {
+  return request(`/api/lab/cards/${encodeURIComponent(cardId)}/archive`, {
+    method: 'POST', body: '{}',
+  })
+}
+
+export function pinLabCard(cardId: string, pinned = true): Promise<Project> {
+  return request(`/api/lab/cards/${encodeURIComponent(cardId)}/pin`, {
+    method: 'POST', body: JSON.stringify({ pinned }),
+  })
+}
+
+export type PromoteLabResponse = {
+  project: Project
+  as: 'sheet-proposal' | 'chapter-stub'
+  proposalIds?: string[]
+  chapterId?: string
+}
+
+export function promoteLabCard(cardId: string, input: {
+  sheetKind?: SheetKind
+  chapterTitle?: string
+} = {}): Promise<PromoteLabResponse> {
+  return request(`/api/lab/cards/${encodeURIComponent(cardId)}/promote`, {
+    method: 'POST', body: JSON.stringify(input),
+  })
+}
+
+export function createLabBoard(title: string): Promise<Project> {
+  return request('/api/lab/boards', { method: 'POST', body: JSON.stringify({ title }) })
 }

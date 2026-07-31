@@ -9,9 +9,10 @@ import {
 import { useProject } from '../../features/project/useProject.ts'
 import { ProjectSwitcher } from '../../features/project/ProjectSwitcher.tsx'
 import { useAgent } from '../../features/agent/useAgent.ts'
+import { LabBench } from '../../features/lab/LabBench.tsx'
 import { Button, Drawer, EmptyState, IconButton } from '../ui'
 import { AgentIcon, BinderIcon, FocusIcon, ThemeIcon } from './icons'
-import { AgentPanel } from './AgentPanel'
+import { AgentPanel, type CompanionContext } from './AgentPanel'
 import { Binder } from './Binder'
 import { Manuscript, type EditorSelection } from './Manuscript'
 import { RelationshipGraph } from '../../features/graph/RelationshipGraph.tsx'
@@ -33,13 +34,22 @@ export function Shell() {
   const [theme, setTheme] = useState<Theme>('dark')
   const [reading, setReading] = useState<ReadingProfile>('night')
   const [activeChapterId, setActiveChapterId] = useState<string | null>(null)
-  const [workspaceMode, setWorkspaceMode] = useState<'manuscript' | 'graph'>('manuscript')
+  const [workspaceMode, setWorkspaceMode] = useState<'manuscript' | 'graph' | 'lab'>('manuscript')
+  const [activeBoardId, setActiveBoardId] = useState<string | null>(null)
   const [requestedSheetId, setRequestedSheetId] = useState<string | null>(null)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
   const activeChapter =
     chapters.find((chapter) => chapter.id === activeChapterId) ?? chapters[0] ?? null
+  const lab = project.project?.lab ?? null
+
+  const companionContext: CompanionContext =
+    workspaceMode === 'lab'
+      ? 'lab'
+      : workspaceMode === 'graph'
+        ? 'graph'
+        : 'writing'
 
   useEffect(() => {
     if (!activeChapterId && chapters[0]) setActiveChapterId(chapters[0].id)
@@ -60,8 +70,13 @@ export function Shell() {
   useEffect(() => {
     setActiveChapterId(null)
     setRequestedSheetId(null)
+    setActiveBoardId(null)
     setWorkspaceMode('manuscript')
   }, [project.activeProjectId])
+
+  useEffect(() => {
+    if (!activeBoardId && lab?.boards[0]) setActiveBoardId(lab.boards[0].id)
+  }, [activeBoardId, lab])
 
   async function switchProject(id: string) {
     await project.switchProject(id)
@@ -84,7 +99,6 @@ export function Shell() {
     const next: Theme = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
     applyTheme(next)
-    // Keep paper in sync with shell when flipping day/night chrome
     const paper: ReadingProfile = next === 'light' ? 'day' : 'night'
     setReading(paper)
   }
@@ -93,13 +107,28 @@ export function Shell() {
     setReading((current) => nextReading(current))
   }
 
+  function openLab(boardId?: string) {
+    if (boardId) setActiveBoardId(boardId)
+    setWorkspaceMode('lab')
+  }
+
+  function selectChapter(id: string) {
+    setActiveChapterId(id)
+    setWorkspaceMode('manuscript')
+  }
+
   const binder = (onClose?: () => void) =>
     project.project && activeChapter ? (
       <Binder
         chapters={project.project.chapters}
         sheets={project.project.sheets}
+        lab={project.project.lab}
         activeChapterId={activeChapter.id}
-        onSelectChapter={setActiveChapterId}
+        activeBoardId={activeBoardId}
+        labMode={workspaceMode === 'lab'}
+        onSelectChapter={selectChapter}
+        onSelectLabBoard={(boardId) => openLab(boardId)}
+        onOpenLab={() => openLab()}
         onAddChapter={project.addChapter}
         onSaveSheet={project.saveSheet}
         onSaveFact={project.saveFact}
@@ -118,6 +147,14 @@ export function Shell() {
       beginMutation={project.beginMutation}
       trackMutation={project.trackMutation}
       chapterTitle={activeChapter?.title ?? 'chapter'}
+      companionContext={companionContext}
+      contextLabel={
+        companionContext === 'lab'
+          ? `@${lab?.boards.find((board) => board.id === activeBoardId)?.title ?? 'lab'}`
+          : companionContext === 'graph'
+            ? '@graph'
+            : undefined
+      }
       proposals={(project.project?.proposals ?? []).filter((proposal) => proposal.status === 'pending')}
       continuityRunning={project.continuity.running}
       continuityMode={project.continuity.mode}
@@ -164,6 +201,18 @@ export function Shell() {
         const chapterId = activeChapter.id
         void agentState.send(chapterId, text, () => project.flushChapter(chapterId))
       }}
+      onSparkPreset={(kind) => {
+        if (!activeChapter) return
+        const chapterId = activeChapter.id
+        const prompts: Record<typeof kind, string> = {
+          place: 'Brainstorm 3 places for the Lab bench',
+          'character-spark': 'Spark a character for the Lab',
+          beat: 'Suggest 3 plot beats for the Lab',
+          'what-if': 'Fork a what-if for the Lab',
+        }
+        if (!shell.isOpen('agent')) shell.toggle('agent')
+        void agentState.send(chapterId, prompts[kind], () => project.flushChapter(chapterId))
+      }}
       onClose={onClose}
     />
   )
@@ -190,7 +239,13 @@ export function Shell() {
           onExport={project.exportProject}
         />
         <span className="shell__breadcrumb">
-          {project.loading ? 'Loading project…' : activeChapter?.title ?? 'No chapters'}
+          {project.loading
+            ? 'Loading project…'
+            : workspaceMode === 'lab'
+              ? lab?.boards.find((board) => board.id === activeBoardId)?.title ?? 'Lab'
+              : workspaceMode === 'graph'
+                ? 'Graph'
+                : activeChapter?.title ?? 'No chapters'}
         </span>
         <span className="project-status" aria-live="polite">
           {project.saveState === 'saving' ? 'Saving…' : project.saveState === 'saved' ? 'Saved' : ''}
@@ -199,15 +254,29 @@ export function Shell() {
         <div className="shell__topbar-actions">
           <Button
             className="shell__action-graph"
-            aria-pressed={workspaceMode === 'graph'}
-            onClick={() => setWorkspaceMode((current) => current === 'graph' ? 'manuscript' : 'graph')}
+            aria-pressed={workspaceMode === 'manuscript'}
+            onClick={() => setWorkspaceMode('manuscript')}
           >
-            {workspaceMode === 'graph' ? 'Editor' : 'Graph'}
+            Editor
+          </Button>
+          <Button
+            className="shell__action-graph"
+            aria-pressed={workspaceMode === 'graph'}
+            onClick={() => setWorkspaceMode('graph')}
+          >
+            Graph
+          </Button>
+          <Button
+            className="shell__action-graph"
+            aria-pressed={workspaceMode === 'lab'}
+            onClick={() => openLab()}
+          >
+            Lab
           </Button>
           <Button
             className="shell__action-continuity"
             variant="primary"
-            disabled={!activeChapter || project.continuity.running}
+            disabled={!activeChapter || project.continuity.running || workspaceMode === 'lab'}
             onClick={() => void runContinuity().catch(() => undefined)}
           >
             {project.continuity.running ? 'Running…' : 'Continuity'}
@@ -225,7 +294,7 @@ export function Shell() {
           ><ThemeIcon /></IconButton>
           <IconButton
             className="shell__action-agent"
-            label={shell.isOpen('agent') ? 'Hide agent panel' : 'Show agent panel'}
+            label={shell.isOpen('agent') ? 'Hide companion' : 'Show companion'}
             aria-pressed={shell.isOpen('agent')}
             onClick={() => shell.toggle('agent')}
           ><AgentIcon /></IconButton>
@@ -247,6 +316,20 @@ export function Shell() {
               <EmptyState title="Loading project…" hint="Opening your binder and latest chapter." />
             </div>
           </main>
+        ) : workspaceMode === 'lab' && lab ? (
+          <LabBench
+            lab={lab}
+            activeBoardId={activeBoardId}
+            onBoardChange={setActiveBoardId}
+            onCreateCard={project.createLabCard}
+            onPatchCard={project.patchLabCard}
+            onArchiveCard={project.archiveLabCard}
+            onPinCard={project.pinLabCard}
+            onPromoteCard={project.promoteLabCard}
+            onOpenAgent={() => {
+              if (!shell.isOpen('agent')) shell.toggle('agent')
+            }}
+          />
         ) : workspaceMode === 'graph' && project.project ? (
           <RelationshipGraph
             project={project.project}
@@ -303,7 +386,7 @@ export function Shell() {
       <Drawer open={shell.drawerOpen('binder')} onClose={shell.closeDrawer} side="left" label="Binder">
         {binder(shell.closeDrawer)}
       </Drawer>
-      <Drawer open={shell.drawerOpen('agent')} onClose={shell.closeDrawer} side="right" label="Agent panel">
+      <Drawer open={shell.drawerOpen('agent')} onClose={shell.closeDrawer} side="right" label="Companion">
         {agent(shell.closeDrawer)}
       </Drawer>
     </div>

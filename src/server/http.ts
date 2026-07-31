@@ -441,15 +441,15 @@ export function createServer(store: ProjectStore) {
         const snapshot = await store.load()
         const chapter = snapshot.chapters.find((candidate) => candidate.id === raw.chapterId)
         if (!chapter) throw new Error(`Chapter not found: ${raw.chapterId}`)
-        const contextVersion = JSON.stringify({ body: chapter.body, sheets: snapshot.sheets })
+        const contextVersion = JSON.stringify({ body: chapter.body, sheets: snapshot.sheets, lab: snapshot.lab })
         const result = await runAgent(snapshot, raw.chapterId, raw.message.trim(), llmConfig())
         let project = snapshot
-        if (result.proposals.length > 0) {
+        if (result.proposals.length > 0 || result.labCards.length > 0) {
           project = await store.update((project) => {
             const currentChapter = project.chapters.find((candidate) => candidate.id === raw.chapterId)
-            const currentVersion = JSON.stringify({ body: currentChapter?.body, sheets: project.sheets })
+            const currentVersion = JSON.stringify({ body: currentChapter?.body, sheets: project.sheets, lab: project.lab })
             if (currentVersion !== contextVersion) throw new Error('Project context changed during agent request; send it again')
-            return {
+            let nextProject = {
               ...project,
               proposals: [
                 ...project.proposals,
@@ -458,9 +458,18 @@ export function createServer(store: ProjectStore) {
                 ),
               ],
             }
+            for (const draft of result.labCards) {
+              nextProject = createLabCard(ensureLab(nextProject), {
+                boardId: draft.boardId,
+                kind: draft.kind,
+                title: draft.title,
+                body: draft.body,
+              })
+            }
+            return nextProject
           })
         }
-        return { ...result, project }
+        return { mode: result.mode, message: result.message, proposals: result.proposals, project }
       },
     },
     {
@@ -549,11 +558,15 @@ export function createServer(store: ProjectStore) {
           throw new Error('lab card kind is invalid')
         }
         if (typeof raw.title !== 'string' || !raw.title.trim()) throw new Error('lab card title is required')
+        const kind = raw.kind as typeof LAB_CARD_KINDS[number]
+        const title = raw.title
+        const cardBody = typeof raw.body === 'string' ? raw.body : ''
+        const boardId = typeof raw.boardId === 'string' ? raw.boardId : undefined
         return store.update((project) => createLabCard(ensureLab(project), {
-          boardId: typeof raw.boardId === 'string' ? raw.boardId : undefined,
-          kind: raw.kind as typeof LAB_CARD_KINDS[number],
-          title: raw.title,
-          body: typeof raw.body === 'string' ? raw.body : '',
+          boardId,
+          kind,
+          title,
+          body: cardBody,
         }))
       },
     },

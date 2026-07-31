@@ -17,7 +17,8 @@ export const LAB_PIN_SOFT_CAP = 5
 
 const DEFAULT_BOARD_ID = 'lab-board-bench'
 
-export function emptyLab(now = new Date().toISOString()): Lab {
+export function emptyLab(_now = new Date().toISOString()): Lab {
+  void _now
   const board: LabBoard = {
     id: DEFAULT_BOARD_ID,
     title: 'Bench',
