@@ -93,6 +93,7 @@ export type AgentPanelProps = {
   onAddCraftTags: (tags: CraftTag[]) => void
   onSend: (text: string) => void
   onSparkPreset?: (kind: 'place' | 'character-spark' | 'beat' | 'what-if') => void
+  onAddChapter?: () => void
   onClose?: () => void
 }
 
@@ -102,7 +103,7 @@ export function AgentPanel({
   proposals, continuityRunning, continuityMode, continuityCounts,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, tipsDismissed,
   onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
-  onRunReview, onAddCraftTags, onSend, onSparkPreset, onClose,
+  onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
   const [face, setFace] = useState<CompanionFace>(DEFAULT_FACE[companionContext])
@@ -357,106 +358,108 @@ export function AgentPanel({
           )}
         </div>
       ) : face === 'write' && companionContext === 'writing' ? (
-        <>
-          {!hasChapter ? (
-            <div className="agent__transcript" aria-label="Write rest">
-              <EmptyState
-                title="No chapter open"
-                hint="Open or create a chapter in Draft, then Continue / Rewrite / Brainstorm from the page. Co-write needs somewhere to land."
-              />
-              {renderTranscript({ tools: false, review: false, apply: true, status: false })}
-            </div>
-          ) : (
-            renderTranscript({ tools: false, review: false, apply: true, status: false })
-          )}
-          <div className="panel__footer">
-            <div className="agent__chips">
-              <Badge tone="accent">{chipLabel}</Badge>
-              {selection.text ? <Badge tone="pending">{selection.end - selection.start} ch selected</Badge> : null}
-            </div>
-            <Textarea
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              placeholder={hasChapter ? 'Optional instruction for co-write…' : 'Open a chapter in Draft first…'}
-              aria-label="Co-write instruction"
-              rows={2}
-              disabled={!hasChapter || sending}
+        !hasChapter ? (
+          <div className="agent__transcript" aria-label="Write rest">
+            <EmptyState
+              title="Co-write needs a chapter"
+              hint="Continue, Rewrite, and Brainstorm land on the open Draft page. Start one chapter, then come back here to write with the companion."
+              action={
+                onAddChapter ? (
+                  <Button variant="primary" onClick={onAddChapter}>
+                    Write first chapter
+                  </Button>
+                ) : undefined
+              }
             />
-            <div className="agent__cowrite-actions" aria-label="Co-write skills">
-              <Button
-                disabled={!hasChapter || sending}
-                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
-                onClick={() => generate('continue')}
-              >
-                Continue
-              </Button>
-              <Button
-                disabled={!hasChapter || sending || selection.start === selection.end}
-                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
-                onClick={() => generate('rewrite')}
-              >
-                Rewrite
-              </Button>
-              <Button
-                disabled={!hasChapter || sending}
-                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
-                onClick={() => generate('brainstorm')}
-              >
-                Brainstorm
-              </Button>
-            </div>
-            {!hasChapter ? (
-              <p className="continuity-privacy" role="status">
-                Waiting on a chapter — use Draft doors Write or New chapter in the binder.
-              </p>
-            ) : null}
           </div>
-        </>
+        ) : (
+          <>
+            {renderTranscript({ tools: false, review: false, apply: true, status: false })}
+            <div className="panel__footer">
+              <div className="agent__chips">
+                <Badge tone="accent">{chipLabel}</Badge>
+                {selection.text ? <Badge tone="pending">{selection.end - selection.start} ch selected</Badge> : null}
+              </div>
+              <Textarea
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                placeholder="Optional instruction for co-write…"
+                aria-label="Co-write instruction"
+                rows={2}
+                disabled={sending}
+              />
+              <div className="agent__cowrite-actions" aria-label="Co-write skills">
+                <Button disabled={sending} onClick={() => generate('continue')}>
+                  Continue
+                </Button>
+                <Button
+                  disabled={sending || selection.start === selection.end}
+                  onClick={() => generate('rewrite')}
+                >
+                  Rewrite
+                </Button>
+                <Button disabled={sending} onClick={() => generate('brainstorm')}>
+                  Brainstorm
+                </Button>
+              </div>
+            </div>
+          </>
+        )
       ) : face === 'check' && companionContext === 'writing' ? (
-        <>
+        !hasChapter ? (
           <div className="companion__check-body" aria-label="Check summary">
-            {continuityRunning ? (
-              <p className="companion__check-summary" data-continuity-state="running" aria-live="polite">
-                Continuity is running on this chapter…
-              </p>
-            ) : continuityMode ? (
-              <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
-                {continuityCounts
-                  ? continuityCounts.red + continuityCounts.yellow + continuityCounts.proposals === 0
-                    ? `Last Continuity (${continuityMode}): no issues found.`
-                    : `Last Continuity (${continuityMode}): ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals. Open Inbox to Accept/Edit/Reject.`
-                  : `Last Continuity finished in ${continuityMode} mode.`}
-              </p>
-            ) : !hasChapter ? (
-              <EmptyState
-                title="Nothing to check yet"
-                hint="Check is the only Continuity entry. Open or create a chapter in Draft first — Continuity scans chapter prose against accepted Canon."
-              />
-            ) : (
-              <EmptyState
-                title="Nothing checked yet"
-                hint="Check is the only Continuity entry. Run Continuity to scan this chapter for contradictions. Findings land as marks and Inbox proposals — never auto-canon."
-              />
-            )}
-            {renderTranscript({ apply: false, status: false })}
+            <EmptyState
+              title="Continuity starts with a chapter"
+              hint="Check is the only place Continuity lives. It reads your chapter against accepted Canon, then leaves findings as marks and Inbox proposals — it never changes Canon on its own."
+              action={
+                onAddChapter ? (
+                  <Button variant="primary" onClick={onAddChapter}>
+                    Write first chapter
+                  </Button>
+                ) : undefined
+              }
+            />
           </div>
-          <div className="panel__footer">
-            <div className="agent__cowrite-actions" aria-label="Check tools">
-              <Button
-                variant="primary"
-                disabled={!hasChapter || continuityRunning}
-                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
-                data-continuity-state={continuityState}
-                aria-busy={continuityRunning}
-                onClick={() => void onRunContinuity().catch(() => undefined)}
-              >
-                {continuityRunning ? 'Running…' : 'Run Continuity'}
-              </Button>
-              <Button disabled={!hasChapter || sending} title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
-              <Button disabled={!hasChapter || sending} title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined} onClick={() => void onRunReview('craft').catch(() => undefined)}>Craft</Button>
+        ) : (
+          <>
+            <div className="companion__check-body" aria-label="Check summary">
+              {continuityRunning ? (
+                <p className="companion__check-summary" data-continuity-state="running" aria-live="polite">
+                  Continuity is running on this chapter…
+                </p>
+              ) : continuityMode ? (
+                <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
+                  {continuityCounts
+                    ? continuityCounts.red + continuityCounts.yellow + continuityCounts.proposals === 0
+                      ? `Last Continuity (${continuityMode}): no issues found.`
+                      : `Last Continuity (${continuityMode}): ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals. Open Inbox to Accept/Edit/Reject.`
+                    : `Last Continuity finished in ${continuityMode} mode.`}
+                </p>
+              ) : (
+                <EmptyState
+                  title="Run Continuity on this chapter"
+                  hint="Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon."
+                />
+              )}
+              {renderTranscript({ apply: false, status: false })}
             </div>
-          </div>
-        </>
+            <div className="panel__footer">
+              <div className="agent__cowrite-actions" aria-label="Check tools">
+                <Button
+                  variant="primary"
+                  disabled={continuityRunning}
+                  data-continuity-state={continuityState}
+                  aria-busy={continuityRunning}
+                  onClick={() => void onRunContinuity().catch(() => undefined)}
+                >
+                  {continuityRunning ? 'Running…' : 'Run Continuity'}
+                </Button>
+                <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
+                <Button disabled={sending} onClick={() => void onRunReview('craft').catch(() => undefined)}>Craft</Button>
+              </div>
+            </div>
+          </>
+        )
       ) : face === 'spark' && companionContext === 'lab' ? (
         <>
           {renderTranscript({ tools: false, apply: false, review: false, status: false })}
