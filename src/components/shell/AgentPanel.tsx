@@ -128,6 +128,8 @@ export function AgentPanel({
   const applyCards = transcript.filter((entry) => entry.role === 'apply')
   const pendingCount = proposals.length + applyCards.length
   const hasChapter = (project?.chapters?.length ?? 0) > 0
+  const hasProse = chapterBody.trim().length > 0
+  const continuityRunnable = hasChapter && hasProse
 
   useEffect(() => {
     const prev = prevPendingCountRef.current
