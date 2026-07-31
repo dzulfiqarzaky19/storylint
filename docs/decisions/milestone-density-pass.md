@@ -14,7 +14,7 @@
 **Write-time candidate tip:** `origin/dev` @ `4327572` (historical snapshot — not current)  
 **Main tip at write time:** `origin/main` @ `184bb3e`  
 **Write-time span:** `git log origin/main..origin/dev` → **60** commits forward  
-**Forward count as-of land:** **87** (`git rev-list --count origin/main..origin/dev` at docs tip on `cc8f224`; re-count at any later merge bubble)  
+**Forward count as-of land:** **87** at docs tip on `cc8f224` (historical). **As-of gate-status update:** **110** on `origin/dev` @ `888d192` (coordinator `test:green` + seal provenance measurement). Re-count at any later bubble.  
 **Reconcile:** nothing to pull back from main (see below)
 
 This is what an **author** would notice if they opened the app and the docs after this batch — not a changelog of branch names.
@@ -51,12 +51,31 @@ If either is non-empty, stop and tell the coordinator. That is unique content or
 
 ## Hold gates (dev → main)
 
-Coordinator holds the milestone merge until remaining holds clear:
+### Original three — **all lifted**
 
-1. **Calm gate sealed** — checker owns its server (build this tree, ephemeral port, refuse stranger `:5173`), provenance (git HEAD + served bundle) in every artifact. Badger line `storylint/e2e-calm-gate` / worktree `storylint-e2e-health`. A ghost PASS on someone else’s Vite is not a seal.
-2. ~~**Canon sheet dirty-guard (in-app leave)**~~ — **LANDED** on `origin/dev` @ `cc8f224` (`20c5c3c` Save/Discard/Cancel on Back, binder sheet switch, ecosystem Draft/Lab/Canon). **Does not** cover refresh/tab-close — see open defects.
+1. ~~**Calm gate sealed**~~ — **LANDED** `d031c58` (`storylint/e2e-calm-gate` / badger). Owned stack, provenance in artifacts, stranger default refused.
+2. ~~**Canon sheet dirty-guard (in-app leave)**~~ — **LANDED** `cc8f224` (`20c5c3c`). Refresh/tab-close still open debt — see defects.
+3. ~~**Smoke repair**~~ — **LANDED** deer `99c952f` / `d0b4b5c`. Lifted earlier.
 
-Smoke-repair gate (deer `99c952f` / `d0b4b5c`) is lifted. Horse does **not** perform `dev → main` or delete branches.
+### Seal’s first real output (proof it works)
+
+On a provenanced calm run against owned UI:
+
+```
+provenance head=888d192 owned=true shell=2c416be35924 ui=http://127.0.0.1:52050/
+```
+
+A smoke pointed at the stranger default now **REFUSES** with `Refusing stranger default :5173` instead of ghost-passing on someone else’s Vite.
+
+### Fourth hold (new) — `npm run test:green` must be GREEN
+
+Product is fine. Coordinator ran `test:green` on `origin/dev` @ `888d192` and got:
+
+- **115/115** unit PASS, build clean, **6/8** smokes PASS
+- **FAIL** `e2e/slice-f-smoke.mjs` — strict mode: `"New sheet"` resolves to **2** elements (test-side)
+- **FAIL** `e2e/slice-l-smoke.mjs` — reads `http://127.0.0.1:4174` while driving an **owned** UI (test-side / unattributed second origin)
+
+Both failures are **TEST-SIDE**. No product bug. **Main is still held** until badger makes `test:green` green. Overriding the first time the command is inconvenient would teach every agent the gate is advisory. Horse does **not** merge `dev → main` or delete branches without go-ahead.
 
 ---
 
@@ -96,7 +115,7 @@ Smoke-repair gate (deer `99c952f` / `d0b4b5c`) is lifted. Horse does **not** per
 
 - **E2E smokes isolate projects** and harden draft/sheet selectors so parallel agents and leftover `data/projects` stop poisoning runs (`66170e3` / `5e087f3`).
 - **Deterministic LLM fixtures + hard timeouts** on smokes so a live model cannot hang the suite (`7aef882`).
-- **Calm checker exists** as offline DOM geometry (`7eb089e`). Server ownership + provenance is hold gate #1, not claimed sealed solely by `4327572`.
+- **Calm checker exists** as offline DOM geometry (`7eb089e`). Server ownership + provenance **sealed** at `d031c58`; write-time tip `4327572` never claimed that seal alone.
 
 ### Docs and process (why the next person does not rebuild the wrong product)
 
@@ -134,7 +153,7 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 
 ## What we learned about verification
 
-**Root cause:** a check that cannot say **what it measured** (on which HEAD, which bundle, which element, visible how) is not evidence. Six ways checks lied this session, same disease:
+**Root cause:** a check that cannot say **what it measured** (on which HEAD, which bundle, which element, visible how) is not evidence. Seven ways checks lied this session, same disease:
 
 | Lie | What we saw |
 |-----|-------------|
@@ -144,15 +163,18 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 | Absence = pass | `chips.length === 0` treated as “correctly collapsed” |
 | Label ownership | Asserting on aria-label / visible copy the product may rewrite |
 | Unproven scoreboard | Historical PASS rows reused as current desk truth |
+| Split-origin stack | Owned UI + stranger API (e.g. smoke UI owned, API still on `:4174`) — still an **unattributed** measurement |
 
 **Four rules (keep):**
 
-1. **Provenance or it is not evidence.** Owned server, git HEAD, served bundle hash — or refuse (not green).
+1. **Provenance or it is not evidence.** Owned server, git HEAD, served bundle hash — or refuse (not green). Provenance must cover **every origin a test talks to**, not only the one it renders.
 2. **Never infer visibility from geometry.** `checkVisibility` + closed-`<details>` — [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md).
 3. **Absence is not a pass.** PASS / FAIL / **NOT-MEASURED**; NOT-MEASURED fails the gate.
 4. **Assert on behaviour, never on a label you do not own.** Prefer roles, `data-*`, and stable structure over marketing copy.
 
-These outlive every feature in this milestone.
+**The gate held the milestone.** Two test-side failures, no product impact, and we waited anyway. A gate that can be overridden by the person who built it is advisory, not a gate.
+
+These outlive every feature in this milestone. Citable green = `npm run test:green` only.
 
 ---
 
@@ -184,7 +206,7 @@ These are the landmines. Someone reading only today’s code will re-propose the
 - **No fourth ecosystem.** Research / Graph / Review / Agent remain tools, not places.
 - **No Continuity return to the top bar.** Ruling stands after `8911406`.
 - **No silent force-push / history rewrite** to paper over multi-agent drift — workflow docs hardened instead.
-- **Calm gate server ownership** remains a hold. **In-app** Canon dirty-guard landed (`cc8f224`); refresh/tab-close draft loss remains open debt. Write-time tip `4327572` is historical only.
+- **Calm seal** landed (`d031c58`). **In-app** Canon dirty-guard landed (`cc8f224`); refresh/tab-close draft loss remains open debt. **`test:green` red** is the active main hold (test-side F/L smokes). Write-time tip `4327572` is historical only.
 - **Graph kind labels / `@bible`→`@canon` badge** called out as open/wrong-turns in CODE_VERIFY — not silently “fixed” by this pass.
 
 ---
