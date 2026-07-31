@@ -106,7 +106,7 @@
 
   .shell__action-ecosystem {
     flex: 0 0 auto;
-    min-width: max-content;
+    min-width: var(--size-touch-min);
     min-height: var(--size-touch-min);
     padding-inline: var(--space-2);
     font-size: var(--text-sm);
@@ -125,6 +125,7 @@
   /* Project menu (⋯) and any other topbar text buttons — B5 chrome @390. */
   .shell__topbar button,
   .shell__topbar .ui-button {
+    min-width: var(--size-touch-min);
     min-height: var(--size-touch-min);
   }
 
