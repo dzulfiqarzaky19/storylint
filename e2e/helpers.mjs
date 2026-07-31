@@ -53,6 +53,69 @@ export async function reloadApp(page, { timeout = 30_000, ready = null } = {}) {
 }
 
 /**
+ * Measurement result — rule 4 structural close.
+ *
+ * Every gate measurement must return found(value) or notFound(reason).
+ * A check whose FAIL path is only `count >= N` PASSes at count 0 when the
+ * surface is missing — that is pass-on-absence (B4-craft-phone / B3-inbox-wall).
+ *
+ * Three outcomes must stay distinguishable:
+ *   1. thing absent and should be  → found(0) / found({ absent: true }) + predicate PASS
+ *   2. thing present within budget → found(value) + predicate PASS
+ *   3. could not find what we judge → notFound(reason) → NOT-MEASURED (HARD fail)
+ *
+ * Intentional absence is still *found* (we found the empty surface).
+ * notFound means the checker cannot name what it measured.
+ */
+export function found(value, extra = {}) {
+  return Object.freeze({ status: 'found', value, ...extra })
+}
+
+export function notFound(reason, extra = {}) {
+  return Object.freeze({
+    status: 'notFound',
+    reason: reason == null ? 'not found' : String(reason),
+    value: undefined,
+    ...extra,
+  })
+}
+
+export function isFound(m) {
+  return Boolean(m && m.status === 'found')
+}
+
+export function isNotFound(m) {
+  return Boolean(m && m.status === 'notFound')
+}
+
+/**
+ * Wrap a raw measure blob that uses missing/notMeasured flags.
+ * Prefer returning found()/notFound() from the measure itself when writing new code.
+ */
+export function asMeasurement(raw, { reason = 'surface missing or not measurable' } = {}) {
+  if (raw == null) return notFound(reason, { raw: null })
+  if (raw.status === 'found' || raw.status === 'notFound') return raw
+  if (raw.missing || raw.notMeasured || raw.found === false) {
+    return notFound(raw.reason || reason, { raw })
+  }
+  return found(raw, { raw })
+}
+
+/**
+ * Refuse a verdict when the measurement is notFound.
+ * Returns the found value, or null after calling onNotFound (caller records HARD).
+ */
+export function requireFound(measurement, onNotFound) {
+  if (isFound(measurement)) return measurement.value
+  const reason = isNotFound(measurement)
+    ? measurement.reason
+    : (measurement?.reason || 'measurement missing status found|notFound')
+  if (typeof onNotFound === 'function') onNotFound(reason, measurement)
+  return null
+}
+
+
+/**
  * Workspace modes used by shell ecosystems + companion context attrs.
  * button: Workspace control label
  * main: expected main aria-label pattern

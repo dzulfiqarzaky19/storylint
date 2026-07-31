@@ -38,11 +38,14 @@ Thumbs.db
 coverage
 *.tsbuildinfo
 # --- e2e/output split (intentional) ---
-# Tracked: judgments (docs/decisions/) AND measurements-over-time that a future
-# reader cannot cheaply reconstruct (e.g. calm-budget-run.md scoreboard at a
-# known commit — git-diffable product state vs the calm bar). Regenerable is
-# not the test; durable informational value is.
-# Ignored: raw evidence dumps — shots, probe JSON/logs, skill dumps, drive scratch.
+# Tracked: judgments (docs/decisions/) AND deliberate scoreboard baselines.
+# calm-budget-run.md is the TRACKED scoreboard — updated only via
+#   npm run calm -- --record   (or npm run calm:record)
+# Default calm writes calm-budget-last.md/.json (untracked). A tool must not
+# write a tracked path as a side effect of running — that dirties the tree,
+# blocks checkout, and can leave a checker measuring a stale detached head
+# (crab scar: detach failed, nearly reported 114/115 against the wrong commit).
+# Ignored: raw evidence dumps — shots, probe JSON/logs, skill dumps, last-run.
 # Cite shot paths from reviews; do not commit shot folders.
 e2e/output/
 !e2e/output/calm-budget-run.md
