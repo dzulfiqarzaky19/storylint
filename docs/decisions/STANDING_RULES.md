@@ -14,7 +14,7 @@
 
 ## Product chrome
 
-8. **One solid primary per job in the viewport**, counted across regions. Same verb + destination = one job; second door demotes or hides. ([one-primary-door-per-job](./one-primary-door-per-job.md)) — check **B6-primary-per-job** not yet implemented.
+8. **One solid primary per job in the viewport**, counted across regions. Same verb + destination = one job; second door demotes or hides. ([one-primary-door-per-job](./one-primary-door-per-job.md)) — check **B6-primary-per-job** **LANDED** (empty Canon + Draft fixtures).
 9. **Build the control the current cardinality justifies.** One overflow target → plain control, not a one-item menu costume. Grow the menu when the second target exists. ([research-face-shape](./research-face-shape.md); APG full-menu greenlight **retracted**)
 10. **Companion is one assistant doing one thing.** Global busy; no run-id parallel lanes; one busy word family; face shows this run’s outcome, not stale success. ([companion-one-assistant](./companion-one-assistant.md))
 11. **Canon has exactly one write path and it is explicit** — Accept on a proposal, or Save on an author sheet edit (with leave guard). Never silent bible write; never Accept/Reject on author sheet edits. ([copy-audit-task-t](./copy-audit-task-t.md), [sheet-dirty-leave-guard](./sheet-dirty-leave-guard.md))

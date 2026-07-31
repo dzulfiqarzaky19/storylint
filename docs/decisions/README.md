@@ -73,7 +73,7 @@ Short list only — do not grow into a second backlog novel.
 2. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift (bear in flight at write time).
 3. **Seeded-default first impression** — Chapter One + empty body unexamined; [brief queued](./seeded-default-first-impression-brief.md).
 4. **Canon and Lab under load** — density/fold under real sheets/cards not fully eye-judged on seeded fixtures.
-5. **B6-primary-per-job** — ruled in [one-primary-door-per-job.md](./one-primary-door-per-job.md); **not yet a calm check**.
+5. ~~**B6-primary-per-job**~~ — **LANDED** on origin/dev (empty Canon + Draft fixtures). Rule still [one-primary-door-per-job.md](./one-primary-door-per-job.md).
 
 ---
 
