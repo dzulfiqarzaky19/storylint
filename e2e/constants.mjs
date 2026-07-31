@@ -11,6 +11,21 @@ export const ALL_FEATURE_SMOKES = Object.freeze([
 ])
 
 /**
+ * D4: the Canon propose form is a collapsed disclosure at every width.
+ * Fields are not interactable until the summary is activated, so smokes must open it first.
+ * Clicks the real summary control (no `details.open` poke) so the smoke also proves the affordance.
+ */
+export async function openProposeEditor(graph) {
+  const disclosure = graph.locator('details.graph__editor--disclosure')
+  await disclosure.waitFor({ timeout: 10000 })
+  if (!(await disclosure.evaluate((el) => el.open))) {
+    await disclosure.locator('summary').click()
+  }
+  await graph.locator('.graph__editor select').first().waitFor({ state: 'visible', timeout: 10000 })
+  return disclosure
+}
+
+/**
  * ~2000-word dogfood chapter for UI e2e manuscript fills.
  * Keeps Aria/Kael + sealed-archive beats so fixture Review/Craft stay deterministic.
  */

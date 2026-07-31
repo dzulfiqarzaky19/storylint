@@ -120,7 +120,11 @@ export function RelationshipGraph({
   const [parallax, setParallax] = useState({ x: 0, y: 0 })
   const [phone, setPhone] = useState(false)
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
+  // D4: Propose is a job tool at every width — collapsed by default so the map owns the fold.
+  const [editorOpen, setEditorOpen] = useState(false)
   const stageRef = useRef<HTMLDivElement | null>(null)
+  const fromFieldRef = useRef<HTMLSelectElement | null>(null)
+  const focusFromFieldRef = useRef(false)
   const geometry = useMemo(() => graphGeometry(phone), [phone])
   const graph = useMemo(() => projectGraph(project, kinds), [project, kinds])
   const family = useMemo(() => layoutFamilyTree(graph, {
@@ -158,6 +162,13 @@ export function RelationshipGraph({
     return () => media.removeEventListener('change', sync)
   }, [])
 
+  useEffect(() => {
+    // Edge edit opens the disclosure; move focus to the first field so the edit is findable.
+    if (!editorOpen || !focusFromFieldRef.current) return
+    focusFromFieldRef.current = false
+    fromFieldRef.current?.focus()
+  }, [editorOpen])
+
   function toggleKind(kind: SheetKind) {
     setKinds((current) => {
       const next = new Set(current)
@@ -175,6 +186,8 @@ export function RelationshipGraph({
       .find((fact) => fact.id === edge.factId)?.statement ?? '')
     setTargetFactId(edge.factId)
     setNotice('Editing creates a pending replacement; canon remains unchanged until Accept.')
+    focusFromFieldRef.current = true
+    setEditorOpen(true)
   }
 
   function editFamilyLink(edgeId: string) {
@@ -231,7 +244,7 @@ export function RelationshipGraph({
 
   const editorFields = (
     <>
-      <label><span>From</span><select value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
+      <label><span>From</span><select ref={fromFieldRef} value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>To</span><select value={to} onChange={(event) => setTo(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>Relationship</span><Input value={key} onChange={(event) => setKey(event.target.value)} placeholder="father_of, member_of, rival…" /></label>
       <label><span>Statement</span><Input value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Aria is a member of the Ember Order" /></label>
@@ -253,7 +266,7 @@ export function RelationshipGraph({
       <header className="graph__header">
         <div>
           <h2>Relationships</h2>
-          <p>Accepted bible facts only. Pending proposals never render as edges.</p>
+          <p className="graph__lede" title="Accepted bible facts only. Pending proposals never render as edges.">Accepted links only</p>
         </div>
         <div className="graph__toolbar">
           <div className="graph__view" role="group" aria-label="Graph view">
@@ -434,17 +447,15 @@ export function RelationshipGraph({
         </>
       )}
 
-      {phone ? (
-        <details className="graph__editor graph__editor--disclosure">
-          <summary className="graph__editor-summary">{editorTitle}</summary>
-          <div className="graph__editor-body">{editorFields}</div>
-        </details>
-      ) : (
-        <section className="graph__editor" aria-labelledby="relationship-editor">
-          <h3 id="relationship-editor">{editorTitle}</h3>
-          {editorFields}
-        </section>
-      )}
+      {/* D4: one collapsed summary row at every width; map keeps the fold until summoned. */}
+      <details
+        className="graph__editor graph__editor--disclosure"
+        open={editorOpen}
+        onToggle={(event) => setEditorOpen((event.currentTarget as HTMLDetailsElement).open)}
+      >
+        <summary className="graph__editor-summary">{editorTitle}</summary>
+        <div className="graph__editor-body">{editorFields}</div>
+      </details>
     </main>
   )
 }

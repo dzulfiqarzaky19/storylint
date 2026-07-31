@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import { companionPanel, openCompanionFace, ensureIsolatedProject, ensureDraftReady } from './helpers.mjs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -60,7 +61,8 @@ try {
   if (nodesFiltered >= nodesBefore) throw new Error('Kind filter did not reduce graph nodes')
   await graph.getByRole('button', { name: 'lore', exact: true }).click()
 
-  const editor = graph.locator('.graph__editor')
+  // D4: Propose is collapsed by default at every width - open it before touching fields.
+  const editor = await openProposeEditor(graph)
   const selects = editor.locator('select')
   await selects.nth(0).selectOption(firstId)
   await selects.nth(1).selectOption(secondId)
