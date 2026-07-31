@@ -8,7 +8,8 @@
 
 ## Principle
 
-**Same agent brain. Different face per job.**
+**Same agent brain. Different face per job.** Structure lock: [../IA_MAP.md](../IA_MAP.md) §7. Words: [CANON-VOCABULARY.md](./CANON-VOCABULARY.md). Density: [../CALM_BUDGET.md](../CALM_BUDGET.md) B3.
+
 
 KISS: user should see **one job** in the right rail. Layout follows **where they are** (center context) and **what they’re doing** (optional sub-mode). Not a permanent toolbox of every skill.
 
@@ -22,8 +23,8 @@ Center context ──▶ default Companion face ──▶ user may switch sub-mo
 
 | Axis | Values | Who sets |
 |------|--------|----------|
-| **Context** (center) | `writing` · `lab` · `details` · `graph` · (+ `research` focus) | Workspace / binder selection |
-| **Face** (rail sub-mode) | depends on context; always ≤4 choices | User; resets to context default on context change |
+| **Context** (center) | `writing` · `lab` · `details` · `graph` only | Workspace / binder selection |
+| **Face** (rail sub-mode) | depends on context; **≤3 primary tabs** visible (+ More / Inbox badge) | User; resets to context default on context change |
 
 Changing center **resets** face to that context’s default (no leftover Co-write chrome while staring at a sheet).
 

@@ -5,6 +5,7 @@
 **Branch work:** `storylint/doc-contradictions`  
 **Authority:** [IA_MAP.md](./IA_MAP.md) rulings + founder decisions win. Shipped = `src` on audit head. Product forks → rat (not resolved here).  
 **Why:** twice in one session a doc nearly caused a wrong build (faces ≤3; Canon sheet→center). Catch the rest before process luck runs out.
+**Corpus map:** [README.md](./README.md). This file is a **hazard index**, not a second IA.
 
 ---
 

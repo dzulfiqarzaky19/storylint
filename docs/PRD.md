@@ -1,10 +1,10 @@
 # Storylint — PRD (MVP spine)
 
-**Status:** complete in-tree through H (P1, P1b Apply, portraits/tags, P2 Review, P3 Research); UI = Kobo paper tokens (see design/TOKENS.md)
+**Status:** MVP spine through H documented here; **in-tree build through L** (see [BUILD.md](./BUILD.md) status). UI = Kobo paper tokens ([design/TOKENS.md](./design/TOKENS.md)). Live chrome inventory: [IA_MAP.md](./IA_MAP.md).
 **First user:** you (local dogfood)  
 **Auth:** none — no login, no session, no multi-tenant  
 
-Related: [01-identity-market](./01-identity-market.md) · [02-steal-and-phases](./02-steal-and-phases.md) · [03-ux](./03-ux.md) · [04-agents](./04-agents.md) · [05-tech](./05-tech.md) · [IA_MAP](./IA_MAP.md) · [research/ui-ux](./research/ui-ux/README.md)
+Related: [README.md](./README.md) (corpus map) · [01-identity-market](./01-identity-market.md) · [02-steal-and-phases](./02-steal-and-phases.md) · [03-ux](./03-ux.md) · [04-agents](./04-agents.md) · [05-tech](./05-tech.md) · [IA_MAP](./IA_MAP.md) · [CALM_BUDGET](./CALM_BUDGET.md) · [design/CANON-VOCABULARY](./design/CANON-VOCABULARY.md) · [research/ui-ux](./research/ui-ux/README.md)
 
 ---
 

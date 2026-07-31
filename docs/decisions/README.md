@@ -45,6 +45,17 @@ Former paths were mostly `e2e/output/<name>.md`. Prefer this folder for any new 
 
 ---
 
+## Supersession (do not delete history)
+
+| Record | Status |
+|--------|--------|
+| [density-audit-qa3.md](./density-audit-qa3.md) | **Historical** pre-fix snapshot. D5 center-sheet **RETRACTED** → [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) + IA_MAP §2/§4.4 |
+| [design-review-task-l.md](./design-review-task-l.md) | Kind **renames REJECTED** — see [design-review-l2.md](./design-review-l2.md) + [../design/CANON-VOCABULARY.md](../design/CANON-VOCABULARY.md) |
+| [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) | Still authoritative for how numbers were judged; **live bar** = [../CALM_BUDGET.md](../CALM_BUDGET.md) |
+| [ia-step1-qa.md](./ia-step1-qa.md) | Superseded as latest IA QA by [ia-final-qa.md](./ia-final-qa.md) (keep both) |
+
+Corpus entry: [../README.md](../README.md).
+
 ## How to add a decision
 
 1. Write or copy the memo into `docs/decisions/<task-traceable-name>.md`.

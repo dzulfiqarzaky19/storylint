@@ -2,7 +2,8 @@
 
 **Status:** enforceable density bar (docs-only) · **r2** (ox Task Q + rat Task R)  
 **Date:** 2026-07-31  
-**Authority:** numbers + severity here are the pass/fail bar for surface density. Doctrine stays in [IA_MAP.md](./IA_MAP.md) §12 and [03-ux.md](./03-ux.md). Evidence in [research/ui-ux/](./research/ui-ux/) (esp. [07](./research/ui-ux/07-overwhelm-evidence.md)). Design authority memo: `e2e/output/calm-budget-authority-ox.md`.  
+**Owns:** measurable density **numbers** + severity (HARD/WARN). **Does not own:** IA structure (three ecosystems, depth, Continuity placement) — that is [IA_MAP.md](./IA_MAP.md); this file only budgets chrome that implements it.
+**Authority:** numbers + severity here are the pass/fail bar for surface density. Doctrine stays in [IA_MAP.md](./IA_MAP.md) §12 and [03-ux.md](./03-ux.md). Evidence in [research/ui-ux/](./research/ui-ux/) (esp. [07](./research/ui-ux/07-overwhelm-evidence.md)). Design authority memo: [decisions/calm-budget-authority-ox.md](./decisions/calm-budget-authority-ox.md). Scoreboard measurement: [e2e/output/calm-budget-run.md](../e2e/output/calm-budget-run.md) (tracked).  
 **Baseline head for scoreboard:** re-measure on **dev ≥ `5db610c`** (includes Continuity-off-topbar, narrow ecosystems, D3/D8 density, D6 companion). Older QA3 at pre-fix heads is historical only.  
 **Future:** badger asserts **HARD** keys once e2e is deterministic. **WARN** = scoreboard only until two review rounds agree.
 

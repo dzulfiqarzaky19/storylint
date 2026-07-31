@@ -1,9 +1,9 @@
 # Build slices — coder order
 
-**Read first:** [PRD.md](./PRD.md) · [AGENTS_ROLES.md](./AGENTS_ROLES.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)  
+**Read first:** [README.md](./README.md) (corpus map) · [IA_MAP.md](./IA_MAP.md) · [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) · [CALM_BUDGET.md](./CALM_BUDGET.md) · [PRD.md](./PRD.md) · [AGENTS_ROLES.md](./AGENTS_ROLES.md) · [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)  
 **AI harness** (`CLAUDE.md`, `.claude/`) is local-only — never commit/push ([AGENTS_ROLES.md](./AGENTS_ROLES.md) § AI harness stays local).  
-**Commits:** whole-project story rules in [AGENTS_ROLES.md](./AGENTS_ROLES.md) § Commit story — layered `feat`/`fix`/`docs`/`test`/`chore`, no `wip`, no harness.  
-One slice per coding session. Do not start G/H/I before F/E as listed.
+**Commits / push:** [AGENTS_ROLES.md](./AGENTS_ROLES.md) § Commit story + [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) (origin hash is done).  
+One slice per coding session. Historical “do not start G/H/I before F/E” — those slices are **done** (see status table); do not re-implement.
 
 Each slice: **coder → reviewer → UX (if UI) → verifier** ([AGENTS_ROLES.md](./AGENTS_ROLES.md)).  
 Reviewer required. **UX** = ease + task flow + visual; **drives Playwright** (not PNG-only, not pretty-only). Personas: [PERSONAS.md](./PERSONAS.md). No N+1 until N approved.  
