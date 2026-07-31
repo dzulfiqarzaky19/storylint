@@ -888,30 +888,143 @@ async function measureDirtyLeave(page, seed) {
   }))
   out.steps.push({ step: 'after-discard', afterDiscard })
 
-  // Re-open deep sheet, record scroll, leave clean, check restore
-  await scrollBinderTo(page, 0.85)
-  const preOpenScroll = await page.evaluate(() => {
-    const binder = document.querySelector('.shell__rail--binder, aside.shell__rail--binder')
-    const body = binder?.querySelector('.binder__stack-body, .shell__rail-body, .panel__body') || binder
-    return body?.scrollTop ?? null
+  // Scroll restore (honest sample):
+  // Author path — place target row mid-fold by list scrollTop, then click WITHOUT
+  // Playwright scrollIntoViewIfNeeded. F1 saves scroll at click; comparing against a
+  // pre-scrollIntoView sample was a false red (2080→1147) on a correct product.
+  const placed = await page.evaluate((name) => {
+    const body =
+      document.querySelector('.shell__rail--binder .panel__body.binder__stack') ||
+      document.querySelector('.shell__rail--binder .binder__stack') ||
+      document.querySelector('.binder__stack') ||
+      document.querySelector('.ui-drawer .panel__body') ||
+      null
+    if (!body) return { ok: false, reason: 'binder list body not found' }
+    const buttons = [...document.querySelectorAll('.binder__stack-list button, .shell__rail--binder button, .ui-drawer button')]
+    const row = buttons.find((b) => (b.textContent || '').includes(name))
+    if (!row) {
+      return {
+        ok: false,
+        reason: 'row not found: ' + name,
+        scrollH: body.scrollHeight,
+        clientH: body.clientHeight,
+      }
+    }
+    const bodyBox = body.getBoundingClientRect()
+    const rowBox = row.getBoundingClientRect()
+    // Place row ~35% down the scrollport (in fold) without relying on scrollIntoView.
+    body.scrollTop += rowBox.top - bodyBox.top - bodyBox.height * 0.35
+    const r = row.getBoundingClientRect()
+    const b = body.getBoundingClientRect()
+    const rowInView = r.top >= b.top - 1 && r.bottom <= b.bottom + 1
+    return {
+      ok: rowInView,
+      reason: rowInView ? null : 'row not in fold after place',
+      sampleWhen: 'after place-in-fold, immediately before click (no scrollIntoView)',
+      preOpenScroll: body.scrollTop,
+      scrollH: body.scrollHeight,
+      clientH: body.clientHeight,
+      bodyTag: body.className || body.tagName,
+    }
+  }, seed.targetNames.last)
+
+  if (!placed?.ok) {
+    out.scrollRestore = {
+      measured: false,
+      notMeasuredReason: placed?.reason || 'place-in-fold failed',
+      sampleWhen: placed?.sampleWhen || 'n/a',
+      preOpenScroll: placed?.preOpenScroll ?? null,
+      restoredScrollTop: null,
+      delta: null,
+      ok: null,
+      placed,
+    }
+    out.steps.push({ step: 'scroll-restore', scrollRestore: out.scrollRestore })
+    return out
+  }
+
+  const preOpenScroll = placed.preOpenScroll
+  // Click without scrollIntoView — row is already in fold.
+  const deepClick = await page.evaluate((name) => {
+    const body =
+      document.querySelector('.shell__rail--binder .panel__body.binder__stack') ||
+      document.querySelector('.shell__rail--binder .binder__stack') ||
+      document.querySelector('.binder__stack')
+    const beforeClick = body?.scrollTop ?? null
+    const buttons = [...document.querySelectorAll('.binder__stack-list button, .shell__rail--binder button, .ui-drawer button')]
+    const row = buttons.find((b) => (b.textContent || '').includes(name))
+    if (!row) return { ok: false, reason: 'row missing at click' }
+    row.click()
+    return { ok: true, before: beforeClick, afterClickScroll: body?.scrollTop ?? null }
+  }, seed.targetNames.last)
+  await page.waitForTimeout(250)
+  const deep = await page.evaluate(() => {
+    const editor = document.querySelector('.sheet-editor, [data-sheet-dirty]')
+    return {
+      ok: Boolean(editor),
+      dirty: editor?.getAttribute('data-sheet-dirty') || null,
+      title: (
+        editor?.querySelector('h1, h2, .sheet-editor__title, input')?.value ||
+        editor?.querySelector('h1, h2, .sheet-editor__title')?.textContent ||
+        ''
+      )
+        .toString()
+        .trim()
+        .slice(0, 80),
+    }
   })
-  const deep = await openSheetByName(page, seed.targetNames.last)
-  out.steps.push({ step: 'open-last', deep, preOpenScroll })
+  out.steps.push({
+    step: 'open-last',
+    deep,
+    deepClick,
+    preOpenScroll,
+    sampleWhen: placed.sampleWhen,
+    placed,
+  })
+  if (!deep.ok) {
+    out.scrollRestore = {
+      measured: false,
+      notMeasuredReason: 'detail did not open after in-fold click',
+      sampleWhen: placed.sampleWhen,
+      preOpenScroll,
+      restoredScrollTop: null,
+      delta: null,
+      ok: null,
+      deep,
+      deepClick,
+    }
+    out.steps.push({ step: 'scroll-restore', scrollRestore: out.scrollRestore })
+    return out
+  }
+
   await backFromSheet(page)
   await page.waitForTimeout(200)
   const restored = await page.evaluate(() => {
-    const binder = document.querySelector('.shell__rail--binder, aside.shell__rail--binder')
-    const body = binder?.querySelector('.binder__stack-body, .shell__rail-body, .panel__body') || binder
+    const body =
+      document.querySelector('.shell__rail--binder .panel__body.binder__stack') ||
+      document.querySelector('.shell__rail--binder .binder__stack') ||
+      document.querySelector('.binder__stack') ||
+      document.querySelector('.ui-drawer .panel__body') ||
+      null
     return {
       scrollTop: body?.scrollTop ?? null,
       editor: Boolean(document.querySelector('.sheet-editor')),
+      bodyTag: body?.className || body?.tagName || null,
     }
   })
+  const measured = preOpenScroll != null && restored.scrollTop != null
+  const delta = measured ? restored.scrollTop - preOpenScroll : null
   out.scrollRestore = {
+    measured,
+    notMeasuredReason: measured ? null : 'preOpen or restored scrollTop is null',
+    sampleWhen: placed.sampleWhen,
     preOpenScroll,
     restoredScrollTop: restored.scrollTop,
-    delta: preOpenScroll != null && restored.scrollTop != null ? restored.scrollTop - preOpenScroll : null,
-    ok: preOpenScroll != null && restored.scrollTop != null && Math.abs(restored.scrollTop - preOpenScroll) <= 4,
+    delta,
+    // null ok = NOT-MEASURED (do not treat as product fail)
+    ok: measured ? Math.abs(delta) <= 4 : null,
+    restored,
+    deepClick,
   }
   out.steps.push({ step: 'scroll-restore', restored, scrollRestore: out.scrollRestore })
   return out
@@ -946,8 +1059,14 @@ function judge(ctx) {
       if (!dlg?.open) {
         worst.push(severity(`Dirty-leave dialog missing @${vp}`, JSON.stringify(p.dirtyLeave.steps?.slice(-4)), 'HIGH'))
       }
-      if (p.dirtyLeave.scrollRestore && p.dirtyLeave.scrollRestore.ok === false) {
-        worst.push(severity(`Binder scroll restore fail @${vp}`, JSON.stringify(p.dirtyLeave.scrollRestore), 'HIGH'))
+      if (p.dirtyLeave.scrollRestore) {
+        const sr = p.dirtyLeave.scrollRestore
+        if (sr.measured === false || sr.ok == null) {
+          // Null sample is NOT-MEASURED, not a product failure (fail-on-absence inverted).
+          worst.push(severity(`Binder scroll restore NOT-MEASURED @${vp}`, JSON.stringify(sr), 'INFO'))
+        } else if (sr.ok === false) {
+          worst.push(severity(`Binder scroll restore fail @${vp}`, JSON.stringify(sr), 'HIGH'))
+        }
       }
     }
     // Graph
@@ -1013,6 +1132,7 @@ function buildReport(ctx) {
   lines.push('- Did not build search. Only reports whether filter-at-scale feels insufficient.')
   lines.push('- B3-inbox-wall@volume honest red is **out of scope** (dolphin).')
   lines.push('- Phone binder may start as drawer; probe forces open when possible.')
+  lines.push('- Scroll-restore samples preOpenScroll AFTER place-in-fold and BEFORE click (no Playwright scrollIntoView). Null sample = NOT-MEASURED, not HIGH.')
   lines.push('')
   lines.push('## Worst first')
   for (const w of ctx.worst) lines.push(`- **[${w.severity}] ${w.title}** — ${w.detail}`)
