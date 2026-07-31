@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { ReadingProfile } from '../../design'
 import { readingLabel } from '../../design'
 import { CRAFT_TAGS, type Chapter, type CraftTag, type Mark } from '../../domain/types.ts'
@@ -74,6 +74,15 @@ export function Manuscript({
 }: ManuscriptProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
+  // Shell phone chrome hides at 767; collapse craft chips so reading wins.
+  const [narrow, setNarrow] = useState(false)
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px)')
+    const sync = () => setNarrow(media.matches)
+    sync()
+    media.addEventListener('change', sync)
+    return () => media.removeEventListener('change', sync)
+  }, [])
   const rendered = useMemo(() => segments(chapter.body, marks), [chapter.body, marks])
   const wordCount = useMemo(() => countWords(chapter.body), [chapter.body])
   const charCount = chapter.body.length
@@ -137,23 +146,52 @@ export function Manuscript({
             </button>
           </header>
 
-          <div className="manuscript__craft-tags" aria-label="Chapter craft tags">
-            {CRAFT_TAGS.map((tag) => {
-              const active = chapter.craftTags.includes(tag)
-              return (
-                <button
-                  key={tag}
-                  type="button"
-                  className="manuscript__craft-tag ui-focusable"
-                  aria-pressed={active}
-                  disabled={readOnly}
-                  onClick={() => onToggleCraftTag(tag)}
-                >
-                  {tag}
-                </button>
-              )
-            })}
-          </div>
+          {/* Narrow: collapse chips under Tags so manuscript body wins vertical space. */}
+          {narrow ? (
+            <details className="manuscript__craft-tags-disclosure">
+              <summary className="manuscript__craft-tags-summary ui-focusable">
+                <span>Tags</span>
+                {chapter.craftTags.length > 0 ? (
+                  <span className="manuscript__craft-tags-count">{chapter.craftTags.length}</span>
+                ) : null}
+              </summary>
+              <div className="manuscript__craft-tags" aria-label="Chapter craft tags">
+                {CRAFT_TAGS.map((tag) => {
+                  const active = chapter.craftTags.includes(tag)
+                  return (
+                    <button
+                      key={tag}
+                      type="button"
+                      className="manuscript__craft-tag ui-focusable"
+                      aria-pressed={active}
+                      disabled={readOnly}
+                      onClick={() => onToggleCraftTag(tag)}
+                    >
+                      {tag}
+                    </button>
+                  )
+                })}
+              </div>
+            </details>
+          ) : (
+            <div className="manuscript__craft-tags" aria-label="Chapter craft tags">
+              {CRAFT_TAGS.map((tag) => {
+                const active = chapter.craftTags.includes(tag)
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    className="manuscript__craft-tag ui-focusable"
+                    aria-pressed={active}
+                    disabled={readOnly}
+                    onClick={() => onToggleCraftTag(tag)}
+                  >
+                    {tag}
+                  </button>
+                )
+              })}
+            </div>
+          )}
 
           <div className="manuscript__editor">
             <div ref={overlayRef} className="manuscript__overlay" aria-hidden="true">

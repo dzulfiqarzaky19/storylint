@@ -24,7 +24,8 @@ try {
   )
   await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
 
-  const sheetName = `Moon Archive ${Date.now()}`
+  const tag = Date.now().toString(36).slice(-4)
+  const sheetName = `Moon Archive-${tag}`
   await page.getByRole('button', { name: 'New sheet' }).click()
   await page.getByLabel('Sheet portrait or icon').waitFor()
   await page.getByLabel('Name').fill(sheetName)

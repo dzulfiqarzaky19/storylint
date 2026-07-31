@@ -143,7 +143,7 @@ try {
   log('meta candidates: ' + JSON.stringify(metaInfo))
 
   const stamp = Date.now()
-  const prose = `UX drive ${stamp}. Aria stepped into the rain-slick courtyard and counted three lanterns. The oath still bound her wrist.`
+  const prose = `UX drive ${stamp}. Aria stepped into the rain-slick courtyard with blue eyes and counted three lanterns. The oath still bound her wrist.`
   await body.click()
   await body.fill(prose)
 
@@ -261,37 +261,40 @@ try {
   await page.waitForTimeout(250)
   await shot(page, '06-focus-off')
 
-  const contBtn = page.getByRole('button', { name: /^Continuity$|^Running/i })
+  const contBtn = page.locator('button.shell__action-continuity')
   await contBtn.waitFor()
   await contBtn.click()
   try {
     await page.waitForFunction(() => {
-      const b = Array.from(document.querySelectorAll('button')).find((x) =>
-        /^Continuity$|^Running/i.test(x.textContent || ''),
-      )
-      return b && !/Running/i.test(b.textContent || '')
+      const b = document.querySelector('button.shell__action-continuity')
+      return b && b.getAttribute('data-continuity-state') === 'ready'
     }, { timeout: 20000 })
-    ok('Continuity finished')
+    ok('Continuity finished (data-continuity-state=ready)')
   } catch {
-    warn('Continuity still running or button label unclear after 20s')
+    warn('Continuity ready signal missing after 20s')
   }
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(300)
   await shot(page, '07-after-continuity')
 
-  const marks = await page.locator('.mark, [class*="mark--"], [data-mark], .manuscript mark').count().catch(() => 0)
+  const toolCard = page.locator('.agent__tool-card').last()
+  const emptyCard = page.locator('.agent__tool-card[data-continuity-result="empty"]')
+  const findingsCard = page.locator('.agent__tool-card[data-continuity-result="findings"]')
+  const marks = await page.locator('.mark, [class*="mark--"], [data-mark], .manuscript mark, .manuscript__mark').count().catch(() => 0)
   const proposals = await page.locator('.proposal-card, [class*="proposal"]').count().catch(() => 0)
-  log(`marks~=${marks} proposals~=${proposals}`)
+  const emptyFeedback = (await emptyCard.count()) > 0 || (await page.getByText('No issues found').count()) > 0
+  const findingsFeedback = (await findingsCard.count()) > 0 || (await toolCard.count()) > 0
+  log(`marks~=${marks} proposals~=${proposals} emptyFeedback=${emptyFeedback} findingsFeedback=${findingsFeedback}`)
   const acceptCount = await page.getByRole('button', { name: /^Accept$/i }).count()
   const rejectCount = await page.getByRole('button', { name: /^Reject$/i }).count()
   const editCount = await page.getByRole('button', { name: /^Edit$/i }).count()
   log(`Accept=${acceptCount} Edit=${editCount} Reject=${rejectCount}`)
-  if (acceptCount + rejectCount === 0 && proposals === 0 && marks === 0) {
+  if (!emptyFeedback && !findingsFeedback && acceptCount + rejectCount === 0 && proposals === 0 && marks === 0) {
     results.shouldFix.push(
-      'Continuity run produced no visible marks or proposal cards (fixture may be empty for current text)',
+      'Continuity finished without visible findings card or explicit empty state',
     )
-    warn('Continuity empty outcome')
+    warn('Continuity silent blank outcome')
   } else {
-    ok('Continuity produced UI feedback')
+    ok(emptyFeedback && marks + proposals === 0 ? 'Continuity empty state visible' : 'Continuity produced UI feedback')
     if (acceptCount > 0) {
       const card = page.locator('.proposal-card').first()
       if (await card.count()) {
@@ -301,7 +304,7 @@ try {
       }
     }
   }
-  results.jobs.continuity = { marks, proposals, acceptCount, rejectCount }
+  results.jobs.continuity = { marks, proposals, acceptCount, rejectCount, emptyFeedback, findingsFeedback }
 
   // Ensure agent rail open (desk default may still hide it)
   const agentToggle = page.getByRole('button', { name: /agent panel/i })
@@ -419,7 +422,7 @@ try {
     const dialog = page.getByRole('dialog')
     if (await dialog.count()) {
       const input = dialog.locator('input').first()
-      if (await input.count()) await input.fill('UX Project ' + stamp)
+      if (await input.count()) await input.fill('Harbor Draft-' + stamp.toString(36).slice(-4))
       await dialog.getByRole('button', { name: /create|ok|save|add/i }).click().catch(() => {})
     }
     await page.waitForTimeout(600)

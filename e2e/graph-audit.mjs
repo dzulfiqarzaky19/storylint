@@ -9,6 +9,7 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 mkdirSync('e2e/output/graph-audit', { recursive: true })
 
 const stamp = Date.now()
+const tag = stamp.toString(36).slice(-4)
 const notes = []
 const shots = []
 const results = { empty: {}, withData: {}, blockers: [], shouldFix: [], nits: [] }
@@ -22,7 +23,7 @@ const sheets = [
   {
     id: `ga-char-a-${stamp}`,
     kind: 'character',
-    name: `GA Char A ${stamp}`,
+    name: `Aria-${tag}`,
     aliases: [],
     summary: '',
     notes: '',
@@ -32,7 +33,7 @@ const sheets = [
   {
     id: `ga-char-b-${stamp}`,
     kind: 'character',
-    name: `GA Char B ${stamp}`,
+    name: `Kael-${tag}`,
     aliases: [],
     summary: '',
     notes: '',
@@ -42,7 +43,7 @@ const sheets = [
   {
     id: `ga-lore-${stamp}`,
     kind: 'lore',
-    name: `GA Lore ${stamp}`,
+    name: `River Oath-${tag}`,
     aliases: [],
     summary: '',
     notes: '',
@@ -52,7 +53,7 @@ const sheets = [
   {
     id: `ga-world-${stamp}`,
     kind: 'world',
-    name: `GA World ${stamp}`,
+    name: `Ember Coast-${tag}`,
     aliases: [],
     summary: '',
     notes: '',
@@ -62,7 +63,7 @@ const sheets = [
   {
     id: `ga-org-${stamp}`,
     kind: 'organization',
-    name: `GA Org ${stamp}`,
+    name: `Lantern Order-${tag}`,
     aliases: [],
     summary: '',
     notes: '',

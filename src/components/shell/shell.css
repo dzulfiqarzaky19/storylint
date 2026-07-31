@@ -617,8 +617,84 @@
   color: var(--color-text);
 }
 
-.shell[data-focus='true'] .manuscript__craft-tags {
+/* Phone craft-tag density (S4): one summary row until expanded. */
+.manuscript__craft-tags-disclosure {
+  margin: 0;
+}
+
+.manuscript__craft-tags-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--size-touch-min);
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  cursor: pointer;
+  list-style: none;
+}
+
+.manuscript__craft-tags-summary::-webkit-details-marker {
   display: none;
+}
+
+.manuscript__craft-tags-summary::after {
+  content: '+';
+  margin-inline-start: auto;
+  color: var(--color-text-muted);
+}
+
+.manuscript__craft-tags-disclosure[open] .manuscript__craft-tags-summary::after {
+  content: '−';
+}
+
+.manuscript__craft-tags-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--space-4);
+  padding-inline: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.manuscript__craft-tags-disclosure .manuscript__craft-tags {
+  margin-top: var(--space-2);
+}
+
+.shell[data-focus='true'] .manuscript__craft-tags,
+.shell[data-focus='true'] .manuscript__craft-tags-disclosure {
+  display: none;
+}
+
+/* Phone: keep expanded chips on one scroll row with edge fade so body stays primary. */
+@media (max-width: 767px) {
+  .manuscript__craft-tags-disclosure[open] .manuscript__craft-tags {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-block: var(--space-1);
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--space-2),
+      #000 calc(100% - var(--space-4)),
+      transparent 100%
+    );
+  }
+
+  .manuscript__craft-tags-disclosure[open] .manuscript__craft-tag {
+    flex: 0 0 auto;
+    min-height: var(--size-touch-min);
+  }
 }
 
 /* Agent panel */

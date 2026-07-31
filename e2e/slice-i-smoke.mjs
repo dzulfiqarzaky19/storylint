@@ -9,10 +9,11 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 mkdirSync('e2e/output', { recursive: true })
 
 const stamp = Date.now()
+const tag = stamp.toString(36).slice(-4)
 const firstId = `slice-i-a-${stamp}`
 const secondId = `slice-i-b-${stamp}`
-const firstName = `I Smoke A ${stamp}`
-const secondName = `I Smoke B ${stamp}`
+const firstName = `Aria-${tag}`
+const secondName = `Moon Archive-${tag}`
 
 async function seedSheets(request) {
   for (const sheet of [
