@@ -2,7 +2,8 @@
   Tracked decision / milestone record.
   Author: horse (TASK AF, release readiness)
   Kind: milestone-notes
-  Span: origin/main tip 184bb3e → origin/dev tip 4327572 (60 commits)
+  Span (write-time snapshot): origin/main tip 184bb3e → origin/dev tip 4327572 (60 commits)
+  Forward count at land: re-count with git rev-list --count origin/main..origin/dev (was 87 @ cc8f224)
   Use: founder-facing summary for the pending density-pass dev→main merge.
   Do not treat as a live lock — locks live in IA_MAP / CALM_BUDGET / CANON-VOCABULARY.
 -->
@@ -10,9 +11,10 @@
 # Milestone — density pass (dev ahead of main)
 
 **When written:** 2026-07-31  
-**Candidate tip:** `origin/dev` @ `4327572`  
+**Write-time candidate tip:** `origin/dev` @ `4327572` (historical snapshot — not current)  
 **Main tip at write time:** `origin/main` @ `184bb3e`  
-**Span:** `git log origin/main..origin/dev` → **60** commits forward  
+**Write-time span:** `git log origin/main..origin/dev` → **60** commits forward  
+**Forward count as-of land:** **87** (`git rev-list --count origin/main..origin/dev` at docs tip on `cc8f224`; re-count at any later merge bubble)  
 **Reconcile:** nothing to pull back from main (see below)
 
 This is what an **author** would notice if they opened the app and the docs after this batch — not a changelog of branch names.
@@ -47,14 +49,14 @@ If either is non-empty, stop and tell the coordinator. That is unique content or
 
 ---
 
-## Hold gates (dev → main does not ship until both clear)
+## Hold gates (dev → main)
 
-Coordinator holds the milestone merge until **both**:
+Coordinator holds the milestone merge until remaining holds clear:
 
 1. **Calm gate sealed** — checker owns its server (build this tree, ephemeral port, refuse stranger `:5173`), provenance (git HEAD + served bundle) in every artifact. Badger line `storylint/e2e-calm-gate` / worktree `storylint-e2e-health`. A ghost PASS on someone else’s Vite is not a seal.
-2. **Canon sheet dirty-guard** — pre-existing **LOST-WORK** defect: leaving a Canon sheet detail with unsaved identity edits discards them silently (no dirty flag, no confirm). Not a regression from this density batch, but it would ride to main in this merge. Fix under `storylint/a11y-focus` (koala). Milestone is **gated on that fix landing on `origin/dev`**.
+2. ~~**Canon sheet dirty-guard (in-app leave)**~~ — **LANDED** on `origin/dev` @ `cc8f224` (`20c5c3c` Save/Discard/Cancel on Back, binder sheet switch, ecosystem Draft/Lab/Canon). **Does not** cover refresh/tab-close — see open defects.
 
-Horse does **not** perform `dev → main` or delete branches.
+Smoke-repair gate (deer `99c952f` / `d0b4b5c`) is lifted. Horse does **not** perform `dev → main` or delete branches.
 
 ---
 
@@ -114,13 +116,43 @@ Horse does **not** perform `dev → main` or delete branches.
 
 ---
 
-## Known defect riding this tip (must not ship silent)
+## Known open defects (ride into main unless fixed)
 
-| ID | Surface | Defect | Status |
-|----|---------|--------|--------|
-| LOST-WORK | Canon sheet detail | Leave sheet with unsaved identity field edits → changes discarded with **no dirty flag and no confirm** | Pre-existing; fix on `storylint/a11y-focus` (koala). **Milestone hold #2.** |
+Deliberate debt. Understood. Not forgotten. Act here before rediscovering by accident.
 
-Density-pass UI work did not introduce this. Shipping the milestone without the guard would still put silent data loss on `main`.
+1. **Refresh / tab-close still drops unsaved Canon identity edits.** Koala’s guard (`20c5c3c`, merge `cc8f224`; `sheetIdentityDirty.ts`) covers **in-app** leave only (Back, binder sheet switch, ecosystem Draft/Lab/Canon → Save/Discard/Cancel). Reload and tab close still discard draft identity with no prompt. Real fix is **draft persistence**, not `beforeunload`. Cite koala’s note / commit message on `storylint/a11y-focus`.
+
+2. **Checker measurement correctness after seal.** Even with badger’s owned server + provenance, some checks can still conflate **hidden / absent / collapsed**. Standing rule: [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md) (bear, Task AG) — never infer visibility from geometry; use `checkVisibility` + closed-`<details>` guard; absence is not a pass. Audit found **9 visibility decision sites** in `e2e/` (27 geometry reads; only decisions need the predicate). Sibling false-green classes M1–M3 in [calm-budget-r3-ox.md](./calm-budget-r3-ox.md).
+
+3. **Lab kinds authored in three places, three vocabularies.** (a) `LabBench.tsx` `KIND_LABEL` map, (b) Companion Spark presets (`AgentPanel` / `Shell` spark kinds + labels), (c) `src/agent/run.ts` parse `Set` / model prompt kind union. Nothing enforces they move together. Single-owner task queued — **not done**.
+
+4. **bible → Canon dialect sweep incomplete.** Done on Companion writing badges (`@canon` in `AgentPanel` / topbar path, `7ad8557` / `86f8c85`). **Still open:** graph kind chips raw enums (C5) — CODE_VERIFY special #1 @ `RelationshipGraph.tsx` filter/node labels; deer D4 map chrome landed structure but C5 labels remain debt. Do not claim the dialect sweep finished.
+
+5. **B4-craft checks load-bearing on copy.** `e2e/calm-budget.mjs` `measureCraft` still leans on `[aria-label*="craft" i]` / Tags strings alongside class selectors. Manuscript owns `aria-label="Chapter craft tags"`. A copy audit that rewrites that string can false-green or false-red craft collapse without a product change. Prefer stable `data-*` / owned class contracts over label substrings.
+
+---
+
+## What we learned about verification
+
+**Root cause:** a check that cannot say **what it measured** (on which HEAD, which bundle, which element, visible how) is not evidence. Six ways checks lied this session, same disease:
+
+| Lie | What we saw |
+|-----|-------------|
+| Ghost PASS | Green calm/scoreboard on someone else’s Vite / wrong HEAD |
+| Geometry-as-visibility | Non-zero box inside closed `<details>` counted as “present” |
+| Dead selector | Class list never matched real DOM; PASS because measure was empty |
+| Absence = pass | `chips.length === 0` treated as “correctly collapsed” |
+| Label ownership | Asserting on aria-label / visible copy the product may rewrite |
+| Unproven scoreboard | Historical PASS rows reused as current desk truth |
+
+**Four rules (keep):**
+
+1. **Provenance or it is not evidence.** Owned server, git HEAD, served bundle hash — or refuse (not green).
+2. **Never infer visibility from geometry.** `checkVisibility` + closed-`<details>` — [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md).
+3. **Absence is not a pass.** PASS / FAIL / **NOT-MEASURED**; NOT-MEASURED fails the gate.
+4. **Assert on behaviour, never on a label you do not own.** Prefer roles, `data-*`, and stable structure over marketing copy.
+
+These outlive every feature in this milestone.
 
 ---
 
@@ -152,7 +184,7 @@ These are the landmines. Someone reading only today’s code will re-propose the
 - **No fourth ecosystem.** Research / Graph / Review / Agent remain tools, not places.
 - **No Continuity return to the top bar.** Ruling stands after `8911406`.
 - **No silent force-push / history rewrite** to paper over multi-agent drift — workflow docs hardened instead.
-- **Calm gate server ownership** and **Canon dirty-guard** are holds, not claimed done solely by tip `4327572`.
+- **Calm gate server ownership** remains a hold. **In-app** Canon dirty-guard landed (`cc8f224`); refresh/tab-close draft loss remains open debt. Write-time tip `4327572` is historical only.
 - **Graph kind labels / `@bible`→`@canon` badge** called out as open/wrong-turns in CODE_VERIFY — not silently “fixed” by this pass.
 
 ---
