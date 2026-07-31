@@ -1,7 +1,7 @@
 # Research — UI/UX best practices
 
 **Status:** research pack for Storylint product/UX decisions  
-**Date:** 2026-07-31  
+**Date:** 2026-07-31 (evidence densified)  
 **Owner lens:** pig (research) · aligns to locked product docs, does not override them  
 
 Locked product truth stays in:
@@ -25,6 +25,7 @@ This folder is **evidence + practice synthesis**. When research and locks confli
 | 4 | [04-writing-ide-patterns.md](./04-writing-ide-patterns.md) | Lessons from writing apps + IDE+agent tools |
 | 5 | [05-gates-and-trust.md](./05-gates-and-trust.md) | Apply / Accept / propose / staged change UX |
 | 6 | [06-storylint-implications.md](./06-storylint-implications.md) | What this means for Lab / Draft / Canon build order |
+| 7 | [07-overwhelm-evidence.md](./07-overwhelm-evidence.md) | **Dense evidence pack** — ~20 datapoints × major source clusters (CLT, Hick, choice overload, info overload, disclosure, split attention, Laws of UX, gates, creative-tool patterns) |
 
 ---
 
@@ -34,19 +35,28 @@ This folder is **evidence + practice synthesis**. When research and locks confli
 
 That is the same spine as Storylint’s locked map: three ecosystems, max depth 3, companion not a kingdom, Apply/Accept sacred.
 
+Overwhelm is a **working-memory failure mode** (extraneous chrome + equal choices + unstructured info + split attention + untrusted automation), not a taste complaint. Full mechanism table: [07](./07-overwhelm-evidence.md).
+
 ---
 
 ## Sources (selected)
 
 Primary / practitioner sources used in this pack:
 
-- LogRocket — Progressive disclosure types and practices (2025 update)
-- Eleken — Navigation design patterns and SaaS wayfinding (2026)
-- Industry writing-tool comparisons (Scrivener, Ulysses, iA Writer focus/binder lessons)
-- Established IDE patterns: VS Code editor + sidebar agent, staged diff/apply
-- Classic UX: cognitive load, progressive disclosure, recognition over recall, feedback loops
+- **Cognitive Load Theory** — Sweller (1988); Sweller, van Merriënboer & Paas (1998); Chandler & Sweller split-attention work
+- **Working memory** — Miller (1956); chunking (Chase & Simon); Cowan-era capacity caveats
+- **Hick–Hyman Law** — Hick (1952), Hyman (1953); Card/Moran/Newell HCI framing
+- **Choice overload** — Toffler overchoice; Iyengar & Lepper (2000); Scheibehenne et al. (2010) meta-analysis; Chernev et al. (2015)
+- **Information overload** — Speier et al.; Roetzel; Shirky “filter failure”; Wurman/Tufte organization lens
+- **Progressive disclosure** — NN/g pattern; Woolsey selective informing; practitioner type taxonomies
+- **Multimedia / contiguity** — Mayer principles; Schroeder & Cenkci (2018) meta-analysis
+- **Laws of UX** (Yablonski) — Cognitive Load, Hick, Miller, Jakob, Doherty, Fitts, Peak-End, Tesler, Serial Position, Aesthetic-Usability, Choice Overload
+- **Practitioner** — Krug *Don’t Make Me Think*; Smashing Mag cognitive overload taxonomy; IJRASET 2025 CLT UI review
+- Writing-tool + IDE+agent comparative practice (Scrivener / Ulysses / iA / VS Code-class apply)
+- Storylint locks: PRD · 03-ux · IA_MAP
 
-Full citations live at the bottom of each note.
+Full numbered datapoints + Storylint mappings: **[07-overwhelm-evidence.md](./07-overwhelm-evidence.md)**.  
+Citations also live at the bottom of each topical note.
 
 ---
 
