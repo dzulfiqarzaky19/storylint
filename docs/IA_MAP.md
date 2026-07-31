@@ -47,7 +47,7 @@ Final walkthrough QA: `e2e/output/ia-final-qa.md` — **PASS 14/14** @ `6a2a74b`
 |-------|------|------|
 | Companion / Agent | Help across all three | Right rail / drawer |
 | Research | Cited gather tool | Companion face (Lab-leaning) |
-| Continuity / Review / Craft | Draft checks | Companion Check + optional top Continuity |
+| Continuity / Review / Craft | Draft checks | Companion **Check** only (no top-bar button) |
 | Apply / Accept / Reject | Gates | Inbox + cards |
 | Project switch / Export | Library ops | Project switcher |
 | Focus / Theme / Reading | Comfort chrome | Top bar / paper |
@@ -235,7 +235,7 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 
 | Control | When | Target treatment | Status |
 |---------|------|------------------|--------|
-| Continuity | Draft + has chapter | **Ruling:** Check is primary. Top Continuity is Draft-only shortcut (hidden on Lab/Canon); may later move to overflow | **ships** (Draft-only) + optional later demote |
+| Continuity | never in top bar | **Ruling (user, final):** Continuity is a verb, not an ecosystem — it never sits beside Draft·Lab·Canon. Companion **Check** is the sole entry point | **removed from top bar** |
 | Export / New project | Rare | Overflow under project switcher | **ships** |
 | Duplicate project title (h1 + switcher) | Never | Single identity | **ships** |
 
@@ -327,7 +327,7 @@ Nothing silent-writes Draft body or Canon truth.
 | Step | Ecosystem | Center | Companion | Status |
 |------|-----------|--------|-----------|--------|
 | 1 Open chapter | Draft | Manuscript | — | **ships** |
-| 2 Run Continuity | Draft | marks appear | Check or top Continuity | **ships** |
+| 2 Run Continuity | Draft | marks appear | Companion **Check** | **ships** |
 | 3 Read Y/R marks | Draft | overlay | summary card | **ships** |
 | 4 Accept/Edit/Reject | Canon gate | — | Inbox / proposal cards | **ships** |
 | 5 Optional Canon context | Canon | sheet or map | Fill/Inspect | **ships** |
