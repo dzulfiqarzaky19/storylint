@@ -120,18 +120,41 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
     saveLeaveRef.current?.focus()
   }, [leaveOpen])
 
+  function requestBack() {
+    requestLeave(onBack)
+  }
+
   useEffect(() => {
-    if (!leaveOpen) return
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== 'Escape') return
+      // Nested menus/dialogs elsewhere win if they already stopped the event.
+      if (event.defaultPrevented) return
+
+      if (leaveOpen) {
+        event.preventDefault()
+        event.stopPropagation()
+        // Guard Escape = Cancel, never Discard.
+        closeLeavePrompt({ restore: true })
+        return
+      }
+
+      // Esc=Back only when focus is inside the binder sheet detail stack,
+      // not when companion/graph/menus own the key.
+      const target = event.target
+      if (!(target instanceof Node)) return
+      const detail = document.querySelector('[data-binder-detail="sheet"]')
+      const editor = document.querySelector('.sheet-editor')
+      const insideDetail = Boolean(detail?.contains(target) || editor?.contains(target))
+      if (!insideDetail) return
+
       event.preventDefault()
       event.stopPropagation()
-      // Guard Escape = Cancel, never Discard.
-      closeLeavePrompt({ restore: true })
+      // Clean or dirty: same leave path as Back chrome.
+      requestBack()
     }
     document.addEventListener('keydown', onKeyDown, true)
     return () => document.removeEventListener('keydown', onKeyDown, true)
-  }, [closeLeavePrompt, leaveOpen])
+  }, [closeLeavePrompt, leaveOpen, requestLeave, onBack])
 
   async function persistIdentity(): Promise<boolean> {
     const name = draft.name.trim()
@@ -172,10 +195,6 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
   function onDiscardAndLeave() {
     const proceed = pendingProceedRef.current
     if (proceed) finishLeave(proceed)
-  }
-
-  function requestBack() {
-    requestLeave(onBack)
   }
 
   async function submitFact(event: FormEvent) {
