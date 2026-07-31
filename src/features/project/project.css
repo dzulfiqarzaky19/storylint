@@ -153,14 +153,20 @@
 }
 
 @media (max-width: 767px) {
+  /* Fill leftover topbar width; ellipsize before Draft·Lab·Canon. */
   .project-switcher {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: 100%;
   }
 
   .project-switcher select {
     width: 100%;
-    max-width: min(100%, calc(var(--size-control-touch) * 3));
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .project-switcher__create {
@@ -168,6 +174,7 @@
     width: min(100vw - var(--space-8), var(--size-binder-min));
   }
 }
+
 
 .project-status {
   color: var(--color-text-muted);
