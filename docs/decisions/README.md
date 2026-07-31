@@ -28,6 +28,8 @@
 | [ia-step1-qa.md](./ia-step1-qa.md) | qa-record | qa (ia-step1-qa.mjs) | PASS with nits — IA step-1 naming/entry @ 67592a1/b68703e |
 | [milestone-density-pass.md](./milestone-density-pass.md) | milestone-notes | horse | Density-pass founder summary @ 4327572; holds = calm gate + Canon dirty-guard; deliberate non-goals |
 | [orchestrator-ux-faults.md](./orchestrator-ux-faults.md) | review-handoff | hamster | Priority UX fault queue for orchestrator (request changes) |
+| [sheet-dirty-leave-guard.md](./sheet-dirty-leave-guard.md) | defect-record | koala | FIXED in-app Canon sheet dirty leave @ cc8f224; Save/Discard/Cancel; navigation only |
+| [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md) | open-defect | koala | OPEN: refresh/tab/window still drop dirty identity; durable fix = draft persistence not beforeunload |
 | [ux-report.md](./ux-report.md) | review | hamster | Full UX drive report; paint doctrine Kobo/brass not skill OLED |
 
 ---
