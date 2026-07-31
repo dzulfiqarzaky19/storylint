@@ -116,10 +116,10 @@ function run(command, args, { allowFail = false, env } = {}) {
   const resolved = resolveCmd(command)
   const printable = [resolved, ...args].map(shellQuote).join(' ')
   console.log(`\n$ ${printable}\n`)
-  // npm.cmd/git.exe resolved above; never shell:true (args would be unescaped).
+  // On Windows npm.cmd requires shell:true; printable args use shellQuote.
   const result = spawnSync(resolved, args, {
     stdio: 'inherit',
-    shell: false,
+    shell: IS_WIN,
     env: env ? { ...process.env, ...env } : process.env,
   })
   if (result.error) {
@@ -140,7 +140,7 @@ function shellQuote(value) {
 function gitCapture(args) {
   const result = spawnSync(resolveCmd('git'), args, {
     encoding: 'utf8',
-    shell: false,
+    shell: IS_WIN,
   })
   if (result.error) fail(`git spawn failed: ${result.error.message}`)
   if (result.status !== 0) {
@@ -153,7 +153,7 @@ function gitCapture(args) {
 function gitOk(args) {
   const result = spawnSync(resolveCmd('git'), args, {
     encoding: 'utf8',
-    shell: false,
+    shell: IS_WIN,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   return (result.status ?? 1) === 0
