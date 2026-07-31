@@ -53,7 +53,8 @@ const active = await page.request.post(`${API}/api/projects/${encodeURIComponent
 })
 if (!active.ok()) throw new Error(`activate -> ${active.status()}`)
 
-await page.goto(UI, { waitUntil: 'networkidle' })
+// never networkidle on owned stacks — companion/LLM sockets burn ~30s
+await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
 await page.reload({ waitUntil: 'domcontentloaded' })
 const canon = page.getByRole('button', { name: 'Canon', exact: true })
 if (await canon.count()) await canon.click()

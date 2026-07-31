@@ -1187,7 +1187,8 @@ async function runViewport(browser, vp, seed, projectId) {
   page.setDefaultTimeout(15000)
   const out = { vp }
   try {
-    await page.goto(process.env.STORYLINT_UI_ORIGIN, { waitUntil: 'networkidle' })
+    // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+    await page.goto(process.env.STORYLINT_UI_ORIGIN, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     await reclaimIsolatedProject(projectId)
     await ensureCompanionOpen(page).catch(() => {})
     await gotoWorkspace(page, 'canon', { ensureCompanion: true })

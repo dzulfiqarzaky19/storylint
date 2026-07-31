@@ -36,7 +36,8 @@ try {
   ]) {
     const page = await browser.newPage({ viewport: { width: w, height: h } })
     page.setDefaultTimeout(12000)
-    await page.goto(UI, { waitUntil: 'networkidle' })
+    // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+    await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     await ensureAgent(page)
     const draft = page.getByRole('button', { name: 'Draft', exact: true }).first()
     if (await draft.count() && (await draft.isVisible().catch(() => false))) {

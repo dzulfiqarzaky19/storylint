@@ -220,7 +220,8 @@ await setup.close()
 
 for (const [label, width, height] of [['1440', 1440, 900], ['390', 390, 844]]) {
   const page = await browser.newPage({ viewport: { width, height } })
-  await page.goto(UI, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await reloadApp(page)
   const canon = page.getByRole('button', { name: 'Canon', exact: true })
   if (await canon.count()) await canon.click()

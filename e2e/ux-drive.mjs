@@ -109,7 +109,8 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   page.setDefaultTimeout(12000)
 
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded', timeout: 30_000 })
   const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor({ timeout: 15000 })
   ok('shell: Draft main present')
@@ -540,7 +541,7 @@ try {
   }
 
   const narrow = await browser.newPage({ viewport: { width: 1280, height: 800 } })
-  await narrow.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await narrow.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await narrow.getByRole('main', { name: 'Draft' }).waitFor()
   await shot(narrow, '14-width-1280')
   const sealInfo = await narrow.evaluate(() => {
@@ -611,7 +612,7 @@ try {
   }
 
   const desk2 = await browser.newPage({ viewport: { width: 1440, height: 900 } })
-  await desk2.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await desk2.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await desk2.getByRole('main', { name: 'Draft' }).waitFor()
   const ribbon = await desk2.evaluate(() => {
     const bm = document.querySelector('.manuscript__bookmark')

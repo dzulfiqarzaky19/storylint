@@ -180,7 +180,8 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 page.setDefaultTimeout(12000)
 
 try {
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto('http://localhost:5173/', { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await page.getByRole('main', { name: 'Draft' }).waitFor({ timeout: 15000 })
   const newProj = page.getByRole('button', { name: /new project/i })
   if (await newProj.count()) {

@@ -1,0 +1,15 @@
+E1 step-stall proof artifact
+date: 2026-07-31T23:27:36.112Z
+child_exit: 1
+expect: body contains "[slice-k +" and "STALL-INJECT" AND child_exit !== 0
+--- FULL OUTPUT (unfiltered) ---
+[slice-k +338ms] mint
+[slice-k +418ms] goto
+[slice-k +518ms] STALL-INJECT
+locator.waitFor: Timeout 4000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('main', { name: 'Relationship graph' }) to be visible[22m
+
+    at D:\dev\projects\storylint-e2e-health\e2e\_stall_slice_k_throwaway.mjs:55:64
+
+--- END ---
