@@ -33,9 +33,9 @@ const DEFAULT_FACE: Record<CompanionContext, CompanionFace> = {
 }
 
 const FACES: Record<CompanionContext, CompanionFace[]> = {
-  writing: ['chat', 'write', 'check', 'inbox'],
+  writing: ['chat', 'write', 'check', 'research', 'inbox'],
   lab: ['chat', 'spark', 'inbox'],
-  details: ['chat', 'fill', 'inbox'],
+  details: ['chat', 'fill', 'research', 'inbox'],
   graph: ['chat', 'inspect', 'inbox'],
 }
 
@@ -216,11 +216,6 @@ export function AgentPanel({
             {candidate === 'inbox' && pendingCount > 0 ? ` ${pendingCount}` : ''}
           </Button>
         ))}
-        {companionContext === 'writing' || companionContext === 'details' ? (
-          <Button aria-pressed={face === 'research'} onClick={() => setFace('research')}>
-            Research
-          </Button>
-        ) : null}
       </div>
 
       {face === 'research' ? (
