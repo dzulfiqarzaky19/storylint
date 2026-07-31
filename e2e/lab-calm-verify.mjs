@@ -93,7 +93,7 @@ try {
   for (const [kind, title] of [['place', 'Glass quarter'], ['beat', 'The gate gives way']]) {
     await page.request.post(`${API}/api/lab/cards`, { data: { boardId, kind, title, body: 'scratch' } })
   }
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   await page.getByRole('button', { name: 'Lab', exact: true }).click()
   await page.getByRole('main', { name: 'Lab' }).waitFor()
   await page.waitForTimeout(400)

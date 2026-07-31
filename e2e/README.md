@@ -66,6 +66,21 @@ Do not invent alternate definitions of green. `npm test` is unit-only and does *
 
 Fail closed. A measurement that cannot name what it measured is not evidence.
 
+## Navigation waits (networkidle trap)
+
+> **`networkidle` is SAFE on FIRST navigation and DANGEROUS on RELOAD.**
+
+On initial `goto`, nothing has connected yet, so idle is reachable.
+After the app mounts and the companion opens sockets (owned stacks, fixture LLM routes, live LLM), idle is **never** reached. Playwright waits the full ~30s timeout, then continues. That is a latent flake under load — slice-j paid 63s for one `ensureDraftReady` reload before the cause was named.
+
+| Do | Don't |
+|----|-------|
+| `page.goto(UI, { waitUntil: 'domcontentloaded' })` then wait for a state landmark | `page.reload({ waitUntil: 'networkidle' })` after mount |
+| `reloadApp(page)` / `reloadApp(page, { ready: '…' })` | Treat network idle as a proxy for "app ready" |
+| Wait for the **state you need** (select option, Draft editor, binder list) | Fixed sleeps or idle timeouts |
+
+Enforced by `guard-helpers` rule `reload-networkidle`. Same disease shape as unowned :5173, rect-based visibility, and label locators: a shared-infrastructure trap wearing a single-test costume.
+
 ## Trust rule
 
 This suite's job is to be **trusted**.

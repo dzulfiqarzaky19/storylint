@@ -247,7 +247,7 @@ try {
   log('family before seed: ' + JSON.stringify(results.empty.familyBeforeSeed))
 
   for (const sheet of sheets) await putSheet(page.request, sheet)
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   graph = await openGraph(page)
   await setAllKinds(graph, true)
   await graph.getByRole('button', { name: 'Network', exact: true }).click()
