@@ -13,7 +13,9 @@
     "ux:graph": "node e2e/ux-drive-graph.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "calm": "node e2e/calm-budget.mjs"
+    "calm": "node e2e/calm-budget.mjs",
+    "test:e2e:guard": "node e2e/guard-helpers.mjs",
+    "test:e2e:all": "node e2e/guard-helpers.mjs && node e2e/all-smoke.mjs"
   },
   "dependencies": {
     "react": "^19.2.7",

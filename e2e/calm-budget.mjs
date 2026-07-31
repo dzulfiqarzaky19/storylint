@@ -6,17 +6,91 @@
  *   node e2e/calm-budget.mjs
  *
  * Exit 1 on any HARD fail. WARN-only → exit 0.
- * Offline DOM geometry only — no LLM. Optional helpers from e2e/helpers.mjs.
+ * Offline DOM geometry only. Requires e2e/helpers.mjs.
+ *
+ * Owns its measurement stack: builds this tree, serves ephemeral ports,
+ * asserts git HEAD + shell.css provenance. Never defaults to :5173.
+ * Unproven server → exit 2 (refuse), never PASS/FAIL a ghost.
+ *
+ * Measurement rule: never measure until workspace/face preconditions are proven.
+ * Precondition misses record HARD fail "precondition not met" (never PASS on wrong surface).
  */
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { createHash } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
+import {
+  armHardTimeout,
+  beforeMeasure,
+  companionPanel,
+  dismissDrawers,
+  ensureBinderOpen,
+  ensureCompanionOpen,
+  ensureDraftReady,
+  ensureIsolatedProject,
+  installFixtureLlmRoutes,
+  openCompanionFace,
+  PreconditionError,
+  reclaimIsolatedProject,
+  requireCompanionFace,
+  resolveWorkspaceMode,
+  setApiBase,
+} from './helpers.mjs'
+import { resolveMeasurementTarget } from './owned-stack.mjs'
 
-const UI = process.env.STORYLINT_UI || 'http://localhost:5173/'
+/** Set after resolveMeasurementTarget — never default to a stranger on :5173. */
+let UI = ''
 const OUT_DIR = 'e2e/output'
 const OUT_MD = `${OUT_DIR}/calm-budget-run.md`
 const OUT_JSON = `${OUT_DIR}/calm-budget-run.json`
+
+/** Format every touch fail sample for console / measured (not just [0]). */
+function formatTouchSamples(samples) {
+  if (!samples?.length) return ''
+  return samples
+    .map((s) => `${s.name} ${s.min}px(${s.w}x${s.h})`)
+    .join(' · ')
+}
+
+/**
+ * Identity of what the UI server is actually serving (not just git HEAD).
+ * Hashes shell.css text so a stale Vite on :5173 is visible in the log.
+ */
+async function servedBundleIdentity(ui) {
+  const base = ui.endsWith('/') ? ui : `${ui}/`
+  const url = new URL('src/components/shell/shell.css', base).href
+  try {
+    const res = await fetch(url, { redirect: 'follow' })
+    const text = await res.text()
+    const hash = createHash('sha256').update(text).digest('hex').slice(0, 12)
+    const hasB5 =
+      text.includes('project-switcher__menu > .ui-button') ||
+      text.includes('project-switcher__menu>.ui-button')
+    return {
+      url,
+      status: res.status,
+      bytes: text.length,
+      sha256_12: hash,
+      shellCssHasB5Touch: hasB5,
+    }
+  } catch (error) {
+    return {
+      url,
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
+}
+
+function printRunIdentity(meta, label = 'identity') {
+  const served = meta.served
+  const servedLine = served?.error
+    ? `served=ERROR ${served.error} url=${served.url}`
+    : served
+      ? `served=shell.css#${served.sha256_12} status=${served.status} bytes=${served.bytes} b5TouchRule=${served.shellCssHasB5Touch}`
+      : 'served=unknown'
+  console.log(`[${label}] head=${meta.head} ui=${meta.ui} ${servedLine}`)
+}
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -30,89 +104,55 @@ const checks = []
 
 function record(check) {
   checks.push(check)
-  const mark = check.pass ? (check.sev === 'WARN' && !check.pass ? 'WARN' : 'PASS') : check.sev === 'HARD' ? 'FAIL' : 'WARN'
-  // pass=false + WARN → WARN; pass=false + HARD → FAIL; pass=true → PASS
   const status = check.pass ? 'PASS' : check.sev === 'HARD' ? 'FAIL' : 'WARN'
-  const color = status === 'PASS' ? 'green' : status === 'FAIL' ? 'red' : 'yellow'
   console.log(`[${status}] ${check.id} (${check.sev}) ${check.measured} · want ${check.threshold} · ${check.surface}`)
+  // On fail: dump every sample name (not just the first) when the check carries them.
+  if (!check.pass && check.samples?.length) {
+    console.log(`  samples(${check.samples.length}): ${formatTouchSamples(check.samples)}`)
+  }
+  if (!check.pass && check.sev === 'HARD' && globalThis.__CALM_META__) {
+    printRunIdentity(globalThis.__CALM_META__, 'hard-fail-identity')
+  }
   return status
 }
 
-async function loadHelpers() {
+function add(id, sev, doc, surface, pass, measured, threshold, note, samples) {
+  record({
+    id,
+    sev,
+    doc,
+    surface,
+    pass,
+    measured: String(measured),
+    threshold: String(threshold),
+    note,
+    samples,
+  })
+}
+
+function preconditionFail(id, surface, error) {
+  const message = error instanceof Error ? error.message : String(error)
+  add(
+    id,
+    'HARD',
+    'precondition not met — measurement skipped',
+    surface,
+    false,
+    message,
+    'precondition proven before measure',
+    'wrong-surface PASS blocked',
+  )
+}
+
+async function withSurface(id, surface, fn) {
   try {
-    const mod = await import(pathToFileURL(resolve('e2e/helpers.mjs')).href)
-    return mod
-  } catch {
-    return null
-  }
-}
-
-function companionPanel(page) {
-  return page.locator('.panel[data-companion-context]').first()
-}
-
-/** Face chrome uses role=tab (D6). Fall back to button for older trees. */
-async function openFace(companion, name) {
-  const faces = companion.getByRole('tablist', { name: 'Companion faces' })
-  await faces.waitFor({ timeout: 8000 })
-  const tabName = name === 'Inbox' ? /^Inbox/ : name
-  const tab = faces.getByRole('tab', { name: tabName, exact: name !== 'Inbox' })
-  if (await tab.count()) {
-    await tab.first().click()
-    return
-  }
-  const btn = faces.getByRole('button', { name: tabName, exact: name !== 'Inbox' })
-  if (await btn.count()) {
-    await btn.first().click()
-    return
-  }
-  const more = faces.getByRole('tab', { name: /^More/ }).or(faces.getByRole('button', { name: /^More/ }))
-  if (await more.count()) {
-    await more.first().click()
-    await companion.getByRole('menuitem', { name, exact: true }).click()
-  }
-}
-
-async function dismissDrawers(page) {
-  // Narrow layouts open rails as drawers with a blocking backdrop.
-  await page.evaluate(() => {
-    document.querySelectorAll('.ui-drawer__backdrop').forEach((el) => {
-      el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
-  }).catch(() => {})
-  await page.keyboard.press('Escape').catch(() => {})
-  await page.waitForTimeout(80)
-}
-
-async function ensureCompanion(page) {
-  await dismissDrawers(page)
-  const btn = page.getByRole('button', { name: /Show companion|Hide companion/i }).first()
-  if (!(await btn.count())) return
-  const label = await btn.getAttribute('aria-label')
-  if (/Show companion/i.test(label || '')) await btn.click({ force: true })
-  await page.waitForTimeout(150)
-}
-
-async function ensureBinder(page) {
-  await dismissDrawers(page)
-  const btn = page.getByRole('button', { name: /Show binder|Hide binder/i }).first()
-  if (!(await btn.count())) return
-  const label = await btn.getAttribute('aria-label')
-  if (/Show binder/i.test(label || '')) await btn.click({ force: true })
-  await page.waitForTimeout(150)
-}
-
-async function gotoMode(page, mode) {
-  await dismissDrawers(page)
-  const label = mode === 'manuscript' ? 'Draft' : mode === 'lab' ? 'Lab' : 'Canon'
-  // Prefer Workspace group ecosystems (role semantics) over binder section labels.
-  const group = page.getByRole('group', { name: 'Workspace' })
-  const btn = (await group.count())
-    ? group.getByRole('button', { name: label, exact: true }).first()
-    : page.getByRole('button', { name: label, exact: true }).first()
-  if (await btn.count()) {
-    await btn.click({ force: true }).catch(() => {})
-    await page.waitForTimeout(350)
+    return await fn()
+  } catch (error) {
+    if (error instanceof PreconditionError || /precondition not met/i.test(String(error?.message || error))) {
+      preconditionFail(id, surface, error)
+      return null
+    }
+    throw error
   }
 }
 
@@ -123,7 +163,6 @@ async function measureLayout(page) {
     const body = document.querySelector('.shell__body')
     const binder = document.querySelector('.shell__rail--binder')
     const agent = document.querySelector('.shell__rail--agent, .shell__rail:not(.shell__rail--binder)')
-    // Prefer explicit work surfaces
     const work =
       document.querySelector('#workspace') ||
       document.querySelector('.manuscript') ||
@@ -141,7 +180,6 @@ async function measureLayout(page) {
     const agentBox = box(agent)
     const workBox = box(work)
 
-    // If agent rail class differs, find companion panel's containing rail
     let agentW = agentBox?.w || 0
     if (!agentW) {
       const panel = document.querySelector('.panel[data-companion-context]')
@@ -166,7 +204,6 @@ async function measureLayout(page) {
     const binderPct = vw > 0 ? (binderW / vw) * 100 : 0
     const agentPct = vw > 0 ? (agentW / vw) * 100 : 0
 
-    // First-fold ownership: largest center-band box in first viewport
     const foldBandTop = 48
     const foldBandBottom = vh
     const candidates = []
@@ -229,11 +266,9 @@ async function measureTopbar(page) {
     })
     const jobPrimaries = primaries.filter((el) => {
       const name = (el.getAttribute('aria-label') || el.textContent || '').trim()
-      // place ecosystems are not job primaries
       if (/^(Draft|Lab|Canon)$/i.test(name)) return false
       return jobNames.test(name)
     })
-    // Also catch Continuity etc even if not primary class but solid weight in topbar actions
     const labeledJobs = controls.filter((el) => {
       const name = (el.getAttribute('aria-label') || el.textContent || '').trim()
       if (/^(Draft|Lab|Canon)$/i.test(name)) return false
@@ -248,11 +283,9 @@ async function measureTopbar(page) {
       ecoLabels.some((t) => t === label || t.startsWith(label)),
     ).length
 
-    // Truncation: compare scrollWidth vs clientWidth on ecosystem labels
     let placeLabelClipped = 0
     for (const el of ecosystems) {
       if (el.scrollWidth > el.clientWidth + 1) placeLabelClipped += 1
-      // also check computed ellipsis
       const style = getComputedStyle(el)
       if (style.textOverflow === 'ellipsis' && el.scrollWidth > el.clientWidth + 1) placeLabelClipped += 1
     }
@@ -292,7 +325,6 @@ async function measureTouchChrome(page) {
       for (const el of document.querySelectorAll(sel)) {
         const r = el.getBoundingClientRect()
         if (r.width <= 0 || r.height <= 0) continue
-        // skip SVG-only graph nodes
         if (el.closest('svg')) continue
         const min = Math.min(r.width, r.height)
         if (min < 44 - 0.5) {
@@ -305,20 +337,26 @@ async function measureTouchChrome(page) {
         }
       }
     }
-    return { touchFailChrome: fails.length, samples: fails.slice(0, 12) }
+    return { touchFailChrome: fails.length, samples: fails }
   })
 }
 
+/**
+ * Measure companion faces only for the proven context.
+ * Never falls back to a different panel context.
+ */
 async function measureFaces(page, context) {
   return page.evaluate((ctx) => {
     const panel = document.querySelector(`.panel[data-companion-context="${ctx}"]`)
-      || document.querySelector('.panel[data-companion-context]')
-    if (!panel) return { missing: true }
+    if (!panel) return { missing: true, context: null, reason: `no panel for context=${ctx}` }
 
     const faceRow = panel.querySelector('.companion__faces')
     const tabs = [...(faceRow?.querySelectorAll('[role="tab"], button') || [])]
-    const labels = tabs.map((t) => (t.getAttribute('aria-label') || t.textContent || '').trim().replace(/\s+/g, ' '))
-    // product face set excludes More chrome control
+    // Normalize Inbox count badge so concurrent proposal churn cannot flip fingerprints.
+    const labels = tabs.map((t) => {
+      const raw = (t.getAttribute('aria-label') || t.textContent || '').trim().replace(/\s+/g, ' ')
+      return /^Inbox(?:\s+\d+)?$/i.test(raw) ? 'Inbox' : raw
+    })
     const productFaces = labels.filter((l) => !/^More/i.test(l))
     const hasMore = labels.some((l) => /^More/i.test(l))
 
@@ -337,11 +375,9 @@ async function measureFaces(page, context) {
       : []
     const footerPrimary = footerBtns.filter((b) => (b.className?.toString?.() || '').includes('ui-button--primary')).length
     const footerTotal = footerBtns.length
-
     const face = panel.getAttribute('data-companion-face') || ''
-    const defaultFace = face // after context open; caller should reset to default first
+    const actualContext = panel.getAttribute('data-companion-context')
 
-    // Check resting
     let checkRestHasStatus = null
     if (face === 'check') {
       const body = panel.querySelector('.companion__check-body, [aria-label="Check summary"]')
@@ -352,7 +388,6 @@ async function measureFaces(page, context) {
       checkRestHasStatus = hasHelper || hasStatus
     }
 
-    // Chat proposals wall: pending proposal cards on chat face
     let chatProposalsWall = false
     if (face === 'chat') {
       const proposals = panel.querySelectorAll('.proposal-list, [aria-label="Pending proposals"] .proposal-card, article.proposal')
@@ -370,7 +405,7 @@ async function measureFaces(page, context) {
       face,
       checkRestHasStatus,
       chatProposalsWall,
-      context: panel.getAttribute('data-companion-context'),
+      context: actualContext,
     }
   }, context)
 }
@@ -385,11 +420,8 @@ async function measureLab(page) {
     const cardCount = cards.length
     const filter = root.querySelector('.lab__filters, [aria-label="Filter card kinds"]')
     const labFilterWhenEmpty = cardCount === 0 && !!filter
-
-    // Full kind strips: composer kinds always full; filter full only if menu expanded showing all kinds as peer strip
     const composerKinds = root.querySelector('.lab__composer-kinds, [aria-label="New card kind"]')
-    const filterFull = root.querySelector('.lab__filters [aria-label="Card kinds"]')
-    // Count a strip as "full" if it shows >=4 kind buttons inline (not behind details closed)
+
     function stripFull(el) {
       if (!el) return false
       const btns = [...el.querySelectorAll('button')].filter((b) => {
@@ -400,9 +432,7 @@ async function measureLab(page) {
     }
     let kindFullStrips = 0
     if (stripFull(composerKinds)) kindFullStrips += 1
-    // filter summary-only does not count as full strip; expanded menu does if visible
     if (filter && stripFull(filter.querySelector('.lab__filter-menu'))) kindFullStrips += 1
-    // If filter renders all kinds as peer buttons (not details), count it
     if (filter && !filter.querySelector('details') && stripFull(filter)) kindFullStrips += 1
 
     return {
@@ -417,12 +447,17 @@ async function measureLab(page) {
 
 async function measureCraft(page) {
   return page.evaluate(() => {
-    // Craft chips: look for common patterns
+    // Scope strictly to Draft manuscript — never count graph/lab/companion chrome.
+    const root =
+      document.querySelector('main[aria-label="Draft"]') ||
+      document.querySelector('.manuscript') ||
+      document.querySelector('#workspace')
+    if (!root) return { missing: true, chipVisibleCount: 0, chipLabels: [], craftCollapsedDefault: true, foundStrip: false }
+
     const strips = [
-      ...document.querySelectorAll('[aria-label*="craft" i], [aria-label*="Craft" i], .craft-tags, .manuscript__tags, .tag-strip, .chip-strip'),
+      ...root.querySelectorAll('[aria-label*="craft" i], [aria-label*="Craft" i], .craft-tags, .manuscript__tags, .tag-strip, .chip-strip, .manuscript__craft'),
     ]
-    // Also meta row chips on manuscript
-    const meta = document.querySelector('.manuscript__meta, .manuscript__header')
+    const meta = root.querySelector('.manuscript__meta, .manuscript__header')
     let chips = []
     for (const strip of strips) {
       chips.push(
@@ -434,22 +469,22 @@ async function measureCraft(page) {
         }),
       )
     }
-    // Fallback: badges in manuscript header that look like tags
     if (chips.length === 0 && meta) {
       chips = [...meta.querySelectorAll('.badge, .ui-badge, button')].filter((el) => {
         const t = (el.textContent || '').trim()
-        return t && !/words|chars|saved|chapter/i.test(t)
+        if (!t || /words|chars|saved|chapter|paper:/i.test(t)) return false
+        const r = el.getBoundingClientRect()
+        return r.width > 0 && r.height > 0
       })
     }
 
-    const overflow = document.querySelector(
+    const overflow = root.querySelector(
       '[aria-label*="tags" i], details.craft, .craft-overflow, button[aria-label*="Tags" i], summary',
     )
-    const collapsedDisclosure = !!document.querySelector(
+    const collapsedDisclosure = !!root.querySelector(
       'details.craft-tags, details[aria-label*="craft" i], details[aria-label*="Tags" i], button[aria-label*="Tags" i][aria-expanded="false"]',
     )
 
-    // If no craft UI found, treat as 0 visible (pass ceiling) and phone collapse N/A→pass if no strip
     return {
       chipVisibleCount: chips.length,
       chipLabels: chips.slice(0, 12).map((c) => (c.textContent || '').trim()),
@@ -468,7 +503,6 @@ async function measureCanon(page) {
       document.querySelector('#workspace')
     if (!root) return { missing: true }
 
-    // Propose form expanded if we see a multi-field form or "Propose" primary with open fields
     const proposeForm = root.querySelector('form, [aria-label*="Propose" i], .graph__propose, .canon-propose')
     const proposeInputs = proposeForm
       ? [...proposeForm.querySelectorAll('input, textarea, select')].filter((el) => {
@@ -477,8 +511,6 @@ async function measureCanon(page) {
         })
       : []
     const proposeExpanded = proposeInputs.length >= 2
-
-    // View switch vs kind filter weight — compare primary/accent classes
     const viewSwitch = root.querySelector('[aria-label*="view" i], .graph__views, [role="tablist"]')
     const kindFilter = root.querySelector('[aria-label*="kind" i], .graph__kinds, .graph__filters')
 
@@ -501,7 +533,6 @@ async function measureCanon(page) {
 }
 
 async function measureFocus(page) {
-  // Toggle focus and ensure rails hide
   const focusBtn = page.getByRole('button', { name: /Focus mode|Exit focus mode/i }).first()
   if (!(await focusBtn.count())) return { missing: true }
   const before = await page.evaluate(() => ({
@@ -509,7 +540,6 @@ async function measureFocus(page) {
     agent: !!document.querySelector('.panel[data-companion-context]'),
     focus: document.querySelector('.shell')?.getAttribute('data-focus'),
   }))
-  // enter focus
   const label = await focusBtn.getAttribute('aria-label')
   if (/Focus mode/i.test(label || '') && !/Exit/i.test(label || '')) {
     await focusBtn.click()
@@ -522,7 +552,6 @@ async function measureFocus(page) {
     focus: document.querySelector('.shell')?.getAttribute('data-focus'),
     work: !!document.querySelector('#workspace, .manuscript'),
   }))
-  // exit focus
   const exit = page.getByRole('button', { name: /Exit focus mode/i }).first()
   if (await exit.count()) {
     await exit.click()
@@ -531,21 +560,61 @@ async function measureFocus(page) {
   return { before, during, ok: during.focus === 'true' && !during.binder && during.work }
 }
 
-function add(id, sev, doc, surface, pass, measured, threshold, note) {
-  record({ id, sev, doc, surface, pass, measured: String(measured), threshold: String(threshold), note })
+/** Enter workspace and prove companion context before any face measurement. */
+async function enterWorkspaceForMeasure(page, mode, projectId) {
+  const spec = resolveWorkspaceMode(mode)
+  await beforeMeasure(page, {
+    projectId,
+    workspace: spec.key,
+    ensureCompanion: true,
+  })
+  return spec
 }
 
-async function runViewport(browser, width, height, label) {
+async function runViewport(browser, width, height, label, projectId) {
   const page = await browser.newPage({ viewport: { width, height } })
   page.setDefaultTimeout(12000)
   try {
+    await installFixtureLlmRoutes(page)
+    // Reclaim private per-run project (never doors/default fixtures).
+    await reclaimIsolatedProject(projectId)
+    await ensureIsolatedProject(page, { id: projectId, title: 'E2E Calm' })
     await page.goto(UI, { waitUntil: 'networkidle' })
-    await page.waitForTimeout(400)
-    await dismissDrawers(page)
-    if (width >= 1200) await ensureBinder(page)
-    await ensureCompanion(page)
-    await gotoMode(page, 'manuscript')
-    await ensureCompanion(page)
+    // Fixed craft tag set so B4 craft counts cannot drift across runs.
+    await reclaimIsolatedProject(projectId)
+    await ensureDraftReady(page, {
+      body: 'Aria opened the iron door for calm budget.',
+      craftTags: ['char-dev', 'plot-progress', 'world-build', 'setup', 'relationship'],
+    })
+    // Drop pending proposals so Inbox badges stay count-free for this project.
+    await page.evaluate(async () => {
+      try {
+        const project = await fetch('/api/project').then((r) => r.json())
+        const pending = project?.proposals?.filter((p) => p.status === 'pending') || []
+        for (const proposal of pending) {
+          await fetch(`/api/proposals/${encodeURIComponent(proposal.id)}/reject`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: '{}',
+          }).catch(() => {})
+        }
+      } catch {
+        // best effort
+      }
+    })
+    await reclaimIsolatedProject(projectId)
+    await page.reload({ waitUntil: 'networkidle' })
+    await ensureDraftReady(page, {
+      body: 'Aria opened the iron door for calm budget.',
+      craftTags: ['char-dev', 'plot-progress', 'world-build', 'setup', 'relationship'],
+    })
+    if (width >= 1200) await ensureBinderOpen(page)
+    else {
+      // Phone: start drawers closed so touch targets are resting chrome, not drawer chrome.
+      await dismissDrawers(page)
+    }
+    await ensureCompanionOpen(page)
+    await enterWorkspaceForMeasure(page, 'draft', projectId)
 
     // --- B1 layout @1440 ---
     if (width >= 1200) {
@@ -564,7 +633,7 @@ async function runViewport(browser, width, height, label) {
         'WARN',
         'CALM_BUDGET.md B1-work-warn · workPct < 45 warns',
         `Draft@${label}`,
-        layout.workPct >= 45, // pass means not in warn band
+        layout.workPct >= 45,
         `workPct=${layout.workPct}`,
         '≥45 preferred (WARN if <45)',
         layout.workPct < 45 ? 'in WARN band' : undefined,
@@ -639,228 +708,277 @@ async function runViewport(browser, width, height, label) {
       )
     }
 
-    // --- B3 companion ---
-    await ensureCompanion(page)
-    // default face should be chat on fresh context
-    await gotoMode(page, 'manuscript')
-    await ensureCompanion(page)
-    await page.waitForTimeout(200)
-    // reset by toggling companion context via Draft
-    const facesChat = await measureFaces(page, 'writing')
-    if (!facesChat.missing) {
-      add(
-        `B3-writing-count@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-writing-count · writing faces ≤ 5',
-        `companion writing@${label}`,
-        facesChat.productFaceCount <= 5,
-        `productFaces=${facesChat.productFaceCount} [${facesChat.productFaces.join(' · ')}] more=${facesChat.hasMore}`,
-        '≤5',
-      )
-      add(
-        `B3-default-face@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-default-face · writing default = Chat',
-        `companion@${label}`,
-        /^chat$/i.test(facesChat.face) || facesChat.productFaces[0]?.startsWith('Chat'),
-        `face=${facesChat.face}`,
-        'chat',
-      )
-      add(
-        `B3-inbox-wall@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false',
-        `companion chat@${label}`,
-        facesChat.chatProposalsWall === false,
-        `chatProposalsWall=${facesChat.chatProposalsWall}`,
-        'false',
-      )
-      if (width <= 400) {
+    // --- B3 companion writing/chat ---
+    const writingOk = await withSurface(`B3-writing-pre@${label}`, `companion writing@${label}`, async () => {
+      await enterWorkspaceForMeasure(page, 'draft', projectId)
+      await requireCompanionFace(page, 'Chat')
+      return true
+    })
+    if (writingOk) {
+      const facesChat = await measureFaces(page, 'writing')
+      if (facesChat.missing || facesChat.context !== 'writing') {
+        preconditionFail(
+          `B3-writing-pre@${label}`,
+          `companion writing@${label}`,
+          facesChat.reason || `context=${facesChat.context}`,
+        )
+      } else {
         add(
-          'B3-wrap',
+          `B3-writing-count@${label}`,
           'HARD',
-          'CALM_BUDGET.md B3-wrap · faceRows @390 = 1',
-          'companion@390',
-          facesChat.faceRows === 1,
-          `faceRows=${facesChat.faceRows} labels=[${facesChat.labels.join(' · ')}]`,
-          '=1',
+          'CALM_BUDGET.md B3-writing-count · writing faces ≤ 5',
+          `companion writing@${label}`,
+          facesChat.productFaceCount <= 5,
+          `productFaces=${facesChat.productFaceCount} [${facesChat.productFaces.join(' · ')}] more=${facesChat.hasMore} context=${facesChat.context}`,
+          '≤5',
         )
         add(
-          'B3-overflow-shape',
+          `B3-default-face@${label}`,
           'HARD',
-          'CALM_BUDGET.md B3-overflow-shape · extras behind one More',
-          'companion@390',
-          facesChat.faceRows === 1 && (facesChat.productFaceCount <= 5),
-          `rows=${facesChat.faceRows} hasMore=${facesChat.hasMore}`,
-          'one row; More ok',
+          'CALM_BUDGET.md B3-default-face · writing default = Chat',
+          `companion@${label}`,
+          /^chat$/i.test(facesChat.face),
+          `face=${facesChat.face} context=${facesChat.context}`,
+          'chat',
         )
+        add(
+          `B3-inbox-wall@${label}`,
+          'HARD',
+          'CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false',
+          `companion chat@${label}`,
+          facesChat.chatProposalsWall === false,
+          `chatProposalsWall=${facesChat.chatProposalsWall}`,
+          'false',
+        )
+        if (width <= 400) {
+          add(
+            'B3-wrap',
+            'HARD',
+            'CALM_BUDGET.md B3-wrap · faceRows @390 = 1',
+            'companion@390',
+            facesChat.faceRows === 1,
+            `faceRows=${facesChat.faceRows} labels=[${facesChat.labels.join(' · ')}]`,
+            '=1',
+          )
+          add(
+            'B3-overflow-shape',
+            'HARD',
+            'CALM_BUDGET.md B3-overflow-shape · extras behind one More',
+            'companion@390',
+            facesChat.faceRows === 1 && (facesChat.productFaceCount <= 5),
+            `rows=${facesChat.faceRows} hasMore=${facesChat.hasMore}`,
+            'one row; More ok',
+          )
+        }
+        add(
+          `B3-footer-primary-chat@${label}`,
+          'HARD',
+          'CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1',
+          `companion chat@${label}`,
+          facesChat.footerPrimary <= 1,
+          `footerPrimary=${facesChat.footerPrimary}`,
+          '≤1',
+        )
+        add(
+          `B3-footer-total-chat@${label}`,
+          facesChat.footerTotal >= 4 ? 'HARD' : 'WARN',
+          'CALM_BUDGET.md B3-footer-total · ≤3 WARN, ≥4 HARD',
+          `companion chat@${label}`,
+          facesChat.footerTotal <= 3,
+          `footerTotal=${facesChat.footerTotal}`,
+          '≤3',
+        )
+
+        const checkOk = await withSurface(`B3-check-pre@${label}`, `companion Check@${label}`, async () => {
+          await openCompanionFace(companionPanel(page), 'Check', { require: true })
+          return true
+        })
+        if (checkOk) {
+          const facesCheck = await measureFaces(page, 'writing')
+          if (facesCheck.missing || facesCheck.context !== 'writing' || facesCheck.face !== 'check') {
+            preconditionFail(
+              `B3-check-pre@${label}`,
+              `companion Check@${label}`,
+              `context=${facesCheck.context} face=${facesCheck.face}`,
+            )
+          } else {
+            add(
+              `B3-rest@${label}`,
+              'HARD',
+              'CALM_BUDGET.md B3-rest · Check resting helper or last-run status',
+              `companion Check@${label}`,
+              facesCheck.checkRestHasStatus === true,
+              `checkRestHasStatus=${facesCheck.checkRestHasStatus}`,
+              'true',
+            )
+            add(
+              `B3-footer-primary-check@${label}`,
+              'HARD',
+              'CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1',
+              `companion Check@${label}`,
+              facesCheck.footerPrimary <= 1,
+              `footerPrimary=${facesCheck.footerPrimary}`,
+              '≤1',
+            )
+          }
+        }
       }
-
-      // Footer on Chat
-      add(
-        `B3-footer-primary-chat@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1',
-        `companion chat@${label}`,
-        facesChat.footerPrimary <= 1,
-        `footerPrimary=${facesChat.footerPrimary}`,
-        '≤1',
-      )
-      add(
-        `B3-footer-total-chat@${label}`,
-        facesChat.footerTotal >= 4 ? 'HARD' : 'WARN',
-        'CALM_BUDGET.md B3-footer-total · ≤3 WARN, ≥4 HARD',
-        `companion chat@${label}`,
-        facesChat.footerTotal <= 3,
-        `footerTotal=${facesChat.footerTotal}`,
-        '≤3',
-      )
-
-      // Check face rest + footer
-      await openFace(companionPanel(page), 'Check')
-      await page.waitForTimeout(200)
-      const facesCheck = await measureFaces(page, 'writing')
-      add(
-        `B3-rest@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-rest · Check resting helper or last-run status',
-        `companion Check@${label}`,
-        facesCheck.checkRestHasStatus === true,
-        `checkRestHasStatus=${facesCheck.checkRestHasStatus}`,
-        'true',
-      )
-      add(
-        `B3-footer-primary-check@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1',
-        `companion Check@${label}`,
-        facesCheck.footerPrimary <= 1,
-        `footerPrimary=${facesCheck.footerPrimary}`,
-        '≤1',
-      )
     }
 
     // Lab faces
-    await gotoMode(page, 'lab')
-    await ensureCompanion(page)
-    await page.waitForTimeout(250)
-    const labFaces = await measureFaces(page, 'lab')
-    if (!labFaces.missing) {
-      add(
-        `B3-lab-count@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-lab-count · lab faces ≤ 3',
-        `companion lab@${label}`,
-        labFaces.productFaceCount <= 3,
-        `productFaces=${labFaces.productFaceCount} [${labFaces.productFaces.join(' · ')}]`,
-        '≤3',
-      )
+    const labOk = await withSurface(`B3-lab-pre@${label}`, `companion lab@${label}`, async () => {
+      await enterWorkspaceForMeasure(page, 'lab', projectId)
+      return true
+    })
+    if (labOk) {
+      const labFaces = await measureFaces(page, 'lab')
+      if (labFaces.missing || labFaces.context !== 'lab') {
+        preconditionFail(`B3-lab-pre@${label}`, `companion lab@${label}`, labFaces.reason || `context=${labFaces.context}`)
+      } else {
+        add(
+          `B3-lab-count@${label}`,
+          'HARD',
+          'CALM_BUDGET.md B3-lab-count · lab faces ≤ 3',
+          `companion lab@${label}`,
+          labFaces.productFaceCount <= 3,
+          `productFaces=${labFaces.productFaceCount} [${labFaces.productFaces.join(' · ')}] context=${labFaces.context}`,
+          '≤3',
+        )
+      }
     }
 
     // Graph/Canon faces
-    await gotoMode(page, 'graph')
-    await ensureCompanion(page)
-    await page.waitForTimeout(250)
-    const graphFaces = await measureFaces(page, 'graph')
-    if (!graphFaces.missing) {
-      add(
-        `B3-graph-count@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B3-graph-count · graph faces ≤ 3',
-        `companion graph@${label}`,
-        graphFaces.productFaceCount <= 3,
-        `productFaces=${graphFaces.productFaceCount} [${graphFaces.productFaces.join(' · ')}]`,
-        '≤3',
-      )
+    const graphOk = await withSurface(`B3-graph-pre@${label}`, `companion graph@${label}`, async () => {
+      await enterWorkspaceForMeasure(page, 'canon', projectId)
+      return true
+    })
+    if (graphOk) {
+      const graphFaces = await measureFaces(page, 'graph')
+      if (graphFaces.missing || graphFaces.context !== 'graph') {
+        preconditionFail(
+          `B3-graph-pre@${label}`,
+          `companion graph@${label}`,
+          graphFaces.reason || `context=${graphFaces.context}`,
+        )
+      } else {
+        add(
+          `B3-graph-count@${label}`,
+          'HARD',
+          'CALM_BUDGET.md B3-graph-count · graph faces ≤ 3',
+          `companion graph@${label}`,
+          graphFaces.productFaceCount <= 3,
+          `productFaces=${graphFaces.productFaceCount} [${graphFaces.productFaces.join(' · ')}] context=${graphFaces.context}`,
+          '≤3',
+        )
+      }
     }
 
     // --- B4 Lab ---
-    await gotoMode(page, 'lab')
-    await page.waitForTimeout(250)
-    const lab = await measureLab(page)
-    if (!lab.missing) {
-      add(
-        `B4-lab-empty-filter@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0',
-        `Lab@${label}`,
-        lab.labFilterWhenEmpty === false,
-        `cards=${lab.cardCount} filterWhenEmpty=${lab.labFilterWhenEmpty}`,
-        'false',
-      )
-      add(
-        `B4-lab-kind-strips@${label}`,
-        'HARD',
-        'CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1',
-        `Lab@${label}`,
-        lab.kindFullStrips <= 1,
-        `kindFullStrips=${lab.kindFullStrips}`,
-        '≤1',
-      )
+    const labSurfaceOk = await withSurface(`B4-lab-pre@${label}`, `Lab@${label}`, async () => {
+      await beforeMeasure(page, { projectId, workspace: 'lab' })
+      return true
+    })
+    if (labSurfaceOk) {
+      const lab = await measureLab(page)
+      if (!lab.missing) {
+        add(
+          `B4-lab-empty-filter@${label}`,
+          'HARD',
+          'CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0',
+          `Lab@${label}`,
+          lab.labFilterWhenEmpty === false,
+          `cards=${lab.cardCount} filterWhenEmpty=${lab.labFilterWhenEmpty}`,
+          'false',
+        )
+        add(
+          `B4-lab-kind-strips@${label}`,
+          'HARD',
+          'CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1',
+          `Lab@${label}`,
+          lab.kindFullStrips <= 1,
+          `kindFullStrips=${lab.kindFullStrips}`,
+          '≤1',
+        )
+      }
     }
 
     // Craft on Draft
-    await gotoMode(page, 'manuscript')
-    await page.waitForTimeout(200)
-    const craft = await measureCraft(page)
-    if (width >= 1200) {
-      add(
-        'B4-craft-desktop',
-        'HARD',
-        'CALM_BUDGET.md B4-craft-desktop · craft visible ≤ 5 + overflow',
-        'Draft craft@1440',
-        craft.chipVisibleCount <= 5,
-        `chipVisibleCount=${craft.chipVisibleCount} [${(craft.chipLabels || []).join(',')}]`,
-        '≤5',
-      )
-    } else {
-      add(
-        'B4-craft-phone',
-        'HARD',
-        'CALM_BUDGET.md B4-craft-phone · craft collapsed disclosure default @390',
-        'Draft craft@390',
-        craft.craftCollapsedDefault === true,
-        `collapsed=${craft.craftCollapsedDefault} chips=${craft.chipVisibleCount}`,
-        'true',
-      )
+    const draftCraftOk = await withSurface(`B4-craft-pre@${label}`, `Draft craft@${label}`, async () => {
+      await beforeMeasure(page, { projectId, workspace: 'draft' })
+      return true
+    })
+    if (draftCraftOk) {
+      const craft = await measureCraft(page)
+      if (width >= 1200) {
+        add(
+          'B4-craft-desktop',
+          'HARD',
+          'CALM_BUDGET.md B4-craft-desktop · craft visible ≤ 5 + overflow',
+          'Draft craft@1440',
+          craft.chipVisibleCount <= 5,
+          `chipVisibleCount=${craft.chipVisibleCount} [${(craft.chipLabels || []).join(',')}]`,
+          '≤5',
+        )
+      } else {
+        add(
+          'B4-craft-phone',
+          'HARD',
+          'CALM_BUDGET.md B4-craft-phone · craft collapsed disclosure default @390',
+          'Draft craft@390',
+          craft.craftCollapsedDefault === true,
+          `collapsed=${craft.craftCollapsedDefault} chips=${craft.chipVisibleCount}`,
+          'true',
+        )
+      }
     }
 
     // Canon WARN until D4
-    await gotoMode(page, 'graph')
-    await page.waitForTimeout(250)
-    const canon = await measureCanon(page)
-    if (!canon.missing) {
-      add(
-        `B4-canon-propose@${label}`,
-        'WARN',
-        'CALM_BUDGET.md B4-canon-propose · propose collapsed until D4 (WARN)',
-        `Canon@${label}`,
-        canon.proposeExpanded === false,
-        `proposeExpanded=${canon.proposeExpanded}`,
-        'collapsed',
-      )
-      add(
-        `B4-canon-view@${label}`,
-        'WARN',
-        'CALM_BUDGET.md B4-canon-view · view accent > kind filter (WARN pre-D4)',
-        `Canon@${label}`,
-        canon.viewWeight >= canon.filterWeight,
-        `viewW=${canon.viewWeight} filterW=${canon.filterWeight}`,
-        'view ≥ filter',
-      )
+    const canonOk = await withSurface(`B4-canon-pre@${label}`, `Canon@${label}`, async () => {
+      await beforeMeasure(page, { projectId, workspace: 'canon' })
+      return true
+    })
+    if (canonOk) {
+      const canon = await measureCanon(page)
+      if (!canon.missing) {
+        add(
+          `B4-canon-propose@${label}`,
+          'WARN',
+          'CALM_BUDGET.md B4-canon-propose · propose collapsed until D4 (WARN)',
+          `Canon@${label}`,
+          canon.proposeExpanded === false,
+          `proposeExpanded=${canon.proposeExpanded}`,
+          'collapsed',
+        )
+        add(
+          `B4-canon-view@${label}`,
+          'WARN',
+          'CALM_BUDGET.md B4-canon-view · view accent > kind filter (WARN pre-D4)',
+          `Canon@${label}`,
+          canon.viewWeight >= canon.filterWeight,
+          `viewW=${canon.viewWeight} filterW=${canon.filterWeight}`,
+          'view ≥ filter',
+        )
+      }
     }
 
     // --- B5 touch + overflow @390 ---
     if (width <= 400) {
+      await dismissDrawers(page)
+      await ensureCompanionOpen(page)
       const touch = await measureTouchChrome(page)
+      const touchSampleLine = touch.samples?.length
+        ? ` samples=[${formatTouchSamples(touch.samples)}]`
+        : ''
       add(
         'B5-touch-chrome',
         'HARD',
         'CALM_BUDGET.md B5-touch-chrome · min hit ≥ 44×44 chrome @390',
         'chrome@390',
         touch.touchFailChrome === 0,
-        `touchFailChrome=${touch.touchFailChrome}${touch.samples?.length ? ` e.g. ${touch.samples[0].name} ${touch.samples[0].min}px` : ''}`,
+        `touchFailChrome=${touch.touchFailChrome}${touchSampleLine}`,
         '=0 fails',
+        undefined,
+        touch.samples,
       )
       add(
         'B5-touch-fail',
@@ -868,8 +986,10 @@ async function runViewport(browser, width, height, label) {
         'CALM_BUDGET.md B5-touch-fail · touchFailChrome = 0',
         'chrome@390',
         touch.touchFailChrome === 0,
-        `touchFailChrome=${touch.touchFailChrome}`,
+        `touchFailChrome=${touch.touchFailChrome}${touchSampleLine}`,
         '=0',
+        undefined,
+        touch.samples,
       )
     }
 
@@ -884,21 +1004,25 @@ async function runViewport(browser, width, height, label) {
       'false',
     )
 
-    // Focus smoke once per desktop
     if (width >= 1200) {
-      const focus = await measureFocus(page)
-      add(
-        'B5-focus',
-        'HARD',
-        'CALM_BUDGET.md B5-focus · Focus hides rails; type column only',
-        'Focus mode',
-        focus.ok === true,
-        `focus=${focus.during?.focus} binder=${focus.during?.binder} work=${focus.during?.work}`,
-        'focus + work, no binder',
-      )
+      const focusDraftOk = await withSurface('B5-focus-pre', 'Focus mode', async () => {
+        await beforeMeasure(page, { projectId, workspace: 'draft' })
+        return true
+      })
+      if (focusDraftOk) {
+        const focus = await measureFocus(page)
+        add(
+          'B5-focus',
+          'HARD',
+          'CALM_BUDGET.md B5-focus · Focus hides rails; type column only',
+          'Focus mode',
+          focus.ok === true,
+          `focus=${focus.during?.focus} binder=${focus.during?.binder} work=${focus.during?.work}`,
+          'focus + work, no binder',
+        )
+      }
     }
 
-    // B6 mirrors
     if (width >= 1200) {
       add(
         'B6-top-job',
@@ -921,7 +1045,6 @@ function renderMarkdown(meta) {
   const hardFails = checks.filter((c) => !c.pass && c.sev === 'HARD')
   const warns = checks.filter((c) => !c.pass && c.sev === 'WARN')
   const passes = checks.filter((c) => c.pass)
-
   const rows = checks
     .map((c) => {
       const status = c.pass ? 'PASS' : c.sev === 'HARD' ? 'FAIL' : 'WARN'
@@ -933,8 +1056,14 @@ function renderMarkdown(meta) {
 
 **When:** ${meta.when}
 **UI:** ${meta.ui}
-**HEAD:** ${meta.head}
-**Branch tip note:** measured live DOM (dev server), not threshold-tuned.
+**HEAD:** ${meta.head} (${meta.headFull || meta.head})
+**Owned:** ${meta.owned ? 'yes (ephemeral stack)' : 'external (STORYLINT_ALLOW_EXTERNAL_UI=1)'}
+**UI:** ${meta.ui}
+**API:** ${meta.api || ''}
+**Shell.css:** local#${meta.shellCss?.sha256_12 || '?'} served#${meta.served?.sha256_12 || meta.served?.error || '?'}
+**Dirty tree:** ${meta.dirty ? 'yes' : 'no'}
+**Helpers:** required e2e/helpers.mjs (no self-contained fallback)
+**Project:** ${meta.projectId}
 
 ## Summary
 
@@ -963,39 +1092,108 @@ ${warns.length ? warns.map((c) => `- **${c.id}**: ${c.measured} (want ${c.thresh
 
 ## Notes
 
+- Measurements require proven workspace/face preconditions via helpers.
+- Wrong-surface PASS is blocked: precondition misses are HARD fails.
 - B4-canon-* stay WARN until D4 lands (doc).
-- B5-graph-nodes intentionally not asserted as HARD (SVG radii).
-- Face chrome uses role=tab (D6). Helpers imported when present; local tab fallback included.
-- Offline only: no LLM routes required.
+- Offline fixture LLM routes installed; no live model.
 `
 }
 
+const clearHardTimeout = armHardTimeout('calm-budget', 300_000)
 mkdirSync(OUT_DIR, { recursive: true })
-const helpers = await loadHelpers()
-if (helpers) console.log('helpers: loaded e2e/helpers.mjs')
-else console.log('helpers: self-contained fallback')
+console.log('helpers: required e2e/helpers.mjs')
 
-const browser = await chromium.launch({ channel: 'msedge', headless: true })
-let head = 'unknown'
+// Own the measurement stack (build + ephemeral ports + provenance).
+// Fail closed BEFORE any PASS/FAIL if we cannot prove what we measure.
+let stack
 try {
-  const { execSync } = await import('node:child_process')
-  head = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim()
-} catch {
-  head = 'unknown'
+  stack = await resolveMeasurementTarget()
+} catch (error) {
+  console.error('REFUSE: ' + (error instanceof Error ? error.message : String(error)))
+  console.error('A measurement that cannot name what it measured is not evidence.')
+  process.exit(2)
 }
 
+UI = stack.ui
+setApiBase(stack.api)
+
+const served = stack.proof?.liveCss || (await servedBundleIdentity(UI))
+const head = stack.shortHead
+const runMeta = {
+  head,
+  headFull: stack.head,
+  ui: UI,
+  api: stack.api,
+  owned: stack.owned,
+  dirty: stack.dirty,
+  shellCss: stack.shellCss,
+  served,
+  provenance: stack.provenance,
+}
+globalThis.__CALM_META__ = runMeta
+printRunIdentity(runMeta, 'run-start')
+console.log(`[owned=${stack.owned}] api=${stack.api} ui=${stack.ui} head=${stack.head}`)
+
+const browser = await chromium.launch({ channel: 'msedge', headless: true })
+
+// One isolated project for the whole run so both viewports share stable state.
+let projectId = null
 try {
-  await runViewport(browser, 1440, 900, '1440')
-  await runViewport(browser, 390, 844, '390')
+  const bootstrap = await browser.newPage()
+  projectId = await ensureIsolatedProject(bootstrap, {
+    id: `e2e-calm-${process.pid}-${Date.now().toString(36)}`,
+    title: 'E2E Calm',
+  })
+  await bootstrap.close()
+
+  await runViewport(browser, 1440, 900, '1440', projectId)
+  await runViewport(browser, 390, 844, '390', projectId)
+} catch (error) {
+  if (error instanceof PreconditionError || String(error?.message || error).includes('precondition not met')) {
+    console.error('REFUSE (precondition): ' + (error instanceof Error ? error.message : String(error)))
+    printRunIdentity(runMeta, 'refuse-identity')
+    try { await browser.close() } catch { /* ignore */ }
+    try { await stack.stop() } catch { /* ignore */ }
+    clearHardTimeout()
+    process.exit(2)
+  }
+  throw error
 } finally {
-  await browser.close()
+  try { await browser.close() } catch { /* ignore */ }
+  try { await stack.stop() } catch { /* ignore */ }
+  clearHardTimeout()
 }
 
 const hardFails = checks.filter((c) => !c.pass && c.sev === 'HARD').length
-const meta = { when: new Date().toISOString(), ui: UI, head }
+const meta = {
+  when: new Date().toISOString(),
+  ui: UI,
+  api: stack.api,
+  head,
+  headFull: stack.head,
+  owned: stack.owned,
+  dirty: stack.dirty,
+  projectId,
+  shellCss: stack.shellCss,
+  served,
+  provenance: stack.provenance,
+}
+printRunIdentity(meta, hardFails ? 'run-end-HARD' : 'run-end')
 const md = renderMarkdown(meta)
 writeFileSync(OUT_MD, md)
-writeFileSync(OUT_JSON, JSON.stringify({ meta, checks }, null, 2))
+// Determinism fingerprint ignores timestamps / project ids in measured paths that include them.
+const fingerprint = checks.map((c) => `${c.id}|${c.pass ? 'P' : c.sev === 'HARD' ? 'F' : 'W'}|${c.measured}|${c.threshold}`).join('\n')
+writeFileSync(OUT_JSON, JSON.stringify({ meta, checks, fingerprint }, null, 2))
 console.log(`\nWrote ${OUT_MD}`)
 console.log(`HARD fails: ${hardFails} / checks: ${checks.length}`)
+console.log(`FINGERPRINT ${hashFingerprint(fingerprint)}`)
 process.exit(hardFails > 0 ? 1 : 0)
+
+function hashFingerprint(value) {
+  let result = 0x811c9dc5
+  for (let index = 0; index < value.length; index += 1) {
+    result ^= value.charCodeAt(index)
+    result = Math.imul(result, 0x01000193)
+  }
+  return (result >>> 0).toString(16).padStart(8, '0')
+}
