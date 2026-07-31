@@ -49,6 +49,13 @@
 
 Citable green = `npm run test:green` only (not a lone smoke, not an unproven calm row).
 
+## Pipeline + tickets (process)
+
+26. **L1 owned-stack Playwright before land** for product/UI fixes — isolation proof on the change; then `npm run land` only. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+27. **L2 composition E2E on `origin/dev` before story close / main** — isolation green ≠ composition green. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+28. **No start lower priority while a P0 is open** without founder/rat override on the ticket. Run `npm run tickets:check`. ([tickets/README](../tickets/README.md))
+29. **Measure condition labels / probe chrome are not default product evidence.** Assert behaviour and state; probes may aid reports only. ([AUDIT_HANDOFF](../AUDIT_HANDOFF.md))
+
 ## Still open
 
 See [README.md § Still open](./README.md#still-open).

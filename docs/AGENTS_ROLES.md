@@ -15,11 +15,17 @@
 | Words | [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) |
 | Density bar | [CALM_BUDGET.md](./CALM_BUDGET.md) |
 | Git / origin | [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) |
+| Pipeline L1/L2 | [AGENT_PIPELINE.md](./AGENT_PIPELINE.md) |
+| Tickets | [tickets/README.md](./tickets/README.md) |
 | Swarm cadence | [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) |
 | Docs map | [README.md](./README.md) |
 | Who it’s for | [PERSONAS.md](./PERSONAS.md) — beachhead only; not a fifth agent |
 
 **Phase:** only the assigned BUILD slice (see status table).
+
+## Pipeline + tickets
+
+Work follows [AGENT_PIPELINE.md](./AGENT_PIPELINE.md): code → L1 owned-stack Playwright → `npm run land` (`--no-ff` bubble) → story pool on `dev` → L2 composition E2E → main at milestone. In-repo tickets and priority check: [tickets/README.md](./tickets/README.md) (`npm run tickets:check` before start). **Verifier** owns reading L1 and L2 proof output (fail closed from commands/Playwright; no code spelunk). Audit measure handoffs: [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md).
 
 ## AI harness stays local
 

@@ -4,6 +4,8 @@
 
 **Reporting cadence / handoffs / coordinator duties:** [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) (state-change reports, shippable slices, no silent progress).
 
+**Agent pipeline (L1 / L2):** [AGENT_PIPELINE.md](./AGENT_PIPELINE.md) — L1 owned-stack Playwright **before** `npm run land`; L2 story/composition E2E on `origin/dev` **before** story close / `dev → main`. Land mechanics on this page are unchanged (no-worse gate, `--no-ff` bubble, only land writes `dev`).
+
 ## Flow
 
 ```
@@ -173,6 +175,7 @@ git worktree remove D:/dev/projects/storylint-<topic>
 | `D:/dev/projects/storylint-pig-docs` | Docs-only when shared is busy |
 | `D:/dev/projects/storylint-release` | Release readiness (AF) / land-script |
 | `D:/dev/projects/storylint-a11y` | a11y / dirty-guard |
+| `D:/dev/projects/storylint-watcher` | Agent pipeline + tickets (process) |
 
 **Constraints:**
 
