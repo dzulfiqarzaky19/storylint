@@ -291,7 +291,7 @@ export function useProject(): ProjectController {
     if (!current) return
     const chapter: Chapter = {
       id: `chapter-${Date.now()}`,
-      title: `Chapter ${current.chapters.length + 1}`,
+      title: '', // BM: never store factory chapter title (ox chapter-create-title)
       body: '',
       craftTags: [],
       revision: 0,

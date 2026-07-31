@@ -32,3 +32,19 @@ test('markdown export omits pending proposals and diagnostics', () => {
   const text = projectMarkdownFiles(project).map((file) => file.content).join('\n')
   assert.doesNotMatch(text, /proposal|diagnostic/i)
 })
+
+test('empty chapter title slugs to untitled without inventing Chapter N', () => {
+  const files = projectMarkdownFiles({
+    ...project,
+    chapters: [
+      { id: 'c1', title: '', body: 'one', craftTags: [], revision: 0 },
+      { id: 'c2', title: '', body: 'two', craftTags: [], revision: 0 },
+      { id: 'c3', title: 'Named', body: 'three', craftTags: [], revision: 0 },
+    ],
+  })
+  const paths = files.map((file) => file.path)
+  assert.ok(paths.includes('chapters/01-untitled.md'))
+  assert.ok(paths.includes('chapters/02-untitled.md'))
+  assert.ok(paths.includes('chapters/03-named.md'))
+  assert.equal(paths.some((path) => /chapter-\d/.test(path)), false)
+})
