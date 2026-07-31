@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
@@ -12,6 +12,7 @@ import type { ProposalEdits } from '../../features/project/api.ts'
 import { Badge, Button, EmptyState, IconButton, Textarea } from '../ui'
 import type { TranscriptEntry } from './workspace'
 import './shell.css'
+import './AgentPanel.css'
 
 export type CompanionContext = 'writing' | 'lab' | 'details' | 'graph'
 
@@ -32,11 +33,24 @@ const DEFAULT_FACE: Record<CompanionContext, CompanionFace> = {
   graph: 'chat',
 }
 
+/** Full face allow-list per context. Research stays here; D6 only changes chrome. */
 const FACES: Record<CompanionContext, CompanionFace[]> = {
   writing: ['chat', 'write', 'check', 'research', 'inbox'],
   lab: ['chat', 'spark', 'inbox'],
   details: ['chat', 'fill', 'research', 'inbox'],
   graph: ['chat', 'inspect', 'inbox'],
+}
+
+/**
+ * D6 density: at most 3 equal primary faces.
+ * Inbox is always a badge-style rail item (not a primary).
+ * Research (and any excess) live under More.
+ */
+const PRIMARY_FACES: Record<CompanionContext, CompanionFace[]> = {
+  writing: ['chat', 'write', 'check'],
+  lab: ['chat', 'spark'],
+  details: ['chat', 'fill'],
+  graph: ['chat', 'inspect'],
 }
 
 const FACE_LABEL: Record<CompanionFace, string> = {
@@ -92,17 +106,38 @@ export function AgentPanel({
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
   const [face, setFace] = useState<CompanionFace>(DEFAULT_FACE[companionContext])
+  const [moreOpen, setMoreOpen] = useState(false)
+  const moreRef = useRef<HTMLDivElement | null>(null)
   const allowed = FACES[companionContext]
+  const primaries = PRIMARY_FACES[companionContext]
+  const overflow = allowed.filter((candidate) => candidate !== 'inbox' && !primaries.includes(candidate))
   const applyCards = transcript.filter((entry) => entry.role === 'apply')
   const pendingCount = proposals.length + applyCards.length
 
   useEffect(() => {
     setFace(DEFAULT_FACE[companionContext])
+    setMoreOpen(false)
   }, [companionContext])
 
   useEffect(() => {
     if (!allowed.includes(face)) setFace(DEFAULT_FACE[companionContext])
   }, [allowed, companionContext, face])
+
+  useEffect(() => {
+    if (!moreOpen) return
+    function onPointerDown(event: MouseEvent) {
+      if (!moreRef.current?.contains(event.target as Node)) setMoreOpen(false)
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setMoreOpen(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [moreOpen])
 
   const statusLine = useMemo(() => {
     const bits: string[] = []
@@ -141,6 +176,11 @@ export function AgentPanel({
     void onGenerateCowrite(skill, instruction).then(() => setDraft('')).catch(() => undefined)
   }
 
+  function selectFace(next: CompanionFace) {
+    setFace(next)
+    setMoreOpen(false)
+  }
+
   function renderProposals(list: Proposal[]) {
     const packIds = [...new Set(list.flatMap((proposal) => proposal.packId ? [proposal.packId] : []))]
     const alone = list.filter((proposal) => !proposal.packId)
@@ -167,13 +207,14 @@ export function AgentPanel({
     )
   }
 
-  function renderTranscript(options?: { tools?: boolean; apply?: boolean; review?: boolean }) {
+  function renderTranscript(options?: { tools?: boolean; apply?: boolean; review?: boolean; status?: boolean }) {
     const showTools = options?.tools !== false
     const showApply = options?.apply !== false
     const showReview = options?.review !== false
+    const showStatus = options?.status !== false
     return (
       <div className="agent__transcript" aria-label="Agent transcript">
-        {statusLine ? (
+        {showStatus && statusLine ? (
           <p className="continuity-privacy" data-continuity-status={continuityState} aria-live="polite">
             {statusLine}
           </p>
@@ -231,6 +272,8 @@ export function AgentPanel({
   const chipLabel = contextLabel
     ?? (companionContext === 'lab' ? '@lab' : companionContext === 'graph' ? '@graph' : `@${chapterTitle || 'chapter'}`)
 
+  const overflowActive = overflow.includes(face)
+
   return (
     <div className="panel" data-companion-context={companionContext} data-companion-face={face}>
       <div className="panel__header">
@@ -239,16 +282,59 @@ export function AgentPanel({
       </div>
 
       <div className="companion__faces" role="tablist" aria-label="Companion faces">
-        {allowed.map((candidate) => (
+        {primaries.map((candidate) => (
           <Button
             key={candidate}
+            role="tab"
+            aria-selected={face === candidate}
             aria-pressed={face === candidate}
-            onClick={() => setFace(candidate)}
+            onClick={() => selectFace(candidate)}
           >
             {FACE_LABEL[candidate]}
-            {candidate === 'inbox' && pendingCount > 0 ? ` ${pendingCount}` : ''}
           </Button>
         ))}
+
+        {allowed.includes('inbox') ? (
+          <Button
+            role="tab"
+            className="companion__face-inbox"
+            aria-selected={face === 'inbox'}
+            aria-pressed={face === 'inbox'}
+            aria-label={pendingCount > 0 ? `Inbox ${pendingCount}` : 'Inbox'}
+            onClick={() => selectFace('inbox')}
+          >
+            Inbox
+            {pendingCount > 0 ? <span className="companion__inbox-count">{pendingCount}</span> : null}
+          </Button>
+        ) : null}
+
+        {overflow.length > 0 ? (
+          <div className="companion__more" ref={moreRef}>
+            <Button
+              role="tab"
+              aria-haspopup="menu"
+              aria-expanded={moreOpen}
+              aria-pressed={overflowActive || moreOpen}
+              onClick={() => setMoreOpen((open) => !open)}
+            >
+              {overflowActive ? FACE_LABEL[face] : 'More'}
+            </Button>
+            {moreOpen ? (
+              <div className="companion__more-menu" role="menu" aria-label="More companion faces">
+                {overflow.map((candidate) => (
+                  <Button
+                    key={candidate}
+                    role="menuitem"
+                    aria-pressed={face === candidate}
+                    onClick={() => selectFace(candidate)}
+                  >
+                    {FACE_LABEL[candidate]}
+                  </Button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       {face === 'research' ? (
@@ -271,7 +357,7 @@ export function AgentPanel({
         </div>
       ) : face === 'write' && companionContext === 'writing' ? (
         <>
-          {renderTranscript({ tools: false, review: false, apply: true })}
+          {renderTranscript({ tools: false, review: false, apply: true, status: false })}
           <div className="panel__footer">
             <div className="agent__chips">
               <Badge tone="accent">{chipLabel}</Badge>
@@ -293,7 +379,27 @@ export function AgentPanel({
         </>
       ) : face === 'check' && companionContext === 'writing' ? (
         <>
-          {renderTranscript({ apply: false })}
+          <div className="companion__check-body" aria-label="Check summary">
+            {continuityRunning ? (
+              <p className="companion__check-summary" data-continuity-state="running" aria-live="polite">
+                Continuity is running on this chapter…
+              </p>
+            ) : continuityMode ? (
+              <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
+                {continuityCounts
+                  ? continuityCounts.red + continuityCounts.yellow + continuityCounts.proposals === 0
+                    ? `Last Continuity (${continuityMode}): no issues found.`
+                    : `Last Continuity (${continuityMode}): ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals. Open Inbox to Accept/Edit/Reject.`
+                  : `Last Continuity finished in ${continuityMode} mode.`}
+              </p>
+            ) : (
+              <EmptyState
+                title="Nothing checked yet"
+                hint="Check is the only Continuity entry. Run Continuity to scan this chapter for contradictions. Findings land as marks and Inbox proposals — never auto-canon."
+              />
+            )}
+            {renderTranscript({ apply: false, status: false })}
+          </div>
           <div className="panel__footer">
             <div className="agent__cowrite-actions" aria-label="Check tools">
               <Button
@@ -312,7 +418,7 @@ export function AgentPanel({
         </>
       ) : face === 'spark' && companionContext === 'lab' ? (
         <>
-          {renderTranscript({ tools: false, apply: false, review: false })}
+          {renderTranscript({ tools: false, apply: false, review: false, status: false })}
           <div className="panel__footer">
             <p className="continuity-privacy">One tap seeds a brainstorm prompt. Cards land on the Lab bench only.</p>
             <div className="agent__cowrite-actions" aria-label="Spark presets">
@@ -325,7 +431,7 @@ export function AgentPanel({
         </>
       ) : face === 'fill' && companionContext === 'details' ? (
         <>
-          {renderTranscript({ apply: false, review: false })}
+          {renderTranscript({ apply: false, review: false, status: false })}
           <div className="panel__footer">
             <div className="agent__chips"><Badge tone="accent">{chipLabel}</Badge><Badge tone="pending">@bible</Badge></div>
             <Textarea
@@ -366,6 +472,7 @@ export function AgentPanel({
             tools: companionContext === 'writing',
             apply: companionContext === 'writing',
             review: companionContext === 'writing',
+            status: companionContext === 'writing',
           })}
           <div className="panel__footer">
             <div className="agent__chips">

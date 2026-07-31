@@ -67,10 +67,11 @@
 
 
 @media (max-width: 767px) {
-  /* Keep Draft · Lab · Canon; demote lesser chrome (D7). */
+  /* Keep Draft · Lab · Canon fully legible; identity may ellipsize (P2). */
   .shell__breadcrumb,
   .project-status,
-  .shell__action-theme {
+  .shell__action-theme,
+  .shell__topbar-spacer {
     display: none;
   }
 
@@ -82,32 +83,35 @@
     min-height: var(--size-touch-min);
   }
 
-  .shell__topbar-actions {
+  /* Identity takes leftover width and ellipsizes first. */
+  .shell__topbar > .project-switcher {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: none;
+  }
+
+  /* Wayfinding + icons never shrink under identity. */
+  .shell__topbar-actions {
+    flex: 0 0 auto;
+    min-width: max-content;
     justify-content: flex-end;
     gap: var(--space-1);
   }
 
   .shell__ecosystem {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .shell__ecosystem::-webkit-scrollbar {
-    display: none;
+    flex: 0 0 auto;
+    min-width: max-content;
+    overflow-x: visible;
   }
 
   .shell__action-ecosystem {
     flex: 0 0 auto;
+    min-width: max-content;
     min-height: var(--size-touch-min);
     padding-inline: var(--space-2);
     font-size: var(--text-sm);
     line-height: var(--leading-sm);
+    white-space: nowrap;
   }
 
   /* Touch targets ≥44 on narrow profile; desktop stays --size-control (D10). */
@@ -117,13 +121,8 @@
     min-width: var(--size-touch-min);
     min-height: var(--size-touch-min);
   }
-
-  .shell__topbar > .project-switcher {
-    flex: 0 1 auto;
-    min-width: 0;
-    max-width: 28%;
-  }
 }
+
 
 /* Body: rails are grid columns, so hiding one reflows without overlay math */
 
@@ -917,10 +916,4 @@
   margin-block-start: var(--space-2);
 }
 
-.binder__still-open {
-  margin: var(--space-2) 0 0;
-  color: var(--color-text-subtle);
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-}
 
