@@ -15,6 +15,14 @@
  * - Failure on dev that disappears → report as fix (do not block)
  * - Fully green both sides → land normally
  *
+ * Gate hardening (rat 2026-07-31, badger):
+ * - Failure identity names WHAT failed (guard/build/unit/smoke/calm/infra).
+ *   opaque:test-green-exit-N is banned — identical void runs must not compare equal.
+ * - Infrastructure / void runs are NOT-MEASURED and hard-abort (standing rule 3).
+ *   no-worse compares product failures only when BOTH runs measured something.
+ * - Missing node_modules / toolchain is refused up front, not discovered as a
+ *   build error and reasoned about as a test outcome.
+ *
  * Never filter mutating command output. No --skip-tests.
  */
 
@@ -22,6 +30,12 @@ import { spawn, spawnSync } from 'node:child_process'
 import { exit } from 'node:process'
 import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
+import {
+  classifyTestGreen,
+  formatFailSet,
+  gateNoWorseDecision,
+  inspectWorktreePrep,
+} from './land-gate.mjs'
 
 const MAX_PUSH_ATTEMPTS = 3
 const DEV_REF = 'origin/dev'
@@ -52,8 +66,9 @@ Optional:
   --allow-known       reserved / OFF by default; not required for no-worse lands
 
 Gate: NO-WORSE vs a fresh origin/dev baseline from the same run (not a cache).
-Compare by failure identity (name + fixture), not by count. Print both sets.
-There is no --skip-tests.
+Compare by failure identity (guard/build/unit/smoke/calm), not by count. Print both sets.
+Infrastructure / void runs are NOT-MEASURED and hard-abort — never a no-worse tie.
+Missing node_modules is refused up front. There is no --skip-tests.
 `.trim()
   console.log(text)
   exit(code)
@@ -225,78 +240,10 @@ function gitOk(args) {
   return (result.status ?? 1) === 0
 }
 
-/**
- * Parse failure identities from a full test:green log.
- * Identity = kind + name/path (not bare counts).
- */
-function parseFailures(output) {
-  const fails = new Set()
-  const lines = output.split(/\r?\n/)
-
-  for (const line of lines) {
-    // node --test failures: "✖ name" or "not ok N name"
-    let m = line.match(/^\s*✖\s+(.+?)(?:\s+\([\d.]+ms\))?\s*$/)
-    if (m) {
-      fails.add(`unit:${m[1].trim()}`)
-      continue
-    }
-    m = line.match(/^\s*not ok\s+\d+\s+-\s+(.+?)\s*$/)
-    if (m) {
-      fails.add(`unit:${m[1].trim()}`)
-      continue
-    }
-    m = line.match(/^\s*not ok\s+\d+\s+(.+?)\s*$/)
-    if (m && !m[1].startsWith('-')) {
-      fails.add(`unit:${m[1].trim()}`)
-      continue
-    }
-
-    // Feature smokes: "FAIL  e2e/slice-j-smoke.mjs  (...)"
-    m = line.match(/^FAIL\s{2}(\S+)/)
-    if (m) {
-      fails.add(`smoke:${m[1]}`)
-      continue
-    }
-
-    // Calm HARD only (WARN never blocks lands): "[FAIL] B3-inbox-wall@volume (HARD) ..."
-    m = line.match(/^\[FAIL\]\s+(\S+)\s+\(HARD\)/)
-    if (m) {
-      fails.add(`calm:${m[1]}`)
-      continue
-    }
-
-    // Guard
-    if (line.includes('FAIL: e2e helper convention')) {
-      fails.add('guard:e2e-helper-convention')
-      continue
-    }
-
-    // Build
-    if (/error TS\d+/i.test(line)) {
-      fails.add(`build:${line.trim().slice(0, 120)}`)
-      continue
-    }
-  }
-
-  // If the suite died with a non-zero exit but no parseable identity, keep a marker
-  // so we never silently treat an opaque red as green. Callers add opaque:exit when needed.
-  return fails
-}
-
-function formatFailSet(set) {
-  if (set.size === 0) return '(none)'
-  return [...set].sort().map((id) => `  - ${id}`).join('\n')
-}
-
-function compareFailures(baseline, candidate) {
-  const preExisting = [...candidate].filter((id) => baseline.has(id)).sort()
-  const introduced = [...candidate].filter((id) => !baseline.has(id)).sort()
-  const fixed = [...baseline].filter((id) => !candidate.has(id)).sort()
-  return { preExisting, introduced, fixed }
-}
+// parseFailures / formatFailSet / compareFailures / gateNoWorseDecision live in ./land-gate.mjs
 
 function assertCleanWorktree() {
-  banner('1/8 clean worktree')
+  banner('1/9 clean worktree')
   run('git', ['status', '--short', '--branch'])
   const dirty = gitCapture(['status', '--porcelain'])
   if (dirty) {
@@ -306,6 +253,28 @@ function assertCleanWorktree() {
     )
   }
   console.log('land: worktree clean')
+}
+
+/**
+ * Refuse unprepared worktrees up front. Missing node_modules is infrastructure,
+ * not a product red for no-worse to reason about.
+ */
+function assertWorktreePrepared() {
+  banner('2/9 worktree prepared (node_modules + toolchain)')
+  const prep = inspectWorktreePrep(process.cwd())
+  if (!prep.ok) {
+    fail(
+      'worktree is not prepared for test:green — refusing to run.\n' +
+        'This is NOT-MEASURED infrastructure, not a product failure.\n' +
+        prep.reasons.map((r) => `  - ${r}`).join('\n') +
+        '\n\nFix:\n' +
+        '  npm ci\n' +
+        '  # or: npm install\n' +
+        'Then re-run land. A gate that discovers missing toolchain as a build error\n' +
+        'and treats identical voids as no-worse is theatre (standing rule 3 + 8a).',
+    )
+  }
+  console.log('land: node_modules + tsc + vite present')
 }
 
 function assertOnTopic(topic) {
@@ -352,18 +321,32 @@ async function runTestGreenLabeled(label) {
   writeFileSync(logPath, output, 'utf8')
   console.log(`land: full log also at ${logPath}`)
 
-  const failures = parseFailures(output)
-  if (status !== 0 && failures.size === 0) {
-    failures.add(`opaque:test-green-exit-${status}`)
+  const report = classifyTestGreen(output, status)
+  // Never emit opaque:exit-N. Void runs are NOT-MEASURED with named reasons.
+  console.log(`\nland: measurement=${report.measurement} exit=${status} failures=${report.failures.size}`)
+  if (report.measurement === 'not-measured') {
+    console.log('land: NOT-MEASURED reasons:')
+    console.log(formatFailSet(new Set(report.notMeasuredReasons)))
   }
-
-  console.log(`\nland: parsed failure set (${label}) exit=${status} count=${failures.size}`)
-  console.log(formatFailSet(failures))
-  return { status, failures, head, logPath, output }
+  console.log(`land: parsed failure set (${label})`)
+  console.log(formatFailSet(report.failures))
+  if (report.chain?.failedAt) {
+    console.log(`land: chain failedAt=${report.chain.failedAt} reached=[${report.chain.reached.join(',')}]`)
+  }
+  return {
+    status,
+    failures: report.failures,
+    measurement: report.measurement,
+    notMeasuredReasons: report.notMeasuredReasons,
+    report,
+    head,
+    logPath,
+    output,
+  }
 }
 
 async function captureDevBaseline(topic) {
-  banner('2/8 baseline test:green on origin/dev (same run, not a cache)')
+  banner('3/9 baseline test:green on origin/dev (same run, not a cache)')
   const devTip = gitCapture(['rev-parse', '--short', DEV_REF])
   console.log(`land: detaching at ${DEV_REF} (${devTip}) for baseline`)
   run('git', ['checkout', '--detach', DEV_REF])
@@ -385,7 +368,7 @@ async function captureDevBaseline(topic) {
 }
 
 function mergeDevIntoTopic(topic) {
-  banner('3/8 merge origin/dev INTO topic')
+  banner('4/9 merge origin/dev INTO topic')
   console.log(`land: merging ${DEV_REF} into ${topic} (topic stays checked out)`)
   const status = run('git', ['merge', DEV_REF, '-m', `Merge ${DEV_REF} into ${topic}`], {
     allowFail: true,
@@ -407,20 +390,26 @@ function mergeDevIntoTopic(topic) {
 }
 
 async function gateNoWorse(baseline, topic) {
-  banner('4/8 test:green on topic-after-dev merge result + no-worse compare')
+  banner('5/9 test:green on topic-after-dev merge result + no-worse compare')
   discardGeneratedNoise()
   const candidate = await runTestGreenLabeled('candidate-topic-after-dev')
   discardGeneratedNoise()
 
-  const { preExisting, introduced, fixed } = compareFailures(baseline.failures, candidate.failures)
-
   console.log('\n' + '='.repeat(72))
   console.log('land: FAILURE SET COMPARE (by identity, not count)')
   console.log('='.repeat(72))
-  console.log(`\nBASELINE origin/dev @ ${baseline.head} (${baseline.failures.size})`)
+  console.log(`\nBASELINE measurement=${baseline.measurement} origin/dev @ ${baseline.head} (${baseline.failures.size})`)
   console.log(formatFailSet(baseline.failures))
-  console.log(`\nCANDIDATE topic-after-dev @ ${candidate.head} (${candidate.failures.size})`)
+  console.log(`\nCANDIDATE measurement=${candidate.measurement} topic-after-dev @ ${candidate.head} (${candidate.failures.size})`)
   console.log(formatFailSet(candidate.failures))
+
+  const decision = gateNoWorseDecision(baseline.report ?? baseline, candidate.report ?? candidate)
+  if (!decision.ok) {
+    console.log('='.repeat(72))
+    fail(decision.reason)
+  }
+
+  const { preExisting, introduced, fixed } = decision
   console.log(`\nPRE-EXISTING (on dev and still here — do not block): ${preExisting.length}`)
   console.log(preExisting.length ? preExisting.map((id) => `  - ${id}`).join('\n') : '  (none)')
   console.log(`\nFIXED (on dev, gone after merge — report only): ${fixed.length}`)
@@ -429,20 +418,12 @@ async function gateNoWorse(baseline, topic) {
   console.log(introduced.length ? introduced.map((id) => `  - ${id}`).join('\n') : '  (none)')
   console.log('='.repeat(72))
 
-  if (introduced.length) {
-    fail(
-      `no-worse gate failed: ${introduced.length} new failure(s) not present on origin/dev.\n` +
-        introduced.map((id) => `  - ${id}`).join('\n') +
-        '\nland will not create a bubble or push. Fix what you introduced, then re-run land.',
-    )
-  }
-
   if (preExisting.length) {
     console.log('\nland: proceeding with PRE-EXISTING reds named above (inherited from origin/dev).')
-  } else if (candidate.failures.size === 0) {
+  } else if (candidate.failures.size === 0 && candidate.measurement === 'measured') {
     console.log('\nland: both sides green — land normally.')
   } else {
-    console.log('\nland: candidate failures are a subset of baseline — proceeding.')
+    console.log('\nland: candidate product failures are a subset of baseline — proceeding.')
   }
 
   if (fixed.length) {
@@ -461,7 +442,7 @@ async function gateNoWorse(baseline, topic) {
 }
 
 function createNoFfBubble(topic, summary) {
-  banner('5/8 detach origin/dev and merge --no-ff topic')
+  banner('6/9 detach origin/dev and merge --no-ff topic')
   const message = `Merge ${topic} into dev: ${summary}`
   console.log(`land: merge message:\n  ${message}`)
 
@@ -492,13 +473,13 @@ function createNoFfBubble(topic, summary) {
 }
 
 function pushHeadToDev() {
-  banner('6/8 push HEAD:dev (full output, unfiltered)')
+  banner('7/9 push HEAD:dev (full output, unfiltered)')
   // CRITICAL: never filter this output. A push you cannot see is unattributed.
   return run('git', ['push', 'origin', 'HEAD:dev'], { allowFail: true })
 }
 
 function readOriginDev() {
-  banner('7/8 fetch and read ORIGIN hash back (never assume push landed)')
+  banner('8/9 fetch and read ORIGIN hash back (never assume push landed)')
   run('git', ['fetch', 'origin'])
   run('git', ['log', '--oneline', '-1', '--decorate', DEV_REF])
   run('git', ['rev-parse', DEV_REF])
@@ -510,7 +491,7 @@ function readOriginDev() {
 }
 
 function restoreTopic(topic) {
-  banner('8/8 restore topic checkout')
+  banner('9/9 restore topic checkout')
   run('git', ['checkout', topic], { allowFail: true })
   discardGeneratedNoise()
   run('git', ['status', '--short', '--branch'], { allowFail: true })
@@ -518,6 +499,7 @@ function restoreTopic(topic) {
 
 async function landOnce(topic, summary) {
   assertCleanWorktree()
+  assertWorktreePrepared()
   assertOnTopic(topic)
   fetchOrigin()
 
@@ -540,7 +522,7 @@ async function main() {
   console.log(`land: topic=${topic}`)
   console.log(`land: summary=${summary}`)
   console.log(`land: max-attempts=${maxAttempts}`)
-  console.log('land: gate=NO-WORSE (fresh origin/dev baseline, identity compare)')
+  console.log('land: gate=NO-WORSE (fresh origin/dev baseline, identity compare, NOT-MEASURED aborts)')
   if (allowKnown) {
     console.log('land: --allow-known noted (no-worse already permits pre-existing reds)')
   }
