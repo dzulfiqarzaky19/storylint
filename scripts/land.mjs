@@ -28,7 +28,7 @@
 
 import { spawn, spawnSync } from 'node:child_process'
 import { exit } from 'node:process'
-import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   classifyTestGreen,
@@ -302,13 +302,9 @@ function discardGeneratedNoise() {
   // test:green may write e2e/output/*; never let that block the next step.
   run('git', ['checkout', '--', 'e2e/output'], { allowFail: true })
   run('git', ['clean', '-fd', 'e2e/output'], { allowFail: true })
-  if (existsSync(LAND_DIR)) {
-    try {
-      rmSync(LAND_DIR, { recursive: true, force: true })
-    } catch {
-      // ignore
-    }
-  }
+  // KEEP _land_run/*.log — those are the only transcript of baseline/candidate
+  // test:green. Wiping them (old behavior) destroyed buffalo's calm-death specimen
+  // and made the gate undebuggable (rat 2026-07-31).
 }
 
 async function runTestGreenLabeled(label) {

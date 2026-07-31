@@ -1,20 +1,38 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import {
+  existsSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { test } from 'node:test'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 /**
- * Hawk/rat hole: 18/18 on land-gate.mjs proves the pure module behaves.
- * It does NOT prove land.mjs consults it. This file locks the wiring.
+ * Wiring locks for land.mjs ↔ land-gate.mjs.
  *
- * If someone re-inlines parse/compare in land.mjs, or stops calling
- * gateNoWorseDecision / classifyTestGreen / inspectWorktreePrep, these fail.
+ * Grep checks are refactor tripwires only (strip comments first — hawk LG-B3).
+ * Behavioral checks assert real outcomes: prep refuses missing node_modules,
+ * gateNoWorseDecision binding aborts identical voids.
  */
 
 const here = dirname(fileURLToPath(import.meta.url))
-const landSrc = readFileSync(join(here, 'land.mjs'), 'utf8')
+const landSrcRaw = readFileSync(join(here, 'land.mjs'), 'utf8')
 const gateSrc = readFileSync(join(here, 'land-gate.mjs'), 'utf8')
+
+/** Strip // line comments and /* block comments so grep cannot match dead code. */
+function stripComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/.*$/gm, '$1')
+}
+
+const landSrc = stripComments(landSrcRaw)
 
 test('land.mjs imports the pure gate module (not a copy)', () => {
   assert.match(landSrc, /from ['"]\.\/land-gate\.mjs['"]/)
@@ -62,6 +80,7 @@ test('land.mjs refuses unprepared worktrees via inspectWorktreePrep before green
     landSrc.indexOf('async function landOnce'),
     landSrc.indexOf('async function main'),
   )
+  // After comment strip, a commented-out call would not match (hawk LG-B3).
   assert.ok(once.includes('assertWorktreePrepared()'), 'landOnce must call assertWorktreePrepared')
   // Ordering: prep before baseline capture
   const prepAt = once.indexOf('assertWorktreePrepared()')
@@ -95,4 +114,34 @@ test('runtime: land-gate module resolves and gateNoWorseDecision is the same bin
   assert.equal(a.measurement, 'not-measured')
   assert.equal(d.ok, false)
   assert.equal(d.code, 'baseline-not-measured')
+
+  // LG-B1: empty exit 0 also aborts
+  const empty = mod.classifyTestGreen('', 0)
+  assert.equal(empty.measurement, 'not-measured')
+  assert.equal(mod.gateNoWorseDecision(empty, empty).ok, false)
+})
+
+test('behavioral: inspectWorktreePrep refuses temp cwd without node_modules', async () => {
+  const gateUrl = pathToFileURL(join(here, 'land-gate.mjs')).href
+  const mod = await import(gateUrl)
+  const dir = mkdtempSync(join(tmpdir(), 'land-wire-prep-'))
+  try {
+    writeFileSync(join(dir, 'package.json'), '{"name":"x"}')
+    const r = mod.inspectWorktreePrep(dir)
+    assert.equal(r.ok, false)
+    assert.ok(r.reasons.includes('missing-node_modules'))
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('behavioral: land.mjs --help exits 0 (script loads and binds gate)', () => {
+  const landPath = join(here, 'land.mjs')
+  assert.ok(existsSync(landPath))
+  const result = spawnSync(process.execPath, [landPath, '--help'], {
+    encoding: 'utf8',
+    shell: false,
+  })
+  assert.equal(result.status, 0, `stderr=${result.stderr}`)
+  assert.match(result.stdout, /NO-WORSE|test:green|storylint/)
 })

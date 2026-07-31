@@ -8,6 +8,10 @@
  * Failure identity must name WHAT failed (guard / build / unit / smoke / calm /
  * infra). Opaque exit codes that collapse every catastrophe into one token are
  * banned — they make no-worse structurally incapable of detecting a regression.
+ *
+ * Measurement never trusts exit code alone (hawk LG-B1). Exit 0 with an empty
+ * or truncated log is NOT-MEASURED. Exit 0 is MEASURED-GREEN only when calm
+ * printed a terminal marker (FINGERPRINT / HARD fails:).
  */
 
 import { existsSync, statSync } from 'node:fs'
@@ -150,14 +154,30 @@ export function classifyTestGreen(output, status = 0) {
     ) {
       stagesSeen.smoke = true
     }
+    if (/PASS:\s*all\s+\d+\s+feature smokes/.test(line)) {
+      stagesPassed.smoke = true
+      stagesSeen.smoke = true
+    }
 
     if (
       line.includes('calm-budget') ||
       line.includes('[FAIL]') ||
       line.includes('[PASS]') ||
       line.includes('[WARN]') ||
-      line.includes('CALM')
+      line.includes('CALM') ||
+      line.includes('visibility-self-test') ||
+      line.includes('FINGERPRINT ')
     ) {
+      stagesSeen.calm = true
+    }
+    // Calm finished only when the run prints its terminal summary.
+    // Self-tests alone are not enough (buffalo opaque-on-green fixture).
+    if (
+      /^FINGERPRINT\s+\S+/.test(line) ||
+      /^HARD fails:\s*\d+/.test(line) ||
+      line.includes('calm-budget: done')
+    ) {
+      stagesPassed.calm = true
       stagesSeen.calm = true
     }
   }
@@ -165,9 +185,6 @@ export function classifyTestGreen(output, status = 0) {
   // npm script headers also mark stage starts: "> storylint@x test" etc.
   if (text.includes('> tsc -b') || text.includes('> vite build') || text.includes('npm run build')) {
     stagesSeen.build = true
-  }
-  if (text.includes('npm test') || text.includes('--test')) {
-    // weak signal only if unit markers already absent
   }
 
   // --- infrastructure / NOT-MEASURED signals ---
@@ -259,21 +276,21 @@ export function classifyTestGreen(output, status = 0) {
     stagesSeen.unit = true
   }
 
-  // Infer how far the chain got when exit != 0
-  const chain = inferChainProgress(text, stagesSeen, status)
+  // Infer chain from log evidence only — never from exit code alone (hawk LG-B1).
+  const chain = inferChainProgress(text, stagesSeen, stagesPassed)
 
   // Measurement rule:
-  // - any infra signal → NOT-MEASURED
-  // - exit != 0 and no stage produced a product failure identity AND build/unit never
-  //   actually ran their runners → NOT-MEASURED
-  // - exit != 0 with only opaque nothing → NOT-MEASURED (never opaque:exit-N)
-  // - product failures present → MEASURED (even if later stages skipped)
+  // - any infra signal → NOT-MEASURED (even at exit 0) — hawk LG-B2
+  // - exit != 0 and no product failure identity → NOT-MEASURED (never opaque:exit-N)
+  // - product failures present → MEASURED
+  // - exit 0 is MEASURED-GREEN only with positive stage evidence through calm terminal
   const hasProductFailure = failures.size > 0
-  const measuredSomething =
-    hasProductFailure ||
-    (status === 0 && chain.completed.includes('calm')) ||
-    (status === 0 && stagesPassed.calm) ||
-    (status === 0 && stagesSeen.calm && stagesSeen.smoke && stagesSeen.unit && stagesSeen.build)
+  const completeGreenBody =
+    stagesPassed.guard &&
+    stagesPassed.build &&
+    stagesPassed.unit &&
+    (stagesPassed.smoke || stagesSeen.smoke) &&
+    stagesPassed.calm
 
   let measurement = 'measured'
   const notMeasuredReasons = [...infra]
@@ -290,10 +307,14 @@ export function classifyTestGreen(output, status = 0) {
     } else {
       notMeasuredReasons.push('not-measured:exit-without-failure-identity')
     }
-  } else if (status === 0 && !measuredSomething && !hasProductFailure) {
-    // Green exit but we never saw evidence the suite ran — also void.
+  } else if (status === 0 && !hasProductFailure && !completeGreenBody) {
+    // Exit 0 without calm terminal evidence — void / truncated capture, not a green verdict.
     measurement = 'not-measured'
-    notMeasuredReasons.push('not-measured:green-exit-without-stage-evidence')
+    if (stagesSeen.calm && !stagesPassed.calm) {
+      notMeasuredReasons.push('not-measured:calm-started-without-terminal-marker')
+    } else {
+      notMeasuredReasons.push('not-measured:green-exit-without-stage-evidence')
+    }
   }
 
   // Promote infra ids into the failure set ONLY as infra:* so they never look like product reds.
@@ -316,10 +337,11 @@ export function classifyTestGreen(output, status = 0) {
 }
 
 /**
- * Infer which test:green stages were reached from log + exit.
+ * Infer which test:green stages were reached from log evidence only.
  * test:green is `guard && build && unit && smoke && calm`.
+ * Never declare all stages complete from exit code alone (hawk LG-B1).
  */
-function inferChainProgress(text, stagesSeen, status) {
+function inferChainProgress(text, stagesSeen, stagesPassed) {
   const reached = []
   for (const stage of TEST_GREEN_STAGES) {
     if (stagesSeen[stage]) reached.push(stage)
@@ -330,22 +352,32 @@ function inferChainProgress(text, stagesSeen, status) {
     if (!reached.includes('guard')) reached.unshift('guard')
   }
 
-  let failedAt = null
-  let completed = []
-
-  if (status === 0) {
-    completed = [...TEST_GREEN_STAGES]
-    return { reached: TEST_GREEN_STAGES.slice(), completed, failedAt: null }
+  // Full completion requires calm terminal marker, not merely exit 0.
+  if (
+    stagesPassed.calm &&
+    stagesSeen.guard &&
+    stagesSeen.build &&
+    stagesSeen.unit &&
+    stagesSeen.smoke
+  ) {
+    return {
+      reached: TEST_GREEN_STAGES.slice(),
+      completed: TEST_GREEN_STAGES.slice(),
+      failedAt: null,
+    }
   }
 
-  // First stage not seen after a seen predecessor is a clue; prefer last seen as failedAt
+  let failedAt = null
   if (reached.length === 0) {
     failedAt = 'before-guard'
+  } else if (stagesSeen.calm && !stagesPassed.calm) {
+    failedAt = 'calm'
   } else {
     failedAt = reached[reached.length - 1]
-    const idx = TEST_GREEN_STAGES.indexOf(failedAt)
-    completed = TEST_GREEN_STAGES.slice(0, Math.max(0, idx))
   }
+
+  const idx = TEST_GREEN_STAGES.indexOf(failedAt)
+  const completed = idx > 0 ? TEST_GREEN_STAGES.slice(0, idx) : []
 
   return { reached, completed, failedAt }
 }

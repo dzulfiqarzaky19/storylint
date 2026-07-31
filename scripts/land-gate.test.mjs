@@ -7,9 +7,13 @@ import {
   inspectWorktreePrep,
   parseFailures,
 } from './land-gate.mjs'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { fileURLToPath } from 'node:url'
+
+const here = dirname(fileURLToPath(import.meta.url))
+const root = join(here, '..')
 
 // --- prep ---
 
@@ -58,12 +62,31 @@ guard-helpers: PASS
 operable program or batch file.
 `
 
+// Realistic full green evidence — requires calm TERMINAL markers (FINGERPRINT / HARD fails)
+const FULL_GREEN_LOG = `
+> node e2e/guard-helpers.mjs && npm run build && npm test && node e2e/all-smoke.mjs && node e2e/calm-budget.mjs
+PASS: e2e helper convention
+> tsc -b && vite build
+vite v6.0.0 building for production...
+✓ built in 1.2s
+✔ unit one (1ms)
+ℹ tests 1
+ℹ pass 1
+ℹ fail 0
+PASS  e2e/slice-a-smoke.mjs
+PASS: all 10 feature smokes
+[PASS] calm-check (HARD) ok
+HARD fails: 0
+FINGERPRINT eddd76a4
+calm-budget: done
+`
+
 test('tsc-not-recognized is NOT-MEASURED, never opaque:exit-1', () => {
   const report = classifyTestGreen(TSC_NOT_RECOGNIZED, 1)
   assert.equal(report.measurement, 'not-measured')
   assert.ok(report.notMeasuredReasons.some((r) => r.includes('tsc-not-recognized')))
   assert.ok([...report.failures].some((f) => f === 'infra:tsc-not-recognized'))
-  assert.ok (![...report.failures].some((f) => f.startsWith('opaque:')))
+  assert.ok(![...report.failures].some((f) => f.startsWith('opaque:')))
 })
 
 test('identical void baseline+candidate must HARD ABORT, not no-worse pass', () => {
@@ -82,6 +105,53 @@ test('candidate-only void also hard aborts', () => {
   const decision = gateNoWorseDecision(green, voidRun)
   assert.equal(decision.ok, false)
   assert.equal(decision.code, 'candidate-not-measured')
+})
+
+// --- hawk LG-B1: exit 0 never measures from status alone ---
+
+test('LG-B1: empty log exit 0 is NOT-MEASURED (never measured green)', () => {
+  const report = classifyTestGreen('', 0)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(report.notMeasuredReasons.includes('not-measured:green-exit-without-stage-evidence'))
+  const decision = gateNoWorseDecision(report, report)
+  assert.equal(decision.ok, false)
+  assert.equal(decision.code, 'baseline-not-measured')
+})
+
+test('LG-B1: npm header only exit 0 is NOT-MEASURED', () => {
+  const log = '> storylint@0.0.0 test:green\n> node e2e/guard-helpers.mjs && npm run build\n'
+  const report = classifyTestGreen(log, 0)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(report.notMeasuredReasons.includes('not-measured:green-exit-without-stage-evidence'))
+})
+
+test('LG-B1: guard PASS only then kill exit 0 is NOT-MEASURED', () => {
+  const log = 'PASS: e2e helper convention\nguard-helpers: PASS\n'
+  const report = classifyTestGreen(log, 0)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(!report.stagesPassed.calm)
+})
+
+// --- hawk LG-B2: infra branch must fire at exit 0 (not only exit 1) ---
+
+test('LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch', () => {
+  // Full green body + port conflict: must still be not-measured because of infra signal.
+  // If someone disables `if (infra.length)`, this test goes red (would look measured-green).
+  const log = FULL_GREEN_LOG + '\nError: listen EADDRINUSE: address already in use :::4173\n'
+  const report = classifyTestGreen(log, 0)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(report.notMeasuredReasons.includes('infra:port-in-use'))
+  assert.ok(report.failures.has('infra:port-in-use'))
+  // And the infra reason is what blocks no-worse, not a missing-stage reason alone.
+  const decision = gateNoWorseDecision(report, report)
+  assert.equal(decision.ok, false)
+  assert.equal(decision.code, 'baseline-not-measured')
+})
+
+test('LG-B2: tsc-not-recognized at exit 0 is NOT-MEASURED (infra, not exit-1 second branch)', () => {
+  const report = classifyTestGreen(TSC_NOT_RECOGNIZED, 0)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(report.notMeasuredReasons.some((r) => r.includes('tsc-not-recognized')))
 })
 
 // --- granular product identities ---
@@ -175,6 +245,7 @@ test('no-worse: fully green both sides passes', () => {
   const baseline = classifyTestGreen(FULL_GREEN_LOG, 0)
   const candidate = classifyTestGreen(FULL_GREEN_LOG, 0)
   assert.equal(baseline.measurement, 'measured')
+  assert.ok(baseline.stagesPassed.calm, 'green body requires calm terminal')
   const decision = gateNoWorseDecision(baseline, candidate)
   assert.equal(decision.ok, true)
   assert.equal(decision.introduced.length, 0)
@@ -184,7 +255,7 @@ test('no-worse: fully green both sides passes', () => {
 test('exit 1 empty log is NOT-MEASURED, not opaque:test-green-exit-1', () => {
   const report = classifyTestGreen('', 1)
   assert.equal(report.measurement, 'not-measured')
-  assert.ok (![...report.failures].some((f) => f.startsWith('opaque:')))
+  assert.ok(![...report.failures].some((f) => f.startsWith('opaque:')))
   assert.ok(report.notMeasuredReasons.length >= 1)
 })
 
@@ -204,22 +275,6 @@ test('compareFailures identity subtract', () => {
   assert.deepEqual(fixed, ['smoke:x'])
 })
 
-// Realistic full green evidence (stage markers only — enough to count as measured)
-const FULL_GREEN_LOG = `
-> node e2e/guard-helpers.mjs && npm run build && npm test && node e2e/all-smoke.mjs && node e2e/calm-budget.mjs
-PASS: e2e helper convention
-> tsc -b && vite build
-vite v6.0.0 building for production...
-✓ built in 1.2s
-✔ unit one (1ms)
-ℹ tests 1
-ℹ pass 1
-ℹ fail 0
-PASS  e2e/slice-a-smoke.mjs
-[PASS] calm-check (HARD) ok
-calm-budget: done
-`
-
 // playwright missing browser
 test('missing playwright browser is NOT-MEASURED infra', () => {
   const log = `
@@ -233,4 +288,57 @@ browserType.launch: Executable doesn't exist
   const report = classifyTestGreen(log, 1)
   assert.equal(report.measurement, 'not-measured')
   assert.ok(report.notMeasuredReasons.includes('infra:playwright-browser-missing'))
+})
+
+// --- buffalo specimen: calm started, no terminal, exit 1 ---
+// Permanent path: e2e/proofs/buffalo-land-opaque-on-green.output
+// (also e2e/proofs/land-gate/buffalo-calm-incomplete.output once copied)
+
+test('buffalo incomplete-calm fixture is NOT-MEASURED stage-died:calm, never opaque', () => {
+  const paths = [
+    join(root, 'e2e', 'proofs', 'land-gate', 'buffalo-calm-incomplete.output'),
+    join(root, 'e2e', 'proofs', 'buffalo-land-opaque-on-green.output'),
+  ]
+  const path = paths.find((p) => existsSync(p))
+  assert.ok(path, `buffalo fixture missing; tried ${paths.join(' | ')}`)
+  const raw = readFileSync(path, 'utf8')
+  // Prefer the test:green slice if the file is a full land transcript
+  let slice = raw
+  const start = raw.indexOf('> storylint@')
+  const end = raw.indexOf('land: full log also at')
+  if (start >= 0) {
+    slice = raw.slice(start, end > start ? end : undefined)
+  }
+  const report = classifyTestGreen(slice, 1)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(
+    report.notMeasuredReasons.some(
+      (r) =>
+        r === 'not-measured:stage-died-without-identity:calm' ||
+        r === 'not-measured:calm-started-without-terminal-marker',
+    ),
+    `unexpected reasons: ${report.notMeasuredReasons.join(',')}`,
+  )
+  assert.ok(![...report.failures].some((f) => f.startsWith('opaque:')))
+  // Identical incomplete-calm on both sides must HARD ABORT (not theatre pass)
+  const decision = gateNoWorseDecision(report, report)
+  assert.equal(decision.ok, false)
+  assert.equal(decision.code, 'baseline-not-measured')
+})
+
+test('calm self-tests without FINGERPRINT/HARD fails is incomplete even at exit 0', () => {
+  const log = `
+PASS: e2e helper convention
+✓ built in 1.2s
+ℹ tests 1
+ℹ fail 0
+PASS: all 10 feature smokes
+visibility-self-test: ok
+[PASS] visibility (HARD) ok
+`
+  const report = classifyTestGreen(log, 0)
+  assert.equal(report.measurement, 'not-measured')
+  assert.ok(report.notMeasuredReasons.includes('not-measured:calm-started-without-terminal-marker'))
+  assert.equal(report.stagesSeen.calm, true)
+  assert.equal(report.stagesPassed.calm, false)
 })
