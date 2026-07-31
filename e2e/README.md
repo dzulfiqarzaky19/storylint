@@ -51,13 +51,15 @@ If a check cannot name the commit it measured, it fails closed (exit 2 refuse).
 
 Do not invent alternate definitions of green. `npm test` is unit-only and does **not** run browser smokes.
 
-## Five ways verification lied (seal lesson)
+## Seven ways verification lied (seal lesson)
 
 1. **No server ownership** — calm/smokes measured stranger Vite on :5173 across worktrees.
 2. **Fixture contamination** — shared doors/default projects under concurrent agents.
 3. **Closed `<details>` visibility** — rect-based counts treated collapsed content as painted.
 4. **Smokes excluded from "green"** — agents reported unit `npm test` as merge-ready while e2e was red.
 5. **Smokes unattributed** — same :5173 hole as calm.
+6. **Surface absent counted as pass** - craft chips length 0 treated as collapsed (NOT-MEASURED now fails).
+7. **Owned UI + stranger API** - UI on ephemeral ports, hard-coded :4174 reading a different database. Provenance must cover every origin a test talks to. Use `requireApiOrigin()` / `setApiBase`; never hardcode :4174.
 
 Fail closed. A measurement that cannot name what it measured is not evidence.
 
