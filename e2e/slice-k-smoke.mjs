@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import { companionPanel, openCompanionFace } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -50,8 +51,8 @@ async function proposeAndAccept(page) {
   if (await graph.locator('.graph__edge').count() !== edgesBefore) {
     throw new Error('Pending kinship edge rendered before Accept')
   }
-  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
-  await companion.getByRole('button', { name: /^Inbox/ }).click()
+  const companion = companionPanel(page)
+  await openCompanionFace(companion, 'Inbox')
   const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
   await graph.locator('title', { hasText: 'parent_of' }).first().waitFor({ state: 'attached', timeout: 5000 })
