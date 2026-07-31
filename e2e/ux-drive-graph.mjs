@@ -230,13 +230,15 @@ async function seedFullBible(request) {
 }
 
 async function openGraph(page) {
-  await page.getByRole('button', { name: /^Graph$|^Editor$/i }).click()
-  // If already graph, button may say Editor — click Graph if present
-  const graphBtn = page.getByRole('button', { name: 'Graph', exact: true })
-  if (await graphBtn.count()) await graphBtn.click()
-  const graph = page.getByRole('main', { name: 'Relationship graph' })
-  await graph.waitFor({ timeout: 10000 })
-  return graph
+  // Shell exposes Graph and Editor as distinct buttons (S1). Prefer Graph.
+  const graphMain = page.getByRole('main', { name: 'Relationship graph' })
+  if (await graphMain.count()) {
+    await graphMain.waitFor({ timeout: 5000 })
+    return graphMain
+  }
+  await page.getByRole('button', { name: 'Graph', exact: true }).click()
+  await graphMain.waitFor({ timeout: 10000 })
+  return graphMain
 }
 
 async function ensureKindOn(graph, kind) {
