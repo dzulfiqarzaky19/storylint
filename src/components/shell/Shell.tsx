@@ -257,8 +257,6 @@ export function Shell() {
       onRejectProposal={project.rejectProposal}
       sending={agentState.sending}
       llmMode={agentState.llmMode}
-      tipsDismissed={agentState.tipsDismissed}
-      onDismissTips={agentState.dismissTips}
       selection={selection}
       onGenerateCowrite={async (skill, instruction) => {
         if (!activeChapter) return
