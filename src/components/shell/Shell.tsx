@@ -158,6 +158,7 @@ export function Shell() {
       proposals={(project.project?.proposals ?? []).filter((proposal) => proposal.status === 'pending')}
       continuityRunning={project.continuity.running}
       continuityMode={project.continuity.mode}
+      continuityCounts={project.continuity.counts}
       onRunContinuity={runContinuity}
       onAcceptProposal={project.acceptProposal}
       onEditProposal={project.editProposal}
@@ -276,6 +277,14 @@ export function Shell() {
             className="shell__action-continuity"
             variant="primary"
             disabled={!activeChapter || project.continuity.running || workspaceMode === 'lab'}
+            data-continuity-state={
+              project.continuity.running
+                ? 'running'
+                : project.continuity.mode
+                  ? 'ready'
+                  : 'idle'
+            }
+            aria-busy={project.continuity.running}
             onClick={() => void runContinuity().catch(() => undefined)}
           >
             {project.continuity.running ? 'Running…' : 'Continuity'}

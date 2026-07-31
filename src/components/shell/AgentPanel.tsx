@@ -62,6 +62,7 @@ export type AgentPanelProps = {
   proposals: Proposal[]
   continuityRunning: boolean
   continuityMode: 'fixture' | 'live' | null
+  continuityCounts?: { red: number; yellow: number; proposals: number } | null
   onRunContinuity: () => Promise<void>
   onAcceptProposal: (id: string, edits?: ProposalEdits) => Promise<void>
   onEditProposal: (id: string, edits: ProposalEdits) => Promise<void>
@@ -84,7 +85,7 @@ export type AgentPanelProps = {
 export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
   companionContext = 'writing', contextLabel,
-  proposals, continuityRunning, continuityMode,
+  proposals, continuityRunning, continuityMode, continuityCounts,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, tipsDismissed,
   onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onClose,
@@ -106,11 +107,26 @@ export function AgentPanel({
   const statusLine = useMemo(() => {
     const bits: string[] = []
     if (continuityRunning) bits.push('Continuity running…')
-    else if (continuityMode) bits.push(`Last Continuity: ${continuityMode}`)
+    else if (continuityMode) {
+      const counts = continuityCounts
+      if (counts && counts.red + counts.yellow + counts.proposals === 0) {
+        bits.push(`Last Continuity (${continuityMode}): no issues found`)
+      } else if (counts) {
+        bits.push(`Last Continuity (${continuityMode}): ${counts.red} red · ${counts.yellow} yellow · ${counts.proposals} proposals`)
+      } else {
+        bits.push(`Last Continuity: ${continuityMode}`)
+      }
+    }
     if (llmMode === 'fixture') bits.push('Chat fixture')
     else if (llmMode === 'live') bits.push('Chat live')
     return bits.join(' · ')
-  }, [continuityMode, continuityRunning, llmMode])
+  }, [continuityCounts, continuityMode, continuityRunning, llmMode])
+
+  const continuityState = continuityRunning
+    ? 'running'
+    : continuityMode
+      ? 'ready'
+      : 'idle'
 
   function send() {
     const text = draft.trim()
@@ -157,7 +173,11 @@ export function AgentPanel({
     const showReview = options?.review !== false
     return (
       <div className="agent__transcript" aria-label="Agent transcript">
-        {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+        {statusLine ? (
+          <p className="continuity-privacy" data-continuity-status={continuityState} aria-live="polite">
+            {statusLine}
+          </p>
+        ) : null}
         {transcript.length === 0 && !tipsDismissed && face === 'chat' ? (
           <EmptyState
             title={companionContext === 'lab' ? 'Brainstorm onto the bench' : 'Start with one small step'}
@@ -170,10 +190,23 @@ export function AgentPanel({
         {transcript.map((entry) => {
           if (entry.role === 'tool') {
             if (!showTools) return null
+            const empty = entry.red + entry.yellow + entry.proposals === 0
             return (
-              <article key={entry.id} className="agent__tool-card">
+              <article
+                key={entry.id}
+                className="agent__tool-card"
+                data-continuity-result={empty ? 'empty' : 'findings'}
+                aria-live="polite"
+              >
                 <span className="agent__message-role">Continuity · {entry.mode}</span>
-                <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} proposals</strong>
+                {empty ? (
+                  <>
+                    <strong>No issues found</strong>
+                    <p className="continuity-privacy">No marks or proposals for this chapter. Accept/Edit/Reject stay gated until something is pending.</p>
+                  </>
+                ) : (
+                  <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} proposals</strong>
+                )}
               </article>
             )
           }
@@ -263,7 +296,13 @@ export function AgentPanel({
           {renderTranscript({ apply: false })}
           <div className="panel__footer">
             <div className="agent__cowrite-actions" aria-label="Check tools">
-              <Button variant="primary" disabled={continuityRunning} onClick={() => void onRunContinuity().catch(() => undefined)}>
+              <Button
+                variant="primary"
+                disabled={continuityRunning}
+                data-continuity-state={continuityState}
+                aria-busy={continuityRunning}
+                onClick={() => void onRunContinuity().catch(() => undefined)}
+              >
                 {continuityRunning ? 'Running…' : 'Run Continuity'}
               </Button>
               <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
