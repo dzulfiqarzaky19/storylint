@@ -113,6 +113,7 @@ export function AgentPanel({
   const overflow = allowed.filter((candidate) => candidate !== 'inbox' && !primaries.includes(candidate))
   const applyCards = transcript.filter((entry) => entry.role === 'apply')
   const pendingCount = proposals.length + applyCards.length
+  const hasChapter = (project?.chapters?.length ?? 0) > 0
 
   useEffect(() => {
     setFace(DEFAULT_FACE[companionContext])
@@ -223,7 +224,7 @@ export function AgentPanel({
           <EmptyState
             title={companionContext === 'lab' ? 'Brainstorm onto the bench' : 'Start with one small step'}
             hint={companionContext === 'lab'
-              ? 'Ask for places, character sparks, or what-ifs. Results land as Lab cards — not bible.'
+              ? 'Ask for places, character sparks, or what-ifs. Results land as Lab cards — not Canon.'
               : 'Run Continuity from Check, or ask me to draft a character sheet. Try: /sheet Kael'}
             action={<Button onClick={onDismissTips}>Dismiss tips</Button>}
           />
@@ -357,7 +358,17 @@ export function AgentPanel({
         </div>
       ) : face === 'write' && companionContext === 'writing' ? (
         <>
-          {renderTranscript({ tools: false, review: false, apply: true, status: false })}
+          {!hasChapter ? (
+            <div className="agent__transcript" aria-label="Write rest">
+              <EmptyState
+                title="No chapter open"
+                hint="Open or create a chapter in Draft, then Continue / Rewrite / Brainstorm from the page. Co-write needs somewhere to land."
+              />
+              {renderTranscript({ tools: false, review: false, apply: true, status: false })}
+            </div>
+          ) : (
+            renderTranscript({ tools: false, review: false, apply: true, status: false })
+          )}
           <div className="panel__footer">
             <div className="agent__chips">
               <Badge tone="accent">{chipLabel}</Badge>
@@ -366,15 +377,39 @@ export function AgentPanel({
             <Textarea
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Optional instruction for co-write…"
+              placeholder={hasChapter ? 'Optional instruction for co-write…' : 'Open a chapter in Draft first…'}
               aria-label="Co-write instruction"
               rows={2}
+              disabled={!hasChapter || sending}
             />
             <div className="agent__cowrite-actions" aria-label="Co-write skills">
-              <Button disabled={sending} onClick={() => generate('continue')}>Continue</Button>
-              <Button disabled={sending || selection.start === selection.end} onClick={() => generate('rewrite')}>Rewrite</Button>
-              <Button disabled={sending} onClick={() => generate('brainstorm')}>Brainstorm</Button>
+              <Button
+                disabled={!hasChapter || sending}
+                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
+                onClick={() => generate('continue')}
+              >
+                Continue
+              </Button>
+              <Button
+                disabled={!hasChapter || sending || selection.start === selection.end}
+                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
+                onClick={() => generate('rewrite')}
+              >
+                Rewrite
+              </Button>
+              <Button
+                disabled={!hasChapter || sending}
+                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
+                onClick={() => generate('brainstorm')}
+              >
+                Brainstorm
+              </Button>
             </div>
+            {!hasChapter ? (
+              <p className="continuity-privacy" role="status">
+                Waiting on a chapter — use Draft doors Write or New chapter in the binder.
+              </p>
+            ) : null}
           </div>
         </>
       ) : face === 'check' && companionContext === 'writing' ? (
@@ -392,6 +427,11 @@ export function AgentPanel({
                     : `Last Continuity (${continuityMode}): ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals. Open Inbox to Accept/Edit/Reject.`
                   : `Last Continuity finished in ${continuityMode} mode.`}
               </p>
+            ) : !hasChapter ? (
+              <EmptyState
+                title="Nothing to check yet"
+                hint="Check is the only Continuity entry. Open or create a chapter in Draft first — Continuity scans chapter prose against accepted Canon."
+              />
             ) : (
               <EmptyState
                 title="Nothing checked yet"
@@ -404,15 +444,16 @@ export function AgentPanel({
             <div className="agent__cowrite-actions" aria-label="Check tools">
               <Button
                 variant="primary"
-                disabled={continuityRunning}
+                disabled={!hasChapter || continuityRunning}
+                title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined}
                 data-continuity-state={continuityState}
                 aria-busy={continuityRunning}
                 onClick={() => void onRunContinuity().catch(() => undefined)}
               >
                 {continuityRunning ? 'Running…' : 'Run Continuity'}
               </Button>
-              <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
-              <Button disabled={sending} onClick={() => void onRunReview('craft').catch(() => undefined)}>Craft</Button>
+              <Button disabled={!hasChapter || sending} title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
+              <Button disabled={!hasChapter || sending} title={!hasChapter ? 'Open or create a chapter in Draft first' : undefined} onClick={() => void onRunReview('craft').catch(() => undefined)}>Craft</Button>
             </div>
           </div>
         </>
@@ -433,7 +474,7 @@ export function AgentPanel({
         <>
           {renderTranscript({ apply: false, review: false, status: false })}
           <div className="panel__footer">
-            <div className="agent__chips"><Badge tone="accent">{chipLabel}</Badge><Badge tone="pending">@bible</Badge></div>
+            <div className="agent__chips"><Badge tone="accent">{chipLabel}</Badge><Badge tone="pending">@canon</Badge></div>
             <Textarea
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
@@ -477,7 +518,7 @@ export function AgentPanel({
           <div className="panel__footer">
             <div className="agent__chips">
               <Badge tone="accent">{chipLabel}</Badge>
-              {companionContext === 'writing' ? <Badge tone="pending">@bible</Badge> : null}
+              {companionContext === 'writing' ? <Badge tone="pending">@canon</Badge> : null}
               {companionContext === 'lab' ? <Badge tone="pending">@lab</Badge> : null}
             </div>
             <Textarea
@@ -501,3 +542,4 @@ export function AgentPanel({
     </div>
   )
 }
+
