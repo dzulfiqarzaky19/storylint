@@ -100,6 +100,14 @@ Use `judgeMeasured(id, sev, doc, surface, measurement, { pass, measured, thresho
 
 Intentional emptiness is still **found** (we found the empty surface). `notFound` means the checker cannot name what it measured.
 
+Calm summary prints the third outcome explicitly (crab/rat):
+
+```text
+HARD fails: 0 · NOT-MEASURED: 0 · checks: 50
+```
+
+If NOT-MEASURED is nonzero, the run names those check ids. Fingerprint tokens include outcome kind (`P`/`F`/`W`/`N`/`X`) so PASS→NOT-MEASURED always moves the hash — a green that silently stopped measuring must not look identical.
+
 ## Navigation waits (networkidle trap)
 
 > **`networkidle` is SAFE on FIRST navigation and DANGEROUS on RELOAD.**

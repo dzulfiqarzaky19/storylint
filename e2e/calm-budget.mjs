@@ -118,14 +118,48 @@ const pwRoot = dirname(require.resolve('playwright/package.json'))
 const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
 
 /** @typedef {'HARD'|'WARN'} Sev */
-/** @typedef {{ id: string, sev: Sev, doc: string, surface: string, pass: boolean, measured: string, threshold: string, note?: string }} Check */
+/**
+ * @typedef {'pass'|'fail'|'warn'|'not-measured'|'precondition'} Outcome
+ * @typedef {{ id: string, sev: Sev, doc: string, surface: string, pass: boolean, measured: string, threshold: string, note?: string, outcome?: Outcome }} Check
+ */
 
 /** @type {Check[]} */
 const checks = []
 
+/** Fingerprint / summary token — N is distinct from F so PASS→NOT-MEASURED always moves the hash (crab/rat). */
+function outcomeOf(check) {
+  if (check.outcome) return check.outcome
+  if (check.pass) return 'pass'
+  if (check.sev === 'HARD') return 'fail'
+  return 'warn'
+}
+
+function outcomeToken(check) {
+  const o = outcomeOf(check)
+  if (o === 'pass') return 'P'
+  if (o === 'not-measured') return 'N'
+  if (o === 'precondition') return 'X'
+  if (o === 'warn') return 'W'
+  return 'F'
+}
+
+function statusLabel(check) {
+  const o = outcomeOf(check)
+  if (o === 'pass') return 'PASS'
+  if (o === 'not-measured') return 'NOT-MEASURED'
+  if (o === 'precondition') return 'PRECONDITION'
+  if (o === 'warn') return 'WARN'
+  return 'FAIL'
+}
+
+function isNotMeasuredCheck(check) {
+  return outcomeOf(check) === 'not-measured'
+}
+
 function record(check) {
+  if (!check.outcome) check.outcome = outcomeOf(check)
   checks.push(check)
-  const status = check.pass ? 'PASS' : check.sev === 'HARD' ? 'FAIL' : 'WARN'
+  const status = statusLabel(check)
   console.log(`[${status}] ${check.id} (${check.sev}) ${check.measured} · want ${check.threshold} · ${check.surface}`)
   // On fail: dump every sample name (not just the first) when the check carries them.
   if (!check.pass && check.samples?.length) {
@@ -138,6 +172,8 @@ function record(check) {
 }
 
 function add(id, sev, doc, surface, pass, measured, threshold, note, samples, extra) {
+  const outcome = extra?.outcome
+    || (pass ? 'pass' : sev === 'HARD' ? 'fail' : 'warn')
   record({
     id,
     sev,
@@ -148,6 +184,7 @@ function add(id, sev, doc, surface, pass, measured, threshold, note, samples, ex
     threshold: String(threshold),
     note,
     samples,
+    outcome,
     ...(extra || {}),
   })
 }
@@ -163,6 +200,8 @@ function preconditionFail(id, surface, error) {
     message,
     'precondition proven before measure',
     'wrong-surface PASS blocked',
+    undefined,
+    { outcome: 'precondition' },
   )
 }
 
@@ -177,6 +216,8 @@ function notMeasuredFail(id, surface, reason) {
     `NOT-MEASURED: ${reason}`,
     'surface present and measurable',
     'absence is not pass',
+    undefined,
+    { outcome: 'not-measured' },
   )
 }
 
@@ -1574,11 +1615,13 @@ async function runViewport(browser, width, height, label, projectId) {
 
 function renderMarkdown(meta) {
   const hardFails = checks.filter((c) => !c.pass && c.sev === 'HARD')
+  const notMeasured = checks.filter(isNotMeasuredCheck)
+  const preconditions = checks.filter((c) => outcomeOf(c) === 'precondition')
   const warns = checks.filter((c) => !c.pass && c.sev === 'WARN')
   const passes = checks.filter((c) => c.pass)
   const rows = checks
     .map((c) => {
-      const status = c.pass ? 'PASS' : c.sev === 'HARD' ? 'FAIL' : 'WARN'
+      const status = statusLabel(c)
       return `| ${status} | ${c.id} | ${c.sev} | ${c.measured.replace(/\|/g, '/')} | ${c.threshold.replace(/\|/g, '/')} | ${c.surface} | ${c.doc} |`
     })
     .join('\n')
@@ -1603,9 +1646,12 @@ function renderMarkdown(meta) {
 | PASS | ${passes.length} |
 | WARN (fail band) | ${warns.length} |
 | HARD FAIL | ${hardFails.length} |
+| NOT-MEASURED | ${notMeasured.length} |
+| PRECONDITION | ${preconditions.length} |
 | Total checks | ${checks.length} |
 
 **Exit:** ${hardFails.length ? 'nonzero (HARD fail)' : 'zero (no HARD fail)'}
+**Line:** HARD fails: ${hardFails.length} · NOT-MEASURED: ${notMeasured.length} · checks: ${checks.length}
 
 ## Scoreboard
 
@@ -1613,9 +1659,13 @@ function renderMarkdown(meta) {
 |--------|----|-----|----------|-----------|---------|-----|
 ${rows}
 
+## NOT-MEASURED
+
+${notMeasured.length ? notMeasured.map((c) => `- **${c.id}**: ${c.measured} — ${c.surface}`).join('\n') : '_None._'}
+
 ## HARD failures
 
-${hardFails.length ? hardFails.map((c) => `- **${c.id}**: ${c.measured} (want ${c.threshold}) — ${c.doc}`).join('\n') : '_None._'}
+${hardFails.length ? hardFails.map((c) => `- **${c.id}** [${statusLabel(c)}]: ${c.measured} (want ${c.threshold}) — ${c.doc}`).join('\n') : '_None._'}
 
 ## WARN band
 
@@ -1625,6 +1675,7 @@ ${warns.length ? warns.map((c) => `- **${c.id}**: ${c.measured} (want ${c.thresh
 
 - Measurements require proven workspace/face preconditions via helpers.
 - Wrong-surface PASS is blocked: precondition misses are HARD fails.
+- NOT-MEASURED is a HARD fail and a first-class summary count (rule 4 / Measurement API).
 - B4-canon-* stay WARN until D4 lands (doc).
 - Offline fixture LLM routes installed; no live model.
 `
@@ -1785,7 +1836,10 @@ try {
   clearHardTimeout()
 }
 
-const hardFails = checks.filter((c) => !c.pass && c.sev === 'HARD').length
+const hardFailChecks = checks.filter((c) => !c.pass && c.sev === 'HARD')
+const notMeasuredChecks = checks.filter(isNotMeasuredCheck)
+const hardFails = hardFailChecks.length
+const notMeasuredCount = notMeasuredChecks.length
 const meta = {
   when: new Date().toISOString(),
   ui: UI,
@@ -1798,15 +1852,26 @@ const meta = {
   shellCss: stack.shellCss,
   served,
   provenance: stack.provenance,
+  hardFails,
+  notMeasured: notMeasuredCount,
+  notMeasuredIds: notMeasuredChecks.map((c) => c.id),
+  checks: checks.length,
 }
 printRunIdentity(meta, hardFails ? 'run-end-HARD' : 'run-end')
 const md = renderMarkdown(meta)
 writeFileSync(OUT_MD, md)
-// Determinism fingerprint ignores timestamps / project ids in measured paths that include them.
-const fingerprint = checks.map((c) => `${c.id}|${c.pass ? 'P' : c.sev === 'HARD' ? 'F' : 'W'}|${c.measured}|${c.threshold}`).join('\n')
+// Determinism fingerprint: outcome kind is load-bearing (P/F/W/N/X).
+// PASS→NOT-MEASURED must move the hash even if measured text collides (crab/rat).
+const fingerprint = checks.map((c) => `${c.id}|${outcomeToken(c)}|${c.measured}|${c.threshold}`).join('\n')
 writeFileSync(OUT_JSON, JSON.stringify({ meta, checks, fingerprint }, null, 2))
 console.log(`\nWrote ${OUT_MD}` + (RECORD_SCOREBOARD ? ' (tracked scoreboard --record)' : ' (untracked run artifact)'))
-console.log(`HARD fails: ${hardFails} / checks: ${checks.length}`)
+console.log(`HARD fails: ${hardFails} · NOT-MEASURED: ${notMeasuredCount} · checks: ${checks.length}`)
+if (notMeasuredCount) {
+  console.log('NOT-MEASURED ids: ' + notMeasuredChecks.map((c) => c.id).join(', '))
+  for (const c of notMeasuredChecks) {
+    console.log(`  - ${c.id}: ${c.measured} · ${c.surface}`)
+  }
+}
 console.log(`FINGERPRINT ${hashFingerprint(fingerprint)}`)
 process.exit(hardFails > 0 ? 1 : 0)
 
