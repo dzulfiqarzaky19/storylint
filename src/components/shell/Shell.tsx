@@ -304,31 +304,32 @@ export function Shell() {
         </span>
         <div className="shell__topbar-spacer" />
         <div className="shell__topbar-actions">
-          <Button
-            className="shell__action-graph"
-            aria-pressed={workspaceMode === 'manuscript'}
-            onClick={() => setWorkspaceMode('manuscript')}
-          >
-            Draft
-          </Button>
-          <Button
-            className="shell__action-graph"
-            aria-pressed={workspaceMode === 'lab'}
-            onClick={() => openLab()}
-          >
-            Lab
-          </Button>
-          <Button
-            className="shell__action-graph"
-            aria-pressed={workspaceMode === 'graph'}
-            onClick={() => openCanon()}
-          >
-            Canon
-          </Button>
+          <div className="shell__ecosystem" role="group" aria-label="Workspace">
+            <Button
+              className="shell__action-ecosystem"
+              aria-pressed={workspaceMode === 'manuscript'}
+              onClick={() => setWorkspaceMode('manuscript')}
+            >
+              Draft
+            </Button>
+            <Button
+              className="shell__action-ecosystem"
+              aria-pressed={workspaceMode === 'lab'}
+              onClick={() => openLab()}
+            >
+              Lab
+            </Button>
+            <Button
+              className="shell__action-ecosystem"
+              aria-pressed={workspaceMode === 'graph'}
+              onClick={() => openCanon()}
+            >
+              Canon
+            </Button>
+          </div>
           {workspaceMode === 'manuscript' && activeChapter ? (
             <Button
               className="shell__action-continuity"
-              variant="primary"
               disabled={project.continuity.running}
               data-continuity-state={
                 project.continuity.running
