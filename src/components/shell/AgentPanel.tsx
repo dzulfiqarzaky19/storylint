@@ -101,14 +101,16 @@ export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts,
-  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, tipsDismissed,
-  onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
+  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, tipsDismissed: _tipsDismissed,
+  onDismissTips: _onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
   const [face, setFace] = useState<CompanionFace>(DEFAULT_FACE[companionContext])
   const [moreOpen, setMoreOpen] = useState(false)
   const moreRef = useRef<HTMLDivElement | null>(null)
+  // Session memory only: last face per ecosystem context. Reload still defaults to Chat.
+  const lastFaceByContext = useRef<Partial<Record<CompanionContext, CompanionFace>>>({})
   const allowed = FACES[companionContext]
   const primaries = PRIMARY_FACES[companionContext]
   const overflow = allowed.filter((candidate) => candidate !== 'inbox' && !primaries.includes(candidate))
@@ -117,12 +119,22 @@ export function AgentPanel({
   const hasChapter = (project?.chapters?.length ?? 0) > 0
 
   useEffect(() => {
-    setFace(DEFAULT_FACE[companionContext])
+    const remembered = lastFaceByContext.current[companionContext]
+    const next = remembered && FACES[companionContext].includes(remembered)
+      ? remembered
+      : DEFAULT_FACE[companionContext]
+    setFace(next)
     setMoreOpen(false)
   }, [companionContext])
 
   useEffect(() => {
-    if (!allowed.includes(face)) setFace(DEFAULT_FACE[companionContext])
+    if (!allowed.includes(face)) {
+      const fallback = DEFAULT_FACE[companionContext]
+      setFace(fallback)
+      lastFaceByContext.current[companionContext] = fallback
+      return
+    }
+    lastFaceByContext.current[companionContext] = face
   }, [allowed, companionContext, face])
 
   useEffect(() => {
@@ -180,6 +192,7 @@ export function AgentPanel({
 
   function selectFace(next: CompanionFace) {
     setFace(next)
+    lastFaceByContext.current[companionContext] = next
     setMoreOpen(false)
   }
 
@@ -221,13 +234,14 @@ export function AgentPanel({
             {statusLine}
           </p>
         ) : null}
-        {transcript.length === 0 && !tipsDismissed && face === 'chat' ? (
+        {transcript.length === 0 && face === 'chat' && hasChapter ? (
           <EmptyState
-            title={companionContext === 'lab' ? 'Brainstorm onto the bench' : 'Start with one small step'}
+            title={companionContext === 'lab' ? 'Brainstorm onto the bench' : 'Ask, draft, check — one place'}
             hint={companionContext === 'lab'
               ? 'Ask for places, character sparks, or what-ifs. Results land as Lab cards — not Canon.'
-              : 'Run Continuity from Check, or ask me to draft a character sheet. Try: /sheet Kael'}
-            action={<Button onClick={onDismissTips}>Dismiss tips</Button>}
+              : companionContext === 'graph'
+                ? 'Ask about accepted links, or open Inspect on a node. Pending edges stay out of the map until Accept.'
+                : 'Chat answers project questions. Write co-writes on the open chapter. Check runs Continuity. Inbox holds proposals until you Accept.'}
           />
         ) : null}
         {transcript.map((entry) => {
@@ -345,7 +359,7 @@ export function AgentPanel({
         <div className="agent__transcript" aria-label="Companion inbox">
           {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
           {pendingCount === 0 ? (
-            <EmptyState title="Inbox clear" hint="Pending proposals and Apply cards land here." />
+            <EmptyState title="Inbox clear" hint="Things arrive here from Continuity on Check, Send proposal in Canon, and Apply cards from co-write on Write. Accept/Edit/Reject stay gated until something is pending." />
           ) : (
             <>
               {proposals.length > 0 ? renderProposals(proposals) : null}
@@ -509,6 +523,24 @@ export function AgentPanel({
             hint="Select a node in Graph to open its sheet. Pending edges never render until Accept."
           />
           {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+        </div>
+      ) : !hasChapter ? (
+        <div className="agent__transcript" aria-label="Chat rest">
+          <EmptyState
+            title={companionContext === 'lab' ? 'Lab chat needs a chapter home' : 'Companion needs a chapter'}
+            hint={companionContext === 'lab'
+              ? 'Spark and chat prompts still attach to a draft chapter today. Start one chapter, then brainstorm onto the bench without changing Canon.'
+              : companionContext === 'graph'
+                ? 'Chat and Inspect read project truth beside the map. Start a draft chapter first, then add Canon sheets when you are ready.'
+                : 'Chat, Write, and Check all work on an open Draft chapter. Start one chapter — that is the first door into the companion.'}
+            action={
+              onAddChapter ? (
+                <Button variant="primary" onClick={onAddChapter}>
+                  Write first chapter
+                </Button>
+              ) : undefined
+            }
+          />
         </div>
       ) : (
         <>
