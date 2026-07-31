@@ -65,16 +65,11 @@
   color: var(--color-accent);
 }
 
-/* Continuity is quiet job chrome — never louder than ecosystem (D2). */
-.shell__action-continuity {
-  color: var(--color-text-muted);
-}
 
 @media (max-width: 767px) {
   /* Keep Draft · Lab · Canon; demote lesser chrome (D7). */
   .shell__breadcrumb,
   .project-status,
-  .shell__action-continuity,
   .shell__action-theme {
     display: none;
   }

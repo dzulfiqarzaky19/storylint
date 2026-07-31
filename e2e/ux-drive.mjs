@@ -261,17 +261,26 @@ try {
   await page.waitForTimeout(250)
   await shot(page, '06-focus-off')
 
-  const contBtn = page.locator('button.shell__action-continuity')
+  // Continuity lives in Companion Check only (no topbar button).
+  const companionPanel = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
+  const agentToggleBtn = page.getByRole('button', { name: /Hide companion|Show companion/i })
+  if (await agentToggleBtn.count()) {
+    const pressed = await agentToggleBtn.first().getAttribute('aria-pressed')
+    if (pressed !== 'true') await agentToggleBtn.first().click()
+  }
+  await companionPanel.getByRole('button', { name: 'Check', exact: true }).click()
+  const contBtn = companionPanel.getByRole('button', { name: /^Run Continuity$|^Running/i })
   await contBtn.waitFor()
   await contBtn.click()
   try {
     await page.waitForFunction(() => {
-      const b = document.querySelector('button.shell__action-continuity')
+      const b = document.querySelector('[data-continuity-state]')
       return b && b.getAttribute('data-continuity-state') === 'ready'
     }, { timeout: 20000 })
     ok('Continuity finished (data-continuity-state=ready)')
   } catch {
     warn('Continuity ready signal missing after 20s')
+  }
   }
   await page.waitForTimeout(300)
   await shot(page, '07-after-continuity')
@@ -459,9 +468,9 @@ try {
       if (name === 'Canon') {
         const contVisible = await page.locator('button.shell__action-continuity').count()
         if (contVisible !== 0) {
-          results.shouldFix.push('Continuity still visible outside Draft (Canon)')
-          warn('Continuity draft-only violated on Canon')
-        } else ok('Continuity draft-only on Canon')
+          results.shouldFix.push('Continuity still present in topbar')
+          warn('Topbar Continuity should be removed')
+        } else ok('No topbar Continuity on Canon')
       }
       results.jobs[name.toLowerCase()] = true
       const msBtn = page.getByRole('button', { name: /manuscript|editor|chapter/i })
