@@ -38,7 +38,8 @@ A reader should find the ruling that governs their question in the tables below 
 | [design-review-r1.md](./design-review-r1.md) | Round-1 accept/reject by surface; drove early density follow-ups (snapshot). |
 | [design-review-task-l.md](./design-review-task-l.md) | Task L binder polish review — **kind renames later rejected** (see L2). |
 | [density-audit-qa3.md](./density-audit-qa3.md) | Pre-fix density fault list — **historical**; D5 center fix superseded by adjudication. |
-| [milestone-density-pass.md](./milestone-density-pass.md) | Founder density-pass summary: holds, deliberate non-goals, verification lies catalog. |
+| [milestone-density-pass.md](./milestone-density-pass.md) | Founder density-pass summary: holds, deliberate non-goals, verification lies catalog. **Shipped main** `de58c14`. |
+| [milestone-load-and-state.md](./milestone-load-and-state.md) | Founder load-and-state summary (post-density): volume/composition/seeded third state/false signifiers/`npm run land` no-worse. **Prepared, not shipped** — hold binder scroll@68. |
 | [seeded-default-first-impression-brief.md](./seeded-default-first-impression-brief.md) | Queued brief (historical). |
 | [seeded-default-first-impression.md](./seeded-default-first-impression.md) | **CONDITIONAL ACCEPT** seed-as-boot; P1 empty title + Continuity gated on prose + prefer body focus. |
 | [ia-final-qa.md](./ia-final-qa.md) | IA J1/J2/J3 + Canon entry PASS @ 6a2a74b (record). |
@@ -68,21 +69,31 @@ Reversed decisions are the most instructive. Keep the file; point here.
 
 ## Still open
 
-Short list only — do not grow into a second backlog novel.
+Short list only — do not grow into a second backlog novel. Full founder context: [milestone-load-and-state.md](./milestone-load-and-state.md).
 
-1. **Refresh / tab-close loses dirty Canon identity** — [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md); durable fix = draft persistence, not `beforeunload`.
-2. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift (bear in flight at write time).
-3. ~~**Seeded-default first impression**~~ — ox **CONDITIONAL ACCEPT** + P1 in flight/landed ([seeded-default-first-impression.md](./seeded-default-first-impression.md)).
-4. **Canon and Lab under load** — density/fold under real sheets/cards not fully eye-judged on seeded fixtures.
-5. **Empty-Canon Send proposal weight** — ruled; octopus implementing (demote/primary weight on empty Canon propose path).
+### Ship hold (blocks second main merge)
 
-6. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'` — badger, proven bare 5/5). Why horse/dolphin bare trees failed is **not established**. Ambient-gitignored-data mechanism **disproven** (server always synthesises `default`).
-7. **`reload`+`networkidle` banned suite-wide** (badger `c4c5e2b` / guard). Residual: first-`goto` `networkidle` still widespread, including **three in `calm-budget.mjs`** — gate wait policy, not only speed. See e2e/README navigation waits.
+1. **Binder scroll restore drifts at 68 sheets** — scrollTop 2080 → Back restores 1147. Fixture-size park/restore green lied once. octopus in flight; verify at 68 sheets before coordinator merge.
 
-### Closed this session (do not re-open without new evidence)
+### Product / measure debt
+
+2. **Refresh / tab-close loses dirty Canon identity** — [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md); durable fix = draft persistence, not `beforeunload`.
+3. **Lab lifecycle ends** — archive is a trapdoor (no restore); Promoted is append-only. No fourth place if archive ships ([08-false-state.md](../research/ui-ux/08-false-state.md) gap b).
+4. **Network graph hairball at ~68 nodes** — layout/model deferred.
+5. **Pass-on-absence class audit** — badger in flight; [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md).
+6. **Research Pin/Propose lack a local working affordance** mid-read.
+7. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
+8. **slice-j original failure mode unexplained** after create-both fix. Ambient-gitignored-data mechanism **disproven**.
+9. **First-`goto` `networkidle` residual** after suite-wide reload ban (`c4c5e2b`) — including calm. See e2e/README navigation waits.
+
+### Closed this window (do not re-open without new evidence)
 
 - ~~**B6-primary-per-job**~~ — **LANDED** (empty Canon + Draft fixtures). Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
-- ~~**slice-j dependency on uncreated entity**~~ — **fixed** (create both; no `'default'`). Original failure mode still open above. Ninth lie + scar: [milestone-density-pass](./milestone-density-pass.md) · [STANDING_RULES](./STANDING_RULES.md) §8/§11.
+- ~~**Empty-Canon Send proposal weight**~~ — **LANDED** (`b64c7ca`); omit solid Send until 2+ sheets.
+- ~~**Seeded-default P1**~~ — **LANDED** (untitled seed, Continuity gated on prose, export slug). Ruling: [seeded-default-first-impression.md](./seeded-default-first-impression.md).
+- ~~**B3-inbox-wall@volume**~~ — **LANDED** (measure Inbox at volume + fold/scrollport).
+- ~~**slice-j dependency on uncreated entity**~~ — **fixed** (create both; no `'default'`). Original failure mode still open above.
+- ~~**`npm run land` absolute-green deadlock**~~ — **LANDED** no-worse gate; self-host `8ce391f`.
 
 ---
 
