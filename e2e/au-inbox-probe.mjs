@@ -28,7 +28,7 @@ try {
       })
     }
   })
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   const tog = page.getByRole('button', { name: /Show companion|Hide companion/i }).first()
   if (/Show companion/i.test((await tog.getAttribute('aria-label')) || '')) {
     await tog.click()

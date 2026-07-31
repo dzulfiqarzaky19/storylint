@@ -3,12 +3,13 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import {
+  reloadApp,
   closeSheetDetail,
   companionPanel,
   openCompanionFace,
   getApiBase,
   requireUiOrigin,
-  setApiBase,
+  setApiBase
 } from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
 
@@ -77,7 +78,7 @@ try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   await seedCharacters(desktop.request)
   await desktop.goto(UI, { waitUntil: 'networkidle' })
-  await desktop.reload({ waitUntil: 'networkidle' })
+  await reloadApp(desktop)
   const graph = await proposeAndAccept(desktop)
   await graph.getByRole('button', { name: 'Family', exact: true }).click()
   await graph.locator('.graph__family-stage').waitFor({ timeout: 5000 })

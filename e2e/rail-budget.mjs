@@ -116,7 +116,7 @@ try {
   for (const width of WIDTHS) {
     // a fresh load per width so "default" reflects a real session start, not a resize
     await page.setViewportSize({ width, height: 900 })
-    await page.reload({ waitUntil: 'networkidle' })
+    await page.reload({ waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(500)
 
     for (const rails of ['default', 'both']) {
