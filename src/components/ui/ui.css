@@ -43,7 +43,7 @@
 }
 
 .ui-button--ghost {
-  border-color: var(--color-border);
+  border-color: var(--color-border-control);
   color: var(--color-text);
 }
 
