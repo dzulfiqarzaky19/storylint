@@ -18,6 +18,14 @@
   margin-inline: auto;
 }
 
+<<<<<<< HEAD
+=======
+.graph__header {
+  align-items: flex-end;
+  padding-block: var(--space-2);
+}
+
+>>>>>>> storylint/lab-slice
 .graph__header h2,
 .graph__header p,
 .graph__editor h3,
@@ -39,8 +47,33 @@
   gap: var(--space-1);
 }
 
+<<<<<<< HEAD
 .graph__canvas {
   display: block;
+=======
+.graph__toolbar {
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.graph__view {
+  padding-inline-end: var(--space-2);
+  border-inline-end: var(--border-width) solid var(--color-border);
+}
+
+.graph__toolbar .ui-button {
+  color: var(--color-text-muted);
+}
+
+.graph__toolbar .ui-button[aria-pressed='true'] {
+  border-color: var(--color-accent-muted);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+.graph__canvas,
+.graph__empty {
+>>>>>>> storylint/lab-slice
   width: 100%;
   max-width: var(--manuscript-page-max-w-xl);
   min-height: calc(var(--size-control-touch) * 8);
@@ -50,6 +83,28 @@
   background: var(--color-surface);
 }
 
+<<<<<<< HEAD
+=======
+.graph__canvas {
+  display: block;
+}
+
+.graph__empty {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: var(--space-8);
+}
+
+.graph__empty .ui-empty-state {
+  align-items: center;
+  max-width: var(--size-binder);
+  border-color: transparent;
+  background: transparent;
+  text-align: center;
+}
+
+>>>>>>> storylint/lab-slice
 .graph__family-stage {
   position: relative;
   width: 100%;
@@ -105,12 +160,26 @@
 
 .graph__node {
   cursor: pointer;
+<<<<<<< HEAD
+=======
+  outline: none;
+>>>>>>> storylint/lab-slice
 }
 
 .graph__node circle,
 .graph__node rect {
   fill: var(--color-surface-raised);
   stroke: var(--color-border-strong);
+<<<<<<< HEAD
+=======
+}
+
+.graph__node circle {
+  stroke-width: var(--border-width);
+}
+
+.graph__node rect {
+>>>>>>> storylint/lab-slice
   stroke-width: var(--border-width-strong);
 }
 
@@ -119,6 +188,10 @@
 .graph__node:hover rect,
 .graph__node:focus-visible rect {
   stroke: var(--color-focus-ring);
+<<<<<<< HEAD
+=======
+  stroke-width: var(--border-width-strong);
+>>>>>>> storylint/lab-slice
 }
 
 .graph__node--family {
@@ -142,10 +215,32 @@
   pointer-events: none;
 }
 
+<<<<<<< HEAD
+=======
+.graph__portrait {
+  font-weight: var(--weight-semibold);
+}
+
+.graph__node:not(.graph__node--family) .graph__label,
+.graph__node:not(.graph__node--family) .graph__kind {
+  paint-order: stroke;
+  stroke: var(--color-surface);
+  stroke-width: var(--border-width-strong);
+  stroke-linejoin: round;
+}
+
+>>>>>>> storylint/lab-slice
 .graph__label {
   font-weight: var(--weight-semibold);
 }
 
+<<<<<<< HEAD
+=======
+.graph__node:not(.graph__node--family) .graph__label {
+  font-size: var(--text-sm);
+}
+
+>>>>>>> storylint/lab-slice
 .graph__kind {
   fill: var(--color-text-muted);
   font-size: var(--text-xs);
@@ -156,7 +251,11 @@
   padding: var(--space-3);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-lg);
+<<<<<<< HEAD
   background: var(--color-surface);
+=======
+  background: var(--color-surface-raised);
+>>>>>>> storylint/lab-slice
 }
 
 .graph__editor label {

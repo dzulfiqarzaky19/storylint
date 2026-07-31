@@ -49,7 +49,13 @@ async function proposeAndAccept(page) {
   if (await graph.locator('.graph__edge').count() !== edgesBefore) {
     throw new Error('Pending kinship edge rendered before Accept')
   }
+<<<<<<< HEAD
   const card = page.locator('.proposal-card').filter({ hasText: statement })
+=======
+  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
+  await companion.getByRole('button', { name: /^Inbox/ }).click()
+  const card = companion.locator('.proposal-card').filter({ hasText: statement })
+>>>>>>> storylint/lab-slice
   await card.getByRole('button', { name: 'Accept' }).click()
   await graph.getByText('parent_of').first().waitFor({ timeout: 5000 })
   return graph

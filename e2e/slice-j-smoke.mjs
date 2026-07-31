@@ -41,7 +41,11 @@ try {
   )
 
   const downloadPromise = page.waitForEvent('download')
+<<<<<<< HEAD
   await page.getByRole('button', { name: 'Export MD' }).click()
+=======
+  await page.getByRole('button', { name: /^Export$|Export markdown/i }).click()
+>>>>>>> storylint/lab-slice
   const download = await downloadPromise
   if (!download.suggestedFilename().endsWith('.zip')) throw new Error('Export is not a ZIP')
   await download.saveAs('e2e/output/slice-j-export.zip')

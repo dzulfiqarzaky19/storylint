@@ -50,7 +50,13 @@ export function ProjectSwitcher({
           <Button disabled={busy} onClick={() => setCreating(false)}>Cancel</Button>
         </>
       ) : <Button onClick={() => setCreating(true)}>New project</Button>}
+<<<<<<< HEAD
       <Button onClick={() => void onExport()}>Export MD</Button>
+=======
+      <Button aria-label="Export markdown" title="Download project as Markdown ZIP" onClick={() => void onExport()}>
+        Export
+      </Button>
+>>>>>>> storylint/lab-slice
     </div>
   )
 }

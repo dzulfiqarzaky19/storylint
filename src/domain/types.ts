@@ -101,8 +101,56 @@ export type ResearchNote = {
   sources: ResearchSource[]
 }
 
+<<<<<<< HEAD
 export type Project = {
   schemaVersion: 1
+=======
+export const LAB_CARD_KINDS = [
+  'beat',
+  'place',
+  'character-spark',
+  'lore-spark',
+  'what-if',
+  'question',
+  'motif',
+] as const
+export type LabCardKind = (typeof LAB_CARD_KINDS)[number]
+
+export const LAB_CARD_STATUSES = ['active', 'pinned', 'promoted', 'archived'] as const
+export type LabCardStatus = (typeof LAB_CARD_STATUSES)[number]
+
+export type LabCard = {
+  id: string
+  boardId: string
+  kind: LabCardKind
+  title: string
+  body: string
+  status: LabCardStatus
+  touches?: { sheetId?: string; chapterId?: string }
+  promoted?: {
+    at: string
+    as: 'sheet-proposal' | 'chapter-stub'
+    targetIds?: string[]
+  }
+  createdAt: string
+  updatedAt: string
+}
+
+export type LabBoard = {
+  id: string
+  title: string
+  cardIds: string[]
+}
+
+export type Lab = {
+  boards: LabBoard[]
+  cards: LabCard[]
+}
+
+export type Project = {
+  /** 1 = pre-Lab projects (migrated on load). 2 = Lab field required. */
+  schemaVersion: 1 | 2
+>>>>>>> storylint/lab-slice
   title: string
   chapters: Chapter[]
   sheets: Sheet[]
@@ -110,6 +158,10 @@ export type Project = {
   rejectedFingerprints: string[]
   marks: Mark[]
   researchNotes: ResearchNote[]
+<<<<<<< HEAD
+=======
+  lab: Lab
+>>>>>>> storylint/lab-slice
 }
 
 export type LintResult = {

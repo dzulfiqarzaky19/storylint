@@ -1,0 +1,265 @@
+import { useEffect, useMemo, useState } from 'react'
+import { LAB_CARD_KINDS, type Lab, type LabCard, type LabCardKind, type Project, type SheetKind } from '../../domain/types.ts'
+import { Badge, Button, EmptyState, Input, Textarea } from '../../components/ui'
+import './lab.css'
+
+const KIND_LABEL: Record<LabCardKind, string> = {
+  beat: 'Beat',
+  place: 'Place',
+  'character-spark': 'Character',
+  'lore-spark': 'Lore',
+  'what-if': 'What-if',
+  question: 'Question',
+  motif: 'Motif',
+}
+
+function canPromote(kind: LabCardKind): boolean {
+  return kind === 'character-spark' || kind === 'place' || kind === 'lore-spark' || kind === 'beat'
+}
+
+function defaultSheetKind(kind: LabCardKind): SheetKind | undefined {
+  if (kind === 'character-spark') return 'character'
+  if (kind === 'place') return 'world'
+  if (kind === 'lore-spark') return 'lore'
+  return undefined
+}
+
+export type LabBenchProps = {
+  lab: Lab
+  onCreateCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
+  onPatchCard: (cardId: string, patch: { title?: string; body?: string }) => Promise<Project>
+  onArchiveCard: (cardId: string) => Promise<void>
+  onPinCard: (cardId: string, pinned?: boolean) => Promise<void>
+  onPromoteCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<unknown>
+  onOpenAgent?: () => void
+  activeBoardId?: string | null
+  onBoardChange?: (boardId: string) => void
+}
+
+export function LabBench({
+  lab,
+  onCreateCard,
+  onPatchCard,
+  onArchiveCard,
+  onPinCard,
+  onPromoteCard,
+  onOpenAgent,
+  activeBoardId,
+  onBoardChange,
+}: LabBenchProps) {
+  const boards = lab.boards
+  const boardId = activeBoardId && boards.some((board) => board.id === activeBoardId)
+    ? activeBoardId
+    : boards[0]?.id ?? null
+  const [kindFilter, setKindFilter] = useState<LabCardKind | 'all'>('all')
+  const [draftKind, setDraftKind] = useState<LabCardKind>('character-spark')
+  const [draftTitle, setDraftTitle] = useState('')
+  const [draftBody, setDraftBody] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editBody, setEditBody] = useState('')
+
+  useEffect(() => {
+    if (boardId) onBoardChange?.(boardId)
+  }, [boardId, onBoardChange])
+
+  const cards = useMemo(() => {
+    if (!boardId) return [] as LabCard[]
+    const order = boards.find((board) => board.id === boardId)?.cardIds ?? []
+    const byId = new Map(lab.cards.map((card) => [card.id, card]))
+    const ordered = order.map((id) => byId.get(id)).filter((card): card is LabCard => Boolean(card))
+    const extras = lab.cards.filter((card) => card.boardId === boardId && !order.includes(card.id))
+    return [...ordered, ...extras]
+  }, [boardId, boards, lab.cards])
+
+  const live = cards.filter((card) => card.status === 'active' || card.status === 'pinned')
+  const promoted = cards.filter((card) => card.status === 'promoted')
+  const visible = (kindFilter === 'all' ? live : live.filter((card) => card.kind === kindFilter))
+    .slice()
+    .sort((a, b) => Number(b.status === 'pinned') - Number(a.status === 'pinned'))
+
+  async function createCard() {
+    if (!draftTitle.trim() || busy || !boardId) return
+    setBusy(true)
+    setNotice(null)
+    try {
+      await onCreateCard({ boardId, kind: draftKind, title: draftTitle, body: draftBody })
+      setDraftTitle('')
+      setDraftBody('')
+      setNotice('Card on the bench. Nothing is canon until Promote → Accept.')
+    } catch (caught) {
+      setNotice(caught instanceof Error ? caught.message : 'Could not create card')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function saveEdit(cardId: string) {
+    if (!editTitle.trim() || busy) return
+    setBusy(true)
+    try {
+      await onPatchCard(cardId, { title: editTitle, body: editBody })
+      setEditingId(null)
+    } catch (caught) {
+      setNotice(caught instanceof Error ? caught.message : 'Could not save card')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function promote(card: LabCard) {
+    if (busy || !canPromote(card.kind)) return
+    setBusy(true)
+    setNotice(null)
+    try {
+      await onPromoteCard(card.id, {
+        sheetKind: defaultSheetKind(card.kind),
+        chapterTitle: card.kind === 'beat' ? card.title : undefined,
+      })
+      setNotice(card.kind === 'beat'
+        ? 'Chapter stub created (empty body). Lab card marked promoted.'
+        : 'Sheet proposal pack pending. Accept in Companion Inbox to write bible.')
+    } catch (caught) {
+      setNotice(caught instanceof Error ? caught.message : 'Promote failed')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <main id="workspace" className="lab" aria-label="Lab" tabIndex={-1}>
+      <header className="lab__header">
+        <div>
+          <h2>Lab</h2>
+          <p>Pre-canon bench. Continuity and Graph ignore everything here.</p>
+        </div>
+        <div className="lab__boards" role="tablist" aria-label="Lab boards">
+          {boards.map((board) => (
+            <Button
+              key={board.id}
+              aria-pressed={board.id === boardId}
+              onClick={() => onBoardChange?.(board.id)}
+            >
+              {board.title}
+            </Button>
+          ))}
+        </div>
+      </header>
+
+      <div className="lab__filters" role="group" aria-label="Filter card kinds">
+        <Button aria-pressed={kindFilter === 'all'} onClick={() => setKindFilter('all')}>All</Button>
+        {LAB_CARD_KINDS.map((kind) => (
+          <Button key={kind} aria-pressed={kindFilter === kind} onClick={() => setKindFilter(kind)}>
+            {KIND_LABEL[kind]}
+          </Button>
+        ))}
+      </div>
+
+      <section className="lab__composer" aria-label="New lab card">
+        <div className="lab__composer-kinds" role="group" aria-label="New card kind">
+          {LAB_CARD_KINDS.map((kind) => (
+            <Button key={kind} aria-pressed={draftKind === kind} onClick={() => setDraftKind(kind)}>
+              {KIND_LABEL[kind]}
+            </Button>
+          ))}
+        </div>
+        <Input
+          value={draftTitle}
+          onChange={(event) => setDraftTitle(event.target.value)}
+          placeholder="Title — a place, beat, or spark"
+          aria-label="Lab card title"
+        />
+        <Textarea
+          value={draftBody}
+          onChange={(event) => setDraftBody(event.target.value)}
+          placeholder="Notes (not canon)"
+          aria-label="Lab card body"
+          rows={3}
+        />
+        <div className="lab__composer-actions">
+          <Button variant="primary" disabled={busy || !draftTitle.trim()} onClick={() => void createCard()}>
+            {busy ? 'Saving…' : 'New card'}
+          </Button>
+        </div>
+      </section>
+
+      {notice ? <p className="lab__notice" role="status">{notice}</p> : null}
+
+      {visible.length === 0 ? (
+        <div className="lab__empty">
+          <EmptyState
+            title="Nothing on the bench"
+            hint="Use the composer above for a place, beat, or what-if. Nothing here is canon until you promote."
+            action={
+              onOpenAgent ? (
+                <div className="lab__empty-actions">
+                  <Button onClick={onOpenAgent}>Ask agent to brainstorm…</Button>
+                </div>
+              ) : undefined
+            }
+          />
+        </div>
+      ) : (
+        <div className="lab__grid" aria-label="Lab cards">
+          {visible.map((card) => (
+            <article
+              key={card.id}
+              className={`lab__card${card.status === 'pinned' ? ' lab__card--pinned' : ''}`}
+              data-kind={card.kind}
+            >
+              <header className="lab__card-header">
+                <Badge tone="pending">{KIND_LABEL[card.kind]}</Badge>
+                {card.status === 'pinned' ? <Badge tone="accent">Pinned</Badge> : null}
+              </header>
+              {editingId === card.id ? (
+                <>
+                  <Input value={editTitle} onChange={(event) => setEditTitle(event.target.value)} aria-label="Edit title" />
+                  <Textarea value={editBody} onChange={(event) => setEditBody(event.target.value)} rows={4} aria-label="Edit body" />
+                  <div className="lab__card-actions">
+                    <Button variant="primary" disabled={busy} onClick={() => void saveEdit(card.id)}>Save</Button>
+                    <Button onClick={() => setEditingId(null)}>Cancel</Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3 className="lab__card-title">{card.title}</h3>
+                  <p className="lab__card-body">{card.body || '—'}</p>
+                  <div className="lab__card-actions">
+                    <Button disabled={busy} onClick={() => {
+                      setEditingId(card.id)
+                      setEditTitle(card.title)
+                      setEditBody(card.body)
+                    }}>Edit</Button>
+                    <Button disabled={busy} onClick={() => void onPinCard(card.id, card.status !== 'pinned')}>
+                      {card.status === 'pinned' ? 'Unpin' : 'Pin'}
+                    </Button>
+                    {canPromote(card.kind) ? (
+                      <Button variant="primary" disabled={busy} onClick={() => void promote(card)}>Promote</Button>
+                    ) : null}
+                    <Button disabled={busy} onClick={() => void onArchiveCard(card.id)}>Archive</Button>
+                  </div>
+                </>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+
+      {promoted.length > 0 ? (
+        <section className="lab__promoted" aria-label="Promoted cards">
+          <h3 className="lab__section-label">Promoted</h3>
+          <ul className="lab__promoted-list">
+            {promoted.map((card) => (
+              <li key={card.id}>
+                <span>{card.title}</span>
+                <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'chapter stub' : 'proposal'}</Badge>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </main>
+  )
+}

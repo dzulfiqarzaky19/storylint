@@ -1,9 +1,20 @@
 # Build slices — coder order
 
+<<<<<<< HEAD
 **Read first:** [PRD.md](./PRD.md) · [../CLAUDE.md](../CLAUDE.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)  
 One slice per coding session. Do not start G/H/I before F/E as listed.
 
 Each slice: coder → reviewer → verifier ([AGENTS_ROLES.md](./AGENTS_ROLES.md)).
+=======
+**Read first:** [PRD.md](./PRD.md) · [AGENTS_ROLES.md](./AGENTS_ROLES.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)  
+**AI harness** (`CLAUDE.md`, `.claude/`) is local-only — never commit/push ([AGENTS_ROLES.md](./AGENTS_ROLES.md) § AI harness stays local).  
+**Commits:** whole-project story rules in [AGENTS_ROLES.md](./AGENTS_ROLES.md) § Commit story — layered `feat`/`fix`/`docs`/`test`/`chore`, no `wip`, no harness.  
+One slice per coding session. Do not start G/H/I before F/E as listed.
+
+Each slice: **coder → reviewer → UX (if UI) → verifier** ([AGENTS_ROLES.md](./AGENTS_ROLES.md)).  
+Reviewer required. **UX** = ease + task flow + visual; **drives Playwright** (not PNG-only, not pretty-only). Personas: [PERSONAS.md](./PERSONAS.md). No N+1 until N approved.  
+If loops skipped review: run [REVIEW_CATCHUP.md](./REVIEW_CATCHUP.md) before new work.
+>>>>>>> storylint/lab-slice
 
 ---
 
@@ -23,6 +34,10 @@ Each slice: coder → reviewer → verifier ([AGENTS_ROLES.md](./AGENTS_ROLES.md
 | **I** P4 Graph | **Done** (landing) |
 | **J** Export / multi-project | **Done** (landing) |
 | **K** Desktop/mobile shells | **Done** (K1 lean spacing + K2 family tree) |
+<<<<<<< HEAD
+=======
+| **L** Lab (pre-canon bench) | **Done** (landing) — [design/LAB.md](./design/LAB.md) |
+>>>>>>> storylint/lab-slice
 
 ---
 
@@ -104,7 +119,33 @@ Continue / rewrite / brainstorm → Apply card → insert/replace only on Apply;
 | H ✓ | P3 research panel (clean, cited) |
 | I ✓ | P4 relationship graph/canvas |
 | J ✓ | MD export, multi-project |
+<<<<<<< HEAD
 | K | Desktop/mobile shell adapters |
+=======
+| K ✓ | Desktop/mobile shell adapters (K1 spacing + K2 family tree) |
+| **L** ✓ | Lab — pre-canon create/experiment ([design/LAB.md](./design/LAB.md)) |
+
+---
+
+## Slice L — Lab (shipped)
+
+**Spec:** [design/LAB.md](./design/LAB.md) · **Companion faces:** [design/COMPANION.md](./design/COMPANION.md)
+
+Pre-canon **Lab** bench + mode-shaped Companion. Nothing is bible until Promote → existing Accept/Apply paths.
+
+| Shipped | Still out |
+|---------|-----------|
+| Center mode `lab` + binder Lab section | Infinite canvas |
+| Boards + cards (kinds, pin, archive, soft pin cap) | Continuity on Lab text |
+| Promote → pending sheet proposal / chapter stub | Graph nodes from Lab |
+| Agent brainstorm → Lab cards only (fixture + live adapter) | Auto-canon / auto-Apply |
+| Companion faces by context (Writing / Lab / Details) | Research replacement |
+| `schemaVersion` bump, unit promote boundary, e2e `slice-l-lab.png` | |
+
+**Verify:** `npm test` · `npm run build` · `node e2e/slice-l-smoke.mjs` (API `:4174` + Vite `:5173`) · screenshot `e2e/output/slice-l-lab.png`.  
+**Boundary:** Continuity/Graph read chapters + accepted sheets only — Lab is ignored. Promote never writes sheets without Accept.  
+**Do not re-implement** domain/UI already on `storylint/lab-slice`. Follow-ups are polish or new product asks only.
+>>>>>>> storylint/lab-slice
 
 ---
 

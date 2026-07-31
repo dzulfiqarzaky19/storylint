@@ -18,10 +18,16 @@ export function readingLabel(profile: ReadingProfile): string {
   return READING_LABELS[profile]
 }
 
+<<<<<<< HEAD
 /** Dark is :root default; light is [data-theme="light"]. */
 export function applyTheme(theme: Theme, root: HTMLElement = document.documentElement): void {
   if (theme === 'dark') root.removeAttribute('data-theme')
   else root.setAttribute('data-theme', theme)
+=======
+/** Dark is default chrome; always set data-theme so tests/CSS share one switch. */
+export function applyTheme(theme: Theme, root: HTMLElement = document.documentElement): void {
+  root.setAttribute('data-theme', theme)
+>>>>>>> storylint/lab-slice
 }
 
 export function applyReading(

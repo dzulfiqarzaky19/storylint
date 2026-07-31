@@ -110,6 +110,10 @@
   --manuscript-padding-y-lg: 1.75rem;
   --manuscript-padding-x-xl: 2.25rem;
   --manuscript-padding-y-xl: 2rem;
+<<<<<<< HEAD
+=======
+  --manuscript-editor-min-h: 12rem;
+>>>>>>> storylint/lab-slice
 
   /* 2.4 letter-spacing */
   --tracking-section: 0.06em;
@@ -155,8 +159,25 @@
   --size-row-min-touch: 44px;
   --size-graph-view-w: 800px;
   --size-graph-view-h: 520px;
+<<<<<<< HEAD
   --size-graph-radius: 185px;
   --size-graph-node: 76px;
+=======
+  --size-graph-radius: 180px;
+  --size-graph-radius-inner: 100px;
+  --size-graph-network-node: 56px;
+  --size-graph-node: 76px;
+  --size-reading-tab: 2px;
+  --size-reading-tab-desk: 3px;
+  --size-reading-ribbon-min-h: 4.5rem;
+  --size-reading-ribbon-label-max: 5rem;
+  --size-reading-ribbon-shift: 28%;
+  --size-reading-ribbon-shift-hover: 16%;
+  --text-reading-seal: 9px;
+  --tracking-reading-seal: 0.04em;
+  --tracking-reading-ribbon: 0.08em;
+  --opacity-reading-tab: 0.4;
+>>>>>>> storylint/lab-slice
 
   /* 5 radius */
   --radius-none: 0;
@@ -200,6 +221,14 @@
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
+<<<<<<< HEAD
+=======
+/* Night chrome — explicit so data-theme is always present (matches applyTheme). */
+[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+>>>>>>> storylint/lab-slice
 /* Day chrome shell — paper desk, ink actions (not muddy chocolate buttons) */
 [data-theme='light'] {
   color-scheme: light;

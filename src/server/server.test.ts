@@ -9,14 +9,22 @@ import { ProjectStore } from './store.ts'
 
 function seedProject(): Project {
   return {
+<<<<<<< HEAD
     schemaVersion: 1,
+=======
+    schemaVersion: 2,
+>>>>>>> storylint/lab-slice
     title: 'Storylint',
     chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
     sheets: [],
     proposals: [],
     rejectedFingerprints: [],
     marks: [],
+<<<<<<< HEAD
     researchNotes: [],
+=======
+    researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
+>>>>>>> storylint/lab-slice
   }
 }
 
@@ -51,14 +59,22 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>
 }
 
+<<<<<<< HEAD
 test('store saves schemaVersion 1 atomically without leaving a temp file', async () => {
+=======
+test('store saves schemaVersion 2 atomically without leaving a temp file', async () => {
+>>>>>>> storylint/lab-slice
   const dir = await mkdtemp(join(tmpdir(), 'storylint-store-'))
   const file = join(dir, 'project.json')
   const store = new ProjectStore(file, seedProject())
   await store.save(seedProject())
 
   const saved = JSON.parse(await readFile(file, 'utf8')) as Project
+<<<<<<< HEAD
   assert.equal(saved.schemaVersion, 1)
+=======
+  assert.equal(saved.schemaVersion, 2)
+>>>>>>> storylint/lab-slice
   assert.deepEqual(await readdir(dir), ['project.json'])
 })
 
@@ -97,7 +113,11 @@ test('failed async update leaves the saved project unchanged', async () => {
   assert.deepEqual(await store.load(), seedProject())
 })
 
+<<<<<<< HEAD
 test('GET and PUT project persist schemaVersion 1', async () => {
+=======
+test('GET and PUT project persist schemaVersion 2', async () => {
+>>>>>>> storylint/lab-slice
   await withServer(async (baseUrl, store) => {
     const loaded = await requestJson<Project>(`${baseUrl}/api/project`)
     assert.equal(loaded.chapters[0].title, 'Chapter One')
@@ -107,7 +127,11 @@ test('GET and PUT project persist schemaVersion 1', async () => {
       body: JSON.stringify({ ...loaded, title: 'Renamed Project' }),
     })
     assert.equal(renamed.title, 'Renamed Project')
+<<<<<<< HEAD
     assert.equal((await store.load()).schemaVersion, 1)
+=======
+    assert.equal((await store.load()).schemaVersion, 2)
+>>>>>>> storylint/lab-slice
   })
 })
 
@@ -533,12 +557,20 @@ test('markdown ZIP export contains readable chapter and bible paths', async () =
   })
 })
 
+<<<<<<< HEAD
 test('local projects can be created listed and switched without changing schema v1', async () => {
+=======
+test('local projects can be created listed and switched with Lab schema v2', async () => {
+>>>>>>> storylint/lab-slice
   await withServer(async (baseUrl) => {
     const created = await requestJson<Project>(`${baseUrl}/api/projects`, {
       method: 'POST', body: JSON.stringify({ id: 'second-story', title: 'Second Story' }),
     })
+<<<<<<< HEAD
     assert.equal(created.schemaVersion, 1)
+=======
+    assert.equal(created.schemaVersion, 2)
+>>>>>>> storylint/lab-slice
     assert.equal(created.title, 'Second Story')
     const listed = await requestJson<{ activeProjectId: string; projects: Array<{ id: string; title: string }> }>(
       `${baseUrl}/api/projects`,
@@ -583,3 +615,55 @@ test('invalid input returns 400 and does not modify the project', async () => {
     assert.equal((await store.load()).chapters[0].body, '')
   })
 })
+<<<<<<< HEAD
+=======
+
+test('lab card create pin archive and promote stay pre-canon until Accept', async () => {
+  await withServer(async (baseUrl, store) => {
+    const created = await requestJson<Project>(`${baseUrl}/api/lab/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'character-spark', title: 'Riven', body: 'Glass knife' }),
+    })
+    assert.equal(created.lab.cards.length, 1)
+    assert.equal(created.sheets.length, 0)
+    const cardId = created.lab.cards[0].id
+
+    const pinned = await requestJson<Project>(`${baseUrl}/api/lab/cards/${cardId}/pin`, {
+      method: 'POST', body: JSON.stringify({ pinned: true }),
+    })
+    assert.equal(pinned.lab.cards[0].status, 'pinned')
+
+    const promoted = await requestJson<{ project: Project; as: string; proposalIds: string[] }>(
+      `${baseUrl}/api/lab/cards/${cardId}/promote`,
+      { method: 'POST', body: '{}' },
+    )
+    assert.equal(promoted.as, 'sheet-proposal')
+    assert.equal(promoted.project.sheets.length, 0)
+    assert.ok(promoted.proposalIds.length >= 1)
+    assert.equal(promoted.project.lab.cards[0].status, 'promoted')
+    assert.equal((await store.load()).sheets.length, 0)
+
+    const accepted = await requestJson<Project>(
+      `${baseUrl}/api/proposals/${promoted.proposalIds[0]}/accept`,
+      { method: 'POST', body: '{}' },
+    )
+    assert.equal(accepted.sheets[0].name, 'Riven')
+  })
+})
+
+test('lab what-if promote is rejected without mutation', async () => {
+  await withServer(async (baseUrl, store) => {
+    const created = await requestJson<Project>(`${baseUrl}/api/lab/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'what-if', title: 'Treaty fails' }),
+    })
+    const cardId = created.lab.cards[0].id
+    const response = await fetch(`${baseUrl}/api/lab/cards/${cardId}/promote`, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}',
+    })
+    assert.equal(response.status, 400)
+    assert.equal((await store.load()).proposals.length, 0)
+    assert.equal((await store.load()).chapters.length, 1)
+  })
+})
+>>>>>>> storylint/lab-slice
