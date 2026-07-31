@@ -2,7 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { companionPanel, openCompanionFace } from './helpers.mjs'
+import { closeSheetDetail, companionPanel, openCompanionFace } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -72,7 +72,7 @@ try {
   if (await familyNodes.count() < 2) throw new Error('Family view did not render character nodes')
   await familyNodes.first().click()
   await desktop.getByLabel('Name').waitFor({ timeout: 5000 })
-  await desktop.getByRole('button', { name: 'Back to binder' }).click()
+  await closeSheetDetail(desktop)
   await graph.getByRole('button', { name: 'Network', exact: true }).click()
   await graph.locator('svg.graph__canvas').first().waitFor()
   await desktop.screenshot({ path: 'e2e/output/slice-k-desktop.png', fullPage: true })
