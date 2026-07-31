@@ -54,7 +54,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   const projectId = await ensureIsolatedProject(page)
   await seedSheets(page.request)
-  await page.goto(UI, { waitUntil: 'networkidle' })
+  await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await ensureDraftReady(page, { body: 'Graph round-trip body.' })
   const manuscriptBody = await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue()
   await page.getByRole('button', { name: 'Canon' }).click()

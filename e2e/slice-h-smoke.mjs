@@ -30,7 +30,7 @@ try {
   // Deterministic research path (default). Live path only with STORYLINT_E2E_LIVE_LLM=1.
   await installFixtureLlmRoutes(page)
   const projectId = await ensureIsolatedProject(page)
-  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'domcontentloaded', timeout: 30_000 })
   const before = await page.evaluate(() => fetch('/api/project').then((response) => response.json()))
   const companion = companionPanel(page)
 
