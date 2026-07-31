@@ -18,7 +18,7 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
    ```
    npm run land -- storylint/<topic> --summary "<why this lands>"
    ```
-   The script refuses a dirty tree, merges `origin/dev` **into** the topic, runs `npm run test:green` on that merge result, detaches at `origin/dev`, `merge --no-ff` the topic with the house message form, pushes `HEAD:dev`, retries the **whole** sequence on rejection (no rebase), then fetches and prints the **origin** hash it actually reads back. It never filters its own output.
+   The script refuses a dirty tree, runs a **fresh** `test:green` baseline on detached `origin/dev` (same run, not a cache), merges `origin/dev` **into** the topic, runs `test:green` on that merge result, compares failure **identities** (no-worse: pre-existing reds on dev do not block; new reds abort; fixed reds are reported), detaches at `origin/dev`, `merge --no-ff` the topic with the house message form, pushes `HEAD:dev`, retries the **whole** sequence on rejection (no rebase), then fetches and prints the **origin** hash it actually reads back. It never filters its own output. There is no `--skip-tests`.
 5. **Done means origin has it.** The script already prints this; re-check if you need to:
    `git fetch origin && git log --oneline -1 origin/dev`
    Report the **`origin/dev` hash**, never a local-only hash.
@@ -34,7 +34,8 @@ Use only if `npm run land` is unavailable. The script remains the instruction.
 git status --porcelain          # must be empty
 git fetch origin
 git merge origin/dev            # INTO the topic; abort on conflict, never auto-resolve
-npm run test:green              # on that merge result; STOP if red
+npm run test:green              # baseline on origin/dev, then again on topic-after-dev
+# no-worse: abort only on failures NOT already on origin/dev (identity compare)
 git checkout --detach origin/dev
 git merge --no-ff storylint/<topic> -m "Merge storylint/<topic> into dev: <summary>"
 git push origin HEAD:dev        # full output, unfiltered — never bury this in a pipeline
@@ -80,7 +81,11 @@ Rules with a scar attached. Founder locks above stay intact; these close the mul
 npm run land -- storylint/<topic> --summary "<why this lands>"
 ```
 
-See **Flow** §4. Self-host rule: changes to `scripts/land.mjs` land via `npm run land`. If the script cannot land its own branch, it is not finished. `--skip-tests` is emergency-only and is not a verified land.
+See **Flow** §4. Self-host rule: changes to `scripts/land.mjs` land via `npm run land`. If the script cannot land its own branch, it is not finished.
+
+**Gate = no-worse, not absolute green (rat 2026-07-31).** A fresh `test:green` on `origin/dev` is the baseline for that run. Compare failure identities (check name + fixture), never bare counts. Pre-existing reds on dev are named and do not block. Failures you introduce abort. Failures that disappear are reported as fixes. Absolute-green-only serialises every agent behind every open red and will get the script disabled under pressure — which destroys it. First self-test of the script correctly **refused** a land when the gate was still absolute-green; that refusal is the proof the procedure held, and it is what forced this ruling.
+
+There is **no** `--skip-tests`. `--allow-known` is accepted and unused (no-worse already covers inheritance).
 
 ### 1. Pushing is part of merging
 
@@ -118,7 +123,7 @@ Prefer `npm run land` (it retries the full sequence). Manual fallback is under *
 
 ### 4. Validate on the merge result, not the topic branch alone
 
-`npm run land` runs `test:green` after merging `origin/dev` into the topic and before the `--no-ff` bubble. Topic-branch green alone does not prove the land is green once integrated.
+`npm run land` baselines `origin/dev`, merges it into the topic, runs `test:green` again, and applies the no-worse identity compare before the `--no-ff` bubble. Topic-branch green alone does not prove the land is safe once integrated.
 
 **Observed failure:** topic passed while integrate order / sibling lines changed the meaning of the merge.
 
@@ -199,7 +204,7 @@ If either shows unique non-merge commits or a tree delta, stop and tell the coor
 
 - Never combine a verification command with a mutating one. Verify, read the result, then act as a **separate** command.
 - Never filter the output of a command that mutates a remote. A push you cannot see is an unattributed action — same defect class as a measurement you cannot attribute.
-- Citable green for a land = `npm run test:green` only (run by `npm run land` on the topic-after-dev merge result). Retrying until green is forbidden.
+- Citable land gate = no-worse vs a fresh `origin/dev` `test:green` in the same run (identity compare). Absolute green on both sides is ideal; inherited reds named by the script are allowed. Retrying until green is forbidden. There is no `--skip-tests`.
 - Ambient gitignored data is not a seed. A smoke that passes only when `data/` already exists is not evidence (milestone ninth verification lie).
 - See [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) §9–10.
 
@@ -217,7 +222,7 @@ Also follow [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md): report on state change, no
 1. `git fetch origin`
 2. `git log --oneline -1 origin/dev` shows your `Merge storylint/<topic>…` (land script prints this)
 3. Report: `branch` · `topic=<sha>` · `origin/dev=<sha>` · `land=npm-run-land`
-4. Validation ran on the **merge result** (`test:green` inside land)
+4. Validation ran no-worse vs fresh `origin/dev` baseline (`test:green` twice inside land); introduced failures empty
 5. No force-push; no shared rebase; no filtered mutating-command output
 6. Work happened in **your** worktree; shared tree left undisturbed
 7. Did **not** push a non-merge tip to `dev`

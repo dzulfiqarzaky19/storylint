@@ -93,7 +93,15 @@ Horse reported the accident immediately with full facts and stopped. That is why
 
 ### Process fix that followed — `npm run land`
 
-Three agents the same day produced correct **content** through wrong **process** after reading the docs (buried filtered push; reverse first-parent bubble; raw non-merge tip on dev). Documentation was not the failing part. **`npm run land -- storylint/<topic> --summary "…"`** is now the land instruction: clean tree → merge `origin/dev` into topic → `test:green` on that result → detach `origin/dev` → `merge --no-ff` → `push HEAD:dev` unfiltered → fetch and print the origin hash. Manual sequence remains fallback only. Bad bubbles already on the graph are **not** rewritten.
+Three agents the same day produced correct **content** through wrong **process** after reading the docs (buried filtered push; reverse first-parent bubble; raw non-merge tip on dev). Documentation was not the failing part. **`npm run land -- storylint/<topic> --summary "…"`** is the land instruction.
+
+**First self-test (absolute-green gate):** the script correctly **refused** to land `storylint/land-script` when `test:green` was red on a pre-existing calm HARD (`B3-inbox-wall@volume`). Smokes 8/8 and units were green; the script still aborted with no bubble and no push. **The refusal is the proof** the procedure held — better evidence than a successful land would have been.
+
+**Ruling that followed (rat): land on no-worse, not on green.** A fresh `test:green` on `origin/dev` is the baseline for that run (same owned stack, not a cache). Compare failure **identities**, not counts. Pre-existing reds on dev are named and do not block; reds you introduce abort; reds that disappear are reported as fixes. Absolute-green-only serialises every agent behind every open red and will get the script disabled under pressure. There is no `--skip-tests`.
+
+**Dev tip note:** after main ship at `de58c14`, `origin/dev` kept moving (well past the land-script baseline tip). Re-count with `git rev-list --count origin/main..origin/dev`. Do not freeze historical tips as current.
+
+Manual sequence remains fallback only. Bad bubbles already on the graph are **not** rewritten.
 
 ---
 

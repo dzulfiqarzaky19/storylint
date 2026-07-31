@@ -4,27 +4,33 @@
  *
  *   npm run land -- storylint/<topic> --summary "<why>"
  *
- * Enforces: clean tree → merge origin/dev into topic → test:green on that
- * result → detach origin/dev → merge --no-ff topic → push HEAD:dev →
- * fetch and print the ORIGIN hash. Never filters command output.
+ * Enforces: clean tree → baseline test:green on origin/dev → merge
+ * origin/dev into topic → test:green on that result → no-worse compare
+ * by failure identity → detach origin/dev → merge --no-ff topic →
+ * push HEAD:dev → fetch and print the ORIGIN hash.
  *
- * Why a script: three different agents produced correct content through wrong
- * process under tip pressure (buried push, reverse bubble, raw tip). Docs
- * were read; the procedure was still too easy to get wrong.
+ * Gate rule (rat 2026-07-31): LAND ON NO-WORSE, NOT ON GREEN.
+ * - Failure on dev and still on merge result → PRE-EXISTING (report, do not block)
+ * - Failure not on dev but on merge result → YOURS (hard abort)
+ * - Failure on dev that disappears → report as fix (do not block)
+ * - Fully green both sides → land normally
+ *
+ * Never filter mutating command output. No --skip-tests.
  */
 
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { exit } from 'node:process'
+import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 const MAX_PUSH_ATTEMPTS = 3
 const DEV_REF = 'origin/dev'
 const IS_WIN = process.platform === 'win32'
+const LAND_DIR = join(process.cwd(), '_land_run')
 
 /**
- * Resolve the executable. On Windows:
- * - git: bare `git` with shell:false works
- * - npm: must go through npm.cmd via shell with a single joined command line
- *   (spawnSync('npm.cmd', args, {shell:false}) → EINVAL)
+ * Resolve the executable. On Windows npm must go through npm.cmd via a
+ * single joined shell command line (spawnSync('npm.cmd', args, {shell:false}) → EINVAL).
  */
 function resolveCmd(name) {
   if (name === 'npm') return IS_WIN ? 'npm.cmd' : 'npm'
@@ -43,13 +49,11 @@ Required:
 
 Optional:
   --max-attempts <n>  push-reject retries of the whole sequence (default ${MAX_PUSH_ATTEMPTS})
-  --skip-tests        DO NOT USE for real lands. Emergency only.
+  --allow-known       reserved / OFF by default; not required for no-worse lands
 
-The script refuses a dirty worktree, aborts on merge conflicts without
-auto-resolving, runs test:green on the topic-after-dev-merge, creates a
---no-ff bubble from detached origin/dev, pushes HEAD:dev, then fetches and
-prints the origin/dev hash it actually reads back. Mutating commands never
-have their output filtered.
+Gate: NO-WORSE vs a fresh origin/dev baseline from the same run (not a cache).
+Compare by failure identity (name + fixture), not by count. Print both sets.
+There is no --skip-tests.
 `.trim()
   console.log(text)
   exit(code)
@@ -60,13 +64,12 @@ function parseArgs(argv) {
   let topic = null
   let summary = null
   let maxAttempts = MAX_PUSH_ATTEMPTS
-  let skipTests = false
+  let allowKnown = false
 
   for (let i = 0; i < args.length; i++) {
     const a = args[i]
     if (a === '--help' || a === '-h') usage(0)
     if (a === '--summary') {
-      // Consume until next flag so unquoted multi-word summaries still work.
       const parts = []
       while (i + 1 < args.length && !args[i + 1].startsWith('--')) {
         parts.push(args[++i])
@@ -86,9 +89,13 @@ function parseArgs(argv) {
       }
       continue
     }
-    if (a === '--skip-tests') {
-      skipTests = true
+    if (a === '--allow-known') {
+      // Explicitly accepted and ignored: no-worse already permits pre-existing reds.
+      allowKnown = true
       continue
+    }
+    if (a === '--skip-tests') {
+      fail('--skip-tests does not exist and will not be added. Fix the gate or wait.')
     }
     if (a.startsWith('-')) fail(`Unknown flag: ${a}`)
     if (topic) fail(`Unexpected extra argument: ${a}`)
@@ -106,7 +113,7 @@ function parseArgs(argv) {
     fail(`Topic name must not contain main/master tokens: ${topic}`)
   }
 
-  return { topic, summary: summary.trim(), maxAttempts, skipTests }
+  return { topic, summary: summary.trim(), maxAttempts, allowKnown }
 }
 
 function fail(message, code = 1) {
@@ -124,17 +131,10 @@ function banner(title) {
 function shellQuote(value) {
   const str = String(value)
   if (/^[A-Za-z0-9_./:@%+=,-]+$/.test(str)) return str
-  // cmd.exe-safe double quotes when we join a Windows shell command line.
   return `"${str.replaceAll('"', '\\"')}"`
 }
 
-/**
- * Run a command with FULL unfiltered stdio. Never pipe-filter output.
- *
- * Windows note: .cmd shims (npm.cmd) cannot be spawnSync'd with shell:false
- * (EINVAL). We join a single command line and run it with shell:true so spaces
- * in -m messages stay inside quotes. git uses shell:false.
- */
+/** Run a command with FULL unfiltered stdio. Never pipe-filter output. */
 function run(command, args, { allowFail = false, env } = {}) {
   const resolved = resolveCmd(command)
   const printable = [resolved, ...args].map(shellQuote).join(' ')
@@ -163,6 +163,46 @@ function run(command, args, { allowFail = false, env } = {}) {
   return status
 }
 
+/**
+ * Run a command, stream stdout/stderr live (unfiltered), and capture full text.
+ * Used for test:green so we can parse failure identities without hiding output.
+ */
+function runCapture(command, args, { env } = {}) {
+  const resolved = resolveCmd(command)
+  const printable = [resolved, ...args].map(shellQuote).join(' ')
+  console.log(`\n$ ${printable}\n`)
+
+  const useShellLine = IS_WIN && /\.cmd$/i.test(resolved)
+  return new Promise((resolvePromise) => {
+    const child = useShellLine
+      ? spawn(printable, {
+          shell: true,
+          env: env ? { ...process.env, ...env } : process.env,
+          stdio: ['ignore', 'pipe', 'pipe'],
+        })
+      : spawn(resolved, args, {
+          shell: false,
+          env: env ? { ...process.env, ...env } : process.env,
+          stdio: ['ignore', 'pipe', 'pipe'],
+        })
+
+    let out = ''
+    const onChunk = (buf, stream) => {
+      const text = buf.toString('utf8')
+      out += text
+      stream.write(text)
+    }
+    child.stdout.on('data', (b) => onChunk(b, process.stdout))
+    child.stderr.on('data', (b) => onChunk(b, process.stderr))
+    child.on('error', (error) => {
+      fail(`failed to spawn ${resolved}: ${error.message}`)
+    })
+    child.on('close', (code) => {
+      resolvePromise({ status: code ?? 1, output: out })
+    })
+  })
+}
+
 function gitCapture(args) {
   const result = spawnSync('git', args, {
     encoding: 'utf8',
@@ -185,8 +225,78 @@ function gitOk(args) {
   return (result.status ?? 1) === 0
 }
 
+/**
+ * Parse failure identities from a full test:green log.
+ * Identity = kind + name/path (not bare counts).
+ */
+function parseFailures(output) {
+  const fails = new Set()
+  const lines = output.split(/\r?\n/)
+
+  for (const line of lines) {
+    // node --test failures: "✖ name" or "not ok N name"
+    let m = line.match(/^\s*✖\s+(.+?)(?:\s+\([\d.]+ms\))?\s*$/)
+    if (m) {
+      fails.add(`unit:${m[1].trim()}`)
+      continue
+    }
+    m = line.match(/^\s*not ok\s+\d+\s+-\s+(.+?)\s*$/)
+    if (m) {
+      fails.add(`unit:${m[1].trim()}`)
+      continue
+    }
+    m = line.match(/^\s*not ok\s+\d+\s+(.+?)\s*$/)
+    if (m && !m[1].startsWith('-')) {
+      fails.add(`unit:${m[1].trim()}`)
+      continue
+    }
+
+    // Feature smokes: "FAIL  e2e/slice-j-smoke.mjs  (...)"
+    m = line.match(/^FAIL\s{2}(\S+)/)
+    if (m) {
+      fails.add(`smoke:${m[1]}`)
+      continue
+    }
+
+    // Calm HARD only (WARN never blocks lands): "[FAIL] B3-inbox-wall@volume (HARD) ..."
+    m = line.match(/^\[FAIL\]\s+(\S+)\s+\(HARD\)/)
+    if (m) {
+      fails.add(`calm:${m[1]}`)
+      continue
+    }
+
+    // Guard
+    if (line.includes('FAIL: e2e helper convention')) {
+      fails.add('guard:e2e-helper-convention')
+      continue
+    }
+
+    // Build
+    if (/error TS\d+/i.test(line)) {
+      fails.add(`build:${line.trim().slice(0, 120)}`)
+      continue
+    }
+  }
+
+  // If the suite died with a non-zero exit but no parseable identity, keep a marker
+  // so we never silently treat an opaque red as green. Callers add opaque:exit when needed.
+  return fails
+}
+
+function formatFailSet(set) {
+  if (set.size === 0) return '(none)'
+  return [...set].sort().map((id) => `  - ${id}`).join('\n')
+}
+
+function compareFailures(baseline, candidate) {
+  const preExisting = [...candidate].filter((id) => baseline.has(id)).sort()
+  const introduced = [...candidate].filter((id) => !baseline.has(id)).sort()
+  const fixed = [...baseline].filter((id) => !candidate.has(id)).sort()
+  return { preExisting, introduced, fixed }
+}
+
 function assertCleanWorktree() {
-  banner('1/7 clean worktree')
+  banner('1/8 clean worktree')
   run('git', ['status', '--short', '--branch'])
   const dirty = gitCapture(['status', '--porcelain'])
   if (dirty) {
@@ -219,8 +329,63 @@ function fetchOrigin() {
   return tip
 }
 
+function discardGeneratedNoise() {
+  // test:green may write e2e/output/*; never let that block the next step.
+  run('git', ['checkout', '--', 'e2e/output'], { allowFail: true })
+  run('git', ['clean', '-fd', 'e2e/output'], { allowFail: true })
+  if (existsSync(LAND_DIR)) {
+    try {
+      rmSync(LAND_DIR, { recursive: true, force: true })
+    } catch {
+      // ignore
+    }
+  }
+}
+
+async function runTestGreenLabeled(label) {
+  banner(`test:green — ${label}`)
+  mkdirSync(LAND_DIR, { recursive: true })
+  const logPath = join(LAND_DIR, `${label.replace(/[^a-z0-9_-]+/gi, '_')}.log`)
+  const head = gitCapture(['rev-parse', '--short', 'HEAD'])
+  console.log(`land: running test:green at HEAD=${head} (${label})`)
+  const { status, output } = await runCapture('npm', ['run', 'test:green'])
+  writeFileSync(logPath, output, 'utf8')
+  console.log(`land: full log also at ${logPath}`)
+
+  const failures = parseFailures(output)
+  if (status !== 0 && failures.size === 0) {
+    failures.add(`opaque:test-green-exit-${status}`)
+  }
+
+  console.log(`\nland: parsed failure set (${label}) exit=${status} count=${failures.size}`)
+  console.log(formatFailSet(failures))
+  return { status, failures, head, logPath, output }
+}
+
+async function captureDevBaseline(topic) {
+  banner('2/8 baseline test:green on origin/dev (same run, not a cache)')
+  const devTip = gitCapture(['rev-parse', '--short', DEV_REF])
+  console.log(`land: detaching at ${DEV_REF} (${devTip}) for baseline`)
+  run('git', ['checkout', '--detach', DEV_REF])
+  discardGeneratedNoise()
+
+  let baseline
+  try {
+    baseline = await runTestGreenLabeled('baseline-origin-dev')
+  } finally {
+    discardGeneratedNoise()
+    console.log(`land: restoring topic ${topic}`)
+    run('git', ['checkout', topic])
+    discardGeneratedNoise()
+  }
+
+  console.log(`\nland: BASELINE origin/dev@${baseline.head}`)
+  console.log(formatFailSet(baseline.failures))
+  return baseline
+}
+
 function mergeDevIntoTopic(topic) {
-  banner('2/7 merge origin/dev INTO topic')
+  banner('3/8 merge origin/dev INTO topic')
   console.log(`land: merging ${DEV_REF} into ${topic} (topic stays checked out)`)
   const status = run('git', ['merge', DEV_REF, '-m', `Merge ${DEV_REF} into ${topic}`], {
     allowFail: true,
@@ -241,26 +406,62 @@ function mergeDevIntoTopic(topic) {
   console.log('land: topic now contains origin/dev')
 }
 
-function runTestGreen(skipTests) {
-  banner('3/7 test:green on MERGE RESULT (topic after origin/dev)')
-  if (skipTests) {
-    console.error('land: WARNING — --skip-tests set. This is not a real land.')
-    return
-  }
-  const status = run('npm', ['run', 'test:green'], { allowFail: true })
-  if (status !== 0) {
+async function gateNoWorse(baseline, topic) {
+  banner('4/8 test:green on topic-after-dev merge result + no-worse compare')
+  discardGeneratedNoise()
+  const candidate = await runTestGreenLabeled('candidate-topic-after-dev')
+  discardGeneratedNoise()
+
+  const { preExisting, introduced, fixed } = compareFailures(baseline.failures, candidate.failures)
+
+  console.log('\n' + '='.repeat(72))
+  console.log('land: FAILURE SET COMPARE (by identity, not count)')
+  console.log('='.repeat(72))
+  console.log(`\nBASELINE origin/dev @ ${baseline.head} (${baseline.failures.size})`)
+  console.log(formatFailSet(baseline.failures))
+  console.log(`\nCANDIDATE topic-after-dev @ ${candidate.head} (${candidate.failures.size})`)
+  console.log(formatFailSet(candidate.failures))
+  console.log(`\nPRE-EXISTING (on dev and still here — do not block): ${preExisting.length}`)
+  console.log(preExisting.length ? preExisting.map((id) => `  - ${id}`).join('\n') : '  (none)')
+  console.log(`\nFIXED (on dev, gone after merge — report only): ${fixed.length}`)
+  console.log(fixed.length ? fixed.map((id) => `  - ${id}`).join('\n') : '  (none)')
+  console.log(`\nINTRODUCED (not on dev — YOURS, hard abort): ${introduced.length}`)
+  console.log(introduced.length ? introduced.map((id) => `  - ${id}`).join('\n') : '  (none)')
+  console.log('='.repeat(72))
+
+  if (introduced.length) {
     fail(
-      `test:green exited ${status} on the topic-after-dev merge result.\n` +
-        'land will not create a bubble or push. Fix the failures, then re-run land.\n' +
-        'Retrying until green is forbidden; a red gate is a stop, not a suggestion.',
-      status,
+      `no-worse gate failed: ${introduced.length} new failure(s) not present on origin/dev.\n` +
+        introduced.map((id) => `  - ${id}`).join('\n') +
+        '\nland will not create a bubble or push. Fix what you introduced, then re-run land.',
     )
   }
-  console.log('land: test:green PASS on merge result')
+
+  if (preExisting.length) {
+    console.log('\nland: proceeding with PRE-EXISTING reds named above (inherited from origin/dev).')
+  } else if (candidate.failures.size === 0) {
+    console.log('\nland: both sides green — land normally.')
+  } else {
+    console.log('\nland: candidate failures are a subset of baseline — proceeding.')
+  }
+
+  if (fixed.length) {
+    console.log('land: this land also clears failure(s) listed under FIXED.')
+  }
+
+  // Ensure tree clean after green artifacts
+  const dirty = gitCapture(['status', '--porcelain'])
+  if (dirty) {
+    discardGeneratedNoise()
+  }
+  const still = gitCapture(['status', '--porcelain'])
+  if (still) fail(`tree dirty after green/compare:\n${still}`)
+
+  return { baseline, candidate, preExisting, introduced, fixed }
 }
 
 function createNoFfBubble(topic, summary) {
-  banner('4/7 detach origin/dev and merge --no-ff topic')
+  banner('5/8 detach origin/dev and merge --no-ff topic')
   const message = `Merge ${topic} into dev: ${summary}`
   console.log(`land: merge message:\n  ${message}`)
 
@@ -291,14 +492,13 @@ function createNoFfBubble(topic, summary) {
 }
 
 function pushHeadToDev() {
-  banner('5/7 push HEAD:dev (full output, unfiltered)')
+  banner('6/8 push HEAD:dev (full output, unfiltered)')
   // CRITICAL: never filter this output. A push you cannot see is unattributed.
-  const status = run('git', ['push', 'origin', 'HEAD:dev'], { allowFail: true })
-  return status
+  return run('git', ['push', 'origin', 'HEAD:dev'], { allowFail: true })
 }
 
 function readOriginDev() {
-  banner('6/7 fetch and read ORIGIN hash back (never assume push landed)')
+  banner('7/8 fetch and read ORIGIN hash back (never assume push landed)')
   run('git', ['fetch', 'origin'])
   run('git', ['log', '--oneline', '-1', '--decorate', DEV_REF])
   run('git', ['rev-parse', DEV_REF])
@@ -310,42 +510,52 @@ function readOriginDev() {
 }
 
 function restoreTopic(topic) {
-  banner('7/7 restore topic checkout')
+  banner('8/8 restore topic checkout')
   run('git', ['checkout', topic], { allowFail: true })
+  discardGeneratedNoise()
   run('git', ['status', '--short', '--branch'], { allowFail: true })
 }
 
-function landOnce(topic, summary, skipTests) {
+async function landOnce(topic, summary) {
   assertCleanWorktree()
   assertOnTopic(topic)
   fetchOrigin()
+
+  const baseline = await captureDevBaseline(topic)
   mergeDevIntoTopic(topic)
 
   const dirty = gitCapture(['status', '--porcelain'])
   if (dirty) fail(`tree dirty after merging ${DEV_REF} into topic:\n${dirty}`)
 
-  runTestGreen(skipTests)
+  const compare = await gateNoWorse(baseline, topic)
   createNoFfBubble(topic, summary)
-  return pushHeadToDev()
+  const pushStatus = pushHeadToDev()
+  return { pushStatus, compare }
 }
 
-function main() {
-  const { topic, summary, maxAttempts, skipTests } = parseArgs(process.argv)
+async function main() {
+  const { topic, summary, maxAttempts, allowKnown } = parseArgs(process.argv)
 
   console.log('land: storylint topic → origin/dev')
   console.log(`land: topic=${topic}`)
   console.log(`land: summary=${summary}`)
   console.log(`land: max-attempts=${maxAttempts}`)
-  if (skipTests) console.log('land: skip-tests=TRUE (not a real land)')
+  console.log('land: gate=NO-WORSE (fresh origin/dev baseline, identity compare)')
+  if (allowKnown) {
+    console.log('land: --allow-known noted (no-worse already permits pre-existing reds)')
+  }
 
   let attempt = 0
   let pushStatus = 1
+  let lastCompare = null
 
   while (attempt < maxAttempts) {
     attempt += 1
     banner(`attempt ${attempt}/${maxAttempts}`)
     try {
-      pushStatus = landOnce(topic, summary, skipTests)
+      const result = await landOnce(topic, summary)
+      pushStatus = result.pushStatus
+      lastCompare = result.compare
     } catch (error) {
       restoreTopic(topic)
       throw error
@@ -363,9 +573,10 @@ function main() {
       )
     }
 
-    console.error('land: re-fetching and retrying the WHOLE sequence from merge-dev-into-topic.')
+    console.error('land: re-fetching and retrying the WHOLE sequence from baseline.')
     console.error('land: this is the honest answer to a moving tip. No rebase.')
     run('git', ['checkout', topic])
+    discardGeneratedNoise()
   }
 
   const origin = readOriginDev()
@@ -394,7 +605,15 @@ function main() {
   console.log(`subject=${origin.subject}`)
   console.log(`parents=${origin.parents.slice(1).map((p) => p.slice(0, 7)).join(' + ')}`)
   console.log(`topic=${topic}`)
+  if (lastCompare) {
+    console.log(`pre-existing=${lastCompare.preExisting.join(',') || '(none)'}`)
+    console.log(`fixed=${lastCompare.fixed.join(',') || '(none)'}`)
+    console.log(`introduced=${lastCompare.introduced.join(',') || '(none)'}`)
+  }
   console.log('Report the ORIGIN hash above. Local HEAD is not a ship.')
 }
 
-main()
+main().catch((error) => {
+  console.error(error)
+  exit(1)
+})
