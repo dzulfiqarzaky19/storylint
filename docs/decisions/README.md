@@ -2,6 +2,7 @@
 
 **Purpose:** durable **judgments** that survive clone/clean.  
 **Start here for rules:** [STANDING_RULES.md](./STANDING_RULES.md) (one page).  
+**Density-pass conclusions (ox):** [density-pass-settled-positions.md](./density-pass-settled-positions.md).  
 **Locks (not this folder):** [IA_MAP](../IA_MAP.md) · [CALM_BUDGET](../CALM_BUDGET.md) · [CANON-VOCABULARY](../design/CANON-VOCABULARY.md).  
 **Scoreboard (measurement over time):** [`e2e/output/calm-budget-run.md`](../../e2e/output/calm-budget-run.md). Raw dumps stay gitignored.
 
@@ -16,11 +17,21 @@ A reader should find the ruling that governs their question in the tables below 
 | File | Decided |
 |------|---------|
 | [STANDING_RULES.md](./STANDING_RULES.md) | **The short rule set** extracted from this corpus (read first). |
+| [density-pass-settled-positions.md](./density-pass-settled-positions.md) | **Ox close-out:** settled product positions — do not relitigate without evidence (not the incident log). |
 | [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md) | Visibility is never inferred from geometry; absence ≠ pass; dead selector = fail. |
 | [one-primary-door-per-job.md](./one-primary-door-per-job.md) | One solid primary per job in the **whole viewport**; dual New sheet / dual first-chapter doors are not calm. |
+| [runnable-solid-precondition.md](./runnable-solid-precondition.md) | Solid must not advertise a job that cannot succeed; weight ≠ entitlement. |
+| [boolean-hides-multi-state.md](./boolean-hides-multi-state.md) | Do not collapse multi-state domains into booleans; fixture real states. |
 | [research-face-shape.md](./research-face-shape.md) | Research is a face, not a primary peer; **one-item More collapses to a plain Research control**; cardinality justifies the control (APG menu greenlight **retracted**). |
 | [companion-one-assistant.md](./companion-one-assistant.md) | Companion = one assistant, one in-flight job, one busy lexicon; no run-id parallel model. |
+| [companion-lock-jobs-vs-decisions.md](./companion-lock-jobs-vs-decisions.md) | Jobs share assistantBusy; decisions (Accept/Apply/Pin) stay local-free. Panel ≠ unit of work. |
 | [new-project-vs-first-boot.md](./new-project-vs-first-boot.md) | First boot may seed Chapter One; **New project stays empty** — two arrivals, one empty rulebook when empty. |
+| [seeded-default-first-impression.md](./seeded-default-first-impression.md) | Seeded-default is a third arrival; P1 empty title + Continuity gated on prose. |
+| [lab-lifecycle-ends.md](./lab-lifecycle-ends.md) | Lab transient; Promoted = dismissible receipts; archive + Restore; no hard delete v1. |
+| [canon-under-load-az.md](./canon-under-load-az.md) | Family not sparse; Network@scale known limit; binder scroll restore P0; no search from 68. |
+| [empty-canon-send-proposal-weight.md](./empty-canon-send-proposal-weight.md) | Empty Canon Send demoted until real sheet path exists. |
+| [draft-under-load-av.md](./draft-under-load-av.md) | Draft/Inbox under load: fold not bulk Accept; Continuity multi-run does not reopen wall. |
+| [b3-inbox-wall-at-volume.md](./b3-inbox-wall-at-volume.md) | B3 measures Inbox at volume, not Chat. |
 | [pack-b-canon-dialect-complete.md](./pack-b-canon-dialect-complete.md) | bible→Canon UI is **full sweep or none**; C5 graph labels in the same PR; incomplete = do not merge. |
 | [copy-audit-task-t.md](./copy-audit-task-t.md) | Worst-first copy bar: no false-empty, no bible-in-UI, no narrating the adjacent CTA; Canon write path explicit; verb rows locked. |
 | [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) | D5 “sheet in center” **RETRACTED**; sheet stays binder Level-3 stack (IA §2/§4.4). |
@@ -38,10 +49,8 @@ A reader should find the ruling that governs their question in the tables below 
 | [design-review-r1.md](./design-review-r1.md) | Round-1 accept/reject by surface; drove early density follow-ups (snapshot). |
 | [design-review-task-l.md](./design-review-task-l.md) | Task L binder polish review — **kind renames later rejected** (see L2). |
 | [density-audit-qa3.md](./density-audit-qa3.md) | Pre-fix density fault list — **historical**; D5 center fix superseded by adjudication. |
-| [milestone-density-pass.md](./milestone-density-pass.md) | Founder density-pass summary: holds, deliberate non-goals, verification lies catalog. **Shipped main** `de58c14`. |
-| [milestone-load-and-state.md](./milestone-load-and-state.md) | Founder load-and-state summary (post-density): volume/composition/seeded third state/false signifiers/`npm run land` no-worse. **Prepared, not shipped** — hold binder scroll@68. |
+| [milestone-density-pass.md](./milestone-density-pass.md) | Founder density-pass summary: holds, deliberate non-goals, verification lies catalog. |
 | [seeded-default-first-impression-brief.md](./seeded-default-first-impression-brief.md) | Queued brief (historical). |
-| [seeded-default-first-impression.md](./seeded-default-first-impression.md) | **CONDITIONAL ACCEPT** seed-as-boot; P1 empty title + Continuity gated on prose + prefer body focus. |
 | [ia-final-qa.md](./ia-final-qa.md) | IA J1/J2/J3 + Canon entry PASS @ 6a2a74b (record). |
 | [ia-step1-qa.md](./ia-step1-qa.md) | Earlier IA step-1 QA — superseded as *latest* by ia-final-qa. |
 | [orchestrator-ux-faults.md](./orchestrator-ux-faults.md) | Hamster priority UX fault queue (handoff). |
@@ -60,6 +69,9 @@ Reversed decisions are the most instructive. Keep the file; point here.
 | Task L kind rename (People/Places/Groups) in [design-review-task-l.md](./design-review-task-l.md) | **REJECTED / reverted** | [design-review-l2.md](./design-review-l2.md) · CANON-VOCABULARY |
 | Full APG menu for one-item More (Research) | **RETRACTED** (rat greenlight withdrawn) | [research-face-shape.md](./research-face-shape.md) — plain Research control at cardinality one |
 | Writing faces HARD ≤3 allow-list | **Never the bar** | D6 + CALM: ≤3 **primaries**; allow-list ≤5 |
+| Companion mutex A (Apply on assistantBusy) | **REJECTED** | [companion-lock-jobs-vs-decisions.md](./companion-lock-jobs-vs-decisions.md) Model B |
+| Lab Promoted as forever audit log | **REJECTED** | [lab-lifecycle-ends.md](./lab-lifecycle-ends.md) dismissible receipts |
+| Family sparse under load (D4 nit) | **CLOSED** | [canon-under-load-az.md](./canon-under-load-az.md) |
 | [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) as live number bar | **Superseded as live bar** | [CALM_BUDGET](../CALM_BUDGET.md) r3 + [calm-budget-r3-ox.md](./calm-budget-r3-ox.md) (method still useful) |
 | [ia-step1-qa.md](./ia-step1-qa.md) as latest IA QA | **Superseded as latest** | [ia-final-qa.md](./ia-final-qa.md) (keep both) |
 | In-app dirty leave “unfixed” | **Fixed** | [sheet-dirty-leave-guard.md](./sheet-dirty-leave-guard.md); refresh loss still [open](./sheet-identity-refresh-loss.md) |
@@ -69,31 +81,24 @@ Reversed decisions are the most instructive. Keep the file; point here.
 
 ## Still open
 
-Short list only — do not grow into a second backlog novel. Full founder context: [milestone-load-and-state.md](./milestone-load-and-state.md).
+Short list only — do not grow into a second backlog novel.
 
-### Ship hold (blocks second main merge)
+1. **Refresh / tab-close loses dirty Canon identity** — [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md); durable fix = draft persistence, not `beforeunload`.
+2. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
+3. **Binder list scroll restore after detail Back** — AZ P0; last product hold before density milestone two ([canon-under-load-az](./canon-under-load-az.md)).
+4. **Lab archive Restore + Promoted dismiss** — ruled ([lab-lifecycle-ends](./lab-lifecycle-ends.md)); implementation follow-on.
+5. **Network@scale product model** — known hairball; options deferred in AZ (not a density hotfix).
+6. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'`). Ambient-gitignored-data mechanism **disproven**.
+7. **`reload`+`networkidle` banned suite-wide** residual: first-`goto` `networkidle` still widespread, including calm gate waits.
 
-1. **Binder scroll restore drifts at 68 sheets** — scrollTop 2080 → Back restores 1147. Fixture-size park/restore green lied once. octopus in flight; verify at 68 sheets before coordinator merge.
+### Closed this session (do not re-open without new evidence)
 
-### Product / measure debt
-
-2. **Refresh / tab-close loses dirty Canon identity** — [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md); durable fix = draft persistence, not `beforeunload`.
-3. **Lab lifecycle ends** — archive is a trapdoor (no restore); Promoted is append-only. No fourth place if archive ships ([08-false-state.md](../research/ui-ux/08-false-state.md) gap b).
-4. **Network graph hairball at ~68 nodes** — layout/model deferred.
-5. **Pass-on-absence class audit** — badger in flight; [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md).
-6. **Research Pin/Propose lack a local working affordance** mid-read.
-7. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
-8. **slice-j original failure mode unexplained** after create-both fix. Ambient-gitignored-data mechanism **disproven**.
-9. **First-`goto` `networkidle` residual** after suite-wide reload ban (`c4c5e2b`) — including calm. See e2e/README navigation waits.
-
-### Closed this window (do not re-open without new evidence)
-
-- ~~**B6-primary-per-job**~~ — **LANDED** (empty Canon + Draft fixtures). Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
-- ~~**Empty-Canon Send proposal weight**~~ — **LANDED** (`b64c7ca`); omit solid Send until 2+ sheets.
-- ~~**Seeded-default P1**~~ — **LANDED** (untitled seed, Continuity gated on prose, export slug). Ruling: [seeded-default-first-impression.md](./seeded-default-first-impression.md).
-- ~~**B3-inbox-wall@volume**~~ — **LANDED** (measure Inbox at volume + fold/scrollport).
+- ~~**B6-primary-per-job**~~ — **LANDED**. Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
+- ~~**AY Inbox fold + ox B lock**~~ — **ACCEPT** @ `78aee53`.
+- ~~**Empty-Canon Send weight**~~ — ruled + landed path.
+- ~~**Family sparsity (D4)**~~ — closed under AZ.
+- ~~**Lab density @40+**~~ — operable; lifecycle is separate product.
 - ~~**slice-j dependency on uncreated entity**~~ — **fixed** (create both; no `'default'`). Original failure mode still open above.
-- ~~**`npm run land` absolute-green deadlock**~~ — **LANDED** no-worse gate; self-host `8ce391f`.
 
 ---
 
