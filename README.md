@@ -88,6 +88,7 @@ UI browser smoke: [docs/E2E.md](docs/E2E.md) (Playwright + system **msedge** on 
 | [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier + **AI harness local-only** |
 | [docs/decisions/](docs/decisions/README.md) | Decision history (adjudications, reviews) |
 | [docs/DOCTRINE_AUDIT.md](docs/DOCTRINE_AUDIT.md) | Contradiction / wrong-build hazard map |
+| [docs/CODE_VERIFY.md](docs/CODE_VERIFY.md) | Docs↔code verification matrix |
 | [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (paint source of truth) |
 | [docs/03-ux.md](docs/03-ux.md) | Journeys + reading profiles (structure → IA_MAP) |
 | [docs/04-agents.md](docs/04-agents.md) | In-app agent panel (product) |

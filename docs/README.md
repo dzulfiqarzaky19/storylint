@@ -62,15 +62,19 @@ Healthy overlap = one sentence + link. Drift risk = two full copies of the same 
 
 ## What a new engineer still gets wrong
 
-1. **`manuscript` / Write / Draft** — code mode `manuscript`, companion face **Write** (co-write), ecosystem label **Draft**. Three different things.
-2. **Sheet opens in the binder stack**, not center stage (IA §2/§4.4; D5 center-sheet **retracted** — [decisions/adjudication-d5-sheet-binder.md](./decisions/adjudication-d5-sheet-binder.md)).
-3. **Kind chips** — binder shows Characters/…; graph may still show raw enums until C5 lands ([DOCTRINE_AUDIT](./DOCTRINE_AUDIT.md) C5). Prefer `SHEET_KIND_LABEL`.
-4. **`@bible` vs `@canon`** — vocabulary prefers `@canon`; shipped badge may still say `@bible` (C8 copy debt).
-5. **Face count** — allow-list can be 5; **≤3 primary tabs** + More + Inbox badge. Not “delete Research.”
-6. **density-audit / old QA shots** — historical unless re-run; not a live implementer checklist ([decisions/density-audit-qa3.md](./decisions/density-audit-qa3.md)).
-7. **Working tree ≠ truth** in a multi-agent repo — `git show origin/dev:path` ([GIT_WORKFLOW](./GIT_WORKFLOW.md) §5).
-8. **PRD phase table lags** — slices through **L** shipped in BUILD; PRD “through H” is spine language, not “stop at H.”
-9. **D4 Canon map chrome** — may live only on a topic branch until merged; do not invent a second map spec from memory.
+Adversarial code check: [CODE_VERIFY.md](./CODE_VERIFY.md) (VERIFIED/STALE with `file:line` @ origin/dev).
+
+1. **`manuscript` / Write / Draft** — code mode `manuscript` (`Shell.tsx`), companion face **Write** (co-write), ecosystem label **Draft**. Three different things. **VERIFIED**
+2. **Sheet opens in the binder push-stack**, not center stage (IA §2/§4.4; D5 retracted). List stays mounted under detail (`Binder.tsx` `binder__stack-*`). **VERIFIED**
+3. **Kind chips** — binder uses `SHEET_KIND_LABEL`; **graph still renders raw enums** (`RelationshipGraph.tsx` filter `{kind}`, node `graph__kind`) until C5 merges. **VERIFIED open**
+4. **`@bible` vs `@canon`** — vocabulary prefers `@canon`; shipped `AgentPanel` still shows `@bible` badge. **VERIFIED**
+5. **Face count** — `FACES.writing` length 5; `PRIMARY_FACES.writing` = chat/write/check; Research under **More**; Inbox badge. Not “delete Research.” **VERIFIED**
+6. **density-audit / old QA shots** — historical unless re-run ([decisions/density-audit-qa3.md](./decisions/density-audit-qa3.md)). Binder-void and pre-stack sheet notes inside it are **not** current code. **VERIFIED**
+7. **Working tree ≠ truth** — `git show origin/dev:path` ([GIT_WORKFLOW](./GIT_WORKFLOW.md) §5). **VERIFIED** (process)
+8. **PRD is intent-at-the-time** — §§3–9 historical; BUILD = ship; IA_MAP = structure. **VERIFIED** (rat ruling)
+9. **D4 Canon map chrome** — not on origin/dev docs tree until merged; don’t invent a second map spec. **VERIFIED**
+10. **Rails** — runtime 272/272/280/320; companion **closed by default below 1366**. Ignore any leftover 300/360/380/420 sketches. **VERIFIED**
+11. **Binder empty project** — binder mounts whenever `project.project` exists (`Shell.tsx`), not only with an active chapter. **VERIFIED**
 
 ## Suggested first hour
 

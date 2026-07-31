@@ -29,7 +29,7 @@ Manuscript paper profiles:
 Marks (text only): soft #A67C2A, hard #B54A4A washes translucent.
 
 Type: UI system sans; manuscript Georgia/serif 17px+/1.7.
-Layout: topbar 48px; binder=agent (300→420 by breakpoint). Paper: full-bleed + round reading seal below 1366; centered A4-ratio page + right ribbon from 1366. Reading control on paper only (not top bar). Words/chars under title.
+Layout: topbar 48px; binder=agent (272→320 by breakpoint, TOKENS §4). Companion closed by default below 1366. Paper: full-bleed + round reading seal below 1366; centered A4-ratio page + right ribbon from 1366. Reading control on paper only (not top bar). Words/chars under title.
 No gen buttons in the prose column. Agent = right panel. Continuity marks only on spans.
 ```
 
@@ -39,10 +39,10 @@ No gen buttons in the prose column. Agent = right panel. Continuity marks only o
 
 ```
 Storylint master style (§0). 1440×900 desktop (≥1366 desk).
-Top bar: project, chapter, Saved, Continuity, Focus, theme (chrome only), agent toggle — NO reading control in top bar.
-Left binder (~380px): chapters, sheet kinds, empty = dashed list rows not pills.
+Top bar: project, Draft·Lab·Canon, Saved, Focus, theme (chrome only), agent toggle — NO Continuity in top bar (Check face only); NO reading control in top bar.
+Left binder (~272–320px): chapters, sheet kinds, empty = dashed list rows not pills.
 Center: A4-ratio paper card on dark desk; title + words/chars under title; body; right-edge ribbon bookmark (Day/Sepia/Mint/Night colors); continuity marks on spans only.
-Right agent (~380px): Continuity, transcript, proposals Accept/Edit/Reject, Apply cards, Continue/Rewrite/Brainstorm, composer.
+Right agent (~272–320px): companion faces, transcript, proposals Accept/Edit/Reject, Apply cards, Continue/Rewrite/Brainstorm, composer.
 Also show compact variant &lt;1366: full-bleed paper, round seal top-right on page, no hanging ribbon.
 No sky blue. Light mode primary = ink charcoal not muddy brown.
 ```

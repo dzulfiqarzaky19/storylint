@@ -190,7 +190,8 @@ Faces: Chat · Inspect · Inbox
 
 ### 4.4 Canon sheet (binder detail stack)
 
-**Where:** binder detail stack (per §2 ruling), not a center surface.
+**Where:** binder detail stack (per §2 ruling), not a center surface.  
+**ships (Task V / F1):** list stays mounted under the detail layer; Back restores scroll — not a destructive list swap (`Binder.tsx` `binder__stack-list` + `binder__stack-detail`).
 
 **In**
 
