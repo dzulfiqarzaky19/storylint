@@ -43,6 +43,79 @@
 
 Enforced by root [`.gitignore`](../.gitignore) block `AI assistant harness`.
 
+
+## Commit story (whole project)
+
+Commits are the **story of the product**, not a diary of agent thrash. Applies to **every** slice and branch — Lab, Companion, shell, domain, docs, tests. A human should skim `git log` like BUILD status.
+
+### Message shape
+
+```
+<type>(optional-scope): <imperative summary ≤72 chars>
+
+Optional body: why / boundary / what is deliberately out.
+```
+
+| Type | Use for |
+|------|---------|
+| `feat` | User-visible capability |
+| `fix` | Correct broken behavior |
+| `docs` | Tracked product/process docs only |
+| `test` | Tests / e2e drivers without product change |
+| `chore` | Scaffold, ignore rules, non-user tooling (**never** AI harness) |
+| `refactor` | Structure only; behavior locked by tests |
+
+**Scope examples:** `shell`, `domain`, `server`, `agent`, `continuity`, `graph`, `export`, `lab`, `companion`, `ui`.
+
+**Good**
+
+- `feat(domain): accept proposal writes facts only after Accept`
+- `feat(shell): three-pane binder manuscript agent layout`
+- `docs: specify Lab pre-canon bench and mode-shaped Companion`
+- `test(e2e): smoke Continuity accept path`
+- `chore: keep AI harness docs local-only`
+
+**Bad**
+
+- `wip`, `tmp`, `asdf`, `updates`, `fix stuff`, `misc`
+- Mega-commits mixing unrelated domain + CSS + docs + harness
+- Subject that names the coding agent/harness as if it were product work
+
+### Layering (default for any non-trivial change)
+
+Prefer **one concern per commit**, in this order when the work spans layers:
+
+1. `docs:` design/process only (if needed first)
+2. `feat(domain)` / pure logic + **unit tests** (gates, Accept/Apply, promote, …)
+3. `feat(server):` API + validation + persistence
+4. `feat(…):` UI / shell / panel wiring
+5. `feat(agent):` fixture/live agent behavior when separate
+6. `test(e2e):` smoke + screenshots
+
+Do **not** bury Accept/Apply/promote boundary tests inside an unrelated polish commit.
+
+Small pure-docs typos or one-line token fixes may be a single commit. Everything else: leave a readable story.
+
+### Do / don't
+
+**Do**
+
+- Commit when a layer is green (`npm test` for domain/API; `build` + E2E when UI).
+- Match message to BUILD slice intent (`feat(graph):…`, not "more work on K").
+- Keep AI harness out of every commit (see § AI harness stays local).
+- Use body lines for product boundaries ("does not write sheets without Accept").
+
+**Don't**
+
+- Commit broken mid-refactor on shared branches — stash or worktree.
+- Rewrite published `main` history without an explicit human request.
+- Force-add ignored harness paths.
+- Stack five unrelated fixes under one vague subject.
+
+### Reviewer gate (commits)
+
+Reviewer may **request changes** if the diff is fine but the commit story is junk (wip subjects, harness files, unrelated mash-up). Fix history before merge when the branch is still private; don't force-push `main`.
+
 ## Review is mandatory
 
 ```
@@ -76,6 +149,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 - No auth; no auto Apply/Accept  
 - UI slices: browser smoke per E2E (`channel: 'msedge'` here)  
 - Smallest diff  
+- **Commits:** § Commit story — layered subjects, whole project, no harness, no `wip`  
 
 ### Done
 
@@ -83,6 +157,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 - `npm test` + `npm run build` (+ lint)  
 - E2E screenshot if UI touched  
 - Short report: files, commands, blockers  
+- Commit(s) named per § Commit story (not one dump at the end unless truly atomic)  
 
 ### Do not
 
@@ -90,6 +165,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 - Invent Obsidian/VS Code/AI-blue colors  
 - Hardcode rail/paper widths in shell CSS  
 - Skip E2E on UI changes  
+- Junk commit subjects (`wip` / `tmp` / “misc”) or AI harness in git  
 
 ---
 
@@ -120,6 +196,7 @@ Fail if:
 | Auth / client secrets | |
 | Gen chips in manuscript | |
 | Layout magic numbers | |
+| Commit story | `wip`/harness files/unrelated mega-commit; see § Commit story |
 
 Output:
 
@@ -254,7 +331,7 @@ Failures:
 
 ## Prompt stubs
 
-**Coder:** `BUILD slice {N} only. CLAUDE + TOKENS. Test-first domain. Playwright smoke if UI. Report commands.`
+**Coder:** `BUILD slice {N} only. TOKENS + AGENTS_ROLES commit story. Test-first domain. Layered commits. Playwright smoke if UI. Report commands. Never commit harness.`
 
 **Reviewer:** `Slice {N}. AGENTS_ROLES fail gates. Diff only. No code.`
 
