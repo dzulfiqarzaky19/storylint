@@ -37,7 +37,15 @@ Thumbs.db
 # test / coverage
 coverage
 *.tsbuildinfo
+# --- e2e/output split (intentional) ---
+# Tracked: judgments (docs/decisions/) AND measurements-over-time that a future
+# reader cannot cheaply reconstruct (e.g. calm-budget-run.md scoreboard at a
+# known commit — git-diffable product state vs the calm bar). Regenerable is
+# not the test; durable informational value is.
+# Ignored: raw evidence dumps — shots, probe JSON/logs, skill dumps, drive scratch.
+# Cite shot paths from reviews; do not commit shot folders.
 e2e/output/
+!e2e/output/calm-budget-run.md
 
 # AI assistant harness (LOCAL ONLY — never commit / never push)
 # Reason: branch checkouts must not swap the agent's brain or skills.

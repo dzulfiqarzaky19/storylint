@@ -24,7 +24,7 @@ UI work after this = align chrome to the map, not invent new kingdoms.
 | Step | Item | Status | Evidence |
 |------|------|--------|----------|
 | 1 | Naming + entry (Draft, Promote split, two doors, binder groups) | **done** | `67592a1` `b68703e` `6a2a74b` |
-| 2 | Calm top bar + Continuity Draft-only | **done** | `55b9033` `6a2a74b` |
+| 2 | Calm top bar + Continuity Draft-only *(milestone name; Continuity later **removed** from top bar — Check only)* | **done** | `55b9033` `6a2a74b` · remove `8911406` |
 | 3 | Canon entry + landing memory | **done** | `5bfe65e` |
 | 4 | Surface density polish | **open** (optional) | user call |
 
@@ -38,7 +38,7 @@ Final walkthrough QA: `e2e/output/ia-final-qa.md` — **PASS 14/14** @ `6a2a74b`
 | Ecosystem | User word | Feeling | Current code names | Status |
 |-----------|-----------|---------|--------------------|--------|
 | **Lab** | Lab | Messy think / research / try | `workspaceMode: 'lab'`, LabBench, binder Lab boards | **ships** |
-| **Draft** | Draft | Clean write | `workspaceMode: 'manuscript'`, Manuscript, binder chapters | **ships** + **rename** (UI still says manuscript / Write) |
+| **Draft** | Draft | Clean write | `workspaceMode: 'manuscript'`, Manuscript, binder chapters | **ships** — user-facing **Draft**; code mode remains `manuscript`; companion face **Write** = co-write ≠ ecosystem |
 | **Canon** | Canon | Settled world truth | Sheets + facts + accepted proposals + Graph | **ships** + **rename** (UI still says sheets / bible / Graph as peer mode) |
 
 **Not ecosystems (never promote them to top kingdoms):**
@@ -173,7 +173,7 @@ Faces: Chat · Spark · Inbox
 **In**
 
 - Network + Family views of **accepted** relationships
-- Kind filters (character/lore/world/org)
+- Kind filters (enums `character`/`lore`/`world`/`organization`; **labels** Characters/Lore/World/Organizations per [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) — binder uses labels; graph chips must not stay raw enums)
 - Node → open sheet (Level-3 Canon thing)
 - Pending edges hidden until Accept (**ships**)
 
@@ -405,7 +405,7 @@ No wizard. Two doors max.
 | # | Item | Status |
 |---|------|--------|
 | 1 | **Naming + entry** — Draft label, Promote split, two doors, binder groups | **done** @ `67592a1` `b68703e` `6a2a74b` |
-| 2 | **Calm top bar** — single identity, overflow New/Export, Continuity Draft-only | **done** @ `55b9033` `6a2a74b` |
+| 2 | **Calm top bar** — single identity, overflow New/Export; Continuity ended as Check-only (not top) | **done** @ `55b9033` `6a2a74b` · `8911406` |
 | 3 | **Canon entry** — map-first landing + last-thing memory | **done** @ `5bfe65e` |
 | 4 | **Surface density polish** | **open** — optional; user call |
 
