@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { cx } from './cx'
 import './ui.css'
 
@@ -7,9 +7,13 @@ export type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string
 }
 
-export function IconButton({ label, className, type, ...rest }: IconButtonProps) {
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+  { label, className, type, ...rest },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       type={type ?? 'button'}
       aria-label={label}
       title={label}
@@ -17,4 +21,4 @@ export function IconButton({ label, className, type, ...rest }: IconButtonProps)
       {...rest}
     />
   )
-}
+})

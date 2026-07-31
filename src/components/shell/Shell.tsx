@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   applyReading,
   applyTheme,
@@ -41,6 +41,12 @@ export function Shell() {
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
   /** Active Canon sheet leave guard from Binder (dirty identity). */
   const requestSheetLeaveRef = useRef<((proceed: () => void) => void) | null>(null)
+  const binderToggleRef = useRef<HTMLButtonElement | null>(null)
+  const agentToggleRef = useRef<HTMLButtonElement | null>(null)
+  const binderRailRef = useRef<HTMLElement | null>(null)
+  const agentRailRef = useRef<HTMLElement | null>(null)
+  const wasBinderRailRef = useRef(false)
+  const wasAgentRailRef = useRef(false)
   const registerSheetLeaveGuard = useCallback(
     (requestLeave: ((proceed: () => void) => void) | null) => {
       requestSheetLeaveRef.current = requestLeave
@@ -56,6 +62,39 @@ export function Shell() {
     }
     proceed()
   }
+
+  const binderRailOpen = shell.railVisible('binder')
+  const agentRailOpen = shell.railVisible('agent')
+
+  function focusFirstIn(root: HTMLElement | null) {
+    if (!root) return
+    const el = root.querySelector<HTMLElement>(
+      'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+    )
+    el?.focus()
+  }
+
+  // Wide-layout rail open/close focus: enter first control, leave restore toggle.
+  // Drawer path already owns its own trap + restore (Drawer.tsx).
+  useLayoutEffect(() => {
+    const was = wasBinderRailRef.current
+    wasBinderRailRef.current = binderRailOpen
+    if (!was && binderRailOpen) {
+      queueMicrotask(() => focusFirstIn(binderRailRef.current))
+      return
+    }
+    if (was && !binderRailOpen) binderToggleRef.current?.focus()
+  }, [binderRailOpen])
+
+  useLayoutEffect(() => {
+    const was = wasAgentRailRef.current
+    wasAgentRailRef.current = agentRailOpen
+    if (!was && agentRailOpen) {
+      queueMicrotask(() => focusFirstIn(agentRailRef.current))
+      return
+    }
+    if (was && !agentRailOpen) agentToggleRef.current?.focus()
+  }, [agentRailOpen])
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
   const activeChapter =
@@ -316,6 +355,7 @@ export function Shell() {
       </a>
       <header className="shell__topbar">
         <IconButton
+          ref={binderToggleRef}
           label={shell.isOpen('binder') ? 'Hide binder' : 'Show binder'}
           aria-pressed={shell.isOpen('binder')}
           onClick={() => shell.toggle('binder')}
@@ -378,6 +418,7 @@ export function Shell() {
             onClick={toggleTheme}
           ><ThemeIcon /></IconButton>
           <IconButton
+            ref={agentToggleRef}
             className="shell__action-agent"
             label={shell.isOpen('agent') ? 'Hide companion' : 'Show companion'}
             aria-pressed={shell.isOpen('agent')}
@@ -391,8 +432,8 @@ export function Shell() {
         data-binder={shell.railVisible('binder') ? 'rail' : 'hidden'}
         data-agent={shell.railVisible('agent') ? 'rail' : 'hidden'}
       >
-        {shell.railVisible('binder') ? (
-          <aside className="shell__rail shell__rail--binder">{binder()}</aside>
+        {binderRailOpen ? (
+          <aside ref={binderRailRef} className="shell__rail shell__rail--binder">{binder()}</aside>
         ) : null}
 
         {project.loading ? (
@@ -472,8 +513,8 @@ export function Shell() {
           </main>
         )}
 
-        {shell.railVisible('agent') ? (
-          <aside className="shell__rail shell__rail--agent">{agent()}</aside>
+        {agentRailOpen ? (
+          <aside ref={agentRailRef} className="shell__rail shell__rail--agent">{agent()}</aside>
         ) : null}
       </div>
 
