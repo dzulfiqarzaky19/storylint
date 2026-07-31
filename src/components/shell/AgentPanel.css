@@ -92,13 +92,28 @@
   color: var(--color-text, var(--color-fg));
 }
 
-@media (max-width: 720px) {
+/* Quiet secondary overflow face (single-item collapse; not a primary peer). */
+.companion__face-secondary {
+  opacity: 0.82;
+  font-weight: 500;
+}
+
+/*
+ * D10/B5 narrow-only: face tabs are .ui-button with min-height: --size-control (32)
+ * + vertical padding → painted 38px. Topbar already lifts via shell.css; faces do not.
+ * Do not change the shared button token — desktop chrome stays 32–38.
+ * Match shell narrow breakpoint (767), not the old 720 density-only cut.
+ */
+@media (max-width: 767px) {
   .companion__faces {
     gap: 2px;
     padding-inline: var(--space-2);
   }
 
-  .companion__faces .ui-button {
+  .companion__faces [role='tab'],
+  .companion__faces > .ui-button {
+    min-height: var(--size-touch-min);
+    min-width: var(--size-touch-min);
     padding-inline: var(--space-2);
     font-size: var(--font-size-sm, 0.8125rem);
   }
@@ -107,11 +122,4 @@
   .companion__face-inbox {
     max-width: 5.5rem;
   }
-}
-
-
-/* Quiet secondary overflow face (single-item collapse; not a primary peer). */
-.companion__face-secondary {
-  opacity: 0.82;
-  font-weight: 500;
 }
