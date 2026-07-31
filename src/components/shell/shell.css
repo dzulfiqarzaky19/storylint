@@ -683,6 +683,13 @@
   color: var(--color-text-muted);
 }
 
+.companion__faces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3) 0;
+}
+
 .agent__chips {
   display: flex;
   flex-wrap: wrap;

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
@@ -13,6 +13,43 @@ import { Badge, Button, EmptyState, IconButton, Textarea } from '../ui'
 import type { TranscriptEntry } from './workspace'
 import './shell.css'
 
+export type CompanionContext = 'writing' | 'lab' | 'details' | 'graph'
+
+export type CompanionFace =
+  | 'chat'
+  | 'write'
+  | 'check'
+  | 'spark'
+  | 'fill'
+  | 'inspect'
+  | 'research'
+  | 'inbox'
+
+const DEFAULT_FACE: Record<CompanionContext, CompanionFace> = {
+  writing: 'chat',
+  lab: 'chat',
+  details: 'chat',
+  graph: 'chat',
+}
+
+const FACES: Record<CompanionContext, CompanionFace[]> = {
+  writing: ['chat', 'write', 'check', 'inbox'],
+  lab: ['chat', 'spark', 'inbox'],
+  details: ['chat', 'fill', 'inbox'],
+  graph: ['chat', 'inspect', 'inbox'],
+}
+
+const FACE_LABEL: Record<CompanionFace, string> = {
+  chat: 'Chat',
+  write: 'Write',
+  check: 'Check',
+  spark: 'Spark',
+  fill: 'Fill',
+  inspect: 'Inspect',
+  research: 'Research',
+  inbox: 'Inbox',
+}
+
 export type AgentPanelProps = {
   transcript: TranscriptEntry[]
   project: Project | null
@@ -20,6 +57,8 @@ export type AgentPanelProps = {
   beginMutation: () => number | null
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   chapterTitle: string
+  companionContext?: CompanionContext
+  contextLabel?: string
   proposals: Proposal[]
   continuityRunning: boolean
   continuityMode: 'fixture' | 'live' | null
@@ -38,19 +77,40 @@ export type AgentPanelProps = {
   onRunReview: (kind: ReviewKind) => Promise<void>
   onAddCraftTags: (tags: CraftTag[]) => void
   onSend: (text: string) => void
+  onSparkPreset?: (kind: 'place' | 'character-spark' | 'beat' | 'what-if') => void
   onClose?: () => void
 }
 
 export function AgentPanel({
-  transcript, project, onProject, beginMutation, trackMutation, chapterTitle, proposals, continuityRunning, continuityMode,
+  transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
+  companionContext = 'writing', contextLabel,
+  proposals, continuityRunning, continuityMode,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, tipsDismissed,
   onDismissTips, selection, onGenerateCowrite, onApplyCard, onDismissCard,
-  onRunReview, onAddCraftTags, onSend, onClose,
+  onRunReview, onAddCraftTags, onSend, onSparkPreset, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
-  const [panelMode, setPanelMode] = useState<'agent' | 'research'>('agent')
-  const packs = [...new Set(proposals.flatMap((proposal) => proposal.packId ? [proposal.packId] : []))]
-  const standalone = proposals.filter((proposal) => !proposal.packId)
+  const [face, setFace] = useState<CompanionFace>(DEFAULT_FACE[companionContext])
+  const allowed = FACES[companionContext]
+  const applyCards = transcript.filter((entry) => entry.role === 'apply')
+  const pendingCount = proposals.length + applyCards.length
+
+  useEffect(() => {
+    setFace(DEFAULT_FACE[companionContext])
+  }, [companionContext])
+
+  useEffect(() => {
+    if (!allowed.includes(face)) setFace(DEFAULT_FACE[companionContext])
+  }, [allowed, companionContext, face])
+
+  const statusLine = useMemo(() => {
+    const bits: string[] = []
+    if (continuityRunning) bits.push('Continuity running…')
+    else if (continuityMode) bits.push(`Last Continuity: ${continuityMode}`)
+    if (llmMode === 'fixture') bits.push('Chat fixture')
+    else if (llmMode === 'live') bits.push('Chat live')
+    return bits.join(' · ')
+  }, [continuityMode, continuityRunning, llmMode])
 
   function send() {
     const text = draft.trim()
@@ -65,112 +125,236 @@ export function AgentPanel({
     void onGenerateCowrite(skill, instruction).then(() => setDraft('')).catch(() => undefined)
   }
 
-  return (
-    <div className="panel">
-      <div className="panel__header">
-        <h2 className="panel__title">{panelMode === 'agent' ? 'Agent' : 'Research'}</h2>
-        <Button aria-pressed={panelMode === 'agent'} onClick={() => setPanelMode('agent')}>Agent</Button>
-        <Button aria-pressed={panelMode === 'research'} onClick={() => setPanelMode('research')}>Research</Button>
-        {onClose ? <IconButton label="Close agent panel" onClick={onClose}>✕</IconButton> : null}
-      </div>
+  function renderProposals(list: Proposal[]) {
+    const packIds = [...new Set(list.flatMap((proposal) => proposal.packId ? [proposal.packId] : []))]
+    const alone = list.filter((proposal) => !proposal.packId)
+    return (
+      <section className="proposal-list" aria-label="Pending proposals">
+        {packIds.map((packId) => (
+          <SheetPackCard
+            key={packId}
+            proposals={list.filter((proposal) => proposal.packId === packId)}
+            onAccept={onAcceptProposal}
+            onEdit={onEditProposal}
+            onReject={onRejectProposal}
+          />
+        ))}
+        {alone.map((proposal) => (
+          <ProposalCard
+            key={proposal.id}
+            proposal={proposal}
+            onAccept={onAcceptProposal}
+            onReject={onRejectProposal}
+          />
+        ))}
+      </section>
+    )
+  }
 
-      {panelMode === 'research' ? (
-        <ResearchPanel project={project} onProject={onProject} beginMutation={beginMutation} trackMutation={trackMutation} />
-      ) : (
-        <>
+  function renderTranscript(options?: { tools?: boolean; apply?: boolean; review?: boolean }) {
+    const showTools = options?.tools !== false
+    const showApply = options?.apply !== false
+    const showReview = options?.review !== false
+    return (
       <div className="agent__transcript" aria-label="Agent transcript">
-        <Button variant="primary" disabled={continuityRunning} onClick={() => void onRunContinuity().catch(() => undefined)}>
-          {continuityRunning ? 'Running…' : 'Run Continuity'}
-        </Button>
-        <p className="continuity-privacy">
-          {continuityRunning
-            ? 'Continuity is running…'
-            : 'Live mode sends this chapter and a bible digest to the configured model provider.'}
-          {!continuityRunning && continuityMode ? ` Last Continuity: ${continuityMode}.` : ''}
-          {llmMode === 'fixture'
-            ? ' Chat is in fixture mode (canned replies) — set LLM_* on the API and restart without STORYLINT_FIXTURE_LLM=1 for real chat.'
-            : llmMode === 'live'
-              ? ' Chat: live.'
-              : ''}
-          {' '}Co-write uses Continue / Rewrite / Brainstorm, then explicit Apply.
-        </p>
-        {proposals.length > 0 ? (
-          <section className="proposal-list" aria-label="Pending proposals">
-            {packs.map((packId) => (
-              <SheetPackCard
-                key={packId}
-                proposals={proposals.filter((proposal) => proposal.packId === packId)}
-                onAccept={onAcceptProposal}
-                onEdit={onEditProposal}
-                onReject={onRejectProposal}
-              />
-            ))}
-            {standalone.map((proposal) => (
-              <ProposalCard
-                key={proposal.id}
-                proposal={proposal}
-                onAccept={onAcceptProposal}
-                onReject={onRejectProposal}
-              />
-            ))}
-          </section>
-        ) : null}
-        {transcript.length === 0 && proposals.length === 0 && !tipsDismissed ? (
+        {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+        {transcript.length === 0 && !tipsDismissed && face === 'chat' ? (
           <EmptyState
-            title="Start with one small step"
-            hint="Run Continuity after a scene, or ask me to draft a character sheet. Try: /sheet Kael"
+            title={companionContext === 'lab' ? 'Brainstorm onto the bench' : 'Start with one small step'}
+            hint={companionContext === 'lab'
+              ? 'Ask for places, character sparks, or what-ifs. Results land as Lab cards — not bible.'
+              : 'Run Continuity from Check, or ask me to draft a character sheet. Try: /sheet Kael'}
             action={<Button onClick={onDismissTips}>Dismiss tips</Button>}
           />
         ) : null}
-        {transcript.map((entry) =>
-          entry.role === 'tool' ? (
-            <article key={entry.id} className="agent__tool-card">
-              <span className="agent__message-role">Continuity · {entry.mode}</span>
-              <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} proposals</strong>
-            </article>
-          ) : entry.role === 'apply' ? (
-            <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} />
-          ) : entry.role === 'review' ? (
-            <ReviewCard key={entry.id} result={entry.result} onAddTags={onAddCraftTags} />
-          ) : (
+        {transcript.map((entry) => {
+          if (entry.role === 'tool') {
+            if (!showTools) return null
+            return (
+              <article key={entry.id} className="agent__tool-card">
+                <span className="agent__message-role">Continuity · {entry.mode}</span>
+                <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} proposals</strong>
+              </article>
+            )
+          }
+          if (entry.role === 'apply') {
+            if (!showApply) return null
+            return <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} />
+          }
+          if (entry.role === 'review') {
+            if (!showReview) return null
+            return <ReviewCard key={entry.id} result={entry.result} onAddTags={onAddCraftTags} />
+          }
+          return (
             <div key={entry.id} className={`agent__message agent__message--${entry.role}`}>
               <span className="agent__message-role">{entry.role}</span>{entry.text}
             </div>
-          ),
-        )}
+          )
+        })}
+      </div>
+    )
+  }
+
+  const chipLabel = contextLabel
+    ?? (companionContext === 'lab' ? '@lab' : companionContext === 'graph' ? '@graph' : `@${chapterTitle || 'chapter'}`)
+
+  return (
+    <div className="panel" data-companion-context={companionContext} data-companion-face={face}>
+      <div className="panel__header">
+        <h2 className="panel__title">Companion</h2>
+        {onClose ? <IconButton label="Close companion" onClick={onClose}>✕</IconButton> : null}
       </div>
 
-      <div className="panel__footer">
-        <div className="agent__chips"><Badge tone="accent">@{chapterTitle || 'chapter'}</Badge><Badge tone="pending">@bible</Badge></div>
-        <Textarea
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); send() }
-          }}
-          placeholder="Ask about this chapter…"
-          aria-label="Message the agent"
-          rows={3}
-        />
-        <div className="agent__cowrite-actions" aria-label="Review tools">
-          <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>
-            Review chapter
+      <div className="companion__faces" role="tablist" aria-label="Companion faces">
+        {allowed.map((candidate) => (
+          <Button
+            key={candidate}
+            aria-pressed={face === candidate}
+            onClick={() => setFace(candidate)}
+          >
+            {FACE_LABEL[candidate]}
+            {candidate === 'inbox' && pendingCount > 0 ? ` ${pendingCount}` : ''}
           </Button>
-          <Button disabled={sending} onClick={() => void onRunReview('craft').catch(() => undefined)}>
-            Craft check
+        ))}
+        {companionContext === 'writing' || companionContext === 'details' ? (
+          <Button aria-pressed={face === 'research'} onClick={() => setFace('research')}>
+            Research
           </Button>
-        </div>
-        <div className="agent__cowrite-actions" aria-label="Co-write skills">
-          <Button disabled={sending} onClick={() => generate('continue')}>Continue</Button>
-          <Button disabled={sending || selection.start === selection.end} onClick={() => generate('rewrite')}>Rewrite selection</Button>
-          <Button disabled={sending} onClick={() => generate('brainstorm')}>Brainstorm beats</Button>
-        </div>
-        <div className="agent__composer-actions">
-          <Button variant="primary" onClick={send} disabled={sending || draft.trim().length === 0}>
-            {sending ? 'Sending…' : 'Send'}
-          </Button>
-        </div>
+        ) : null}
       </div>
+
+      {face === 'research' ? (
+        <ResearchPanel project={project} onProject={onProject} beginMutation={beginMutation} trackMutation={trackMutation} />
+      ) : face === 'inbox' ? (
+        <div className="agent__transcript" aria-label="Companion inbox">
+          {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+          {pendingCount === 0 ? (
+            <EmptyState title="Inbox clear" hint="Pending proposals and Apply cards land here." />
+          ) : (
+            <>
+              {proposals.length > 0 ? renderProposals(proposals) : null}
+              {applyCards.map((entry) =>
+                entry.role === 'apply'
+                  ? <ApplyCard key={entry.id} card={entry.card} onApply={onApplyCard} onDismiss={onDismissCard} />
+                  : null,
+              )}
+            </>
+          )}
+        </div>
+      ) : face === 'write' && companionContext === 'writing' ? (
+        <>
+          {renderTranscript({ tools: false, review: false, apply: true })}
+          <div className="panel__footer">
+            <div className="agent__chips">
+              <Badge tone="accent">{chipLabel}</Badge>
+              {selection.text ? <Badge tone="pending">{selection.end - selection.start} ch selected</Badge> : null}
+            </div>
+            <Textarea
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="Optional instruction for co-write…"
+              aria-label="Co-write instruction"
+              rows={2}
+            />
+            <div className="agent__cowrite-actions" aria-label="Co-write skills">
+              <Button disabled={sending} onClick={() => generate('continue')}>Continue</Button>
+              <Button disabled={sending || selection.start === selection.end} onClick={() => generate('rewrite')}>Rewrite</Button>
+              <Button disabled={sending} onClick={() => generate('brainstorm')}>Brainstorm</Button>
+            </div>
+          </div>
+        </>
+      ) : face === 'check' && companionContext === 'writing' ? (
+        <>
+          {renderTranscript({ apply: false })}
+          <div className="panel__footer">
+            <div className="agent__cowrite-actions" aria-label="Check tools">
+              <Button variant="primary" disabled={continuityRunning} onClick={() => void onRunContinuity().catch(() => undefined)}>
+                {continuityRunning ? 'Running…' : 'Run Continuity'}
+              </Button>
+              <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
+              <Button disabled={sending} onClick={() => void onRunReview('craft').catch(() => undefined)}>Craft</Button>
+            </div>
+          </div>
+        </>
+      ) : face === 'spark' && companionContext === 'lab' ? (
+        <>
+          {renderTranscript({ tools: false, apply: false, review: false })}
+          <div className="panel__footer">
+            <p className="continuity-privacy">One tap seeds a brainstorm prompt. Cards land on the Lab bench only.</p>
+            <div className="agent__cowrite-actions" aria-label="Spark presets">
+              <Button onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>Place</Button>
+              <Button onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>Character</Button>
+              <Button onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>Beat</Button>
+              <Button onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>What-if</Button>
+            </div>
+          </div>
+        </>
+      ) : face === 'fill' && companionContext === 'details' ? (
+        <>
+          {renderTranscript({ apply: false, review: false })}
+          <div className="panel__footer">
+            <div className="agent__chips"><Badge tone="accent">{chipLabel}</Badge><Badge tone="pending">@bible</Badge></div>
+            <Textarea
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); send() }
+              }}
+              placeholder="Propose facts for this sheet…"
+              aria-label="Sheet fill prompt"
+              rows={3}
+            />
+            <div className="agent__composer-actions">
+              <Button
+                variant="primary"
+                disabled={sending}
+                onClick={() => {
+                  if (draft.trim()) send()
+                  else onSend(`Draft a character sheet pack for ${chapterTitle}`)
+                }}
+              >
+                {sending ? 'Working…' : 'Propose'}
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : face === 'inspect' && companionContext === 'graph' ? (
+        <div className="agent__transcript" aria-label="Graph inspect">
+          <EmptyState
+            title="Inspect accepted links"
+            hint="Select a node in Graph to open its sheet. Pending edges never render until Accept."
+          />
+          {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+        </div>
+      ) : (
+        <>
+          {renderTranscript({
+            tools: companionContext === 'writing',
+            apply: companionContext === 'writing',
+            review: companionContext === 'writing',
+          })}
+          <div className="panel__footer">
+            <div className="agent__chips">
+              <Badge tone="accent">{chipLabel}</Badge>
+              {companionContext === 'writing' ? <Badge tone="pending">@bible</Badge> : null}
+              {companionContext === 'lab' ? <Badge tone="pending">@lab</Badge> : null}
+            </div>
+            <Textarea
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); send() }
+              }}
+              placeholder={companionContext === 'lab' ? 'Brainstorm onto the bench…' : 'Ask about this project…'}
+              aria-label="Message the companion"
+              rows={3}
+            />
+            <div className="agent__composer-actions">
+              <Button variant="primary" onClick={send} disabled={sending || draft.trim().length === 0}>
+                {sending ? 'Sending…' : 'Send'}
+              </Button>
+            </div>
+          </div>
         </>
       )}
     </div>
