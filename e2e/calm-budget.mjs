@@ -609,6 +609,12 @@ async function measureFocus(page) {
  * Viewport-wide solid primary count grouped by job key (ox one-primary-door-per-job).
  * Same accessible name (or data-job) + solid/primary recipe across binder/fold/companion
  * is one job. Expect at most one solid primary per job when dual-rail empty fixtures run.
+ *
+ * Letter vs spirit (ox empty-canon-send-proposal-weight): a historical canon-empty PASS with
+ * solids=2 was CORRECT by job grouping when those solids were map New sheet + Send proposal
+ * (different jobs). Do not "fix" that by collapsing distinct jobs. Product must omit solid
+ * Send while sheets<2; checker additionally asserts no Send primary on true-empty fold.
+ * Solids inside closed <details> are excluded (IM1 / not painted) — see self-test.
  */
 async function measurePrimaryPerJob(page) {
   return page.evaluate((visSrc) => {
@@ -642,10 +648,25 @@ async function measurePrimaryPerJob(page) {
       return n.toLowerCase()
     }
 
+    function insideClosedDetails(el) {
+      // IM1: closed <details> guts are not painted; never count as solid primaries.
+      let node = el
+      while (node && node !== document.documentElement) {
+        const parent = node.parentElement
+        if (parent && parent.tagName === 'DETAILS' && !parent.open) {
+          if (node.tagName === 'SUMMARY') return false
+          return true
+        }
+        node = parent
+      }
+      return false
+    }
+
     const controls = [...document.querySelectorAll('button, [role="button"], a.ui-button')]
     const solids = []
     for (const el of controls) {
       if (!isVisibleEl(el)) continue
+      if (insideClosedDetails(el)) continue
       // Face tabs are role=tab — never job primaries even if painted primary.
       if (el.getAttribute('role') === 'tab') continue
       const cls = el.className?.toString?.() || ''
@@ -773,14 +794,19 @@ async function runEmptyPrimaryFixtures(browser) {
         const offenders = (canon.offenders || [])
           .map((o) => `${o.job}=${o.count}[${o.items.map((i) => `${i.region}:${i.name}`).join(' | ')}]`)
           .join('; ')
+        // Spirit (ox): on true-empty fold the only solid create door is New sheet.
+        // Send proposal must not be primary while sheets < 2 (omit in product).
+        const sendSolid = (canon.jobs || []).some((j) => /send proposal/i.test(j.job) && j.count > 0)
+        const sheetSolids = (canon.jobs || []).find((j) => j.job === 'create-sheet')
+        const emptyFoldOk = !sendSolid && (sheetSolids?.count || 0) <= 1
         add(
           'B6-primary-per-job@canon-empty',
           'HARD',
-          'CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job (Canon true-empty dual-rail)',
+          'CALM_BUDGET.md B6-primary-per-job · ≤1 solid primary per job; empty fold solid = New sheet only (no Send)',
           'Canon true-empty@1440 dual-rail',
-          (canon.maxPerJob || 0) <= 1,
-          `maxPerJob=${canon.maxPerJob || 0} solids=${canon.solidCount} graphEmpty=${canon.graphEmpty}${offenders ? ` offenders=${offenders}` : ''} · ${railNote}`,
-          '≤1 solid primary per job',
+          (canon.maxPerJob || 0) <= 1 && emptyFoldOk,
+          `maxPerJob=${canon.maxPerJob || 0} solids=${canon.solidCount} graphEmpty=${canon.graphEmpty} sendSolid=${sendSolid}${offenders ? ` offenders=${offenders}` : ''} · ${railNote}`,
+          '≤1/job; no Send primary while sheets<2',
         )
       }
     }
@@ -1400,6 +1426,75 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
     console.log('[visibility-self-test] ok (closed details hidden; summary + open content visible)')
   } catch (error) {
     console.error('REFUSE (visibility): ' + (error instanceof Error ? error.message : String(error)))
+    try { await probe.close() } catch { /* ignore */ }
+    try { await browser.close() } catch { /* ignore */ }
+    try { await stack.stop() } catch { /* ignore */ }
+    clearHardTimeout()
+    process.exit(2)
+  }
+  await probe.close()
+}
+
+// B6 rule-3 self-test: closed details solid must NOT count; open details solid MUST count.
+// Uses the same isVisibleEl + insideClosedDetails path as measurePrimaryPerJob.
+{
+  const probe = await browser.newPage()
+  try {
+    await probe.setContent(`<!doctype html>
+<html><body>
+<style>.ui-button--primary{font-weight:700}</style>
+<details id="d">
+  <summary id="s">Propose new edge</summary>
+  <button id="send" type="button" class="ui-button ui-button--primary">Send proposal</button>
+</details>
+<button id="open-solid" type="button" class="ui-button ui-button--primary">New sheet</button>
+</body></html>`)
+    const result = await probe.evaluate((visSrc) => {
+      // eslint-disable-next-line no-new-func
+      const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
+      function insideClosedDetails(el) {
+        let node = el
+        while (node && node !== document.documentElement) {
+          const parent = node.parentElement
+          if (parent && parent.tagName === 'DETAILS' && !parent.open) {
+            if (node.tagName === 'SUMMARY') return false
+            return true
+          }
+          node = parent
+        }
+        return false
+      }
+      function countSolids() {
+        const out = []
+        for (const el of document.querySelectorAll('button, [role="button"], a.ui-button')) {
+          if (!isVisibleEl(el)) continue
+          if (insideClosedDetails(el)) continue
+          const cls = el.className?.toString?.() || ''
+          if (!cls.includes('ui-button--primary')) continue
+          out.push((el.textContent || '').trim())
+        }
+        return out
+      }
+      const closed = countSolids()
+      const details = document.getElementById('d')
+      details.open = true
+      void details.offsetHeight
+      const open = countSolids()
+      return { closed, open }
+    }, BROWSER_IS_VISIBLE_SOURCE)
+
+    const closedOk = result.closed.length === 1 && result.closed[0] === 'New sheet'
+      && !result.closed.includes('Send proposal')
+    const openOk = result.open.includes('Send proposal') && result.open.includes('New sheet')
+    if (!closedOk || !openOk) {
+      const detail = 'closed=' + JSON.stringify(result.closed) + ' open=' + JSON.stringify(result.open)
+      throw new PreconditionError(
+        'precondition not met: B6 closed-details primary self-test failed (' + detail + '; closed must drop Send, open must include Send)',
+      )
+    }
+    console.log('[b6-primary-visibility-self-test] ok (closed details solid excluded; open included)')
+  } catch (error) {
+    console.error('REFUSE (b6-primary-visibility): ' + (error instanceof Error ? error.message : String(error)))
     try { await probe.close() } catch { /* ignore */ }
     try { await browser.close() } catch { /* ignore */ }
     try { await stack.stop() } catch { /* ignore */ }

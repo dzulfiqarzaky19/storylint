@@ -168,7 +168,7 @@ Measure **resting** face row (More **closed**).
 | B6-binder-title-wrap | long titles wrap ≤2 lines or have `title`; no silent ellipsis-only regress | **WARN** | D1 wrap win. | never |
 | B6-canon-chrome | ≤4 chrome peers post-D4 (view · filter · propose entry · overflow) | **HARD post-D4** | Map chrome budget. | pre-D4 open form |
 | B6-primary-per-region | ≤1 solid primary per region (topbar / graph toolbar / companion face / binder footer) | **HARD** | Multiple primaries = loud. | never (new) |
-| B6-primary-per-job | empty Canon + empty Draft dual-rail @1440: ≤1 solid primary **per job key** across binder/fold/companion | **HARD** | Composition defect (ox one-primary-door-per-job). Single-surface review misses it. Fixtures via `claimEmptyProject` (real New project). | never (new; AM weight demotes pre-gate) |
+| B6-primary-per-job | empty Canon + empty Draft dual-rail @1440: ≤1 solid primary **per job key**; true-empty fold solid = New sheet only (no Send while sheets<2) | **HARD** | Composition defect (ox one-primary-door-per-job + empty-canon-send-proposal-weight). Fixtures via `claimEmptyProject`. Closed `details` guts excluded. | never (new; AM weight demotes pre-gate) |
 | B6-draft-header | title+meta OK; extra chrome **≤2** | **WARN** | Implement or remove next pass. | never |
 | B6-lab-chrome | empty composer is work; extra chrome **≤3** | **WARN** | Implement or remove next pass. | never |
 | B6-companion | owned by B3 | via B3 | — | — |
