@@ -2,18 +2,26 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { ensureIsolatedProject, ensureDraftReady, waitSaved } from './helpers.mjs'
+import {
+  ensureIsolatedProject,
+  ensureDraftReady,
+  waitSaved,
+  requireUiOrigin,
+  setApiBase
+} from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
 const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
 mkdirSync('e2e/output', { recursive: true })
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   await ensureIsolatedProject(page)
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
   await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor()

@@ -2,7 +2,16 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { closeSheetDetail, companionPanel, openCompanionFace, ensureIsolatedProject, ensureDraftReady } from './helpers.mjs'
+import {
+  closeSheetDetail,
+  companionPanel,
+  openCompanionFace,
+  ensureIsolatedProject,
+  ensureDraftReady,
+  getApiBase,
+  requireUiOrigin,
+  setApiBase,
+} from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -18,6 +27,7 @@ const firstName = `Aria-${tag}`
 const secondName = `Moon Archive-${tag}`
 
 async function seedSheets(request) {
+  const api = getApiBase()
   for (const sheet of [
     {
       id: firstId, kind: 'character', name: firstName, aliases: [], summary: '', notes: '', portrait: 'A',
@@ -28,7 +38,7 @@ async function seedSheets(request) {
       facts: [],
     },
   ]) {
-    const response = await request.put(`http://127.0.0.1:4174/api/sheets/${sheet.id}`, {
+    const response = await request.put(`${api}/api/sheets/${sheet.id}`, {
       data: sheet,
       headers: { 'content-type': 'application/json' },
     })
@@ -36,12 +46,14 @@ async function seedSheets(request) {
   }
 }
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   await ensureIsolatedProject(page)
   await seedSheets(page.request)
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await page.goto(UI, { waitUntil: 'networkidle' })
   await ensureDraftReady(page, { body: 'Graph round-trip body.' })
   const manuscriptBody = await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue()
   await page.getByRole('button', { name: 'Canon' }).click()

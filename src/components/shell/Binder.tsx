@@ -146,6 +146,12 @@ export function Binder({
   }
 
   useEffect(() => {
+    // 'new' is a request for the create form itself, not for an existing sheet id.
+    if (requestedSheetId === 'new') {
+      if (canonMode) openNewSheet()
+      onRequestedSheetHandled?.()
+      return
+    }
     if (requestedSheetId && sheets.some((sheet) => sheet.id === requestedSheetId)) {
       if (canonMode) {
         if (stackBodyRef.current && !editingSheetId) {

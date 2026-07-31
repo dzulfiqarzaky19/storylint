@@ -97,6 +97,7 @@ export function RelationshipGraph({
   project,
   onProject,
   onOpenSheet,
+  onNewSheet,
   projectGeneration,
   trackMutation,
   beginMutation,
@@ -104,6 +105,7 @@ export function RelationshipGraph({
   project: Project
   onProject: (project: Project, generation?: number) => void
   onOpenSheet: (sheetId: string) => void
+  onNewSheet?: () => void
   projectGeneration: () => number
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   beginMutation: () => number | null
@@ -252,6 +254,13 @@ export function RelationshipGraph({
   }
 
   const empty = view === 'family' ? family.nodes.length === 0 : graph.nodes.length === 0
+  /**
+   * A Canon with no sheets at all is a true-empty world, not a filtered view.
+   * It gets the map's own explanation and one way forward; hiding kinds gets a different hint,
+   * because telling an author to "create a sheet" when their sheets are merely filtered out
+   * would imply their work vanished.
+   */
+  const noSheets = project.sheets.length === 0
   const editorTitle = targetFactId ? 'Propose edge edit' : 'Propose new edge'
 
   const editorFields = (
@@ -272,13 +281,14 @@ export function RelationshipGraph({
       data-graph-view={view}
       data-graph-dense={denseNetwork ? 'true' : 'false'}
       data-graph-phone={phone ? 'true' : 'false'}
+      data-canon-empty={noSheets ? 'true' : 'false'}
       aria-label="Relationship graph"
       tabIndex={-1}
     >
       <header className="graph__header">
         <div>
           <h2>Relationships</h2>
-          <p className="graph__lede" title="Accepted bible facts only. Pending proposals never render as edges.">Accepted links only</p>
+          <p className="graph__lede" title="Accepted Canon facts only. Pending proposals never render as edges.">Accepted links only</p>
         </div>
         <div className="graph__toolbar">
           <div className="graph__view" role="group" aria-label="Graph view">
@@ -294,12 +304,19 @@ export function RelationshipGraph({
       </header>
 
       {empty ? (
-        <div className="graph__empty">
+        <div className="graph__empty" data-graph-empty={noSheets ? 'canon' : 'filtered'}>
           <EmptyState
-            title={view === 'family' ? 'No family tree yet' : 'No visible sheets'}
-            hint={view === 'family'
-              ? 'Add character sheets and accepted kinship facts such as parent_of, spouse_of, or sibling_of.'
-              : 'Enable a sheet kind or create a bible sheet.'}
+            title={noSheets
+              ? 'Your settled world lives here'
+              : view === 'family' ? 'No family tree yet' : 'No sheets match these filters'}
+            hint={noSheets
+              ? 'Canon holds what is true: the characters, places, and groups your story treats as settled. Start with one sheet.'
+              : view === 'family'
+                ? 'Add character sheets and accepted kinship facts such as parent_of, spouse_of, or sibling_of.'
+                : 'Turn a sheet kind back on to see it.'}
+            action={noSheets && onNewSheet ? (
+              <Button variant="primary" className="graph__empty-cta" onClick={onNewSheet}>New sheet</Button>
+            ) : undefined}
           />
         </div>
       ) : view === 'network' ? (
@@ -308,7 +325,7 @@ export function RelationshipGraph({
           data-dense={denseNetwork ? 'true' : 'false'}
           viewBox={`0 0 ${geometry.width} ${geometry.height}`}
           role="img"
-          aria-label="Bible relationship network"
+          aria-label="Canon relationship network"
         >
           <defs><marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" /></marker></defs>
           {graph.edges.map((edge) => {
@@ -390,7 +407,7 @@ export function RelationshipGraph({
                 width={family.width}
                 height={family.height}
                 role="img"
-                aria-label="Bible family tree"
+                aria-label="Canon family tree"
               >
                 {family.connectors.map((connector) => {
                   const link = family.links.find((candidate) => candidate.id === connector.id)

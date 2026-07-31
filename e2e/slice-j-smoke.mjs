@@ -2,17 +2,23 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { waitSaved } from './helpers.mjs'
+import {
+  waitSaved,
+  requireUiOrigin,
+  setApiBase
+} from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
 const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
 mkdirSync('e2e/output', { recursive: true })
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true })
 const page = await context.newPage()
 try {
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
   const tag = Date.now().toString(36).slice(-4)
   const title = `Harbor Draft-${tag}`
   await page.getByRole('button', { name: 'Project menu' }).click()

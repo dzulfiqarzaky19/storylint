@@ -473,6 +473,13 @@ export function Shell() {
             onOpenSheet={(sheetId) => {
               openCanonSheet(sheetId)
             }}
+            onNewSheet={() => {
+              // Same door as the binder's New sheet button, not a second one: Binder owns the
+              // form, so route through its 'new' request rather than inventing a map-local form.
+              setWorkspaceMode('graph')
+              setRequestedSheetId('new')
+              if (!shell.isOpen('binder')) shell.toggle('binder')
+            }}
           />
         ) : activeChapter ? (
           <Manuscript
