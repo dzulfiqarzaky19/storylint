@@ -4,6 +4,18 @@ import { dirname, resolve } from 'node:path'
 import { runContinuity } from '../continuity/run.ts'
 import { runAgent } from '../agent/run.ts'
 import { acceptProposal, rejectProposal } from '../domain/proposals.ts'
+import {
+  archiveLabCard,
+  createLabBoard,
+  createLabCard,
+  emptyLab,
+  ensureLab,
+  patchLabCard,
+  pinLabCard,
+  promoteLabCard,
+  LAB_CARD_KINDS,
+} from '../domain/lab.ts'
+import { SHEET_KINDS } from '../domain/types.ts'
 import { claimFingerprint } from '../domain/fingerprint.ts'
 import { deleteFact, patchChapter, upsertChapter, upsertFact, upsertSheet } from '../domain/project.ts'
 import { ProjectStore } from './store.ts'
@@ -141,10 +153,10 @@ export function createServer(store: ProjectStore) {
           if (error instanceof ConflictError) throw error
         }
         const project = {
-          schemaVersion: 1 as const,
+          schemaVersion: 2 as const,
           title: raw.title.trim(),
           chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
-          sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
+          sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: emptyLab(),
         }
         const created = new ProjectStore(path)
         await created.save(project)
@@ -515,6 +527,97 @@ export function createServer(store: ProjectStore) {
             ),
           }
         }),
+    },
+
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/boards$/,
+      handle: async (_params, body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('lab board request must be an object')
+        const raw = body as Record<string, unknown>
+        const title = typeof raw.title === 'string' ? raw.title : 'Board'
+        return store.update((project) => createLabBoard(ensureLab(project), title))
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/cards$/,
+      handle: async (_params, body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('lab card request must be an object')
+        const raw = body as Record<string, unknown>
+        if (typeof raw.kind !== 'string' || !LAB_CARD_KINDS.includes(raw.kind as typeof LAB_CARD_KINDS[number])) {
+          throw new Error('lab card kind is invalid')
+        }
+        if (typeof raw.title !== 'string' || !raw.title.trim()) throw new Error('lab card title is required')
+        return store.update((project) => createLabCard(ensureLab(project), {
+          boardId: typeof raw.boardId === 'string' ? raw.boardId : undefined,
+          kind: raw.kind as typeof LAB_CARD_KINDS[number],
+          title: raw.title,
+          body: typeof raw.body === 'string' ? raw.body : '',
+        }))
+      },
+    },
+    {
+      method: 'PATCH',
+      pattern: /^\/api\/lab\/cards\/([^/]+)$/,
+      handle: async ([cardId], body) => {
+        if (typeof body !== 'object' || body === null) throw new Error('lab card patch must be an object')
+        const raw = body as Record<string, unknown>
+        const patch: { title?: string; body?: string; kind?: typeof LAB_CARD_KINDS[number] } = {}
+        if (raw.title !== undefined) {
+          if (typeof raw.title !== 'string') throw new Error('title must be a string')
+          patch.title = raw.title
+        }
+        if (raw.body !== undefined) {
+          if (typeof raw.body !== 'string') throw new Error('body must be a string')
+          patch.body = raw.body
+        }
+        if (raw.kind !== undefined) {
+          if (typeof raw.kind !== 'string' || !LAB_CARD_KINDS.includes(raw.kind as typeof LAB_CARD_KINDS[number])) {
+            throw new Error('lab card kind is invalid')
+          }
+          patch.kind = raw.kind as typeof LAB_CARD_KINDS[number]
+        }
+        return store.update((project) => patchLabCard(ensureLab(project), routeSegment(cardId), patch))
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/cards\/([^/]+)\/archive$/,
+      handle: async ([cardId]) =>
+        store.update((project) => archiveLabCard(ensureLab(project), routeSegment(cardId))),
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/cards\/([^/]+)\/pin$/,
+      handle: async ([cardId], body) => {
+        const pinned = typeof body === 'object' && body !== null && 'pinned' in body
+          ? Boolean((body as { pinned?: unknown }).pinned)
+          : true
+        return store.update((project) => pinLabCard(ensureLab(project), routeSegment(cardId), pinned))
+      },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/cards\/([^/]+)\/promote$/,
+      handle: async ([cardId], body) => {
+        const raw = typeof body === 'object' && body !== null ? body as Record<string, unknown> : {}
+        let sheetKind: typeof SHEET_KINDS[number] | undefined
+        if (raw.sheetKind !== undefined) {
+          if (typeof raw.sheetKind !== 'string' || !SHEET_KINDS.includes(raw.sheetKind as typeof SHEET_KINDS[number])) {
+            throw new Error('sheetKind is invalid')
+          }
+          sheetKind = raw.sheetKind as typeof SHEET_KINDS[number]
+        }
+        const chapterTitle = typeof raw.chapterTitle === 'string' ? raw.chapterTitle : undefined
+        let meta: { as: 'sheet-proposal' | 'chapter-stub'; proposalIds?: string[]; chapterId?: string } | undefined
+        const project = await store.update((project) => {
+          const result = promoteLabCard(ensureLab(project), routeSegment(cardId), { sheetKind, chapterTitle })
+          meta = { as: result.as, proposalIds: result.proposalIds, chapterId: result.chapterId }
+          return result.project
+        })
+        return { project, as: meta?.as, proposalIds: meta?.proposalIds, chapterId: meta?.chapterId }
+      },
     },
     {
       method: 'POST',

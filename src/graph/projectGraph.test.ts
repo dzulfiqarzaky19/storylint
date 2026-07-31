@@ -26,7 +26,7 @@ function fixture(): Project {
       claimKind: 'relationship', confidence: 1, fromSheetId: 'aria', toSheetId: 'order',
       source: { chapterId: 'ch-1', start: 0, end: 0, text: '' },
     }],
-    rejectedFingerprints: [], marks: [], researchNotes: [],
+    rejectedFingerprints: [], marks: [], researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
   }
 }
 

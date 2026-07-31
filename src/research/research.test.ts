@@ -7,7 +7,7 @@ const project: Project = {
   schemaVersion: 1,
   title: 'Research fixture',
   chapters: [{ id: 'chapter-1', title: 'Opening', body: '', craftTags: [], revision: 0 }],
-  sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
+  sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
 }
 const fixture = { provider: '', model: '', baseUrl: '', apiKey: '', maxTokens: 20000, fixture: false }
 

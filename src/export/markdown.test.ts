@@ -12,7 +12,7 @@ const project: Project = {
     notes: 'Private notes.', portrait: '🔥',
     facts: [{ id: 'fact-1', key: 'oath', value: 'guard', statement: 'Aria swore to guard.', claimKind: 'attribute' }],
   }],
-  proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
+  proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
 }
 
 test('markdown export produces readable sanitized chapter and sheet files', () => {

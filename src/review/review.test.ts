@@ -12,7 +12,7 @@ const project: Project = {
     craftTags: ['plot-progress'],
     revision: 0,
   }],
-  sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
+  sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
 }
 const fixture = { provider: '', model: '', baseUrl: '', apiKey: '', maxTokens: 20000, fixture: false }
 
