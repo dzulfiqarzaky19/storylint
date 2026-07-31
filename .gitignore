@@ -1,0 +1,56 @@
+# deps / build
+node_modules
+dist
+dist-ssr
+dist-server
+*.local
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# app data (local dogfood)
+data/
+!data/.gitkeep
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+Thumbs.db
+
+# test / coverage
+coverage
+*.tsbuildinfo
+e2e/output/
+
+# AI assistant artifacts (local-only; keep out of git)
+.claude/
+CLAUDE.local.md
+.cursor/
+.cursorignore
+.cursorrules
+.aider*
+.codex/
+.jcode/
+.gemini/
+.continue/
+.windsurf/
+.mcp.local.json
+__pycache__/
+*.py[cod]
