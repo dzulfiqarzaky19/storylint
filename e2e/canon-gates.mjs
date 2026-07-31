@@ -22,6 +22,7 @@ const GATES = [
   'e2e/density-d4-shots.mjs',
   'e2e/canon-empty-shots.mjs',
   'e2e/canon-empty-guard.mjs',
+  'e2e/canon-load-audit.mjs',
 ]
 
 function run(relPath, env) {
