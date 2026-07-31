@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type RefCallback } from 'react'
 import type { Fact, Lab, Sheet } from '../../domain/types.ts'
 import { SheetEditor, type SheetEditorHandle } from '../../features/project/SheetEditor.tsx'
 import { Button, IconButton, ListRow } from '../ui'
@@ -68,6 +68,12 @@ export function Binder({
   const stackBodyRef = useRef<HTMLDivElement | null>(null)
   const listScrollTopRef = useRef(0)
   const editorRef = useRef<SheetEditorHandle | null>(null)
+  /** Opener control to restore after Back (sheet id or new). */
+  const returnFocusIdRef = useRef<string | 'new' | null>(null)
+  const sheetRowRefs = useRef(new Map<string, HTMLButtonElement | null>())
+  const newSheetBtnRef = useRef<HTMLButtonElement | null>(null)
+  const backBtnRef = useRef<HTMLButtonElement | null>(null)
+  const wasDetailOpenRef = useRef(false)
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
   const boards = lab?.boards ?? []
   const draftActive = !labMode && !canonMode
@@ -95,6 +101,7 @@ export function Binder({
       if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
       setEditingSheetId(sheetId)
       setParkedSheetId(null)
+      returnFocusIdRef.current = sheetId
       onEditSheet?.(sheetId)
     }
     // Switching sheets while a dirty form is open must share the leave guard.
@@ -114,6 +121,7 @@ export function Binder({
     const open = () => {
       if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
       setEditingSheetId('new')
+      returnFocusIdRef.current = 'new'
       // Signal detail-open for map quiet (F2); Shell ignores 'new' as a real sheet id for landing.
       onEditSheet?.('new')
     }
@@ -151,6 +159,7 @@ export function Binder({
         }
         setEditingSheetId(requestedSheetId)
         setParkedSheetId(null)
+        returnFocusIdRef.current = requestedSheetId
         onEditSheet?.(requestedSheetId)
       } else {
         // Outside Canon: remember for restore, keep binder as navigator.
@@ -181,6 +190,7 @@ export function Binder({
     if (!wasCanon && canonMode) {
       if (!editingSheetId && parkedSheetId && sheets.some((sheet) => sheet.id === parkedSheetId)) {
         setEditingSheetId(parkedSheetId)
+        returnFocusIdRef.current = parkedSheetId
         onEditSheet?.(parkedSheetId)
         setParkedSheetId(null)
       }
@@ -226,6 +236,34 @@ export function Binder({
     if (!body) return
     body.scrollTop = listScrollTopRef.current
   }, [sheetDetailOpen, canonMode, labMode])
+
+  // Push-stack focus: enter detail → Back; leave detail → opener row/button.
+  useLayoutEffect(() => {
+    const wasOpen = wasDetailOpenRef.current
+    wasDetailOpenRef.current = sheetDetailOpen
+    if (!wasOpen && sheetDetailOpen) {
+      backBtnRef.current?.focus()
+      return
+    }
+    if (wasOpen && !sheetDetailOpen) {
+      const returnId = returnFocusIdRef.current
+      returnFocusIdRef.current = null
+      const restore = () => {
+        if (returnId === 'new') {
+          newSheetBtnRef.current?.focus()
+          return
+        }
+        if (returnId) sheetRowRefs.current.get(returnId)?.focus()
+      }
+      // List unhides in the same commit; focus after paint so the control is tabbable.
+      queueMicrotask(restore)
+    }
+  }, [sheetDetailOpen])
+
+  const setSheetRowRef = (sheetId: string): RefCallback<HTMLButtonElement> => (node) => {
+    if (node) sheetRowRefs.current.set(sheetId, node)
+    else sheetRowRefs.current.delete(sheetId)
+  }
 
   const draftSection = (
     <section className="panel__group" aria-labelledby="binder-draft">
@@ -288,6 +326,7 @@ export function Binder({
               forKind.map((sheet) => (
                 <ListRow
                   key={sheet.id}
+                  ref={setSheetRowRef(sheet.id)}
                   meta={String(sheet.facts.length)}
                   active={canonMode && editingSheetId === sheet.id}
                   onClick={() => openSheetFromList(sheet.id)}
@@ -299,7 +338,7 @@ export function Binder({
           </div>
         )
       })}
-      <Button variant="primary" onClick={openNewSheet}>
+      <Button ref={newSheetBtnRef} variant="primary" onClick={openNewSheet}>
         New sheet
       </Button>
     </section>
@@ -371,7 +410,7 @@ export function Binder({
         {sheetDetailOpen ? (
           <div className="binder__stack-detail" data-binder-detail="sheet">
             <div className="binder__detail-chrome">
-              <Button onClick={requestCloseSheetDetail}>Back</Button>
+              <Button ref={backBtnRef} onClick={requestCloseSheetDetail}>Back</Button>
               <div className="binder__detail-meta">
                 <span className="binder__detail-title">{sheetTitle}</span>
                 <span className="binder__detail-kind">{sheetKindLabel}</span>
