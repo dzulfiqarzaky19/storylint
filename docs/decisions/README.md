@@ -73,7 +73,12 @@ Short list only — do not grow into a second backlog novel.
 2. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift (bear in flight at write time).
 3. **Seeded-default first impression** — Chapter One + empty body unexamined; [brief queued](./seeded-default-first-impression-brief.md).
 4. **Canon and Lab under load** — density/fold under real sheets/cards not fully eye-judged on seeded fixtures.
-5. ~~**B6-primary-per-job**~~ — **LANDED** on origin/dev (empty Canon + Draft fixtures). Rule still [one-primary-door-per-job.md](./one-primary-door-per-job.md).
+5. **Empty-Canon Send proposal weight** — ruled; octopus implementing (demote/primary weight on empty Canon propose path).
+
+### Closed this session (do not re-open without new evidence)
+
+- ~~**B6-primary-per-job**~~ — **LANDED** (empty Canon + Draft fixtures). Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
+- ~~**slice-j “flake”**~~ — **root-caused**: ambient gitignored `data/project.json` (`selectOption('default')`). Fix in flight (badger). Ninth lie in [milestone-density-pass](./milestone-density-pass.md) + [STANDING_RULES](./STANDING_RULES.md) §8.
 
 ---
 
