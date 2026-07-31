@@ -74,6 +74,8 @@ export type AgentPanelProps = {
   beginMutation: () => number | null
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   chapterTitle: string
+  /** Open chapter body — gates Continuity primary until prose exists (seeded-default P1). */
+  chapterBody?: string
   companionContext?: CompanionContext
   contextLabel?: string
   proposals: Proposal[]
@@ -105,7 +107,7 @@ export type AgentPanelProps = {
 }
 
 export function AgentPanel({
-  transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
+  transcript, project, onProject, beginMutation, trackMutation, chapterTitle, chapterBody = '',
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, researchRunning = false, onResearchRunningChange, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
@@ -579,8 +581,10 @@ export function AgentPanel({
                 </p>
               ) : (
                 <EmptyState
-                  title="Run Continuity on this chapter"
-                  hint="Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon."
+                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before Continuity'}
+                  hint={continuityRunnable
+                    ? 'Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon.'
+                    : 'Continuity checks this chapter against accepted Canon. It needs draft prose first — type in the paper, then run Continuity here.'}
                 />
               )}
               {renderTranscript({ apply: false, status: false })}
@@ -588,9 +592,11 @@ export function AgentPanel({
             <div className="panel__footer">
               <div className="agent__cowrite-actions" aria-label="Check tools">
                 <Button
-                  variant="primary"
-                  disabled={assistantBusy}
+                  variant={continuityRunnable || continuityRunning ? 'primary' : 'ghost'}
+                  disabled={assistantBusy || !continuityRunnable}
+                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before checking Continuity'}
                   data-continuity-state={continuityState}
+                  data-continuity-runnable={continuityRunnable ? 'true' : 'false'}
                   aria-busy={continuityRunning || undefined}
                   onClick={() => void onRunContinuity().catch(() => undefined)}
                 >
