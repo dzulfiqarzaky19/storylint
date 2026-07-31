@@ -75,6 +75,7 @@ export function parseChapter(value: unknown): Chapter {
     id: string(raw.id, 'chapter.id'),
     title: string(raw.title, 'chapter.title'),
     body: string(raw.body, 'chapter.body'),
+    revision: raw.revision === undefined ? 0 : number(raw.revision, 'chapter.revision'),
     craftTags: raw.craftTags === undefined
       ? []
       : stringArray(raw.craftTags, 'chapter.craftTags').map((tag) => oneOf(tag, CRAFT_TAGS, 'chapter.craftTags')),
@@ -166,6 +167,7 @@ function parseProposal(value: unknown): Proposal {
     sheetKind: oneOf(raw.sheetKind, SHEET_KINDS, 'proposal.sheetKind'),
     sheetSummary: optionalString(raw.sheetSummary, 'proposal.sheetSummary'),
     targetSheetId: optionalString(raw.targetSheetId, 'proposal.targetSheetId'),
+    targetFactId: optionalString(raw.targetFactId, 'proposal.targetFactId'),
     key: string(raw.key, 'proposal.key'),
     value: string(raw.value, 'proposal.value'),
     statement: string(raw.statement, 'proposal.statement'),

@@ -14,6 +14,7 @@ export type Chapter = {
   title: string
   body: string
   craftTags: CraftTag[]
+  revision: number
 }
 
 export type Fact = {
@@ -77,6 +78,7 @@ export type Proposal = {
   sheetKind: SheetKind
   sheetSummary?: string
   targetSheetId?: string
+  targetFactId?: string
   key: string
   value: string
   statement: string

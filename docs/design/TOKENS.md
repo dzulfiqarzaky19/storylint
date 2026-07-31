@@ -232,6 +232,10 @@ Ports: map `font.ui` → San Francisco (iOS), Roboto/system (Android), Segoe UI 
 | `size.iconLg` | 20 | |
 | `size.controlHeight` | 32 | Desktop button/input height |
 | `size.controlHeightTouch` | 44 | Touch |
+| `size.graphViewW` | 800 | Relationship graph viewBox width |
+| `size.graphViewH` | 520 | Relationship graph viewBox height |
+| `size.graphRadius` | 185 | Radial node orbit radius |
+| `size.graphNode` | 76 | Graph node diameter |
 
 ---
 

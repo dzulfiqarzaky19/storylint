@@ -25,6 +25,34 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>
 }
 
+export type ProjectSummary = { id: string; title: string }
+
+export function listProjects(): Promise<{ activeProjectId: string; projects: ProjectSummary[] }> {
+  return request('/api/projects')
+}
+
+export function createProject(id: string, title: string): Promise<Project> {
+  return request('/api/projects', { method: 'POST', body: JSON.stringify({ id, title }) })
+}
+
+export function activateProject(id: string): Promise<Project> {
+  return request(`/api/projects/${encodeURIComponent(id)}/activate`, { method: 'POST', body: '{}' })
+}
+
+export async function downloadMarkdownExport(): Promise<void> {
+  const response = await fetch('/api/export')
+  if (!response.ok) throw new Error(`Export failed (${response.status})`)
+  const blob = await response.blob()
+  const disposition = response.headers.get('content-disposition') ?? ''
+  const filename = disposition.match(/filename="([^"]+)"/)?.[1] ?? 'storylint-project.zip'
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
 export function loadProject(signal?: AbortSignal): Promise<Project> {
   return request('/api/project', { signal })
 }
@@ -33,6 +61,7 @@ export function saveChapter(chapter: Chapter): Promise<Project> {
   return request(`/api/chapters/${encodeURIComponent(chapter.id)}`, {
     method: 'PUT',
     body: JSON.stringify(chapter),
+    keepalive: true,
   })
 }
 
@@ -98,6 +127,18 @@ export type ChatResponse = {
 export function sendChat(chapterId: string, message: string): Promise<ChatResponse> {
   return request('/api/chat', {
     method: 'POST', body: JSON.stringify({ chapterId, message }),
+  })
+}
+
+export function proposeGraphEdge(input: {
+  fromSheetId: string
+  toSheetId: string
+  key: string
+  statement: string
+  targetFactId?: string
+}): Promise<Project> {
+  return request('/api/graph/proposals', {
+    method: 'POST', body: JSON.stringify(input),
   })
 }
 

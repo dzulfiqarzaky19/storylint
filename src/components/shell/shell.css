@@ -57,8 +57,10 @@
 
 @media (max-width: 767px) {
   .shell__project,
+  .shell__breadcrumb,
   .project-status,
-  .shell__topbar-actions > .ui-icon-button:nth-last-child(2) {
+  .shell__action-graph,
+  .shell__action-theme {
     display: none;
   }
 
@@ -143,7 +145,7 @@
   padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .panel__footer {

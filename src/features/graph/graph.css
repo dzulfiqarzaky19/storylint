@@ -1,0 +1,179 @@
+.graph {
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-3);
+  overflow: auto;
+  background: var(--color-canvas);
+  color: var(--color-text);
+}
+
+.graph__header,
+.graph__editor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  max-width: var(--manuscript-page-max-w-xl);
+  margin-inline: auto;
+}
+
+.graph__header h2,
+.graph__header p,
+.graph__editor h3,
+.graph__editor p {
+  margin: var(--space-0);
+}
+
+.graph__header p,
+.graph__editor p {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.graph__toolbar,
+.graph__filters,
+.graph__view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.graph__canvas {
+  display: block;
+  width: 100%;
+  max-width: var(--manuscript-page-max-w-xl);
+  min-height: calc(var(--size-control-touch) * 8);
+  margin: var(--space-3) auto;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.graph__family-stage {
+  position: relative;
+  width: 100%;
+  max-width: var(--manuscript-page-max-w-2xl);
+  min-height: calc(var(--size-control-touch) * 10);
+  margin: var(--space-3) auto;
+  overflow: auto;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.graph__family-plane {
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.graph__canvas--family {
+  max-width: none;
+  margin: var(--space-0);
+  border: 0;
+  background: transparent;
+}
+
+.graph__edge line {
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width-strong);
+}
+
+.graph__edge path {
+  fill: none;
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width-strong);
+}
+
+.graph__edge text {
+  fill: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  paint-order: stroke;
+  stroke: var(--color-surface);
+  stroke-width: var(--border-width-strong);
+}
+
+.graph__edge:focus-visible line,
+.graph__edge:hover line,
+.graph__edge:focus-visible path,
+.graph__edge:hover path {
+  stroke: var(--color-accent);
+}
+
+.graph__node {
+  cursor: pointer;
+}
+
+.graph__node circle,
+.graph__node rect {
+  fill: var(--color-surface-raised);
+  stroke: var(--color-border-strong);
+  stroke-width: var(--border-width-strong);
+}
+
+.graph__node:hover circle,
+.graph__node:focus-visible circle,
+.graph__node:hover rect,
+.graph__node:focus-visible rect {
+  stroke: var(--color-focus-ring);
+}
+
+.graph__node--family {
+  min-width: var(--size-touch-min);
+  min-height: var(--size-touch-min);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graph__family-plane {
+    transform: none !important;
+    will-change: auto;
+  }
+}
+
+.graph__portrait,
+.graph__label,
+.graph__kind {
+  fill: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  pointer-events: none;
+}
+
+.graph__label {
+  font-weight: var(--weight-semibold);
+}
+
+.graph__kind {
+  fill: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.graph__editor {
+  justify-content: flex-start;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.graph__editor label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: var(--size-binder-min);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.graph__editor select {
+  min-height: var(--size-control);
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+}

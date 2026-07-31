@@ -49,14 +49,24 @@ export function upsertFact(project: Project, sheetId: string, fact: Fact): Proje
     ...project,
     sheets: project.sheets.map((sheet) => {
       if (sheet.id !== sheetId) return sheet
-      const sameKey = sheet.facts.find((candidate) =>
-        candidate.key.toLocaleLowerCase('en-US') === fact.key.toLocaleLowerCase('en-US'),
-      )
+      const sameId = sheet.facts.find((candidate) => candidate.id === fact.id)
+      if (sameId) {
+        return {
+          ...sheet,
+          facts: sheet.facts.map((candidate) => candidate.id === fact.id ? fact : candidate),
+        }
+      }
+      const sameKey = fact.claimKind === 'relationship'
+        ? undefined
+        : sheet.facts.find((candidate) =>
+            candidate.claimKind !== 'relationship' &&
+            candidate.key.toLocaleLowerCase('en-US') === fact.key.toLocaleLowerCase('en-US'),
+          )
       return {
         ...sheet,
         facts: sameKey
           ? sheet.facts.map((candidate) => candidate.id === sameKey.id ? { ...fact, id: sameKey.id } : candidate)
-          : replaceById(sheet.facts, fact),
+          : [...sheet.facts, fact],
       }
     }),
   }

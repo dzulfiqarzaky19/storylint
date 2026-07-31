@@ -61,7 +61,7 @@ export function acceptProposal(project: Project, proposalId: string, edits: Prop
 
   for (const proposal of accepted) {
     const fact: Fact = {
-      id: `fact-${proposal.fingerprint}`,
+      id: proposal.targetFactId ?? `fact-${proposal.fingerprint}`,
       key: proposal.key,
       value: proposal.value,
       statement: proposal.statement,

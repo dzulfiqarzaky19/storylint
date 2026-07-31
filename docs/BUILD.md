@@ -16,13 +16,13 @@ Each slice: coder → reviewer → verifier ([AGENTS_ROLES.md](./AGENTS_ROLES.md
 | **B** Domain + persistence | **Done** |
 | **C** Continuity + marks + proposals | **Done** |
 | **D** Agent panel P1 bar | **Done** (= P1 acceptance) |
-| **E** P1b Co-write Apply | **Done / landing** — verify before F |
-| **F** Portraits, craft tags, shell polish | **Next** (partial polish already in tree: paper modes, snap layout, scrollbars, counts, binder empty rows) |
-| **G** P2 Review + craft check | Not started |
-| **H** P3 Research panel | Not started |
-| **I** P4 Graph | Not started |
-| **J** Export / multi-project | Not started |
-| **K** Desktop/mobile shells | Not started |
+| **E** P1b Co-write Apply | **Done** |
+| **F** Portraits, craft tags, shell polish | **Done** |
+| **G** P2 Review + craft check | **Done** |
+| **H** P3 Research panel | **Done** |
+| **I** P4 Graph | **Done** (landing) |
+| **J** Export / multi-project | **Done** (landing) |
+| **K** Desktop/mobile shells | **Done** (K1 lean spacing + K2 family tree) |
 
 ---
 
@@ -102,8 +102,8 @@ Continue / rewrite / brainstorm → Apply card → insert/replace only on Apply;
 |-------|---------|
 | G ✓ | P2 review agents + craft tag suggest + chapter craft check |
 | H ✓ | P3 research panel (clean, cited) |
-| I | P4 relationship graph/canvas |
-| J | MD export, multi-project |
+| I ✓ | P4 relationship graph/canvas |
+| J ✓ | MD export, multi-project |
 | K | Desktop/mobile shell adapters |
 
 ---

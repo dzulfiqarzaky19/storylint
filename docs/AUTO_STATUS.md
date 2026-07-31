@@ -1,7 +1,7 @@
 # Autonomous build status
 
-Branch: `storylint/auto-f-to-h`  
-Commits/pushes: disabled by latest user instruction.
+Branch: `storylint/auto-i-to-k`  
+Commits: local only. Pushes: never.
 
 ## Slice E — verified
 
@@ -44,11 +44,60 @@ Commits/pushes: disabled by latest user instruction.
 - Pin persists a research note only; no manuscript or bible write.
 - Propose creates a pending lore proposal; canon changes only through existing Accept.
 - Invalid/uncited results cannot be pinned or proposed.
-- `npm test`: 65 passed.
+- `npm test`: 67 passed.
 - `npm run build`: passed (50 modules).
+- Final audit fixes: server chapter revisions reject stale tabs; local drafts survive immediate reload; sheet metadata saves preserve facts; citations are URL-validated and labeled unverified; Apply cards lock duplicate clicks.
+- Final independent review: **APPROVE THROUGH H**; no remaining shared save/Accept/Apply blocker.
 - `npm run lint`: passed.
-- Edge smoke passed: `e2e/output/slice-h-smoke.png`.
+- Edge smoke passed: `e2e/output/slice-h-research.png`, `e2e/output/slice-h-smoke.png`.
 
-## Complete
+## Slice I — complete (landing)
 
-Autonomous build is complete through H. Stopped before I (graph), J (export/multi-project), and K (native shells) per scope lock. No commits and no push per latest user instruction.
+- Dedicated center relationship graph projects bible sheets to nodes and accepted relationship facts to directed edges.
+- Portrait/icon or accessible text fallback appears on nodes; sheet-kind filters are deterministic.
+- Node mouse/keyboard activation opens the existing binder sheet editor.
+- New/edit edge actions create pending relationship proposals only; existing Accept writes/replaces the canonical fact by identity.
+- Pending proposals never render as edges; dangling facts produce diagnostics, not broken nodes.
+- Graph geometry uses tokens (`--size-graph-view-w/h/radius/node`); no feature-local layout constants.
+- Mobile topbar keeps Continuity; Graph/theme hide by explicit classes under compact width.
+- `npm test`: 79 passed (includes queued `switchFile` race test).
+- `npm run build`: passed (54 modules).
+- `npm run lint`: passed.
+
+## Slice J — complete (landing)
+
+- Markdown export builds a standards-compatible ZIP with README, ordered chapters, and readable bible sheets/facts.
+- Local project catalog creates, lists, switches, and remembers active schema-v1 projects under `data/projects/`.
+- Existing `data/project.json` remains the default single-project dogfood path.
+- Project IDs are slug-validated; duplicate creation conflicts; no auth/cloud sync/import added.
+- Project-scoped recovery drafts (`projectId:chapterId`); switch/create restore drafts like boot.
+- `editLock` freezes editor mutations across flush+activate; `trackMutation` awaits Accept/sheet/fact/Apply/agent/graph HTTP before path switch.
+- Generation stamps drop late client merges after install; agent transcript/Apply cards reset synchronously before switch/create.
+- Export flushes all chapters first.
+- `npm test`: 79 passed.
+- `npm run build`: passed (54 modules).
+- `npm run lint`: passed.
+
+## Slice K1 — complete (landing)
+
+- Lean spacing only: `.panel__body` gap `space-4` → `space-3`; graph outer pad/margin `space-3`; graph max-width token corrected to `--manuscript-page-max-w-xl`.
+- Colors, copy, and structural layout unchanged.
+- `npm test`: 79 passed.
+- `npm run build`: passed (54 modules).
+- `npm run lint`: passed.
+- Edge smoke: `e2e/output/k1-desktop.png`, `e2e/output/k1-narrow.png`.
+
+## Slice K2 — complete (landing)
+
+- Family view lays out character kinship as an orthogonal multi-generation tree (multi-parent/partner capable), separate from the radial network.
+- Kinship vocabulary is explicit and tested (`parent_of`/`child_of`/`spouse_of`/`sibling_of` and aliases); non-kinship edges stay in Network.
+- Subtle pointer-follow parallax on the family plane; disabled for touch and `prefers-reduced-motion`.
+- Propose/Accept boundary unchanged: pending relationships never render before Accept.
+- `npm test`: 85 passed.
+- `npm run build`: passed (55 modules).
+- `npm run lint`: passed.
+- Edge smoke: `e2e/output/slice-k-desktop.png`, `e2e/output/slice-k-narrow.png`.
+
+## Next
+
+Shell adapter seams / further responsive hardening only if still needed after K1+K2; no native app scaffold.

@@ -11,7 +11,7 @@ function seedProject(): Project {
   return {
     schemaVersion: 1,
     title: 'Storylint',
-    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [] }],
+    chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
     sheets: [],
     proposals: [],
     rejectedFingerprints: [],
@@ -60,6 +60,30 @@ test('store saves schemaVersion 1 atomically without leaving a temp file', async
   const saved = JSON.parse(await readFile(file, 'utf8')) as Project
   assert.equal(saved.schemaVersion, 1)
   assert.deepEqual(await readdir(dir), ['project.json'])
+})
+
+test('switchFile serializes with concurrent updates so writes stay on the intended path', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'storylint-switch-'))
+  const first = join(dir, 'first.json')
+  const second = join(dir, 'second.json')
+  const store = new ProjectStore(first, seedProject())
+  await store.save(seedProject())
+  await new ProjectStore(second).save({ ...seedProject(), title: 'Second' })
+
+  let releaseUpdate: (() => void) | undefined
+  const hold = new Promise<void>((resolve) => { releaseUpdate = resolve })
+  const update = store.updateAsync(async (project) => {
+    await hold
+    return { ...project, title: 'First mutated' }
+  })
+  const switchPromise = store.switchFile(second)
+  await Promise.resolve()
+  releaseUpdate?.()
+  await Promise.all([update, switchPromise])
+
+  assert.equal(JSON.parse(await readFile(first, 'utf8')).title, 'First mutated')
+  assert.equal(JSON.parse(await readFile(second, 'utf8')).title, 'Second')
+  assert.equal((await store.load()).title, 'Second')
 })
 
 test('failed async update leaves the saved project unchanged', async () => {
@@ -393,6 +417,158 @@ test('research persistence rejects unsafe citations and colliding note IDs', asy
     })
     assert.equal(collision.status, 409)
     assert.equal((await store.load()).researchNotes[0].title, 'First')
+  })
+})
+
+test('stale chapter PUT and stale sheet metadata cannot overwrite newer content', async () => {
+  await withServer(async (baseUrl, store) => {
+    const initial = await store.load()
+    const chapter = initial.chapters[0]
+    const first = await requestJson<Project>(`${baseUrl}/api/chapters/${chapter.id}`, {
+      method: 'PUT', body: JSON.stringify({ ...chapter, body: 'new prose' }),
+    })
+    assert.equal(first.chapters[0].revision, chapter.revision + 1)
+    const stale = await fetch(`${baseUrl}/api/chapters/${chapter.id}`, {
+      method: 'PUT', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...chapter, body: 'stale prose' }),
+    })
+    assert.equal(stale.status, 409)
+    assert.equal((await store.load()).chapters[0].body, 'new prose')
+
+    const sheet: Sheet = {
+      id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '', facts: [],
+    }
+    await requestJson<Project>(`${baseUrl}/api/sheets/aria`, {
+      method: 'PUT', body: JSON.stringify(sheet),
+    })
+    const fact: Fact = {
+      id: 'fact-1', key: 'oath', value: 'guard', statement: 'Aria swore to guard', claimKind: 'attribute',
+    }
+    await requestJson<Project>(`${baseUrl}/api/sheets/aria/facts/fact-1`, {
+      method: 'PUT', body: JSON.stringify(fact),
+    })
+    const metadata = await requestJson<Project>(`${baseUrl}/api/sheets/aria`, {
+      method: 'PUT', body: JSON.stringify({ ...sheet, summary: 'Updated metadata', facts: [] }),
+    })
+    assert.equal(metadata.sheets[0].facts.length, 1)
+    assert.equal(metadata.sheets[0].summary, 'Updated metadata')
+  })
+})
+
+test('graph edge create/edit stays pending until Accept and preserves fact identity', async () => {
+  await withServer(async (baseUrl, store) => {
+    const project = seedProject()
+    project.sheets = [
+      { id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '', facts: [] },
+      { id: 'order', kind: 'organization', name: 'Ember Order', aliases: [], summary: '', notes: '', facts: [] },
+    ]
+    await store.save(project)
+    const pending = await requestJson<Project>(`${baseUrl}/api/graph/proposals`, {
+      method: 'POST',
+      body: JSON.stringify({
+        fromSheetId: 'aria', toSheetId: 'order', key: 'member_of',
+        statement: 'Aria is a member of the Ember Order',
+      }),
+    })
+    assert.equal(pending.sheets[0].facts.length, 0)
+    const proposal = pending.proposals.find((candidate) => candidate.status === 'pending')
+    assert.ok(proposal)
+    const accepted = await requestJson<Project>(`${baseUrl}/api/proposals/${proposal.id}/accept`, {
+      method: 'POST', body: '{}',
+    })
+    const fact = accepted.sheets[0].facts[0]
+    assert.equal(fact.claimKind, 'relationship')
+    assert.equal(fact.toSheetId, 'order')
+
+    const editedPending = await requestJson<Project>(`${baseUrl}/api/graph/proposals`, {
+      method: 'POST',
+      body: JSON.stringify({
+        fromSheetId: 'aria', toSheetId: 'order', key: 'rival',
+        statement: 'Aria now rivals the Ember Order', targetFactId: fact.id,
+      }),
+    })
+    assert.equal(editedPending.sheets[0].facts[0].key, 'member_of')
+    const edit = editedPending.proposals.find((candidate) =>
+      candidate.status === 'pending' && candidate.targetFactId === fact.id)
+    assert.ok(edit)
+    const updated = await requestJson<Project>(`${baseUrl}/api/proposals/${edit.id}/accept`, {
+      method: 'POST', body: '{}',
+    })
+    assert.equal(updated.sheets[0].facts.length, 1)
+    assert.equal(updated.sheets[0].facts[0].id, fact.id)
+    assert.equal(updated.sheets[0].facts[0].key, 'rival')
+  })
+})
+
+test('invalid graph endpoints fail without canon mutation', async () => {
+  await withServer(async (baseUrl, store) => {
+    const response = await fetch(`${baseUrl}/api/graph/proposals`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        fromSheetId: 'missing', toSheetId: 'also-missing', key: 'rival', statement: 'Missing rivals missing',
+      }),
+    })
+    assert.equal(response.status, 404)
+    assert.equal((await store.load()).sheets.flatMap((sheet) => sheet.facts).length, 0)
+  })
+})
+
+test('markdown ZIP export contains readable chapter and bible paths', async () => {
+  await withServer(async (baseUrl, store) => {
+    const project = await store.load()
+    project.sheets = [{
+      id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: 'A fighter', notes: '',
+      facts: [{ id: 'fact-1', key: 'oath', value: 'guard', statement: 'Aria guards', claimKind: 'attribute' }],
+    }]
+    await store.save(project)
+    const response = await fetch(`${baseUrl}/api/export`)
+    assert.equal(response.status, 200)
+    assert.equal(response.headers.get('content-type'), 'application/zip')
+    const bytes = Buffer.from(await response.arrayBuffer())
+    assert.equal(bytes.readUInt32LE(0), 0x04034b50)
+    const text = bytes.toString('utf8')
+    assert.match(text, /chapters\/01-chapter-one\.md/)
+    assert.match(text, /bible\/character\/aria\.md/)
+    assert.match(text, /Aria guards/)
+  })
+})
+
+test('local projects can be created listed and switched without changing schema v1', async () => {
+  await withServer(async (baseUrl) => {
+    const created = await requestJson<Project>(`${baseUrl}/api/projects`, {
+      method: 'POST', body: JSON.stringify({ id: 'second-story', title: 'Second Story' }),
+    })
+    assert.equal(created.schemaVersion, 1)
+    assert.equal(created.title, 'Second Story')
+    const listed = await requestJson<{ activeProjectId: string; projects: Array<{ id: string; title: string }> }>(
+      `${baseUrl}/api/projects`,
+    )
+    assert.equal(listed.activeProjectId, 'second-story')
+    assert.equal(listed.projects.some((project) => project.id === 'default'), true)
+    assert.equal(listed.projects.some((project) => project.id === 'second-story'), true)
+
+    const active = await requestJson<Project>(`${baseUrl}/api/projects/default/activate`, {
+      method: 'POST', body: '{}',
+    })
+    assert.equal(active.title, 'Storylint')
+  })
+})
+
+test('invalid project IDs and duplicate creation are rejected', async () => {
+  await withServer(async (baseUrl) => {
+    const invalid = await fetch(`${baseUrl}/api/projects`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id: '../escape', title: 'Escape' }),
+    })
+    assert.equal(invalid.status, 400)
+    await requestJson<Project>(`${baseUrl}/api/projects`, {
+      method: 'POST', body: JSON.stringify({ id: 'story-two', title: 'Story Two' }),
+    })
+    const duplicate = await fetch(`${baseUrl}/api/projects`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ id: 'story-two', title: 'Duplicate' }),
+    })
+    assert.equal(duplicate.status, 409)
   })
 })
 

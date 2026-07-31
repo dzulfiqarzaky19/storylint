@@ -110,5 +110,5 @@
 
 ## Build order reminder
 
-**P1 (0–D) done.** Apply (E) landing. Next **F** (portraits/craft tags) → G review → H research → I graph.  
+**P1 (0–D), Apply (E), portraits/tags (F), Review (G), and Research (H) are shipped in-tree.** Next roadmap slice is I (graph), not started.
 Live status: [BUILD.md](./BUILD.md). Do not rebuild shipped slices.

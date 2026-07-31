@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Fact, Sheet } from '../../domain/types.ts'
 import { SheetEditor } from '../../features/project/SheetEditor.tsx'
 import { Button, IconButton, ListRow } from '../ui'
@@ -15,6 +15,8 @@ export type BinderProps = {
   onSaveSheet: (sheet: Sheet) => Promise<void>
   onSaveFact: (sheetId: string, fact: Fact) => Promise<void>
   onDeleteFact: (sheetId: string, factId: string) => Promise<void>
+  requestedSheetId?: string | null
+  onRequestedSheetHandled?: () => void
   onClose?: () => void
 }
 
@@ -27,10 +29,21 @@ export function Binder({
   onSaveSheet,
   onSaveFact,
   onDeleteFact,
+  requestedSheetId,
+  onRequestedSheetHandled,
   onClose,
 }: BinderProps) {
   const [editingSheetId, setEditingSheetId] = useState<string | 'new' | null>(null)
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
+
+  useEffect(() => {
+    if (requestedSheetId && sheets.some((sheet) => sheet.id === requestedSheetId)) {
+      setEditingSheetId(requestedSheetId)
+      onRequestedSheetHandled?.()
+    } else if (editingSheetId && editingSheetId !== 'new' && !sheets.some((sheet) => sheet.id === editingSheetId)) {
+      setEditingSheetId(null)
+    }
+  }, [requestedSheetId, sheets, editingSheetId, onRequestedSheetHandled])
 
   return (
     <div className="panel">
