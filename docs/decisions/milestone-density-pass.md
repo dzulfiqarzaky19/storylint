@@ -164,7 +164,7 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 | Label ownership | Asserting on aria-label / visible copy the product may rewrite |
 | Unproven scoreboard | Historical PASS rows reused as current desk truth |
 | Split-origin stack | Owned UI + stranger API (e.g. smoke UI owned, API still on `:4174`) — still an **unattributed** measurement |
-| Ambient data (9th) | `slice-j` `selectOption('default')` needs gitignored `data/project.json`. Warm worktree PASS, bare FAIL — looked like a flake; was deterministic ambient state. |
+| Uncreated entity (9th) | `slice-j` selected a project it did not create (`'default'`). **Verified wrong.** Fix: create both projects in-run; never select `'default'` (badger 5/5 bare). **Disproven mechanism:** ambient gitignored `data/project.json` — server always synthesises `default` (`http.ts`). Horse/dolphin bare fails still **unexplained**. |
 
 **Rules (keep):**
 
@@ -172,8 +172,18 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 2. **Never infer visibility from geometry.** `checkVisibility` + closed-`<details>` — [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md).
 3. **Absence is not a pass.** PASS / FAIL / **NOT-MEASURED**; NOT-MEASURED fails the gate.
 4. **Assert on behaviour, never on a label you do not own.** Prefer roles, `data-*`, and stable structure over marketing copy.
-5. **A test that depends on state it did not create measures the machine, not the product.** Gitignored files are ambient. Seed or refuse inside the check. (ninth lie)
+5. **A test may only interact with entities it created in that run.** (ninth lie — verified property; ambient-data mechanism discarded)
 6. **Never combine verify with mutate; never filter mutator output.** Same principle applied to actions — [STANDING_RULES](./STANDING_RULES.md) §9–10.
+7. **A fix can be correct while its stated cause is wrong.** Prefer an open question over a confident false mechanism — [STANDING_RULES](./STANDING_RULES.md) §11.
+
+### Scar — rat (coordinator), same hour, twice
+
+Inferred mechanism from symptom without reading the code that settles it:
+
+1. Pass/fail variance → “race/flake.”
+2. Pig’s bare-worktree seed remark → “ambient gitignored `data/project.json`.”
+
+Badger’s negative control (wipe `data/`, old smoke still finds `default`) and a read of `src/server/http.ts` disproved (2). The fix (create both projects) stands. The false cause does not. Written here so the rule set stays credible when the enforcer is the one who broke it.
 
 **The gate held the milestone.** Two test-side failures, no product impact, and we waited anyway. A gate that can be overridden by the person who built it is advisory, not a gate.
 
