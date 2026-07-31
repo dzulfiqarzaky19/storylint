@@ -26,7 +26,9 @@ const tag = stamp.toString(36).slice(-4)
 const cardTitle = `Siege gate-${tag}`
 const STEP_T0 = Date.now()
 function step(label) {
-  console.log(`[slice-l +${Date.now() - STEP_T0}ms] ${label}`)
+  // Sync write so a stall after this line still leaves the label on the pipe
+  // before Playwright's bare timeout kills the process (E1 stall-proof).
+  process.stdout.write(`[slice-l +${Date.now() - STEP_T0}ms] ${label}\n`)
 }
 
 if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)

@@ -21,7 +21,8 @@ const report = { head: stack.head, shortHead: stack.shortHead, dirty: stack.dirt
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   page.setDefaultTimeout(20_000)
-  await page.goto(stack.ui, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(stack.ui, { waitUntil: 'domcontentloaded', timeout: 30_000 })
 
   await page.evaluate(async () => {
     const list = await fetch('/api/projects').then((r) => r.json())

@@ -32,7 +32,9 @@ const parentName = `Mira Parent-${tag}`
 const childName = `Kael-${tag}`
 const STEP_T0 = Date.now()
 function step(label) {
-  console.log(`[slice-k +${Date.now() - STEP_T0}ms] ${label}`)
+  // Sync write so a stall after this line still leaves the label on the pipe
+  // before Playwright's bare timeout kills the process (E1 stall-proof).
+  process.stdout.write(`[slice-k +${Date.now() - STEP_T0}ms] ${label}\n`)
 }
 
 /** First nav and reload: never networkidle on owned stacks (companion/LLM sockets). */

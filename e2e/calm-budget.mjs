@@ -50,6 +50,9 @@ import {
   resolveWorkspaceMode,
   setApiBase
 } from './helpers.mjs'
+
+// Nav rule: never waitUntil: 'domcontentloaded', timeout: 30_000 on owned stacks — companion/LLM sockets
+// keep the network busy and burn Playwright's ~30s default (same trap as slice-j/k).
 import { resolveMeasurementTarget } from './owned-stack.mjs'
 
 /** Set after resolveMeasurementTarget — never default to a stranger on :5173. */
@@ -876,7 +879,8 @@ async function runInboxWallFixture(browser) {
       id: 'e2e-calm-inbox-wall-' + process.pid + '-' + Date.now().toString(36),
       title: 'E2E Calm Inbox Wall',
     })
-    await page.goto(UI, { waitUntil: 'networkidle' })
+    // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+    await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     await reclaimIsolatedProject(projectId)
     await ensureDraftReady(page, {
       body: 'Aria opened the iron door for inbox wall measure.',
@@ -981,7 +985,7 @@ async function runEmptyPrimaryFixtures(browser) {
       id: `e2e-calm-empty-${process.pid}-${Date.now().toString(36)}`,
       title: 'E2E Calm Empty',
     })
-    await page.goto(UI, { waitUntil: 'networkidle' })
+    await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     await reclaimIsolatedProject(emptyId)
     // Desk dual-rail: binder + companion open so composition is visible.
     const railOrigin = { binder: 'default', agent: 'default' }
@@ -1090,7 +1094,7 @@ async function runViewport(browser, width, height, label, projectId) {
     // Reclaim private per-run project (never doors/default fixtures).
     await reclaimIsolatedProject(projectId)
     await ensureIsolatedProject(page, { id: projectId, title: 'E2E Calm' })
-    await page.goto(UI, { waitUntil: 'networkidle' })
+    await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     // Fixed craft tag set so B4 craft counts cannot drift across runs.
     await reclaimIsolatedProject(projectId)
     await ensureDraftReady(page, {

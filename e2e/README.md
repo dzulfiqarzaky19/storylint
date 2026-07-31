@@ -265,3 +265,11 @@ Listed in `constants.mjs` → `ALL_FEATURE_SMOKES`, run by `all-smoke.mjs` with 
 ## Runtime isolation (active container)
 
 After every smoke in `ALL_FEATURE_SMOKES`: server `activeProjectId` **must** be a non-`default` id **this smoke minted this run**. Missing mint = FAIL. `default` = FAIL. Sibling id = FAIL. Observed via `STORYLINT_ISOLATION_REPORT` from `ensureIsolatedProject` — discarding the return still registers. Suite bookend: active after equals active before; orphan harness projects swept.
+
+## Diagnostic capture
+
+Do **not** filter the output of a run you might need to diagnose (`findstr`/`grep` pipelines that drop Playwright timeout bodies). Capture whole, filter when reading. Step labels on k/l (`[slice-k +Nms] …`) are proven to survive a stall — see `e2e/prove-step-stall.mjs` and `e2e/proofs/E1-step-stall-proof.txt`.
+
+## Nav waitUntil
+
+Never `waitUntil: 'networkidle'` on owned stacks. Companion/LLM sockets keep the network busy and burn Playwright's ~30s default. Use `domcontentloaded` + a real readiness locator.
