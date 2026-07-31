@@ -158,13 +158,16 @@ export function Shell() {
     setWorkspaceMode('manuscript')
   }
 
+  // The binder is the navigator, not a chapter detail view: a project with no
+  // chapters yet still needs its structure and its first move (D1 resting state).
+  // Gating this on activeChapter left an empty project staring at a blank rail.
   const binder = (onClose?: () => void) =>
-    project.project && activeChapter ? (
+    project.project ? (
       <Binder
         chapters={project.project.chapters}
         sheets={project.project.sheets}
         lab={project.project.lab}
-        activeChapterId={activeChapter.id}
+        activeChapterId={activeChapter?.id ?? ''}
         activeBoardId={activeBoardId}
         labMode={workspaceMode === 'lab'}
         canonMode={workspaceMode === 'graph'}

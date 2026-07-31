@@ -174,6 +174,15 @@
   border-left: var(--border-width) solid var(--color-border);
 }
 
+/* Rail budget (TOKENS.md §4): rails are narrow, so their internal gutters are tighter
+   than the same panel presented as a drawer, where width is not scarce. This buys
+   readable line length inside the rail without widening the rail itself. */
+.shell__rail .panel__header,
+.shell__rail .panel__body,
+.shell__rail .panel__footer {
+  padding-inline: var(--space-2);
+}
+
 /* Panels (shared by rail + drawer presentation) */
 
 .panel {
