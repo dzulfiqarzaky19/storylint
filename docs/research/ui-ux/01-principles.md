@@ -161,3 +161,22 @@ Pretty screenshots are secondary.
 - Wayfinding trio (where / what / next) — standard navigation UX teaching
 - Nielsen-class heuristics: visibility of system status, match to real world, consistency, error prevention, recognition vs recall
 - Accessibility baselines (WCAG-oriented practical bar for app chrome)
+
+
+- Dense evidence (~20 datapoints per cluster): [07-overwhelm-evidence.md](./07-overwhelm-evidence.md)
+  - Sweller CLT (1988+) · Miller WM · Hick–Hyman · choice overload metas · Krug / Laws of UX · Fitts / Doherty / Tesler
+
+### Overwhelm one-liners (from evidence)
+
+| Principle above | Evidence hook |
+|-----------------|---------------|
+| Cognitive load | Extraneous load is the design-owned budget |
+| One primary job | Hick + choice overload: equal peers freeze users |
+| Recognition over recall | Limited WM; labels beat icon grammar |
+| Feedback loops | Doherty ~400ms; empty success builds trust |
+| Hierarchy | Serial position + structured density |
+| Consistency | Micro-pauses from inconsistency accumulate load |
+| Accessibility | Fitts targets; non-hover identity |
+| Empty states | Two-door onboarding beats wizard overload |
+| Density OK / chaos not | Tesler: system should carry irreducible complexity |
+| Test tasks | Aesthetic-usability can mask real faults |
