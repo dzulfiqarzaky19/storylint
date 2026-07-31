@@ -1,0 +1,432 @@
+{
+  "meta": {
+    "when": "2026-07-31T18:55:39.286Z",
+    "ui": "http://localhost:5173/",
+    "head": "0510b22"
+  },
+  "checks": [
+    {
+      "id": "B1-work-hard",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B1-work-hard · workPct ≥ 40",
+      "surface": "Draft@1440",
+      "pass": true,
+      "measured": "workPct=47.2",
+      "threshold": "≥40"
+    },
+    {
+      "id": "B1-work-warn",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B1-work-warn · workPct < 45 warns",
+      "surface": "Draft@1440",
+      "pass": true,
+      "measured": "workPct=47.2",
+      "threshold": "≥45 preferred (WARN if <45)"
+    },
+    {
+      "id": "B1-rail-warn",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B1-rail-warn · rail>24 or chrome>55",
+      "surface": "Draft@1440",
+      "pass": false,
+      "measured": "binder=26.4 agent=26.4 chrome=52.8",
+      "threshold": "rails≤24, chrome≤55"
+    },
+    {
+      "id": "B1-rail-pathological",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B1-rail-pathological · rail > work",
+      "surface": "Draft@1440",
+      "pass": true,
+      "measured": "binderW=380 agentW=380 workW=680",
+      "threshold": "each rail ≤ work"
+    },
+    {
+      "id": "B1-fold",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B1-fold · foldOwner = work",
+      "surface": "Draft@1440",
+      "pass": true,
+      "measured": "foldOwner=work (manuscript)",
+      "threshold": "work"
+    },
+    {
+      "id": "B2-job-primary@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B2-job-primary · Continuity/Export/Research/Review/New top primary = 0",
+      "surface": "topbar@1440",
+      "pass": true,
+      "measured": "topJobPrimaryCount=0",
+      "threshold": "=0"
+    },
+    {
+      "id": "B2-ecosystem@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B2-ecosystem · ecosystemVisible = 3",
+      "surface": "topbar@1440",
+      "pass": true,
+      "measured": "ecosystemVisible=3 [Draft,Lab,Canon]",
+      "threshold": "=3"
+    },
+    {
+      "id": "B3-writing-count@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-writing-count · writing faces ≤ 5",
+      "surface": "companion writing@1440",
+      "pass": true,
+      "measured": "productFaces=4 [Chat · Write · Check · Inbox] more=true",
+      "threshold": "≤5"
+    },
+    {
+      "id": "B3-default-face@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-default-face · writing default = Chat",
+      "surface": "companion@1440",
+      "pass": true,
+      "measured": "face=chat",
+      "threshold": "chat"
+    },
+    {
+      "id": "B3-inbox-wall@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false",
+      "surface": "companion chat@1440",
+      "pass": true,
+      "measured": "chatProposalsWall=false",
+      "threshold": "false"
+    },
+    {
+      "id": "B3-footer-primary-chat@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1",
+      "surface": "companion chat@1440",
+      "pass": true,
+      "measured": "footerPrimary=1",
+      "threshold": "≤1"
+    },
+    {
+      "id": "B3-footer-total-chat@1440",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B3-footer-total · ≤3 WARN, ≥4 HARD",
+      "surface": "companion chat@1440",
+      "pass": true,
+      "measured": "footerTotal=1",
+      "threshold": "≤3"
+    },
+    {
+      "id": "B3-rest@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-rest · Check resting helper or last-run status",
+      "surface": "companion Check@1440",
+      "pass": true,
+      "measured": "checkRestHasStatus=true",
+      "threshold": "true"
+    },
+    {
+      "id": "B3-footer-primary-check@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1",
+      "surface": "companion Check@1440",
+      "pass": true,
+      "measured": "footerPrimary=1",
+      "threshold": "≤1"
+    },
+    {
+      "id": "B3-lab-count@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-lab-count · lab faces ≤ 3",
+      "surface": "companion lab@1440",
+      "pass": true,
+      "measured": "productFaces=3 [Chat · Spark · Inbox]",
+      "threshold": "≤3"
+    },
+    {
+      "id": "B3-graph-count@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-graph-count · graph faces ≤ 3",
+      "surface": "companion graph@1440",
+      "pass": true,
+      "measured": "productFaces=3 [Chat · Inspect · Inbox]",
+      "threshold": "≤3"
+    },
+    {
+      "id": "B4-lab-empty-filter@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0",
+      "surface": "Lab@1440",
+      "pass": true,
+      "measured": "cards=0 filterWhenEmpty=false",
+      "threshold": "false"
+    },
+    {
+      "id": "B4-lab-kind-strips@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1",
+      "surface": "Lab@1440",
+      "pass": true,
+      "measured": "kindFullStrips=1",
+      "threshold": "≤1"
+    },
+    {
+      "id": "B4-craft-desktop",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B4-craft-desktop · craft visible ≤ 5 + overflow",
+      "surface": "Draft craft@1440",
+      "pass": true,
+      "measured": "chipVisibleCount=5 [char-dev,plot-progress,twist,world-build,relationship]",
+      "threshold": "≤5"
+    },
+    {
+      "id": "B4-canon-propose@1440",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B4-canon-propose · propose collapsed until D4 (WARN)",
+      "surface": "Canon@1440",
+      "pass": true,
+      "measured": "proposeExpanded=false",
+      "threshold": "collapsed"
+    },
+    {
+      "id": "B4-canon-view@1440",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B4-canon-view · view accent > kind filter (WARN pre-D4)",
+      "surface": "Canon@1440",
+      "pass": true,
+      "measured": "viewW=2 filterW=2",
+      "threshold": "view ≥ filter"
+    },
+    {
+      "id": "B5-overflow@1440",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B5-overflow · overflowX = false",
+      "surface": "shell@1440",
+      "pass": true,
+      "measured": "overflowX=false",
+      "threshold": "false"
+    },
+    {
+      "id": "B5-focus",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B5-focus · Focus hides rails; type column only",
+      "surface": "Focus mode",
+      "pass": true,
+      "measured": "focus=true binder=false work=true",
+      "threshold": "focus + work, no binder"
+    },
+    {
+      "id": "B6-top-job",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B6-top-job · solid job primaries = 0",
+      "surface": "topbar",
+      "pass": true,
+      "measured": "topJobPrimaryCount=0",
+      "threshold": "=0"
+    },
+    {
+      "id": "B2-job-primary@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B2-job-primary · Continuity/Export/Research/Review/New top primary = 0",
+      "surface": "topbar@390",
+      "pass": true,
+      "measured": "topJobPrimaryCount=0",
+      "threshold": "=0"
+    },
+    {
+      "id": "B2-ecosystem@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B2-ecosystem · ecosystemVisible = 3",
+      "surface": "topbar@390",
+      "pass": true,
+      "measured": "ecosystemVisible=3 [Draft,Lab,Canon]",
+      "threshold": "=3"
+    },
+    {
+      "id": "B2-truncation",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B2-truncation · placeLabelClipped = 0 @390",
+      "surface": "topbar@390",
+      "pass": true,
+      "measured": "placeLabelClipped=0",
+      "threshold": "=0"
+    },
+    {
+      "id": "B2-top-count-warn",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B2-top-count-warn · top controls > 8 without overflow",
+      "surface": "topbar@390",
+      "pass": true,
+      "measured": "topControlCount=7",
+      "threshold": "≤8"
+    },
+    {
+      "id": "B3-writing-count@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-writing-count · writing faces ≤ 5",
+      "surface": "companion writing@390",
+      "pass": true,
+      "measured": "productFaces=4 [Chat · Write · Check · Inbox] more=true",
+      "threshold": "≤5"
+    },
+    {
+      "id": "B3-default-face@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-default-face · writing default = Chat",
+      "surface": "companion@390",
+      "pass": true,
+      "measured": "face=chat",
+      "threshold": "chat"
+    },
+    {
+      "id": "B3-inbox-wall@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-inbox-wall · chatProposalsWall = false",
+      "surface": "companion chat@390",
+      "pass": true,
+      "measured": "chatProposalsWall=false",
+      "threshold": "false"
+    },
+    {
+      "id": "B3-wrap",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-wrap · faceRows @390 = 1",
+      "surface": "companion@390",
+      "pass": true,
+      "measured": "faceRows=1 labels=[Chat · Write · Check · Inbox · More]",
+      "threshold": "=1"
+    },
+    {
+      "id": "B3-overflow-shape",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-overflow-shape · extras behind one More",
+      "surface": "companion@390",
+      "pass": true,
+      "measured": "rows=1 hasMore=true",
+      "threshold": "one row; More ok"
+    },
+    {
+      "id": "B3-footer-primary-chat@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1",
+      "surface": "companion chat@390",
+      "pass": true,
+      "measured": "footerPrimary=1",
+      "threshold": "≤1"
+    },
+    {
+      "id": "B3-footer-total-chat@390",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B3-footer-total · ≤3 WARN, ≥4 HARD",
+      "surface": "companion chat@390",
+      "pass": true,
+      "measured": "footerTotal=1",
+      "threshold": "≤3"
+    },
+    {
+      "id": "B3-rest@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-rest · Check resting helper or last-run status",
+      "surface": "companion Check@390",
+      "pass": true,
+      "measured": "checkRestHasStatus=true",
+      "threshold": "true"
+    },
+    {
+      "id": "B3-footer-primary-check@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-footer-primary · footer primary ≤ 1",
+      "surface": "companion Check@390",
+      "pass": true,
+      "measured": "footerPrimary=1",
+      "threshold": "≤1"
+    },
+    {
+      "id": "B3-lab-count@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-lab-count · lab faces ≤ 3",
+      "surface": "companion lab@390",
+      "pass": true,
+      "measured": "productFaces=3 [Chat · Spark · Inbox]",
+      "threshold": "≤3"
+    },
+    {
+      "id": "B3-graph-count@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B3-graph-count · graph faces ≤ 3",
+      "surface": "companion graph@390",
+      "pass": true,
+      "measured": "productFaces=3 [Chat · Inspect · Inbox]",
+      "threshold": "≤3"
+    },
+    {
+      "id": "B4-lab-empty-filter@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0",
+      "surface": "Lab@390",
+      "pass": true,
+      "measured": "cards=0 filterWhenEmpty=false",
+      "threshold": "false"
+    },
+    {
+      "id": "B4-lab-kind-strips@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1",
+      "surface": "Lab@390",
+      "pass": true,
+      "measured": "kindFullStrips=1",
+      "threshold": "≤1"
+    },
+    {
+      "id": "B4-craft-phone",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B4-craft-phone · craft collapsed disclosure default @390",
+      "surface": "Draft craft@390",
+      "pass": false,
+      "measured": "collapsed=false chips=8",
+      "threshold": "true"
+    },
+    {
+      "id": "B4-canon-propose@390",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B4-canon-propose · propose collapsed until D4 (WARN)",
+      "surface": "Canon@390",
+      "pass": true,
+      "measured": "proposeExpanded=false",
+      "threshold": "collapsed"
+    },
+    {
+      "id": "B4-canon-view@390",
+      "sev": "WARN",
+      "doc": "CALM_BUDGET.md B4-canon-view · view accent > kind filter (WARN pre-D4)",
+      "surface": "Canon@390",
+      "pass": true,
+      "measured": "viewW=2 filterW=2",
+      "threshold": "view ≥ filter"
+    },
+    {
+      "id": "B5-touch-chrome",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B5-touch-chrome · min hit ≥ 44×44 chrome @390",
+      "surface": "chrome@390",
+      "pass": false,
+      "measured": "touchFailChrome=3 e.g. Project menu 38px",
+      "threshold": "=0 fails"
+    },
+    {
+      "id": "B5-touch-fail",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B5-touch-fail · touchFailChrome = 0",
+      "surface": "chrome@390",
+      "pass": false,
+      "measured": "touchFailChrome=3",
+      "threshold": "=0"
+    },
+    {
+      "id": "B5-overflow@390",
+      "sev": "HARD",
+      "doc": "CALM_BUDGET.md B5-overflow · overflowX = false",
+      "surface": "shell@390",
+      "pass": true,
+      "measured": "overflowX=false",
+      "threshold": "false"
+    }
+  ]
+}
