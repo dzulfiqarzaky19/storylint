@@ -70,8 +70,12 @@ Why both exist: a change can be perfectly reviewable and still not do what its t
 
 3. **L2 = story/composition E2E after the story pool sits on `origin/dev`.**
    - Run on **integrated** `origin/dev`, not the topic alone.
-   - Story/composition paths: multi-surface journeys, load fixtures, cross-region jobs that L1 never composed.
-   - **Isolation green ≠ composition green.** L1 pass does not close a story. L2 pass does (for that story).
+   - **One command:** `npm run test:l2` → `e2e/l2-composition.mjs` (guard + owned stack).
+   - Same evidence discipline as `test:green`: owned stack, HEAD + shell.css provenance, fail-closed, NOT-MEASURED / precondition = fail (exit 2 refuse).
+   - **Not a renamed L1.** `all-smoke` isolates each feature smoke on its own mint. L2 keeps **one project** and walks Draft → Canon → Lab → reload, proving body + sheet + active pointer survive the shared container.
+   - Story/composition paths: multi-surface journeys, load fixtures, cross-region jobs that L1 never composed. Grow `l2-composition.mjs` (or story-scoped runners it calls) when a new composition defect class appears — do not append isolated smokes and call it L2.
+   - **Isolation green ≠ composition green.** L1 pass does not close a story. L2 pass does (for that story). Tickets with `l2_required: yes` stay short of `done` until L2 is green on the integrated tip. L2 fail → reopen ≥ prior priority with shortest repro (never silent downgrade).
+   - Artifacts (untracked): `e2e/output/l2-composition-last.md` + `.json`. Cite provenance: HEAD, owned flag, shell hash.
 
 4. **PR is optional review UI.** Opening a GitHub PR does not write `dev`. **Only `npm run land` writes `dev`.** Never `git push origin <topic>:dev`. Never squash-merge into `dev`.
 
