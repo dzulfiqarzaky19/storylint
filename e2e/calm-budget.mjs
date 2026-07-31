@@ -149,6 +149,20 @@ function preconditionFail(id, surface, error) {
   )
 }
 
+/** Rule 4: NOT-MEASURED is a first-class failing verdict. Never PASS on absence. */
+function notMeasuredFail(id, surface, reason) {
+  add(
+    id,
+    'HARD',
+    'NOT-MEASURED — checker could not find the surface it judges (rule 4)',
+    surface,
+    false,
+    `NOT-MEASURED: ${reason}`,
+    'surface present and measurable',
+    'absence is not pass',
+  )
+}
+
 async function withSurface(id, surface, fn) {
   try {
     return await fn()
@@ -162,7 +176,9 @@ async function withSurface(id, surface, fn) {
 }
 
 async function measureLayout(page) {
-  return page.evaluate(() => {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const vw = window.innerWidth
     const vh = window.innerHeight
     const body = document.querySelector('.shell__body')
@@ -213,6 +229,8 @@ async function measureLayout(page) {
     const foldBandBottom = vh
     const candidates = []
     for (const el of document.querySelectorAll('main, .manuscript, .lab, .graph, .shell__rail, aside, .panel, #workspace')) {
+      // Visibility first: collapsed/hidden regions must not win fold ownership.
+      if (!isVisibleEl(el)) continue
       const r = el.getBoundingClientRect()
       if (r.width < 40 || r.height < 40) continue
       if (r.bottom < foldBandTop || r.top > foldBandBottom) continue
@@ -255,7 +273,7 @@ async function measureLayout(page) {
     function round1(n) {
       return Math.round(n * 10) / 10
     }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
 }
 
 async function measureTopbar(page) {
@@ -437,7 +455,8 @@ async function measureLab(page) {
     let kindFullStrips = 0
     if (stripFull(composerKinds)) kindFullStrips += 1
     if (filter && stripFull(filter.querySelector('.lab__filter-menu'))) kindFullStrips += 1
-    if (filter && !filter.querySelector('details') && stripFull(filter)) kindFullStrips += 1
+    // Per-element visibility only (rule 6). Never "container contains details?".
+    if (filter && stripFull(filter)) kindFullStrips += 1
 
     return {
       cardCount,
@@ -454,51 +473,64 @@ async function measureCraft(page) {
     // eslint-disable-next-line no-new-func
     const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     // Scope strictly to Draft manuscript — never count graph/lab/companion chrome.
+    // Do not fall back to #workspace alone (that can be Lab/Canon and silently vacuous).
     const root =
       document.querySelector('main[aria-label="Draft"]') ||
-      document.querySelector('.manuscript') ||
-      document.querySelector('#workspace')
-    if (!root) return { missing: true, chipVisibleCount: 0, chipLabels: [], craftCollapsedDefault: true, foundStrip: false }
+      document.querySelector('.manuscript')
+    if (!root) {
+      return {
+        missing: true,
+        notMeasured: true,
+        reason: 'no Draft manuscript root',
+        chipVisibleCount: 0,
+        chipLabels: [],
+        craftCollapsedDefault: null,
+        foundStrip: false,
+      }
+    }
 
+    // Real product classes (Manuscript.tsx / shell.css). Dead aliases banned —
+    // a selector that matches nothing is a failure (rule 5), not a vacuous pass.
     const strips = [
-      ...root.querySelectorAll('[aria-label*="craft" i], [aria-label*="Craft" i], .craft-tags, .manuscript__tags, .tag-strip, .chip-strip, .manuscript__craft'),
+      ...root.querySelectorAll(
+        '.manuscript__craft-tags, .manuscript__craft-tags-disclosure, [data-craft-tags], [aria-label*="craft" i]',
+      ),
     ]
-    const meta = root.querySelector('.manuscript__meta, .manuscript__header')
     let chips = []
     for (const strip of strips) {
       chips.push(
-        ...[...strip.querySelectorAll('button, [role="button"], .badge, .chip, .ui-badge')].filter((el) => {
+        ...[
+          ...strip.querySelectorAll(
+            'button.manuscript__craft-tag, .manuscript__craft-tag, button[aria-pressed], [role="button"]',
+          ),
+        ].filter((el) => {
           const t = (el.textContent || '').trim()
-          if (!t || /^\+\d|tags|more/i.test(t)) return false
+          if (!t || /^\+\d|\d+\s*tags?|tags\s*\+|more/i.test(t)) return false
           return isVisibleEl(el)
         }),
       )
     }
-    if (chips.length === 0 && meta) {
-      chips = [...meta.querySelectorAll('.badge, .ui-badge, button')].filter((el) => {
-        const t = (el.textContent || '').trim()
-        if (!t || /words|chars|saved|chapter|paper:/i.test(t)) return false
-        return isVisibleEl(el)
-      })
-    }
 
-    const overflow = root.querySelector(
-      '[aria-label*="tags" i], details.craft, .craft-overflow, button[aria-label*="Tags" i], summary',
-    )
-    // Prefer real open-state of details over counting layout boxes inside closed ones.
     const details = root.querySelector(
-      'details.craft-tags, details[aria-label*="craft" i], details[aria-label*="Tags" i], .manuscript__tags details, details:has(summary)',
+      'details.manuscript__craft-tags-disclosure, details.manuscript__craft-tags, details:has(.manuscript__craft-tag)',
     )
     const collapsedDisclosure = details
       ? !details.open
       : !!root.querySelector('button[aria-label*="Tags" i][aria-expanded="false"]')
+    const foundStrip = strips.length > 0 || !!details
+    // Absence is NOT collapsed (rule 4). chips===0 alone must never pass phone collapse.
+    const craftCollapsedDefault = foundStrip
+      ? !!collapsedDisclosure || (details ? !details.open && chips.length === 0 : false)
+      : null
 
     return {
       chipVisibleCount: chips.length,
       chipLabels: chips.slice(0, 12).map((chip) => (chip.textContent || '').trim()),
-      hasOverflowControl: !!overflow || !!details,
-      craftCollapsedDefault: chips.length === 0 || collapsedDisclosure,
-      foundStrip: strips.length > 0 || !!meta,
+      hasOverflowControl: !!details,
+      craftCollapsedDefault,
+      foundStrip,
+      notMeasured: !foundStrip,
+      reason: foundStrip ? null : 'craft surface selectors matched nothing',
       detailsOpen: details ? !!details.open : null,
     }
   }, BROWSER_IS_VISIBLE_SOURCE)
@@ -940,14 +972,20 @@ async function runViewport(browser, width, height, label, projectId) {
     })
     if (draftCraftOk) {
       const craft = await measureCraft(page)
-      if (width >= 1200) {
+      if (craft.missing || craft.notMeasured || !craft.foundStrip) {
+        notMeasuredFail(
+          width >= 1200 ? 'B4-craft-desktop' : 'B4-craft-phone',
+          `Draft craft@${label}`,
+          craft.reason || 'craft surface not found',
+        )
+      } else if (width >= 1200) {
         add(
           'B4-craft-desktop',
           'HARD',
           'CALM_BUDGET.md B4-craft-desktop · craft visible ≤ 5 + overflow',
           'Draft craft@1440',
           craft.chipVisibleCount <= 5,
-          `chipVisibleCount=${craft.chipVisibleCount} [${(craft.chipLabels || []).join(',')}]`,
+          `chipVisibleCount=${craft.chipVisibleCount} [${(craft.chipLabels || []).join(',')}] foundStrip=${craft.foundStrip}`,
           '≤5',
         )
       } else {
@@ -957,8 +995,8 @@ async function runViewport(browser, width, height, label, projectId) {
           'CALM_BUDGET.md B4-craft-phone · craft collapsed disclosure default @390',
           'Draft craft@390',
           craft.craftCollapsedDefault === true,
-          `collapsed=${craft.craftCollapsedDefault} chips=${craft.chipVisibleCount}`,
-          'true',
+          `collapsed=${craft.craftCollapsedDefault} chips=${craft.chipVisibleCount} detailsOpen=${craft.detailsOpen}`,
+          'true (disclosure collapsed; absence ≠ pass)',
         )
       }
     }

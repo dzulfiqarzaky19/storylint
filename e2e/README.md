@@ -13,7 +13,14 @@ Deterministic browser smokes and gates for Storylint.
 
 ## Provenance (what did we measure?)
 
-> **A measurement that cannot name what it measured is not evidence.**
+> **A check that is measuring something OTHER than what it claims is not evidence.**
+
+Three rules, one root failure (see also `docs/decisions/rule-visibility-not-geometry.md` rules 1–6):
+
+1. **Name the commit and bundle.** If a check cannot state what it examined and at what commit, its output is not evidence.
+2. **Never infer visibility from geometry.** Use `Element.checkVisibility` + closed-`<details>` ancestry (`isVisibleEl`). Self-test both directions. **NOT-MEASURED** (surface absent / dead selector / undetermined) is a first-class **failing** verdict — never PASS on absence (rules 4–6).
+3. **Assert on behaviour and state, never on a label you do not own.** Chrome copy moves (D5 Back, bible→Canon, ox copy audit). Prefer outcome markers like `[data-binder-stack="list"]` over `getByRole(..., { name: 'Back to binder' })`, which hang on vanished strings.
+
 
 UI gates must not adopt a stranger server on `:5173`. Multiple agents run Vite in multiple worktrees; measuring whatever happens to answer on that port is how we spent an hour arguing with a ghost build.
 
@@ -91,6 +98,9 @@ Chromium still yields layout boxes for children of a closed `<details>`. `getBou
 
 - Self-test: `assertVisibilityPredicate(page)` runs once per calm session. Closed details child must be hidden; summary and open content must be visible. Fail → exit 2 refuse.
 - Undetermined visibility (no `checkVisibility`) → refuse, never PASS/FAIL.
+- **Guard shape (rule 6):** ask "is this ELEMENT inside a closed details?" per element. Never "does this container CONTAIN a details?"
+- **NOT-MEASURED fails the gate (rule 4).** A checker that cannot find the surface it judges must not treat zero as collapsed/pass. Dead selectors (class that never matches) are failures (rule 5), not silent vacuous greens.
+- Craft surface selectors must name the real product classes (`.manuscript__craft-tags`, `.manuscript__craft-tag`).
 
 ## Rail state provenance
 
