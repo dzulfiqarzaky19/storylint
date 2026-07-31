@@ -273,22 +273,24 @@ export function Shell() {
           >
             Lab
           </Button>
-          <Button
-            className="shell__action-continuity"
-            variant="primary"
-            disabled={!activeChapter || project.continuity.running || workspaceMode === 'lab'}
-            data-continuity-state={
-              project.continuity.running
-                ? 'running'
-                : project.continuity.mode
-                  ? 'ready'
-                  : 'idle'
-            }
-            aria-busy={project.continuity.running}
-            onClick={() => void runContinuity().catch(() => undefined)}
-          >
-            {project.continuity.running ? 'Running…' : 'Continuity'}
-          </Button>
+          {workspaceMode === 'manuscript' && activeChapter ? (
+            <Button
+              className="shell__action-continuity"
+              variant="primary"
+              disabled={project.continuity.running}
+              data-continuity-state={
+                project.continuity.running
+                  ? 'running'
+                  : project.continuity.mode
+                    ? 'ready'
+                    : 'idle'
+              }
+              aria-busy={project.continuity.running}
+              onClick={() => void runContinuity().catch(() => undefined)}
+            >
+              {project.continuity.running ? 'Running…' : 'Continuity'}
+            </Button>
+          ) : null}
           <IconButton
             className="shell__action-focus"
             label={shell.focus ? 'Exit focus mode' : 'Focus mode'}

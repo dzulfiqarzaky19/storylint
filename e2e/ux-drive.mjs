@@ -456,6 +456,13 @@ try {
       await page.waitForTimeout(500)
       await shot(page, '13-' + name.toLowerCase())
       ok(name + ' surface opened')
+      if (name === 'Graph') {
+        const contVisible = await page.locator('button.shell__action-continuity').count()
+        if (contVisible !== 0) {
+          results.shouldFix.push('Continuity still visible outside Draft (Graph)')
+          warn('Continuity draft-only violated on Graph')
+        } else ok('Continuity draft-only on Graph')
+      }
       results.jobs[name.toLowerCase()] = true
       const msBtn = page.getByRole('button', { name: /manuscript|editor|chapter/i })
       if (await msBtn.count()) await msBtn.first().click().catch(() => {})
@@ -466,24 +473,36 @@ try {
     }
   }
 
-  const exportBtn = page.getByRole('button', { name: /^Export$|Export markdown/i })
-  if (await exportBtn.count()) {
-    const downloadPromise = page.waitForEvent('download', { timeout: 10000 }).catch(() => null)
-    await exportBtn.first().click()
-    const download = await downloadPromise
-    await shot(page, '13-export')
-    if (download) {
-      ok('Export started download')
-      results.jobs.export = true
+  // Export lives under project overflow (IA_MAP §6.2 / S1 calm top bar)
+  {
+    const menu = page.getByRole('button', { name: 'Project menu' })
+    if (await menu.count()) {
+      await menu.click()
+      const exportItem = page.getByRole('menuitem', { name: /Export|Export markdown/i })
+      if (await exportItem.count()) {
+        const downloadPromise = page.waitForEvent('download', { timeout: 10000 }).catch(() => null)
+        await exportItem.click()
+        const download = await downloadPromise
+        await shot(page, '13-export')
+        if (download) {
+          ok('Export started download via project menu')
+          results.jobs.export = true
+        } else {
+          warn('Export clicked but no download event')
+          results.shouldFix.push('Export control present but download did not start')
+          results.jobs.export = false
+        }
+      } else {
+        await page.keyboard.press('Escape').catch(() => {})
+        log('no Export menuitem')
+        results.jobs.export = false
+        results.blockers.push('Export control not discoverable in project menu')
+      }
     } else {
-      warn('Export clicked but no download event')
-      results.shouldFix.push('Export control present but download did not start')
+      log('no Project menu')
       results.jobs.export = false
+      results.blockers.push('Project menu not discoverable for Export')
     }
-  } else {
-    log('no Export button')
-    results.jobs.export = false
-    results.blockers.push('Export control not discoverable')
   }
 
   const genInMs = await page.evaluate(() => {

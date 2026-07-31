@@ -84,6 +84,7 @@ export function ProjectSwitcher({
       <div className="project-switcher__menu">
         <Button
           aria-label="Project menu"
+          title="Project actions"
           aria-haspopup="menu"
           aria-expanded={menuOpen}
           aria-controls={menuId}
