@@ -4,7 +4,7 @@
 **First user:** you (local dogfood)  
 **Auth:** none — no login, no session, no multi-tenant  
 
-Related: [01-identity-market](./01-identity-market.md) · [02-steal-and-phases](./02-steal-and-phases.md) · [03-ux](./03-ux.md) · [04-agents](./04-agents.md) · [05-tech](./05-tech.md) · [IA_MAP](./IA_MAP.md)
+Related: [01-identity-market](./01-identity-market.md) · [02-steal-and-phases](./02-steal-and-phases.md) · [03-ux](./03-ux.md) · [04-agents](./04-agents.md) · [05-tech](./05-tech.md) · [IA_MAP](./IA_MAP.md) · [research/ui-ux](./research/ui-ux/README.md)
 
 ---
 
