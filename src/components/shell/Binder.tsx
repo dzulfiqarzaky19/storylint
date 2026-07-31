@@ -13,6 +13,8 @@ export type BinderProps = {
   activeChapterId: string
   activeBoardId?: string | null
   labMode?: boolean
+  /** When center is Canon, sheets lead and Draft chapters are secondary. */
+  canonMode?: boolean
   onSelectChapter: (id: string) => void
   onSelectLabBoard?: (boardId: string) => void
   onOpenLab?: () => void
@@ -22,6 +24,8 @@ export type BinderProps = {
   onDeleteFact: (sheetId: string, factId: string) => Promise<void>
   requestedSheetId?: string | null
   onRequestedSheetHandled?: () => void
+  /** Notify shell when a sheet enters/leaves the binder detail stack (Canon landing). */
+  onEditSheet?: (sheetId: string | null) => void
   onClose?: () => void
 }
 
@@ -32,6 +36,7 @@ export function Binder({
   activeChapterId,
   activeBoardId,
   labMode = false,
+  canonMode = false,
   onSelectChapter,
   onSelectLabBoard,
   onOpenLab,
@@ -41,6 +46,7 @@ export function Binder({
   onDeleteFact,
   requestedSheetId,
   onRequestedSheetHandled,
+  onEditSheet,
   onClose,
 }: BinderProps) {
   const [editingSheetId, setEditingSheetId] = useState<string | 'new' | null>(null)
@@ -50,11 +56,100 @@ export function Binder({
   useEffect(() => {
     if (requestedSheetId && sheets.some((sheet) => sheet.id === requestedSheetId)) {
       setEditingSheetId(requestedSheetId)
+      onEditSheet?.(requestedSheetId)
       onRequestedSheetHandled?.()
     } else if (editingSheetId && editingSheetId !== 'new' && !sheets.some((sheet) => sheet.id === editingSheetId)) {
       setEditingSheetId(null)
+      onEditSheet?.(null)
     }
-  }, [requestedSheetId, sheets, editingSheetId, onRequestedSheetHandled])
+  }, [requestedSheetId, sheets, editingSheetId, onRequestedSheetHandled, onEditSheet])
+
+  const draftSection = (
+    <section className="panel__group" aria-labelledby="binder-draft">
+      <h3 className="panel__label" id="binder-draft">Draft</h3>
+      {chapters.map((chapter, index) => (
+        <ListRow
+          key={chapter.id}
+          active={!labMode && !canonMode && chapter.id === activeChapterId}
+          meta={String(index + 1)}
+          onClick={() => onSelectChapter(chapter.id)}
+        >
+          {chapter.title || 'Untitled'}
+        </ListRow>
+      ))}
+      <Button onClick={onAddChapter}>New chapter</Button>
+    </section>
+  )
+
+  const canonSection = (
+    <section className="panel__group" aria-labelledby="binder-canon">
+      <h3 className="panel__label" id="binder-canon">Canon</h3>
+      {SHEET_KINDS.map((kind: SheetKind) => {
+        const forKind = sheets.filter((sheet) => sheet.kind === kind)
+        return (
+          <div className="binder__canon-kind" key={kind}>
+            <h4 className="panel__sublabel" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h4>
+            {forKind.length === 0 ? (
+              <div className="panel__empty-row" role="status">
+                None yet
+              </div>
+            ) : (
+              forKind.map((sheet) => (
+                <ListRow
+                  key={sheet.id}
+                  meta={String(sheet.facts.length)}
+                  onClick={() => {
+                    setEditingSheetId(sheet.id)
+                    onEditSheet?.(sheet.id)
+                  }}
+                >
+                  {sheet.name}
+                </ListRow>
+              ))
+            )}
+          </div>
+        )
+      })}
+      <Button
+        variant="primary"
+        onClick={() => {
+          setEditingSheetId('new')
+          onEditSheet?.(null)
+        }}
+      >
+        New sheet
+      </Button>
+    </section>
+  )
+
+  const labSection = (
+    <section className="panel__group" aria-labelledby="binder-lab">
+      <h3 className="panel__label" id="binder-lab">Lab</h3>
+      {boards.length === 0 ? (
+        <div className="panel__empty-row" role="status">Bench</div>
+      ) : (
+        boards.map((board) => {
+          const live = (lab?.cards ?? []).filter(
+            (card) => card.boardId === board.id && (card.status === 'active' || card.status === 'pinned'),
+          ).length
+          return (
+            <ListRow
+              key={board.id}
+              active={labMode && board.id === activeBoardId}
+              meta={String(live)}
+              onClick={() => {
+                onOpenLab?.()
+                onSelectLabBoard?.(board.id)
+              }}
+            >
+              {board.title}
+            </ListRow>
+          )
+        })
+      )}
+      <Button onClick={() => onOpenLab?.()}>Open Lab</Button>
+    </section>
+  )
 
   return (
     <div className="panel">
@@ -70,78 +165,26 @@ export function Binder({
             onSaveSheet={async (sheet) => {
               await onSaveSheet(sheet)
               setEditingSheetId(sheet.id)
+              onEditSheet?.(sheet.id)
             }}
             onSaveFact={onSaveFact}
             onDeleteFact={onDeleteFact}
-            onBack={() => setEditingSheetId(null)}
+            onBack={() => {
+              setEditingSheetId(null)
+              onEditSheet?.(null)
+            }}
           />
+        ) : canonMode ? (
+          <>
+            {canonSection}
+            {draftSection}
+            {labSection}
+          </>
         ) : (
           <>
-            <section className="panel__group" aria-labelledby="binder-draft">
-              <h3 className="panel__label" id="binder-draft">Draft</h3>
-              {chapters.map((chapter, index) => (
-                <ListRow
-                  key={chapter.id}
-                  active={!labMode && chapter.id === activeChapterId}
-                  meta={String(index + 1)}
-                  onClick={() => onSelectChapter(chapter.id)}
-                >
-                  {chapter.title || 'Untitled'}
-                </ListRow>
-              ))}
-              <Button onClick={onAddChapter}>New chapter</Button>
-            </section>
-
-            <section className="panel__group" aria-labelledby="binder-canon">
-              <h3 className="panel__label" id="binder-canon">Canon</h3>
-              {SHEET_KINDS.map((kind: SheetKind) => {
-                const forKind = sheets.filter((sheet) => sheet.kind === kind)
-                return (
-                  <div className="binder__canon-kind" key={kind}>
-                    <h4 className="panel__sublabel" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h4>
-                    {forKind.length === 0 ? (
-                      <div className="panel__empty-row" role="status">
-                        None yet
-                      </div>
-                    ) : (
-                      forKind.map((sheet) => (
-                        <ListRow key={sheet.id} meta={String(sheet.facts.length)} onClick={() => setEditingSheetId(sheet.id)}>
-                          {sheet.name}
-                        </ListRow>
-                      ))
-                    )}
-                  </div>
-                )
-              })}
-              <Button variant="primary" onClick={() => setEditingSheetId('new')}>New sheet</Button>
-            </section>
-
-            <section className="panel__group" aria-labelledby="binder-lab">
-              <h3 className="panel__label" id="binder-lab">Lab</h3>
-              {boards.length === 0 ? (
-                <div className="panel__empty-row" role="status">Bench</div>
-              ) : (
-                boards.map((board) => {
-                  const live = (lab?.cards ?? []).filter(
-                    (card) => card.boardId === board.id && (card.status === 'active' || card.status === 'pinned'),
-                  ).length
-                  return (
-                    <ListRow
-                      key={board.id}
-                      active={labMode && board.id === activeBoardId}
-                      meta={String(live)}
-                      onClick={() => {
-                        onOpenLab?.()
-                        onSelectLabBoard?.(board.id)
-                      }}
-                    >
-                      {board.title}
-                    </ListRow>
-                  )
-                })
-              )}
-              <Button onClick={() => onOpenLab?.()}>Open Lab</Button>
-            </section>
+            {draftSection}
+            {canonSection}
+            {labSection}
           </>
         )}
       </div>

@@ -37,12 +37,16 @@ export function Shell() {
   const [workspaceMode, setWorkspaceMode] = useState<'manuscript' | 'graph' | 'lab'>('manuscript')
   const [activeBoardId, setActiveBoardId] = useState<string | null>(null)
   const [requestedSheetId, setRequestedSheetId] = useState<string | null>(null)
+  const [activeCanonSheetId, setActiveCanonSheetId] = useState<string | null>(null)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
   const activeChapter =
     chapters.find((chapter) => chapter.id === activeChapterId) ?? chapters[0] ?? null
   const lab = project.project?.lab ?? null
+  const activeCanonSheetName = activeCanonSheetId
+    ? project.project?.sheets.find((sheet) => sheet.id === activeCanonSheetId)?.name ?? null
+    : null
 
   const companionContext: CompanionContext =
     workspaceMode === 'lab'
@@ -70,6 +74,7 @@ export function Shell() {
   useEffect(() => {
     setActiveChapterId(null)
     setRequestedSheetId(null)
+    setActiveCanonSheetId(null)
     setActiveBoardId(null)
     setWorkspaceMode('manuscript')
   }, [project.activeProjectId])
@@ -112,6 +117,39 @@ export function Shell() {
     setWorkspaceMode('lab')
   }
 
+  /** Canon entry: first visit → map; later → last-opened Canon thing (sheet or map). */
+  function openCanon(options?: { sheetId?: string }) {
+    const projectId = project.activeProjectId
+    let sheetId = options?.sheetId ?? null
+
+    if (!sheetId) {
+      const last = shell.getCanonLastOpened(projectId)
+      if (last?.kind === 'sheet') {
+        const exists = project.project?.sheets.some((sheet) => sheet.id === last.sheetId)
+        if (exists) sheetId = last.sheetId
+      }
+    }
+
+    setWorkspaceMode('graph')
+    if (sheetId) {
+      setActiveCanonSheetId(sheetId)
+      setRequestedSheetId(sheetId)
+      if (!shell.isOpen('binder')) shell.toggle('binder')
+      shell.setCanonLastOpened(projectId, { kind: 'sheet', sheetId })
+    } else {
+      setActiveCanonSheetId(null)
+      shell.setCanonLastOpened(projectId, { kind: 'map' })
+    }
+  }
+
+  function openCanonSheet(sheetId: string) {
+    setActiveCanonSheetId(sheetId)
+    setRequestedSheetId(sheetId)
+    setWorkspaceMode('graph')
+    if (!shell.isOpen('binder')) shell.toggle('binder')
+    shell.setCanonLastOpened(project.activeProjectId, { kind: 'sheet', sheetId })
+  }
+
   function selectChapter(id: string) {
     setActiveChapterId(id)
     setWorkspaceMode('manuscript')
@@ -126,6 +164,7 @@ export function Shell() {
         activeChapterId={activeChapter.id}
         activeBoardId={activeBoardId}
         labMode={workspaceMode === 'lab'}
+        canonMode={workspaceMode === 'graph'}
         onSelectChapter={selectChapter}
         onSelectLabBoard={(boardId) => openLab(boardId)}
         onOpenLab={() => openLab()}
@@ -135,6 +174,19 @@ export function Shell() {
         onDeleteFact={project.deleteFact}
         requestedSheetId={requestedSheetId}
         onRequestedSheetHandled={() => setRequestedSheetId(null)}
+        onEditSheet={(sheetId) => {
+          if (!sheetId) {
+            setActiveCanonSheetId(null)
+            if (workspaceMode === 'graph') {
+              shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+            }
+            return
+          }
+          // Sheet detail is a Canon Level-3 thing for landing memory.
+          // Keep Draft/Lab center; graph-node open still uses openCanonSheet.
+          setActiveCanonSheetId(sheetId)
+          shell.setCanonLastOpened(project.activeProjectId, { kind: 'sheet', sheetId })
+        }}
         onClose={onClose}
       />
     ) : null
@@ -152,7 +204,7 @@ export function Shell() {
         companionContext === 'lab'
           ? `@${lab?.boards.find((board) => board.id === activeBoardId)?.title ?? 'lab'}`
           : companionContext === 'graph'
-            ? '@graph'
+            ? '@canon'
             : undefined
       }
       proposals={(project.project?.proposals ?? []).filter((proposal) => proposal.status === 'pending')}
@@ -244,7 +296,7 @@ export function Shell() {
             : workspaceMode === 'lab'
               ? lab?.boards.find((board) => board.id === activeBoardId)?.title ?? 'Lab'
               : workspaceMode === 'graph'
-                ? 'Graph'
+                ? activeCanonSheetName ?? 'Canon'
                 : activeChapter?.title ?? 'No chapters'}
         </span>
         <span className="project-status" aria-live="polite">
@@ -261,17 +313,17 @@ export function Shell() {
           </Button>
           <Button
             className="shell__action-graph"
-            aria-pressed={workspaceMode === 'graph'}
-            onClick={() => setWorkspaceMode('graph')}
-          >
-            Graph
-          </Button>
-          <Button
-            className="shell__action-graph"
             aria-pressed={workspaceMode === 'lab'}
             onClick={() => openLab()}
           >
             Lab
+          </Button>
+          <Button
+            className="shell__action-graph"
+            aria-pressed={workspaceMode === 'graph'}
+            onClick={() => openCanon()}
+          >
+            Canon
           </Button>
           {workspaceMode === 'manuscript' && activeChapter ? (
             <Button
@@ -355,8 +407,7 @@ export function Shell() {
             trackMutation={project.trackMutation}
             beginMutation={project.beginMutation}
             onOpenSheet={(sheetId) => {
-              setRequestedSheetId(sheetId)
-              if (!shell.isOpen('binder')) shell.toggle('binder')
+              openCanonSheet(sheetId)
             }}
           />
         ) : activeChapter ? (

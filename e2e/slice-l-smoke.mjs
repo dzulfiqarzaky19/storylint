@@ -60,7 +60,7 @@ try {
   if (!promoted || promoted.status !== 'promoted') throw new Error('Lab card not marked promoted')
 
   // Graph ignores Lab: no lab card titles as nodes
-  await page.getByRole('button', { name: 'Graph', exact: true }).click()
+  await page.getByRole('button', { name: 'Canon', exact: true }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
   if (await graph.getByText(cardTitle).count()) {

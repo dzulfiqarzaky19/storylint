@@ -89,7 +89,7 @@ async function shot(page, name) {
 }
 
 async function openGraph(page) {
-  await page.getByRole('button', { name: /^Graph$/i }).click()
+  await page.getByRole('button', { name: /^Canon$/i }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor({ timeout: 10000 })
   return graph

@@ -449,19 +449,19 @@ try {
   }
   results.jobs.multiProject = multiOk
 
-  for (const name of ['Research', 'Graph']) {
+  for (const name of ['Research', 'Canon']) {
     const btn = page.getByRole('button', { name: new RegExp('^' + name + '$', 'i') })
     if (await btn.count()) {
       await btn.first().click()
       await page.waitForTimeout(500)
       await shot(page, '13-' + name.toLowerCase())
       ok(name + ' surface opened')
-      if (name === 'Graph') {
+      if (name === 'Canon') {
         const contVisible = await page.locator('button.shell__action-continuity').count()
         if (contVisible !== 0) {
-          results.shouldFix.push('Continuity still visible outside Draft (Graph)')
-          warn('Continuity draft-only violated on Graph')
-        } else ok('Continuity draft-only on Graph')
+          results.shouldFix.push('Continuity still visible outside Draft (Canon)')
+          warn('Continuity draft-only violated on Canon')
+        } else ok('Continuity draft-only on Canon')
       }
       results.jobs[name.toLowerCase()] = true
       const msBtn = page.getByRole('button', { name: /manuscript|editor|chapter/i })

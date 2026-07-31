@@ -35,7 +35,7 @@ async function seedCharacters(request) {
 }
 
 async function proposeAndAccept(page) {
-  await page.getByRole('button', { name: 'Graph' }).click()
+  await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
   const selects = graph.locator('.graph__editor select')
@@ -78,7 +78,7 @@ try {
 
   const narrow = await browser.newPage({ viewport: { width: 1024, height: 900 } })
   await narrow.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  await narrow.getByRole('button', { name: 'Graph' }).click()
+  await narrow.getByRole('button', { name: 'Canon' }).click()
   const narrowGraph = narrow.getByRole('main', { name: 'Relationship graph' })
   await narrowGraph.waitFor()
   await narrowGraph.getByRole('button', { name: 'Family', exact: true }).click()

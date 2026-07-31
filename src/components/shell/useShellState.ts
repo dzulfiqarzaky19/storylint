@@ -8,6 +8,51 @@ const BP_LG = '(min-width: 1024px)'
 export type ShellLayout = 'compact' | 'medium' | 'wide'
 export type ShellRegion = 'binder' | 'agent'
 
+/** Last Canon thing opened in a project: map center or a binder sheet. */
+export type CanonLastOpened =
+  | { kind: 'map' }
+  | { kind: 'sheet'; sheetId: string }
+
+const CANON_LAST_KEY = 'storylint.canonLastOpened.v1'
+
+function readCanonMap(): Record<string, CanonLastOpened> {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = window.localStorage.getItem(CANON_LAST_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as Record<string, CanonLastOpened>
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+function writeCanonMap(map: Record<string, CanonLastOpened>) {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(CANON_LAST_KEY, JSON.stringify(map))
+  } catch {
+    // ignore quota / private mode
+  }
+}
+
+export function getCanonLastOpened(projectId: string): CanonLastOpened | null {
+  const entry = readCanonMap()[projectId]
+  if (!entry) return null
+  if (entry.kind === 'map') return { kind: 'map' }
+  if (entry.kind === 'sheet' && typeof entry.sheetId === 'string' && entry.sheetId) {
+    return { kind: 'sheet', sheetId: entry.sheetId }
+  }
+  return null
+}
+
+export function setCanonLastOpened(projectId: string, value: CanonLastOpened) {
+  if (!projectId) return
+  const map = readCanonMap()
+  map[projectId] = value
+  writeCanonMap(map)
+}
+
 const queries = new Map<string, MediaQueryList>()
 
 function mql(query: string): MediaQueryList {
@@ -75,6 +120,9 @@ export type ShellState = {
   toggle: (region: ShellRegion) => void
   closeDrawer: () => void
   toggleFocus: () => void
+  /** Per-project Canon landing memory (map or sheet). */
+  getCanonLastOpened: (projectId: string) => CanonLastOpened | null
+  setCanonLastOpened: (projectId: string, value: CanonLastOpened) => void
 }
 
 /**
@@ -136,6 +184,8 @@ export function useShellState(): ShellState {
       },
       closeDrawer: () => setDrawer(null),
       toggleFocus: () => setFocus((prev) => !prev),
+      getCanonLastOpened,
+      setCanonLastOpened,
     }
   }, [layout, focus, rails, drawer, railAllowed])
 }

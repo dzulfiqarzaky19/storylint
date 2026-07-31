@@ -41,7 +41,7 @@ try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   await page.reload({ waitUntil: 'networkidle' })
   const manuscriptBody = await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue()
-  await page.getByRole('button', { name: 'Graph' }).click()
+  await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
   const nodesBefore = await graph.locator('.graph__node').count()
