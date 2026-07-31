@@ -116,10 +116,10 @@ function run(command, args, { allowFail = false, env } = {}) {
   const resolved = resolveCmd(command)
   const printable = [resolved, ...args].map(shellQuote).join(' ')
   console.log(`\n$ ${printable}\n`)
-  // shell:true on Windows so .cmd shims resolve; stdio still fully inherited.
+  // npm.cmd/git.exe resolved above; never shell:true (args would be unescaped).
   const result = spawnSync(resolved, args, {
     stdio: 'inherit',
-    shell: IS_WIN,
+    shell: false,
     env: env ? { ...process.env, ...env } : process.env,
   })
   if (result.error) {
@@ -140,7 +140,7 @@ function shellQuote(value) {
 function gitCapture(args) {
   const result = spawnSync(resolveCmd('git'), args, {
     encoding: 'utf8',
-    shell: IS_WIN,
+    shell: false,
   })
   if (result.error) fail(`git spawn failed: ${result.error.message}`)
   if (result.status !== 0) {
@@ -153,7 +153,7 @@ function gitCapture(args) {
 function gitOk(args) {
   const result = spawnSync(resolveCmd('git'), args, {
     encoding: 'utf8',
-    shell: IS_WIN,
+    shell: false,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   return (result.status ?? 1) === 0
