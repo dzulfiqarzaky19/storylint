@@ -11,6 +11,7 @@ import type { ReviewKind } from '../../review/types.ts'
 import { ReviewCard } from '../../features/agent/ReviewCard.tsx'
 import type { ProposalEdits } from '../../features/project/api.ts'
 import { Badge, Button, EmptyState, IconButton, Textarea } from '../ui'
+import type { AgentBusyOp } from '../../features/agent/useAgent.ts'
 import type { TranscriptEntry } from './workspace'
 import './shell.css'
 import './AgentPanel.css'
@@ -85,6 +86,8 @@ export type AgentPanelProps = {
   onEditProposal: (id: string, edits: ProposalEdits) => Promise<void>
   onRejectProposal: (id: string) => Promise<void>
   sending: boolean
+  /** Which control started the single in-flight agent job. Null when idle. */
+  busyOp?: AgentBusyOp | null
   llmMode: 'fixture' | 'live' | null
   selection: { start: number; end: number; text: string }
   onGenerateCowrite: (skill: CowriteSkill, instruction: string) => Promise<void>
@@ -92,7 +95,7 @@ export type AgentPanelProps = {
   onDismissCard: (id: string) => void
   onRunReview: (kind: ReviewKind) => Promise<void>
   onAddCraftTags: (tags: CraftTag[]) => void
-  onSend: (text: string) => void
+  onSend: (text: string, op?: AgentBusyOp) => void
   onSparkPreset?: (kind: 'place' | 'character-spark' | 'beat' | 'what-if') => void
   onAddChapter?: () => void
   onClose?: () => void
@@ -102,7 +105,7 @@ export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
-  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
+  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
@@ -192,7 +195,15 @@ export function AgentPanel({
   const assistantBusy = sending || continuityRunning
   // AU-2/AU-6: agent-lane busy live mirrors Check Continuity. Continuity keeps face-local live;
   // suppress the shared line while Continuity runs so two polite regions do not queue the same fact.
-  const agentBusyLive = sending && !continuityRunning ? 'Working…' : ''
+  // Derive from busyOp so announce names only the real in-flight agent job (not Continuity).
+  const agentBusyLive = busyOp && !continuityRunning ? 'Working…' : ''
+  /** Label + aria-busy for THIS control only. disabled stays assistantBusy. */
+  function opActive(op: AgentBusyOp) {
+    return busyOp === op
+  }
+  function opLabel(op: AgentBusyOp, idle: string) {
+    return opActive(op) ? 'Working…' : idle
+  }
 
   const continuityState = continuityRunning
     ? 'running'
@@ -202,10 +213,10 @@ export function AgentPanel({
         ? 'ready'
         : 'idle'
 
-  function send() {
+  function send(op: AgentBusyOp = 'send') {
     const text = draft.trim()
     if (!text || assistantBusy) return
-    onSend(text)
+    onSend(text, op)
     setDraft('')
   }
 
@@ -496,18 +507,26 @@ export function AgentPanel({
                 disabled={assistantBusy}
               />
               <div className="agent__cowrite-actions" aria-label="Co-write skills">
-                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => generate('continue')}>
-                  {assistantBusy ? 'Working…' : 'Continue'}
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('continue') || undefined}
+                  onClick={() => generate('continue')}
+                >
+                  {opLabel('continue', 'Continue')}
                 </Button>
                 <Button
                   disabled={assistantBusy || selection.start === selection.end}
-                  aria-busy={assistantBusy || undefined}
+                  aria-busy={opActive('rewrite') || undefined}
                   onClick={() => generate('rewrite')}
                 >
-                  {assistantBusy ? 'Working…' : 'Rewrite'}
+                  {opLabel('rewrite', 'Rewrite')}
                 </Button>
-                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => generate('brainstorm')}>
-                  {assistantBusy ? 'Working…' : 'Brainstorm'}
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('brainstorm') || undefined}
+                  onClick={() => generate('brainstorm')}
+                >
+                  {opLabel('brainstorm', 'Brainstorm')}
                 </Button>
               </div>
             </div>
@@ -562,13 +581,25 @@ export function AgentPanel({
                   variant="primary"
                   disabled={assistantBusy}
                   data-continuity-state={continuityState}
-                  aria-busy={assistantBusy || undefined}
+                  aria-busy={continuityRunning || undefined}
                   onClick={() => void onRunContinuity().catch(() => undefined)}
                 >
                   {continuityRunning ? 'Working…' : 'Run Continuity'}
                 </Button>
-                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => void onRunReview('review').catch(() => undefined)}>{sending ? 'Working…' : 'Review'}</Button>
-                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => void onRunReview('craft').catch(() => undefined)}>{sending ? 'Working…' : 'Craft'}</Button>
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('review') || undefined}
+                  onClick={() => void onRunReview('review').catch(() => undefined)}
+                >
+                  {opLabel('review', 'Review')}
+                </Button>
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('craft') || undefined}
+                  onClick={() => void onRunReview('craft').catch(() => undefined)}
+                >
+                  {opLabel('craft', 'Craft')}
+                </Button>
               </div>
             </div>
           </>
@@ -579,10 +610,34 @@ export function AgentPanel({
           <div className="panel__footer">
             <p className="continuity-privacy">One tap seeds a brainstorm prompt. Cards land on the Lab bench only.</p>
             <div className="agent__cowrite-actions" aria-label="Spark presets">
-              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>{assistantBusy ? 'Working…' : 'Place'}</Button>
-              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>{assistantBusy ? 'Working…' : 'Character'}</Button>
-              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>{assistantBusy ? 'Working…' : 'Beat'}</Button>
-              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>{assistantBusy ? 'Working…' : 'What-if'}</Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('place') || undefined}
+                onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board', 'place')}
+              >
+                {opLabel('place', 'Place')}
+              </Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('character-spark') || undefined}
+                onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench', 'character-spark')}
+              >
+                {opLabel('character-spark', 'Character')}
+              </Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('beat') || undefined}
+                onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab', 'beat')}
+              >
+                {opLabel('beat', 'Beat')}
+              </Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('what-if') || undefined}
+                onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab', 'what-if')}
+              >
+                {opLabel('what-if', 'What-if')}
+              </Button>
             </div>
           </div>
         </>
@@ -605,13 +660,13 @@ export function AgentPanel({
               <Button
                 variant="primary"
                 disabled={assistantBusy}
-                aria-busy={assistantBusy || undefined}
+                aria-busy={opActive('propose') || undefined}
                 onClick={() => {
-                  if (draft.trim()) send()
-                  else onSend(`Draft a character sheet pack for ${chapterTitle}`)
+                  if (draft.trim()) send('propose')
+                  else onSend(`Draft a character sheet pack for ${chapterTitle}`, 'propose')
                 }}
               >
-                {assistantBusy ? 'Working…' : 'Propose'}
+                {opLabel('propose', 'Propose')}
               </Button>
             </div>
           </div>
@@ -671,11 +726,11 @@ export function AgentPanel({
             <div className="agent__composer-actions">
               <Button
                 variant="primary"
-                onClick={send}
+                onClick={() => send('send')}
                 disabled={assistantBusy || draft.trim().length === 0}
-                aria-busy={assistantBusy || undefined}
+                aria-busy={opActive('send') || undefined}
               >
-                {assistantBusy ? 'Working…' : 'Send'}
+                {opLabel('send', 'Send')}
               </Button>
             </div>
           </div>

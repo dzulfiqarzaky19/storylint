@@ -5,6 +5,20 @@ import { requestCowrite, requestReview, sendChat } from '../project/api.ts'
 import type { ReviewKind } from '../../review/types.ts'
 import type { ApplyCard, CowriteRequest } from '../../cowrite/types.ts'
 
+/** Which control started the single in-flight agent job. Not concurrency / not run ids. */
+export type AgentBusyOp =
+  | 'send'
+  | 'propose'
+  | 'continue'
+  | 'rewrite'
+  | 'brainstorm'
+  | 'review'
+  | 'craft'
+  | 'place'
+  | 'character-spark'
+  | 'beat'
+  | 'what-if'
+
 export function useAgent(
   onProject: (project: Project, generation?: number) => void,
   applySuggestion: (card: ApplyCard) => Promise<Project>,
@@ -14,10 +28,28 @@ export function useAgent(
 ) {
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([])
   const [sending, setSending] = useState(false)
+  const [busyOp, setBusyOp] = useState<AgentBusyOp | null>(null)
   const [llmMode, setLlmMode] = useState<'fixture' | 'live' | null>(null)
   const sessionRef = useRef(0)
 
-  async function send(chapterId: string, text: string, prepare?: () => Promise<void>) {
+  function beginAgentJob(op: AgentBusyOp) {
+    setBusyOp(op)
+    setSending(true)
+  }
+
+  function endAgentJob(session: number, generation: number) {
+    if (session === sessionRef.current && generation === projectGeneration()) {
+      setBusyOp(null)
+      setSending(false)
+    }
+  }
+
+  async function send(
+    chapterId: string,
+    text: string,
+    prepare?: () => Promise<void>,
+    op: AgentBusyOp = 'send',
+  ) {
     if (sending) {
       setTranscript((current) => [
         ...current,
@@ -40,7 +72,7 @@ export function useAgent(
     const session = sessionRef.current
     const id = Date.now()
     setTranscript((current) => [...current, { id: `user-${id}`, role: 'user', text }])
-    setSending(true)
+    beginAgentJob(op)
     try {
       const result = await trackMutation((async () => {
         if (prepare) await prepare()
@@ -64,7 +96,7 @@ export function useAgent(
         { id: `assistant-error-${id}`, role: 'assistant', text: `Could not complete that request: ${message}` },
       ])
     } finally {
-      if (session === sessionRef.current && generation === projectGeneration()) setSending(false)
+      endAgentJob(session, generation)
     }
   }
 
@@ -73,7 +105,7 @@ export function useAgent(
     const generation = beginMutation()
     if (generation === null) return
     const session = sessionRef.current
-    setSending(true)
+    beginAgentJob(kind)
     try {
       const result = await trackMutation((async () => {
         if (prepare) await prepare()
@@ -95,7 +127,7 @@ export function useAgent(
         { id: `review-error-${Date.now()}`, role: 'assistant', text: `Could not run review: ${message}` },
       ])
     } finally {
-      if (session === sessionRef.current && generation === projectGeneration()) setSending(false)
+      endAgentJob(session, generation)
     }
   }
 
@@ -104,7 +136,7 @@ export function useAgent(
     const generation = beginMutation()
     if (generation === null) return
     const session = sessionRef.current
-    setSending(true)
+    beginAgentJob(request.skill)
     try {
       const result = await trackMutation((async () => {
         if (prepare) await prepare()
@@ -126,7 +158,7 @@ export function useAgent(
         { id: `cowrite-error-${Date.now()}`, role: 'assistant', text: `Could not draft that: ${message}` },
       ])
     } finally {
-      if (session === sessionRef.current && generation === projectGeneration()) setSending(false)
+      endAgentJob(session, generation)
     }
   }
 
@@ -174,12 +206,14 @@ export function useAgent(
     sessionRef.current += 1
     setTranscript([])
     setSending(false)
+    setBusyOp(null)
     setLlmMode(null)
   }, [])
 
   return {
     transcript,
     sending,
+    busyOp,
     llmMode,
     send,
     generateCowrite,
