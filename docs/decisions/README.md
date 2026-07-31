@@ -76,6 +76,7 @@ Short list only — do not grow into a second backlog novel.
 5. **Empty-Canon Send proposal weight** — ruled; octopus implementing (demote/primary weight on empty Canon propose path).
 
 6. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'` — badger, proven bare 5/5). Why horse/dolphin bare trees failed is **not established**. Ambient-gitignored-data mechanism **disproven** (server always synthesises `default`).
+7. **Eighteen `reload`+`networkidle` sites remain** outside the slice-j fix (badger sweeping). **Two are inside `calm-budget.mjs`** — gate correctness, not only speed.
 
 ### Closed this session (do not re-open without new evidence)
 
