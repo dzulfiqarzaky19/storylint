@@ -70,6 +70,8 @@ Illegal:
 
 Companion faces are **modes of help**, not Level-2 places.
 
+**Ruling — depth counts navigation steps, not screen regions.** A sheet opened in the binder detail stack is still the Level-3 Canon thing (Home → Canon → Sheet Kael = depth 3). No separate center sheet surface is required.
+
 ---
 
 ## 3. Shell skeleton (one frame)
@@ -97,14 +99,13 @@ Companion faces are **modes of help**, not Level-2 places.
 
 ## 4. Center workspace map
 
-Only **one** center surface at a time.
+Only **one** center surface at a time. (Canon sheet is a Level-3 thing in the binder detail stack, not a center surface — see §2 ruling.)
 
 | Target surface | Ecosystem | Current | Primary content | Status |
 |----------------|-----------|---------|-----------------|--------|
 | Draft page | Draft | Manuscript | Chapter title + body + marks + reading | **ships** + **rename** |
 | Lab bench | Lab | LabBench | Boards + cards + promote | **ships** |
 | Canon map | Canon | RelationshipGraph | Network / family of **accepted** links | **ships** + **partial** (peer mode button) |
-| Canon sheet | Canon | SheetEditor in binder/details | Sheet + facts | **ships** + **rename** |
 
 ### 4.1 Draft (center)
 
@@ -149,6 +150,8 @@ Faces: Chat · Write · Check · Research · Inbox
 | **Send to Draft** | chapter stub in Draft | Promote beat → `chapter-stub` | **ships** + **rename** (button still “Promote”) |
 | **Promote to Canon** | pending sheet proposal → Accept | Promote character/place/lore → proposal pack | **ships** + **rename** (same Promote; copy already says Accept in Inbox) |
 
+**Ruling — post-exit navigation:** **Send to Draft** jumps to the new stub in Draft. **Promote to Canon** stays in Lab; Accept happens via Inbox.
+
 **Companion context when Lab center:** `lab`  
 Faces: Chat · Spark · Inbox
 
@@ -171,7 +174,9 @@ Faces: Chat · Inspect · Inbox
 
 **IA note:** Graph is **Canon’s map**, not ecosystem #4. Top-level control should eventually sit under Canon entry, not equal “product mode” forever. **partial**
 
-### 4.4 Canon sheet (details)
+### 4.4 Canon sheet (binder detail stack)
+
+**Where:** binder detail stack (per §2 ruling), not a center surface.
 
 **In**
 
@@ -219,7 +224,7 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 
 | Control | When | Target treatment | Status |
 |---------|------|------------------|--------|
-| Continuity | Draft + has chapter | Prefer Companion **Check**; top button optional shortcut | **partial** (always top-level) |
+| Continuity | Draft + has chapter | **Ruling:** Check is primary. Top Continuity stays as a Draft-only shortcut through S1, then demotes to overflow once Check is discoverable | **partial** (always top-level) |
 | Export / New project | Rare | Overflow under project switcher | **partial** (S1) |
 | Duplicate project title (h1 + switcher) | Never | Single identity | **partial** (S1) |
 
@@ -231,7 +236,7 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 | **Lab** | Lab | Keep word Lab |
 | **Canon** | Graph (only map) | Canon entry should open sheets-or-map; map is one Canon view |
 
-**missing:** single **Canon** entry that can land on last sheet or map without making Graph a fourth kingdom.
+**Ruling — Canon landing:** the single **Canon** entry lands on the **map** on first visit, then on the **last-opened Canon thing** (sheet or map). Map is one Canon view, never a peer mode. Entry itself is still **missing**.
 
 ---
 
@@ -245,6 +250,8 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 | lab | Lab center | Chat, Spark, Inbox | **ships** |
 | details | Sheet edit | Chat, Fill, Research, Inbox | **ships** |
 | graph | Canon map | Chat, Inspect, Inbox | **ships** |
+
+**Ruling — details trigger:** `details` context activates while a sheet is open for edit (including from the binder stack); closing the sheet returns the companion to the center context.
 
 ### 7.2 Face jobs
 
@@ -340,6 +347,7 @@ No wizard. Two doors max.
 | Promote (both exits) | **Send to Draft** / **Promote to Canon** | high |
 | Companion faces | keep; they’re good | — |
 | Lab | Lab | keep |
+| Binder sections (unlabeled) | **Draft / Canon / Lab** group labels | high |
 
 ---
 
@@ -383,7 +391,7 @@ No wizard. Two doors max.
 
 ## 15. Next build order (after this map)
 
-1. **Naming + entry** — Draft label, Promote split copy, empty-project two doors  
+1. **Naming + entry** — Draft label, Promote split copy, empty-project two doors, binder group labels  
 2. **Calm top bar** — S1 identity/overflow; Continuity demoted to Check-primary  
 3. **Canon entry** — Graph as Canon map, not peer kingdom  
 4. Only then polish density inside each surface  
