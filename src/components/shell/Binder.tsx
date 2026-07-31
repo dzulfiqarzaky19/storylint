@@ -216,7 +216,7 @@ export function Binder({
       </div>
       {sheets.length === 0 ? (
         <div className="panel__empty-row" role="status">
-          World truth lives here. Add a sheet, or promote from Lab.
+          Add a sheet, or promote from Lab.
         </div>
       ) : null}
       {SHEET_KINDS.map((kind: SheetKind) => {
@@ -259,7 +259,7 @@ export function Binder({
         <span className="binder__count" aria-label={`${boards.length} boards`}>{boards.length}</span>
       </div>
       {boards.length === 0 ? (
-        <div className="panel__empty-row" role="status">No boards yet. Open Lab to start a bench.</div>
+        <div className="panel__empty-row" role="status">Open Lab to start a bench.</div>
       ) : (
         boards.map((board) => {
           const live = (lab?.cards ?? []).filter(
