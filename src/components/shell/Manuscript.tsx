@@ -123,7 +123,8 @@ export function Manuscript({
                 aria-label="Chapter title"
                 readOnly={readOnly}
               />
-              <div className="manuscript__meta" aria-live="polite">
+              {/* AU-8: counts are ambient chrome, not live — keystroke narration is unusable. */}
+              <div className="manuscript__meta">
                 <span>
                   {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
                 </span>

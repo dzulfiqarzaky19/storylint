@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+// AU screen-reader: one busy dialect + Inbox live (mirror Check Continuity). Method = DOM/ARIA sampling.
 import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
@@ -110,12 +111,28 @@ export function AgentPanel({
   const moreRef = useRef<HTMLDivElement | null>(null)
   // Session memory only: last face per ecosystem context. Reload still defaults to Chat.
   const lastFaceByContext = useRef<Partial<Record<CompanionContext, CompanionFace>>>({})
+  /** AU-1: announce only on pending-count *change*, not first mount (load noise). */
+  const prevPendingCountRef = useRef<number | null>(null)
+  const [inboxLiveText, setInboxLiveText] = useState('')
   const allowed = FACES[companionContext]
   const primaries = PRIMARY_FACES[companionContext]
   const overflow = allowed.filter((candidate) => candidate !== 'inbox' && !primaries.includes(candidate))
   const applyCards = transcript.filter((entry) => entry.role === 'apply')
   const pendingCount = proposals.length + applyCards.length
   const hasChapter = (project?.chapters?.length ?? 0) > 0
+
+  useEffect(() => {
+    const prev = prevPendingCountRef.current
+    prevPendingCountRef.current = pendingCount
+    if (prev === null || prev === pendingCount) return
+    if (pendingCount === 0) {
+      setInboxLiveText(prev > 0 ? 'Inbox clear' : '')
+      return
+    }
+    setInboxLiveText(
+      pendingCount === 1 ? 'Inbox: 1 pending item' : `Inbox: ${pendingCount} pending items`,
+    )
+  }, [pendingCount])
 
   useEffect(() => {
     const remembered = lastFaceByContext.current[companionContext]
@@ -173,6 +190,9 @@ export function AgentPanel({
 
   // One assistant, one job: agent lane and Continuity share a single busy gate.
   const assistantBusy = sending || continuityRunning
+  // AU-2/AU-6: agent-lane busy live mirrors Check Continuity. Continuity keeps face-local live;
+  // suppress the shared line while Continuity runs so two polite regions do not queue the same fact.
+  const agentBusyLive = sending && !continuityRunning ? 'Working…' : ''
 
   const continuityState = continuityRunning
     ? 'running'
@@ -334,7 +354,19 @@ export function AgentPanel({
   }
 
   return (
-    <div className="panel" data-companion-context={companionContext} data-companion-face={face}>
+    <div
+      className="panel"
+      data-companion-context={companionContext}
+      data-companion-face={face}
+      aria-busy={assistantBusy || undefined}
+    >
+      {/* AU-1 Inbox + AU-2 agent busy: one shared polite channel each. Check Continuity keeps its own live. */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true" data-au-live="inbox">
+        {inboxLiveText}
+      </div>
+      <div className="sr-only" aria-live="polite" aria-atomic="true" data-au-live="assistant-busy">
+        {agentBusyLive}
+      </div>
       <div className="panel__header">
         <h2 className="panel__title">Companion</h2>
         {onClose ? <IconButton label="Close companion" onClick={onClose}>✕</IconButton> : null}
@@ -417,7 +449,7 @@ export function AgentPanel({
         <ResearchPanel project={project} onProject={onProject} beginMutation={beginMutation} trackMutation={trackMutation} />
       ) : face === 'inbox' ? (
         <div className="agent__transcript" aria-label="Companion inbox">
-          {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+          {statusLine ? <p className="continuity-privacy" aria-live="polite">{statusLine}</p> : null}
           {pendingCount === 0 ? (
             <EmptyState title="Inbox clear" hint="Things arrive here from Continuity on Check, Send proposal in Canon, and Apply cards from co-write on Write. Accept/Edit/Reject stay gated until something is pending." />
           ) : (
@@ -464,16 +496,17 @@ export function AgentPanel({
                 disabled={assistantBusy}
               />
               <div className="agent__cowrite-actions" aria-label="Co-write skills">
-                <Button disabled={assistantBusy} onClick={() => generate('continue')}>
+                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => generate('continue')}>
                   {assistantBusy ? 'Working…' : 'Continue'}
                 </Button>
                 <Button
                   disabled={assistantBusy || selection.start === selection.end}
+                  aria-busy={assistantBusy || undefined}
                   onClick={() => generate('rewrite')}
                 >
                   {assistantBusy ? 'Working…' : 'Rewrite'}
                 </Button>
-                <Button disabled={assistantBusy} onClick={() => generate('brainstorm')}>
+                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => generate('brainstorm')}>
                   {assistantBusy ? 'Working…' : 'Brainstorm'}
                 </Button>
               </div>
@@ -529,13 +562,13 @@ export function AgentPanel({
                   variant="primary"
                   disabled={assistantBusy}
                   data-continuity-state={continuityState}
-                  aria-busy={continuityRunning}
+                  aria-busy={assistantBusy || undefined}
                   onClick={() => void onRunContinuity().catch(() => undefined)}
                 >
                   {continuityRunning ? 'Working…' : 'Run Continuity'}
                 </Button>
-                <Button disabled={assistantBusy} onClick={() => void onRunReview('review').catch(() => undefined)}>{sending ? 'Working…' : 'Review'}</Button>
-                <Button disabled={assistantBusy} onClick={() => void onRunReview('craft').catch(() => undefined)}>{sending ? 'Working…' : 'Craft'}</Button>
+                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => void onRunReview('review').catch(() => undefined)}>{sending ? 'Working…' : 'Review'}</Button>
+                <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => void onRunReview('craft').catch(() => undefined)}>{sending ? 'Working…' : 'Craft'}</Button>
               </div>
             </div>
           </>
@@ -546,10 +579,10 @@ export function AgentPanel({
           <div className="panel__footer">
             <p className="continuity-privacy">One tap seeds a brainstorm prompt. Cards land on the Lab bench only.</p>
             <div className="agent__cowrite-actions" aria-label="Spark presets">
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>{assistantBusy ? 'Working…' : 'Place'}</Button>
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>{assistantBusy ? 'Working…' : 'Character'}</Button>
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>{assistantBusy ? 'Working…' : 'Beat'}</Button>
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>{assistantBusy ? 'Working…' : 'What-if'}</Button>
+              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>{assistantBusy ? 'Working…' : 'Place'}</Button>
+              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>{assistantBusy ? 'Working…' : 'Character'}</Button>
+              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>{assistantBusy ? 'Working…' : 'Beat'}</Button>
+              <Button disabled={assistantBusy} aria-busy={assistantBusy || undefined} onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>{assistantBusy ? 'Working…' : 'What-if'}</Button>
             </div>
           </div>
         </>
@@ -572,6 +605,7 @@ export function AgentPanel({
               <Button
                 variant="primary"
                 disabled={assistantBusy}
+                aria-busy={assistantBusy || undefined}
                 onClick={() => {
                   if (draft.trim()) send()
                   else onSend(`Draft a character sheet pack for ${chapterTitle}`)
@@ -588,7 +622,7 @@ export function AgentPanel({
             title="Inspect accepted links"
             hint="Select a node in Graph to open its sheet. Pending edges never render until Accept."
           />
-          {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+          {statusLine ? <p className="continuity-privacy" aria-live="polite">{statusLine}</p> : null}
         </div>
       ) : !hasChapter ? (
         <div className="agent__transcript" aria-label="Chat rest">
@@ -635,7 +669,12 @@ export function AgentPanel({
               rows={3}
             />
             <div className="agent__composer-actions">
-              <Button variant="primary" onClick={send} disabled={assistantBusy || draft.trim().length === 0}>
+              <Button
+                variant="primary"
+                onClick={send}
+                disabled={assistantBusy || draft.trim().length === 0}
+                aria-busy={assistantBusy || undefined}
+              >
                 {assistantBusy ? 'Working…' : 'Send'}
               </Button>
             </div>
