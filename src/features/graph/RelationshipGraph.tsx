@@ -6,6 +6,12 @@ import { proposeGraphEdge } from '../project/api.ts'
 import { Button, EmptyState, Input } from '../../components/ui'
 import './graph.css'
 
+/** Dense network: hide non-active labels to stop collisions. */
+const NETWORK_DENSE_NODE_THRESHOLD = 8
+/** Always truncate network labels; full name stays on title/aria. */
+const NETWORK_LABEL_MAX = 10
+const NETWORK_EDGE_LABEL_MAX = 14
+
 function readTokenPx(name: string, fallback: number): number {
   if (typeof document === 'undefined') return fallback
   const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
@@ -13,11 +19,20 @@ function readTokenPx(name: string, fallback: number): number {
   return Number.isFinite(value) ? value : fallback
 }
 
-function graphGeometry() {
+function graphGeometry(phone: boolean) {
   const width = readTokenPx('--size-graph-view-w', 800)
   const height = readTokenPx('--size-graph-view-h', 520)
   const networkNodeRadius = readTokenPx('--size-graph-network-node', 56) / 2
   const networkLabelY = networkNodeRadius + readTokenPx('--space-5', 20)
+  const touch = readTokenPx('--size-touch-min', 44)
+  const familyBase = readTokenPx('--size-graph-node', 76)
+  // Phone family: larger cards, more vertical gap, labels sit below portrait.
+  const familyNodeW = phone
+    ? Math.max(touch * 2.5, familyBase + readTokenPx('--space-8', 32))
+    : familyBase + readTokenPx('--space-8', 32)
+  const familyNodeH = phone
+    ? Math.max(touch * 2.25, familyBase + readTokenPx('--space-8', 32))
+    : familyBase + readTokenPx('--space-3', 12)
   return {
     width,
     height,
@@ -28,13 +43,20 @@ function graphGeometry() {
     networkNodeRadius,
     networkLabelY,
     networkKindY: networkLabelY + readTokenPx('--space-4', 16),
-    familyNodeW: readTokenPx('--size-graph-node', 76) + readTokenPx('--space-8', 32),
-    familyNodeH: readTokenPx('--size-graph-node', 76) + readTokenPx('--space-3', 12),
-    familyGapX: readTokenPx('--space-8', 32) + readTokenPx('--space-4', 16),
-    familyGapY: readTokenPx('--space-12', 48) + readTokenPx('--space-8', 32),
-    familyPad: readTokenPx('--space-8', 32) + readTokenPx('--space-4', 16),
+    familyNodeW,
+    familyNodeH,
+    familyGapX: phone
+      ? readTokenPx('--space-6', 24)
+      : readTokenPx('--space-8', 32) + readTokenPx('--space-4', 16),
+    familyGapY: phone
+      ? readTokenPx('--space-12', 48) + readTokenPx('--space-6', 24)
+      : readTokenPx('--space-12', 48) + readTokenPx('--space-8', 32),
+    familyPad: phone
+      ? readTokenPx('--space-6', 24)
+      : readTokenPx('--space-8', 32) + readTokenPx('--space-4', 16),
     parallax: readTokenPx('--space-3', 12),
     radiusLg: readTokenPx('--radius-lg', 8),
+    touch,
   }
 }
 
@@ -61,8 +83,10 @@ function networkPosition(index: number, count: number, geometry: ReturnType<type
   }
 }
 
-function networkLabel(label: string, dense: boolean): string {
-  return dense && label.length > 12 ? `${label.slice(0, 11).trimEnd()}…` : label
+function truncateLabel(label: string, max: number): string {
+  const trimmed = label.trim()
+  if (trimmed.length <= max) return trimmed
+  return `${trimmed.slice(0, Math.max(1, max - 1)).trimEnd()}…`
 }
 
 function pointsPath(points: Array<{ x: number; y: number }>): string {
@@ -94,8 +118,10 @@ export function RelationshipGraph({
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
   const [parallax, setParallax] = useState({ x: 0, y: 0 })
+  const [phone, setPhone] = useState(false)
+  const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
   const stageRef = useRef<HTMLDivElement | null>(null)
-  const geometry = useMemo(() => graphGeometry(), [])
+  const geometry = useMemo(() => graphGeometry(phone), [phone])
   const graph = useMemo(() => projectGraph(project, kinds), [project, kinds])
   const family = useMemo(() => layoutFamilyTree(graph, {
     nodeWidth: geometry.familyNodeW,
@@ -113,6 +139,7 @@ export function RelationshipGraph({
     () => new Map(family.positions.map((position) => [position.id, position])),
     [family.positions],
   )
+  const denseNetwork = graph.nodes.length >= NETWORK_DENSE_NODE_THRESHOLD
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -120,6 +147,15 @@ export function RelationshipGraph({
     const onChange = () => { if (media.matches) reset() }
     media.addEventListener('change', onChange)
     return () => media.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    // bp.sm — phone / narrow. Tokens doc: 640.
+    const media = window.matchMedia('(max-width: 640px)')
+    const sync = () => setPhone(media.matches)
+    sync()
+    media.addEventListener('change', sync)
+    return () => media.removeEventListener('change', sync)
   }, [])
 
   function toggleKind(kind: SheetKind) {
@@ -191,9 +227,29 @@ export function RelationshipGraph({
   }
 
   const empty = view === 'family' ? family.nodes.length === 0 : graph.nodes.length === 0
+  const editorTitle = targetFactId ? 'Propose edge edit' : 'Propose new edge'
+
+  const editorFields = (
+    <>
+      <label><span>From</span><select value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
+      <label><span>To</span><select value={to} onChange={(event) => setTo(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
+      <label><span>Relationship</span><Input value={key} onChange={(event) => setKey(event.target.value)} placeholder="father_of, member_of, rival…" /></label>
+      <label><span>Statement</span><Input value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Aria is a member of the Ember Order" /></label>
+      <Button variant="primary" disabled={busy || from === to || !statement.trim()} onClick={() => void propose()}>{busy ? 'Proposing…' : 'Send proposal'}</Button>
+      {notice ? <p role="status">{notice}</p> : null}
+    </>
+  )
 
   return (
-    <main id="workspace" className="graph" aria-label="Relationship graph" tabIndex={-1}>
+    <main
+      id="workspace"
+      className="graph"
+      data-graph-view={view}
+      data-graph-dense={denseNetwork ? 'true' : 'false'}
+      data-graph-phone={phone ? 'true' : 'false'}
+      aria-label="Relationship graph"
+      tabIndex={-1}
+    >
       <header className="graph__header">
         <div>
           <h2>Relationships</h2>
@@ -222,113 +278,173 @@ export function RelationshipGraph({
           />
         </div>
       ) : view === 'network' ? (
-        <svg className="graph__canvas" viewBox={`0 0 ${geometry.width} ${geometry.height}`} role="img" aria-label="Bible relationship network">
+        <svg
+          className="graph__canvas"
+          data-dense={denseNetwork ? 'true' : 'false'}
+          viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+          role="img"
+          aria-label="Bible relationship network"
+        >
           <defs><marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" /></marker></defs>
           {graph.edges.map((edge) => {
             const start = networkPositions.get(edge.from)
             const end = networkPositions.get(edge.to)
             if (!start || !end) return null
+            const fromLabel = graph.nodes.find((node) => node.id === edge.from)?.label ?? edge.from
+            const toLabel = graph.nodes.find((node) => node.id === edge.to)?.label ?? edge.to
             return (
               <g key={edge.id} className="graph__edge" role="button" tabIndex={0}
-                aria-label={`${edge.label}: ${graph.nodes.find((node) => node.id === edge.from)?.label} to ${graph.nodes.find((node) => node.id === edge.to)?.label}`}
+                aria-label={`${edge.label}: ${fromLabel} to ${toLabel}`}
                 onClick={() => editEdge(edge)} onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); editEdge(edge) }
                 }}>
+                <title>{edge.label}: {fromLabel} → {toLabel}</title>
                 <line x1={start.x} y1={start.y} x2={end.x} y2={end.y} markerEnd="url(#graph-arrow)" />
-                <text x={(start.x + end.x) / 2} y={(start.y + end.y) / 2}>{edge.label}</text>
+                {/* Dense: edge labels collide; keep full label on title/aria only. */}
+                {!denseNetwork ? (
+                  <text x={(start.x + end.x) / 2} y={(start.y + end.y) / 2}>
+                    {truncateLabel(edge.label, NETWORK_EDGE_LABEL_MAX)}
+                  </text>
+                ) : null}
               </g>
             )
           })}
           {graph.nodes.map((node) => {
             const position = networkPositions.get(node.id)
             if (!position) return null
+            const active = activeNodeId === node.id
+            const showText = !denseNetwork || active
             return (
-              <g key={node.id} className="graph__node" role="button" tabIndex={0}
+              <g
+                key={node.id}
+                className="graph__node"
+                data-active={active ? 'true' : 'false'}
+                role="button"
+                tabIndex={0}
                 aria-label={`Open ${node.label} ${node.kind} sheet`}
                 transform={`translate(${position.x} ${position.y})`}
-                onClick={() => onOpenSheet(node.id)} onKeyDown={(event) => {
+                onPointerEnter={() => setActiveNodeId(node.id)}
+                onPointerLeave={() => setActiveNodeId((current) => current === node.id ? null : current)}
+                onFocus={() => setActiveNodeId(node.id)}
+                onBlur={() => setActiveNodeId((current) => current === node.id ? null : current)}
+                onClick={() => onOpenSheet(node.id)}
+                onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
-                }}>
+                }}
+              >
                 <title>{node.label} · {node.kind}</title>
                 <circle r={geometry.networkNodeRadius} />
                 <text className="graph__portrait" textAnchor="middle" y="-4">{node.portrait || node.label.slice(0, 2).toUpperCase()}</text>
-                <text className="graph__label" textAnchor="middle" y={geometry.networkLabelY}>{networkLabel(node.label, graph.nodes.length > 12)}</text>
-                <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{node.kind}</text>
+                {showText ? (
+                  <>
+                    <text className="graph__label" textAnchor="middle" y={geometry.networkLabelY}>
+                      {truncateLabel(node.label, NETWORK_LABEL_MAX)}
+                    </text>
+                    <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{node.kind}</text>
+                  </>
+                ) : null}
               </g>
             )
           })}
         </svg>
       ) : (
-        <div
-          ref={stageRef}
-          className="graph__family-stage"
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
-        >
+        <>
           <div
-            className="graph__family-plane"
-            style={{ transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0)` }}
+            ref={stageRef}
+            className="graph__family-stage"
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
           >
-            <svg
-              className="graph__canvas graph__canvas--family"
-              viewBox={`0 0 ${family.width} ${family.height}`}
-              role="img"
-              aria-label="Bible family tree"
+            <div
+              className="graph__family-plane"
+              style={{ transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0)` }}
             >
-              {family.connectors.map((connector) => {
-                const link = family.links.find((candidate) => candidate.id === connector.id)
-                return (
-                  <g key={connector.id} className={`graph__edge graph__edge--${link?.kind ?? 'parent'}`} role="button" tabIndex={0}
-                    aria-label={link ? `${link.label}: ${link.from} to ${link.to}` : 'Family link'}
-                    onClick={() => link && editFamilyLink(link.edgeId)}
-                    onKeyDown={(event) => {
-                      if (!link) return
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault()
-                        editFamilyLink(link.edgeId)
-                      }
-                    }}
-                  >
-                    <path d={pointsPath(connector.points)} />
-                  </g>
-                )
-              })}
-              {family.nodes.map((node) => {
-                const position = familyPositions.get(node.id)
-                if (!position) return null
-                const x = position.x - geometry.familyNodeW / 2
-                const y = position.y - geometry.familyNodeH / 2
-                return (
-                  <g key={node.id} className="graph__node graph__node--family" role="button" tabIndex={0}
-                    aria-label={`Open ${node.label} ${node.kind} sheet`}
-                    transform={`translate(${x} ${y})`}
-                    onClick={() => onOpenSheet(node.id)} onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
-                    }}>
-                    <rect width={geometry.familyNodeW} height={geometry.familyNodeH} rx={geometry.radiusLg} ry={geometry.radiusLg} />
-                    <text className="graph__portrait" textAnchor="middle" x={geometry.familyNodeW / 2} y={geometry.familyNodeH * 0.42}>
-                      {node.portrait || node.label.slice(0, 2).toUpperCase()}
-                    </text>
-                    <text className="graph__label" textAnchor="middle" x={geometry.familyNodeW / 2} y={geometry.familyNodeH * 0.72}>
-                      {node.label}
-                    </text>
-                  </g>
-                )
-              })}
-            </svg>
+              <svg
+                className="graph__canvas graph__canvas--family"
+                viewBox={`0 0 ${family.width} ${family.height}`}
+                width={family.width}
+                height={family.height}
+                role="img"
+                aria-label="Bible family tree"
+              >
+                {family.connectors.map((connector) => {
+                  const link = family.links.find((candidate) => candidate.id === connector.id)
+                  return (
+                    <g key={connector.id} className={`graph__edge graph__edge--${link?.kind ?? 'parent'}`} role="button" tabIndex={0}
+                      aria-label={link ? `${link.label}: ${link.from} to ${link.to}` : 'Family link'}
+                      onClick={() => link && editFamilyLink(link.edgeId)}
+                      onKeyDown={(event) => {
+                        if (!link) return
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault()
+                          editFamilyLink(link.edgeId)
+                        }
+                      }}
+                    >
+                      <path d={pointsPath(connector.points)} />
+                    </g>
+                  )
+                })}
+                {family.nodes.map((node) => {
+                  const position = familyPositions.get(node.id)
+                  if (!position) return null
+                  const x = position.x - geometry.familyNodeW / 2
+                  const y = position.y - geometry.familyNodeH / 2
+                  const portraitY = phone ? geometry.familyNodeH * 0.36 : geometry.familyNodeH * 0.42
+                  const labelY = phone ? geometry.familyNodeH * 0.78 : geometry.familyNodeH * 0.72
+                  return (
+                    <g key={node.id} className="graph__node graph__node--family" role="button" tabIndex={0}
+                      aria-label={`Open ${node.label} ${node.kind} sheet`}
+                      transform={`translate(${x} ${y})`}
+                      onClick={() => onOpenSheet(node.id)} onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
+                      }}>
+                      <title>{node.label}</title>
+                      <rect width={geometry.familyNodeW} height={geometry.familyNodeH} rx={geometry.radiusLg} ry={geometry.radiusLg} />
+                      <text className="graph__portrait" textAnchor="middle" x={geometry.familyNodeW / 2} y={portraitY}>
+                        {node.portrait || node.label.slice(0, 2).toUpperCase()}
+                      </text>
+                      <text className="graph__label" textAnchor="middle" x={geometry.familyNodeW / 2} y={labelY}>
+                        {truncateLabel(node.label, phone ? 14 : 18)}
+                      </text>
+                    </g>
+                  )
+                })}
+              </svg>
+            </div>
           </div>
-        </div>
+          {/* Phone a11y / legibility fallback: binder-style list of family members. */}
+          {phone && family.nodes.length > 0 ? (
+            <nav className="graph__family-list" aria-label="Family members">
+              <h3 className="graph__family-list-title">Family members</h3>
+              <ul>
+                {family.nodes.map((node) => (
+                  <li key={node.id}>
+                    <button type="button" className="graph__family-list-item" onClick={() => onOpenSheet(node.id)}>
+                      <span className="graph__family-list-portrait" aria-hidden="true">
+                        {node.portrait || node.label.slice(0, 2).toUpperCase()}
+                      </span>
+                      <span className="graph__family-list-label">{node.label}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : null}
+        </>
       )}
 
-      <section className="graph__editor" aria-labelledby="relationship-editor">
-        <h3 id="relationship-editor">{targetFactId ? 'Propose edge edit' : 'Propose new edge'}</h3>
-        <label><span>From</span><select value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
-        <label><span>To</span><select value={to} onChange={(event) => setTo(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
-        <label><span>Relationship</span><Input value={key} onChange={(event) => setKey(event.target.value)} placeholder="father_of, member_of, rival…" /></label>
-        <label><span>Statement</span><Input value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Aria is a member of the Ember Order" /></label>
-        <Button variant="primary" disabled={busy || from === to || !statement.trim()} onClick={() => void propose()}>{busy ? 'Proposing…' : 'Send proposal'}</Button>
-        {notice ? <p role="status">{notice}</p> : null}
-      </section>
+      {phone ? (
+        <details className="graph__editor graph__editor--disclosure">
+          <summary className="graph__editor-summary">{editorTitle}</summary>
+          <div className="graph__editor-body">{editorFields}</div>
+        </details>
+      ) : (
+        <section className="graph__editor" aria-labelledby="relationship-editor">
+          <h3 id="relationship-editor">{editorTitle}</h3>
+          {editorFields}
+        </section>
+      )}
     </main>
   )
 }

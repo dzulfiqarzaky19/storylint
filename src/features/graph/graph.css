@@ -49,16 +49,42 @@
   gap: var(--space-2);
 }
 
+/* S2: view toggle reads as a segmented control, not kind chips. */
 .graph__view {
-  padding-inline-end: var(--space-2);
-  border-inline-end: var(--border-width) solid var(--color-border);
+  padding: var(--space-1);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
 }
 
-.graph__toolbar .ui-button {
+.graph__view .ui-button {
+  min-height: var(--size-control);
+  padding-inline: var(--space-3);
+  border-color: transparent;
+  background: transparent;
   color: var(--color-text-muted);
+  font-weight: var(--weight-semibold);
 }
 
-.graph__toolbar .ui-button[aria-pressed='true'] {
+.graph__view .ui-button[aria-pressed='true'] {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm, 0 0 0 transparent);
+}
+
+.graph__filters {
+  padding-inline-start: var(--space-2);
+  border-inline-start: var(--border-width) solid var(--color-border);
+}
+
+.graph__filters .ui-button {
+  color: var(--color-text-muted);
+  text-transform: lowercase;
+  font-weight: var(--weight-normal, 400);
+}
+
+.graph__filters .ui-button[aria-pressed='true'] {
   border-color: var(--color-accent-muted);
   background: var(--color-accent-subtle);
   color: var(--color-accent);
@@ -104,6 +130,7 @@
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+  -webkit-overflow-scrolling: touch;
 }
 
 .graph__family-plane {
@@ -168,6 +195,7 @@
 
 .graph__node:hover circle,
 .graph__node:focus-visible circle,
+.graph__node[data-active='true'] circle,
 .graph__node:hover rect,
 .graph__node:focus-visible rect {
   stroke: var(--color-focus-ring);
@@ -177,6 +205,12 @@
 .graph__node--family {
   min-width: var(--size-touch-min);
   min-height: var(--size-touch-min);
+}
+
+/* B1 dense network: non-active labels are omitted in JSX; active gets higher contrast. */
+.graph__canvas[data-dense='true'] .graph__node[data-active='true'] .graph__label,
+.graph__canvas[data-dense='true'] .graph__node[data-active='true'] .graph__kind {
+  fill: var(--color-text);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -237,6 +271,12 @@
   font-size: var(--text-sm);
 }
 
+.graph__editor select,
+.graph__editor .ui-input,
+.graph__editor .ui-button {
+  min-height: var(--size-control);
+}
+
 .graph__editor select {
   min-height: var(--size-control);
   padding-inline: var(--space-2);
@@ -245,4 +285,162 @@
   background: var(--color-surface-raised);
   color: var(--color-text);
   font: inherit;
+}
+
+/* B2 phone: collapsible propose form + family list fallback */
+.graph__editor--disclosure {
+  display: block;
+  max-width: var(--manuscript-page-max-w-xl);
+  margin-inline: auto;
+  padding: var(--space-0);
+}
+
+.graph__editor-summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--size-touch-min);
+  padding: var(--space-3);
+  cursor: pointer;
+  list-style: none;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.graph__editor-summary::-webkit-details-marker {
+  display: none;
+}
+
+.graph__editor-summary::after {
+  content: '+';
+  margin-inline-start: auto;
+  color: var(--color-text-muted);
+  font-weight: var(--weight-semibold);
+}
+
+.graph__editor--disclosure[open] .graph__editor-summary::after {
+  content: '−';
+}
+
+.graph__editor-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-0) var(--space-3) var(--space-3);
+}
+
+.graph__family-list {
+  max-width: var(--manuscript-page-max-w-xl);
+  margin: var(--space-0) auto var(--space-3);
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.graph__family-list-title {
+  margin: var(--space-0) var(--space-0) var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.graph__family-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: var(--space-0);
+  padding: var(--space-0);
+  list-style: none;
+}
+
+.graph__family-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--size-touch-min);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.graph__family-list-item:hover,
+.graph__family-list-item:focus-visible {
+  border-color: var(--color-focus-ring);
+  outline: none;
+}
+
+.graph__family-list-portrait {
+  display: grid;
+  place-items: center;
+  width: var(--size-touch-min);
+  height: var(--size-touch-min);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  font-weight: var(--weight-semibold);
+}
+
+.graph__family-list-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--weight-semibold);
+}
+
+/* Phone layout tightening (bp.sm = 640) */
+@media (max-width: 640px) {
+  .graph {
+    padding: var(--space-2);
+  }
+
+  .graph__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .graph__toolbar {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .graph__view,
+  .graph__filters {
+    width: 100%;
+  }
+
+  .graph__filters {
+    padding-inline-start: var(--space-0);
+    padding-block-start: var(--space-2);
+    border-inline-start: 0;
+    border-block-start: var(--border-width) solid var(--color-border);
+  }
+
+  .graph__view .ui-button,
+  .graph__filters .ui-button,
+  .graph__editor select,
+  .graph__editor .ui-button,
+  .graph__editor .ui-input {
+    min-height: var(--size-touch-min);
+  }
+
+  .graph__family-stage {
+    min-height: calc(var(--size-touch-min) * 8);
+  }
+
+  .graph__node--family .graph__label {
+    font-size: var(--text-sm);
+  }
+
+  .graph__node--family .graph__portrait {
+    font-size: var(--text-body);
+  }
 }
