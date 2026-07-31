@@ -61,6 +61,27 @@ Let **N** = node count in the current Canon map (accepted relationship graph), b
 
 **All** must remain a first-class chip — default slice is a **start**, not a prison.
 
+### Exit threshold (N drops below T)
+
+Rat case: author at 30 with a slice active deletes down to 20. Does the slice release?
+
+**Distinguish who chose the slice.**
+
+| How the current slice was set | When N falls below T | Why |
+|---|---|---|
+| **System default** (auto-applied because N was ≥ T; author never picked a chip this session) | **Release to All** automatically | Principle: never force a filter door when the full set is readable again. Staying narrowed with no author intent is unexplained chrome. |
+| **Author-explicit** (clicked a kind chip, or chose All then a kind) | **Keep the slice** | Author is investigating a cut on purpose. Do not yank their filter because a delete crossed T. Honesty line still shows `Showing x of N`. |
+| Author later clicks **All** | All, always | Widen is one control away at any N. |
+
+**Session flag:** track `sliceSource = 'system' | 'author'`.  
+- Auto-apply on enter N≥T only when there is no author choice yet (or last author choice was cleared).  
+- Any chip click (including All) sets `author`.  
+- On N < T: if `system` → set All and clear system flag; if `author` → keep.  
+- **Persisted last-used kind** is only the default **seed for the next system enter** (N crosses T upward again) — it does **not** by itself keep a narrow view below T.
+
+**No hysteresis band** for v1 (enter and exit at the same T). Boundary thrash is rare (add/delete single nodes at exactly 24). Revisit only if dogfood flickers.
+
+**Fixture:** N=30 system-narrowed Characters → delete to N=20 → view becomes All, honesty line off. Same path after author clicks Lore → delete to N=20 → stays Lore with honesty line.
 ### Honesty chrome (required when narrowed)
 
 When the view is not All:
@@ -81,14 +102,15 @@ Quiet, muted, always visible with the chips. Author must never wonder whether Ca
 | Filter-first empty canvas at small N | Cardinality / false-empty |
 | Pretending dense initials = directory | Still false |
 
-## Implement sketch (for pig/deer)
+## Implement sketch (for badger / pig)
 
-1. Compute N on map data.  
-2. If N ≥ T and no explicit user choice this session, apply default slice (last-used → Characters → …).  
-3. Kind chips + **All**; persist last-used kind per project.  
-4. Status line `Showing x of N · Kind` when ≠ All.  
-5. Fixtures: **N=5** (all visible, no forced narrow); **N≥T** (first paint narrowed, count honest, All restores full).  
-6. Calm: no new solid primary; chips are quiet selection, not a second Canon job door.
+1. Compute N on map data; hold `sliceSource` (`system` | `author`).  
+2. If N ≥ T and `sliceSource` is not `author`, apply default slice (last-used → Characters → …) and set `system`.  
+3. If N < T and `sliceSource === 'system'`, release to All.  
+4. Kind chips + **All**; chip click → `author`; persist last-used kind per project (for next system enter only).  
+5. Status line `Showing x of N · Kind` when ≠ All.  
+6. Fixtures: **N=5** all visible; **N≥T** first paint narrowed + honest count + All restores; **N=30→20 system** releases to All; **N=30→20 after author chip** keeps slice.  
+7. Calm: no new solid primary; chips are quiet selection, not a second Canon job door.
 
 ## Relation to earlier lean
 
