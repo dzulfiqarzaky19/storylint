@@ -4,18 +4,56 @@ Founder flow. Same loop the founder runs; git vehicle is **`npm run land` + `--n
 
 Cross-links: [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) · [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) · [E2E.md](./E2E.md) · [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) · [tickets/README.md](./tickets/README.md) · [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md)
 
+## Sprint model (founder-set)
+
+Work is assigned in **sprints**, so priority is known before anyone picks anything up.
+
+| | |
+|--|--|
+| Who holds priority | **rat** (coordinator). One ranked queue; agents do not self-select from the backlog. |
+| Sprint boundary | **Until the batch is done.** Not a clock, not a commit count. |
+| Why no clock | We are not running against a release or inbound user requests. There is therefore **no reason to rush and every reason to be correct**. Slow and right beats fast. |
+| Grouping | By **theme**, not by severity. Half a story shipped is how docs end up claiming what the code does not do. |
+| `dev → main` | At a **named milestone** only — never at a commit count. |
+
+A sprint closes when its items are landed **and** verified (below), not when they are merged.
+
 ## Flow
 
 ```
-code → local self-check → L1 Playwright (owned-stack, their change)
-  bad → coder again
-  good → push topic branch (PR optional UI only)
-       → npm run land → origin/dev   # --no-ff bubble; NEVER squash-to-dev
-dev pools until 1 story/feature complete
+sprint (rat holds priority) → rat assigns
+  → coder works → local self-check → L1 Playwright (owned-stack, their change)
+  → CODE REVIEW (reviewer: is the change sound?)
+      bad → coder again
+  → coder lands: npm run land → origin/dev   # --no-ff bubble; NEVER squash-to-dev
+  → E2E VERIFY (verifier: did the ticket's intent land on the running product?)
+      did not land → BUG → new ticket → back into the sprint at >= prior priority
+dev pools until the story/batch is complete
   → L2 story/composition E2E on origin/dev
-  bad → reopen coder with shortest repro + ticket
-  good → merge dev → main at milestone
+  → merge dev → main at a NAMED MILESTONE
 ```
+
+**The coordinator is not an approval gate in this flow.** rat assigns and ranks; the reviewer reviews; the coder lands; the verifier verifies. Inserting the coordinator between "reviewed" and "landed" is what produced an 83-commit drift between `dev` and `main` — every agent waited on one inbox.
+
+## The two verification lanes are different questions
+
+They are **not** redundant, and neither substitutes for the other. They catch different defect classes.
+
+| Lane | Asks | Reads code? | Drives the app? |
+|------|------|-------------|-----------------|
+| **Code review** | Is this **sound**? Is the evidence attributed? **Does the check actually check** (mutate it and watch it fail)? | **Yes — primary job** | Only if a gate needs proof |
+| **E2E verify** | Did the **ticket's intent** land on the **running product**? Can an author now actually do X and get Y? | **No** | **Yes — required** |
+
+Why both exist: a change can be perfectly reviewable and still not do what its ticket promised, and a probe can report a correct fix as broken. Both happened in the density pass. Review alone missed the first; a live probe alone nearly caused a revert of good work.
+
+**A failed E2E verify is a BUG, not a review rejection.** It does not revert the land. It opens a ticket and re-enters the sprint with a priority.
+
+**Verifier discipline (why its reports are trusted):**
+
+- Verify against the **ticket intent**, not the diff. The diff belongs to review.
+- Own the stack; cite provenance (HEAD + served bundle + what was examined).
+- **State plainly what you did not verify.** Explicit non-claims are the reason a PASS is worth anything. A verdict with no stated limits is a verdict with unknown limits.
+- **Report; do not fix.** A verifier who patches the thing loses the seat.
 
 ## Rules (locked)
 
@@ -39,6 +77,10 @@ dev pools until 1 story/feature complete
 
 5. **`dev → main` only at milestones**, after L2 (and product verification) for the batch. Founder account. `--no-ff`. See GIT_WORKFLOW § Flow step 6.
 
+6. **A diagnostic proven only on the happy path is not proven.** Step timers, error labels, failure logs and timeout messages exist for the failure path — so **fault-inject** and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (Same disease as a check that passes on absence.)
+
+7. **Verification is delegated, not centralised.** The person who wrote a change is the worst reader of it, and so is anyone who has been inferring instead of driving the product. Fresh eyes on an owned stack.
+
 ## Where tickets fit
 
 | Moment | Ticket action |
@@ -46,6 +88,7 @@ dev pools until 1 story/feature complete
 | Start implement work | **Priority check** — highest open P0, else highest P1 for assigned story, else assigned ticket ([tickets/README.md](./tickets/README.md)) |
 | Before land | Ticket exists; status → `in_review` / `landing`; priority unchanged unless ox/rat re-ranks |
 | Land hits `origin/dev` | Status → `integrated` |
+| E2E verify fails | **New bug ticket** with shortest repro; re-enters the sprint at **≥ prior priority**. The land stays. |
 | L2 fail | Reopen at **≥ prior priority**; attach shortest repro; never silent downgrade |
 | L2 pass + story close | Status → `done`; eligible for main with the milestone |
 
@@ -65,8 +108,11 @@ Do **not** jump from a probe finding straight to land. Report criteria and hando
 
 | Gate | Owns proof reading |
 |------|--------------------|
+| Sprint priority / assignment | **Coordinator (rat)** — not an approval gate on landing |
+| Code review (soundness) | **Reviewer** — reads the diff; mutation-tests the checks |
 | L1 (owned-stack, pre-land) | **Verifier** (Coder runs smoke; Verifier fails closed on output) |
 | Land / origin hash | Coder via `npm run land`; report `origin/dev=<sha>` |
+| E2E verify (intent on running product, post-land) | **E2E Verifier** — files bugs, does not fix, does not gate the land |
 | L2 (composition on dev) | **Verifier** on `origin/dev` after story pool |
 | Priority / reopen | Coordinator + ticket owner; ox/rat for re-rank |
 
@@ -77,3 +123,7 @@ Do **not** jump from a probe finding straight to land. Report criteria and hando
 - Claim story-done on L1 alone
 - Start lower-priority implement work while a P0 is open without founder/rat override on the ticket
 - Use condition/probe chrome as default pass evidence
+- **Wait on the coordinator to approve a land** — review, then land, then verify
+- **Treat an E2E-verify failure as grounds to revert** — it is a bug ticket
+- **Merge `dev → main` on a commit count** instead of a named milestone
+- **Ship a failure diagnostic without forcing the failure once**
