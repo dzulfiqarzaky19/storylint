@@ -16,7 +16,7 @@
 4. Manuscript uses `color.paper` / `color.paperInk`; chrome uses surface/canvas/text.  
 5. Rails and paper width scale via size/measure/gutter tokens — uniformity over one-off CSS.  
 6. Steal **patterns** from REFERENCES; skin always ours.  
-7. Optional skill `.claude/skills/ui-ux-pro-max` = structure/a11y **checklist only** — never copy its hex/OLED palettes over TOKENS.  
+7. Optional **local** skill (gitignored `.claude/…`) = structure/a11y **checklist only** — never copy its hex/OLED palettes over TOKENS. Never commit harness dirs.  
 8. Product UX rules live in **[../03-ux.md](../03-ux.md)** + this folder — no separate review markdown files.
 
 ## Folders

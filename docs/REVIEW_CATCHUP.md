@@ -22,8 +22,9 @@ Apply/cowrite, continuity, Kobo UI, project switch races).
 ## Baseline
 - Early: f4d1209 / e4230b9 / 0b0de72 (phase 0–1) if present
 - Recent: fd0ae61, 029cd7d, plus ALL uncommitted changes
-- Read: docs/AUTO_STATUS.md, docs/BUILD.md, CLAUDE.md, docs/AGENTS_ROLES.md,
+- Read: docs/AUTO_STATUS.md, docs/BUILD.md, docs/AGENTS_ROLES.md,
   docs/04-agents.md, docs/design/TOKENS.md, docs/03-ux.md, docs/E2E.md, README.md
+  (optional local-only CLAUDE.md if present on disk — not in git)
 
 ## Commands (read-only / evidence)
 git log --oneline -20

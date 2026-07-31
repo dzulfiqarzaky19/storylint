@@ -1,6 +1,7 @@
 # Build slices — coder order
 
-**Read first:** [PRD.md](./PRD.md) · [../CLAUDE.md](../CLAUDE.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)  
+**Read first:** [PRD.md](./PRD.md) · [AGENTS_ROLES.md](./AGENTS_ROLES.md) · [design/TOKENS.md](./design/TOKENS.md) · [E2E.md](./E2E.md)
+**AI harness** (`CLAUDE.md`, `.claude/`) is local-only — never commit/push ([AGENTS_ROLES.md](./AGENTS_ROLES.md) § AI harness stays local).  
 One slice per coding session. Do not start G/H/I before F/E as listed.
 
 Each slice: **coder → reviewer → UX (if UI) → verifier** ([AGENTS_ROLES.md](./AGENTS_ROLES.md)).  
