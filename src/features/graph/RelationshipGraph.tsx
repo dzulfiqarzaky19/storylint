@@ -262,6 +262,12 @@ export function RelationshipGraph({
    * would imply their work vanished.
    */
   const noSheets = project.sheets.length === 0
+  /**
+   * Edge propose needs two endpoints. On true-empty / single-sheet Canon the job cannot
+   * succeed — omit the solid Send (ox empty-canon-send-proposal-weight). Keep the
+   * disclosure (D4); never leave a disabled primary as costume on empty selects.
+   */
+  const canProposeEdge = project.sheets.length >= 2
   const editorTitle = targetFactId ? 'Propose edge edit' : 'Propose new edge'
 
   const editorFields = (
@@ -270,7 +276,11 @@ export function RelationshipGraph({
       <label><span>To</span><select value={to} onChange={(event) => setTo(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>Relationship</span><Input value={key} onChange={(event) => setKey(event.target.value)} placeholder="father_of, member_of, rival…" /></label>
       <label><span>Statement</span><Input value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Aria is a member of the Ember Order" /></label>
-      <Button variant="primary" disabled={busy || from === to || !statement.trim()} onClick={() => void propose()}>{busy ? 'Proposing…' : 'Send proposal'}</Button>
+      {canProposeEdge ? (
+        <Button variant="primary" disabled={busy || from === to || !statement.trim()} onClick={() => void propose()}>{busy ? 'Proposing…' : 'Send proposal'}</Button>
+      ) : (
+        <p className="graph__editor-hint" role="status">Add at least two sheets before proposing a link.</p>
+      )}
       {notice ? <p role="status">{notice}</p> : null}
     </>
   )

@@ -53,6 +53,7 @@ Prefer **viewport** shares, not full-document geometry when they diverge.
 | `kindFullStrips` | count of **full** Lab kind strips (filter+composer both full = 2) |
 | `choiceWallCount` | equal-weight visible choices in one toolbar group before overflow |
 | `labFilterWhenEmpty` | filter strip present when card count = 0 |
+| `primaryPerJobMax` | max solid/`ui-button--primary` count for any single **job key** across binder + fold + companion in one viewport |
 | `touchFailChrome` | unique topbar / faces / disclosures / ecosystems with min(w,h) < 44 @390 (**dedupe samples**) |
 | `overflowX` | `scrollWidth > clientWidth` |
 | `foldOwner` | largest center-band box in the **first viewport** |
@@ -62,7 +63,8 @@ Prefer **viewport** shares, not full-document geometry when they diverge.
 | `viewKindDistinct` | pressed view accent recipe ≠ pressed kind; kind is not accent fill |
 | `railBudgetWork` | TOKENS §4 / `railBudget.test` default dual work share (**≥ 60**) |
 
-**Job primary** = Continuity · Export · Research · Review · New (peers) as solid/primary in the **top bar**.  
+**Job primary (top bar)** = Continuity · Export · Research · Review · New (peers) as solid/primary in the **top bar**.
+**Job key (viewport, B6-primary-per-job)** = same create/open destination across regions (e.g. create-chapter = binder New chapter · companion Write first chapter · center Write; create-sheet = binder New sheet · map New sheet). `data-job` wins when present; else accessible name clusters above.  
 **Place controls** (Draft / Lab / Canon) are wayfinding — pressed place must **not** count as a job primary.  
 One segmented control = one choice set, not N primaries.
 
@@ -166,6 +168,7 @@ Measure **resting** face row (More **closed**).
 | B6-binder-title-wrap | long titles wrap ≤2 lines or have `title`; no silent ellipsis-only regress | **WARN** | D1 wrap win. | never |
 | B6-canon-chrome | ≤4 chrome peers post-D4 (view · filter · propose entry · overflow) | **HARD post-D4** | Map chrome budget. | pre-D4 open form |
 | B6-primary-per-region | ≤1 solid primary per region (topbar / graph toolbar / companion face / binder footer) | **HARD** | Multiple primaries = loud. | never (new) |
+| B6-primary-per-job | empty Canon + empty Draft dual-rail @1440: ≤1 solid primary **per job key**; true-empty fold solid = New sheet only (no Send while sheets<2) | **HARD** | Composition defect (ox one-primary-door-per-job + empty-canon-send-proposal-weight). Fixtures via `claimEmptyProject`. Closed `details` guts excluded. | never (new; AM weight demotes pre-gate) |
 | B6-draft-header | title+meta OK; extra chrome **≤2** | **WARN** | Implement or remove next pass. | never |
 | B6-lab-chrome | empty composer is work; extra chrome **≤3** | **WARN** | Implement or remove next pass. | never |
 | B6-companion | owned by B3 | via B3 | — | — |
@@ -189,6 +192,7 @@ Measure **resting** face row (More **closed**).
 | M9 | B2-ecosystem on Lab/Canon routes | HARD (same B2) | smoke once in checker |
 | M10 | **Checker/doc drift** | **HARD** | thresholds in `calm-budget.mjs` must match this file (incl. B1-rail-warn chrome **55**, work **40**, rail-budget **60**). Unit test or header parse. |
 | M11 | B6-primary-per-region | HARD | **in bar** — checker TODO |
+| M12 | B6-primary-per-job | HARD | **in bar** — empty Canon + empty Draft dual-rail fixtures; checker in `calm-budget.mjs` |
 
 Also required with r3: **B1-rail-budget**, **B3-writing-primary-peers**, fold on Lab/Canon, last-failed updates on each owned scoreboard commit.
 
@@ -210,6 +214,7 @@ Also required with r3: **B1-rail-budget**, **B3-writing-primary-peers**, fold on
 | B5-touch-chrome | HARD deduped | HARD; dedupe TODO; **drop B5-touch-fail** |
 | B5-touch-fail / B6-top-job | **deleted** | drop in follow-up |
 | M1–M11 | in bar | mostly TODO |
+| M12 B6-primary-per-job | empty dual-rail ≤1/job HARD | **in checker** (empty fixtures) |
 | Provenance refuse exit 2 | HARD meta | **done** (owned stack) |
 
 ---
@@ -263,6 +268,7 @@ assert kindFullStrips(lab) <= 1
 assert sheetStackRespectsCanon == true
 assert binderRestEmptyProject == true
 assert primaryPerRegion <= 1
+assert primaryPerJobMax(emptyCanon|emptyDraft dual@1440) <= 1
 assert touchFailChrome(390) == 0  // deduped
 assert overflowX(*) == false
 assert focusHidesRails == true
@@ -277,4 +283,4 @@ assert checkerThresholdsMatch(thisFile)  // M10
 
 ## One-line bar (r3)
 
-**Provenanced run only. Default desk: work ≥60% (rail budget) and ≥40% catastrophe floor. Fold owned by work on Draft/Lab/Canon. Zero L0 job primaries. Three unclipped places on phone. Writing: ≤3 primary peers + one row @390 + optional More; Check never empty-rest; no Chat proposal wall. Craft ≤5 desktop / collapsed phone. One Lab kind strip; no empty-bench filter. Canon (seeded, post-D4): propose collapsed, map owns fold, view accent beats kind. Chrome touch ≥44; no overflowX; Focus pure; binder never a void; sheet stack respects Canon. Checker matches this file.**
+**Provenanced run only. Default desk: work ≥60% (rail budget) and ≥40% catastrophe floor. Fold owned by work on Draft/Lab/Canon. Zero L0 job primaries. Three unclipped places on phone. Writing: ≤3 primary peers + one row @390 + optional More; Check never empty-rest; no Chat proposal wall. Craft ≤5 desktop / collapsed phone. One Lab kind strip; no empty-bench filter. Canon (seeded, post-D4): propose collapsed, map owns fold, view accent beats kind. Chrome touch ≥44; no overflowX; Focus pure; binder never a void; sheet stack respects Canon; empty Canon/Draft dual-rail ≤1 solid primary per job. Checker matches this file.**
