@@ -71,18 +71,19 @@ npm run lint
 
 UI browser smoke: [docs/E2E.md](docs/E2E.md) (Playwright + system **msedge** on this machine).
 
-## Docs (agents)
+## Docs
 
 | Doc | |
 |-----|--|
-| [CLAUDE.md](CLAUDE.md) | Hard rules + current state |
 | [docs/PRD.md](docs/PRD.md) | Product spine |
 | [docs/BUILD.md](docs/BUILD.md) | Slices + next work |
-| [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier |
+| [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier + **AI harness local-only** |
 | [docs/03-ux.md](docs/03-ux.md) | IA + reading profiles + layout |
 | [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (source of truth) |
-| [docs/04-agents.md](docs/04-agents.md) | Agent model |
+| [docs/04-agents.md](docs/04-agents.md) | In-app agent panel (product) |
 | [docs/E2E.md](docs/E2E.md) | UI e2e |
+
+**AI harness is local-only.** Never commit/push `CLAUDE.md`, `.claude/`, or other assistant config. See [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) § "AI harness stays local". Checkout must not swap the agent brain.
 
 ## Privacy
 

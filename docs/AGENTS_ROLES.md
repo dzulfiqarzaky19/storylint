@@ -5,7 +5,7 @@
 | | |
 |--|--|
 | Product | [PRD.md](./PRD.md) |
-| Rules | [../CLAUDE.md](../CLAUDE.md) |
+| Local harness (optional) | `CLAUDE.md` on disk only — **not in git** |
 | Slices / status | [BUILD.md](./BUILD.md) |
 | Skin | [design/TOKENS.md](./design/TOKENS.md) — Kobo paper, **not** AI blue |
 | UI e2e | [E2E.md](./E2E.md) — Playwright **msedge** |
@@ -14,6 +14,34 @@
 | Who it’s for | [PERSONAS.md](./PERSONAS.md) — beachhead only; not a fifth agent |
 
 **Phase:** only the assigned BUILD slice (see status table).
+
+## AI harness stays local
+
+**Never commit or push AI-assistant harness files.** Branch checkout must not swap (or delete) the local agent brain.
+
+| Local only (gitignored) | Tracked product docs (OK) |
+|-------------------------|---------------------------|
+| `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` | `docs/04-agents.md` (in-app agent product) |
+| `.claude/`, `.agents/`, `.cursor/`, `.codex/`, `.jcode/`, … | `docs/AGENTS_ROLES.md` (this file — human process) |
+| `.mcp.json`, `.mcp.local.json` | `docs/BUILD.md`, PRD, UX, tokens |
+| `.github/copilot-instructions.md`, `.github/instructions/`, `.github/prompts/` | app source under `src/agent/` |
+
+**Why:** if harness lives in git, `git checkout other-branch` restores an old brain, drops skills, or blanks rules → agent gets dumb mid-session.
+
+**Do**
+
+- Keep personal rules/skills only on disk (ignored).
+- Point agents at **tracked** product docs (`docs/*`) for truth.
+- After clone: recreate local `CLAUDE.md` if you want one (copy from memory/template; not from repo history).
+
+**Do not**
+
+- `git add CLAUDE.md` / `.claude/` / other harness paths.
+- Force-add ignored AI files (`git add -f`).
+- Put session memory, skill packs, or tool config in commits or PRs.
+- Treat `docs/04-agents.md` as “AI harness” — that doc is the **product** agent panel.
+
+Enforced by root [`.gitignore`](../.gitignore) block `AI assistant harness`.
 
 ## Review is mandatory
 
