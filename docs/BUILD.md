@@ -27,7 +27,7 @@ If loops skipped review: run [REVIEW_CATCHUP.md](./REVIEW_CATCHUP.md) before new
 | **I** P4 Graph | **Done** (landing) |
 | **J** Export / multi-project | **Done** (landing) |
 | **K** Desktop/mobile shells | **Done** (K1 lean spacing + K2 family tree) |
-| **L** Lab (pre-canon bench) | **Spec ready** — [design/LAB.md](./design/LAB.md); not built |
+| **L** Lab (pre-canon bench) | **Done** (landing) — [design/LAB.md](./design/LAB.md) |
 
 ---
 
@@ -110,31 +110,28 @@ Continue / rewrite / brainstorm → Apply card → insert/replace only on Apply;
 | I ✓ | P4 relationship graph/canvas |
 | J ✓ | MD export, multi-project |
 | K ✓ | Desktop/mobile shell adapters (K1 spacing + K2 family tree) |
-| **L** | **Lab** — pre-canon create/experiment ([design/LAB.md](./design/LAB.md)) |
+| **L** ✓ | Lab — pre-canon create/experiment ([design/LAB.md](./design/LAB.md)) |
 
 ---
 
-## Slice L — Lab (next product slice)
+## Slice L — Lab (shipped)
 
-**Spec:** [design/LAB.md](./design/LAB.md) · **Companion faces:** [design/COMPANION.md](./design/COMPANION.md)  
-**Why:** Sheets/agent/continuity **improve** canon and draft. Authors still need a bench to **create and try** characters, places, beats, what-ifs without fake chapters or false bible. Right rail must stay **mode-shaped** (Writing vs Lab vs Details) so brains don’t overload.
+**Spec:** [design/LAB.md](./design/LAB.md) · **Companion faces:** [design/COMPANION.md](./design/COMPANION.md)
 
-| In | Out |
-|----|-----|
-| Center mode `lab` + binder entry | Infinite canvas |
-| Boards + cards (kinds, pin, archive) | Continuity on Lab text |
-| Promote → sheet proposal / chapter stub | Graph nodes from Lab |
-| Agent brainstorm → Lab cards only | Auto-canon / auto-Apply |
-| Companion faces per context (Chat/Spark/…) | Kitchen-sink Agent+Research stack |
-| schemaVersion bump + tests on promote boundary | Research replacement |
+Pre-canon **Lab** bench + mode-shaped Companion. Nothing is bible until Promote → existing Accept/Apply paths.
 
-**Order:**  
-0. **Companion shell (Writing faces first)** — split today’s AgentPanel clutter; can ship before Lab domain  
-1. Domain+persist Lab → API → UI bench  
-2. Lab companion faces (Chat/Spark/Inbox)  
-3. Promote → agent fixture → E2E  
+| Shipped | Still out |
+|---------|-----------|
+| Center mode `lab` + binder Lab section | Infinite canvas |
+| Boards + cards (kinds, pin, archive, soft pin cap) | Continuity on Lab text |
+| Promote → pending sheet proposal / chapter stub | Graph nodes from Lab |
+| Agent brainstorm → Lab cards only (fixture + live adapter) | Auto-canon / auto-Apply |
+| Companion faces by context (Writing / Lab / Details) | Research replacement |
+| `schemaVersion` bump, unit promote boundary, e2e `slice-l-lab.png` | |
 
-**Do not start L coding on a dirty PR branch** — land or worktree first.
+**Verify:** `npm test` · `npm run build` · `node e2e/slice-l-smoke.mjs` (API `:4174` + Vite `:5173`) · screenshot `e2e/output/slice-l-lab.png`.  
+**Boundary:** Continuity/Graph read chapters + accepted sheets only — Lab is ignored. Promote never writes sheets without Accept.  
+**Do not re-implement** domain/UI already on `storylint/lab-slice`. Follow-ups are polish or new product asks only.
 
 ---
 

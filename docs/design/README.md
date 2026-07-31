@@ -3,7 +3,7 @@
 | Doc | |
 |-----|--|
 | [TOKENS.md](./TOKENS.md) | **Source of truth** — Kobo paper + warm chrome |
-| [LAB.md](./LAB.md) | **Slice L** — pre-canon Lab (create/experiment; not built) |
+| [LAB.md](./LAB.md) | **Slice L** — pre-canon Lab bench (shipped; create/experiment) |
 | [COMPANION.md](./COMPANION.md) | Mode-shaped right rail — Writing / Lab / Details faces |
 | [REFERENCES.md](./REFERENCES.md) | Patterns/URLs (behavior only) |
 | [STITCH.md](./STITCH.md) | Stitch prompts — **outdated AI-blue**; do not ship skin from it |

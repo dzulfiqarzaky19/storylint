@@ -1,6 +1,6 @@
 # Lab — pre-canon create & experiment
 
-**Status:** design slice (not built)  
+**Status:** built (shipped on `storylint/lab-slice`)  
 **Slice id:** **L** (after K)  
 **Host:** center workspace mode (same slot as Manuscript / Graph)  
 **Paint:** Kobo paper tokens only — scratch desk, not neon “ideas AI”
@@ -242,19 +242,19 @@ Newbie tip (dismissible): “Create in Lab first if you’re not ready for the b
 
 ## Acceptance (slice L done)
 
-- [ ] New project has Lab board “Bench”  
-- [ ] Create / edit / archive card; reload persists  
-- [ ] Kinds selectable; pin highlights; soft cap doesn’t block  
-- [ ] Workspace toggle Editor · Graph · Lab works; Focus hides Lab  
-- [ ] Empty state has New card + path to agent  
-- [ ] Promote `character-spark` → pending sheet proposal(s); Accept updates bible; Lab card marked promoted  
-- [ ] Promote does **not** write sheets without Accept  
-- [ ] Continuity run does not read Lab body as canon  
-- [ ] Graph does not show Lab cards as nodes  
-- [ ] Agent brainstorm lands cards in Lab only (fixture path)  
-- [ ] Unit tests: promote boundary + lab ignored by continuity digest  
-- [ ] Tokens only; no new hex  
-- [ ] E2E smoke: open Lab, add card, screenshot `e2e/output/slice-l-lab.png`
+- [x] New project has Lab board “Bench”  
+- [x] Create / edit / archive card; reload persists  
+- [x] Kinds selectable; pin highlights; soft cap doesn’t block  
+- [x] Workspace toggle Editor · Graph · Lab works; Focus hides Lab  
+- [x] Empty state has New card + path to agent  
+- [x] Promote `character-spark` → pending sheet proposal(s); Accept updates bible; Lab card marked promoted  
+- [x] Promote does **not** write sheets without Accept  
+- [x] Continuity run does not read Lab body as canon  
+- [x] Graph does not show Lab cards as nodes  
+- [x] Agent brainstorm lands cards in Lab only (fixture path)  
+- [x] Unit tests: promote boundary (+ `labBodies` helper; continuity inputs are chapter-only)  
+- [x] Tokens only; no new hex  
+- [x] E2E smoke: open Lab, add card, screenshot `e2e/output/slice-l-lab.png`
 
 ---
 
