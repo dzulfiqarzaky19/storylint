@@ -302,7 +302,7 @@ try {
 
   // —— B. SEED full multi-kind bible
   await seedFullBible(page.request)
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   graph = await openGraph(page)
   checkpoint('seeded-reloaded')
 

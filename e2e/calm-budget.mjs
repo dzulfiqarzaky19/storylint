@@ -21,6 +21,7 @@ import { pathToFileURL } from 'node:url'
 import { createHash } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import {
+  reloadApp,
   armHardTimeout,
   assertVisibilityPredicate,
   beforeMeasure,
@@ -41,7 +42,7 @@ import {
   reclaimIsolatedProject,
   requireCompanionFace,
   resolveWorkspaceMode,
-  setApiBase,
+  setApiBase
 } from './helpers.mjs'
 import { resolveMeasurementTarget } from './owned-stack.mjs'
 
@@ -833,7 +834,7 @@ async function runInboxWallFixture(browser) {
       )
     }
     await reclaimIsolatedProject(projectId)
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
     await reclaimIsolatedProject(projectId)
     await ensureCompanionOpen(page)
     await enterWorkspaceForMeasure(page, 'draft', projectId)
@@ -1024,7 +1025,7 @@ async function runViewport(browser, width, height, label, projectId) {
       }
     })
     await reclaimIsolatedProject(projectId)
-    await page.reload({ waitUntil: 'networkidle' })
+    await reloadApp(page)
     await ensureDraftReady(page, {
       body: 'Aria opened the iron door for calm budget.',
       craftTags: ['char-dev', 'plot-progress', 'world-build', 'setup', 'relationship'],

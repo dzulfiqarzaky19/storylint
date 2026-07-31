@@ -76,6 +76,7 @@ Short list only — do not grow into a second backlog novel.
 5. **Empty-Canon Send proposal weight** — ruled; octopus implementing (demote/primary weight on empty Canon propose path).
 
 6. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'` — badger, proven bare 5/5). Why horse/dolphin bare trees failed is **not established**. Ambient-gitignored-data mechanism **disproven** (server always synthesises `default`).
+7. **`reload`+`networkidle` banned suite-wide** (badger `c4c5e2b` / guard). Residual: first-`goto` `networkidle` still widespread, including **three in `calm-budget.mjs`** — gate wait policy, not only speed. See e2e/README navigation waits.
 
 ### Closed this session (do not re-open without new evidence)
 

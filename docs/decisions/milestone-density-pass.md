@@ -175,6 +175,7 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 5. **A test may only interact with entities it created in that run.** (ninth lie — verified property; ambient-data mechanism discarded)
 6. **Never combine verify with mutate; never filter mutator output.** Same principle applied to actions — [STANDING_RULES](./STANDING_RULES.md) §9–10.
 7. **A fix can be correct while its stated cause is wrong.** Prefer an open question over a confident false mechanism — [STANDING_RULES](./STANDING_RULES.md) §11.
+8. **A defect found once is a hypothesis about a class** — grep the mechanism, count sites, fixer owns the sweep — [STANDING_RULES](./STANDING_RULES.md) §12–13.
 
 ### Scar — rat (coordinator), same hour, twice
 
@@ -190,6 +191,28 @@ Badger’s negative control (wipe `data/`, old smoke still finds `default`) and 
 These outlive every feature in this milestone. Citable green = `npm run test:green` only.
 
 ---
+
+### Class over instance (session pattern)
+
+Standing rule: [STANDING_RULES](./STANDING_RULES.md) §12–13. Detail here so the short rule stays short.
+
+**Infrastructure — one surface, shared mechanism:**
+
+| Looked like | Actually was |
+|---|---|
+| Bad calm verdict | Missing **server-ownership** layer used by every measurement |
+| One wrong visibility check | Wrong **rect predicate** in nine sites + a guard shaped wrong even where present |
+| One broken smoke “Back” | **Locator convention** coupling three smokes to copy they did not own |
+| slice-j slow (60s) | `reload`+`networkidle` in **nineteen** places (five in helpers, two in the gate) |
+
+**Product — each part fine, composition wrong:**
+
+| Looked like | Actually was |
+|---|---|
+| Empty-state primary doors each OK | **Composition** dual-primary across regions ([one-primary-door-per-job](./one-primary-door-per-job.md)) |
+| Nine busy controls each locally reasonable | **Global flag** forced into a specific claim (busy label lie) |
+
+Every time, grepping the mechanism found more sites than the reporter had seen. Fix the class (or inventory it); do not only patch the instance.
 
 ## What we deliberately did NOT do
 
