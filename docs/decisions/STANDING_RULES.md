@@ -14,7 +14,7 @@
 6. **A fixture that changes the state under test is not a fixture.** Empty checks on empty; density/hierarchy on seeded. Forced-open companion is labeled and is not default-rail evidence. ([calm-budget-r3-ox](./calm-budget-r3-ox.md), [CALM_BUDGET](../CALM_BUDGET.md) r3)
 7. **Verify a finding still describes the code before building against it.** Worktree ≠ truth; `git show origin/dev:path`. ([CODE_VERIFY](../CODE_VERIFY.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
 8. **A test may only interact with entities it created in that run.** Depending on a pre-existing project, file, or option the smoke did not create measures the machine, not the product. Create both sides of a switch test inside the check. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md); ambient-gitignored-data mechanism **disproven**)
-8a. **A diagnostic proven only on the happy path is not proven.** Step labels, timers and failure logs exist for the failure path — fault-inject once and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (badger step timings, verified happy-path only)
+8a. **A diagnostic proven only on the happy path is not proven.** Step labels, timers and failure logs exist for the failure path — fault-inject once and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (badger step timings, verified happy-path only; keep distinct from §3 — [standing-8a-vs-absence](./standing-8a-vs-absence.md))
 8b. **State what you did not verify.** A verdict with no stated limits has unknown limits. Explicit non-claims are what make a PASS worth reading.
 
 ## Actions (same disease as unattributed measurement)
@@ -46,6 +46,11 @@
 23. **Sheet = binder Level-3 stack**, not center stage. ([adjudication-d5-sheet-binder](./adjudication-d5-sheet-binder.md))
 24. **Writing faces:** ≤3 primary peers (Chat·Write·Check) + Inbox badge + quiet Research/More — allow-list may be 5; not a ≤3 redesign gate. ([design-review-d6](./design-review-d6.md), [research-face-shape](./research-face-shape.md))
 25. **Lab is transient.** Promoted = dismissible receipts (not forever audit, not auto-outbox); dismiss does not undo Canon/Inbox. Archive is a state with Restore; no hard delete v1. ([lab-lifecycle-ends](./lab-lifecycle-ends.md))
+26. **Network at volume:** full graph when small; thresholded default kind-slice when N≥24; honesty count when narrowed. ([network-at-volume](./network-at-volume.md))
+
+## Process letters
+
+35. **One letter ladder per axis.** L1/L2 = pipeline altitude only. P0/P1… = ticket priority only. Gate strength = HARD/WARN full words — no third L*/P* scheme. ([pipeline-gate-vocabulary](./pipeline-gate-vocabulary.md))
 
 ## Gate
 
