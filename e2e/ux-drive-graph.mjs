@@ -10,6 +10,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -18,6 +19,8 @@ mkdirSync('e2e/output', { recursive: true })
 
 const API = 'http://127.0.0.1:4174'
 const UI = 'http://localhost:5173/'
+/** Visible chip labels for sheet kinds (SHEET_KIND_LABEL); the map no longer renders raw enums. */
+const KIND_LABEL = { character: 'Characters', lore: 'Lore', world: 'World', organization: 'Organizations' }
 const KINDS = ['character', 'lore', 'world', 'organization']
 const stamp = Date.now()
 const tag = stamp.toString(36).slice(-4)
@@ -243,13 +246,13 @@ async function openGraph(page) {
 }
 
 async function ensureKindOn(graph, kind) {
-  const btn = graph.getByRole('button', { name: kind, exact: true })
+  const btn = graph.getByRole('button', { name: KIND_LABEL[kind] ?? kind, exact: true })
   const pressed = await btn.getAttribute('aria-pressed')
   if (pressed !== 'true') await btn.click()
 }
 
 async function ensureKindOff(graph, kind) {
-  const btn = graph.getByRole('button', { name: kind, exact: true })
+  const btn = graph.getByRole('button', { name: KIND_LABEL[kind] ?? kind, exact: true })
   const pressed = await btn.getAttribute('aria-pressed')
   if (pressed === 'true') await btn.click()
 }
@@ -348,7 +351,8 @@ try {
   await shot(page, '05-network-all-on-again')
 
   // —— C. Propose edge (pending must not draw), Accept, then Family
-  const editor = graph.locator('.graph__editor')
+  // D4: Propose is a collapsed disclosure at every width; summon it before filling fields.
+  const editor = await openProposeEditor(graph)
   const selects = editor.locator('select')
   if ((await selects.count()) >= 2) {
     await selects.nth(0).selectOption(ids.parent)
@@ -359,7 +363,7 @@ try {
     await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
     const edgesBefore = await graph.locator('.graph__edge').count()
     await graph.getByRole('button', { name: 'Send proposal' }).click()
-    await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 8000 }).catch(() => null)
+    await graph.getByText(/proposal is pending/i).waitFor({ timeout: 8000 }).catch(() => null)
     const edgesPending = await graph.locator('.graph__edge').count()
     if (edgesPending === edgesBefore) {
       results.jobs.pendingHidden = true
@@ -397,6 +401,7 @@ try {
   checkpoint('propose-accept')
 
   // Also link org membership for multi-kind density
+  await openProposeEditor(graph)
   if ((await selects.count()) >= 2) {
     await selects.nth(0).selectOption(ids.parent)
     await selects.nth(1).selectOption(ids.org)

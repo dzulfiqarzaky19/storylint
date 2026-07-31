@@ -83,7 +83,7 @@ For a writing IDE, **conditional + contextual** beat long staged onboarding.
 
 ### Demote over time
 
-A top-level shortcut can exist while a better home is weak (e.g. top Continuity while Check is still learning), then move to overflow once the contextual home is discoverable. That is a **migration** disclosure strategy, not a permanent double home.
+Migration dual-homes are temporary. **Continuity migration is finished:** Check is the only entry; do not re-add a top-bar Continuity shortcut.
 
 ---
 
@@ -132,3 +132,22 @@ If (4) is yes or (5) is no, redesign.
 - LogRocket, “Progressive disclosure in UX design: Types and use cases” (updated 2025) — conditional, contextual, progressive enabling, staged; keep disclosure levels shallow (ideally under three)
 - Standard complex-product practice: basic toolbar + advanced overflow (docs/IDE pattern)
 - Storylint lock: max depth 3 · IA_MAP chrome density rules
+
+
+- Nielsen Norman Group — Progressive Disclosure pattern (advanced/rare → secondary surface)
+- Kristina Hooper Woolsey (1985) — selectively inform users with well-chosen system bits
+- Wikipedia *Progressive disclosure* (retrieved 2026-07-31) — macOS print “Show Details”; theme-park queue analogy
+- Evidence pack cluster F: [07-overwhelm-evidence.md](./07-overwhelm-evidence.md#source-cluster-f--progressive-disclosure)
+
+### Evidence anchors (selected)
+
+1. Defer advanced features until task-relevant (NN/g definition).
+2. >~3 nested disclosure layers usually means broken IA, not “need another menu.”
+3. Staged wizards OK for rare setup; bad for daily write (J1).
+4. Hidden nav calms but costs discoverability — compensate with plain labels + empty states.
+5. Contextual face sets beat permanent mega-toolbars.
+6. Expertise reversal: scaffolds that help novices can slow experts (fade chrome, don’t delete power).
+7. Defaults must complete primary job without opening advanced UI.
+8. Migration dual-homes are temporary, not permanent double entry.
+9. Hover-only disclosure fails a11y/touch.
+10. Storylint max depth 3 *is* architectural progressive disclosure.

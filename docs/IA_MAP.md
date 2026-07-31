@@ -2,7 +2,8 @@
 
 **Status:** locked product map (target language + current wiring)  
 **Depends on:** [PRD.md](./PRD.md) · [03-ux.md](./03-ux.md) journeys · [PERSONAS.md](./PERSONAS.md) · [design/LAB.md](./design/LAB.md)  
-**Research pack:** [research/ui-ux](./research/ui-ux/README.md)
+**Research pack:** [research/ui-ux](./research/ui-ux/README.md)  
+**Corpus map:** [README.md](./README.md) · density numbers: [CALM_BUDGET.md](./CALM_BUDGET.md) · words: [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md)
 **Not:** a fourth ecosystem, new panels, or depth > 3
 
 ---
@@ -24,7 +25,7 @@ UI work after this = align chrome to the map, not invent new kingdoms.
 | Step | Item | Status | Evidence |
 |------|------|--------|----------|
 | 1 | Naming + entry (Draft, Promote split, two doors, binder groups) | **done** | `67592a1` `b68703e` `6a2a74b` |
-| 2 | Calm top bar + Continuity Draft-only | **done** | `55b9033` `6a2a74b` |
+| 2 | Calm top bar + Continuity Draft-only *(milestone name; Continuity later **removed** from top bar — Check only)* | **done** | `55b9033` `6a2a74b` · remove `8911406` |
 | 3 | Canon entry + landing memory | **done** | `5bfe65e` |
 | 4 | Surface density polish | **open** (optional) | user call |
 
@@ -38,7 +39,7 @@ Final walkthrough QA: `e2e/output/ia-final-qa.md` — **PASS 14/14** @ `6a2a74b`
 | Ecosystem | User word | Feeling | Current code names | Status |
 |-----------|-----------|---------|--------------------|--------|
 | **Lab** | Lab | Messy think / research / try | `workspaceMode: 'lab'`, LabBench, binder Lab boards | **ships** |
-| **Draft** | Draft | Clean write | `workspaceMode: 'manuscript'`, Manuscript, binder chapters | **ships** + **rename** (UI still says manuscript / Write) |
+| **Draft** | Draft | Clean write | `workspaceMode: 'manuscript'`, Manuscript, binder chapters | **ships** — user-facing **Draft**; code mode remains `manuscript`; companion face **Write** = co-write ≠ ecosystem |
 | **Canon** | Canon | Settled world truth | Sheets + facts + accepted proposals + Graph | **ships** + **rename** (UI still says sheets / bible / Graph as peer mode) |
 
 **Not ecosystems (never promote them to top kingdoms):**
@@ -47,7 +48,7 @@ Final walkthrough QA: `e2e/output/ia-final-qa.md` — **PASS 14/14** @ `6a2a74b`
 |-------|------|------|
 | Companion / Agent | Help across all three | Right rail / drawer |
 | Research | Cited gather tool | Companion face (Lab-leaning) |
-| Continuity / Review / Craft | Draft checks | Companion Check + optional top Continuity |
+| Continuity / Review / Craft | Draft checks | Companion **Check** only (no top-bar button) |
 | Apply / Accept / Reject | Gates | Inbox + cards |
 | Project switch / Export | Library ops | Project switcher |
 | Focus / Theme / Reading | Comfort chrome | Top bar / paper |
@@ -173,7 +174,7 @@ Faces: Chat · Spark · Inbox
 **In**
 
 - Network + Family views of **accepted** relationships
-- Kind filters (character/lore/world/org)
+- Kind filters (enums `character`/`lore`/`world`/`organization`; **labels** Characters/Lore/World/Organizations per [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) — binder uses labels; graph chips must not stay raw enums)
 - Node → open sheet (Level-3 Canon thing)
 - Pending edges hidden until Accept (**ships**)
 
@@ -189,7 +190,8 @@ Faces: Chat · Inspect · Inbox
 
 ### 4.4 Canon sheet (binder detail stack)
 
-**Where:** binder detail stack (per §2 ruling), not a center surface.
+**Where:** binder detail stack (per §2 ruling), not a center surface.  
+**ships (Task V / F1):** list stays mounted under the detail layer; Back restores scroll — not a destructive list swap (`Binder.tsx` `binder__stack-list` + `binder__stack-detail`).
 
 **In**
 
@@ -235,7 +237,7 @@ Binder contents **reshape by ecosystem**, same rail (depth stays 3).
 
 | Control | When | Target treatment | Status |
 |---------|------|------------------|--------|
-| Continuity | Draft + has chapter | **Ruling:** Check is primary. Top Continuity is Draft-only shortcut (hidden on Lab/Canon); may later move to overflow | **ships** (Draft-only) + optional later demote |
+| Continuity | never in top bar | **Ruling (user, final):** Continuity is a verb, not an ecosystem — it never sits beside Draft·Lab·Canon. Companion **Check** is the sole entry point | **removed from top bar** |
 | Export / New project | Rare | Overflow under project switcher | **ships** |
 | Duplicate project title (h1 + switcher) | Never | Single identity | **ships** |
 
@@ -327,7 +329,7 @@ Nothing silent-writes Draft body or Canon truth.
 | Step | Ecosystem | Center | Companion | Status |
 |------|-----------|--------|-----------|--------|
 | 1 Open chapter | Draft | Manuscript | — | **ships** |
-| 2 Run Continuity | Draft | marks appear | Check or top Continuity | **ships** |
+| 2 Run Continuity | Draft | marks appear | Companion **Check** | **ships** |
 | 3 Read Y/R marks | Draft | overlay | summary card | **ships** |
 | 4 Accept/Edit/Reject | Canon gate | — | Inbox / proposal cards | **ships** |
 | 5 Optional Canon context | Canon | sheet or map | Fill/Inspect | **ships** |
@@ -405,7 +407,7 @@ No wizard. Two doors max.
 | # | Item | Status |
 |---|------|--------|
 | 1 | **Naming + entry** — Draft label, Promote split, two doors, binder groups | **done** @ `67592a1` `b68703e` `6a2a74b` |
-| 2 | **Calm top bar** — single identity, overflow New/Export, Continuity Draft-only | **done** @ `55b9033` `6a2a74b` |
+| 2 | **Calm top bar** — single identity, overflow New/Export; Continuity ended as Check-only (not top) | **done** @ `55b9033` `6a2a74b` · `8911406` |
 | 3 | **Canon entry** — map-first landing + last-thing memory | **done** @ `5bfe65e` |
 | 4 | **Surface density polish** | **open** — optional; user call |
 

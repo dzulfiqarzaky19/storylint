@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync, writeFileSync } from 'node:fs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -18,7 +19,7 @@ const log = (s) => {
   console.log(s)
 }
 
-const KINDS = ['character', 'lore', 'world', 'organization']
+/** Visible chip labels for sheet kinds (SHEET_KIND_LABEL); the map no longer renders raw enums. */\nconst KIND_LABEL = { character: 'Characters', lore: 'Lore', world: 'World', organization: 'Organizations' }\nconst KINDS = ['character', 'lore', 'world', 'organization']
 const sheets = [
   {
     id: `ga-char-a-${stamp}`,
@@ -153,7 +154,7 @@ async function sampleGraph(page) {
 
 async function setOnlyKind(graph, kind) {
   for (const k of KINDS) {
-    const btn = graph.getByRole('button', { name: k, exact: true })
+    const btn = graph.getByRole('button', { name: KIND_LABEL[k] ?? k, exact: true })
     const pressed = await btn.getAttribute('aria-pressed')
     const want = k === kind
     if ((pressed === 'true') !== want) await btn.click()
@@ -162,7 +163,7 @@ async function setOnlyKind(graph, kind) {
 
 async function setAllKinds(graph, on) {
   for (const k of KINDS) {
-    const btn = graph.getByRole('button', { name: k, exact: true })
+    const btn = graph.getByRole('button', { name: KIND_LABEL[k] ?? k, exact: true })
     const pressed = await btn.getAttribute('aria-pressed')
     if ((pressed === 'true') !== on) await btn.click()
   }
@@ -261,13 +262,15 @@ try {
   }
 
   async function proposeEdge(fromId, toId, key, statement) {
+    // D4: Propose collapses at every width; open the disclosure before touching fields.
+    await openProposeEditor(graph)
     const selects = graph.locator('.graph__editor select')
     await selects.nth(0).selectOption(fromId)
     await selects.nth(1).selectOption(toId)
     await graph.getByPlaceholder('father_of, member_of, rival…').fill(key)
     await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
     await graph.getByRole('button', { name: /Send proposal/i }).click()
-    await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 8000 })
+    await graph.getByText(/proposal is pending/i).waitFor({ timeout: 8000 })
     await acceptPending(page, statement)
   }
 

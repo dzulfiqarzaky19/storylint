@@ -1,10 +1,12 @@
 # Storylint — PRD (MVP spine)
 
-**Status:** complete in-tree through H (P1, P1b Apply, portraits/tags, P2 Review, P3 Research); UI = Kobo paper tokens (see design/TOKENS.md)
+> **Intent record, not current ship spec.** §§3–9 stay as written when we set out (what/why). **Ship truth** = [BUILD.md](./BUILD.md). **Product structure truth** = [IA_MAP.md](./IA_MAP.md). Do not rewrite this body to match what later shipped — same principle as superseded decisions: history stays, pointers clarify.
+
+**Status:** MVP spine through H documented here; **in-tree build through L** (see [BUILD.md](./BUILD.md) status). UI = Kobo paper tokens ([design/TOKENS.md](./design/TOKENS.md)). Live chrome inventory: [IA_MAP.md](./IA_MAP.md).
 **First user:** you (local dogfood)  
 **Auth:** none — no login, no session, no multi-tenant  
 
-Related: [01-identity-market](./01-identity-market.md) · [02-steal-and-phases](./02-steal-and-phases.md) · [03-ux](./03-ux.md) · [04-agents](./04-agents.md) · [05-tech](./05-tech.md) · [IA_MAP](./IA_MAP.md) · [research/ui-ux](./research/ui-ux/README.md)
+Related: [README.md](./README.md) (corpus map) · [01-identity-market](./01-identity-market.md) · [02-steal-and-phases](./02-steal-and-phases.md) · [03-ux](./03-ux.md) · [04-agents](./04-agents.md) · [05-tech](./05-tech.md) · [IA_MAP](./IA_MAP.md) · [CALM_BUDGET](./CALM_BUDGET.md) · [design/CANON-VOCABULARY](./design/CANON-VOCABULARY.md) · [research/ui-ux](./research/ui-ux/README.md)
 
 ---
 
@@ -165,7 +167,7 @@ Detail: [02-steal-and-phases](./02-steal-and-phases.md), [04-agents](./04-agents
 
 | # | Topic | Default |
 |---|--------|---------|
-| 1 | Agent panel | Open ≥ `bp.lg`; hideable |
+| 1 | Agent panel | Rail available ≥ `bp.lg`; **open by default ≥ `bp.desk`** (rail budget, TOKENS.md §7); hideable |
 | 2 | Sheet kinds | character, lore, world, organization |
 | 3 | Confidence | 0.7 |
 | 4 | Name | Storylint |

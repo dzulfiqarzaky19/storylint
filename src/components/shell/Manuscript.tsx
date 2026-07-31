@@ -74,8 +74,10 @@ export function Manuscript({
 }: ManuscriptProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
-  // Shell phone chrome hides at 767; collapse craft chips so reading wins.
+  // Phone collapses fully; desktop caps visible chips (D8 density).
+  const DESKTOP_CRAFT_VISIBLE = 5
   const [narrow, setNarrow] = useState(false)
+  const [craftExpanded, setCraftExpanded] = useState(false)
   useEffect(() => {
     const media = window.matchMedia('(max-width: 767px)')
     const sync = () => setNarrow(media.matches)
@@ -146,52 +148,70 @@ export function Manuscript({
             </button>
           </header>
 
-          {/* Narrow: collapse chips under Tags so manuscript body wins vertical space. */}
-          {narrow ? (
-            <details className="manuscript__craft-tags-disclosure">
-              <summary className="manuscript__craft-tags-summary ui-focusable">
-                <span>Tags</span>
-                {chapter.craftTags.length > 0 ? (
-                  <span className="manuscript__craft-tags-count">{chapter.craftTags.length}</span>
-                ) : null}
-              </summary>
+          {/* Craft tags: phone full collapse; desktop ≤5 + "n tags" (D8). */}
+          {(() => {
+            const active = CRAFT_TAGS.filter((tag) => chapter.craftTags.includes(tag))
+            const inactive = CRAFT_TAGS.filter((tag) => !chapter.craftTags.includes(tag))
+            const ordered = [...active, ...inactive]
+            const chip = (tag: CraftTag) => {
+              const on = chapter.craftTags.includes(tag)
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  className="manuscript__craft-tag ui-focusable"
+                  aria-pressed={on}
+                  disabled={readOnly}
+                  onClick={() => onToggleCraftTag(tag)}
+                >
+                  {tag}
+                </button>
+              )
+            }
+            if (narrow) {
+              return (
+                <details className="manuscript__craft-tags-disclosure">
+                  <summary className="manuscript__craft-tags-summary ui-focusable">
+                    <span>Tags</span>
+                    {chapter.craftTags.length > 0 ? (
+                      <span className="manuscript__craft-tags-count">{chapter.craftTags.length}</span>
+                    ) : null}
+                  </summary>
+                  <div className="manuscript__craft-tags" aria-label="Chapter craft tags">
+                    {ordered.map(chip)}
+                  </div>
+                </details>
+              )
+            }
+            const limit = craftExpanded ? ordered.length : DESKTOP_CRAFT_VISIBLE
+            const shown = ordered.slice(0, limit)
+            const hidden = Math.max(0, ordered.length - shown.length)
+            return (
               <div className="manuscript__craft-tags" aria-label="Chapter craft tags">
-                {CRAFT_TAGS.map((tag) => {
-                  const active = chapter.craftTags.includes(tag)
-                  return (
-                    <button
-                      key={tag}
-                      type="button"
-                      className="manuscript__craft-tag ui-focusable"
-                      aria-pressed={active}
-                      disabled={readOnly}
-                      onClick={() => onToggleCraftTag(tag)}
-                    >
-                      {tag}
-                    </button>
-                  )
-                })}
-              </div>
-            </details>
-          ) : (
-            <div className="manuscript__craft-tags" aria-label="Chapter craft tags">
-              {CRAFT_TAGS.map((tag) => {
-                const active = chapter.craftTags.includes(tag)
-                return (
+                {shown.map(chip)}
+                {hidden > 0 ? (
                   <button
-                    key={tag}
                     type="button"
-                    className="manuscript__craft-tag ui-focusable"
-                    aria-pressed={active}
-                    disabled={readOnly}
-                    onClick={() => onToggleCraftTag(tag)}
+                    className="manuscript__craft-tag manuscript__craft-tag--more ui-focusable"
+                    onClick={() => setCraftExpanded(true)}
+                    aria-label={'Show ' + hidden + ' more craft tags'}
                   >
-                    {tag}
+                    {hidden + ' tags'}
                   </button>
-                )
-              })}
-            </div>
-          )}
+                ) : null}
+                {craftExpanded && ordered.length > DESKTOP_CRAFT_VISIBLE ? (
+                  <button
+                    type="button"
+                    className="manuscript__craft-tag manuscript__craft-tag--more ui-focusable"
+                    onClick={() => setCraftExpanded(false)}
+                    aria-label="Show fewer craft tags"
+                  >
+                    Less
+                  </button>
+                ) : null}
+              </div>
+            )
+          })()}
 
           <div className="manuscript__editor">
             <div ref={overlayRef} className="manuscript__overlay" aria-hidden="true">

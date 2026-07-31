@@ -346,7 +346,7 @@ export function promoteLabCard(
   )
 }
 
-/** Continuity / bible digests must ignore Lab text. */
+/** Continuity / Canon digests must ignore Lab text. */
 export function labBodies(project: Project): string[] {
   return (project.lab?.cards ?? []).map((card) => `${card.title}\n${card.body}`)
 }

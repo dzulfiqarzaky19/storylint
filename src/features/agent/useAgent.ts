@@ -14,7 +14,6 @@ export function useAgent(
 ) {
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([])
   const [sending, setSending] = useState(false)
-  const [tipsDismissed, setTipsDismissed] = useState(false)
   const [llmMode, setLlmMode] = useState<'fixture' | 'live' | null>(null)
   const sessionRef = useRef(0)
 
@@ -182,8 +181,6 @@ export function useAgent(
     transcript,
     sending,
     llmMode,
-    tipsDismissed,
-    dismissTips: () => setTipsDismissed(true),
     send,
     generateCowrite,
     runReview,

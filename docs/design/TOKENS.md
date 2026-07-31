@@ -212,14 +212,14 @@ Ports: map `font.ui` → San Francisco (iOS), Roboto/system (Android), Segoe UI 
 | `size.topbarHeight` | 48 | Top bar |
 | `size.readingBtn` | 76 | Desk ribbon width (Day/Sepia/Mint/Night) |
 | `size.readingSeal` | 44 | Compact in-paper circle control |
-| `size.binderWidth` | 300 | Base left rail (snug) |
-| `size.binderWidthLg` | 340 | ≥1024 |
-| `size.binderWidthXl` | 380 | ≥1440 |
-| `size.binderWidth2xl` | 420 | ≥1920 |
-| `size.agentWidth` | 300 | Base right rail (= binder) |
-| `size.agentWidthLg` | 340 | |
-| `size.agentWidthXl` | 380 | |
-| `size.agentWidth2xl` | 420 | |
+| `size.binderWidth` | 272 | Base left rail (snug) |
+| `size.binderWidthLg` | 272 | ≥1024 |
+| `size.binderWidthXl` | 280 | ≥1440 |
+| `size.binderWidth2xl` | 320 | ≥1920 |
+| `size.agentWidth` | 272 | Base right rail (= binder) |
+| `size.agentWidthLg` | 272 | |
+| `size.agentWidthXl` | 280 | |
+| `size.agentWidth2xl` | 320 | |
 | `manuscript.pageMaxW` | 36rem | Max page width (not physical A4 mm) |
 | `manuscript.pageMaxWLg` | 40rem | ≥1366 desk |
 | `manuscript.pageMaxWXl` | 44rem | ≥1440 |
@@ -296,6 +296,12 @@ Keep flat; max 2 levels.
 - `< bp.md`: binder + agent as overlays/sheets; editor full width  
 - `≥ bp.lg`: three-slot IDE shell available  
 - Focus mode: editor only at every width  
+- **Rail budget (locked, density audit D1):** the default rail state leaves the center
+  workspace **≥ 60%** of the viewport at every width, and both rails open still clear
+  60% at desk class (`bp.desk` 1366). The companion rail is therefore **not open by
+  default below `bp.desk`** — dual rails there are a user choice, not permanent chrome.
+  Rails grow far more slowly than the viewport on purpose: extra pixels belong to the
+  manuscript. Guarded by `src/design/railBudget.test.ts`; measured by `e2e/rail-budget.mjs`.
 
 ---
 
@@ -403,8 +409,8 @@ Use one naming scheme everywhere:
   /* layout */
   --size-topbar: 48px;
   --size-reading-btn: 76px;
-  --size-binder: 360px;
-  --size-agent: 360px;
+  --size-binder: 272px; /* D1 rail budget — see §4 table; not 300/360/420 */
+  --size-agent: 272px;
   --size-touch-min: 44px;
   --size-control: 32px;
   --radius-md: 6px;
@@ -470,3 +476,4 @@ When adding Android/iOS/desktop:
 | 2026-07-27 | Add `color.onPrimary` (per-theme primary-button label; contrast) — Slice 0 port |
 | 2026-07-29 | Split dense network geometry from family nodes; add inner/outer network rings |
 | 2026-07-31 | Always set `data-theme`; thin rail scrollbars + hidden paper bars; document 32/44 hit targets; skip link + empty-chapter CTA |
+| 2026-07-31 | D1 rail budget sample block aligned to 272/272/280/320 (was stale 360 sketch) |

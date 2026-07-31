@@ -20,7 +20,7 @@
 
 .graph__header {
   align-items: flex-end;
-  padding-block: var(--space-2);
+  padding-block: var(--space-1);
 }
 
 .graph__header h2,
@@ -36,6 +36,11 @@
   font-size: var(--text-sm);
 }
 
+/* D4: short lede — the full accepted-only rule lives on title/empty states, not above the fold. */
+.graph__lede {
+  font-size: var(--text-xs);
+}
+
 .graph__toolbar,
 .graph__filters,
 .graph__view {
@@ -46,10 +51,10 @@
 
 .graph__toolbar {
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
-/* S2: view toggle reads as a segmented control, not kind chips. */
+/* S2 + D4: Network/Family is the primary journey switch — segmented, accent when pressed. */
 .graph__view {
   padding: var(--space-1);
   border: var(--border-width) solid var(--color-border-strong);
@@ -63,39 +68,47 @@
   border-color: transparent;
   background: transparent;
   color: var(--color-text-muted);
+  font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
 }
 
 .graph__view .ui-button[aria-pressed='true'] {
-  border-color: var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
+  border-color: var(--color-accent-muted);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
   box-shadow: var(--shadow-sm, 0 0 0 transparent);
 }
 
+/* D4: kind filters are secondary job tools (IA_MAP 12.2) — quiet, never accent chips. */
 .graph__filters {
-  padding-inline-start: var(--space-2);
+  align-items: center;
+  padding-inline-start: var(--space-3);
   border-inline-start: var(--border-width) solid var(--color-border);
 }
 
 .graph__filters .ui-button {
+  min-height: var(--size-control);
+  padding-inline: var(--space-2);
+  border-color: transparent;
+  background: transparent;
   color: var(--color-text-muted);
   text-transform: lowercase;
-  font-weight: var(--weight-normal, 400);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
 }
 
 .graph__filters .ui-button[aria-pressed='true'] {
-  border-color: var(--color-accent-muted);
-  background: var(--color-accent-subtle);
-  color: var(--color-accent);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
 }
 
 .graph__canvas,
 .graph__empty {
   width: 100%;
   max-width: var(--manuscript-page-max-w-xl);
-  min-height: calc(var(--size-control-touch) * 8);
-  margin: var(--space-3) auto;
+  min-height: calc(var(--size-control-touch) * 10);
+  margin: var(--space-2) auto;
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
@@ -120,12 +133,42 @@
   text-align: center;
 }
 
+/* P0: on a Canon with no sheets, the map's own explanation owns the fold. The propose form
+   is a job tool for a world that already exists, so it must not be the loudest thing an author
+   sees before that world has anything in it. Demoted in weight, kept legible: proposals are how
+   facts enter Canon, and hiding that would hide the acceptance model itself. */
+.graph__empty[data-graph-empty='canon'] {
+  min-height: calc(var(--size-control-touch) * 12);
+  align-content: center;
+}
+
+.graph__empty[data-graph-empty='canon'] .ui-empty-state {
+  max-width: var(--manuscript-page-max-w-md, 42rem);
+  gap: var(--space-3);
+}
+
+.graph__empty-cta {
+  margin-top: var(--space-2);
+  min-height: var(--size-control-touch);
+}
+
+.graph[data-canon-empty='true'] .graph__editor--disclosure {
+  margin-top: var(--space-2);
+  opacity: 0.85;
+}
+
+.graph[data-canon-empty='true'] .graph__editor-summary {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-muted);
+}
+
 .graph__family-stage {
   position: relative;
   width: 100%;
   max-width: var(--manuscript-page-max-w-2xl);
-  min-height: calc(var(--size-control-touch) * 10);
-  margin: var(--space-3) auto;
+  min-height: calc(var(--size-control-touch) * 11);
+  margin: var(--space-2) auto;
   overflow: auto;
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -287,7 +330,7 @@
   font: inherit;
 }
 
-/* B2 phone: collapsible propose form + family list fallback */
+/* D4 (was B2 phone-only): collapsible propose form at every width + family list fallback */
 .graph__editor--disclosure {
   display: block;
   max-width: var(--manuscript-page-max-w-xl);
@@ -298,12 +341,18 @@
 .graph__editor-summary {
   display: flex;
   align-items: center;
-  min-height: var(--size-touch-min);
-  padding: var(--space-3);
+  min-height: var(--size-control);
+  padding: var(--space-2) var(--space-3);
   cursor: pointer;
   list-style: none;
+  font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   color: var(--color-text);
+}
+
+.graph__editor-summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .graph__editor-summary::-webkit-details-marker {
@@ -326,6 +375,10 @@
   flex-wrap: wrap;
   gap: var(--space-3);
   padding: var(--space-0) var(--space-3) var(--space-3);
+}
+
+.graph__editor-body > label {
+  flex: 1 1 var(--size-binder-min);
 }
 
 .graph__family-list {
@@ -428,8 +481,18 @@
   .graph__filters .ui-button,
   .graph__editor select,
   .graph__editor .ui-button,
-  .graph__editor .ui-input {
+  .graph__editor .ui-input,
+  .graph__editor-summary {
     min-height: var(--size-touch-min);
+  }
+
+  .graph__filters .ui-button {
+    flex: 1 1 auto;
+    font-size: var(--text-sm);
+  }
+
+  .graph__editor-summary {
+    padding: var(--space-3);
   }
 
   .graph__family-stage {

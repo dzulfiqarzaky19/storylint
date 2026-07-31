@@ -17,7 +17,7 @@ New session resumes from progress files — **never** re-paste full logs.
 
 | Phase | Command | Covers |
 |-------|---------|--------|
-| **1 Shell** | `node e2e/ux-drive.mjs` | write/Saved, paper, Focus, Continuity, Apply path, multi-project, research open, shallow graph open, widths |
+| **1 Shell** | `node e2e/ux-drive.mjs` | write/Saved, paper, Focus, Continuity via Check face (not top bar), Apply path, multi-project, research open, shallow graph open, widths |
 | **2 Graph** | `node e2e/ux-drive-graph.mjs` | Network + Family; **empty** (kinds off) + **full seed** (character/lore/world/org); kind filters; pending→Accept edge; node→sheet; narrow |
 
 **Rule:** One phase per agent session when near limits. Phase 2 does **not** require re-running phase 1 if `ux-progress` already has shell results.
@@ -93,7 +93,7 @@ If drive finished but report missing: **no Playwright**. Read progress files + �
 |-----|--------|-------|
 | write → Saved | | |
 | Focus rails | | |
-| Continuity → Accept/Reject | | |
+| Continuity via Check face → Accept/Reject | | |
 | Co-write Apply | | |
 | Multi-project | | |
 | Research | | |

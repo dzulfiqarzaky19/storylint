@@ -35,14 +35,14 @@ async function liveCompletion(
 ): Promise<{ text: string }> {
   const chapter = validate(project, request)
   const selection = chapter.body.slice(request.start, request.end)
-  const bible = project.sheets.map((sheet) => `${sheet.kind}: ${sheet.name} — ${sheet.summary}`).join('\n')
-  if (chapter.body.length + bible.length > 200_000) {
-    throw new Error('Chapter and bible context are too large for co-write')
+  const canon = project.sheets.map((sheet) => `${sheet.kind}: ${sheet.name} — ${sheet.summary}`).join('\n')
+  if (chapter.body.length + canon.length > 200_000) {
+    throw new Error('Chapter and Canon context are too large for co-write')
   }
   const response = await completeJson(
     config,
     'You are a fiction co-writer. Return JSON exactly as {"text": string}. Draft only the requested manuscript-ready snippet. Do not claim it was inserted. Do not change canon.',
-    `Skill: ${request.skill}\nInstruction: ${request.instruction}\nChapter: ${chapter.title}\nSelection: ${selection || '(cursor only)'}\nManuscript:\n${chapter.body}\n\nBible context:\n${bible}`,
+    `Skill: ${request.skill}\nInstruction: ${request.instruction}\nChapter: ${chapter.title}\nSelection: ${selection || '(cursor only)'}\nManuscript:\n${chapter.body}\n\nCanon context:\n${canon}`,
   )
   if (typeof response !== 'object' || response === null || !('text' in response) ||
       typeof response.text !== 'string' || !response.text.trim()) {

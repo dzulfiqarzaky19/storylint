@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   applyReading,
   applyTheme,
@@ -39,14 +39,73 @@ export function Shell() {
   const [requestedSheetId, setRequestedSheetId] = useState<string | null>(null)
   const [activeCanonSheetId, setActiveCanonSheetId] = useState<string | null>(null)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
+  /** Active Canon sheet leave guard from Binder (dirty identity). */
+  const requestSheetLeaveRef = useRef<((proceed: () => void) => void) | null>(null)
+  const binderToggleRef = useRef<HTMLButtonElement | null>(null)
+  const agentToggleRef = useRef<HTMLButtonElement | null>(null)
+  const binderRailRef = useRef<HTMLElement | null>(null)
+  const agentRailRef = useRef<HTMLElement | null>(null)
+  const wasBinderRailRef = useRef(false)
+  const wasAgentRailRef = useRef(false)
+  const registerSheetLeaveGuard = useCallback(
+    (requestLeave: ((proceed: () => void) => void) | null) => {
+      requestSheetLeaveRef.current = requestLeave
+    },
+    [],
+  )
+
+  function withSheetLeaveGuard(proceed: () => void) {
+    const guard = requestSheetLeaveRef.current
+    if (guard) {
+      guard(proceed)
+      return
+    }
+    proceed()
+  }
+
+  const binderRailOpen = shell.railVisible('binder')
+  const agentRailOpen = shell.railVisible('agent')
+
+  function focusFirstIn(root: HTMLElement | null) {
+    if (!root) return
+    const el = root.querySelector<HTMLElement>(
+      'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+    )
+    el?.focus()
+  }
+
+  // Wide-layout rail open/close focus: enter first control, leave restore toggle.
+  // Drawer path already owns its own trap + restore (Drawer.tsx).
+  useLayoutEffect(() => {
+    const was = wasBinderRailRef.current
+    wasBinderRailRef.current = binderRailOpen
+    if (!was && binderRailOpen) {
+      queueMicrotask(() => focusFirstIn(binderRailRef.current))
+      return
+    }
+    if (was && !binderRailOpen) binderToggleRef.current?.focus()
+  }, [binderRailOpen])
+
+  useLayoutEffect(() => {
+    const was = wasAgentRailRef.current
+    wasAgentRailRef.current = agentRailOpen
+    if (!was && agentRailOpen) {
+      queueMicrotask(() => focusFirstIn(agentRailRef.current))
+      return
+    }
+    if (was && !agentRailOpen) agentToggleRef.current?.focus()
+  }, [agentRailOpen])
 
   const chapters = project.project?.chapters ?? EMPTY_CHAPTERS
   const activeChapter =
     chapters.find((chapter) => chapter.id === activeChapterId) ?? chapters[0] ?? null
   const lab = project.project?.lab ?? null
-  const activeCanonSheetName = activeCanonSheetId
-    ? project.project?.sheets.find((sheet) => sheet.id === activeCanonSheetId)?.name ?? null
-    : null
+  const activeCanonSheetName =
+    activeCanonSheetId === 'new'
+      ? 'New sheet'
+      : activeCanonSheetId
+        ? project.project?.sheets.find((sheet) => sheet.id === activeCanonSheetId)?.name ?? null
+        : null
 
   const companionContext: CompanionContext =
     workspaceMode === 'lab'
@@ -95,6 +154,8 @@ export function Shell() {
 
   async function runContinuity() {
     if (!activeChapter) return
+    // One assistant, one job: do not start Continuity while an agent request is in flight.
+    if (agentState.sending) return
     const session = agentState.session()
     const result = await project.runContinuity(activeChapter.id)
     if (result) agentState.addContinuityCard(result.mode, result.counts, session)
@@ -155,13 +216,16 @@ export function Shell() {
     setWorkspaceMode('manuscript')
   }
 
+  // The binder is the navigator, not a chapter detail view: a project with no
+  // chapters yet still needs its structure and its first move (D1 resting state).
+  // Gating this on activeChapter left an empty project staring at a blank rail.
   const binder = (onClose?: () => void) =>
-    project.project && activeChapter ? (
+    project.project ? (
       <Binder
         chapters={project.project.chapters}
         sheets={project.project.sheets}
         lab={project.project.lab}
-        activeChapterId={activeChapter.id}
+        activeChapterId={activeChapter?.id ?? ''}
         activeBoardId={activeBoardId}
         labMode={workspaceMode === 'lab'}
         canonMode={workspaceMode === 'graph'}
@@ -175,18 +239,35 @@ export function Shell() {
         requestedSheetId={requestedSheetId}
         onRequestedSheetHandled={() => setRequestedSheetId(null)}
         onEditSheet={(sheetId) => {
-          if (!sheetId) {
-            setActiveCanonSheetId(null)
-            if (workspaceMode === 'graph') {
-              shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+          if (!sheetId || sheetId === 'new') {
+            // 'new' still counts as sheet-open for F2 quiet chrome; no real id yet.
+            if (!sheetId) {
+              setActiveCanonSheetId(null)
+              if (workspaceMode === 'graph') {
+                shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+              }
+            } else {
+              setActiveCanonSheetId('new')
             }
             return
           }
           // Sheet detail is a Canon Level-3 thing for landing memory.
-          // Keep Draft/Lab center; graph-node open still uses openCanonSheet.
           setActiveCanonSheetId(sheetId)
           shell.setCanonLastOpened(project.activeProjectId, { kind: 'sheet', sheetId })
         }}
+        onOpenCanonSheet={(sheetId) => {
+          if (sheetId) {
+            openCanonSheet(sheetId)
+            return
+          }
+          // New sheet from Draft/Lab: enter Canon map, do not restore last sheet.
+          setWorkspaceMode('graph')
+          setActiveCanonSheetId(null)
+          setRequestedSheetId(null)
+          shell.setCanonLastOpened(project.activeProjectId, { kind: 'map' })
+          if (!shell.isOpen('binder')) shell.toggle('binder')
+        }}
+        onRequestLeaveGuard={registerSheetLeaveGuard}
         onClose={onClose}
       />
     ) : null
@@ -211,17 +292,16 @@ export function Shell() {
       continuityRunning={project.continuity.running}
       continuityMode={project.continuity.mode}
       continuityCounts={project.continuity.counts}
+      continuityError={project.continuity.error}
       onRunContinuity={runContinuity}
       onAcceptProposal={project.acceptProposal}
       onEditProposal={project.editProposal}
       onRejectProposal={project.rejectProposal}
       sending={agentState.sending}
       llmMode={agentState.llmMode}
-      tipsDismissed={agentState.tipsDismissed}
-      onDismissTips={agentState.dismissTips}
       selection={selection}
       onGenerateCowrite={async (skill, instruction) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
         await agentState.generateCowrite({
           chapterId,
@@ -239,7 +319,7 @@ export function Shell() {
       }}
       onDismissCard={agentState.dismissCard}
       onRunReview={async (kind) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
         await agentState.runReview(chapterId, kind, () => project.flushChapter(chapterId))
       }}
@@ -250,12 +330,12 @@ export function Shell() {
         })
       }}
       onSend={(text) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
         void agentState.send(chapterId, text, () => project.flushChapter(chapterId))
       }}
       onSparkPreset={(kind) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running || agentState.sending) return
         const chapterId = activeChapter.id
         const prompts: Record<typeof kind, string> = {
           place: 'Brainstorm 3 places for the Lab bench',
@@ -266,17 +346,19 @@ export function Shell() {
         if (!shell.isOpen('agent')) shell.toggle('agent')
         void agentState.send(chapterId, prompts[kind], () => project.flushChapter(chapterId))
       }}
+      onAddChapter={project.addChapter}
       onClose={onClose}
     />
   )
 
   return (
-    <div className="shell" data-focus={shell.focus}>
+    <div className="shell" data-focus={shell.focus} data-sheet-open={workspaceMode === 'graph' && activeCanonSheetId ? 'true' : 'false'}>
       <a className="sr-only" href="#workspace">
         Skip to workspace
       </a>
       <header className="shell__topbar">
         <IconButton
+          ref={binderToggleRef}
           label={shell.isOpen('binder') ? 'Hide binder' : 'Show binder'}
           aria-pressed={shell.isOpen('binder')}
           onClick={() => shell.toggle('binder')}
@@ -304,45 +386,29 @@ export function Shell() {
         </span>
         <div className="shell__topbar-spacer" />
         <div className="shell__topbar-actions">
-          <Button
-            className="shell__action-graph"
-            aria-pressed={workspaceMode === 'manuscript'}
-            onClick={() => setWorkspaceMode('manuscript')}
-          >
-            Draft
-          </Button>
-          <Button
-            className="shell__action-graph"
-            aria-pressed={workspaceMode === 'lab'}
-            onClick={() => openLab()}
-          >
-            Lab
-          </Button>
-          <Button
-            className="shell__action-graph"
-            aria-pressed={workspaceMode === 'graph'}
-            onClick={() => openCanon()}
-          >
-            Canon
-          </Button>
-          {workspaceMode === 'manuscript' && activeChapter ? (
+          <div className="shell__ecosystem" role="group" aria-label="Workspace">
             <Button
-              className="shell__action-continuity"
-              variant="primary"
-              disabled={project.continuity.running}
-              data-continuity-state={
-                project.continuity.running
-                  ? 'running'
-                  : project.continuity.mode
-                    ? 'ready'
-                    : 'idle'
-              }
-              aria-busy={project.continuity.running}
-              onClick={() => void runContinuity().catch(() => undefined)}
+              className="shell__action-ecosystem"
+              aria-pressed={workspaceMode === 'manuscript'}
+              onClick={() => withSheetLeaveGuard(() => setWorkspaceMode('manuscript'))}
             >
-              {project.continuity.running ? 'Running…' : 'Continuity'}
+              Draft
             </Button>
-          ) : null}
+            <Button
+              className="shell__action-ecosystem"
+              aria-pressed={workspaceMode === 'lab'}
+              onClick={() => withSheetLeaveGuard(() => openLab())}
+            >
+              Lab
+            </Button>
+            <Button
+              className="shell__action-ecosystem"
+              aria-pressed={workspaceMode === 'graph'}
+              onClick={() => withSheetLeaveGuard(() => openCanon())}
+            >
+              Canon
+            </Button>
+          </div>
           <IconButton
             className="shell__action-focus"
             label={shell.focus ? 'Exit focus mode' : 'Focus mode'}
@@ -355,6 +421,7 @@ export function Shell() {
             onClick={toggleTheme}
           ><ThemeIcon /></IconButton>
           <IconButton
+            ref={agentToggleRef}
             className="shell__action-agent"
             label={shell.isOpen('agent') ? 'Hide companion' : 'Show companion'}
             aria-pressed={shell.isOpen('agent')}
@@ -368,8 +435,8 @@ export function Shell() {
         data-binder={shell.railVisible('binder') ? 'rail' : 'hidden'}
         data-agent={shell.railVisible('agent') ? 'rail' : 'hidden'}
       >
-        {shell.railVisible('binder') ? (
-          <aside className="shell__rail shell__rail--binder">{binder()}</aside>
+        {binderRailOpen ? (
+          <aside ref={binderRailRef} className="shell__rail shell__rail--binder">{binder()}</aside>
         ) : null}
 
         {project.loading ? (
@@ -408,6 +475,13 @@ export function Shell() {
             beginMutation={project.beginMutation}
             onOpenSheet={(sheetId) => {
               openCanonSheet(sheetId)
+            }}
+            onNewSheet={() => {
+              // Same door as the binder's New sheet button, not a second one: Binder owns the
+              // form, so route through its 'new' request rather than inventing a map-local form.
+              setWorkspaceMode('graph')
+              setRequestedSheetId('new')
+              if (!shell.isOpen('binder')) shell.toggle('binder')
             }}
           />
         ) : activeChapter ? (
@@ -449,8 +523,8 @@ export function Shell() {
           </main>
         )}
 
-        {shell.railVisible('agent') ? (
-          <aside className="shell__rail shell__rail--agent">{agent()}</aside>
+        {agentRailOpen ? (
+          <aside ref={agentRailRef} className="shell__rail shell__rail--agent">{agent()}</aside>
         ) : null}
       </div>
 

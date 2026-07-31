@@ -3,6 +3,7 @@ import { SHEET_KINDS, type Project, type SheetKind } from '../../domain/types.ts
 import { layoutFamilyTree } from '../../graph/familyTree.ts'
 import { projectGraph, type GraphEdge } from '../../graph/projectGraph.ts'
 import { proposeGraphEdge } from '../project/api.ts'
+import { SHEET_KIND_LABEL } from '../../components/shell/workspace.ts'
 import { Button, EmptyState, Input } from '../../components/ui'
 import './graph.css'
 
@@ -97,6 +98,7 @@ export function RelationshipGraph({
   project,
   onProject,
   onOpenSheet,
+  onNewSheet,
   projectGeneration,
   trackMutation,
   beginMutation,
@@ -104,6 +106,7 @@ export function RelationshipGraph({
   project: Project
   onProject: (project: Project, generation?: number) => void
   onOpenSheet: (sheetId: string) => void
+  onNewSheet?: () => void
   projectGeneration: () => number
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   beginMutation: () => number | null
@@ -120,7 +123,12 @@ export function RelationshipGraph({
   const [parallax, setParallax] = useState({ x: 0, y: 0 })
   const [phone, setPhone] = useState(false)
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null)
+  // D4: Propose is a job tool at every width — collapsed by default so the map owns the fold.
+  const [editorOpen, setEditorOpen] = useState(false)
   const stageRef = useRef<HTMLDivElement | null>(null)
+  const editorRef = useRef<HTMLDetailsElement | null>(null)
+  const fromFieldRef = useRef<HTMLSelectElement | null>(null)
+  const focusFromFieldRef = useRef(false)
   const geometry = useMemo(() => graphGeometry(phone), [phone])
   const graph = useMemo(() => projectGraph(project, kinds), [project, kinds])
   const family = useMemo(() => layoutFamilyTree(graph, {
@@ -158,6 +166,13 @@ export function RelationshipGraph({
     return () => media.removeEventListener('change', sync)
   }, [])
 
+  useEffect(() => {
+    // Edge edit opens the disclosure; move focus to the first field so the edit is findable.
+    if (!editorOpen || !focusFromFieldRef.current) return
+    focusFromFieldRef.current = false
+    fromFieldRef.current?.focus()
+  }, [editorOpen])
+
   function toggleKind(kind: SheetKind) {
     setKinds((current) => {
       const next = new Set(current)
@@ -175,6 +190,19 @@ export function RelationshipGraph({
       .find((fact) => fact.id === edge.factId)?.statement ?? '')
     setTargetFactId(edge.factId)
     setNotice('Editing creates a pending replacement; canon remains unchanged until Accept.')
+    focusFromFieldRef.current = true
+    openEditor()
+  }
+
+  /**
+   * Open the disclosure through the DOM, not through state alone.
+   * `toggle` fires asynchronously, so a collapse still in flight can land after this call and
+   * clobber the state update, leaving the fields filled inside a form that reads as closed.
+   * Setting `open` directly keeps element and state in agreement within the same task.
+   */
+  function openEditor() {
+    if (editorRef.current) editorRef.current.open = true
+    setEditorOpen(true)
   }
 
   function editFamilyLink(edgeId: string) {
@@ -199,7 +227,7 @@ export function RelationshipGraph({
       if (generation !== projectGeneration()) return
       onProject(next, generation)
       setTargetFactId(undefined)
-      setNotice('Relationship proposal is pending in the agent panel. Accept is required for canon.')
+      setNotice('Relationship proposal is pending in the Companion Inbox. Accept is required for Canon.')
     } catch (caught) {
       if (generation !== projectGeneration()) return
       setNotice(caught instanceof Error ? caught.message : 'Could not propose relationship')
@@ -227,11 +255,18 @@ export function RelationshipGraph({
   }
 
   const empty = view === 'family' ? family.nodes.length === 0 : graph.nodes.length === 0
+  /**
+   * A Canon with no sheets at all is a true-empty world, not a filtered view.
+   * It gets the map's own explanation and one way forward; hiding kinds gets a different hint,
+   * because telling an author to "create a sheet" when their sheets are merely filtered out
+   * would imply their work vanished.
+   */
+  const noSheets = project.sheets.length === 0
   const editorTitle = targetFactId ? 'Propose edge edit' : 'Propose new edge'
 
   const editorFields = (
     <>
-      <label><span>From</span><select value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
+      <label><span>From</span><select ref={fromFieldRef} value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>To</span><select value={to} onChange={(event) => setTo(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>Relationship</span><Input value={key} onChange={(event) => setKey(event.target.value)} placeholder="father_of, member_of, rival…" /></label>
       <label><span>Statement</span><Input value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Aria is a member of the Ember Order" /></label>
@@ -247,13 +282,14 @@ export function RelationshipGraph({
       data-graph-view={view}
       data-graph-dense={denseNetwork ? 'true' : 'false'}
       data-graph-phone={phone ? 'true' : 'false'}
+      data-canon-empty={noSheets ? 'true' : 'false'}
       aria-label="Relationship graph"
       tabIndex={-1}
     >
       <header className="graph__header">
         <div>
           <h2>Relationships</h2>
-          <p>Accepted bible facts only. Pending proposals never render as edges.</p>
+          <p className="graph__lede" title="Accepted Canon facts only. Pending proposals never render as edges.">Accepted links only</p>
         </div>
         <div className="graph__toolbar">
           <div className="graph__view" role="group" aria-label="Graph view">
@@ -262,19 +298,26 @@ export function RelationshipGraph({
           </div>
           <div className="graph__filters" role="group" aria-label="Filter by sheet kind">
             {SHEET_KINDS.map((kind) => (
-              <Button key={kind} aria-pressed={kinds.has(kind)} onClick={() => toggleKind(kind)}>{kind}</Button>
+              <Button key={kind} aria-pressed={kinds.has(kind)} onClick={() => toggleKind(kind)}>{SHEET_KIND_LABEL[kind]}</Button>
             ))}
           </div>
         </div>
       </header>
 
       {empty ? (
-        <div className="graph__empty">
+        <div className="graph__empty" data-graph-empty={noSheets ? 'canon' : 'filtered'}>
           <EmptyState
-            title={view === 'family' ? 'No family tree yet' : 'No visible sheets'}
-            hint={view === 'family'
-              ? 'Add character sheets and accepted kinship facts such as parent_of, spouse_of, or sibling_of.'
-              : 'Enable a sheet kind or create a bible sheet.'}
+            title={noSheets
+              ? 'Your settled world lives here'
+              : view === 'family' ? 'No family tree yet' : 'No sheets match these filters'}
+            hint={noSheets
+              ? 'Canon holds what is true: the characters, places, and groups your story treats as settled. Start with one sheet.'
+              : view === 'family'
+                ? 'Add character sheets and accepted kinship facts such as parent_of, spouse_of, or sibling_of.'
+                : 'Turn a sheet kind back on to see it.'}
+            action={noSheets && onNewSheet ? (
+              <Button variant="primary" className="graph__empty-cta" onClick={onNewSheet}>New sheet</Button>
+            ) : undefined}
           />
         </div>
       ) : view === 'network' ? (
@@ -283,7 +326,7 @@ export function RelationshipGraph({
           data-dense={denseNetwork ? 'true' : 'false'}
           viewBox={`0 0 ${geometry.width} ${geometry.height}`}
           role="img"
-          aria-label="Bible relationship network"
+          aria-label="Canon relationship network"
         >
           <defs><marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" /></marker></defs>
           {graph.edges.map((edge) => {
@@ -321,7 +364,7 @@ export function RelationshipGraph({
                 data-active={active ? 'true' : 'false'}
                 role="button"
                 tabIndex={0}
-                aria-label={`Open ${node.label} ${node.kind} sheet`}
+                aria-label={`Open ${node.label} ${SHEET_KIND_LABEL[node.kind]} sheet`}
                 transform={`translate(${position.x} ${position.y})`}
                 onPointerEnter={() => setActiveNodeId(node.id)}
                 onPointerLeave={() => setActiveNodeId((current) => current === node.id ? null : current)}
@@ -332,7 +375,7 @@ export function RelationshipGraph({
                   if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
                 }}
               >
-                <title>{node.label} · {node.kind}</title>
+                <title>{node.label} · {SHEET_KIND_LABEL[node.kind]}</title>
                 <circle r={geometry.networkNodeRadius} />
                 <text className="graph__portrait" textAnchor="middle" y="-4">{node.portrait || node.label.slice(0, 2).toUpperCase()}</text>
                 {showText ? (
@@ -340,7 +383,7 @@ export function RelationshipGraph({
                     <text className="graph__label" textAnchor="middle" y={geometry.networkLabelY}>
                       {truncateLabel(node.label, NETWORK_LABEL_MAX)}
                     </text>
-                    <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{node.kind}</text>
+                    <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{SHEET_KIND_LABEL[node.kind]}</text>
                   </>
                 ) : null}
               </g>
@@ -365,7 +408,7 @@ export function RelationshipGraph({
                 width={family.width}
                 height={family.height}
                 role="img"
-                aria-label="Bible family tree"
+                aria-label="Canon family tree"
               >
                 {family.connectors.map((connector) => {
                   const link = family.links.find((candidate) => candidate.id === connector.id)
@@ -394,7 +437,7 @@ export function RelationshipGraph({
                   const labelY = phone ? geometry.familyNodeH * 0.78 : geometry.familyNodeH * 0.72
                   return (
                     <g key={node.id} className="graph__node graph__node--family" role="button" tabIndex={0}
-                      aria-label={`Open ${node.label} ${node.kind} sheet`}
+                      aria-label={`Open ${node.label} ${SHEET_KIND_LABEL[node.kind]} sheet`}
                       transform={`translate(${x} ${y})`}
                       onClick={() => onOpenSheet(node.id)} onKeyDown={(event) => {
                         if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
@@ -434,17 +477,16 @@ export function RelationshipGraph({
         </>
       )}
 
-      {phone ? (
-        <details className="graph__editor graph__editor--disclosure">
-          <summary className="graph__editor-summary">{editorTitle}</summary>
-          <div className="graph__editor-body">{editorFields}</div>
-        </details>
-      ) : (
-        <section className="graph__editor" aria-labelledby="relationship-editor">
-          <h3 id="relationship-editor">{editorTitle}</h3>
-          {editorFields}
-        </section>
-      )}
+      {/* D4: one collapsed summary row at every width; map keeps the fold until summoned. */}
+      <details
+        ref={editorRef}
+        className="graph__editor graph__editor--disclosure"
+        open={editorOpen}
+        onToggle={(event) => setEditorOpen((event.currentTarget as HTMLDetailsElement).open)}
+      >
+        <summary className="graph__editor-summary">{editorTitle}</summary>
+        <div className="graph__editor-body">{editorFields}</div>
+      </details>
     </main>
   )
 }

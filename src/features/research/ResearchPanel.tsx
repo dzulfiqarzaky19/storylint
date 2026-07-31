@@ -70,7 +70,7 @@ export function ResearchPanel({
       {error ? <p className="project-error" role="alert">{error}</p> : null}
 
       {results.length === 0 ? (
-        <EmptyState title="Research without chat clutter" hint="Results require citations. Pin notes or propose them to the bible; neither action auto-canonizes." />
+        <EmptyState title="Research without chat clutter" hint="Results require citations. Pin notes or propose them to Canon; neither action auto-canonizes." />
       ) : (
         <div className="research-panel__results">
           {results.map((result) => (

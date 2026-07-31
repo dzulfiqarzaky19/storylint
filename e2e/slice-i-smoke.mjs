@@ -2,6 +2,17 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import {
+  closeSheetDetail,
+  companionPanel,
+  openCompanionFace,
+  ensureIsolatedProject,
+  ensureDraftReady,
+  getApiBase,
+  requireUiOrigin,
+  setApiBase,
+} from './helpers.mjs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -16,6 +27,7 @@ const firstName = `Aria-${tag}`
 const secondName = `Moon Archive-${tag}`
 
 async function seedSheets(request) {
+  const api = getApiBase()
   for (const sheet of [
     {
       id: firstId, kind: 'character', name: firstName, aliases: [], summary: '', notes: '', portrait: 'A',
@@ -26,7 +38,7 @@ async function seedSheets(request) {
       facts: [],
     },
   ]) {
-    const response = await request.put(`http://127.0.0.1:4174/api/sheets/${sheet.id}`, {
+    const response = await request.put(`${api}/api/sheets/${sheet.id}`, {
       data: sheet,
       headers: { 'content-type': 'application/json' },
     })
@@ -34,12 +46,15 @@ async function seedSheets(request) {
   }
 }
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
+  await ensureIsolatedProject(page)
   await seedSheets(page.request)
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.goto(UI, { waitUntil: 'networkidle' })
+  await ensureDraftReady(page, { body: 'Graph round-trip body.' })
   const manuscriptBody = await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue()
   await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
@@ -51,14 +66,15 @@ try {
   await firstNode.click()
   await page.getByLabel('Name').waitFor({ timeout: 5000 })
   if (await page.getByLabel('Name').inputValue() !== firstName) throw new Error('Node did not open its sheet')
-  await page.getByRole('button', { name: 'Back to binder' }).click()
+  await closeSheetDetail(page)
 
-  await graph.getByRole('button', { name: 'lore', exact: true }).click()
+  await graph.getByRole('button', { name: 'Lore', exact: true }).click()
   const nodesFiltered = await graph.locator('.graph__node').count()
   if (nodesFiltered >= nodesBefore) throw new Error('Kind filter did not reduce graph nodes')
-  await graph.getByRole('button', { name: 'lore', exact: true }).click()
+  await graph.getByRole('button', { name: 'Lore', exact: true }).click()
 
-  const editor = graph.locator('.graph__editor')
+  // D4: Propose is collapsed by default at every width - open it before touching fields.
+  const editor = await openProposeEditor(graph)
   const selects = editor.locator('select')
   await selects.nth(0).selectOption(firstId)
   await selects.nth(1).selectOption(secondId)
@@ -68,11 +84,11 @@ try {
   await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
   const edgesBefore = await graph.locator('.graph__edge').count()
   await graph.getByRole('button', { name: 'Send proposal' }).click()
-  await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 5000 })
+  await graph.getByText(/proposal is pending/i).waitFor({ timeout: 5000 })
   if (await graph.locator('.graph__edge').count() !== edgesBefore) throw new Error('Pending edge rendered before Accept')
 
-  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
-  await companion.getByRole('button', { name: /^Inbox/ }).click()
+  const companion = companionPanel(page)
+  await openCompanionFace(companion, 'Inbox')
   const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
   await graph.locator('title', { hasText: key }).waitFor({ state: 'attached', timeout: 5000 })

@@ -167,3 +167,24 @@ Storylint’s own UX fault list already hit several of these (topbar overload, g
 - Eleken, “UX navigation design: Common patterns and best practices” (2026) — wayfinding questions, patterns, label clarity, depth mistakes, responsive nav
 - Progressive disclosure depth guidance (keep layers shallow) — see 02
 - Storylint [IA_MAP.md](../../IA_MAP.md) rulings on Canon landing, binder stack sheets, depth law
+
+
+- Hick–Hyman Law — decision time rises with equal unfamiliar choices (log form T = b · log2(n + 1))
+- Choice overload literature — large equal sets raise regret/deferral when preference/dominance/expertise are low (Iyengar & Lepper; Scheibehenne meta; Chernev review)
+- Jakob’s Law — users transfer expectations from tools they already know (binder | editor | assistant is legible)
+- Serial position effect — first/last chrome items remembered better
+- Information overload / filter failure — volume without structure drops decision quality (Speier; Shirky; Wurman/Tufte organization lens)
+- Evidence pack clusters C–E, H: [07-overwhelm-evidence.md](./07-overwhelm-evidence.md)
+
+### Evidence anchors (selected)
+
+1. Wayfinding fails if users cannot answer where / what / next quickly.
+2. Few top-level items beat many equal peers (Storylint: three ecosystems).
+3. Daily jobs must stay within ~3 steps from home.
+4. Filters are not destinations.
+5. Labels in task language beat clever internal codenames.
+6. Structured density ≠ clutter; unstructured density is “too many buttons.”
+7. Responsive nav re-prioritizes; it does not shrink the desktop toolbar.
+8. Missing selected/location state is a top complex-product failure.
+9. Card sort / tree test validate IA against real user chunks.
+10. Overwhelm often is organization underload, not pure feature count.

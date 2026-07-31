@@ -199,3 +199,22 @@ If any answer is fuzzy, fix copy or IA before adding more AI power.
 - CMS draft/publish and editorial suggestion-mode norms
 - Trust/UX guidance for AI features: human control, visible state, reversible defaults
 - Storylint PRD Accept boundary + IA_MAP gates table
+
+
+- Split-attention / contiguity: mark ↔ reason ↔ action must stay integrated (Chandler & Sweller; Mayer spatial contiguity)
+- Information overload coping: Inbox as filter + organize layer (not another firehose)
+- Alarm fatigue / severity inflation — heavy always-on red reduces response quality
+- Evidence pack clusters G + I: [07-overwhelm-evidence.md](./07-overwhelm-evidence.md)
+
+### Evidence anchors (selected)
+
+1. AI increases speed and blast radius together — gates are load *and* safety design.
+2. Proposals as objects beat chat-only results for Accept/Reject clarity.
+3. One durable pending place prevents “something changed somewhere” anxiety.
+4. Preview reduces surprise (extraneous uncertainty load).
+5. Edit-then-accept preserves agency and reduces reject spirals.
+6. Empty success (“0 issues”) is a trust peak, not a non-event.
+7. On-demand checks protect deep-work flow better than shame bars while typing.
+8. Lab→Canon double gate matches high-stakes truth psychology.
+9. Pending edges drawn as truth create false schemas.
+10. Stable verbs (Apply vs Accept) reduce semantic load across sessions.

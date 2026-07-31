@@ -8,7 +8,8 @@
 
 ## Principle
 
-**Same agent brain. Different face per job.**
+**Same agent brain. Different face per job.** Structure lock: [../IA_MAP.md](../IA_MAP.md) §7. Words: [CANON-VOCABULARY.md](./CANON-VOCABULARY.md). Density: [../CALM_BUDGET.md](../CALM_BUDGET.md) B3.
+
 
 KISS: user should see **one job** in the right rail. Layout follows **where they are** (center context) and **what they’re doing** (optional sub-mode). Not a permanent toolbox of every skill.
 
@@ -22,8 +23,8 @@ Center context ──▶ default Companion face ──▶ user may switch sub-mo
 
 | Axis | Values | Who sets |
 |------|--------|----------|
-| **Context** (center) | `writing` · `lab` · `details` · `graph` · (+ `research` focus) | Workspace / binder selection |
-| **Face** (rail sub-mode) | depends on context; always ≤4 choices | User; resets to context default on context change |
+| **Context** (center) | `writing` · `lab` · `details` · `graph` only | Workspace / binder selection |
+| **Face** (rail sub-mode) | depends on context; **≤3 primary tabs** visible (+ More / Inbox badge) | User; resets to context default on context change |
 
 Changing center **resets** face to that context’s default (no leftover Co-write chrome while staring at a sheet).
 
@@ -44,7 +45,7 @@ Changing center **resets** face to that context’s default (no leftover Co-writ
 
 **Hidden by default in Writing/Chat:** Research UI, Lab boards, multi-row skill toolbars, long privacy essays (one muted status line max).
 
-Top-bar **Continuity** may remain a power shortcut; rail **Check** is the explained home.
+**No top-bar Continuity** (IA final): rail **Check** is the sole Continuity entry. Do not re-add a top shortcut.
 
 ```
 Writing + Chat                    Writing + Write
@@ -154,7 +155,7 @@ No transcript wall, no Continuity, no co-write row.
 ## Global rules (overload budget)
 
 1. **≤1 primary** button in the footer.  
-2. **≤3 face tabs** visible (4th = overflow/More if needed).  
+2. **≤3 primary face tabs** visible; Inbox is badge-style; further faces (e.g. Research) under one **More** — allow-list may exceed 3.
 3. **≤3** competing actions before scroll in the active face.  
 4. **One** main scroll region (transcript **or** tools **or** inbox **or** results).  
 5. Proposals do not permanently eat the top of Chat — **badge → Inbox**.  
@@ -171,7 +172,7 @@ No transcript wall, no Continuity, no co-write row.
 | Today | Tomorrow |
 |-------|----------|
 | Agent \| Research tabs | Faces under context; Research is a face, not a peer app |
-| Continuity button + essay in transcript | Check face + one status line; optional top-bar run |
+| Continuity button + essay in transcript | Check face + one status line; **no** top-bar Continuity |
 | Review / Craft always under composer | Check face only (Writing) |
 | Continue / Rewrite / Brainstorm always | Write face only (Writing) |
 | All proposals above chat | Inbox face + badge |

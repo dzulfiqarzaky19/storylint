@@ -2,16 +2,28 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import {
+  closeSheetDetail,
+  ensureIsolatedProject,
+  ensureDraftReady,
+  waitSaved,
+  requireUiOrigin,
+  setApiBase
+} from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
 const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
 mkdirSync('e2e/output', { recursive: true })
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await ensureIsolatedProject(page)
+  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
+  await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor()
 
@@ -22,23 +34,30 @@ try {
     undefined,
     { timeout: 5000 },
   )
-  await page.locator('.project-status', { hasText: 'Saved' }).waitFor({ timeout: 5000 })
+  await waitSaved(page)
 
   const suffix = Date.now().toString(36).slice(-4)
   const sheetName = `Moon Archive-${suffix}`
-  await page.getByRole('button', { name: 'New sheet' }).click()
-  await page.getByLabel('Sheet portrait or icon').waitFor()
-  await page.getByLabel('Name').fill(sheetName)
-  await page.getByLabel('Kind').selectOption('lore')
+  // Sheet editor lives under Canon/binder; open Canon before New sheet.
+  const canonBtn = page.getByRole('button', { name: 'Canon', exact: true })
+  if (await canonBtn.count()) await canonBtn.click()
+  await page.locator('.panel').getByRole('button', { name: 'New sheet', exact: true }).first().click()
+  await page.getByLabel('Portrait / icon').waitFor()
+  await page.getByLabel('Name', { exact: true }).fill(sheetName)
+  await page.locator('select.sheet-editor__select').selectOption('lore')
   await page.getByLabel('Portrait / icon').fill('🌙')
   await page.getByRole('button', { name: 'Save sheet' }).click()
   await page.getByRole('button', { name: 'origin' }).waitFor({ timeout: 5000 })
   await page.getByRole('button', { name: 'origin' }).click()
   if (await page.getByLabel('Key').inputValue() !== 'origin') throw new Error('Lore hint did not fill freeform key')
-  await page.getByRole('button', { name: 'Back to binder' }).click()
-  await page.getByRole('button', { name: new RegExp(sheetName) }).click()
+  await closeSheetDetail(page)
+  // Binder list row (not graph node which also matches the sheet name).
+  await page.locator('.ui-list-row').filter({ hasText: sheetName }).first().click()
   if (await page.getByLabel('Portrait / icon').inputValue() !== '🌙') throw new Error('Portrait did not persist')
 
+  // Reading profile + Focus live on Draft.
+  await page.getByRole('button', { name: 'Draft', exact: true }).click()
+  await manuscript.waitFor()
   const reading = manuscript.getByRole('button', { name: /Paper:/ })
   const before = await reading.getAttribute('aria-label')
   await reading.click()

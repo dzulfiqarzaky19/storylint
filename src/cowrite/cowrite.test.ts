@@ -11,7 +11,7 @@ const project: Project = {
 }
 const fixture = { provider: '', model: '', baseUrl: '', apiKey: '', maxTokens: 20000, fixture: false }
 
-test('fixture continue returns an insert card and never changes manuscript or bible', async () => {
+test('fixture continue returns an insert card and never changes manuscript or Canon', async () => {
   const before = structuredClone(project)
   const result = await runCowrite(project, {
     chapterId: 'ch-1', skill: 'continue', instruction: 'Continue with tension', start: 21, end: 21,

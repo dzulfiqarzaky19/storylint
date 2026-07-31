@@ -20,6 +20,19 @@ Storylint’s locked shape is **aligned with best practice**:
 
 The main risk is not missing features. It is **extraneous load from chrome and naming** while the architecture is already rich enough.
 
+Dense citations and ~20 datapoints per mechanism cluster: **[07-overwhelm-evidence.md](./07-overwhelm-evidence.md)**.
+
+### Overwhelm mechanisms → Storylint counters
+
+| Mechanism | Counter already locked |
+|-----------|------------------------|
+| Extraneous cognitive load | Calm L0 top bar; Focus; paper-first Draft |
+| Choice overload / Hick | 3 ecosystems; 2 empty doors; 2 Lab exits |
+| Information overload | Inbox + cards + Check summaries (filters) |
+| Split attention | Mark ↔ proposal ↔ Accept contiguity |
+| Untrusted automation | No auto-apply/accept; gen out of type column |
+| Cockpit sprawl | No fourth ecosystem; companion faces by job |
+
 ---
 
 ## What the research says to prioritize
@@ -41,7 +54,7 @@ Matches IA_MAP §15, reinforced by external practice:
 |--------|-----|
 | Single project identity | Duplicate titles = orientation noise |
 | Rare actions to overflow | Hick’s law / hierarchy |
-| Continuity as Check-primary; top shortcut temporary | Contextual disclosure migration |
+| Continuity only in Check (no top shortcut — migration finished) | Contextual disclosure migration |
 
 ### P2 — Canon entry
 
@@ -141,8 +154,8 @@ Pass/fail on task completion and confusion moments, not aesthetics alone.
 
 | Agent role | Use |
 |------------|-----|
-| Research (pig) | Keep pack updated when new evidence arrives |
-| UX review | Judge faults against principles + IA_MAP, not taste alone |
+| Research (pig) | Keep pack updated when new evidence arrives; densify in [07](./07-overwhelm-evidence.md) |
+| UX review | Judge faults against principles + IA_MAP + 07 mechanisms, not taste alone |
 | Coder | Implement IA_MAP build order; read 06 before inventing chrome |
 | PM (when active) | Don’t schedule new surfaces before P0–P2 |
 

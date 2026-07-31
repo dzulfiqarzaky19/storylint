@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
+  defaultRailsAt,
   railAllowedAt,
   regionVisibility,
   type ShellLayout,
@@ -44,6 +45,21 @@ test('agent has no rail below bp.lg; binder keeps its rail down to bp.md', () =>
   assert.equal(railAllowedAt('medium', 'agent'), false)
   assert.equal(railAllowedAt('compact', 'binder'), false)
   assert.equal(railAllowedAt('compact', 'agent'), false)
+})
+
+test('rail budget: only desk width opens both rails by default', () => {
+  assert.deepEqual(defaultRailsAt(true), { binder: true, agent: true })
+  assert.deepEqual(defaultRailsAt(false), { binder: true, agent: false })
+})
+
+test('rail budget: the companion is still reachable where it starts closed', () => {
+  // below desk the default is closed, but the region is allowed at wide,
+  // so the toggle opens a real rail rather than being a dead control
+  const closed = defaultRailsAt(false)
+  assert.equal(regionVisibility(state({ rails: closed }), 'agent').rail, false)
+  assert.equal(railAllowedAt('wide', 'agent'), true)
+  const opened = { ...closed, agent: true }
+  assert.equal(regionVisibility(state({ rails: opened }), 'agent').rail, true)
 })
 
 test('a closed rail hides the region without opening a drawer', () => {

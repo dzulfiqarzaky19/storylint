@@ -201,3 +201,21 @@ UX risk: looking like **all of them at once** on first paint. Mitigation: journe
 - IDE+agent interaction norms: sidebar assistant, apply/diff, editor sanctity (VS Code / Copilot-class patterns)
 - Sandbox vs production patterns in creative and engineering tools
 - Storylint PRD one-liner and IA_MAP shell skeleton
+
+
+- Cognitive / choice evidence applied to creative cockpits: [07-overwhelm-evidence.md](./07-overwhelm-evidence.md) clusters A, D, I, J
+- Peak-end + Focus: session endings and chrome-kill matter for remembered quality (Laws of UX Peak-End; iA-class sanctuary)
+- Tesler’s Law: irreducible novel-writing complexity stays; UI must not add a second novel of chrome
+
+### Evidence anchors (selected)
+
+1. Scrivener-class failure mode = always-on inspector cockpit.
+2. Pure focus apps fail on weak world/project model — Storylint differentiates on Canon + Continuity.
+3. Sacred editor column is non-negotiable once agents exist.
+4. Explicit Apply matches developer diff psychology authors already learn.
+5. Sandbox without named exits produces truth anxiety (extraneous load).
+6. Three-region shell is durable; fourth permanent region is a density smell.
+7. Reading comfort is multi-hour performance UX, not skin.
+8. First paint that looks like “every writing tool + every AI panel” triggers choice overload.
+9. Mitigation = journeys + disclosure + three ecosystems (already locked).
+10. Agent hideability preserves non-AI sessions (reduces dependency / trust load).

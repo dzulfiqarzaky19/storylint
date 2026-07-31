@@ -2,6 +2,15 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import {
+  closeSheetDetail,
+  companionPanel,
+  openCompanionFace,
+  getApiBase,
+  requireUiOrigin,
+  setApiBase,
+} from './helpers.mjs'
+import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -16,6 +25,7 @@ const parentName = `Mira Parent-${tag}`
 const childName = `Kael-${tag}`
 
 async function seedCharacters(request) {
+  const api = getApiBase()
   for (const sheet of [
     {
       id: parentId, kind: 'character', name: parentName, aliases: [], summary: '', notes: '', portrait: 'P',
@@ -26,7 +36,7 @@ async function seedCharacters(request) {
       facts: [],
     },
   ]) {
-    const response = await request.put(`http://127.0.0.1:4174/api/sheets/${sheet.id}`, {
+    const response = await request.put(`${api}/api/sheets/${sheet.id}`, {
       data: sheet,
       headers: { 'content-type': 'application/json' },
     })
@@ -38,6 +48,8 @@ async function proposeAndAccept(page) {
   await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
+  // D4: Propose is collapsed by default at every width — open it before touching fields.
+  await openProposeEditor(graph)
   const selects = graph.locator('.graph__editor select')
   await selects.nth(0).selectOption(parentId)
   await selects.nth(1).selectOption(childId)
@@ -46,23 +58,25 @@ async function proposeAndAccept(page) {
   await graph.getByPlaceholder('Aria is a member of the Ember Order').fill(statement)
   const edgesBefore = await graph.locator('.graph__edge').count()
   await graph.getByRole('button', { name: 'Send proposal' }).click()
-  await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 5000 })
+  await graph.getByText(/proposal is pending/i).waitFor({ timeout: 5000 })
   if (await graph.locator('.graph__edge').count() !== edgesBefore) {
     throw new Error('Pending kinship edge rendered before Accept')
   }
-  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
-  await companion.getByRole('button', { name: /^Inbox/ }).click()
+  const companion = companionPanel(page)
+  await openCompanionFace(companion, 'Inbox')
   const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
   await graph.locator('title', { hasText: 'parent_of' }).first().waitFor({ state: 'attached', timeout: 5000 })
   return graph
 }
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   await seedCharacters(desktop.request)
-  await desktop.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await desktop.goto(UI, { waitUntil: 'networkidle' })
   await desktop.reload({ waitUntil: 'networkidle' })
   const graph = await proposeAndAccept(desktop)
   await graph.getByRole('button', { name: 'Family', exact: true }).click()
@@ -71,13 +85,13 @@ try {
   if (await familyNodes.count() < 2) throw new Error('Family view did not render character nodes')
   await familyNodes.first().click()
   await desktop.getByLabel('Name').waitFor({ timeout: 5000 })
-  await desktop.getByRole('button', { name: 'Back to binder' }).click()
+  await closeSheetDetail(desktop)
   await graph.getByRole('button', { name: 'Network', exact: true }).click()
   await graph.locator('svg.graph__canvas').first().waitFor()
   await desktop.screenshot({ path: 'e2e/output/slice-k-desktop.png', fullPage: true })
 
   const narrow = await browser.newPage({ viewport: { width: 1024, height: 900 } })
-  await narrow.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await narrow.goto(UI, { waitUntil: 'networkidle' })
   await narrow.getByRole('button', { name: 'Canon' }).click()
   const narrowGraph = narrow.getByRole('main', { name: 'Relationship graph' })
   await narrowGraph.waitFor()

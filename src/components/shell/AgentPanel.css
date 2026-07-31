@@ -1,0 +1,125 @@
+/* Companion face density (D6) — primary ≤3, Inbox badge, More overflow.
+   Tokens only. Owned with AgentPanel.tsx.
+   P3: face row stays one line at 390. */
+
+.companion__faces {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-3) var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.companion__faces::-webkit-scrollbar {
+  display: none;
+}
+
+.companion__faces [role='tab'],
+.companion__faces > .ui-button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.companion__face-inbox {
+  position: relative;
+  min-width: 0;
+}
+
+.companion__inbox-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  margin-left: var(--space-1);
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft, var(--color-accent));
+  color: var(--color-accent-fg, var(--color-fg));
+  font-size: var(--font-size-xs, 0.7rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.companion__more {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.companion__more-menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  z-index: 20;
+  min-width: 9rem;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface-raised, var(--color-bg-elevated, var(--color-bg)));
+  box-shadow: var(--shadow-md, 0 8px 24px color-mix(in srgb, var(--color-fg) 12%, transparent));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.companion__more-menu [role='menuitem'] {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.companion__check-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  min-height: 10rem;
+}
+
+.companion__check-status {
+  margin: 0 0 var(--space-2);
+}
+
+.companion__check-summary {
+  margin: 0;
+  color: var(--color-text-muted, var(--color-fg-muted, inherit));
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.45;
+}
+
+.companion__check-summary[data-continuity-state='ready'] {
+  color: var(--color-text, var(--color-fg));
+}
+
+/* Quiet secondary overflow face (single-item collapse; not a primary peer). */
+.companion__face-secondary {
+  opacity: 0.82;
+  font-weight: 500;
+}
+
+/*
+ * D10/B5 narrow-only: face tabs are .ui-button with min-height: --size-control (32)
+ * + vertical padding → painted 38px. Topbar already lifts via shell.css; faces do not.
+ * Do not change the shared button token — desktop chrome stays 32–38.
+ * Match shell narrow breakpoint (767), not the old 720 density-only cut.
+ */
+@media (max-width: 767px) {
+  .companion__faces {
+    gap: 2px;
+    padding-inline: var(--space-2);
+  }
+
+  .companion__faces [role='tab'],
+  .companion__faces > .ui-button {
+    min-height: var(--size-touch-min);
+    min-width: var(--size-touch-min);
+    padding-inline: var(--space-2);
+    font-size: var(--font-size-sm, 0.8125rem);
+  }
+
+  /* Keep Inbox badge visible; shrink label room if needed */
+  .companion__face-inbox {
+    max-width: 5.5rem;
+  }
+}

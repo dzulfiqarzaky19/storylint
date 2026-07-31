@@ -50,11 +50,28 @@
   color: var(--color-text-muted);
 }
 
+/* Ecosystem switch: pressed state is the strongest topbar cue (D2). */
+.shell__ecosystem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.shell__action-ecosystem[aria-pressed='true'] {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent-muted);
+  color: var(--color-accent);
+}
+
+
 @media (max-width: 767px) {
+  /* Keep Draft · Lab · Canon fully legible; identity may ellipsize (P2). */
   .shell__breadcrumb,
   .project-status,
-  .shell__action-graph,
-  .shell__action-theme {
+  .shell__action-theme,
+  .shell__topbar-spacer {
     display: none;
   }
 
@@ -62,18 +79,64 @@
     min-width: 0;
     gap: var(--space-1);
     padding-inline: var(--space-2);
+    /* Room for touch-sized icon hits without clipping (D10). */
+    min-height: var(--size-touch-min);
   }
 
-  .shell__topbar-actions {
-    flex: 0 0 auto;
-    min-width: 0;
-  }
-
+  /* Identity takes leftover width and ellipsizes first. */
   .shell__topbar > .project-switcher {
     flex: 1 1 auto;
     min-width: 0;
+    max-width: none;
+  }
+
+  /* Wayfinding + icons never shrink under identity. */
+  .shell__topbar-actions {
+    flex: 0 0 auto;
+    min-width: max-content;
+    justify-content: flex-end;
+    gap: var(--space-1);
+  }
+
+  .shell__ecosystem {
+    flex: 0 0 auto;
+    min-width: max-content;
+    overflow-x: visible;
+  }
+
+  .shell__action-ecosystem {
+    flex: 0 0 auto;
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+    padding-inline: var(--space-2);
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+    white-space: nowrap;
+  }
+
+  /* Touch targets ≥44 on narrow profile; desktop stays --size-control (D10/B5). */
+  .shell__topbar .ui-icon-button {
+    width: var(--size-touch-min);
+    height: var(--size-touch-min);
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+  }
+
+  /* Project menu (⋯) and any other topbar text buttons — B5 chrome @390. */
+  .shell__topbar button,
+  .shell__topbar .ui-button {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+  }
+
+  .shell__topbar .project-switcher__menu > .ui-button {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+    width: var(--size-touch-min);
+    padding-inline: 0;
   }
 }
+
 
 /* Body: rails are grid columns, so hiding one reflows without overlay math */
 
@@ -109,6 +172,15 @@
 
 .shell__rail--agent {
   border-left: var(--border-width) solid var(--color-border);
+}
+
+/* Rail budget (TOKENS.md §4): rails are narrow, so their internal gutters are tighter
+   than the same panel presented as a drawer, where width is not scarce. This buys
+   readable line length inside the rail without widening the rail itself. */
+.shell__rail .panel__header,
+.shell__rail .panel__body,
+.shell__rail .panel__footer {
+  padding-inline: var(--space-2);
 }
 
 /* Panels (shared by rail + drawer presentation) */
@@ -633,6 +705,11 @@
   color: var(--color-text);
 }
 
+.manuscript__craft-tag--more {
+  border-style: dashed;
+  color: var(--color-text-muted);
+}
+
 /* Phone craft-tag density (S4): one summary row until expanded. */
 .manuscript__craft-tags-disclosure {
   margin: 0;
@@ -808,9 +885,100 @@
   text-transform: uppercase;
 }
 
+.binder__section-head,
+.binder__kind-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.binder__section-head .panel__label,
+.binder__kind-head .panel__sublabel {
+  margin-block-end: 0;
+}
+
+.binder__count {
+  color: var(--color-text-subtle);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.binder__count--kind {
+  opacity: 0.85;
+}
+
+.binder__chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-block-size: min(40vh, 22rem);
+  overflow: auto;
+  padding-inline-end: var(--space-1);
+  scroll-padding-block: var(--space-2);
+}
+
+.binder__chapter--current {
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+/* Binder L3 sheet stack (D5/F1): list stays mounted; detail pushes over it. */
+.binder__stack {
+  position: relative;
+}
+
+.binder__stack-list[hidden] {
+  display: none !important;
+}
+
+.binder__stack-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.binder__detail-chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-block: var(--space-1);
+  background: var(--color-surface);
+}
+
+.binder__detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.binder__detail-title {
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.binder__detail-kind {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+}
+
+
 .binder__canon-kind {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
   margin-block-start: var(--space-2);
 }
+
+
