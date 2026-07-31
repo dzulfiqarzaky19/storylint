@@ -178,9 +178,6 @@ export function Binder({
           </div>
         )
       })}
-      <p className="binder__still-open" role="note">
-        Still open: sheet detail parks when you leave Canon and restores on return.
-      </p>
       <Button
         variant="primary"
         onClick={() => {

@@ -908,10 +908,4 @@
   margin-block-start: var(--space-2);
 }
 
-.binder__still-open {
-  margin: var(--space-2) 0 0;
-  color: var(--color-text-subtle);
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-}
 
