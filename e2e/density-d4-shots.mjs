@@ -96,6 +96,18 @@ function metrics(graph) {
   })
 }
 
+/** Canon sheet detail can rest open over the map; Esc it so map controls are hittable. */
+async function dismissSheetDetail(page) {
+  const shell = page.locator('.shell')
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const drawer = page.locator('.ui-drawer-root')
+    const sheetOpen = await shell.getAttribute('data-sheet-open')
+    if ((await drawer.count()) === 0 && sheetOpen !== 'true') return
+    await page.keyboard.press('Escape')
+    await page.waitForTimeout(200)
+  }
+}
+
 async function openCanon(page) {
   await page.goto(UI, { waitUntil: 'networkidle' })
   const graph = page.getByRole('main', { name: 'Relationship graph' })
@@ -104,6 +116,7 @@ async function openCanon(page) {
   }
   await graph.waitFor({ timeout: 10000 })
   await page.waitForTimeout(300)
+  await dismissSheetDetail(page)
   return graph
 }
 
@@ -125,6 +138,7 @@ async function capture(page, width, height, name) {
   await page.keyboard.press('Enter')
   await page.waitForTimeout(150)
 
+  await dismissSheetDetail(page)
   await graph.getByRole('button', { name: 'Family', exact: true }).click()
   await page.waitForTimeout(300)
   await page.screenshot({ path: `${OUT}/${name}-family.png` })
@@ -133,6 +147,7 @@ async function capture(page, width, height, name) {
   await page.waitForTimeout(200)
 
   // Edge edit must open Propose with fields filled.
+  await dismissSheetDetail(page)
   await openProposeEditor(graph)
   await page.keyboard.press('Escape')
   const edge = graph.locator('.graph__edge').first()
@@ -140,7 +155,9 @@ async function capture(page, width, height, name) {
   if (await edge.count()) {
     await graph.locator('.graph__editor-summary').click() // collapse again
     await page.waitForTimeout(150)
-    await edge.click({ force: true })
+    await dismissSheetDetail(page)
+    await edge.focus()
+    await page.keyboard.press('Enter')
     await page.waitForTimeout(250)
     const after = await metrics(graph)
     const keyValue = await graph.getByPlaceholder('father_of, member_of, rival…').inputValue()

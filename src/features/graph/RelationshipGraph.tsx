@@ -123,6 +123,7 @@ export function RelationshipGraph({
   // D4: Propose is a job tool at every width — collapsed by default so the map owns the fold.
   const [editorOpen, setEditorOpen] = useState(false)
   const stageRef = useRef<HTMLDivElement | null>(null)
+  const editorRef = useRef<HTMLDetailsElement | null>(null)
   const fromFieldRef = useRef<HTMLSelectElement | null>(null)
   const focusFromFieldRef = useRef(false)
   const geometry = useMemo(() => graphGeometry(phone), [phone])
@@ -187,6 +188,17 @@ export function RelationshipGraph({
     setTargetFactId(edge.factId)
     setNotice('Editing creates a pending replacement; canon remains unchanged until Accept.')
     focusFromFieldRef.current = true
+    openEditor()
+  }
+
+  /**
+   * Open the disclosure through the DOM, not through state alone.
+   * `toggle` fires asynchronously, so a collapse still in flight can land after this call and
+   * clobber the state update, leaving the fields filled inside a form that reads as closed.
+   * Setting `open` directly keeps element and state in agreement within the same task.
+   */
+  function openEditor() {
+    if (editorRef.current) editorRef.current.open = true
     setEditorOpen(true)
   }
 
@@ -449,6 +461,7 @@ export function RelationshipGraph({
 
       {/* D4: one collapsed summary row at every width; map keeps the fold until summoned. */}
       <details
+        ref={editorRef}
         className="graph__editor graph__editor--disclosure"
         open={editorOpen}
         onToggle={(event) => setEditorOpen((event.currentTarget as HTMLDetailsElement).open)}
