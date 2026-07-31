@@ -22,7 +22,7 @@
 
 ## How to measure
 
-Viewports: **1440×900** desktop, **390×844** narrow. Theme light. Rails in product **default open** state (not Focus). Prefer **viewport** shares, not full-document geometry when they diverge.
+Viewports: **1440×900** desktop, **390×844** narrow. Theme light. Rails in product **default** state (not Focus): binder open when the layout shows a rail; **companion open by default only ≥ `bp.desk` (1366)** — below that agent starts closed (`useShellState.defaultRailsAt`). At 1440 measure dual-rail; at 390 measure real defaults (usually binder drawer/rail + agent closed). Prefer **viewport** shares, not full-document geometry when they diverge.
 
 | Metric key | Definition |
 |------------|------------|

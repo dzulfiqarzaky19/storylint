@@ -1,5 +1,7 @@
 # Storylint — PRD (MVP spine)
 
+> **Intent record, not current ship spec.** §§3–9 stay as written when we set out (what/why). **Ship truth** = [BUILD.md](./BUILD.md). **Product structure truth** = [IA_MAP.md](./IA_MAP.md). Do not rewrite this body to match what later shipped — same principle as superseded decisions: history stays, pointers clarify.
+
 **Status:** MVP spine through H documented here; **in-tree build through L** (see [BUILD.md](./BUILD.md) status). UI = Kobo paper tokens ([design/TOKENS.md](./design/TOKENS.md)). Live chrome inventory: [IA_MAP.md](./IA_MAP.md).
 **First user:** you (local dogfood)  
 **Auth:** none — no login, no session, no multi-tenant  

@@ -7,7 +7,8 @@
 -->
 
 > **HISTORICAL SNAPSHOT (not a live worklist).** Captured pre-fix density head. Re-run `e2e/density-audit.mjs` before filing new D-tasks.  
-> **D5 “sheet in center” is RETRACTED.** IA_MAP §2/§4.4 STANDS — sheet = binder Level-3 detail stack. See [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) (ox) and [DOCTRINE_AUDIT.md](../DOCTRINE_AUDIT.md) C2. Residue = F1/F2/F3 (Task V), not center stage.
+> **D5 “sheet in center” is RETRACTED.** IA_MAP §2/§4.4 STANDS — sheet = binder Level-3 detail stack. See [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) (ox) and [DOCTRINE_AUDIT.md](../DOCTRINE_AUDIT.md) C2. Residue was F1/F2/F3 (Task V), not center stage.  
+> **Post-ship note (Task AD):** F1 list-under-detail **ships** on origin/dev (`Binder.tsx` stack). Fault text below about “loses binder list” is **historical**, not current code.
 
 # QA3 — Surface density audit (step 4 worklist)
 
