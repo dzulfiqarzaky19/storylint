@@ -8,6 +8,7 @@ export const ALL_FEATURE_SMOKES = Object.freeze([
   'e2e/slice-j-smoke.mjs',
   'e2e/slice-k-smoke.mjs',
   'e2e/slice-l-smoke.mjs',
+  'e2e/bl-phone-drawer-smoke.mjs',
 ])
 
 /**

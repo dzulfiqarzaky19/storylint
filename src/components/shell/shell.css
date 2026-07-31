@@ -20,7 +20,8 @@
   padding-inline: var(--space-3);
   background: var(--color-surface);
   border-bottom: var(--border-width) solid var(--color-border);
-  z-index: var(--z-dropdown);
+  /* Above drawer/overlay so phone Hide companion / ecosystem stay reachable (BL). */
+  z-index: var(--z-modal);
 }
 
 .shell__breadcrumb {

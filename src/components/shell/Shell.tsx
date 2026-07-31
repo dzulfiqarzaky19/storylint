@@ -231,10 +231,23 @@ export function Shell() {
         activeBoardId={activeBoardId}
         labMode={workspaceMode === 'lab'}
         canonMode={workspaceMode === 'graph'}
-        onSelectChapter={selectChapter}
-        onSelectLabBoard={(boardId) => openLab(boardId)}
-        onOpenLab={() => openLab()}
-        onAddChapter={project.addChapter}
+        onSelectChapter={(id) => {
+          selectChapter(id)
+          // Phone binder is navigation: choosing a chapter returns to the paper (BL).
+          onClose?.()
+        }}
+        onSelectLabBoard={(boardId) => {
+          openLab(boardId)
+          onClose?.()
+        }}
+        onOpenLab={() => {
+          openLab()
+          onClose?.()
+        }}
+        onAddChapter={() => {
+          project.addChapter()
+          onClose?.()
+        }}
         onSaveSheet={project.saveSheet}
         onSaveFact={project.saveFact}
         onDeleteFact={project.deleteFact}
