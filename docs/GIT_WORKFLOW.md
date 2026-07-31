@@ -13,15 +13,46 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
 1. Branch off **`origin/dev`** (not local `dev`, not another worker's branch):
    `git fetch origin && git checkout -B storylint/<topic> origin/dev`
 2. Commit work there (small, scoped commits: `feat|fix|docs|test(scope): message`)
-3. Push the branch: `git push -u origin storylint/<topic>`
-4. Merge to `dev` with a merge commit for readable history, **then push**:
-   `git checkout dev && git merge --no-ff storylint/<topic> && git push origin dev`
-5. **Done means origin has it.** Confirm before reporting:
+3. Push the topic branch: `git push -u origin storylint/<topic>`
+4. **Land onto `dev` with the script (this is the instruction):**
+   ```
+   npm run land -- storylint/<topic> --summary "<why this lands>"
+   ```
+   The script refuses a dirty tree, merges `origin/dev` **into** the topic, runs `npm run test:green` on that merge result, detaches at `origin/dev`, `merge --no-ff` the topic with the house message form, pushes `HEAD:dev`, retries the **whole** sequence on rejection (no rebase), then fetches and prints the **origin** hash it actually reads back. It never filters its own output.
+5. **Done means origin has it.** The script already prints this; re-check if you need to:
    `git fetch origin && git log --oneline -1 origin/dev`
    Report the **`origin/dev` hash**, never a local-only hash.
 6. `dev → main`: agents may merge when dev is verified (tests + QA green), using the founder's account:
    `git checkout main && git pull && git merge --no-ff dev -m "Merge dev: <milestone summary>" && git push`
    Merge at milestones (a completed, verified batch), not per-commit. Never commit work directly on `main`.
+
+### Manual land sequence (fallback / understanding only)
+
+Use only if `npm run land` is unavailable. The script remains the instruction.
+
+```
+git status --porcelain          # must be empty
+git fetch origin
+git merge origin/dev            # INTO the topic; abort on conflict, never auto-resolve
+npm run test:green              # on that merge result; STOP if red
+git checkout --detach origin/dev
+git merge --no-ff storylint/<topic> -m "Merge storylint/<topic> into dev: <summary>"
+git push origin HEAD:dev        # full output, unfiltered — never bury this in a pipeline
+# on rejection: checkout topic, restart from fetch — do not rebase
+git fetch origin
+git log --oneline -1 origin/dev # report THIS hash
+```
+
+**House merge subject:** `Merge storylint/<topic> into dev: <summary>`  
+**After a land, `origin/dev` must be a merge commit** (two parents). A raw tip means the land failed even if the content is right.  
+**Do not** `git push origin <topic>:dev`. **Do not** rebase onto moving `dev` to win a race. **No force-push** to `dev` or `main`.
+
+**Why a script (2026-07-31):** three agents produced correct *content* through wrong *process* under tip pressure, after reading these docs:
+1. Mutating `git push` buried inside a filtered verification one-liner — result unobservable (unattributed action).
+2. Merged `dev` into topic, then pushed the **topic** tip as `dev` — bubble reads backwards on the first-parent line.
+3. Raced a concurrent merge, rebased to a linear tip, pushed a **raw commit** to `dev` with no bubble.
+
+When a correct procedure is reliably performed incorrectly, more documentation will not fix it. Encode the procedure. History honesty over graph beauty: do **not** rewrite bad bubbles already on `origin/dev` / `main`.
 
 ## Branch naming
 
@@ -42,6 +73,14 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
 ## Hardening (session scars — 2026-07-31)
 
 Rules with a scar attached. Founder locks above stay intact; these close the multi-agent failure modes observed today.
+
+### 0. Land with `npm run land`
+
+```
+npm run land -- storylint/<topic> --summary "<why this lands>"
+```
+
+See **Flow** §4. Self-host rule: changes to `scripts/land.mjs` land via `npm run land`. If the script cannot land its own branch, it is not finished. `--skip-tests` is emergency-only and is not a verified land.
 
 ### 1. Pushing is part of merging
 
@@ -69,13 +108,7 @@ Do **not** `git checkout dev && git checkout -b …` without fetch+ff. Do **not*
 
 ### 3. If push is rejected
 
-```
-git fetch origin
-git checkout dev
-git merge --no-ff origin/dev          # bring remote forward on your line
-# re-validate (tests / calm / task checks) on the MERGE RESULT
-git push origin dev
-```
+Prefer `npm run land` (it retries the full sequence). Manual fallback is under **Flow**.
 
 - **Never** `--force` to `dev` or `main`
 - **Never** rebase shared branches (`dev`, `main`)
@@ -83,9 +116,9 @@ git push origin dev
 
 **Observed failure:** unpushed local merges stacked under other agents' work; force would have rewritten peer history.
 
-### 4. Validate on the merge result, not the topic branch
+### 4. Validate on the merge result, not the topic branch alone
 
-Run `npm test`, `npm run calm`, smokes, and QA **after** `merge --no-ff` into `dev` (or on a throwaway checkout of that merge commit). Topic-branch green does not prove the bubble is green once integrated.
+`npm run land` runs `test:green` after merging `origin/dev` into the topic and before the `--no-ff` bubble. Topic-branch green alone does not prove the land is green once integrated.
 
 **Observed failure:** topic passed while integrate order / sibling lines changed the meaning of the merge.
 
@@ -133,13 +166,13 @@ git worktree remove D:/dev/projects/storylint-<topic>
 | `D:/dev/projects/storylint-rail` | Rail budget |
 | `D:/dev/projects/storylint-e2e-health` | E2E / calm gate |
 | `D:/dev/projects/storylint-pig-docs` | Docs-only when shared is busy |
-| `D:/dev/projects/storylint-release` | Release readiness (AF) |
+| `D:/dev/projects/storylint-release` | Release readiness (AF) / land-script |
 | `D:/dev/projects/storylint-a11y` | a11y / dirty-guard |
 
 **Constraints:**
 
 - Git refuses the same branch checked out in two worktrees at once (`dev` included).
-- Standard move when another worktree holds `dev`: **detached HEAD at `origin/dev`** inside your worktree, `merge --no-ff` the topic, `git push origin HEAD:dev`, then `git fetch` and report `origin/dev`. Avoid `git update-ref` unless you own the shared ref and no other worktree holds `dev`.
+- Standard move when another worktree holds `dev`: **detached HEAD at `origin/dev`** inside your worktree, `merge --no-ff` the topic, `git push origin HEAD:dev`, then `git fetch` and report `origin/dev`. Prefer `npm run land`, which does exactly this. Avoid `git update-ref` unless you own the shared ref and no other worktree holds `dev`.
 - Prefer `git worktree add <path> -b storylint/<topic> origin/dev` for long tasks so the shared tree stays free.
 - When done, remove spare worktrees **you** created: `git worktree remove <path>`.
 
@@ -162,10 +195,18 @@ If either shows unique non-merge commits or a tree delta, stop and tell the coor
 
 **Observed false alarm (2026-07-31):** AF stopped on `184bb3e` (pure merge bubble; tree identical to second parent / merge-base). Cost real agent time; do not repeat.
 
+## Verification vs mutation
+
+- Never combine a verification command with a mutating one. Verify, read the result, then act as a **separate** command.
+- Never filter the output of a command that mutates a remote. A push you cannot see is an unattributed action — same defect class as a measurement you cannot attribute.
+- Citable green for a land = `npm run test:green` only (run by `npm run land` on the topic-after-dev merge result). Retrying until green is forbidden.
+- Ambient gitignored data is not a seed. A smoke that passes only when `data/` already exists is not evidence (milestone ninth verification lie).
+- See [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) §9–10.
+
 ## Swarm rules
 
 - Coordinator assigns one branch per task; workers with disjoint scopes may share a branch only if told to
-- Worker reports must include: **branch name**, **topic commit**, **`origin/dev` hash after push** (not local-only)
+- Worker reports must include: **branch name**, **topic commit**, **`origin/dev` hash after push** (not local-only), and `land=npm-run-land` when applicable
 - Backup refs (`backup/*`) are snapshots — read-only, never build on them
 - Before claiming collision-free, `git fetch` and re-read `origin/dev`; coordinate on shared files (e.g. graph) via DM, not optimism
 
@@ -174,15 +215,9 @@ If either shows unique non-merge commits or a tree delta, stop and tell the coor
 Also follow [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md): report on state change, not only at the end.
 
 1. `git fetch origin`
-2. `git log --oneline -1 origin/dev` shows your `Merge storylint/<topic>…`
-3. Report: `branch` · `topic=<sha>` · `origin/dev=<sha>`
-4. Validation ran on the **merge result**
-5. No force-push; no shared rebase
-6. Work happened in **your** worktree; shared tree left on `origin/dev`
-
-
-## Verification vs mutation
-
-- Never combine a verification command with a mutating one.
-- Never filter the output of a command that mutates a remote.
-- See [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) §9–10.
+2. `git log --oneline -1 origin/dev` shows your `Merge storylint/<topic>…` (land script prints this)
+3. Report: `branch` · `topic=<sha>` · `origin/dev=<sha>` · `land=npm-run-land`
+4. Validation ran on the **merge result** (`test:green` inside land)
+5. No force-push; no shared rebase; no filtered mutating-command output
+6. Work happened in **your** worktree; shared tree left undisturbed
+7. Did **not** push a non-merge tip to `dev`
