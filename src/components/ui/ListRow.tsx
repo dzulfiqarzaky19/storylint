@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { cx } from './cx'
 import './ui.css'
 
@@ -7,9 +7,13 @@ export type ListRowProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   meta?: string
 }
 
-export function ListRow({ active = false, meta, className, children, type, ...rest }: ListRowProps) {
+export const ListRow = forwardRef<HTMLButtonElement, ListRowProps>(function ListRow(
+  { active = false, meta, className, children, type, ...rest },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       type={type ?? 'button'}
       aria-current={active ? 'true' : undefined}
       className={cx('ui-list-row', active && 'ui-list-row--active', 'ui-focusable', className)}
@@ -19,4 +23,4 @@ export function ListRow({ active = false, meta, className, children, type, ...re
       {meta ? <span className="ui-list-row__meta">{meta}</span> : null}
     </button>
   )
-}
+})

@@ -125,7 +125,7 @@ export function LabBench({
       })
       setNotice(card.kind === 'beat'
         ? 'Sent to Draft as a chapter stub (empty body). Lab card marked promoted.'
-        : 'Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write bible.')
+        : 'Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write Canon.')
     } catch (caught) {
       setNotice(caught instanceof Error ? caught.message : `${promoteActionLabel(card.kind)} failed`)
     } finally {
@@ -138,7 +138,7 @@ export function LabBench({
       <header className="lab__header">
         <div>
           <h2>Lab</h2>
-          <p>Pre-canon bench. Continuity and Graph ignore everything here.</p>
+          <p>Pre-canon bench. Continuity and Canon ignore everything here.</p>
         </div>
         <div className="lab__boards" role="tablist" aria-label="Lab boards">
           {boards.map((board) => (

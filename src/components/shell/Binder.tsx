@@ -52,8 +52,10 @@ export function Binder({
   const [editingSheetId, setEditingSheetId] = useState<string | 'new' | null>(null)
   /** Park sheet detail when leaving Canon; restore on re-enter (D9). */
   const [parkedSheetId, setParkedSheetId] = useState<string | null>(null)
+  const currentChapterRef = useRef<HTMLButtonElement | null>(null)
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
   const boards = lab?.boards ?? []
+  const draftActive = !labMode && !canonMode
 
   useEffect(() => {
     if (requestedSheetId && sheets.some((sheet) => sheet.id === requestedSheetId)) {
@@ -96,31 +98,65 @@ export function Binder({
     }
   }, [canonMode, editingSheetId, parkedSheetId, sheets, onEditSheet])
 
+  // Keep the active Draft chapter visible in long lists.
+  useEffect(() => {
+    if (!draftActive || editingSheetId) return
+    currentChapterRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  }, [activeChapterId, chapters.length, draftActive, editingSheetId])
+
   const draftSection = (
     <section className="panel__group" aria-labelledby="binder-draft">
-      <h3 className="panel__label" id="binder-draft">Draft</h3>
-      {chapters.map((chapter, index) => (
-        <ListRow
-          key={chapter.id}
-          active={!labMode && !canonMode && chapter.id === activeChapterId}
-          meta={String(index + 1)}
-          onClick={() => onSelectChapter(chapter.id)}
-        >
-          {chapter.title || 'Untitled'}
-        </ListRow>
-      ))}
+      <div className="binder__section-head">
+        <h3 className="panel__label" id="binder-draft">Draft</h3>
+        <span className="binder__count" aria-label={`${chapters.length} chapters`}>{chapters.length}</span>
+      </div>
+      {chapters.length === 0 ? (
+        <div className="panel__empty-row" role="status">
+          No chapters yet. Start with New chapter.
+        </div>
+      ) : (
+        <div className="binder__chapter-list" role="list" aria-label="Chapters">
+          {chapters.map((chapter, index) => {
+            const current = draftActive && chapter.id === activeChapterId
+            return (
+              <ListRow
+                key={chapter.id}
+                ref={current ? currentChapterRef : undefined}
+                className={current ? 'binder__chapter binder__chapter--current' : 'binder__chapter'}
+                active={current}
+                meta={String(index + 1)}
+                data-binder-chapter={current ? 'current' : undefined}
+                onClick={() => onSelectChapter(chapter.id)}
+              >
+                {chapter.title || 'Untitled'}
+              </ListRow>
+            )
+          })}
+        </div>
+      )}
       <Button onClick={onAddChapter}>New chapter</Button>
     </section>
   )
 
   const canonSection = (
     <section className="panel__group" aria-labelledby="binder-canon">
-      <h3 className="panel__label" id="binder-canon">Canon</h3>
+      <div className="binder__section-head">
+        <h3 className="panel__label" id="binder-canon">Canon</h3>
+        <span className="binder__count" aria-label={`${sheets.length} sheets`}>{sheets.length}</span>
+      </div>
+      {sheets.length === 0 ? (
+        <div className="panel__empty-row" role="status">
+          World truth lives here. Add a sheet, or promote from Lab.
+        </div>
+      ) : null}
       {SHEET_KINDS.map((kind: SheetKind) => {
         const forKind = sheets.filter((sheet) => sheet.kind === kind)
         return (
           <div className="binder__canon-kind" key={kind}>
-            <h4 className="panel__sublabel" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h4>
+            <div className="binder__kind-head">
+              <h4 className="panel__sublabel" id={`binder-${kind}`}>{SHEET_KIND_LABEL[kind]}</h4>
+              <span className="binder__count binder__count--kind" aria-hidden="true">{forKind.length}</span>
+            </div>
             {forKind.length === 0 ? (
               <div className="panel__empty-row" role="status">
                 None yet
@@ -142,6 +178,9 @@ export function Binder({
           </div>
         )
       })}
+      <p className="binder__still-open" role="note">
+        Still open: sheet detail parks when you leave Canon and restores on return.
+      </p>
       <Button
         variant="primary"
         onClick={() => {
@@ -156,9 +195,12 @@ export function Binder({
 
   const labSection = (
     <section className="panel__group" aria-labelledby="binder-lab">
-      <h3 className="panel__label" id="binder-lab">Lab</h3>
+      <div className="binder__section-head">
+        <h3 className="panel__label" id="binder-lab">Lab</h3>
+        <span className="binder__count" aria-label={`${boards.length} boards`}>{boards.length}</span>
+      </div>
       {boards.length === 0 ? (
-        <div className="panel__empty-row" role="status">Bench</div>
+        <div className="panel__empty-row" role="status">No boards yet. Open Lab to start a bench.</div>
       ) : (
         boards.map((board) => {
           const live = (lab?.cards ?? []).filter(
