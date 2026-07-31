@@ -37,6 +37,10 @@ Thumbs.db
 # test / coverage
 coverage
 *.tsbuildinfo
+# --- e2e/output split (intentional) ---
+# Throwaway / regenerable: screenshots, probe JSON, skill dumps, run progress, machine runs.
+# Durable judgments live in docs/decisions/ (tracked). Do not force-add shot folders.
+# If a review needs a shot, cite the path (e.g. e2e/output/design-review-r1/) — regenerate via e2e/*.mjs.
 e2e/output/
 
 # AI assistant harness (LOCAL ONLY — never commit / never push)

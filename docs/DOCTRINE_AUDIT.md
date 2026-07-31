@@ -39,22 +39,18 @@
 ---
 
 ### C2 — Canon sheet: center workspace vs binder Level-3 stack  
-**Risk:** **Critical** (D5 worker task directly opposes IA)
+**Risk:** **Critical** (was open wrong-build path; **now decided**)  
+**Status:** **DECIDED 2026-07-31** — option **1** (rat) · ox adjudication **(a)**
 
 | | |
 |--|--|
-| **Claim A** | `e2e/output/density-audit.md:74` — “**Fix direction:** open sheet in center workspace (map collapses or splits); binder stays list…” · `:145` task **D5+D9** “Sheet opens in center…” |
-| **Claim B** | `docs/IA_MAP.md:86` — “A sheet opened in the **binder detail stack** is still the Level-3 Canon thing… **No separate center sheet surface is required.**” · `:115` — “Only **one** center surface at a time. (Canon sheet is a Level-3 thing in the binder detail stack…)” · `:190–192` §4.4 — “**Where:** binder detail stack… **not a center surface.**” |
-| **Shipped** | `Binder.tsx` mounts `SheetEditor` when `editingSheetId` set; center stays map/Draft/Lab (`Shell.tsx` workspace modes manuscript \| lab \| graph). |
-| **Locked** | **IA_MAP §2 / §4.4** — binder stack. |
-| **Resolution** | **Not a product call for pig.** Ox adjudicating (rat note). **Audit annotated** this branch: D5 marked **CONTRADICTS IA_MAP — do not implement pending adjudication**. Options for rat (below). |
-
-**Options for rat (product):**  
-1. **Keep IA** — fix density pain inside binder stack (park/clear on mode leave = D9 only; widen binder editor UX). Retract D5 center-stage.  
-2. **Overturn IA** — sheet becomes center surface; rewrite §2/§4.4/depth examples; big Shell change.  
-3. **Hybrid** — map remains default center; explicit “Stage sheet” expands center temporarily (new ruling required).
-
----
+| **Claim A (retracted)** | density-audit D5 — open sheet in **center** workspace |
+| **Claim B (stands)** | IA_MAP §2 / §4.4 — sheet = **binder detail stack** Level-3; one center surface |
+| **Shipped** | `SheetEditor` in binder; center stays map/Draft/Lab |
+| **Locked** | IA_MAP §2/§4.4 **STANDS** |
+| **Adjudication** | [decisions/adjudication-d5-sheet-binder.md](./decisions/adjudication-d5-sheet-binder.md) (ox): D5 fix is **wrong architecture**; D5 “sheet takes center” **RETRACTED** |
+| **Residue (not a reopen of §2)** | Task V → octopus: **F1** detail stack behaves like a stack (list recoverable); **F2** quiet map chrome while sheet open; **F3** Canon sheet form must not bleed into Draft |
+| **Resolution** | Do **not** implement center-stage sheet. Do **not** reopen §2/§4.4. Tracked audit copy: [decisions/density-audit-qa3.md](./decisions/density-audit-qa3.md) |
 
 ### C3 — Continuity on top bar (diagram / companion) vs final ruling  
 **Risk:** **High** (re-adds L0 job CTA; fights CALM B2)
@@ -186,9 +182,9 @@
 | `docs/research/ui-ux/06-storylint-implications.md` | Continuity top shortcut → removed / Check-only. |
 | `docs/research/ui-ux/02-progressive-disclosure.md` | Demote example no longer implies live top Continuity. |
 | `docs/UX_PASS.md` | Continuity path = Check face. |
-| `e2e/output/density-audit.md` | Historical banner + D5 blocked note applied in working tree (`e2e/output` is **gitignored** — re-apply on next audit run or read C2/C4 here as source of truth). |
+| [decisions/density-audit-qa3.md](./decisions/density-audit-qa3.md) + [adjudication-d5…](./decisions/adjudication-d5-sheet-binder.md) | D5 **RETRACTED**; historical density faults tracked under docs/decisions/ |
 
-**Not changed (need rat/ox):** Canon sheet center vs binder (C2 options); `@bible` → `@canon` code (C8); graph chip label code (C5 implementer fix).
+**C2 decided** (keep IA; D5 retracted). Still open implementer debt: `@bible` → `@canon` (C8); graph chip labels (C5 — rat routing).
 
 ---
 
@@ -203,4 +199,4 @@
 
 ## One-line
 
-**Docs nearly deleted Research and nearly restaged Canon sheets; face chrome ≠ face allow-list, and density fix directions are not IA. Remaining product fork: C2 sheet stage (ox/rat).**
+**Docs nearly deleted Research and nearly restaged Canon sheets; face chrome ≠ face allow-list; density fix directions are not IA. C2 decided: binder stack stands, D5 retracted.**
