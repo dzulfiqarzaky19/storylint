@@ -9,6 +9,8 @@ export type SheetEditorProps = {
   onSaveFact: (sheetId: string, fact: Fact) => Promise<void>
   onDeleteFact: (sheetId: string, factId: string) => Promise<void>
   onBack: () => void
+  /** When false, parent stack chrome owns Back (binder L3). Default true. */
+  showBack?: boolean
 }
 
 const EMPTY_KIND: SheetKind = 'character'
@@ -30,6 +32,7 @@ export function SheetEditor({
   onSaveFact,
   onDeleteFact,
   onBack,
+  showBack = true,
 }: SheetEditorProps) {
   const [draft, setDraft] = useState<Sheet>(() => sheet ?? emptySheet())
   const [portraitFailed, setPortraitFailed] = useState(false)
@@ -69,7 +72,7 @@ export function SheetEditor({
 
   return (
     <div className="sheet-editor">
-      <Button onClick={onBack}>Back to binder</Button>
+      {showBack ? <Button onClick={onBack}>Back to binder</Button> : null}
       <form className="sheet-editor__form" onSubmit={(event) => void submitSheet(event)}>
         <div className="sheet-editor__identity">
           <div className="sheet-editor__portrait" aria-label="Sheet portrait or icon">
