@@ -7,7 +7,7 @@ const project: Project = {
   schemaVersion: 1, title: 'Storylint',
   chapters: [{ id: 'ch-1', title: 'Opening', body: 'Aria opened the door. Kael waited outside.', craftTags: [], revision: 0 }],
   sheets: [{ id: 'aria', kind: 'character', name: 'Aria', aliases: [], summary: '', notes: '', facts: [] }],
-  proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
+  proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
 }
 const fixture = { provider: '', model: '', baseUrl: '', apiKey: '', maxTokens: 20000, fixture: false }
 

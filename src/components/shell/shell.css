@@ -205,6 +205,15 @@
   overflow: auto;
   background: var(--color-paper);
   padding: var(--space-0);
+  /* Paper stays clean — wheel/keys still scroll. Rails keep thin bars. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.manuscript::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .manuscript__page {
@@ -306,18 +315,18 @@
 
 .manuscript__bookmark-tab {
   width: 40%;
-  height: 2px;
+  height: var(--size-reading-tab);
   border-radius: var(--radius-pill);
   background: currentColor;
-  opacity: 0.4;
+  opacity: var(--opacity-reading-tab);
 }
 
 .manuscript__bookmark-label {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: 0.04em;
-  font-size: 9px;
+  letter-spacing: var(--tracking-reading-seal);
+  font-size: var(--text-reading-seal);
   line-height: 1;
 }
 
@@ -397,29 +406,29 @@
     min-width: var(--size-reading-btn);
     max-width: var(--size-reading-btn);
     height: auto;
-    min-height: 4.5rem;
+    min-height: var(--size-reading-ribbon-min-h);
     padding: var(--space-3) var(--space-1) var(--space-4);
     border-radius: var(--radius-md) 0 0 var(--radius-md);
-    transform: translateX(28%);
+    transform: translateX(var(--size-reading-ribbon-shift));
     gap: var(--space-2);
   }
 
   .manuscript__bookmark:hover {
-    transform: translateX(16%);
+    transform: translateX(var(--size-reading-ribbon-shift-hover));
   }
 
   .manuscript__bookmark-tab {
     width: 55%;
-    height: 3px;
+    height: var(--size-reading-tab-desk);
   }
 
   .manuscript__bookmark-label {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     transform: rotate(180deg);
-    max-height: 5rem;
+    max-height: var(--size-reading-ribbon-label-max);
     font-size: var(--text-xs);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-reading-ribbon);
   }
 }
 
@@ -507,7 +516,7 @@
   position: relative;
   display: grid;
   flex: 1 1 auto;
-  min-height: 12rem;
+  min-height: var(--manuscript-editor-min-h);
   width: 100%;
 }
 
@@ -515,7 +524,7 @@
 .manuscript__overlay {
   grid-area: 1 / 1;
   width: 100%;
-  min-height: 12rem;
+  min-height: var(--manuscript-editor-min-h);
   height: 100%;
   margin: var(--space-0);
   padding: var(--space-0);
@@ -672,6 +681,13 @@
   letter-spacing: var(--tracking-section);
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+.companion__faces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3) 0;
 }
 
 .agent__chips {

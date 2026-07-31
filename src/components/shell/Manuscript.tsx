@@ -99,7 +99,7 @@ export function Manuscript({
   }, [])
 
   return (
-    <main className="manuscript" aria-label="Manuscript">
+    <main id="workspace" className="manuscript" aria-label="Manuscript" tabIndex={-1}>
       <div className="manuscript__page">
         <div className="manuscript__sheet">
           <header className="manuscript__header">
@@ -178,6 +178,14 @@ export function Manuscript({
               value={chapter.body}
               onChange={(event) => onChange({ body: event.target.value })}
               onSelect={(event) => {
+                const { selectionStart: start, selectionEnd: end, value } = event.currentTarget
+                onSelectionChange({ start, end, text: value.slice(start, end) })
+              }}
+              onKeyUp={(event) => {
+                const { selectionStart: start, selectionEnd: end, value } = event.currentTarget
+                onSelectionChange({ start, end, text: value.slice(start, end) })
+              }}
+              onMouseUp={(event) => {
                 const { selectionStart: start, selectionEnd: end, value } = event.currentTarget
                 onSelectionChange({ start, end, text: value.slice(start, end) })
               }}

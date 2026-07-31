@@ -20,11 +20,29 @@ Portable skill (if installed): user skill **`playwright-ui`** — same rules.
 
 | Role | When |
 |------|------|
-| **Coder** | After UI-facing slice work (shell, Apply, Continuity chrome, Focus); before claiming done |
-| **Verifier** | Any slice that touches UI; include screenshot path in report |
-| **Skip** | Pure domain-only change with zero UI files |
+| **Coder** | After UI-facing slice work; before claiming done — run the slice smoke |
+| **UX** | Phased: `node e2e/ux-drive.mjs` then `node e2e/ux-drive-graph.mjs` ([UX_PASS.md](./UX_PASS.md)). Progress files on disk. **Read ≤4 PNGs/session**. Graph = Network+Family, empty+full, all sheet kinds. Write `e2e/output/ux-report.md` |
+| **Verifier** | **Default required.** Boot app + Playwright until flows **behave** as expected; screenshots in report. Only skip if diff is pure domain/API with **zero** UI/CSS/shell files |
+| **Catch-up review debt** | Verifier (or fix cycle) runs **all** `e2e/slice-*-smoke.mjs` after blockers land |
 
-Unit tests still required for domain/API. E2e **adds** browser proof; it does not replace gates tests.
+Unit tests still required for domain/API. Playwright **proves the product path**; it does not replace gates tests.
+
+### Verifier checklist (working-as-expected)
+
+Assert, don’t just open the URL:
+
+1. Shell loads: Manuscript main, binder, agent panel  
+2. Type chapter → **Saved**  
+3. Focus toggles rails; reading control is **on paper** (seal/ribbon), cycles day/sepia/mint/night  
+4. Continuity (fixture) → marks and/or proposals; **no** auto-accept into bible  
+5. If Apply shipped: co-write card → body changes **only** after Apply  
+6. Multi-project: create/switch restores correct chapter body  
+7. Export / graph / research: use the matching `e2e/slice-*-smoke.mjs` if that surface is in scope  
+8. No sky-blue accent; no gen chips inside manuscript column  
+
+Existing scripts: `e2e/slice-e-smoke.mjs` … `e2e/slice-k-smoke.mjs` (run with `node e2e/slice-X-smoke.mjs` while servers are up).
+
+**Full product gate:** `npm run test:e2e` → `e2e/all-smoke.mjs` runs `ALL_FEATURE_SMOKES` from [`e2e/constants.mjs`](../e2e/constants.mjs) in order. Shared ~2k-word manuscript body: `NOVEL_CHAPTER` (used by G review/craft).
 
 ## Boot (two processes)
 

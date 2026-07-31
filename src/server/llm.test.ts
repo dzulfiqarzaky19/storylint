@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { test } from 'node:test'
-import { completeJson } from './llm.ts'
+import { completeJson, completeText } from './llm.ts'
 
 async function withMock(
   body: string,
@@ -93,6 +93,16 @@ test('accepts nested braces inside string values', async () => {
     async (baseUrl) => {
       const result = await completeJson(config(baseUrl), 'system', 'user')
       assert.deepEqual(result, { message: 'use {braces} carefully', sheetPack: null })
+    },
+  )
+})
+
+test('completeText returns freeform assistant content', async () => {
+  await withMock(
+    JSON.stringify({ choices: [{ message: { content: 'Plain advice about pacing.' } }] }),
+    async (baseUrl) => {
+      const result = await completeText(config(baseUrl), 'system', 'user')
+      assert.equal(result, 'Plain advice about pacing.')
     },
   )
 })

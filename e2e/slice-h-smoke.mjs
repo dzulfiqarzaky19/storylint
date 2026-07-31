@@ -12,14 +12,18 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   const before = await page.evaluate(() => fetch('/api/project').then((response) => response.json()))
-  await page.getByRole('button', { name: 'Research', exact: true }).click()
-  await page.getByLabel('Research query').fill(`medieval archive access customs smoke-${Date.now()}`)
-  await page.locator('form').getByRole('button', { name: 'Research', exact: true }).click()
-  const card = page.locator('.research-card').first()
+  const companion = page.locator('.panel[data-companion-context]').first()
+  const faces = companion.getByRole('tablist', { name: 'Companion faces' })
+
+  await faces.getByRole('button', { name: 'Research', exact: true }).click()
+  await companion.getByLabel('Research query').waitFor({ timeout: 5000 })
+  await companion.getByLabel('Research query').fill(`medieval archive access customs smoke-${Date.now()}`)
+  await companion.locator('form').getByRole('button', { name: 'Research', exact: true }).click()
+  const card = companion.locator('.research-card').first()
   await card.getByText('Controlled archive access').waitFor({ timeout: 10000 })
   await card.getByText('International Council on Archives — Principles of Access').waitFor({ timeout: 5000 })
   await card.getByRole('button', { name: 'Pin' }).click()
-  await page.getByText('Pinned notes').waitFor({ timeout: 5000 })
+  await companion.getByText('Pinned notes').waitFor({ timeout: 5000 })
   await card.getByRole('button', { name: 'Propose to sheet' }).click()
   await page.waitForFunction(
     (count) => fetch('/api/project').then((response) => response.json()).then((project) => project.proposals.length > count),
@@ -35,8 +39,8 @@ try {
   }
 
   await page.screenshot({ path: 'e2e/output/slice-h-research.png', fullPage: true })
-  await page.getByRole('button', { name: 'Agent', exact: true }).click()
-  await page.getByRole('button', { name: 'Accept' }).first().waitFor({ timeout: 5000 })
+  await faces.getByRole('button', { name: /^Inbox/ }).click()
+  await companion.getByRole('button', { name: 'Accept' }).first().waitFor({ timeout: 5000 })
   await page.screenshot({ path: 'e2e/output/slice-h-smoke.png', fullPage: true })
   console.log('PASS: dedicated cited research panel; Pin persists note; Propose creates pending lore; no auto-canon or chat dump')
 } finally {

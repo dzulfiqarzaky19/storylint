@@ -18,10 +18,9 @@ export function readingLabel(profile: ReadingProfile): string {
   return READING_LABELS[profile]
 }
 
-/** Dark is :root default; light is [data-theme="light"]. */
+/** Dark is default chrome; always set data-theme so tests/CSS share one switch. */
 export function applyTheme(theme: Theme, root: HTMLElement = document.documentElement): void {
-  if (theme === 'dark') root.removeAttribute('data-theme')
-  else root.setAttribute('data-theme', theme)
+  root.setAttribute('data-theme', theme)
 }
 
 export function applyReading(

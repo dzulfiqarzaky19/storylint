@@ -3,6 +3,8 @@
 | Doc | |
 |-----|--|
 | [TOKENS.md](./TOKENS.md) | **Source of truth** — Kobo paper + warm chrome |
+| [LAB.md](./LAB.md) | **Slice L** — pre-canon Lab bench (shipped; create/experiment) |
+| [COMPANION.md](./COMPANION.md) | Mode-shaped right rail — Writing / Lab / Details faces |
 | [REFERENCES.md](./REFERENCES.md) | Patterns/URLs (behavior only) |
 | [STITCH.md](./STITCH.md) | Stitch prompts — **outdated AI-blue**; do not ship skin from it |
 | [../03-ux.md](../03-ux.md) | IA, reading profiles, snap layout |
@@ -15,7 +17,9 @@
 3. Change values in **TOKENS.md** then **`src/design/tokens.css`**.  
 4. Manuscript uses `color.paper` / `color.paperInk`; chrome uses surface/canvas/text.  
 5. Rails and paper width scale via size/measure/gutter tokens — uniformity over one-off CSS.  
-6. Steal **patterns** from REFERENCES; skin always ours.
+6. Steal **patterns** from REFERENCES; skin always ours.  
+7. Optional **local** skill (gitignored `.claude/…`) = structure/a11y **checklist only** — never copy its hex/OLED palettes over TOKENS. Never commit harness dirs.  
+8. Product UX rules live in **[../03-ux.md](../03-ux.md)** + this folder — no separate review markdown files.
 
 ## Folders
 

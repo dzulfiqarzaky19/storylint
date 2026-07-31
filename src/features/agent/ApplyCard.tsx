@@ -36,10 +36,13 @@ export function ApplyCard({
       <pre className="apply-card__preview">{card.text}</pre>
       <div className="proposal-card__actions">
         <Button variant="primary" disabled={busy} onClick={() => void apply()}>
-          {busy ? 'Applying…' : card.target.mode === 'replace' ? 'Replace selection' : 'Insert at cursor'}
+          {busy ? 'Applying…' : 'Apply'}
         </Button>
         <Button disabled={busy} onClick={() => onDismiss(card.id)}>Dismiss</Button>
       </div>
+      <p className="apply-card__hint">
+        {card.target.mode === 'replace' ? 'Replaces the current selection.' : 'Inserts at the current cursor.'}
+      </p>
       {error ? <p className="apply-card__error" role="alert">{error}</p> : null}
     </article>
   )

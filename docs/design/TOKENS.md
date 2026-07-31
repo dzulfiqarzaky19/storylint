@@ -114,11 +114,11 @@ Marks = diagnostics only — never primary buttons.
 
 | Attr on `<html>` | Meaning |
 |------------------|---------|
-| (default) | Night chrome + night paper |
+| `data-theme="dark"` (boot default) | Night chrome; `:root` paint is the source values |
 | `data-theme="light"` | Day chrome + day paper defaults |
 | `data-reading="day\|sepia\|mint\|night"` | Overrides **paper + paperInk only** (and manuscript text) |
 
-Reading profile can differ from chrome (e.g. night shell + sepia page later); v1 toggle cycles reading on both.
+`applyTheme` **always** sets `data-theme` (never leaves it null). Boot in `main.tsx`: dark + night reading. Reading profile can differ from chrome (e.g. night shell + sepia page); theme toggle syncs paper to day/night defaults.
 
 ---
 
@@ -197,9 +197,11 @@ Ports: map `font.ui` → San Francisco (iOS), Roboto/system (Android), Segoe UI 
 
 | Token | px | Role |
 |-------|-----|------|
-| `size.touchMin` | 44 | Minimum hit target (mobile profile) |
+| `size.touchMin` | 44 | Minimum hit target (mobile / coarse pointer) |
 | `size.rowMin` | 36 | Desktop list row min height |
 | `size.rowMinTouch` | 44 | Touch list row |
+
+**Hit-target choice:** desktop defaults stay **32 control / 36 row** (dense writing desk, WCAG **2.5.5 AA** practical). Coarse pointer (`pointer: coarse`) bumps control + row to **44** (AAA target size). Do not raise desktop chrome to 44 without a density pass.
 
 ---
 
@@ -223,6 +225,7 @@ Ports: map `font.ui` → San Francisco (iOS), Roboto/system (Android), Segoe UI 
 | `manuscript.pageMaxWXl` | 44rem | ≥1440 |
 | `manuscript.pageMaxW2xl` | 48rem | ≥1920 |
 | `manuscript.pageRatio` | 1.414… | A4 portrait **ratio** — `min-height: 100cqw * ratio` |
+| `manuscript.editorMinH` | 12rem | Empty editor floor height |
 | `manuscript.gutter` | 16px | Desk pad around page |
 | `manuscript.gutterLg` | 20px | |
 | `manuscript.gutterXl` | 28px | |
@@ -234,8 +237,20 @@ Ports: map `font.ui` → San Francisco (iOS), Roboto/system (Android), Segoe UI 
 | `size.controlHeightTouch` | 44 | Touch |
 | `size.graphViewW` | 800 | Relationship graph viewBox width |
 | `size.graphViewH` | 520 | Relationship graph viewBox height |
-| `size.graphRadius` | 185 | Radial node orbit radius |
-| `size.graphNode` | 76 | Graph node diameter |
+| `size.graphRadius` | 180 | Network outer orbit radius |
+| `size.graphRadiusInner` | 100 | Dense-network inner orbit radius |
+| `size.graphNetworkNode` | 56 | Network node diameter |
+| `size.graphNode` | 76 | Family node base size |
+| `size.readingTab` | 2 | Compact seal tab stroke |
+| `size.readingTabDesk` | 3 | Desk ribbon tab stroke |
+| `size.readingRibbonMinH` | 4.5rem | Desk ribbon min height |
+| `size.readingRibbonLabelMax` | 5rem | Desk ribbon vertical label cap |
+| `size.readingRibbonShift` | 28% | Desk ribbon rest offset |
+| `size.readingRibbonShiftHover` | 16% | Desk ribbon hover offset |
+| `text.readingSeal` | 9 | Compact seal label |
+| `tracking.readingSeal` | 0.04em | Compact seal tracking |
+| `tracking.readingRibbon` | 0.08em | Desk ribbon tracking |
+| `opacity.readingTab` | 0.4 | Seal/ribbon tab wash |
 
 ---
 
@@ -308,6 +323,17 @@ Keep flat; max 2 levels.
 | `easing.standard` | `cubic-bezier(0.2, 0, 0, 1)` |
 
 Prefer **no animation** on manuscript text. Respect `prefers-reduced-motion: reduce` → all durations 0.
+
+### Scrollbars
+
+- **Rails / agent / binder / drawers:** thin bars (`scrollbar-width: thin`, border-strong thumb).
+- **Manuscript (`.manuscript`):** bars **hidden**; wheel/trackpad/keys still scroll. Paper stays clean.
+
+### Focus
+
+- Chrome controls: `.ui-focusable:focus-visible` → `color.focusRing`.
+- Manuscript title/body: **no ring** — caret is the focus cue (intentional).
+- Skip link: `.sr-only` until focus, jumps to `#workspace`.
 
 ---
 
@@ -442,3 +468,5 @@ When adding Android/iOS/desktop:
 | 2026-07-27 | Desk breakpoint **1366**; seal&lt;1366; A4 ratio via cqw; docs fully synced |
 | 2026-07-27 | Light chrome: ink primary not muddy brown; `size.readingBtn` token; binder empty rows not pills |
 | 2026-07-27 | Add `color.onPrimary` (per-theme primary-button label; contrast) — Slice 0 port |
+| 2026-07-29 | Split dense network geometry from family nodes; add inner/outer network rings |
+| 2026-07-31 | Always set `data-theme`; thin rail scrollbars + hidden paper bars; document 32/44 hit targets; skip link + empty-chapter CTA |

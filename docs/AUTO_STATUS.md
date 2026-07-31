@@ -72,7 +72,7 @@ Commits: local only. Pushes: never.
 - Project IDs are slug-validated; duplicate creation conflicts; no auth/cloud sync/import added.
 - Project-scoped recovery drafts (`projectId:chapterId`); switch/create restore drafts like boot.
 - `editLock` freezes editor mutations across flush+activate; `trackMutation` awaits Accept/sheet/fact/Apply/agent/graph HTTP before path switch.
-- Generation stamps drop late client merges after install; agent transcript/Apply cards reset synchronously before switch/create.
+- Generation stamps drop late client merges after install; agent transcript/Apply cards reset after successful switch/create (editLock blocks Apply during the transition).
 - Export flushes all chapters first.
 - `npm test`: 79 passed.
 - `npm run build`: passed (54 modules).
@@ -98,6 +98,12 @@ Commits: local only. Pushes: never.
 - `npm run lint`: passed.
 - Edge smoke: `e2e/output/slice-k-desktop.png`, `e2e/output/slice-k-narrow.png`.
 
+## Catch-up review — APPROVED
+
+- Prior blockers cleared in `7d3cf37` (CLAUDE honesty, shell tokens, AUTO_STATUS reset wording, I smoke seed).
+- Process gate docs on disk: `docs/AGENTS_ROLES.md`, `docs/E2E.md`, `docs/REVIEW_CATCHUP.md`.
+- New feature slices resume under Coder → Reviewer → Verifier.
+
 ## Next
 
-Shell adapter seams / further responsive hardening only if still needed after K1+K2; no native app scaffold.
+Optional shell adapter seams / residual polish only; no native app scaffold.

@@ -1,15 +1,21 @@
 import {
   CLAIM_KINDS,
   CRAFT_TAGS,
+  LAB_CARD_KINDS,
+  LAB_CARD_STATUSES,
   SHEET_KINDS,
   type Chapter,
   type Fact,
+  type Lab,
+  type LabBoard,
+  type LabCard,
   type Mark,
   type Project,
   type Proposal,
   type ResearchNote,
   type Sheet,
 } from '../domain/types.ts'
+import { emptyLab } from '../domain/lab.ts'
 
 type ObjectValue = Record<string, unknown>
 
@@ -189,16 +195,74 @@ function number(value: unknown, name: string): number {
   return value
 }
 
+
+function parseLabCard(value: unknown): LabCard {
+  const raw = object(value, 'lab card')
+  const card: LabCard = {
+    id: string(raw.id, 'labCard.id'),
+    boardId: string(raw.boardId, 'labCard.boardId'),
+    kind: oneOf(raw.kind, LAB_CARD_KINDS, 'labCard.kind'),
+    title: string(raw.title, 'labCard.title'),
+    body: string(raw.body, 'labCard.body'),
+    status: oneOf(raw.status, LAB_CARD_STATUSES, 'labCard.status'),
+    createdAt: string(raw.createdAt, 'labCard.createdAt'),
+    updatedAt: string(raw.updatedAt, 'labCard.updatedAt'),
+  }
+  if (raw.touches !== undefined) {
+    const touches = object(raw.touches, 'labCard.touches')
+    card.touches = {
+      sheetId: optionalString(touches.sheetId, 'labCard.touches.sheetId'),
+      chapterId: optionalString(touches.chapterId, 'labCard.touches.chapterId'),
+    }
+  }
+  if (raw.promoted !== undefined) {
+    const promoted = object(raw.promoted, 'labCard.promoted')
+    card.promoted = {
+      at: string(promoted.at, 'labCard.promoted.at'),
+      as: oneOf(promoted.as, ['sheet-proposal', 'chapter-stub'] as const, 'labCard.promoted.as'),
+      targetIds: promoted.targetIds === undefined
+        ? undefined
+        : stringArray(promoted.targetIds, 'labCard.promoted.targetIds'),
+    }
+  }
+  return card
+}
+
+function parseLabBoard(value: unknown): LabBoard {
+  const raw = object(value, 'lab board')
+  return {
+    id: string(raw.id, 'labBoard.id'),
+    title: string(raw.title, 'labBoard.title'),
+    cardIds: stringArray(raw.cardIds, 'labBoard.cardIds'),
+  }
+}
+
+function parseLab(value: unknown): Lab {
+  const raw = object(value, 'lab')
+  if (!Array.isArray(raw.boards) || raw.boards.length === 0) {
+    throw new Error('lab.boards must be a non-empty array')
+  }
+  if (!Array.isArray(raw.cards)) throw new Error('lab.cards must be an array')
+  const boards = raw.boards.map(parseLabBoard)
+  const cards = raw.cards.map(parseLabCard)
+  const boardIds = new Set(boards.map((board) => board.id))
+  for (const card of cards) {
+    if (!boardIds.has(card.boardId)) throw new Error(`lab card board missing: ${card.boardId}`)
+  }
+  return { boards, cards }
+}
+
 /** Validate disk data at the trust boundary; malformed files never enter domain/UI. */
 export function parseProject(value: unknown): Project {
   const raw = object(value, 'project')
-  if (raw.schemaVersion !== 1) throw new Error('Unsupported project schemaVersion')
+  if (raw.schemaVersion !== 1 && raw.schemaVersion !== 2) throw new Error('Unsupported project schemaVersion')
   if (!Array.isArray(raw.chapters)) throw new Error('project.chapters must be an array')
   if (!Array.isArray(raw.sheets)) throw new Error('project.sheets must be an array')
   if (!Array.isArray(raw.proposals)) throw new Error('project.proposals must be an array')
   if (raw.marks !== undefined && !Array.isArray(raw.marks)) throw new Error('project.marks must be an array')
+  const lab = raw.lab === undefined ? emptyLab() : parseLab(raw.lab)
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     title: string(raw.title, 'project.title'),
     chapters: raw.chapters.map(parseChapter),
     sheets: raw.sheets.map(parseSheet),
@@ -206,5 +270,6 @@ export function parseProject(value: unknown): Project {
     rejectedFingerprints: stringArray(raw.rejectedFingerprints, 'project.rejectedFingerprints'),
     marks: Array.isArray(raw.marks) ? raw.marks.map(parseMark) : [],
     researchNotes: Array.isArray(raw.researchNotes) ? raw.researchNotes.map(parseResearchNote) : [],
+    lab,
   }
 }

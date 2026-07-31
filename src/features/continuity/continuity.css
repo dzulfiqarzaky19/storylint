@@ -106,6 +106,13 @@
   gap: var(--space-1);
 }
 
+.apply-card__hint {
+  margin: var(--space-0);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
+}
+
 .apply-card__error {
   margin: var(--space-0);
   color: var(--color-danger);
