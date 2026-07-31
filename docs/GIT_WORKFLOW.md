@@ -2,6 +2,8 @@
 
 **Rule: no direct commits to `main`.** `main` receives only merges from `dev`, done on the founder's account.
 
+**Reporting cadence / handoffs / coordinator duties:** [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) (state-change reports, shippable slices, no silent progress).
+
 ## Flow
 
 ```
@@ -123,6 +125,8 @@ Do not treat `cat file` / editor buffers / a dirty worktree as the product of re
 - Before claiming collision-free, `git fetch` and re-read `origin/dev`; coordinate on shared files (e.g. graph) via DM, not optimism
 
 ## Done checklist (copy into reports)
+
+Also follow [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md): report on state change, not only at the end.
 
 1. `git fetch origin`
 2. `git log --oneline -1 origin/dev` shows your `Merge storylint/<topic>…`

@@ -78,6 +78,8 @@ UI browser smoke: [docs/E2E.md](docs/E2E.md) (Playwright + system **msedge** on 
 | [docs/PRD.md](docs/PRD.md) | Product spine |
 | [docs/BUILD.md](docs/BUILD.md) | Slices + next work |
 | [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier + **AI harness local-only** |
+| [docs/AGENT_PROTOCOL.md](docs/AGENT_PROTOCOL.md) | Swarm reporting cadence, handoffs, coordinator duties |
+| [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) | Branch / merge / push; origin hash is truth |
 | [docs/03-ux.md](docs/03-ux.md) | IA + reading profiles + layout |
 | [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (source of truth) |
 | [docs/04-agents.md](docs/04-agents.md) | In-app agent panel (product) |
