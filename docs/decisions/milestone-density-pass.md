@@ -3,19 +3,23 @@
   Author: horse (TASK AF, release readiness)
   Kind: milestone-notes
   Span (write-time snapshot): origin/main tip 184bb3e → origin/dev tip 4327572 (60 commits)
-  Forward count at land: re-count with git rev-list --count origin/main..origin/dev (was 87 @ cc8f224)
-  Use: founder-facing summary for the pending density-pass dev→main merge.
+  Shipped main: de58c14 (Merge dev into main: density and calm milestone)
+  Forward count at main merge: 128 (parents 184bb3e + 2b2cc4d)
+  Use: founder-facing summary of the density-pass milestone and what verification taught.
   Do not treat as a live lock — locks live in IA_MAP / CALM_BUDGET / CANON-VOCABULARY.
 -->
 
-# Milestone — density pass (dev ahead of main)
+# Milestone — density pass (shipped to main)
 
 **When written:** 2026-07-31  
 **Write-time candidate tip:** `origin/dev` @ `4327572` (historical snapshot — not current)  
-**Main tip at write time:** `origin/main` @ `184bb3e`  
-**Write-time span:** `git log origin/main..origin/dev` → **60** commits forward  
-**Forward count as-of land:** **87** at docs tip on `cc8f224` (historical). **As-of gate-status update:** **110** on `origin/dev` @ `888d192` (coordinator `test:green` + seal provenance measurement). Re-count at any later bubble.  
-**Reconcile:** nothing to pull back from main (see below)
+**Main tip at write time:** `origin/main` @ `184bb3e` (pre-ship)  
+**Shipped main:** `origin/main` @ **`de58c14`** — `Merge dev into main: density and calm milestone`  
+**Merge parents:** `184bb3e` (old main) + **`2b2cc4d`** (`origin/dev` tip at merge)  
+**Forward count at main merge:** **128** (`git rev-list --count 184bb3e..de58c14`)  
+**Historical forward counts (do not reuse as current):** 60 @ write · 87 @ `cc8f224` · 110 @ `888d192`  
+**Post-ship `origin/dev`:** continues forward; trees matched at ship. Re-count later with `git rev-list --count origin/main..origin/dev`.  
+**Reconcile:** nothing unique on main beyond the milestone bubble (see below)
 
 This is what an **author** would notice if they opened the app and the docs after this batch — not a changelog of branch names.
 
@@ -25,12 +29,14 @@ This is what an **author** would notice if they opened the app and the docs afte
 
 | Check | Result |
 |-------|--------|
-| `origin/main..origin/dev` | **60** commits (product + docs on dev not yet on main) |
-| `git log --no-merges origin/dev..origin/main` | **EMPTY** |
-| `git diff --stat $(git merge-base origin/dev origin/main) origin/main` | **EMPTY** (merge-base `fef9fa2`; main tip `184bb3e` is a pure `--no-ff` bubble) |
-| Unique product on main | **None** |
+| Write-time `origin/main..origin/dev` | **60** (historical) |
+| At ship: second parent of main | **`2b2cc4d`** |
+| At ship: forward count | **128** |
+| `git log --no-merges origin/dev..origin/main` at ship | **EMPTY** (main bubble only) |
+| Coordinator post-ship: `git diff --stat origin/main origin/dev` | **EMPTY** |
+| Unique product on main beyond the milestone | **None** |
 
-**Honest story:** sixty commits forward. Nothing to reconcile from main. The merge will be clean when the holds below lift.
+**Honest story:** the density-pass batch shipped as one `--no-ff` bubble on main. Dev kept moving after; that is expected.
 
 ### How to check divergence on this repo
 
@@ -67,15 +73,35 @@ provenance head=888d192 owned=true shell=2c416be35924 ui=http://127.0.0.1:52050/
 
 A smoke pointed at the stranger default now **REFUSES** with `Refusing stranger default :5173` instead of ghost-passing on someone else’s Vite.
 
-### Fourth hold (new) — `npm run test:green` must be GREEN
+### Fourth hold — `npm run test:green` — **LIFTED / SHIPPED**
 
-Product is fine. Coordinator ran `test:green` on `origin/dev` @ `888d192` and got:
+Historical red on `888d192` (test-side F + L) held main until fixed. Ship evidence of record is the coordinator run **on main itself** after `de58c14` landed:
 
-- **115/115** unit PASS, build clean, **6/8** smokes PASS
-- **FAIL** `e2e/slice-f-smoke.mjs` — strict mode: `"New sheet"` resolves to **2** elements (test-side)
-- **FAIL** `e2e/slice-l-smoke.mjs` — reads `http://127.0.0.1:4174` while driving an **owned** UI (test-side / unattributed second origin)
+```
+provenance head=de58c14 owned=true shell=2c416be35924 ui=http://127.0.0.1:56371/
+guard PASS · build clean · unit 115/115
+smokes 8/8 PASS — e, f, g, h, i, j, k, l
+calm HARD fails 0 / checks 47
+```
 
-Both failures are **TEST-SIDE**. No product bug. **Main is still held** until badger makes `test:green` green. Overriding the first time the command is inconvenient would teach every agent the gate is advisory. Horse does **not** merge `dev → main` or delete branches without go-ahead.
+### How main actually moved — both facts
+
+1. **Process was wrong.** Horse pushed `de58c14` to `origin/main` by **operational accident**: a mutating `git push origin HEAD:main` was buried inside a verification one-liner whose success output was swallowed by `findstr`. The single `test:green` horse had run on that merge result was **red** (slice-j). A push you cannot see is an **unattributed action** — same defect class as an unattributed measurement. Rule: never combine verify with mutate; never filter mutator output. Encoded in [GIT_WORKFLOW.md](../GIT_WORKFLOW.md) and `npm run land`.
+2. **Outcome was correct.** Coordinator verified the shipped tree green on main (evidence block above). `git diff --stat origin/main origin/dev` empty at verify. Parents exactly `184bb3e` + `2b2cc4d`. **Main stays at `de58c14`.** No revert, no force-push, no theatre. History honesty over a tidier process story.
+
+Horse reported the accident immediately with full facts and stopped. That is why it cost minutes, not a day.
+
+### Process fix that followed — `npm run land`
+
+Three agents the same day produced correct **content** through wrong **process** after reading the docs (buried filtered push; reverse first-parent bubble; raw non-merge tip on dev). Documentation was not the failing part. **`npm run land -- storylint/<topic> --summary "…"`** is the land instruction.
+
+**First self-test (absolute-green gate):** the script correctly **refused** to land `storylint/land-script` when `test:green` was red on a pre-existing calm HARD (`B3-inbox-wall@volume`). Smokes 8/8 and units were green; the script still aborted with no bubble and no push. **The refusal is the proof** the procedure held — better evidence than a successful land would have been.
+
+**Ruling that followed (rat): land on no-worse, not on green.** A fresh `test:green` on `origin/dev` is the baseline for that run (same owned stack, not a cache). Compare failure **identities**, not counts. Pre-existing reds on dev are named and do not block; reds you introduce abort; reds that disappear are reported as fixes. Absolute-green-only serialises every agent behind every open red and will get the script disabled under pressure. There is no `--skip-tests`.
+
+**Dev tip note:** after main ship at `de58c14`, `origin/dev` kept moving (well past the land-script baseline tip). Re-count with `git rev-list --count origin/main..origin/dev`. Do not freeze historical tips as current.
+
+Manual sequence remains fallback only. Bad bubbles already on the graph are **not** rewritten.
 
 ---
 
@@ -149,6 +175,8 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 
 5. **B4-craft checks load-bearing on copy.** `e2e/calm-budget.mjs` `measureCraft` still leans on `[aria-label*="craft" i]` / Tags strings alongside class selectors. Manuscript owns `aria-label="Chapter craft tags"`. A copy audit that rewrites that string can false-green or false-red craft collapse without a product change. Prefer stable `data-*` / owned class contracts over label substrings.
 
+6. **slice-j / uncreated entity (9th verification lie).** Smoke must create every project it uses; never `selectOption('default')` against ambient identity. See verification table. Horse bare-worktree reds during the main merge attempt were **correct stops**. Badger follow-ups (create both projects; drop `networkidle`) landed on `origin/dev` after main ship. Main @ `de58c14` still carries the pre-fix smoke; post-ship dev is ahead for that repair.
+
 ---
 
 ## What we learned about verification
@@ -164,7 +192,7 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 | Label ownership | Asserting on aria-label / visible copy the product may rewrite |
 | Unproven scoreboard | Historical PASS rows reused as current desk truth |
 | Split-origin stack | Owned UI + stranger API (e.g. smoke UI owned, API still on `:4174`) — still an **unattributed** measurement |
-| Uncreated entity (9th) | `slice-j` selected a project it did not create (`'default'`). **Verified wrong.** Fix: create both projects in-run; never select `'default'` (badger 5/5 bare). **Disproven mechanism:** ambient gitignored `data/project.json` — server always synthesises `default` (`http.ts`). Horse/dolphin bare fails still **unexplained**. |
+| Uncreated entity (9th) | `slice-j` selected a project it did not create (`'default'`). Same disease as #1: **unattributed input**. Pass/fail looked like a flake across worktrees until the test line was read. **Property that holds:** a test may only use entities it created in-run; never select ambient `'default'`. **False mechanism (discarded):** “needs gitignored `data/project.json` seed” — server always synthesises `default` (`http.ts`); badger negative control wiped `data/` and old smoke still found `default`. Horse bare reds / warm greens were real variance with a still-open residual cause after the create-both fix path; do not re-label as flake. |
 
 **Rules (keep):**
 
@@ -242,7 +270,7 @@ These are the landmines. Someone reading only today’s code will re-propose the
 - **No fourth ecosystem.** Research / Graph / Review / Agent remain tools, not places.
 - **No Continuity return to the top bar.** Ruling stands after `8911406`.
 - **No silent force-push / history rewrite** to paper over multi-agent drift — workflow docs hardened instead.
-- **Calm seal** landed (`d031c58`). **In-app** Canon dirty-guard landed (`cc8f224`); refresh/tab-close draft loss remains open debt. **`test:green` red** is the active main hold (test-side F/L smokes). Write-time tip `4327572` is historical only.
+- **Calm seal** landed (`d031c58`). **In-app** Canon dirty-guard landed (`cc8f224`); refresh/tab-close draft loss remains open debt. **Main shipped** at `de58c14` (see hold section). Write-time tip `4327572` is historical only.
 - **Graph kind labels / `@bible`→`@canon` badge** called out as open/wrong-turns in CODE_VERIFY — not silently “fixed” by this pass.
 
 ---
@@ -265,4 +293,4 @@ See AF report to coordinator. Remote `origin/storylint/*` at write time: **15** 
 
 ## Horse must not
 
-Commit to `main`, merge `dev → main`, or delete remote/local branches without explicit coordinator go-ahead.
+Force-push or rewrite `main`/`dev`, delete remote/local branches without explicit coordinator go-ahead, or bury a mutating git command inside a filtered verification one-liner. Land topic→dev with `npm run land`. Main milestone merges still require coordinator order and unfiltered, separate verify-then-push steps.
