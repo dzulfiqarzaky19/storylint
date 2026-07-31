@@ -24,16 +24,41 @@ Writers who already like **VS Code + Claude / Cursor** want that shape for a nov
 
 **Storylint** = a **writing IDE** for serial fiction with a **first-class agent panel**.
 
-| Surface | Role |
-|---------|------|
-| Manuscript editor | Clean draft (like the VS Code editor) |
-| Binder | Chapters + bible sheets (project tree) |
-| Agent panel | Claude-extension-like companion: chat, tools, runs |
-| Apply / Accept | Agent output enters MS or canon only on explicit user action |
-| Continuity marks | Inline yellow/red diagnostics after a continuity run |
+### Three ecosystems (locked)
+
+| Ecosystem | Feeling | Job |
+|-----------|---------|-----|
+| **Lab** | Messy | Research, think, try ideas, scraps, pre-story work |
+| **Draft** | Clean write | Real chapters — authors who already know the story start here |
+| **Canon** | Settled truth | Bible sheets, accepted facts, graph, continuity source of truth |
+
+```
+        Lab (messy)
+       /           \
+      v             v
+   Draft          Canon
+ (chapters)    (world truth)
+```
+
+- **Lab → Draft:** send scene/chapter seed into the editor
+- **Lab → Canon:** promote only via **Accept** (never silent bible write)
+- **Agent** is not a fourth ecosystem — companion across all three
+- **Max navigation depth: 3.** Home → ecosystem → thing. No deeper dig to find core work. No new top-level kingdoms.
+- Plain language: **Lab** = think and gather · **Draft** = write the book · **Canon** = what is true
+
+| Surface (implementation) | Ecosystem | Role |
+|--------------------------|-----------|------|
+| Lab bench | Lab | Pre-canon cards; Promote → Draft stub or Canon proposal |
+| Manuscript editor | Draft | Clean chapter page |
+| Binder chapters | Draft | Chapter tree |
+| Binder sheets + graph | Canon | Bible / settled links |
+| Research (cited) | Lab tools | Gather with citations; Pin / Propose still gated |
+| Agent panel | Across all | Chat, tools, runs |
+| Apply / Accept | Gates | Enters Draft or Canon only on explicit action |
+| Continuity marks | Draft ← Canon | Yellow/red diagnostics after a continuity run |
 
 **One-liner:**  
-Like VS Code + Claude, for your novel — clean page to write; agent that knows your world and helps for real; you accept what lands in the book or bible.
+Like VS Code + Claude, for your novel — think in Lab, write in Draft, lock truth in Canon; agent helps in all three; you accept what becomes real.
 
 ---
 
@@ -144,6 +169,7 @@ Detail: [02-steal-and-phases](./02-steal-and-phases.md), [04-agents](./04-agents
 | 3 | Confidence | 0.7 |
 | 4 | Name | Storylint |
 | 5 | Visual | Kobo paper + warm chrome ([design/TOKENS.md](./design/TOKENS.md)) |
-| 6 | Next roadmap slice | **I graph** — not started; autonomous build stopped after H ([BUILD.md](./BUILD.md)) |
+| 6 | Product shape | **Lab / Draft / Canon** — three ecosystems max; nav depth ≤3; no new top-level kingdoms |
+| 7 | Next product work | Calm chrome + naming alignment (not new panels); see [BUILD.md](./BUILD.md) |
 
 Roles: [AGENTS_ROLES.md](./AGENTS_ROLES.md).
