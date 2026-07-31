@@ -20,10 +20,15 @@ const MAX_PUSH_ATTEMPTS = 3
 const DEV_REF = 'origin/dev'
 const IS_WIN = process.platform === 'win32'
 
-/** Resolve npm/git so Windows does not hit spawn ENOENT on bare npm. */
+/**
+ * Resolve the executable. On Windows:
+ * - git: bare `git` with shell:false works
+ * - npm: must go through npm.cmd via shell with a single joined command line
+ *   (spawnSync('npm.cmd', args, {shell:false}) → EINVAL)
+ */
 function resolveCmd(name) {
   if (name === 'npm') return IS_WIN ? 'npm.cmd' : 'npm'
-  if (name === 'git') return IS_WIN ? 'git.exe' : 'git'
+  if (name === 'git') return 'git'
   return name
 }
 
@@ -61,7 +66,12 @@ function parseArgs(argv) {
     const a = args[i]
     if (a === '--help' || a === '-h') usage(0)
     if (a === '--summary') {
-      summary = args[++i]
+      // Consume until next flag so unquoted multi-word summaries still work.
+      const parts = []
+      while (i + 1 < args.length && !args[i + 1].startsWith('--')) {
+        parts.push(args[++i])
+      }
+      summary = parts.join(' ')
       if (!summary) fail('Missing value for --summary')
       continue
     }
@@ -111,17 +121,38 @@ function banner(title) {
   console.log(line)
 }
 
-/** Run a command with FULL unfiltered stdio. Never pipe-filter output. */
+function shellQuote(value) {
+  const str = String(value)
+  if (/^[A-Za-z0-9_./:@%+=,-]+$/.test(str)) return str
+  // cmd.exe-safe double quotes when we join a Windows shell command line.
+  return `"${str.replaceAll('"', '\\"')}"`
+}
+
+/**
+ * Run a command with FULL unfiltered stdio. Never pipe-filter output.
+ *
+ * Windows note: .cmd shims (npm.cmd) cannot be spawnSync'd with shell:false
+ * (EINVAL). We join a single command line and run it with shell:true so spaces
+ * in -m messages stay inside quotes. git uses shell:false.
+ */
 function run(command, args, { allowFail = false, env } = {}) {
   const resolved = resolveCmd(command)
   const printable = [resolved, ...args].map(shellQuote).join(' ')
   console.log(`\n$ ${printable}\n`)
-  // On Windows npm.cmd requires shell:true; printable args use shellQuote.
-  const result = spawnSync(resolved, args, {
-    stdio: 'inherit',
-    shell: IS_WIN,
-    env: env ? { ...process.env, ...env } : process.env,
-  })
+
+  const useShellLine = IS_WIN && /\.cmd$/i.test(resolved)
+  const result = useShellLine
+    ? spawnSync(printable, {
+        stdio: 'inherit',
+        shell: true,
+        env: env ? { ...process.env, ...env } : process.env,
+      })
+    : spawnSync(resolved, args, {
+        stdio: 'inherit',
+        shell: false,
+        env: env ? { ...process.env, ...env } : process.env,
+      })
+
   if (result.error) {
     fail(`failed to spawn ${resolved}: ${result.error.message}`)
   }
@@ -132,15 +163,10 @@ function run(command, args, { allowFail = false, env } = {}) {
   return status
 }
 
-function shellQuote(value) {
-  if (/^[A-Za-z0-9_./:@%+=,-]+$/.test(value)) return value
-  return `"${String(value).replaceAll('"', '\\"')}"`
-}
-
 function gitCapture(args) {
-  const result = spawnSync(resolveCmd('git'), args, {
+  const result = spawnSync('git', args, {
     encoding: 'utf8',
-    shell: IS_WIN,
+    shell: false,
   })
   if (result.error) fail(`git spawn failed: ${result.error.message}`)
   if (result.status !== 0) {
@@ -151,9 +177,9 @@ function gitCapture(args) {
 }
 
 function gitOk(args) {
-  const result = spawnSync(resolveCmd('git'), args, {
+  const result = spawnSync('git', args, {
     encoding: 'utf8',
-    shell: IS_WIN,
+    shell: false,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   return (result.status ?? 1) === 0
@@ -161,7 +187,6 @@ function gitOk(args) {
 
 function assertCleanWorktree() {
   banner('1/7 clean worktree')
-  // Full status printed; never filtered.
   run('git', ['status', '--short', '--branch'])
   const dirty = gitCapture(['status', '--porcelain'])
   if (dirty) {
@@ -197,7 +222,6 @@ function fetchOrigin() {
 function mergeDevIntoTopic(topic) {
   banner('2/7 merge origin/dev INTO topic')
   console.log(`land: merging ${DEV_REF} into ${topic} (topic stays checked out)`)
-  // Full merge output — conflicts print normally. No auto-resolve.
   const status = run('git', ['merge', DEV_REF, '-m', `Merge ${DEV_REF} into ${topic}`], {
     allowFail: true,
   })
@@ -212,7 +236,6 @@ function mergeDevIntoTopic(topic) {
     console.error('  # resolve files')
     console.error('  git add <files> && git commit')
     console.error(`  npm run land -- ${topic} --summary "..."`)
-    // Leave the conflicted merge state for the human/agent; do not abort silently.
     exit(status)
   }
   console.log('land: topic now contains origin/dev')
@@ -224,7 +247,6 @@ function runTestGreen(skipTests) {
     console.error('land: WARNING — --skip-tests set. This is not a real land.')
     return
   }
-  // Full unfiltered suite output. Abort on red.
   const status = run('npm', ['run', 'test:green'], { allowFail: true })
   if (status !== 0) {
     fail(
@@ -252,7 +274,6 @@ function createNoFfBubble(topic, summary) {
     fail(`merge --no-ff failed with exit ${status}`, status)
   }
 
-  // First-parent must be former origin/dev; second parent the topic tip.
   const parents = gitCapture(['rev-list', '--parents', '-n', '1', 'HEAD']).split(/\s+/)
   if (parents.length < 3) {
     run('git', ['checkout', topic], { allowFail: true })
@@ -279,7 +300,6 @@ function pushHeadToDev() {
 function readOriginDev() {
   banner('6/7 fetch and read ORIGIN hash back (never assume push landed)')
   run('git', ['fetch', 'origin'])
-  // Print full tip evidence unfiltered.
   run('git', ['log', '--oneline', '-1', '--decorate', DEV_REF])
   run('git', ['rev-parse', DEV_REF])
   const short = gitCapture(['rev-parse', '--short', DEV_REF])
@@ -292,7 +312,6 @@ function readOriginDev() {
 function restoreTopic(topic) {
   banner('7/7 restore topic checkout')
   run('git', ['checkout', topic], { allowFail: true })
-  // Topic may lag the new origin/dev bubble; that is fine. Caller can ff later.
   run('git', ['status', '--short', '--branch'], { allowFail: true })
 }
 
@@ -302,7 +321,6 @@ function landOnce(topic, summary, skipTests) {
   fetchOrigin()
   mergeDevIntoTopic(topic)
 
-  // After merging dev into topic the tree must still be clean (merge commit only).
   const dirty = gitCapture(['status', '--porcelain'])
   if (dirty) fail(`tree dirty after merging ${DEV_REF} into topic:\n${dirty}`)
 
@@ -347,14 +365,11 @@ function main() {
 
     console.error('land: re-fetching and retrying the WHOLE sequence from merge-dev-into-topic.')
     console.error('land: this is the honest answer to a moving tip. No rebase.')
-    // Get off detached bubble before retry.
     run('git', ['checkout', topic])
-    // Drop a failed local merge commit on detached HEAD is automatic when we leave it.
   }
 
   const origin = readOriginDev()
 
-  // Confirm the bubble we care about is on origin and is a merge commit.
   if (origin.parents.length < 3) {
     restoreTopic(topic)
     fail(
@@ -365,8 +380,6 @@ function main() {
   }
 
   if (!origin.subject.startsWith(`Merge ${topic} into dev:`)) {
-    // Tip may have moved under us between push and fetch if another land won
-    // a race after our push — extremely unlikely once push succeeded, but be honest.
     console.error(`land: WARNING — origin/dev subject is not our bubble:`)
     console.error(`  expected prefix: Merge ${topic} into dev:`)
     console.error(`  actual: ${origin.subject}`)
