@@ -55,8 +55,8 @@ One segmented control = one choice set, not N primaries.
 | ID | Rule | Sev | Why |
 |----|------|-----|-----|
 | B1-work-hard | `workPct` **≥ 40** | **HARD** | Below ~40% the manuscript stops being the job (CLT extraneous). |
-| B1-work-warn | `workPct` **< 45** | **WARN** | Soft push toward paper majority; R1 accepted-calm Draft ~47 must not HARD-fail. |
-| B1-rail-warn | either rail **> 24** or `chromePct` **> 55** | **WARN** | Guidance only — do not force fake collapse to hit 55 work. |
+| B1-work-warn | `workPct` **< 45** | **WARN** | Soft push toward paper majority; fires only when work drops under 45. R1 accepted-calm Draft ~47 is **above** this band (no WARN). |
+| B1-rail-warn | either rail **> 24** or `chromePct` **> 58** | **WARN** | Dual-rail ~53 chrome is **expected**, not soft-fail. WARN only past ~58 or fat single rail — do not force collapse to manufacture work%. |
 | B1-rail-pathological | either rail width **>** work width | **HARD** | Chrome owns the desk. |
 | B1-fold | `foldOwner` = work surface (paper / lab bench / map) | **HARD** | Page-% can pass while a form steals the fold (Canon sheet-in-binder class). |
 
@@ -127,7 +127,7 @@ Chrome control = labeled button/chip/tab in the region chrome band (not page bod
 | B6-top-job | Top bar | solid job primaries **= 0** | **HARD** |
 | B6-draft-header | Draft header | title+meta OK; extra chrome **≤2** | **WARN** (HARD later if thrash-free) |
 | B6-lab-chrome | Lab | empty composer is work; extra chrome **≤3** | **WARN** |
-| B6-canon-chrome | Canon map | default budget assumes propose **collapsed** | **HARD** post-D4 |
+| B6-canon-chrome | Canon map | propose **collapsed** by default; when D4 lands pin **≤ 4** chrome peers (view · filter · propose entry · overflow) | **HARD** post-D4 |
 | B6-companion | Companion | owned by B3 | via B3 |
 | B6-binder | Binder list | global list actions **≤2** | **WARN** |
 
@@ -140,7 +140,8 @@ Code/docs pass where marked **code**; layout % still needs a fresh density run (
 | ID | Sev | Current read | Status |
 |----|-----|--------------|--------|
 | B1-work-hard ≥40 | HARD | last QA3 workPct=47 | **PASS** (ratio); confirm on new run |
-| B1-work-warn <45 | WARN | 47 | **WARN** band if still ~47 |
+| B1-work-warn <45 | WARN | 47 ≥ 45 | **PASS** on warn band (WARN only if work <45) |
+| B1-rail-warn chrome>58 | WARN | ~53 dual-rail expected | **PASS** expected at ~53; WARN only >58 |
 | B1-fold | HARD | sheet-in-binder history | **measure** foldOwner |
 | B2-job-primary | HARD | Continuity removed from topbar (`8911406` line) | **PASS** code; confirm DOM |
 | B2-ecosystem | HARD | narrow ecosystems retained (`fef1406` line) | **PASS** code; confirm @390 |
