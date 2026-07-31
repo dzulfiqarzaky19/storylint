@@ -5,8 +5,8 @@ export type { Chapter, Sheet, SheetKind } from '../../domain/types.ts'
 export type { TranscriptEntry } from '../../agent/types.ts'
 
 export const SHEET_KIND_LABEL: Record<SheetKind, string> = {
-  character: 'People',
+  character: 'Characters',
   lore: 'Lore',
-  world: 'Places & things',
-  organization: 'Groups',
+  world: 'World',
+  organization: 'Organizations',
 }
