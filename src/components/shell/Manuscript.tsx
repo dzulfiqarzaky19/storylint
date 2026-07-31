@@ -74,6 +74,7 @@ export function Manuscript({
 }: ManuscriptProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLTextAreaElement>(null)
+  const didAutoFocusBody = useRef(false)
   // Phone collapses fully; desktop caps visible chips (D8 density).
   const DESKTOP_CRAFT_VISIBLE = 5
   const [narrow, setNarrow] = useState(false)
@@ -97,6 +98,23 @@ export function Manuscript({
     el.style.height = `${Math.max(el.scrollHeight, min)}px`
   }, [chapter.body, chapter.title])
 
+  // BD P1-3: one-shot focus on empty body so first boot teaches the paper.
+  // No HTML autofocus — skip link (#workspace) stays first in tab order until activation.
+  // Distinct from Canon sheet Back-first focus: body is the primary work surface, not a push-stack form.
+  useEffect(() => {
+    if (didAutoFocusBody.current || readOnly) return
+    if (chapter.body.trim().length > 0) {
+      didAutoFocusBody.current = true
+      return
+    }
+    const el = bodyRef.current
+    if (!el) return
+    didAutoFocusBody.current = true
+    const id = window.requestAnimationFrame(() => {
+      el.focus({ preventScroll: true })
+    })
+    return () => window.cancelAnimationFrame(id)
+  }, [chapter.id, chapter.body, readOnly])
   useEffect(() => {
     const onResize = () => {
       const el = bodyRef.current
@@ -119,7 +137,7 @@ export function Manuscript({
                 className="manuscript__title"
                 value={chapter.title}
                 onChange={(event) => onChange({ title: event.target.value })}
-                placeholder="Chapter title"
+                placeholder="Name this chapter"
                 aria-label="Chapter title"
                 readOnly={readOnly}
               />
