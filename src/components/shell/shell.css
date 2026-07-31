@@ -50,10 +50,31 @@
   color: var(--color-text-muted);
 }
 
+/* Ecosystem switch: pressed state is the strongest topbar cue (D2). */
+.shell__ecosystem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.shell__action-ecosystem[aria-pressed='true'] {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent-muted);
+  color: var(--color-accent);
+}
+
+/* Continuity is quiet job chrome — never louder than ecosystem (D2). */
+.shell__action-continuity {
+  color: var(--color-text-muted);
+}
+
 @media (max-width: 767px) {
+  /* Keep Draft · Lab · Canon; demote lesser chrome (D7). */
   .shell__breadcrumb,
   .project-status,
-  .shell__action-graph,
+  .shell__action-continuity,
   .shell__action-theme {
     display: none;
   }
@@ -62,16 +83,50 @@
     min-width: 0;
     gap: var(--space-1);
     padding-inline: var(--space-2);
+    /* Room for touch-sized icon hits without clipping (D10). */
+    min-height: var(--size-touch-min);
   }
 
   .shell__topbar-actions {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     min-width: 0;
+    justify-content: flex-end;
+    gap: var(--space-1);
+  }
+
+  .shell__ecosystem {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .shell__ecosystem::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shell__action-ecosystem {
+    flex: 0 0 auto;
+    min-height: var(--size-touch-min);
+    padding-inline: var(--space-2);
+    font-size: var(--text-sm);
+    line-height: var(--leading-sm);
+  }
+
+  /* Touch targets ≥44 on narrow profile; desktop stays --size-control (D10). */
+  .shell__topbar .ui-icon-button {
+    width: var(--size-touch-min);
+    height: var(--size-touch-min);
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
   }
 
   .shell__topbar > .project-switcher {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     min-width: 0;
+    max-width: 28%;
   }
 }
 
