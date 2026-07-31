@@ -351,6 +351,158 @@ export async function readUiSurface(page) {
   })
 }
 
+/**
+ * Browser-side visibility predicate source.
+ * Injected into page.evaluate — do not rely on getBoundingClientRect alone.
+ *
+ * Chromium still lays out children of closed <details>, so rect/offsetParent/
+ * display/visibility all lie. Prefer Element.checkVisibility; always treat
+ * non-summary descendants of closed <details> as hidden.
+ *
+ * Fail closed: if visibility cannot be determined, returns {visible:false, refuse:true}.
+ */
+export const BROWSER_IS_VISIBLE_SOURCE = `function isVisiblyPainted(el) {
+  if (!el || !(el instanceof Element)) {
+    return { visible: false, reason: 'no-el', refuse: true }
+  }
+  // Closed <details> content is not painted; <summary> still is.
+  let node = el
+  while (node && node !== document.documentElement) {
+    const parent = node.parentElement
+    if (parent && parent.tagName === 'DETAILS' && !parent.open) {
+      if (node.tagName === 'SUMMARY') break
+      return { visible: false, reason: 'closed-details' }
+    }
+    node = parent
+  }
+  if (typeof el.checkVisibility === 'function') {
+    try {
+      const visible = el.checkVisibility({
+        checkOpacity: true,
+        checkVisibilityCSS: true,
+        contentVisibilityAuto: true,
+      })
+      return { visible: !!visible, reason: visible ? 'checkVisibility' : 'checkVisibility-false' }
+    } catch (error) {
+      return {
+        visible: false,
+        reason: 'checkVisibility-error',
+        refuse: true,
+        error: error instanceof Error ? error.message : String(error),
+      }
+    }
+  }
+  return { visible: false, reason: 'no-checkVisibility', refuse: true }
+}
+function isVisibleEl(el) {
+  const result = isVisiblyPainted(el)
+  if (result.refuse) {
+    throw new Error('precondition not met: visibility undetermined (' + result.reason + ')')
+  }
+  return !!result.visible
+}
+`
+
+/** Desk breakpoint matching src/components/shell/useShellState defaultRailsAt. */
+export const DESK_RAIL_MIN_WIDTH = 1366
+
+/**
+ * Self-test: closed <details> children must NOT count as visible.
+ * Call once per browser session before any density/chrome count.
+ * Fail closed if Element.checkVisibility is missing or the predicate lies.
+ */
+export async function assertVisibilityPredicate(page) {
+  await page.setContent(`<!doctype html>
+<html><body>
+<details id="d">
+  <summary id="s">Tags</summary>
+  <button id="chip" type="button">char-dev</button>
+</details>
+</body></html>`)
+  const result = await page.evaluate((src) => {
+    // eslint-disable-next-line no-new-func
+    eval(src)
+    const hasCV = typeof Element.prototype.checkVisibility === 'function'
+    const chipClosed = isVisiblyPainted(document.getElementById('chip'))
+    const summary = isVisiblyPainted(document.getElementById('s'))
+    const details = document.getElementById('d')
+    details.open = true
+    // Force layout after open so checkVisibility sees painted content.
+    void details.offsetHeight
+    const chipOpen = isVisiblyPainted(document.getElementById('chip'))
+    return {
+      hasCV,
+      chip: chipClosed,
+      summary,
+      openChip: chipOpen,
+      detailsOpen: details.open,
+    }
+  }, BROWSER_IS_VISIBLE_SOURCE)
+
+  if (!result.hasCV) {
+    throw new PreconditionError(
+      'precondition not met: Element.checkVisibility unavailable — refuse rect-only visibility',
+    )
+  }
+  if (result.chip?.visible) {
+    throw new PreconditionError(
+      `visibility self-test failed: closed <details> child reported visible (${JSON.stringify(result.chip)})`,
+    )
+  }
+  if (!result.summary?.visible) {
+    throw new PreconditionError(
+      `visibility self-test failed: <summary> of closed details not visible (${JSON.stringify(result.summary)})`,
+    )
+  }
+  if (!result.openChip?.visible) {
+    throw new PreconditionError(
+      `visibility self-test failed: open <details> child not visible (${JSON.stringify(result.openChip)})`,
+    )
+  }
+  return result
+}
+
+/**
+ * Read binder/agent open state + whether the harness forced them.
+ * origin.binder|agent: 'default' | 'forced'
+ * Below DESK_RAIL_MIN_WIDTH, product default is companion closed / binder leads.
+ */
+export async function readRailState(page, { origin = {} } = {}) {
+  return page.evaluate((originMap) => {
+    const body = document.querySelector('.shell__body')
+    const binderEl = document.querySelector('.shell__rail--binder')
+    const agentEl = document.querySelector('.shell__rail--agent')
+    const binderAttr = body?.getAttribute('data-binder')
+    const agentAttr = body?.getAttribute('data-agent')
+    const binderRect = binderEl?.getBoundingClientRect?.()
+    const agentRect = agentEl?.getBoundingClientRect?.()
+    const binderOpen =
+      binderAttr === 'open' ||
+      (!!binderEl && (binderRect?.width || 0) > 40 && getComputedStyle(binderEl).display !== 'none')
+    const agentOpen =
+      agentAttr === 'open' ||
+      (!!agentEl && (agentRect?.width || 0) > 40 && getComputedStyle(agentEl).display !== 'none') ||
+      !!document.querySelector('.panel[data-companion-context]')
+    return {
+      binder: binderOpen ? 'open' : 'closed',
+      agent: agentOpen ? 'open' : 'closed',
+      origin: {
+        binder: originMap.binder === 'forced' ? 'forced' : 'default',
+        agent: originMap.agent === 'forced' ? 'forced' : 'default',
+      },
+      atDesk: window.innerWidth >= 1366,
+      vw: window.innerWidth,
+      bodyBinder: binderAttr || null,
+      bodyAgent: agentAttr || null,
+    }
+  }, origin)
+}
+
+export function formatRailState(railState) {
+  if (!railState) return 'rails=?'
+  return `rails binder=${railState.binder}/${railState.origin?.binder || '?'} agent=${railState.agent}/${railState.origin?.agent || '?'} atDesk=${railState.atDesk}`
+}
+
 /** Close drawer backdrops that block topbar / rails on narrow layouts. */
 export async function dismissDrawers(page) {
   await page.evaluate(() => {
@@ -361,27 +513,41 @@ export async function dismissDrawers(page) {
   await page.keyboard.press('Escape').catch(() => {})
 }
 
-/** Ensure companion rail/panel is open (no-op if already open or control missing). */
-export async function ensureCompanionOpen(page) {
+/**
+ * Ensure companion rail/panel is open (no-op if already open or control missing).
+ * If track is provided and a Show click happens, sets track.agent = 'forced'.
+ */
+export async function ensureCompanionOpen(page, { track = null } = {}) {
   await dismissDrawers(page)
   const btn = page.getByRole('button', { name: /Show companion|Hide companion/i }).first()
-  if (!(await btn.count())) return
+  if (!(await btn.count())) return false
   const label = await btn.getAttribute('aria-label')
+  let forced = false
   if (/Show companion/i.test(label || '')) {
     await btn.click({ force: true })
+    forced = true
+    if (track) track.agent = 'forced'
   }
   await companionPanel(page).waitFor({ timeout: PRECONDITION_TIMEOUT_MS }).catch(() => {})
+  return forced
 }
 
-/** Ensure binder rail is open on desktop layouts. */
-export async function ensureBinderOpen(page) {
+/**
+ * Ensure binder rail is open on desktop layouts.
+ * If track is provided and a Show click happens, sets track.binder = 'forced'.
+ */
+export async function ensureBinderOpen(page, { track = null } = {}) {
   await dismissDrawers(page)
   const btn = page.getByRole('button', { name: /Show binder|Hide binder/i }).first()
-  if (!(await btn.count())) return
+  if (!(await btn.count())) return false
   const label = await btn.getAttribute('aria-label')
+  let forced = false
   if (/Show binder/i.test(label || '')) {
     await btn.click({ force: true })
+    forced = true
+    if (track) track.binder = 'forced'
   }
+  return forced
 }
 
 /**
@@ -473,6 +639,21 @@ export function setApiBase(origin) {
 export function getApiBase() {
   return API_BASE
 }
+
+/**
+ * UI origin for browser gates/smokes.
+ * No default to :5173. Parent (all-smoke / calm) must own the stack and set STORYLINT_UI.
+ */
+export function requireUiOrigin() {
+  const ui = process.env.STORYLINT_UI || ''
+  if (!ui) {
+    throw new PreconditionError(
+      'precondition not met: STORYLINT_UI is unset. Run via npm run test:e2e (owned stack) or npm run calm. Refusing stranger default :5173.',
+    )
+  }
+  return ui.endsWith('/') ? ui : `${ui}/`
+}
+
 
 async function apiJson(path, init) {
   const response = await fetch(`${API_BASE}${path}`, init)

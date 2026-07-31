@@ -22,16 +22,20 @@ import { createHash } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import {
   armHardTimeout,
+  assertVisibilityPredicate,
   beforeMeasure,
+  BROWSER_IS_VISIBLE_SOURCE,
   companionPanel,
   dismissDrawers,
   ensureBinderOpen,
   ensureCompanionOpen,
   ensureDraftReady,
   ensureIsolatedProject,
+  formatRailState,
   installFixtureLlmRoutes,
   openCompanionFace,
   PreconditionError,
+  readRailState,
   reclaimIsolatedProject,
   requireCompanionFace,
   resolveWorkspaceMode,
@@ -116,7 +120,7 @@ function record(check) {
   return status
 }
 
-function add(id, sev, doc, surface, pass, measured, threshold, note, samples) {
+function add(id, sev, doc, surface, pass, measured, threshold, note, samples, extra) {
   record({
     id,
     sev,
@@ -127,6 +131,7 @@ function add(id, sev, doc, surface, pass, measured, threshold, note, samples) {
     threshold: String(threshold),
     note,
     samples,
+    ...(extra || {}),
   })
 }
 
@@ -254,7 +259,9 @@ async function measureLayout(page) {
 }
 
 async function measureTopbar(page) {
-  return page.evaluate(() => {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const top = document.querySelector('.shell__topbar')
     if (!top) return { missing: true }
 
@@ -290,10 +297,7 @@ async function measureTopbar(page) {
       if (style.textOverflow === 'ellipsis' && el.scrollWidth > el.clientWidth + 1) placeLabelClipped += 1
     }
 
-    const topControlCount = controls.filter((el) => {
-      const r = el.getBoundingClientRect()
-      return r.width > 0 && r.height > 0
-    }).length
+    const topControlCount = controls.filter((el) => isVisibleEl(el)).length
 
     return {
       topJobPrimaryCount: Math.max(jobPrimaries.length, labeledJobs.filter((el) => {
@@ -306,11 +310,13 @@ async function measureTopbar(page) {
       placeLabelClipped,
       topControlCount,
     }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
 }
 
 async function measureTouchChrome(page) {
-  return page.evaluate(() => {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const selectors = [
       '.shell__topbar button',
       '.shell__topbar [role="button"]',
@@ -323,9 +329,9 @@ async function measureTouchChrome(page) {
     const fails = []
     for (const sel of selectors) {
       for (const el of document.querySelectorAll(sel)) {
-        const r = el.getBoundingClientRect()
-        if (r.width <= 0 || r.height <= 0) continue
+        if (!isVisibleEl(el)) continue
         if (el.closest('svg')) continue
+        const r = el.getBoundingClientRect()
         const min = Math.min(r.width, r.height)
         if (min < 44 - 0.5) {
           fails.push({
@@ -338,7 +344,7 @@ async function measureTouchChrome(page) {
       }
     }
     return { touchFailChrome: fails.length, samples: fails }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
 }
 
 /**
@@ -346,12 +352,14 @@ async function measureTouchChrome(page) {
  * Never falls back to a different panel context.
  */
 async function measureFaces(page, context) {
-  return page.evaluate((ctx) => {
+  return page.evaluate(({ ctx, visSrc }) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const panel = document.querySelector(`.panel[data-companion-context="${ctx}"]`)
     if (!panel) return { missing: true, context: null, reason: `no panel for context=${ctx}` }
 
     const faceRow = panel.querySelector('.companion__faces')
-    const tabs = [...(faceRow?.querySelectorAll('[role="tab"], button') || [])]
+    const tabs = [...(faceRow?.querySelectorAll('[role="tab"], button') || [])].filter((t) => isVisibleEl(t))
     // Normalize Inbox count badge so concurrent proposal churn cannot flip fingerprints.
     const labels = tabs.map((t) => {
       const raw = (t.getAttribute('aria-label') || t.textContent || '').trim().replace(/\s+/g, ' ')
@@ -368,10 +376,7 @@ async function measureFaces(page, context) {
 
     const footer = panel.querySelector('.panel__footer')
     const footerBtns = footer
-      ? [...footer.querySelectorAll('button, [role="button"]')].filter((b) => {
-          const r = b.getBoundingClientRect()
-          return r.width > 0 && r.height > 0
-        })
+      ? [...footer.querySelectorAll('button, [role="button"]')].filter((b) => isVisibleEl(b))
       : []
     const footerPrimary = footerBtns.filter((b) => (b.className?.toString?.() || '').includes('ui-button--primary')).length
     const footerTotal = footerBtns.length
@@ -407,27 +412,26 @@ async function measureFaces(page, context) {
       chatProposalsWall,
       context: actualContext,
     }
-  }, context)
+  }, { ctx: context, visSrc: BROWSER_IS_VISIBLE_SOURCE })
 }
 
 async function measureLab(page) {
-  return page.evaluate(() => {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const lab = document.querySelector('.lab') || document.querySelector('[aria-label="Lab"]')?.closest('.lab, main, #workspace')
     const root = lab || document.querySelector('#workspace')
     if (!root) return { missing: true }
 
-    const cards = root.querySelectorAll('.lab__card, [aria-label="Lab cards"] article')
+    const cards = [...root.querySelectorAll('.lab__card, [aria-label="Lab cards"] article')].filter((c) => isVisibleEl(c))
     const cardCount = cards.length
     const filter = root.querySelector('.lab__filters, [aria-label="Filter card kinds"]')
-    const labFilterWhenEmpty = cardCount === 0 && !!filter
+    const labFilterWhenEmpty = cardCount === 0 && !!filter && isVisibleEl(filter)
     const composerKinds = root.querySelector('.lab__composer-kinds, [aria-label="New card kind"]')
 
     function stripFull(el) {
       if (!el) return false
-      const btns = [...el.querySelectorAll('button')].filter((b) => {
-        const r = b.getBoundingClientRect()
-        return r.width > 0 && r.height > 0
-      })
+      const btns = [...el.querySelectorAll('button')].filter((b) => isVisibleEl(b))
       return btns.length >= 4
     }
     let kindFullStrips = 0
@@ -442,11 +446,13 @@ async function measureLab(page) {
       hasFilter: !!filter,
       hasComposerKinds: !!composerKinds,
     }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
 }
 
 async function measureCraft(page) {
-  return page.evaluate(() => {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     // Scope strictly to Draft manuscript — never count graph/lab/companion chrome.
     const root =
       document.querySelector('main[aria-label="Draft"]') ||
@@ -464,8 +470,7 @@ async function measureCraft(page) {
         ...[...strip.querySelectorAll('button, [role="button"], .badge, .chip, .ui-badge')].filter((el) => {
           const t = (el.textContent || '').trim()
           if (!t || /^\+\d|tags|more/i.test(t)) return false
-          const r = el.getBoundingClientRect()
-          return r.width > 0 && r.height > 0
+          return isVisibleEl(el)
         }),
       )
     }
@@ -473,44 +478,51 @@ async function measureCraft(page) {
       chips = [...meta.querySelectorAll('.badge, .ui-badge, button')].filter((el) => {
         const t = (el.textContent || '').trim()
         if (!t || /words|chars|saved|chapter|paper:/i.test(t)) return false
-        const r = el.getBoundingClientRect()
-        return r.width > 0 && r.height > 0
+        return isVisibleEl(el)
       })
     }
 
     const overflow = root.querySelector(
       '[aria-label*="tags" i], details.craft, .craft-overflow, button[aria-label*="Tags" i], summary',
     )
-    const collapsedDisclosure = !!root.querySelector(
-      'details.craft-tags, details[aria-label*="craft" i], details[aria-label*="Tags" i], button[aria-label*="Tags" i][aria-expanded="false"]',
+    // Prefer real open-state of details over counting layout boxes inside closed ones.
+    const details = root.querySelector(
+      'details.craft-tags, details[aria-label*="craft" i], details[aria-label*="Tags" i], .manuscript__tags details, details:has(summary)',
     )
+    const collapsedDisclosure = details
+      ? !details.open
+      : !!root.querySelector('button[aria-label*="Tags" i][aria-expanded="false"]')
 
     return {
       chipVisibleCount: chips.length,
-      chipLabels: chips.slice(0, 12).map((c) => (c.textContent || '').trim()),
-      hasOverflowControl: !!overflow,
-      craftCollapsedDefault: chips.length === 0 || collapsedDisclosure || chips.length <= 5,
+      chipLabels: chips.slice(0, 12).map((chip) => (chip.textContent || '').trim()),
+      hasOverflowControl: !!overflow || !!details,
+      craftCollapsedDefault: chips.length === 0 || collapsedDisclosure,
       foundStrip: strips.length > 0 || !!meta,
+      detailsOpen: details ? !!details.open : null,
     }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
 }
 
 async function measureCanon(page) {
-  return page.evaluate(() => {
+  return page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const root =
       document.querySelector('.graph') ||
       document.querySelector('[aria-label*="Canon" i]') ||
       document.querySelector('#workspace')
     if (!root) return { missing: true }
 
+    const proposeDetails = root.querySelector('details.graph__propose, details[aria-label*="Propose" i], details:has(summary)')
     const proposeForm = root.querySelector('form, [aria-label*="Propose" i], .graph__propose, .canon-propose')
     const proposeInputs = proposeForm
-      ? [...proposeForm.querySelectorAll('input, textarea, select')].filter((el) => {
-          const r = el.getBoundingClientRect()
-          return r.width > 0 && r.height > 0
-        })
+      ? [...proposeForm.querySelectorAll('input, textarea, select')].filter((el) => isVisibleEl(el))
       : []
-    const proposeExpanded = proposeInputs.length >= 2
+    // Closed details => not expanded, regardless of layout boxes inside.
+    const proposeExpanded = proposeDetails
+      ? !!proposeDetails.open && proposeInputs.length >= 2
+      : proposeInputs.length >= 2
     const viewSwitch = root.querySelector('[aria-label*="view" i], .graph__views, [role="tablist"]')
     const kindFilter = root.querySelector('[aria-label*="kind" i], .graph__kinds, .graph__filters')
 
@@ -529,7 +541,7 @@ async function measureCanon(page) {
       viewWeight: weight(viewSwitch),
       filterWeight: weight(kindFilter),
     }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
 }
 
 async function measureFocus(page) {
@@ -608,25 +620,33 @@ async function runViewport(browser, width, height, label, projectId) {
       body: 'Aria opened the iron door for calm budget.',
       craftTags: ['char-dev', 'plot-progress', 'world-build', 'setup', 'relationship'],
     })
-    if (width >= 1200) await ensureBinderOpen(page)
+    // Track whether harness forced rails open (default vs forced provenance).
+    const railOrigin = { binder: 'default', agent: 'default' }
+    if (width >= 1200) await ensureBinderOpen(page, { track: railOrigin })
     else {
       // Phone: start drawers closed so touch targets are resting chrome, not drawer chrome.
       await dismissDrawers(page)
     }
-    await ensureCompanionOpen(page)
+    // Companion is opened for face measures — mark forced when below desk default-closed.
+    await ensureCompanionOpen(page, { track: railOrigin })
     await enterWorkspaceForMeasure(page, 'draft', projectId)
+    const railState = await readRailState(page, { origin: railOrigin })
 
     // --- B1 layout @1440 ---
     if (width >= 1200) {
       const layout = await measureLayout(page)
+      const railNote = formatRailState(railState)
       add(
         'B1-work-hard',
         'HARD',
         'CALM_BUDGET.md B1-work-hard · workPct ≥ 40',
         `Draft@${label}`,
         layout.workPct >= 40,
-        `workPct=${layout.workPct}`,
+        `workPct=${layout.workPct} · ${railNote}`,
         '≥40',
+        undefined,
+        undefined,
+        { railState },
       )
       add(
         'B1-work-warn',
@@ -634,9 +654,11 @@ async function runViewport(browser, width, height, label, projectId) {
         'CALM_BUDGET.md B1-work-warn · workPct < 45 warns',
         `Draft@${label}`,
         layout.workPct >= 45,
-        `workPct=${layout.workPct}`,
+        `workPct=${layout.workPct} · ${railNote}`,
         '≥45 preferred (WARN if <45)',
         layout.workPct < 45 ? 'in WARN band' : undefined,
+        undefined,
+        { railState },
       )
       add(
         'B1-rail-warn',
@@ -644,8 +666,11 @@ async function runViewport(browser, width, height, label, projectId) {
         'CALM_BUDGET.md B1-rail-warn · rail>24 or chrome>55',
         `Draft@${label}`,
         !(layout.binderPct > 24 || layout.agentPct > 24 || layout.chromePct > 55),
-        `binder=${layout.binderPct} agent=${layout.agentPct} chrome=${layout.chromePct}`,
+        `binder=${layout.binderPct} agent=${layout.agentPct} chrome=${layout.chromePct} · ${railNote}`,
         'rails≤24, chrome≤55',
+        undefined,
+        undefined,
+        { railState },
       )
       add(
         'B1-rail-pathological',
@@ -653,8 +678,11 @@ async function runViewport(browser, width, height, label, projectId) {
         'CALM_BUDGET.md B1-rail-pathological · rail > work',
         `Draft@${label}`,
         !(layout.binderW > layout.workW || layout.agentW > layout.workW),
-        `binderW=${layout.binderW} agentW=${layout.agentW} workW=${layout.workW}`,
+        `binderW=${layout.binderW} agentW=${layout.agentW} workW=${layout.workW} · ${railNote}`,
         'each rail ≤ work',
+        undefined,
+        undefined,
+        { railState },
       )
       add(
         'B1-fold',
@@ -662,8 +690,11 @@ async function runViewport(browser, width, height, label, projectId) {
         'CALM_BUDGET.md B1-fold · foldOwner = work',
         `Draft@${label}`,
         layout.foldOwner === 'work',
-        `foldOwner=${layout.foldOwner}${layout.foldTop ? ` (${layout.foldTop.cls || layout.foldTop.tag})` : ''}`,
+        `foldOwner=${layout.foldOwner}${layout.foldTop ? ` (${layout.foldTop.cls || layout.foldTop.tag})` : ''} · ${railNote}`,
         'work',
+        undefined,
+        undefined,
+        { railState },
       )
     }
 
@@ -1135,6 +1166,23 @@ printRunIdentity(runMeta, 'run-start')
 console.log(`[owned=${stack.owned}] api=${stack.api} ui=${stack.ui} head=${stack.head}`)
 
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
+
+// Visibility self-test once per run — refuse if closed <details> looks painted.
+{
+  const probe = await browser.newPage()
+  try {
+    await assertVisibilityPredicate(probe)
+    console.log('[visibility-self-test] ok (closed details hidden; summary + open content visible)')
+  } catch (error) {
+    console.error('REFUSE (visibility): ' + (error instanceof Error ? error.message : String(error)))
+    try { await probe.close() } catch { /* ignore */ }
+    try { await browser.close() } catch { /* ignore */ }
+    try { await stack.stop() } catch { /* ignore */ }
+    clearHardTimeout()
+    process.exit(2)
+  }
+  await probe.close()
+}
 
 // One isolated project for the whole run so both viewports share stable state.
 let projectId = null

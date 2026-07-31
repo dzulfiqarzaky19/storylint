@@ -9,6 +9,7 @@ Deterministic browser smokes and gates for Storylint.
 | `npm run test:e2e` | Feature smokes (`e2e/all-smoke.mjs`) |
 | `npm run calm` | CALM_BUDGET geometry/face checker |
 | `npm run test:e2e:guard` | Convention guard: measurement scripts must use helpers |
+| `npm run test:green` | **ONE green:** guard + build + unit + owned smokes + calm |
 
 ## Provenance (what did we measure?)
 
@@ -30,6 +31,28 @@ Rules:
 | `assertServedProvenance(ui, expected)` | Fail closed if served ≠ working tree |
 
 Calm exit codes: `0` no HARD fail, `1` HARD fail on proven bundle, `2` refused (unproven / precondition).
+
+## One green command
+
+```bash
+npm run test:green
+```
+
+Means: helper guard + production build + unit tests + feature smokes + calm budget.
+Smokes and calm share `e2e/owned-stack.mjs` (build this tree, ephemeral ports, HEAD + shell.css provenance).
+If a check cannot name the commit it measured, it fails closed (exit 2 refuse).
+
+Do not invent alternate definitions of green. `npm test` is unit-only and does **not** run browser smokes.
+
+## Five ways verification lied (seal lesson)
+
+1. **No server ownership** — calm/smokes measured stranger Vite on :5173 across worktrees.
+2. **Fixture contamination** — shared doors/default projects under concurrent agents.
+3. **Closed `<details>` visibility** — rect-based counts treated collapsed content as painted.
+4. **Smokes excluded from "green"** — agents reported unit `npm test` as merge-ready while e2e was red.
+5. **Smokes unattributed** — same :5173 hole as calm.
+
+Fail closed. A measurement that cannot name what it measured is not evidence.
 
 ## Trust rule
 
@@ -59,6 +82,23 @@ Do **not**:
 - click Workspace/face controls and assume the switch landed
 
 Enforced by `node e2e/guard-helpers.mjs` (`npm run test:e2e:guard`).
+
+## Visibility predicate
+
+Rect-based "visible" is banned for density/chrome counts.
+
+Chromium still yields layout boxes for children of a closed `<details>`. `getBoundingClientRect`, `offsetParent`, and computed display/visibility all lie. The gate uses `Element.checkVisibility` plus an explicit closed-`<details>` ancestor check (`BROWSER_IS_VISIBLE_SOURCE` / `isVisibleEl` in helpers).
+
+- Self-test: `assertVisibilityPredicate(page)` runs once per calm session. Closed details child must be hidden; summary and open content must be visible. Fail → exit 2 refuse.
+- Undetermined visibility (no `checkVisibility`) → refuse, never PASS/FAIL.
+
+## Rail state provenance
+
+Below 1366px the product default is companion closed (binder leads). Dual-rail measurements must name whether rails were **default** or **forced** by the harness:
+
+`railState: { binder: 'open'|'closed', agent: 'open'|'closed', origin: { binder: 'default'|'forced', agent: 'default'|'forced' }, atDesk }`
+
+`ensureBinderOpen` / `ensureCompanionOpen` accept `{ track }` and mark origin forced only when they actually click Show.
 
 ## Isolation (concurrent agents)
 

@@ -35,6 +35,9 @@ const LEGACY_EXPLORATORY = new Set([
   'ux-drive-graph.mjs',
   'graph-audit.mjs',
   'd6-companion-shots.mjs',
+  // Bear D1 rail measure — port to helpers+owned-stack after seal.
+  'rail-budget.mjs',
+  'binder-resting.mjs',
 ])
 
 const FORBIDDEN_IN_GATES = [
@@ -51,6 +54,10 @@ const FORBIDDEN_IN_GATES = [
     id: 'stranger-ui-default-5173',
     // Defaulting STORYLINT_UI to :5173 measures whatever ghost Vite is alive.
     re: /STORYLINT_UI\s*\|\|\s*['"`]https?:\/\/(localhost|127\.0\.0\.1):5173/,
+  },
+  {
+    id: 'hardcoded-localhost-5173',
+    re: /goto\(\s*['"`]https?:\/\/(localhost|127\.0\.0\.1):5173/,
   },
 ]
 

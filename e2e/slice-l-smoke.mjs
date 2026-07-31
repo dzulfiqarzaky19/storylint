@@ -2,7 +2,12 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { companionPanel, openCompanionFace } from './helpers.mjs'
+import {
+  companionPanel,
+  openCompanionFace,
+  requireUiOrigin,
+  setApiBase
+} from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -13,10 +18,12 @@ const stamp = Date.now()
 const tag = stamp.toString(36).slice(-4)
 const cardTitle = `Siege gate-${tag}`
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
 
   await page.getByRole('button', { name: 'Lab', exact: true }).click()
   const lab = page.getByRole('main', { name: 'Lab' })
