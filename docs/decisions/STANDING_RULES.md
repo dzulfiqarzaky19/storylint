@@ -11,23 +11,24 @@
 5. **Assert on behaviour and state, never on a label you do not own.** Prefer roles, `data-*`, structure over marketing copy / aria substrings. ([milestone-density-pass](./milestone-density-pass.md), [copy-audit-task-t](./copy-audit-task-t.md))
 6. **A fixture that changes the state under test is not a fixture.** Empty checks on empty; density/hierarchy on seeded. Forced-open companion is labeled and is not default-rail evidence. ([calm-budget-r3-ox](./calm-budget-r3-ox.md), [CALM_BUDGET](../CALM_BUDGET.md) r3)
 7. **Verify a finding still describes the code before building against it.** Worktree ≠ truth; `git show origin/dev:path`. ([CODE_VERIFY](../CODE_VERIFY.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
-8. **A test that depends on state it did not create is measuring the machine, not the product.** Gitignored paths (`data/`, local `project.json`) are ambient. Seed or refuse inside the check — never assume a warm worktree. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md))
+8. **A test may only interact with entities it created in that run.** Depending on a pre-existing project, file, or option the smoke did not create measures the machine, not the product. Create both sides of a switch test inside the check. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md); ambient-gitignored-data mechanism **disproven**)
 
 ## Actions (same disease as unattributed measurement)
 
 9. **Never combine a verification command with a mutating one.** Read, then act, as separate steps. A verify that also pushes or checks out is not evidence of the pre-state.
 10. **Never filter the output of a command that mutates a remote.** Pipes and greps hide the mutation line; run mutators plain so the full transcript is the record.
+11. **A fix can be correct while its stated cause is wrong.** Ship the fix with an open question rather than a confident false mechanism — the wrong cause stops the next person looking. (rat scar: slice-j — [milestone-density-pass](./milestone-density-pass.md))
 
 ## Product chrome
 
-11. **One solid primary per job in the viewport**, counted across regions. Same verb + destination = one job; second door demotes or hides. ([one-primary-door-per-job](./one-primary-door-per-job.md)) — check **B6-primary-per-job** **LANDED** (empty Canon + Draft fixtures).
-12. **Build the control the current cardinality justifies.** One overflow target → plain control, not a one-item menu costume. Grow the menu when the second target exists. ([research-face-shape](./research-face-shape.md); APG full-menu greenlight **retracted**)
-13. **Companion is one assistant doing one thing.** Global busy; no run-id parallel lanes; one busy word family; face shows this run’s outcome, not stale success. ([companion-one-assistant](./companion-one-assistant.md))
-14. **Canon has exactly one write path and it is explicit** — Accept on a proposal, or Save on an author sheet edit (with leave guard). Never silent bible write; never Accept/Reject on author sheet edits. ([copy-audit-task-t](./copy-audit-task-t.md), [sheet-dirty-leave-guard](./sheet-dirty-leave-guard.md))
-15. **User-facing bible → Canon is full sweep or none** (half-rename is revert-class). Graph kinds use `SHEET_KIND_LABEL`. ([pack-b-canon-dialect-complete](./pack-b-canon-dialect-complete.md), [design-review-l2](./design-review-l2.md))
-16. **New project ≠ first boot.** Boot may seed Chapter One; New project stays empty. Same empty-door rules when empty. ([new-project-vs-first-boot](./new-project-vs-first-boot.md))
-17. **Sheet = binder Level-3 stack**, not center stage. ([adjudication-d5-sheet-binder](./adjudication-d5-sheet-binder.md))
-18. **Writing faces:** ≤3 primary peers (Chat·Write·Check) + Inbox badge + quiet Research/More — allow-list may be 5; not a ≤3 redesign gate. ([design-review-d6](./design-review-d6.md), [research-face-shape](./research-face-shape.md))
+12. **One solid primary per job in the viewport**, counted across regions. Same verb + destination = one job; second door demotes or hides. ([one-primary-door-per-job](./one-primary-door-per-job.md)) — check **B6-primary-per-job** **LANDED** (empty Canon + Draft fixtures).
+13. **Build the control the current cardinality justifies.** One overflow target → plain control, not a one-item menu costume. Grow the menu when the second target exists. ([research-face-shape](./research-face-shape.md); APG full-menu greenlight **retracted**)
+14. **Companion is one assistant doing one thing.** Global busy; no run-id parallel lanes; one busy word family; face shows this run’s outcome, not stale success. ([companion-one-assistant](./companion-one-assistant.md))
+15. **Canon has exactly one write path and it is explicit** — Accept on a proposal, or Save on an author sheet edit (with leave guard). Never silent bible write; never Accept/Reject on author sheet edits. ([copy-audit-task-t](./copy-audit-task-t.md), [sheet-dirty-leave-guard](./sheet-dirty-leave-guard.md))
+16. **User-facing bible → Canon is full sweep or none** (half-rename is revert-class). Graph kinds use `SHEET_KIND_LABEL`. ([pack-b-canon-dialect-complete](./pack-b-canon-dialect-complete.md), [design-review-l2](./design-review-l2.md))
+17. **New project ≠ first boot.** Boot may seed Chapter One; New project stays empty. Same empty-door rules when empty. ([new-project-vs-first-boot](./new-project-vs-first-boot.md))
+18. **Sheet = binder Level-3 stack**, not center stage. ([adjudication-d5-sheet-binder](./adjudication-d5-sheet-binder.md))
+19. **Writing faces:** ≤3 primary peers (Chat·Write·Check) + Inbox badge + quiet Research/More — allow-list may be 5; not a ≤3 redesign gate. ([design-review-d6](./design-review-d6.md), [research-face-shape](./research-face-shape.md))
 
 ## Gate
 

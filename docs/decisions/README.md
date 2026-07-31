@@ -75,10 +75,12 @@ Short list only — do not grow into a second backlog novel.
 4. **Canon and Lab under load** — density/fold under real sheets/cards not fully eye-judged on seeded fixtures.
 5. **Empty-Canon Send proposal weight** — ruled; octopus implementing (demote/primary weight on empty Canon propose path).
 
+6. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'` — badger, proven bare 5/5). Why horse/dolphin bare trees failed is **not established**. Ambient-gitignored-data mechanism **disproven** (server always synthesises `default`).
+
 ### Closed this session (do not re-open without new evidence)
 
 - ~~**B6-primary-per-job**~~ — **LANDED** (empty Canon + Draft fixtures). Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
-- ~~**slice-j “flake”**~~ — **root-caused**: ambient gitignored `data/project.json` (`selectOption('default')`). Fix in flight (badger). Ninth lie in [milestone-density-pass](./milestone-density-pass.md) + [STANDING_RULES](./STANDING_RULES.md) §8.
+- ~~**slice-j dependency on uncreated entity**~~ — **fixed** (create both; no `'default'`). Original failure mode still open above. Ninth lie + scar: [milestone-density-pass](./milestone-density-pass.md) · [STANDING_RULES](./STANDING_RULES.md) §8/§11.
 
 ---
 
