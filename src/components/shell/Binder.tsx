@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Fact, Lab, Sheet } from '../../domain/types.ts'
-import { SheetEditor } from '../../features/project/SheetEditor.tsx'
+import { SheetEditor, type SheetEditorHandle } from '../../features/project/SheetEditor.tsx'
 import { Button, IconButton, ListRow } from '../ui'
 import type { Chapter, SheetKind } from './workspace'
 import { SHEET_KINDS, SHEET_KIND_LABEL } from './workspace'
@@ -31,6 +31,11 @@ export type BinderProps = {
    * Pass sheetId to open that sheet; null/omit opens Canon map only.
    */
   onOpenCanonSheet?: (sheetId?: string | null) => void
+  /**
+   * Shell registers the active sheet leave guard so ecosystem place switches
+   * can share one Save/Discard/Cancel path with Back.
+   */
+  onRequestLeaveGuard?: (requestLeave: ((proceed: () => void) => void) | null) => void
   onClose?: () => void
 }
 
@@ -53,6 +58,7 @@ export function Binder({
   onRequestedSheetHandled,
   onEditSheet,
   onOpenCanonSheet,
+  onRequestLeaveGuard,
   onClose,
 }: BinderProps) {
   const [editingSheetId, setEditingSheetId] = useState<string | 'new' | null>(null)
@@ -61,6 +67,7 @@ export function Binder({
   const currentChapterRef = useRef<HTMLButtonElement | null>(null)
   const stackBodyRef = useRef<HTMLDivElement | null>(null)
   const listScrollTopRef = useRef(0)
+  const editorRef = useRef<SheetEditorHandle | null>(null)
   const editingSheet = sheets.find((sheet) => sheet.id === editingSheetId) ?? null
   const boards = lab?.boards ?? []
   const draftActive = !labMode && !canonMode
@@ -84,10 +91,18 @@ export function Binder({
       onOpenCanonSheet?.(sheetId)
       return
     }
-    if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
-    setEditingSheetId(sheetId)
-    setParkedSheetId(null)
-    onEditSheet?.(sheetId)
+    const open = () => {
+      if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
+      setEditingSheetId(sheetId)
+      setParkedSheetId(null)
+      onEditSheet?.(sheetId)
+    }
+    // Switching sheets while a dirty form is open must share the leave guard.
+    if (editingSheetId && editingSheetId !== sheetId && editorRef.current) {
+      editorRef.current.requestLeave(open)
+      return
+    }
+    open()
   }
 
   function openNewSheet() {
@@ -96,15 +111,30 @@ export function Binder({
       onOpenCanonSheet?.(null)
       return
     }
-    if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
-    setEditingSheetId('new')
-    // Signal detail-open for map quiet (F2); Shell ignores 'new' as a real sheet id for landing.
-    onEditSheet?.('new')
+    const open = () => {
+      if (stackBodyRef.current) listScrollTopRef.current = stackBodyRef.current.scrollTop
+      setEditingSheetId('new')
+      // Signal detail-open for map quiet (F2); Shell ignores 'new' as a real sheet id for landing.
+      onEditSheet?.('new')
+    }
+    if (editingSheetId && editorRef.current) {
+      editorRef.current.requestLeave(open)
+      return
+    }
+    open()
   }
 
   function closeSheetDetail() {
     setEditingSheetId(null)
     onEditSheet?.(null)
+  }
+
+  function requestCloseSheetDetail() {
+    if (editorRef.current) {
+      editorRef.current.requestLeave(closeSheetDetail)
+      return
+    }
+    closeSheetDetail()
   }
 
   useEffect(() => {
@@ -159,6 +189,23 @@ export function Binder({
       onEditSheet?.(null)
     }
   }, [canonMode, editingSheetId, onEditSheet])
+
+  // Publish leave guard to Shell for ecosystem place switches (Draft/Lab/Canon).
+  useEffect(() => {
+    if (!onRequestLeaveGuard) return
+    if (!sheetDetailOpen) {
+      onRequestLeaveGuard(null)
+      return
+    }
+    onRequestLeaveGuard((proceed) => {
+      if (editorRef.current) {
+        editorRef.current.requestLeave(proceed)
+        return
+      }
+      proceed()
+    })
+    return () => onRequestLeaveGuard(null)
+  }, [onRequestLeaveGuard, sheetDetailOpen])
 
   // Keep the active Draft chapter visible in long lists.
   useEffect(() => {
@@ -318,13 +365,14 @@ export function Binder({
         {sheetDetailOpen ? (
           <div className="binder__stack-detail" data-binder-detail="sheet">
             <div className="binder__detail-chrome">
-              <Button onClick={closeSheetDetail}>Back</Button>
+              <Button onClick={requestCloseSheetDetail}>Back</Button>
               <div className="binder__detail-meta">
                 <span className="binder__detail-title">{sheetTitle}</span>
                 <span className="binder__detail-kind">{sheetKindLabel}</span>
               </div>
             </div>
             <SheetEditor
+              ref={editorRef}
               sheet={editingSheet}
               showBack={false}
               onSaveSheet={async (sheet) => {

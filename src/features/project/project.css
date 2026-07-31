@@ -196,3 +196,63 @@
   line-height: var(--leading-sm);
   box-shadow: var(--shadow-md);
 }
+
+
+/* Canon sheet leave guard (dirty identity). */
+.sheet-editor__leave-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 40);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.sheet-editor__leave-backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-ink, #1a1612) 45%, transparent);
+}
+
+.sheet-editor__leave-dialog {
+  position: relative;
+  width: min(100%, 24rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+
+.sheet-editor__leave-title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--text-lg);
+  line-height: var(--leading-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.sheet-editor__leave-body {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.sheet-editor__leave-error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+
+.sheet-editor__leave-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}

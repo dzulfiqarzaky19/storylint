@@ -1,6 +1,18 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react'
 import type { Fact, Sheet, SheetKind } from '../../domain/types.ts'
 import { Button, Input, Textarea } from '../../components/ui'
+import { isSheetIdentityDirty, normalizeSheetIdentity } from './sheetIdentityDirty.ts'
 import './project.css'
 
 export type SheetEditorProps = {
@@ -11,6 +23,11 @@ export type SheetEditorProps = {
   onBack: () => void
   /** When false, parent stack chrome owns Back (binder L3). Default true. */
   showBack?: boolean
+}
+
+/** Single exit path for Back, Escape, stack switches, and Canon leave. */
+export type SheetEditorHandle = {
+  requestLeave: (proceed: () => void) => void
 }
 
 const EMPTY_KIND: SheetKind = 'character'
@@ -26,31 +43,139 @@ const FIELD_HINTS: Record<SheetKind, readonly string[]> = {
   organization: ['purpose', 'leader', 'symbol', 'rival'],
 }
 
-export function SheetEditor({
-  sheet,
-  onSaveSheet,
-  onSaveFact,
-  onDeleteFact,
-  onBack,
-  showBack = true,
-}: SheetEditorProps) {
+export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(function SheetEditor(
+  {
+    sheet,
+    onSaveSheet,
+    onSaveFact,
+    onDeleteFact,
+    onBack,
+    showBack = true,
+  },
+  ref,
+) {
   const [draft, setDraft] = useState<Sheet>(() => sheet ?? emptySheet())
+  const [loaded, setLoaded] = useState(() => normalizeSheetIdentity(sheet))
   const [portraitFailed, setPortraitFailed] = useState(false)
   const [fact, setFact] = useState({ id: '', key: '', value: '', statement: '' })
+  const [leaveOpen, setLeaveOpen] = useState(false)
+  const [leaveError, setLeaveError] = useState<string | null>(null)
+  const [savingLeave, setSavingLeave] = useState(false)
+  const pendingProceedRef = useRef<(() => void) | null>(null)
+  const leaveDialogRef = useRef<HTMLDivElement | null>(null)
+  const saveLeaveRef = useRef<HTMLButtonElement | null>(null)
+  const restoreFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     setDraft(sheet ?? emptySheet())
+    setLoaded(normalizeSheetIdentity(sheet))
     setPortraitFailed(false)
     setFact({ id: '', key: '', value: '', statement: '' })
+    setLeaveOpen(false)
+    setLeaveError(null)
+    pendingProceedRef.current = null
   }, [sheet])
+
+  const dirty = useMemo(() => isSheetIdentityDirty(draft, loaded), [draft, loaded])
+  const canSave = Boolean(draft.name.trim())
+  const displayName = draft.name.trim() || 'this sheet'
+
+  const closeLeavePrompt = useCallback((opts?: { restore?: boolean }) => {
+    setLeaveOpen(false)
+    setLeaveError(null)
+    pendingProceedRef.current = null
+    if (opts?.restore) {
+      const target = restoreFocusRef.current
+      restoreFocusRef.current = null
+      queueMicrotask(() => target?.focus())
+    }
+  }, [])
+
+  const finishLeave = useCallback((proceed: () => void) => {
+    setLeaveOpen(false)
+    setLeaveError(null)
+    pendingProceedRef.current = null
+    proceed()
+  }, [])
+
+  const requestLeave = useCallback(
+    (proceed: () => void) => {
+      if (leaveOpen) return
+      if (!isSheetIdentityDirty(draft, loaded)) {
+        proceed()
+        return
+      }
+      restoreFocusRef.current = document.activeElement as HTMLElement | null
+      pendingProceedRef.current = proceed
+      setLeaveError(null)
+      setLeaveOpen(true)
+    },
+    [draft, leaveOpen, loaded],
+  )
+
+  useImperativeHandle(ref, () => ({ requestLeave }), [requestLeave])
+
+  useLayoutEffect(() => {
+    if (!leaveOpen) return
+    saveLeaveRef.current?.focus()
+  }, [leaveOpen])
+
+  useEffect(() => {
+    if (!leaveOpen) return
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      event.stopPropagation()
+      // Guard Escape = Cancel, never Discard.
+      closeLeavePrompt({ restore: true })
+    }
+    document.addEventListener('keydown', onKeyDown, true)
+    return () => document.removeEventListener('keydown', onKeyDown, true)
+  }, [closeLeavePrompt, leaveOpen])
+
+  async function persistIdentity(): Promise<boolean> {
+    const name = draft.name.trim()
+    if (!name) {
+      setLeaveError('Name is required to save.')
+      return false
+    }
+    const next: Sheet = {
+      ...draft,
+      name,
+      facts: sheet?.facts ?? draft.facts,
+    }
+    await onSaveSheet(next)
+    setDraft(next)
+    setLoaded(normalizeSheetIdentity(next))
+    return true
+  }
 
   async function submitSheet(event: FormEvent) {
     event.preventDefault()
-    await onSaveSheet({
-      ...draft,
-      name: draft.name.trim(),
-      facts: sheet?.facts ?? draft.facts,
-    })
+    const ok = await persistIdentity()
+    if (!ok) return
+  }
+
+  async function onSaveAndLeave() {
+    if (savingLeave) return
+    setSavingLeave(true)
+    try {
+      const ok = await persistIdentity()
+      if (!ok) return
+      const proceed = pendingProceedRef.current
+      if (proceed) finishLeave(proceed)
+    } finally {
+      setSavingLeave(false)
+    }
+  }
+
+  function onDiscardAndLeave() {
+    const proceed = pendingProceedRef.current
+    if (proceed) finishLeave(proceed)
+  }
+
+  function requestBack() {
+    requestLeave(onBack)
   }
 
   async function submitFact(event: FormEvent) {
@@ -70,9 +195,29 @@ export function SheetEditor({
     setFact({ id: '', key: '', value: '', statement: '' })
   }
 
+  function onLeaveDialogKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Tab' || !leaveDialogRef.current) return
+    const focusable = Array.from(
+      leaveDialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]),[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+      ),
+    )
+    if (focusable.length === 0) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    const active = document.activeElement
+    if (event.shiftKey && active === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+
   return (
-    <div className="sheet-editor">
-      {showBack ? <Button onClick={onBack}>Back to binder</Button> : null}
+    <div className="sheet-editor" data-sheet-dirty={dirty ? 'true' : 'false'}>
+      {showBack ? <Button onClick={requestBack}>Back to binder</Button> : null}
       <form className="sheet-editor__form" onSubmit={(event) => void submitSheet(event)}>
         <div className="sheet-editor__identity">
           <div className="sheet-editor__portrait" aria-label="Sheet portrait or icon">
@@ -212,9 +357,53 @@ export function SheetEditor({
           </form>
         </section>
       ) : null}
+
+      {leaveOpen ? (
+        <div className="sheet-editor__leave-root">
+          <div className="sheet-editor__leave-backdrop" aria-hidden="true" />
+          <div
+            ref={leaveDialogRef}
+            className="sheet-editor__leave-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sheet-leave-title"
+            aria-describedby="sheet-leave-body"
+            tabIndex={-1}
+            onKeyDown={onLeaveDialogKeyDown}
+          >
+            <h3 className="sheet-editor__leave-title" id="sheet-leave-title">
+              {`Save changes to ${displayName}?`}
+            </h3>
+            <p className="sheet-editor__leave-body" id="sheet-leave-body">
+              Canon keeps accepted truth. Save writes these identity edits, or discard them.
+            </p>
+            {leaveError ? (
+              <p className="sheet-editor__leave-error" role="alert">
+                {leaveError}
+              </p>
+            ) : null}
+            <div className="sheet-editor__leave-actions">
+              <Button
+                ref={saveLeaveRef}
+                variant="primary"
+                disabled={!canSave || savingLeave}
+                onClick={() => void onSaveAndLeave()}
+              >
+                Save
+              </Button>
+              <Button variant="danger" disabled={savingLeave} onClick={onDiscardAndLeave}>
+                Discard
+              </Button>
+              <Button disabled={savingLeave} onClick={() => closeLeavePrompt({ restore: true })}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
-}
+})
 
 function emptySheet(): Sheet {
   return {
