@@ -10,7 +10,8 @@
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { requireApiOrigin, requireUiOrigin } from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -20,8 +21,8 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 const OUT = 'e2e/output/density-d4'
 mkdirSync(OUT, { recursive: true })
 
-const API = 'http://127.0.0.1:4174'
-const UI = 'http://localhost:5173/'
+const API = requireApiOrigin()
+const UI = requireUiOrigin()
 const stamp = Date.now()
 const tag = stamp.toString(36).slice(-4)
 const parentId = `d4-parent-${stamp}`
