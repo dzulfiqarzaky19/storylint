@@ -14,6 +14,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import { requireApiOrigin, requireUiOrigin } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -22,8 +23,8 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 const OUT = 'e2e/output/canon-empty'
 mkdirSync(OUT, { recursive: true })
 
-const API = 'http://127.0.0.1:4174'
-const UI = 'http://localhost:5173/'
+const API = requireApiOrigin()
+const UI = requireUiOrigin()
 const stamp = Date.now()
 const projectId = `canon-guard-${stamp}`
 
