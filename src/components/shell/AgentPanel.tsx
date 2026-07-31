@@ -192,6 +192,17 @@ export function AgentPanel({
     setFace(next)
     lastFaceByContext.current[companionContext] = next
     setMoreOpen(false)
+    // Overflow secondary (Research) can sit past the face-row scroll edge.
+    queueMicrotask(() => {
+      const root = document.querySelector<HTMLElement>('.companion__faces')
+      if (!root) return
+      const label = FACE_LABEL[next]
+      const tabs = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))
+      const active = tabs.find((tab) =>
+        (tab.textContent || '').replace(/\s+/g, ' ').trim().startsWith(label),
+      )
+      active?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    })
   }
 
   function renderProposals(list: Proposal[]) {
@@ -310,6 +321,8 @@ export function AgentPanel({
     else if (event.key === 'End') next = tabs.length - 1
     const tab = tabs[next]
     tab?.focus()
+    // Face row is overflow-x; keep the focused tab on-screen (Research secondary).
+    tab?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
     tab?.click()
   }
 
