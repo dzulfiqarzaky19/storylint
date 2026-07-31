@@ -45,6 +45,7 @@ Writers who already like **VS Code + Claude / Cursor** want that shape for a nov
 - **Agent** is not a fourth ecosystem — companion across all three
 - **Max navigation depth: 3.** Home → ecosystem → thing. No deeper dig to find core work. No new top-level kingdoms.
 - Plain language: **Lab** = think and gather · **Draft** = write the book · **Canon** = what is true
+- **Journeys:** J1 write · J2 Lab→promote · J3 Continuity pass — detail in [03-ux.md](./03-ux.md)#user-journeys-locked
 
 | Surface (implementation) | Ecosystem | Role |
 |--------------------------|-----------|------|

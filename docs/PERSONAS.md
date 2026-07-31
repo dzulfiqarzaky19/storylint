@@ -20,6 +20,16 @@ Out of beachhead (don’t optimize UX for them yet): pure format/EPUB factories,
 
 ---
 
+## Primary journeys
+
+Full detail: [03-ux.md](./03-ux.md) § User journeys (locked).
+
+| Id | Path | Who |
+|----|------|-----|
+| J1 | Open → **Draft** → write → Saved | serial_worldbuilder, ide_agent_native, return visits |
+| J2 | Open → **Lab** → Send to Draft / Promote to Canon | dogfood_zaky finding the story; empty projects |
+| J3 | Draft → Continuity → Accept/Edit/Reject (Canon if needed) | serial_worldbuilder continuity pass |
+
 ## Jobs UX must be able to finish (without a manual)
 
 1. Open project → write chapter → **Saved** trust  
