@@ -17,6 +17,11 @@ function canPromote(kind: LabCardKind): boolean {
   return kind === 'character-spark' || kind === 'place' || kind === 'lore-spark' || kind === 'beat'
 }
 
+/** IA_MAP §4.2: beat → Draft stub; spark/place/lore → Canon proposal. */
+function promoteActionLabel(kind: LabCardKind): 'Send to Draft' | 'Promote to Canon' {
+  return kind === 'beat' ? 'Send to Draft' : 'Promote to Canon'
+}
+
 function defaultSheetKind(kind: LabCardKind): SheetKind | undefined {
   if (kind === 'character-spark') return 'character'
   if (kind === 'place') return 'world'
@@ -88,7 +93,7 @@ export function LabBench({
       await onCreateCard({ boardId, kind: draftKind, title: draftTitle, body: draftBody })
       setDraftTitle('')
       setDraftBody('')
-      setNotice('Card on the bench. Nothing is canon until Promote → Accept.')
+      setNotice('Card on the bench. Nothing is canon until Promote to Canon → Accept. Beats use Send to Draft.')
     } catch (caught) {
       setNotice(caught instanceof Error ? caught.message : 'Could not create card')
     } finally {
@@ -119,10 +124,10 @@ export function LabBench({
         chapterTitle: card.kind === 'beat' ? card.title : undefined,
       })
       setNotice(card.kind === 'beat'
-        ? 'Chapter stub created (empty body). Lab card marked promoted.'
-        : 'Sheet proposal pack pending. Accept in Companion Inbox to write bible.')
+        ? 'Sent to Draft as a chapter stub (empty body). Lab card marked promoted.'
+        : 'Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write bible.')
     } catch (caught) {
-      setNotice(caught instanceof Error ? caught.message : 'Promote failed')
+      setNotice(caught instanceof Error ? caught.message : `${promoteActionLabel(card.kind)} failed`)
     } finally {
       setBusy(false)
     }
@@ -191,7 +196,7 @@ export function LabBench({
         <div className="lab__empty">
           <EmptyState
             title="Nothing on the bench"
-            hint="Use the composer above for a place, beat, or what-if. Nothing here is canon until you promote."
+            hint="Use the composer above for a place, beat, or what-if. Beats use Send to Draft; sparks use Promote to Canon → Accept."
             action={
               onOpenAgent ? (
                 <div className="lab__empty-actions">
@@ -236,7 +241,9 @@ export function LabBench({
                       {card.status === 'pinned' ? 'Unpin' : 'Pin'}
                     </Button>
                     {canPromote(card.kind) ? (
-                      <Button variant="primary" disabled={busy} onClick={() => void promote(card)}>Promote</Button>
+                      <Button variant="primary" disabled={busy} onClick={() => void promote(card)}>
+                        {promoteActionLabel(card.kind)}
+                      </Button>
                     ) : null}
                     <Button disabled={busy} onClick={() => void onArchiveCard(card.id)}>Archive</Button>
                   </div>
@@ -248,13 +255,13 @@ export function LabBench({
       )}
 
       {promoted.length > 0 ? (
-        <section className="lab__promoted" aria-label="Promoted cards">
+        <section className="lab__promoted" aria-label="Cards sent to Draft or promoted toward Canon">
           <h3 className="lab__section-label">Promoted</h3>
           <ul className="lab__promoted-list">
             {promoted.map((card) => (
               <li key={card.id}>
                 <span>{card.title}</span>
-                <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'chapter stub' : 'proposal'}</Badge>
+                <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'sent to Draft' : 'Canon proposal'}</Badge>
               </li>
             ))}
           </ul>

@@ -43,8 +43,8 @@ try {
     const project = await response.json()
     return project.sheets.length
   })
-  await card.getByRole('button', { name: 'Promote' }).click()
-  await lab.getByText(/Sheet proposal pack pending/i).waitFor({ timeout: 5000 })
+  await card.getByRole('button', { name: 'Promote to Canon' }).click()
+  await lab.getByText(/Promote to Canon queued a sheet proposal/i).waitFor({ timeout: 5000 })
   await lab.getByRole('heading', { name: 'Promoted' }).waitFor()
 
   const after = await page.request.get('http://127.0.0.1:4174/api/project').then(async (response) => {
@@ -52,10 +52,10 @@ try {
     return response.json()
   })
   if (after.sheets.length !== sheetsBefore) {
-    throw new Error('Promote wrote sheets without Accept')
+    throw new Error('Promote to Canon wrote sheets without Accept')
   }
   const pending = after.proposals.filter((proposal) => proposal.status === 'pending' && proposal.entityName === cardTitle)
-  if (pending.length === 0) throw new Error('Promote did not create pending proposals')
+  if (pending.length === 0) throw new Error('Promote to Canon did not create pending proposals')
   const promoted = after.lab.cards.find((cardRow) => cardRow.title === cardTitle)
   if (!promoted || promoted.status !== 'promoted') throw new Error('Lab card not marked promoted')
 
