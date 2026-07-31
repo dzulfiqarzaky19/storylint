@@ -39,7 +39,8 @@ A reader should find the ruling that governs their question in the tables below 
 | [design-review-task-l.md](./design-review-task-l.md) | Task L binder polish review — **kind renames later rejected** (see L2). |
 | [density-audit-qa3.md](./density-audit-qa3.md) | Pre-fix density fault list — **historical**; D5 center fix superseded by adjudication. |
 | [milestone-density-pass.md](./milestone-density-pass.md) | Founder density-pass summary: holds, deliberate non-goals, verification lies catalog. |
-| [seeded-default-first-impression-brief.md](./seeded-default-first-impression-brief.md) | **Queued brief only** — seeded Chapter One first impression not yet judged. |
+| [seeded-default-first-impression-brief.md](./seeded-default-first-impression-brief.md) | Queued brief (historical). |
+| [seeded-default-first-impression.md](./seeded-default-first-impression.md) | **CONDITIONAL ACCEPT** seed-as-boot; P1 empty title + Continuity gated on prose + prefer body focus. |
 | [ia-final-qa.md](./ia-final-qa.md) | IA J1/J2/J3 + Canon entry PASS @ 6a2a74b (record). |
 | [ia-step1-qa.md](./ia-step1-qa.md) | Earlier IA step-1 QA — superseded as *latest* by ia-final-qa. |
 | [orchestrator-ux-faults.md](./orchestrator-ux-faults.md) | Hamster priority UX fault queue (handoff). |
@@ -71,7 +72,7 @@ Short list only — do not grow into a second backlog novel.
 
 1. **Refresh / tab-close loses dirty Canon identity** — [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md); durable fix = draft persistence, not `beforeunload`.
 2. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift (bear in flight at write time).
-3. **Seeded-default first impression** — Chapter One + empty body unexamined; [brief queued](./seeded-default-first-impression-brief.md).
+3. ~~**Seeded-default first impression**~~ — ox **CONDITIONAL ACCEPT** + P1 in flight/landed ([seeded-default-first-impression.md](./seeded-default-first-impression.md)).
 4. **Canon and Lab under load** — density/fold under real sheets/cards not fully eye-judged on seeded fixtures.
 5. **Empty-Canon Send proposal weight** — ruled; octopus implementing (demote/primary weight on empty Canon propose path).
 

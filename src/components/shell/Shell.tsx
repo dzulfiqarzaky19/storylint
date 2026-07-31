@@ -282,6 +282,7 @@ export function Shell() {
       beginMutation={project.beginMutation}
       trackMutation={project.trackMutation}
       chapterTitle={activeChapter?.title ?? 'chapter'}
+      chapterBody={activeChapter?.body ?? ''}
       companionContext={companionContext}
       contextLabel={
         companionContext === 'lab'
