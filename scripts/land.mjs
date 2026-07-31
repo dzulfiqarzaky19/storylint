@@ -18,6 +18,14 @@ import { exit } from 'node:process'
 
 const MAX_PUSH_ATTEMPTS = 3
 const DEV_REF = 'origin/dev'
+const IS_WIN = process.platform === 'win32'
+
+/** Resolve npm/git so Windows does not hit spawn ENOENT on bare npm. */
+function resolveCmd(name) {
+  if (name === 'npm') return IS_WIN ? 'npm.cmd' : 'npm'
+  if (name === 'git') return IS_WIN ? 'git.exe' : 'git'
+  return name
+}
 
 function usage(code = 2) {
   const text = `
@@ -105,15 +113,17 @@ function banner(title) {
 
 /** Run a command with FULL unfiltered stdio. Never pipe-filter output. */
 function run(command, args, { allowFail = false, env } = {}) {
-  const printable = [command, ...args].map(shellQuote).join(' ')
+  const resolved = resolveCmd(command)
+  const printable = [resolved, ...args].map(shellQuote).join(' ')
   console.log(`\n$ ${printable}\n`)
-  const result = spawnSync(command, args, {
+  // shell:true on Windows so .cmd shims resolve; stdio still fully inherited.
+  const result = spawnSync(resolved, args, {
     stdio: 'inherit',
-    shell: false,
+    shell: IS_WIN,
     env: env ? { ...process.env, ...env } : process.env,
   })
   if (result.error) {
-    fail(`failed to spawn ${command}: ${result.error.message}`)
+    fail(`failed to spawn ${resolved}: ${result.error.message}`)
   }
   const status = result.status ?? 1
   if (status !== 0 && !allowFail) {
@@ -128,9 +138,9 @@ function shellQuote(value) {
 }
 
 function gitCapture(args) {
-  const result = spawnSync('git', args, {
+  const result = spawnSync(resolveCmd('git'), args, {
     encoding: 'utf8',
-    shell: false,
+    shell: IS_WIN,
   })
   if (result.error) fail(`git spawn failed: ${result.error.message}`)
   if (result.status !== 0) {
@@ -141,9 +151,9 @@ function gitCapture(args) {
 }
 
 function gitOk(args) {
-  const result = spawnSync('git', args, {
+  const result = spawnSync(resolveCmd('git'), args, {
     encoding: 'utf8',
-    shell: false,
+    shell: IS_WIN,
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   return (result.status ?? 1) === 0
