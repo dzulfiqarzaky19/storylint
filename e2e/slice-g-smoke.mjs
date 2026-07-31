@@ -14,6 +14,8 @@ import {
   ensureDraftReady,
   ensureIsolatedProject,
   fillChapterAndSave,
+  requireUiOrigin,
+  setApiBase
 } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -22,13 +24,15 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 
 const clearHardTimeout = armHardTimeout('slice-g-smoke')
 mkdirSync('e2e/output', { recursive: true })
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 
 try {
   await installFixtureLlmRoutes(page)
   await ensureIsolatedProject(page)
-  await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
   await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const body = page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text')
   const companion = companionPanel(page)

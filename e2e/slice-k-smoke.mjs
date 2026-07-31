@@ -2,7 +2,14 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { closeSheetDetail, companionPanel, openCompanionFace } from './helpers.mjs'
+import {
+  closeSheetDetail,
+  companionPanel,
+  openCompanionFace,
+  getApiBase,
+  requireUiOrigin,
+  setApiBase,
+} from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -18,6 +25,7 @@ const parentName = `Mira Parent-${tag}`
 const childName = `Kael-${tag}`
 
 async function seedCharacters(request) {
+  const api = getApiBase()
   for (const sheet of [
     {
       id: parentId, kind: 'character', name: parentName, aliases: [], summary: '', notes: '', portrait: 'P',
@@ -28,7 +36,7 @@ async function seedCharacters(request) {
       facts: [],
     },
   ]) {
-    const response = await request.put(`http://127.0.0.1:4174/api/sheets/${sheet.id}`, {
+    const response = await request.put(`${api}/api/sheets/${sheet.id}`, {
       data: sheet,
       headers: { 'content-type': 'application/json' },
     })
@@ -62,11 +70,13 @@ async function proposeAndAccept(page) {
   return graph
 }
 
+if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   await seedCharacters(desktop.request)
-  await desktop.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await desktop.goto(UI, { waitUntil: 'networkidle' })
   await desktop.reload({ waitUntil: 'networkidle' })
   const graph = await proposeAndAccept(desktop)
   await graph.getByRole('button', { name: 'Family', exact: true }).click()
@@ -81,7 +91,7 @@ try {
   await desktop.screenshot({ path: 'e2e/output/slice-k-desktop.png', fullPage: true })
 
   const narrow = await browser.newPage({ viewport: { width: 1024, height: 900 } })
-  await narrow.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await narrow.goto(UI, { waitUntil: 'networkidle' })
   await narrow.getByRole('button', { name: 'Canon' }).click()
   const narrowGraph = narrow.getByRole('main', { name: 'Relationship graph' })
   await narrowGraph.waitFor()

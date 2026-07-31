@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync, writeFileSync } from 'node:fs'
+import { BROWSER_IS_VISIBLE_SOURCE } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -231,23 +232,18 @@ try {
   log('data-focus=' + focusAttr)
   await shot(page, '05-focus-on')
 
-  const railsHidden = await page.evaluate(() => {
+  const railsHidden = await page.evaluate((visSrc) => {
+    // eslint-disable-next-line no-new-func
+    const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
     const shell = document.querySelector('.shell')
-    const binder = document.querySelector('.binder, [class*="binder"]')
-    const agent = document.querySelector('.agent, [class*="agent-panel"]')
-    const vis = (el) => {
-      if (!el) return false
-      const s = getComputedStyle(el)
-      if (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) === 0) return false
-      const r = el.getBoundingClientRect()
-      return r.width > 8 && r.height > 8 && r.right > 0 && r.left < window.innerWidth
-    }
+    const binder = document.querySelector('.shell__rail--binder, .binder, [class*="binder"]')
+    const agent = document.querySelector('.shell__rail--agent, .agent, [class*="agent-panel"]')
     return {
       dataFocus: shell?.getAttribute('data-focus'),
-      binderVisible: vis(binder),
-      agentVisible: vis(agent),
+      binderVisible: !!binder && isVisibleEl(binder),
+      agentVisible: !!agent && isVisibleEl(agent),
     }
-  })
+  }, BROWSER_IS_VISIBLE_SOURCE)
   log('focus rails: ' + JSON.stringify(railsHidden))
   if (railsHidden.binderVisible || railsHidden.agentVisible) {
     results.shouldFix.push('Focus mode: binder and/or agent still visibly competing with manuscript')
@@ -280,7 +276,6 @@ try {
     ok('Continuity finished (data-continuity-state=ready)')
   } catch {
     warn('Continuity ready signal missing after 20s')
-  }
   }
   await page.waitForTimeout(300)
   await shot(page, '07-after-continuity')
@@ -318,15 +313,17 @@ try {
   // Ensure agent rail open (desk default may still hide it)
   const agentToggle = page.getByRole('button', { name: /agent panel/i })
   for (let i = 0; i < 2; i++) {
-    const open = await page.evaluate(() => {
+    const open = await page.evaluate((visSrc) => {
+      // eslint-disable-next-line no-new-func
+      const { isVisibleEl } = new Function(`${visSrc}; return { isVisibleEl }`)()
       const el =
-        document.querySelector('[aria-label="Agent panel"], .agent-panel, aside.agent, [class*="AgentPanel"]') ||
-        document.querySelector('[class*="agent"]')
+        document.querySelector('.shell__rail--agent, [aria-label="Agent panel"], .agent-panel, aside.agent, [class*="AgentPanel"]') ||
+        document.querySelector('.panel[data-companion-context]')
       if (!el) return false
+      if (!isVisibleEl(el)) return false
       const r = el.getBoundingClientRect()
-      const s = getComputedStyle(el)
-      return r.width > 80 && r.height > 80 && s.display !== 'none' && s.visibility !== 'hidden'
-    })
+      return r.width > 80 && r.height > 80
+    }, BROWSER_IS_VISIBLE_SOURCE)
     if (open) break
     if (await agentToggle.count()) {
       await agentToggle.click({ force: true }).catch(() => {})
