@@ -15,6 +15,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import { requireApiOrigin, requireUiOrigin } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -23,8 +24,8 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 const OUT = 'e2e/output/canon-empty'
 mkdirSync(OUT, { recursive: true })
 
-const API = 'http://127.0.0.1:4174'
-const UI = 'http://localhost:5173/'
+const API = requireApiOrigin()
+const UI = requireUiOrigin()
 const stamp = Date.now()
 const emptyProjectId = `canon-empty-${stamp}`
 const seededProjectId = `canon-seeded-${stamp}`
@@ -65,7 +66,7 @@ async function seedTwoSheets(request) {
 
 async function openCanon(page) {
   await page.goto(UI, { waitUntil: 'networkidle' })
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   const canon = page.getByRole('button', { name: 'Canon', exact: true })
   if (await canon.count()) await canon.click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
@@ -78,6 +79,15 @@ async function openCanon(page) {
  * Read the resting state of Canon.
  * `shown` uses checkVisibility so a collapsed disclosure cannot masquerade as visible content.
  */
+function readViewportPrimaries(page) {
+  return page.evaluate(() => {
+    const shown = (el) => Boolean(el && el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }))
+    return [...document.querySelectorAll('.ui-button--primary')]
+      .filter(shown)
+      .map((b) => b.textContent.trim())
+  })
+}
+
 function readCanon(graph) {
   return graph.evaluate((root) => {
     const shown = (el) => Boolean(el && el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }))
@@ -148,6 +158,14 @@ for (const [label, width, height] of [['1440', 1440, 900], ['390', 390, 844]]) {
     `empty@${label}: expected exactly one primary action (New sheet), got ${JSON.stringify(state.primaryLabels)}`,
   )
 
+  // One solid primary per job across the whole viewport: while the map's centre CTA is the door,
+  // the binder's New sheet must step down so the author is not offered the same job twice in bold.
+  const viewportPrimaries = await readViewportPrimaries(page)
+  check(
+    viewportPrimaries.filter((t) => t === 'New sheet').length === 1,
+    `empty@${label}: expected exactly one solid New sheet in the viewport, got ${JSON.stringify(viewportPrimaries)}`,
+  )
+
   // Propose stays reachable (it IS the acceptance model) but must not be the loud thing.
   check(state.editorPresent, `empty@${label}: propose disclosure must remain present, not be removed`)
   check(state.editorOpen === false, `empty@${label}: propose must be collapsed, open=${state.editorOpen}`)
@@ -182,6 +200,19 @@ for (const [label, width, height] of [['1440', 1440, 900], ['390', 390, 844]]) {
   await page.screenshot({ path: `${OUT}/populated-${label}.png` })
 
   check(state.emptyKind === null, `populated@${label}: expected a rendered map, got empty state ${state.emptyKind}`)
+  // Populated inverts: the map CTA is gone, so the binder owns the job and carries the solid weight.
+  // Only checked where the binder is on screen; at 390 it is a drawer and no binder button is visible.
+  const populatedPrimaries = await readViewportPrimaries(page)
+  const binderVisible = await page.evaluate(() => {
+    const el = document.querySelector('.panel')
+    return Boolean(el && el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }))
+  })
+  if (binderVisible) {
+    check(
+      populatedPrimaries.includes('New sheet'),
+      `populated@${label}: binder New sheet should be the solid primary, got ${JSON.stringify(populatedPrimaries)}`,
+    )
+  }
   check(state.editorOpen === false, `populated@${label}: propose must still default collapsed`)
   check(
     state.purposeArea > state.proposeArea,

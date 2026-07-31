@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import {
+  reloadApp,
   DEFAULT_VIEWPORT,
   LLM_UI_TIMEOUT_MS,
   armHardTimeout,
@@ -42,7 +43,7 @@ try {
 
   const emergencyDraft = `Unsaved reload recovery ${Date.now()}`
   await fillChapterAndSave(page, emergencyDraft)
-  await page.reload({ waitUntil: 'networkidle' })
+  await reloadApp(page)
   await manuscript.waitFor()
   await body.waitFor()
   if (await body.inputValue() !== emergencyDraft) throw new Error('Pending draft was lost on reload after save')

@@ -7,7 +7,8 @@ Deterministic browser smokes and gates for Storylint.
 | Command | Purpose |
 |---------|---------|
 | `npm run test:e2e` | Feature smokes (`e2e/all-smoke.mjs`) |
-| `npm run calm` | CALM_BUDGET geometry/face checker |
+| `npm run calm` | CALM_BUDGET geometry/face checker (writes **untracked** `e2e/output/calm-budget-last.md`) |
+| `npm run calm:record` | Same checker; updates **tracked** scoreboard `e2e/output/calm-budget-run.md` |
 | `npm run test:e2e:guard` | Convention guard: measurement scripts must use helpers |
 | `npm run test:green` | **ONE green:** guard + build + unit + owned smokes + calm |
 
@@ -19,7 +20,7 @@ Three rules, one root failure (see also `docs/decisions/rule-visibility-not-geom
 
 1. **Name the commit and bundle.** If a check cannot state what it examined and at what commit, its output is not evidence.
 2. **Never infer visibility from geometry.** Use `Element.checkVisibility` + closed-`<details>` ancestry (`isVisibleEl`). Self-test both directions. **NOT-MEASURED** (surface absent / dead selector / undetermined) is a first-class **failing** verdict — never PASS on absence (rules 4–6).
-3. **Assert on behaviour and state, never on a label you do not own.** Chrome copy moves (D5 Back, bible→Canon, ox copy audit). Prefer outcome markers like `[data-binder-stack="list"]` over `getByRole(..., { name: 'Back to binder' })`, which hang on vanished strings.
+3. **Assert on behaviour and state, never on a label you do not own.** Applies to **locators**, not only assertions. Chrome copy moves (D5 Back, `Back, editing {title}`, bible→Canon). Prefer stable hooks (`[data-binder-back]`, `[data-binder-stack="list"]`) over `getByRole(..., { name: 'Back' })`. Half-following the rule — wait for list after click, but still find the button by name — is how AU broke slice-f/i/k.
 
 
 UI gates must not adopt a stranger server on `:5173`. Multiple agents run Vite in multiple worktrees; measuring whatever happens to answer on that port is how we spent an hour arguing with a ghost build.
@@ -51,7 +52,7 @@ If a check cannot name the commit it measured, it fails closed (exit 2 refuse).
 
 Do not invent alternate definitions of green. `npm test` is unit-only and does **not** run browser smokes.
 
-## Seven ways verification lied (seal lesson)
+## Nine ways verification lied (seal lesson)
 
 1. **No server ownership** — calm/smokes measured stranger Vite on :5173 across worktrees.
 2. **Fixture contamination** — shared doors/default projects under concurrent agents.
@@ -60,8 +61,67 @@ Do not invent alternate definitions of green. `npm test` is unit-only and does *
 5. **Smokes unattributed** — same :5173 hole as calm.
 6. **Surface absent counted as pass** - craft chips length 0 treated as collapsed (NOT-MEASURED now fails).
 7. **Owned UI + stranger API** - UI on ephemeral ports, hard-coded :4174 reading a different database. Provenance must cover every origin a test talks to. Use `requireApiOrigin()` / `setApiBase`; never hardcode :4174.
+8. **Nondeterministic check (misdiagnosed twice)** - same commit looked PASS/FAIL across worktrees for slice-j. First diagnosis (rat): race on selectOption. Retracted. Second diagnosis (rat, from pig's seed remark): ambient gitignored `data/` so `default` was missing in bare trees. **Disproved by negative control:** server `http.ts` always synthesises `activeProjectId='default'` and lists `default` first — wiping `data/` does not remove the option. Root cause of the cross-worktree failures is **not established**. The smoke still depended on a project it did not create, which is wrong regardless. Fix: create every project via `ensureIsolatedProject`; never `selectOption('default')`. Proven 5/5 bare with honest open question on mechanism. A fix can be correct while its stated cause is wrong; shipping a confident wrong cause stops the next person looking (scar: rat, twice in one hour — correlation → mechanism without reading the code that settles it).
+9. **Smoke depended on an entity it did not create** - the verified property under lie 8. Not "gitignored data" until someone proves that mechanism. Guard symptom bans (`selectOption('default')`, `data/project.json`) are narrower than the invariant (only touch entities minted this run) — do not mistake the guard for a proof of the invariant.
+10. **Locator by unowned copy** - `closeSheetDetail` waited for list state (good) but found Back via `getByRole(..., { name: 'Back', exact: true })` (bad). AU set `aria-label="Back, editing {title}"` which overrides accessible name; slice-f/i/k hung. Rule 3 applies to **locators**. Fix: `[data-binder-back]` hook + list wait.
 
 Fail closed. A measurement that cannot name what it measured is not evidence.
+
+## Tracked path side effect (scoreboard)
+
+> **A tool must not write to a tracked path as a side effect of running.**
+
+If it does, every run dirties the tree. That blocks `git checkout`, and worse: a failed detach can leave the worktree on a stale commit while the checker reports numbers that look current (crab: nearly reported 114/115 against the wrong head).
+
+| Role | Path | When |
+|------|------|------|
+| Run artifact (default) | `e2e/output/calm-budget-last.md` (+ `.json`) | every `npm run calm` / `test:green` |
+| Scoreboard baseline | `e2e/output/calm-budget-run.md` | only `npm run calm:record` / `calm -- --record` |
+
+Default stays ignored under `e2e/output/`. The scoreboard exception in `.gitignore` is for deliberate baseline commits, not per-run output. Same split as tracked judgments vs untracked evidence dumps.
+
+Always verify the head you **measured** (`git rev-parse HEAD` after the run, provenance in the artifact), never only the head you asked for.
+
+## Pass-on-absence (rule 4, structural)
+
+> A check whose only FAIL path is `count >= N` **passes at count 0**.
+
+That is bear's B4-craft-phone defect and B3-inbox-wall@volume reproduced after the rule was known. Memory is not a mechanism.
+
+Three outcomes must stay distinguishable:
+
+| Outcome | API | Verdict |
+|---------|-----|---------|
+| Thing absent and should be | `found(0)` / `found({ absent: true })` | predicate PASS |
+| Thing present within budget | `found(value)` | predicate PASS/FAIL |
+| Could not find what we judge | `notFound(reason)` | **NOT-MEASURED** HARD |
+
+Use `judgeMeasured(id, sev, doc, surface, measurement, { pass, measured, threshold })`. It refuses a verdict on `notFound` — the next author cannot write pass-on-absence without bypassing the helper.
+
+Intentional emptiness is still **found** (we found the empty surface). `notFound` means the checker cannot name what it measured.
+
+Calm summary prints the third outcome explicitly (crab/rat):
+
+```text
+HARD fails: 0 · NOT-MEASURED: 0 · checks: 50
+```
+
+If NOT-MEASURED is nonzero, the run names those check ids. Fingerprint tokens include outcome kind (`P`/`F`/`W`/`N`/`X`) so PASS→NOT-MEASURED always moves the hash — a green that silently stopped measuring must not look identical.
+
+## Navigation waits (networkidle trap)
+
+> **`networkidle` is SAFE on FIRST navigation and DANGEROUS on RELOAD.**
+
+On initial `goto`, nothing has connected yet, so idle is reachable.
+After the app mounts and the companion opens sockets (owned stacks, fixture LLM routes, live LLM), idle is **never** reached. Playwright waits the full ~30s timeout, then continues. That is a latent flake under load — slice-j paid 63s for one `ensureDraftReady` reload before the cause was named.
+
+| Do | Don't |
+|----|-------|
+| `page.goto(UI, { waitUntil: 'domcontentloaded' })` then wait for a state landmark | `page.reload({ waitUntil: 'networkidle' })` after mount |
+| `reloadApp(page)` / `reloadApp(page, { ready: '…' })` | Treat network idle as a proxy for "app ready" |
+| Wait for the **state you need** (select option, Draft editor, binder list) | Fixed sleeps or idle timeouts |
+
+Enforced by `guard-helpers` rule `reload-networkidle`. Same disease shape as unowned :5173, rect-based visibility, and label locators: a shared-infrastructure trap wearing a single-test costume.
 
 ## Trust rule
 
@@ -149,6 +209,8 @@ Rules enforced by helpers:
 | `ensureCompanionOpen` / `ensureBinderOpen` | Rail visibility |
 | `dismissDrawers(page)` | Clear narrow-layout backdrops |
 | `armHardTimeout(label)` | Process wall clock |
+| `found(value)` / `notFound(reason)` | Measurement result — never PASS on absence |
+| `asMeasurement(raw)` / `requireFound(m, onNF)` | Wrap legacy missing flags; refuse verdict on notFound |
 | `PreconditionError` | Thrown when surface/face/project did not land |
 
 ### Companion faces (D6)

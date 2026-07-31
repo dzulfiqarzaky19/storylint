@@ -28,7 +28,8 @@ Clone → read **this page** → follow one lane. Do not browse the folder as a 
 
 | Read | Owns |
 |------|------|
-| [decisions/README.md](./decisions/README.md) | Index of judgments + measurements-over-time split |
+| [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) | **Short standing rules** from the decision corpus (read before coding on a finding) |
+| [decisions/README.md](./decisions/README.md) | Index of judgments — each line is what was **DECIDED** + supersession + still open |
 | [DOCTRINE_AUDIT.md](./DOCTRINE_AUDIT.md) | **Hazard map** — ranked contradictions (C1–C10); what almost caused a wrong build |
 | Individual files under `decisions/` | Ox adjudications, design reviews, QA records — **history even when superseded** |
 
@@ -76,11 +77,14 @@ Adversarial code check: [CODE_VERIFY.md](./CODE_VERIFY.md) (VERIFIED/STALE with 
 10. **Rails** — runtime 272/272/280/320; companion **closed by default below 1366**. Ignore any leftover 300/360/380/420 sketches. **VERIFIED**
 11. **Binder empty project** — binder mounts whenever `project.project` exists (`Shell.tsx`), not only with an active chapter. **VERIFIED**
 
+**Open defects / unexamined:** [decisions/README.md § Still open](./decisions/README.md#still-open).
+
 ## Suggested first hour
 
 1. This file  
 2. [IA_MAP.md](./IA_MAP.md) §1–§2, §8, §16  
 3. [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) §2  
 4. [CALM_BUDGET.md](./CALM_BUDGET.md) severity + B1–B3  
-5. [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) + [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md)  
-6. Your slice in [BUILD.md](./BUILD.md) · paint in [design/TOKENS.md](./design/TOKENS.md)
+5. [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) · [decisions/README.md](./decisions/README.md)
+6. [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) + [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md)  
+7. Your slice in [BUILD.md](./BUILD.md) · paint in [design/TOKENS.md](./design/TOKENS.md)

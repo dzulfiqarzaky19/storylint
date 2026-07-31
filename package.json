@@ -14,9 +14,12 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "calm": "node e2e/calm-budget.mjs",
+    "calm:record": "node e2e/calm-budget.mjs --record",
     "test:e2e:guard": "node e2e/guard-helpers.mjs",
     "test:e2e:all": "node e2e/guard-helpers.mjs && node e2e/all-smoke.mjs",
-    "test:green": "node e2e/guard-helpers.mjs && npm run build && npm test && node e2e/all-smoke.mjs && node e2e/calm-budget.mjs"
+    "test:green": "node e2e/guard-helpers.mjs && npm run build && npm test && node e2e/all-smoke.mjs && node e2e/calm-budget.mjs",
+    "land": "node scripts/land.mjs",
+    "canon:gates": "node e2e/canon-gates.mjs"
   },
   "dependencies": {
     "react": "^19.2.7",

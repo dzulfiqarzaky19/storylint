@@ -65,6 +65,21 @@ const FORBIDDEN_IN_GATES = [
     id: 'hardcoded-localhost-4174',
     re: /['"`]https?:\/\/(localhost|127\.0\.0\.1):4174\b/,
   },
+  {
+    // data/ is gitignored. Selecting ambient 'default' measures the machine, not the product.
+    id: 'ambient-default-project',
+    re: /select(?:Option|ProjectByValue|ProjectByLabel)\s*\(\s*(?:page\s*,\s*)?['"`]default['"`]/,
+  },
+  {
+    id: 'ambient-data-project-json',
+    re: /data\/project\.json|data\\project\.json/,
+  },
+  {
+    // networkidle is safe on FIRST goto, dangerous on RELOAD after mount
+    // (companion/LLM sockets never idle → 30s latent timeout). Use reloadApp.
+    id: 'reload-networkidle',
+    re: /\.reload\s*\(\s*\{[^}]*waitUntil\s*:\s*['"`]networkidle['"`]/,
+  },
 ]
 
 function listScripts(dir, out = []) {
@@ -131,6 +146,27 @@ for (const full of scripts) {
 
 console.log(`e2e helper guard: scanned ${scripts.length} scripts`)
 for (const note of notes) console.log(note)
+if (failures.length) {
+  console.error('\nFAIL: e2e helper convention violations:')
+  for (const fail of failures) console.error(` - ${fail}`)
+  console.error('\nRule: UI gates measure only through e2e/helpers.mjs.')
+  console.error('Precondition before measure. No self-contained face/mode fallbacks.')
+  console.error('See e2e/README.md.')
+  process.exit(1)
+}
+// pass-on-absence class: calm must use Measurement API; volume wall checks must notFound on empty
+const calmPath = scripts.find((f) => f.replace(/\\/g, '/').endsWith('calm-budget.mjs'))
+if (calmPath) {
+  const calmSrc = readFileSync(calmPath, 'utf8')
+  if (!/\bjudgeMeasured\b/.test(calmSrc) || !/\bnotFound\b/.test(calmSrc) || !/\bfound\b/.test(calmSrc)) {
+    failures.push('calm-budget.mjs: must use found/notFound/judgeMeasured (pass-on-absence class API)')
+  }
+  // B3 wall: failure must not be only inboxWall===false without a notFound path on zero cards
+  if (/inboxWall\s*===\s*false/.test(calmSrc) && !/cardVisible\s*===\s*0/.test(calmSrc) && !/notFound\(/.test(calmSrc)) {
+    failures.push('calm-budget.mjs: B3-inbox-wall threshold without absence/notFound path (pass-on-absence)')
+  }
+}
+
 if (failures.length) {
   console.error('\nFAIL: e2e helper convention violations:')
   for (const fail of failures) console.error(` - ${fail}`)

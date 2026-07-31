@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+// AU screen-reader: one busy dialect + Inbox live (mirror Check Continuity). Method = DOM/ARIA sampling.
 import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
@@ -10,6 +11,7 @@ import type { ReviewKind } from '../../review/types.ts'
 import { ReviewCard } from '../../features/agent/ReviewCard.tsx'
 import type { ProposalEdits } from '../../features/project/api.ts'
 import { Badge, Button, EmptyState, IconButton, Textarea } from '../ui'
+import type { AgentBusyOp } from '../../features/agent/useAgent.ts'
 import type { TranscriptEntry } from './workspace'
 import './shell.css'
 import './AgentPanel.css'
@@ -72,6 +74,8 @@ export type AgentPanelProps = {
   beginMutation: () => number | null
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   chapterTitle: string
+  /** Open chapter body — gates Continuity primary until prose exists (seeded-default P1). */
+  chapterBody?: string
   companionContext?: CompanionContext
   contextLabel?: string
   proposals: Proposal[]
@@ -84,6 +88,11 @@ export type AgentPanelProps = {
   onEditProposal: (id: string, edits: ProposalEdits) => Promise<void>
   onRejectProposal: (id: string) => Promise<void>
   sending: boolean
+  /** Which control started the single in-flight agent job. Null when idle. */
+  busyOp?: AgentBusyOp | null
+  /** Research query in flight (reported by ResearchPanel). */
+  researchRunning?: boolean
+  onResearchRunningChange?: (running: boolean) => void
   llmMode: 'fixture' | 'live' | null
   selection: { start: number; end: number; text: string }
   onGenerateCowrite: (skill: CowriteSkill, instruction: string) => Promise<void>
@@ -91,17 +100,17 @@ export type AgentPanelProps = {
   onDismissCard: (id: string) => void
   onRunReview: (kind: ReviewKind) => Promise<void>
   onAddCraftTags: (tags: CraftTag[]) => void
-  onSend: (text: string) => void
+  onSend: (text: string, op?: AgentBusyOp) => void
   onSparkPreset?: (kind: 'place' | 'character-spark' | 'beat' | 'what-if') => void
   onAddChapter?: () => void
   onClose?: () => void
 }
 
 export function AgentPanel({
-  transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
+  transcript, project, onProject, beginMutation, trackMutation, chapterTitle, chapterBody = '',
   companionContext = 'writing', contextLabel,
   proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
-  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
+  onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, researchRunning = false, onResearchRunningChange, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
   const [draft, setDraft] = useState('')
@@ -110,12 +119,30 @@ export function AgentPanel({
   const moreRef = useRef<HTMLDivElement | null>(null)
   // Session memory only: last face per ecosystem context. Reload still defaults to Chat.
   const lastFaceByContext = useRef<Partial<Record<CompanionContext, CompanionFace>>>({})
+  /** AU-1: announce only on pending-count *change*, not first mount (load noise). */
+  const prevPendingCountRef = useRef<number | null>(null)
+  const [inboxLiveText, setInboxLiveText] = useState('')
   const allowed = FACES[companionContext]
   const primaries = PRIMARY_FACES[companionContext]
   const overflow = allowed.filter((candidate) => candidate !== 'inbox' && !primaries.includes(candidate))
   const applyCards = transcript.filter((entry) => entry.role === 'apply')
   const pendingCount = proposals.length + applyCards.length
   const hasChapter = (project?.chapters?.length ?? 0) > 0
+  const hasProse = chapterBody.trim().length > 0
+  const continuityRunnable = hasChapter && hasProse
+
+  useEffect(() => {
+    const prev = prevPendingCountRef.current
+    prevPendingCountRef.current = pendingCount
+    if (prev === null || prev === pendingCount) return
+    if (pendingCount === 0) {
+      setInboxLiveText(prev > 0 ? 'Inbox clear' : '')
+      return
+    }
+    setInboxLiveText(
+      pendingCount === 1 ? 'Inbox: 1 pending item' : `Inbox: ${pendingCount} pending items`,
+    )
+  }, [pendingCount])
 
   useEffect(() => {
     const remembered = lastFaceByContext.current[companionContext]
@@ -171,8 +198,20 @@ export function AgentPanel({
     return bits.join(' · ')
   }, [continuityCounts, continuityError, continuityMode, continuityRunning, llmMode])
 
-  // One assistant, one job: agent lane and Continuity share a single busy gate.
-  const assistantBusy = sending || continuityRunning
+  // One assistant, one job: agent, Continuity, and Research QUERY share one busy gate.
+  // Author decisions (Inbox Accept/Apply/Dismiss, Research Pin/Propose) use local busy only (ox B).
+  const assistantBusy = sending || continuityRunning || researchRunning
+  // AU-2/AU-6: agent-lane busy live mirrors Check Continuity. Continuity keeps face-local live;
+  // suppress the shared line while Continuity runs so two polite regions do not queue the same fact.
+  // Derive from busyOp so announce names only the real in-flight agent job (not Continuity).
+  const agentBusyLive = busyOp && !continuityRunning ? 'Working…' : ''
+  /** Label + aria-busy for THIS control only. disabled stays assistantBusy. */
+  function opActive(op: AgentBusyOp) {
+    return busyOp === op
+  }
+  function opLabel(op: AgentBusyOp, idle: string) {
+    return opActive(op) ? 'Working…' : idle
+  }
 
   const continuityState = continuityRunning
     ? 'running'
@@ -182,10 +221,10 @@ export function AgentPanel({
         ? 'ready'
         : 'idle'
 
-  function send() {
+  function send(op: AgentBusyOp = 'send') {
     const text = draft.trim()
     if (!text || assistantBusy) return
-    onSend(text)
+    onSend(text, op)
     setDraft('')
   }
 
@@ -214,26 +253,56 @@ export function AgentPanel({
 
   function renderProposals(list: Proposal[]) {
     const packIds = [...new Set(list.flatMap((proposal) => proposal.packId ? [proposal.packId] : []))]
-    const alone = list.filter((proposal) => !proposal.packId)
-    return (
-      <section className="proposal-list" aria-label="Pending proposals">
-        {packIds.map((packId) => (
+    const packs = packIds.map((packId) => ({
+      kind: 'pack' as const,
+      id: packId,
+      proposals: list.filter((proposal) => proposal.packId === packId),
+    }))
+    const alone = list
+      .filter((proposal) => !proposal.packId)
+      .map((proposal) => ({ kind: 'alone' as const, id: proposal.id, proposal }))
+    // AY/B3: calm first fold (~4 cards). Overflow stays in closed <details>
+    // so checkVisibility (and the eye) do not count a wall on first paint.
+    const items = [...packs, ...alone]
+    const foldAt = 4
+    const head = items.slice(0, foldAt)
+    const tail = items.slice(foldAt)
+
+    function renderItem(item: (typeof items)[number]) {
+      if (item.kind === 'pack') {
+        return (
           <SheetPackCard
-            key={packId}
-            proposals={list.filter((proposal) => proposal.packId === packId)}
+            key={item.id}
+            proposals={item.proposals}
             onAccept={onAcceptProposal}
             onEdit={onEditProposal}
             onReject={onRejectProposal}
           />
-        ))}
-        {alone.map((proposal) => (
-          <ProposalCard
-            key={proposal.id}
-            proposal={proposal}
-            onAccept={onAcceptProposal}
-            onReject={onRejectProposal}
-          />
-        ))}
+        )
+      }
+      return (
+        <ProposalCard
+          key={item.id}
+          proposal={item.proposal}
+          onAccept={onAcceptProposal}
+          onReject={onRejectProposal}
+        />
+      )
+    }
+
+    return (
+      <section className="proposal-list" aria-label="Pending proposals">
+        {head.map(renderItem)}
+        {tail.length > 0 ? (
+          <details className="companion__inbox-more">
+            <summary className="companion__inbox-more-summary">
+              {tail.length === 1 ? '1 more pending' : `${tail.length} more pending`}
+            </summary>
+            <div className="companion__inbox-more-list">
+              {tail.map(renderItem)}
+            </div>
+          </details>
+        ) : null}
       </section>
     )
   }
@@ -334,7 +403,19 @@ export function AgentPanel({
   }
 
   return (
-    <div className="panel" data-companion-context={companionContext} data-companion-face={face}>
+    <div
+      className="panel"
+      data-companion-context={companionContext}
+      data-companion-face={face}
+      aria-busy={assistantBusy || undefined}
+    >
+      {/* AU-1 Inbox + AU-2 agent busy: one shared polite channel each. Check Continuity keeps its own live. */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true" data-au-live="inbox">
+        {inboxLiveText}
+      </div>
+      <div className="sr-only" aria-live="polite" aria-atomic="true" data-au-live="assistant-busy">
+        {agentBusyLive}
+      </div>
       <div className="panel__header">
         <h2 className="panel__title">Companion</h2>
         {onClose ? <IconButton label="Close companion" onClick={onClose}>✕</IconButton> : null}
@@ -414,14 +495,24 @@ export function AgentPanel({
       </div>
 
       {face === 'research' ? (
-        <ResearchPanel project={project} onProject={onProject} beginMutation={beginMutation} trackMutation={trackMutation} />
+        <ResearchPanel
+          project={project}
+          onProject={onProject}
+          beginMutation={beginMutation}
+          trackMutation={trackMutation}
+          assistantBusy={sending || continuityRunning}
+          onRunningChange={onResearchRunningChange}
+        />
       ) : face === 'inbox' ? (
-        <div className="agent__transcript" aria-label="Companion inbox">
-          {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+        <div className="agent__transcript companion__inbox" aria-label="Companion inbox">
+          {statusLine ? <p className="continuity-privacy" aria-live="polite">{statusLine}</p> : null}
           {pendingCount === 0 ? (
             <EmptyState title="Inbox clear" hint="Things arrive here from Continuity on Check, Send proposal in Canon, and Apply cards from co-write on Write. Accept/Edit/Reject stay gated until something is pending." />
           ) : (
             <>
+              <p className="companion__inbox-summary" data-inbox-pending={pendingCount}>
+                {pendingCount === 1 ? '1 pending' : `${pendingCount} pending`}
+              </p>
               {proposals.length > 0 ? renderProposals(proposals) : null}
               {applyCards.map((entry) =>
                 entry.role === 'apply'
@@ -461,20 +552,28 @@ export function AgentPanel({
                 placeholder="Optional instruction for co-write…"
                 aria-label="Co-write instruction"
                 rows={2}
-                disabled={assistantBusy}
               />
               <div className="agent__cowrite-actions" aria-label="Co-write skills">
-                <Button disabled={assistantBusy} onClick={() => generate('continue')}>
-                  {assistantBusy ? 'Working…' : 'Continue'}
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('continue') || undefined}
+                  onClick={() => generate('continue')}
+                >
+                  {opLabel('continue', 'Continue')}
                 </Button>
                 <Button
                   disabled={assistantBusy || selection.start === selection.end}
+                  aria-busy={opActive('rewrite') || undefined}
                   onClick={() => generate('rewrite')}
                 >
-                  {assistantBusy ? 'Working…' : 'Rewrite'}
+                  {opLabel('rewrite', 'Rewrite')}
                 </Button>
-                <Button disabled={assistantBusy} onClick={() => generate('brainstorm')}>
-                  {assistantBusy ? 'Working…' : 'Brainstorm'}
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('brainstorm') || undefined}
+                  onClick={() => generate('brainstorm')}
+                >
+                  {opLabel('brainstorm', 'Brainstorm')}
                 </Button>
               </div>
             </div>
@@ -517,8 +616,10 @@ export function AgentPanel({
                 </p>
               ) : (
                 <EmptyState
-                  title="Run Continuity on this chapter"
-                  hint="Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon."
+                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before Continuity'}
+                  hint={continuityRunnable
+                    ? 'Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon.'
+                    : 'Continuity checks this chapter against accepted Canon. It needs draft prose first — type in the paper, then run Continuity here.'}
                 />
               )}
               {renderTranscript({ apply: false, status: false })}
@@ -526,16 +627,30 @@ export function AgentPanel({
             <div className="panel__footer">
               <div className="agent__cowrite-actions" aria-label="Check tools">
                 <Button
-                  variant="primary"
-                  disabled={assistantBusy}
+                  variant={continuityRunnable || continuityRunning ? 'primary' : 'ghost'}
+                  disabled={assistantBusy || !continuityRunnable}
+                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before checking Continuity'}
                   data-continuity-state={continuityState}
-                  aria-busy={continuityRunning}
+                  data-continuity-runnable={continuityRunnable ? 'true' : 'false'}
+                  aria-busy={continuityRunning || undefined}
                   onClick={() => void onRunContinuity().catch(() => undefined)}
                 >
                   {continuityRunning ? 'Working…' : 'Run Continuity'}
                 </Button>
-                <Button disabled={assistantBusy} onClick={() => void onRunReview('review').catch(() => undefined)}>{sending ? 'Working…' : 'Review'}</Button>
-                <Button disabled={assistantBusy} onClick={() => void onRunReview('craft').catch(() => undefined)}>{sending ? 'Working…' : 'Craft'}</Button>
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('review') || undefined}
+                  onClick={() => void onRunReview('review').catch(() => undefined)}
+                >
+                  {opLabel('review', 'Review')}
+                </Button>
+                <Button
+                  disabled={assistantBusy}
+                  aria-busy={opActive('craft') || undefined}
+                  onClick={() => void onRunReview('craft').catch(() => undefined)}
+                >
+                  {opLabel('craft', 'Craft')}
+                </Button>
               </div>
             </div>
           </>
@@ -546,10 +661,34 @@ export function AgentPanel({
           <div className="panel__footer">
             <p className="continuity-privacy">One tap seeds a brainstorm prompt. Cards land on the Lab bench only.</p>
             <div className="agent__cowrite-actions" aria-label="Spark presets">
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>{assistantBusy ? 'Working…' : 'Place'}</Button>
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>{assistantBusy ? 'Working…' : 'Character'}</Button>
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>{assistantBusy ? 'Working…' : 'Beat'}</Button>
-              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>{assistantBusy ? 'Working…' : 'What-if'}</Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('place') || undefined}
+                onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board', 'place')}
+              >
+                {opLabel('place', 'Place')}
+              </Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('character-spark') || undefined}
+                onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench', 'character-spark')}
+              >
+                {opLabel('character-spark', 'Character')}
+              </Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('beat') || undefined}
+                onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab', 'beat')}
+              >
+                {opLabel('beat', 'Beat')}
+              </Button>
+              <Button
+                disabled={assistantBusy}
+                aria-busy={opActive('what-if') || undefined}
+                onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab', 'what-if')}
+              >
+                {opLabel('what-if', 'What-if')}
+              </Button>
             </div>
           </div>
         </>
@@ -572,12 +711,13 @@ export function AgentPanel({
               <Button
                 variant="primary"
                 disabled={assistantBusy}
+                aria-busy={opActive('propose') || undefined}
                 onClick={() => {
-                  if (draft.trim()) send()
-                  else onSend(`Draft a character sheet pack for ${chapterTitle}`)
+                  if (draft.trim()) send('propose')
+                  else onSend(`Draft a character sheet pack for ${chapterTitle}`, 'propose')
                 }}
               >
-                {assistantBusy ? 'Working…' : 'Propose'}
+                {opLabel('propose', 'Propose')}
               </Button>
             </div>
           </div>
@@ -588,7 +728,7 @@ export function AgentPanel({
             title="Inspect accepted links"
             hint="Select a node in Graph to open its sheet. Pending edges never render until Accept."
           />
-          {statusLine ? <p className="continuity-privacy">{statusLine}</p> : null}
+          {statusLine ? <p className="continuity-privacy" aria-live="polite">{statusLine}</p> : null}
         </div>
       ) : !hasChapter ? (
         <div className="agent__transcript" aria-label="Chat rest">
@@ -635,8 +775,13 @@ export function AgentPanel({
               rows={3}
             />
             <div className="agent__composer-actions">
-              <Button variant="primary" onClick={send} disabled={assistantBusy || draft.trim().length === 0}>
-                {assistantBusy ? 'Working…' : 'Send'}
+              <Button
+                variant="primary"
+                onClick={() => send('send')}
+                disabled={assistantBusy || draft.trim().length === 0}
+                aria-busy={opActive('send') || undefined}
+              >
+                {opLabel('send', 'Send')}
               </Button>
             </div>
           </div>
