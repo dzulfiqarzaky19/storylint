@@ -19,7 +19,7 @@ Three rules, one root failure (see also `docs/decisions/rule-visibility-not-geom
 
 1. **Name the commit and bundle.** If a check cannot state what it examined and at what commit, its output is not evidence.
 2. **Never infer visibility from geometry.** Use `Element.checkVisibility` + closed-`<details>` ancestry (`isVisibleEl`). Self-test both directions. **NOT-MEASURED** (surface absent / dead selector / undetermined) is a first-class **failing** verdict — never PASS on absence (rules 4–6).
-3. **Assert on behaviour and state, never on a label you do not own.** Chrome copy moves (D5 Back, bible→Canon, ox copy audit). Prefer outcome markers like `[data-binder-stack="list"]` over `getByRole(..., { name: 'Back to binder' })`, which hang on vanished strings.
+3. **Assert on behaviour and state, never on a label you do not own.** Applies to **locators**, not only assertions. Chrome copy moves (D5 Back, `Back, editing {title}`, bible→Canon). Prefer stable hooks (`[data-binder-back]`, `[data-binder-stack="list"]`) over `getByRole(..., { name: 'Back' })`. Half-following the rule — wait for list after click, but still find the button by name — is how AU broke slice-f/i/k.
 
 
 UI gates must not adopt a stranger server on `:5173`. Multiple agents run Vite in multiple worktrees; measuring whatever happens to answer on that port is how we spent an hour arguing with a ghost build.
@@ -51,7 +51,7 @@ If a check cannot name the commit it measured, it fails closed (exit 2 refuse).
 
 Do not invent alternate definitions of green. `npm test` is unit-only and does **not** run browser smokes.
 
-## Seven ways verification lied (seal lesson)
+## Nine ways verification lied (seal lesson)
 
 1. **No server ownership** — calm/smokes measured stranger Vite on :5173 across worktrees.
 2. **Fixture contamination** — shared doors/default projects under concurrent agents.
@@ -60,6 +60,9 @@ Do not invent alternate definitions of green. `npm test` is unit-only and does *
 5. **Smokes unattributed** — same :5173 hole as calm.
 6. **Surface absent counted as pass** - craft chips length 0 treated as collapsed (NOT-MEASURED now fails).
 7. **Owned UI + stranger API** - UI on ephemeral ports, hard-coded :4174 reading a different database. Provenance must cover every origin a test talks to. Use `requireApiOrigin()` / `setApiBase`; never hardcode :4174.
+8. **Nondeterministic check (misdiagnosed twice)** - same commit looked PASS/FAIL across worktrees for slice-j. First diagnosis (rat): race on selectOption. Retracted. Second diagnosis (rat, from pig's seed remark): ambient gitignored `data/` so `default` was missing in bare trees. **Disproved by negative control:** server `http.ts` always synthesises `activeProjectId='default'` and lists `default` first — wiping `data/` does not remove the option. Root cause of the cross-worktree failures is **not established**. The smoke still depended on a project it did not create, which is wrong regardless. Fix: create every project via `ensureIsolatedProject`; never `selectOption('default')`. Proven 5/5 bare with honest open question on mechanism. A fix can be correct while its stated cause is wrong; shipping a confident wrong cause stops the next person looking (scar: rat, twice in one hour — correlation → mechanism without reading the code that settles it).
+9. **Smoke depended on an entity it did not create** - the verified property under lie 8. Not "gitignored data" until someone proves that mechanism. Guard symptom bans (`selectOption('default')`, `data/project.json`) are narrower than the invariant (only touch entities minted this run) — do not mistake the guard for a proof of the invariant.
+10. **Locator by unowned copy** - `closeSheetDetail` waited for list state (good) but found Back via `getByRole(..., { name: 'Back', exact: true })` (bad). AU set `aria-label="Back, editing {title}"` which overrides accessible name; slice-f/i/k hung. Rule 3 applies to **locators**. Fix: `[data-binder-back]` hook + list wait.
 
 Fail closed. A measurement that cannot name what it measured is not evidence.
 

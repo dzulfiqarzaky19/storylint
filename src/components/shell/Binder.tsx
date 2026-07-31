@@ -438,6 +438,7 @@ export function Binder({
             <div className="binder__detail-chrome">
               <Button
                 ref={backBtnRef}
+                data-binder-back=""
                 aria-label={`Back, editing ${sheetTitle}`}
                 onClick={requestCloseSheetDetail}
               >

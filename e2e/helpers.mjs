@@ -246,14 +246,15 @@ export async function installFixtureLlmRoutes(page) {
 /** Companion root panel. Prefer heading filter (stable); data-attr is secondary. */
 /**
  * Leave an open Canon sheet and return to the binder list.
- * The affordance moved: SheetEditor is rendered with showBack={false}, and the control now lives
- * in the binder detail chrome as "Back". Assert the behaviour (list is showing again) rather than
- * a button label, so the next chrome change fails loudly instead of hanging on a missing name.
+ * SheetEditor uses showBack={false}; control lives in binder detail chrome.
+ * Locate via [data-binder-back] (stable hook). NEVER by accessible name —
+ * aria-label is "Back, editing {title}" for screen readers (product copy we do not own).
+ * Rule 3 applies to LOCATORS, not only assertions. After click, wait for list stack.
  */
 export async function closeSheetDetail(page) {
-  const detail = page.locator('[data-binder-detail="sheet"]')
-  if (await detail.count()) {
-    await detail.getByRole('button', { name: 'Back', exact: true }).click()
+  const back = page.locator('[data-binder-detail="sheet"] [data-binder-back], [data-binder-back]')
+  if (await back.count()) {
+    await back.first().click()
   } else {
     await page.keyboard.press('Escape')
   }
@@ -678,6 +679,64 @@ export function requireUiOrigin() {
     )
   }
   return ui.endsWith('/') ? ui : `${ui}/`
+}
+
+/**
+ * Select an Active project option only after THAT option exists.
+ * Waiting on the <select> alone races the project list populate and flakes
+ * with "did not find some options" while the control is already mounted.
+ * Assert the state you need (the option), not the container.
+ */
+export async function selectProjectByLabel(page, label, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  if (!label) throw new PreconditionError('precondition not met: selectProjectByLabel needs a label')
+  const select = page.getByLabel('Active project')
+  await select.waitFor({ state: 'attached', timeout })
+  await page.waitForFunction(
+    (expected) => {
+      const el = document.querySelector('select[aria-label="Active project"]')
+      if (!el) return false
+      return [...el.options].some((o) => (o.textContent || '').trim() === expected || (o.textContent || '').includes(expected))
+    },
+    label,
+    { timeout },
+  )
+  const value = await select.locator('option').filter({ hasText: label }).first().getAttribute('value')
+  if (!value) {
+    throw new PreconditionError(`precondition not met: Active project option "${label}" has no value`)
+  }
+  await select.selectOption(value)
+  await page.waitForFunction(
+    (expected) => {
+      const el = document.querySelector('select[aria-label="Active project"]')
+      const text = el?.selectedOptions?.[0]?.text || ''
+      return text === expected || text.includes(expected)
+    },
+    label,
+    { timeout },
+  )
+  return value
+}
+
+/** Select Active project by option value after that option is attached. */
+export async function selectProjectByValue(page, value, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  if (!value) throw new PreconditionError('precondition not met: selectProjectByValue needs a value')
+  const select = page.getByLabel('Active project')
+  await select.waitFor({ state: 'attached', timeout })
+  await page.waitForFunction(
+    (v) => {
+      const el = document.querySelector('select[aria-label="Active project"]')
+      return !!el && [...el.options].some((o) => o.value === v)
+    },
+    value,
+    { timeout },
+  )
+  await select.selectOption(value)
+  await page.waitForFunction(
+    (v) => document.querySelector('select[aria-label="Active project"]')?.value === v,
+    value,
+    { timeout },
+  )
+  return value
 }
 
 /** Binder root panel. Prefer heading filter (stable). */
