@@ -19,6 +19,18 @@
 This map is the **detailed locked architecture**. Journeys (J1–J3) are the paths through it.  
 UI work after this = align chrome to the map, not invent new kingdoms.
 
+## Build status (refresh)
+
+| Step | Item | Status | Evidence |
+|------|------|--------|----------|
+| 1 | Naming + entry (Draft, Promote split, two doors, binder groups) | **done** | `67592a1` `b68703e` `6a2a74b` |
+| 2 | Calm top bar + Continuity Draft-only | **done** | `55b9033` `6a2a74b` |
+| 3 | Canon entry + landing memory | **done** | `5bfe65e` |
+| 4 | Surface density polish | **open** (optional) | user call |
+
+Final walkthrough QA: `e2e/output/ia-final-qa.md` — **PASS 14/14** @ `6a2a74b`.
+
+
 ---
 
 ## 1. Three ecosystems (only)
