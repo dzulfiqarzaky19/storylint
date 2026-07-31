@@ -2,13 +2,19 @@
 
 | Doc | |
 |-----|--|
-| [TOKENS.md](./TOKENS.md) | **Source of truth** — Kobo paper + warm chrome |
-| [LAB.md](./LAB.md) | **Slice L** — pre-canon Lab bench (shipped; create/experiment) |
-| [COMPANION.md](./COMPANION.md) | Mode-shaped right rail — Writing / Lab / Details faces |
+| [TOKENS.md](./TOKENS.md) | **Paint source of truth** — Kobo paper + warm chrome |
+| [CANON-VOCABULARY.md](./CANON-VOCABULARY.md) | **Words** — user-facing lexicon (kinds, places, @canon) |
+| [LAB.md](./LAB.md) | **Slice L** — pre-canon Lab bench (shipped) |
+| [COMPANION.md](./COMPANION.md) | Mode-shaped right rail — faces by context |
 | [REFERENCES.md](./REFERENCES.md) | Patterns/URLs (behavior only) |
 | [STITCH.md](./STITCH.md) | Stitch prompts — **outdated AI-blue**; do not ship skin from it |
-| [../03-ux.md](../03-ux.md) | IA, reading profiles, snap layout |
+| [../IA_MAP.md](../IA_MAP.md) | **Structure lock** (ecosystems, depth, gates) |
+| [../03-ux.md](../03-ux.md) | Journeys + reading profiles (defers structure to IA_MAP) |
+| [../CALM_BUDGET.md](../CALM_BUDGET.md) | Density HARD/WARN numbers |
 | [../E2E.md](../E2E.md) | Browser verify |
+| [../decisions/](../decisions/README.md) | Design reviews / adjudications (history) |
+
+Corpus entry: [../README.md](../README.md).
 
 ## Doctrine (agents)
 
@@ -19,7 +25,7 @@
 5. Rails and paper width scale via size/measure/gutter tokens — uniformity over one-off CSS.  
 6. Steal **patterns** from REFERENCES; skin always ours.  
 7. Optional **local** skill (gitignored `.claude/…`) = structure/a11y **checklist only** — never copy its hex/OLED palettes over TOKENS. Never commit harness dirs.  
-8. Product UX rules live in **[../03-ux.md](../03-ux.md)** + this folder — no separate review markdown files.
+8. Product **structure** lives in **[../IA_MAP.md](../IA_MAP.md)**; journeys/skin narrative in **[../03-ux.md](../03-ux.md)** + this folder. Durable design **reviews** live under [../decisions/](../decisions/README.md) (history — not a second lock).
 
 ## Folders
 

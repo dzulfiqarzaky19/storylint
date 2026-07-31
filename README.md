@@ -73,15 +73,23 @@ UI browser smoke: [docs/E2E.md](docs/E2E.md) (Playwright + system **msedge** on 
 
 ## Docs
 
+**Start here:** [docs/README.md](docs/README.md) — map of locks, process, decisions, and common wrong turns.
+
 | Doc | |
 |-----|--|
-| [docs/PRD.md](docs/PRD.md) | Product spine |
+| [docs/README.md](docs/README.md) | **Corpus map** (entry point) |
+| [docs/IA_MAP.md](docs/IA_MAP.md) | **Product structure lock** — ecosystems, depth, shell, gates |
+| [docs/design/CANON-VOCABULARY.md](docs/design/CANON-VOCABULARY.md) | **Words lock** — user-facing labels |
+| [docs/CALM_BUDGET.md](docs/CALM_BUDGET.md) | **Density bar** — HARD/WARN numbers |
+| [docs/PRD.md](docs/PRD.md) | Product spine / why |
 | [docs/BUILD.md](docs/BUILD.md) | Slices + next work |
-| [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier + **AI harness local-only** |
-| [docs/AGENT_PROTOCOL.md](docs/AGENT_PROTOCOL.md) | Swarm reporting cadence, handoffs, coordinator duties |
 | [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) | Branch / merge / push; origin hash is truth |
-| [docs/03-ux.md](docs/03-ux.md) | IA + reading profiles + layout |
-| [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (source of truth) |
+| [docs/AGENT_PROTOCOL.md](docs/AGENT_PROTOCOL.md) | Swarm reporting cadence, handoffs |
+| [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier + **AI harness local-only** |
+| [docs/decisions/](docs/decisions/README.md) | Decision history (adjudications, reviews) |
+| [docs/DOCTRINE_AUDIT.md](docs/DOCTRINE_AUDIT.md) | Contradiction / wrong-build hazard map |
+| [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (paint source of truth) |
+| [docs/03-ux.md](docs/03-ux.md) | Journeys + reading profiles (structure → IA_MAP) |
 | [docs/04-agents.md](docs/04-agents.md) | In-app agent panel (product) |
 | [docs/E2E.md](docs/E2E.md) | UI e2e |
 
