@@ -9,6 +9,7 @@ import {
   labBodies,
   pinLabCard,
   promoteLabCard,
+  restoreLabCard,
 } from './lab.ts'
 import type { Project } from './types.ts'
 
@@ -56,6 +57,33 @@ test('create edit archive and pin lab cards', () => {
   project = archiveLabCard(project, id)
   assert.equal(project.lab.cards[0].status, 'archived')
   assert.equal(project.lab.cards.length, 1)
+})
+
+test('archive is a state with Restore back to active — no hard delete', () => {
+  let project = createLabCard(seed(), {
+    kind: 'character-spark',
+    title: 'Riven',
+    body: 'A rival with a glass knife',
+  })
+  const id = project.lab.cards[0].id
+  project = archiveLabCard(project, id)
+  assert.equal(project.lab.cards[0].status, 'archived')
+  assert.equal(project.lab.cards.length, 1)
+
+  project = restoreLabCard(project, id)
+  assert.equal(project.lab.cards[0].status, 'active')
+  assert.equal(project.lab.cards[0].title, 'Riven')
+  assert.equal(project.lab.cards.length, 1)
+
+  // Restore is Lab-only: no chapters/sheets/proposals invented.
+  assert.equal(project.chapters.length, 1)
+  assert.equal(project.sheets.length, 0)
+  assert.equal(project.proposals.length, 0)
+})
+
+test('restore rejects non-archived cards', () => {
+  const project = createLabCard(seed(), { kind: 'lore-spark', title: 'Keep' })
+  assert.throws(() => restoreLabCard(project, project.lab.cards[0].id), /Only archived/i)
 })
 
 test('promote character-spark creates pending proposals only — no sheet facts', () => {

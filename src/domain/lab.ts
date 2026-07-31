@@ -143,6 +143,27 @@ export function archiveLabCard(project: Project, cardId: string): Project {
  * Pin highlights a card. Soft cap of LAB_PIN_SOFT_CAP does not error —
  * pinning beyond the cap still works; UI may warn.
  */
+/** Restore returns an archived card to the live bench (active). v1: no hard delete. */
+export function restoreLabCard(project: Project, cardId: string): Project {
+  const base = ensureLab(project)
+  const lab = requireLab(base)
+  const card = cardOrThrow(lab, cardId)
+  if (card.status !== 'archived') {
+    throw new Error(`Only archived lab cards can be restored (got ${card.status})`)
+  }
+  return {
+    ...base,
+    lab: {
+      ...lab,
+      cards: lab.cards.map((candidate) =>
+        candidate.id === cardId
+          ? { ...candidate, status: 'active', updatedAt: nowIso() }
+          : candidate,
+      ),
+    },
+  }
+}
+
 export function pinLabCard(project: Project, cardId: string, pinned = true): Project {
   const base = ensureLab(project)
   const lab = requireLab(base)

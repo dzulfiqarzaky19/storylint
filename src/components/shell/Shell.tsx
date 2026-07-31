@@ -473,6 +473,7 @@ export function Shell() {
             onCreateCard={project.createLabCard}
             onPatchCard={project.patchLabCard}
             onArchiveCard={project.archiveLabCard}
+            onRestoreCard={project.restoreLabCard}
             onPinCard={project.pinLabCard}
             onPromoteCard={async (cardId, input) => {
               const result = await project.promoteLabCard(cardId, input)
