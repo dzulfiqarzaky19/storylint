@@ -126,7 +126,7 @@ Measure **resting** face row (More **closed**).
 | B3-default-face | writing default **= Chat** | **HARD** | Not Check-as-home. | never |
 | B3-rest | Check body: non-footer orientation **or** last-run region (structure) | **HARD** | Empty middle + footer-only is loud (R1 P4). | R1 P4 empty rest |
 | B3-chat-proposals-wall | Chat has **no** proposal-card dump (`chatProposalsWall = false`) | **HARD** | Chat is transcript; pending lives on Inbox. | never |
-| B3-inbox-wall | Inbox at **30 pending** is not a wall: internal scrollport + calm fold (not ≥12 cards packed / panel-grows) | **HARD** | Named surface must be measured at volume (AV). Badge OK. | AV 30-card wall |
+| B3-inbox-wall | Inbox at **30 pending** not a wall (scrollport + calm fold). **NOT-MEASURED** if pending≥8 and cardVisible=0 (absence ≠ calm). | **HARD** | AV volume surface. Zero cards at volume = broken measure, never PASS. | pass-on-absence closed |
 | B3-doors-rest | Write/Check/Inbox one click from default Chat (Research may stay under More) | **WARN** | Resting discoverability (Task W). | never |
 
 ---

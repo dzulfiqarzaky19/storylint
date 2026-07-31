@@ -733,7 +733,7 @@ async function measureInboxWall(page) {
     const panel = document.querySelector('.panel[data-companion-context], [data-companion-face]')
     const face = panel?.getAttribute('data-companion-face') || null
     const cards = [...document.querySelectorAll(
-      '.proposal-card, article.proposal, [data-proposal-id], [aria-label="Pending proposals"] article, [aria-label="Pending proposals"] li',
+      '.proposal-card, article.proposal, [data-proposal-id], [aria-label="Pending proposals"] article, [aria-label="Pending proposals"] li, .companion__inbox-list article, .companion__inbox-list li, .companion__inbox-more article, .companion__inbox-more li, [data-inbox-card]',
     )]
     const visibleCards = cards.filter((c) => {
       try {
@@ -861,6 +861,16 @@ async function runInboxWallFixture(browser) {
       )
       return
     }
+    // Bear rule 4: pending volume with zero visible cards is NOT calm — it is
+    // an unmeasured face (broken selector / fold rename / mount miss).
+    if (proof.pending >= 8 && measured.cardVisible === 0) {
+      notMeasuredFail(
+        'B3-inbox-wall@volume',
+        'companion Inbox@1440 volume=30',
+        'pending=' + proof.pending + ' cardVisible=0 cardDom=' + measured.cardDom + ' badge=' + measured.badgeText + ' (seeded proposals not seen)',
+      )
+      return
+    }
     // Honest red while product packs all cards / grows the panel.
     // Pass criteria (ox AV): internal scrollport + not a dense first-screen wall.
     add(
@@ -876,7 +886,7 @@ async function runInboxWallFixture(browser) {
         + ' clientH=' + measured.clientH
         + ' internalScroll=' + measured.internalScroll
         + ' badge=' + measured.badgeText,
-      'inboxWall=false at volume 30',
+      'inboxWall=false at volume 30; cardVisible>0 when pending>=8',
     )
   } finally {
     await page.close()
