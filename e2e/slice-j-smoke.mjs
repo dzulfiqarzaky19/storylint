@@ -18,6 +18,9 @@ try {
   await page.getByRole('menuitem', { name: 'New project' }).click()
   await page.getByLabel('New project title').fill(title)
   await page.getByRole('button', { name: 'Create', exact: true }).click()
+  // Empty create lands two doors (IA_MAP §10); open Draft before editing chapter text.
+  await page.getByLabel('Draft').getByRole('button', { name: 'Write', exact: true }).click()
+  await page.getByLabel('Chapter text').waitFor({ timeout: 5000 })
   await page.waitForFunction(
     (expected) => document.querySelector('select[aria-label="Active project"]')?.selectedOptions[0]?.text === expected,
     title,

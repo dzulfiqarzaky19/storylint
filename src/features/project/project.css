@@ -153,8 +153,19 @@
 }
 
 @media (max-width: 767px) {
+  .project-switcher {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .project-switcher select {
-    max-width: calc(var(--size-control-touch) * 4);
+    width: 100%;
+    max-width: min(100%, calc(var(--size-control-touch) * 3));
+  }
+
+  .project-switcher__create {
+    min-width: 0;
+    width: min(100vw - var(--space-8), var(--size-binder-min));
   }
 }
 

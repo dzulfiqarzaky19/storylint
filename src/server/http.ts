@@ -155,7 +155,7 @@ export function createServer(store: ProjectStore) {
         const project = {
           schemaVersion: 2 as const,
           title: raw.title.trim(),
-          chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
+          chapters: [],
           sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: emptyLab(),
         }
         const created = new ProjectStore(path)

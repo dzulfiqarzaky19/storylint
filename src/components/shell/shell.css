@@ -4,6 +4,9 @@
   display: grid;
   grid-template-rows: var(--size-topbar) 1fr;
   height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--color-canvas);
 }
 
@@ -56,7 +59,19 @@
   }
 
   .shell__topbar {
+    min-width: 0;
+    gap: var(--space-1);
     padding-inline: var(--space-2);
+  }
+
+  .shell__topbar-actions {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .shell__topbar > .project-switcher {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 

@@ -540,6 +540,7 @@ test('local projects can be created listed and switched with Lab schema v2', asy
     })
     assert.equal(created.schemaVersion, 2)
     assert.equal(created.title, 'Second Story')
+    assert.equal(created.chapters.length, 0)
     const listed = await requestJson<{ activeProjectId: string; projects: Array<{ id: string; title: string }> }>(
       `${baseUrl}/api/projects`,
     )
