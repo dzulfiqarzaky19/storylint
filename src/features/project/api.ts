@@ -1,0 +1,177 @@
+import type { Chapter, Fact, Project, Proposal, Sheet } from '../../domain/types.ts'
+import type { ApplyCard, CowriteRequest, CowriteResult } from '../../cowrite/types.ts'
+import type { ReviewKind, ReviewResult } from '../../review/types.ts'
+import type { ResearchNote } from '../../domain/types.ts'
+import type { ResearchResult } from '../../research/types.ts'
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(path, {
+    ...init,
+    headers: init?.body
+      ? { 'content-type': 'application/json', ...init.headers }
+      : init?.headers,
+  })
+  if (!response.ok) {
+    const message = await response
+      .json()
+      .then((body: unknown) =>
+        typeof body === 'object' && body !== null && 'error' in body && typeof body.error === 'string'
+          ? body.error
+          : response.statusText,
+      )
+      .catch(() => response.statusText)
+    throw new Error(message)
+  }
+  return response.json() as Promise<T>
+}
+
+export type ProjectSummary = { id: string; title: string }
+
+export function listProjects(): Promise<{ activeProjectId: string; projects: ProjectSummary[] }> {
+  return request('/api/projects')
+}
+
+export function createProject(id: string, title: string): Promise<Project> {
+  return request('/api/projects', { method: 'POST', body: JSON.stringify({ id, title }) })
+}
+
+export function activateProject(id: string): Promise<Project> {
+  return request(`/api/projects/${encodeURIComponent(id)}/activate`, { method: 'POST', body: '{}' })
+}
+
+export async function downloadMarkdownExport(): Promise<void> {
+  const response = await fetch('/api/export')
+  if (!response.ok) throw new Error(`Export failed (${response.status})`)
+  const blob = await response.blob()
+  const disposition = response.headers.get('content-disposition') ?? ''
+  const filename = disposition.match(/filename="([^"]+)"/)?.[1] ?? 'storylint-project.zip'
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
+export function loadProject(signal?: AbortSignal): Promise<Project> {
+  return request('/api/project', { signal })
+}
+
+export function saveChapter(chapter: Chapter): Promise<Project> {
+  return request(`/api/chapters/${encodeURIComponent(chapter.id)}`, {
+    method: 'PUT',
+    body: JSON.stringify(chapter),
+    keepalive: true,
+  })
+}
+
+export function upsertSheet(sheet: Sheet): Promise<Project> {
+  return request(`/api/sheets/${encodeURIComponent(sheet.id)}`, {
+    method: 'PUT',
+    body: JSON.stringify(sheet),
+  })
+}
+
+export function upsertFact(sheetId: string, fact: Fact): Promise<Project> {
+  return request(
+    `/api/sheets/${encodeURIComponent(sheetId)}/facts/${encodeURIComponent(fact.id)}`,
+    { method: 'PUT', body: JSON.stringify(fact) },
+  )
+}
+
+export function removeFact(sheetId: string, factId: string): Promise<Project> {
+  return request(
+    `/api/sheets/${encodeURIComponent(sheetId)}/facts/${encodeURIComponent(factId)}`,
+    { method: 'DELETE' },
+  )
+}
+
+export type ContinuityResponse = {
+  project: Project
+  mode: 'fixture' | 'live'
+  counts: { red: number; yellow: number; proposals: number }
+}
+
+export function runContinuity(chapterId: string): Promise<ContinuityResponse> {
+  return request(`/api/continuity/${encodeURIComponent(chapterId)}`, {
+    method: 'POST', body: '{}',
+  })
+}
+
+export type ProposalEdits = Partial<Pick<Proposal, 'entityName' | 'key' | 'value' | 'statement' | 'claimKind'>>
+
+export function acceptProposal(id: string, edits: ProposalEdits = {}): Promise<Project> {
+  return request(`/api/proposals/${encodeURIComponent(id)}/accept`, {
+    method: 'POST', body: JSON.stringify(edits),
+  })
+}
+
+export function editProposal(id: string, edits: ProposalEdits): Promise<Project> {
+  return request(`/api/proposals/${encodeURIComponent(id)}`, {
+    method: 'PATCH', body: JSON.stringify(edits),
+  })
+}
+
+export function rejectProposal(id: string): Promise<Project> {
+  return request(`/api/proposals/${encodeURIComponent(id)}/reject`, {
+    method: 'POST', body: '{}',
+  })
+}
+
+export type ChatResponse = {
+  mode: 'fixture' | 'live'
+  message: string
+  project: Project
+}
+
+export function sendChat(chapterId: string, message: string): Promise<ChatResponse> {
+  return request('/api/chat', {
+    method: 'POST', body: JSON.stringify({ chapterId, message }),
+  })
+}
+
+export function proposeGraphEdge(input: {
+  fromSheetId: string
+  toSheetId: string
+  key: string
+  statement: string
+  targetFactId?: string
+}): Promise<Project> {
+  return request('/api/graph/proposals', {
+    method: 'POST', body: JSON.stringify(input),
+  })
+}
+
+export function requestResearch(query: string): Promise<ResearchResult> {
+  return request('/api/research', { method: 'POST', body: JSON.stringify({ query }) })
+}
+
+export function pinResearch(note: ResearchNote): Promise<Project> {
+  return request('/api/research/pin', { method: 'POST', body: JSON.stringify(note) })
+}
+
+export function proposeResearch(note: ResearchNote): Promise<Project> {
+  return request('/api/research/propose', { method: 'POST', body: JSON.stringify(note) })
+}
+
+export function requestReview(chapterId: string, kind: ReviewKind): Promise<ReviewResult> {
+  return request(`/api/review/${encodeURIComponent(chapterId)}`, {
+    method: 'POST', body: JSON.stringify({ kind }),
+  })
+}
+
+export function requestCowrite(input: CowriteRequest): Promise<CowriteResult> {
+  return request('/api/cowrite', { method: 'POST', body: JSON.stringify(input) })
+}
+
+export function applySuggestion(chapterId: string, card: ApplyCard): Promise<Project> {
+  return request(`/api/chapters/${encodeURIComponent(chapterId)}/apply`, {
+    method: 'POST',
+    body: JSON.stringify({
+      text: card.text,
+      target: card.target,
+      expectedBody: card.expectedBody,
+      expectedText: card.expectedText,
+    }),
+  })
+}
