@@ -70,7 +70,9 @@ try {
   await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 5000 })
   if (await graph.locator('.graph__edge').count() !== edgesBefore) throw new Error('Pending edge rendered before Accept')
 
-  const card = page.locator('.proposal-card').filter({ hasText: statement })
+  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
+  await companion.getByRole('button', { name: /^Inbox/ }).click()
+  const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
   await graph.getByText(key).waitFor({ timeout: 5000 })
   if (await page.getByRole('main', { name: 'Manuscript' }).count() !== 0) {

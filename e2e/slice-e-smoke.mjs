@@ -37,6 +37,7 @@ try {
   const manuscript = page.getByRole('main', { name: 'Manuscript' })
   const body = manuscript.getByLabel('Chapter text')
   await manuscript.waitFor()
+  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
 
   const emergencyDraft = `Unsaved reload recovery ${Date.now()}`
   await body.fill(emergencyDraft)
@@ -56,8 +57,9 @@ try {
     textarea.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
   })
 
-  await page.getByRole('button', { name: 'Continue' }).click()
-  const apply = page.getByRole('button', { name: /^Apply$/i })
+  await companion.getByRole('button', { name: 'Write', exact: true }).click()
+  await companion.getByRole('button', { name: 'Continue' }).click()
+  const apply = companion.getByRole('button', { name: /^Apply$/i })
   await apply.waitFor({ timeout: 30000 })
   if (await body.inputValue() !== source) throw new Error('Generation changed manuscript before Apply')
   await apply.click()
@@ -76,9 +78,10 @@ try {
     textarea.dispatchEvent(new Event('select', { bubbles: true }))
     textarea.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
   })
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByRole('button', { name: 'Dismiss' }).waitFor({ timeout: 10000 })
-  await page.getByRole('button', { name: 'Dismiss' }).click()
+  await companion.getByRole('button', { name: 'Write', exact: true }).click()
+  await companion.getByRole('button', { name: 'Continue' }).click()
+  await companion.getByRole('button', { name: 'Dismiss' }).waitFor({ timeout: 10000 })
+  await companion.getByRole('button', { name: 'Dismiss' }).click()
   if (await body.inputValue() !== beforeDismiss) throw new Error('Dismiss changed manuscript')
 
   const generatedControls = await manuscript.getByRole('button', {
