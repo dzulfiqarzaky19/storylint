@@ -196,6 +196,22 @@ export async function installFixtureLlmRoutes(page) {
 }
 
 /** Companion root panel. Prefer heading filter (stable); data-attr is secondary. */
+/**
+ * Leave an open Canon sheet and return to the binder list.
+ * The affordance moved: SheetEditor is rendered with showBack={false}, and the control now lives
+ * in the binder detail chrome as "Back". Assert the behaviour (list is showing again) rather than
+ * a button label, so the next chrome change fails loudly instead of hanging on a missing name.
+ */
+export async function closeSheetDetail(page) {
+  const detail = page.locator('[data-binder-detail="sheet"]')
+  if (await detail.count()) {
+    await detail.getByRole('button', { name: 'Back', exact: true }).click()
+  } else {
+    await page.keyboard.press('Escape')
+  }
+  await page.locator('[data-binder-stack="list"]').first().waitFor({ timeout: 5000 })
+}
+
 export function companionPanel(page) {
   return page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) }).first()
 }

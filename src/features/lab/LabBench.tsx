@@ -32,7 +32,7 @@ function defaultSheetKind(kind: LabCardKind): SheetKind | undefined {
 export type LabBenchProps = {
   lab: Lab
   onCreateCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
-  onPatchCard: (cardId: string, patch: { title?: string; body?: string }) => Promise<Project>
+  onPatchCard: (cardId: string, patch: { title?: string; body?: string; kind?: LabCardKind }) => Promise<Project>
   onArchiveCard: (cardId: string) => Promise<void>
   onPinCard: (cardId: string, pinned?: boolean) => Promise<void>
   onPromoteCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<unknown>
@@ -65,6 +65,7 @@ export function LabBench({
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editBody, setEditBody] = useState('')
+  const [editKind, setEditKind] = useState<LabCardKind>('character-spark')
 
   useEffect(() => {
     if (boardId) onBoardChange?.(boardId)
@@ -105,7 +106,7 @@ export function LabBench({
     if (!editTitle.trim() || busy) return
     setBusy(true)
     try {
-      await onPatchCard(cardId, { title: editTitle, body: editBody })
+      await onPatchCard(cardId, { title: editTitle, body: editBody, kind: editKind })
       setEditingId(null)
     } catch (caught) {
       setNotice(caught instanceof Error ? caught.message : 'Could not save card')
@@ -153,12 +154,15 @@ export function LabBench({
         </div>
       </header>
 
-      {/* D3: kind picker lives in composer only; filter appears once cards exist. */}
+      {/* D3 (closed): filter appears only once cards exist, and its kinds stay behind a disclosure. */}
       {live.length > 0 ? (
         <div className="lab__filters" role="group" aria-label="Filter card kinds">
           <Button aria-pressed={kindFilter === 'all'} onClick={() => setKindFilter('all')}>All</Button>
-          <details className="lab__filter-more">
-            <summary className="lab__filter-summary ui-focusable">
+          <details className="lab__disclosure">
+            <summary
+              className="lab__disclosure-summary ui-focusable"
+              aria-label={kindFilter === 'all' ? 'Filter by kind' : `Filtered by kind: ${KIND_LABEL[kindFilter]}`}
+            >
               {kindFilter === 'all' ? 'Kinds' : KIND_LABEL[kindFilter]}
             </summary>
             <div className="lab__filter-menu" role="group" aria-label="Card kinds">
@@ -177,13 +181,6 @@ export function LabBench({
       ) : null}
 
       <section className="lab__composer" aria-label="New lab card">
-        <div className="lab__composer-kinds" role="group" aria-label="New card kind">
-          {LAB_CARD_KINDS.map((kind) => (
-            <Button key={kind} aria-pressed={draftKind === kind} onClick={() => setDraftKind(kind)}>
-              {KIND_LABEL[kind]}
-            </Button>
-          ))}
-        </div>
         <Input
           value={draftTitle}
           onChange={(event) => setDraftTitle(event.target.value)}
@@ -198,6 +195,19 @@ export function LabBench({
           rows={3}
         />
         <div className="lab__composer-actions">
+          {/* P2: one quiet chooser at rest, not seven equal peers. All kinds stay one click away. */}
+          <details className="lab__disclosure">
+            <summary className="lab__disclosure-summary ui-focusable" aria-label={`Card kind: ${KIND_LABEL[draftKind]}`}>
+              {KIND_LABEL[draftKind]}
+            </summary>
+            <div className="lab__composer-kinds" role="group" aria-label="New card kind">
+              {LAB_CARD_KINDS.map((kind) => (
+                <Button key={kind} aria-pressed={draftKind === kind} onClick={() => setDraftKind(kind)}>
+                  {KIND_LABEL[kind]}
+                </Button>
+              ))}
+            </div>
+          </details>
           <Button variant="primary" disabled={busy || !draftTitle.trim()} onClick={() => void createCard()}>
             {busy ? 'Saving…' : 'New card'}
           </Button>
@@ -206,21 +216,27 @@ export function LabBench({
 
       {notice ? <p className="lab__notice" role="status">{notice}</p> : null}
 
-      {visible.length === 0 ? (
+      {/* P2: an empty bench already has the composer as its one obvious move.
+          A second "nothing here" block pointing back at that composer is the wall. */}
+      {live.length === 0 ? (
+        <div className="lab__rest">
+          <p className="lab__rest-note">Beats use Send to Draft; sparks use Promote to Canon → Accept.</p>
+          {onOpenAgent ? (
+            <Button onClick={onOpenAgent}>Ask agent to brainstorm…</Button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {live.length > 0 && visible.length === 0 && kindFilter !== 'all' ? (
         <div className="lab__empty">
           <EmptyState
-            title="Nothing on the bench"
-            hint="Use the composer above for a place, beat, or what-if. Beats use Send to Draft; sparks use Promote to Canon → Accept."
-            action={
-              onOpenAgent ? (
-                <div className="lab__empty-actions">
-                  <Button onClick={onOpenAgent}>Ask agent to brainstorm…</Button>
-                </div>
-              ) : undefined
-            }
+            title={`No ${KIND_LABEL[kindFilter]} cards on this board`}
+            action={<Button onClick={() => setKindFilter('all')}>Show all</Button>}
           />
         </div>
-      ) : (
+      ) : null}
+
+      {visible.length > 0 ? (
         <div className="lab__grid" aria-label="Lab cards">
           {visible.map((card) => (
             <article
@@ -236,6 +252,19 @@ export function LabBench({
                 <>
                   <Input value={editTitle} onChange={(event) => setEditTitle(event.target.value)} aria-label="Edit title" />
                   <Textarea value={editBody} onChange={(event) => setEditBody(event.target.value)} rows={4} aria-label="Edit body" />
+                  {/* Kind stays changeable after creation, so choosing it up front is never a trap. */}
+                  <details className="lab__disclosure">
+                    <summary className="lab__disclosure-summary ui-focusable" aria-label={`Card kind: ${KIND_LABEL[editKind]}`}>
+                      {KIND_LABEL[editKind]}
+                    </summary>
+                    <div className="lab__composer-kinds" role="group" aria-label="Edit card kind">
+                      {LAB_CARD_KINDS.map((kind) => (
+                        <Button key={kind} aria-pressed={editKind === kind} onClick={() => setEditKind(kind)}>
+                          {KIND_LABEL[kind]}
+                        </Button>
+                      ))}
+                    </div>
+                  </details>
                   <div className="lab__card-actions">
                     <Button variant="primary" disabled={busy} onClick={() => void saveEdit(card.id)}>Save</Button>
                     <Button onClick={() => setEditingId(null)}>Cancel</Button>
@@ -250,6 +279,7 @@ export function LabBench({
                       setEditingId(card.id)
                       setEditTitle(card.title)
                       setEditBody(card.body)
+                      setEditKind(card.kind)
                     }}>Edit</Button>
                     <Button disabled={busy} onClick={() => void onPinCard(card.id, card.status !== 'pinned')}>
                       {card.status === 'pinned' ? 'Unpin' : 'Pin'}
@@ -266,7 +296,7 @@ export function LabBench({
             </article>
           ))}
         </div>
-      )}
+      ) : null}
 
       {promoted.length > 0 ? (
         <section className="lab__promoted" aria-label="Cards sent to Draft or promoted toward Canon">
