@@ -11,6 +11,9 @@ import {
   installFixtureLlmRoutes,
   openCompanionFace,
   waitSaved,
+  ensureDraftReady,
+  ensureIsolatedProject,
+  fillChapterAndSave,
 } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -24,12 +27,13 @@ const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 
 try {
   await installFixtureLlmRoutes(page)
+  await ensureIsolatedProject(page)
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const body = page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text')
   const companion = companionPanel(page)
   const chapter = `${NOVEL_CHAPTER}\n\n— e2e ${Date.now()}`
-  await body.fill(chapter)
-  await waitSaved(page)
+  await fillChapterAndSave(page, chapter)
   const before = await body.inputValue()
   if (before !== chapter) throw new Error('Novel chapter did not land in manuscript')
   const marksBefore = await page.locator('.manuscript__mark').count()

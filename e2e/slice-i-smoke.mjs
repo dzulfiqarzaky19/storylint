@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import { companionPanel, openCompanionFace, ensureIsolatedProject, ensureDraftReady } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -37,9 +38,10 @@ async function seedSheets(request) {
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
+  await ensureIsolatedProject(page)
   await seedSheets(page.request)
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  await page.reload({ waitUntil: 'networkidle' })
+  await ensureDraftReady(page, { body: 'Graph round-trip body.' })
   const manuscriptBody = await page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text').inputValue()
   await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
@@ -71,8 +73,8 @@ try {
   await graph.getByText(/pending in the agent panel/i).waitFor({ timeout: 5000 })
   if (await graph.locator('.graph__edge').count() !== edgesBefore) throw new Error('Pending edge rendered before Accept')
 
-  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
-  await companion.getByRole('button', { name: /^Inbox/ }).click()
+  const companion = companionPanel(page)
+  await openCompanionFace(companion, 'Inbox')
   const card = companion.locator('.proposal-card').filter({ hasText: statement })
   await card.getByRole('button', { name: 'Accept' }).click()
   await graph.locator('title', { hasText: key }).waitFor({ state: 'attached', timeout: 5000 })

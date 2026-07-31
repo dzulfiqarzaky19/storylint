@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
+import { companionPanel, openCompanionFace } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -22,10 +23,10 @@ try {
   await lab.waitFor()
   await lab.getByRole('heading', { name: 'Lab' }).waitFor()
 
-  // Companion faces in Lab context: Chat / Spark / Inbox
-  const companion = page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Companion' }) })
-  await companion.getByRole('button', { name: 'Spark', exact: true }).click()
-  await companion.getByRole('button', { name: 'Chat', exact: true }).click()
+  // Companion faces in Lab context: Chat / Spark / Inbox (D6 uses role=tab)
+  const companion = companionPanel(page)
+  await openCompanionFace(companion, 'Spark')
+  await openCompanionFace(companion, 'Chat')
 
   await lab.getByLabel('New card kind').getByRole('button', { name: 'Place', exact: true }).click()
   await lab.getByLabel('Lab card title').fill(cardTitle)

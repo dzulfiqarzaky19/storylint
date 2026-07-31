@@ -9,6 +9,7 @@ import {
   companionPanel,
   installFixtureLlmRoutes,
   openCompanionFace,
+  ensureIsolatedProject,
 } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -23,6 +24,7 @@ const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 try {
   // Deterministic research path (default). Live path only with STORYLINT_E2E_LIVE_LLM=1.
   await installFixtureLlmRoutes(page)
+  await ensureIsolatedProject(page)
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   const before = await page.evaluate(() => fetch('/api/project').then((response) => response.json()))
   const companion = companionPanel(page)

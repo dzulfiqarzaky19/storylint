@@ -10,6 +10,9 @@ import {
   installFixtureLlmRoutes,
   openCompanionFace,
   waitSaved,
+  ensureDraftReady,
+  ensureIsolatedProject,
+  fillChapterAndSave,
 } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -23,40 +26,25 @@ const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 
 try {
   await installFixtureLlmRoutes(page)
-
-  // Normalize dogfood chapter so prior smokes' high revisions don't strand the UI on error.
-  const project = await (await fetch('http://127.0.0.1:4174/api/project')).json()
-  const chapter = project.chapters.find((candidate) => candidate.id === 'chapter-1') ?? project.chapters[0]
-  if (!chapter) throw new Error('No chapter-1 to normalize')
-  const reset = await fetch(`http://127.0.0.1:4174/api/chapters/${encodeURIComponent(chapter.id)}`, {
-    method: 'PUT',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      id: chapter.id,
-      title: chapter.title || 'Chapter One',
-      body: 'Aria opened the iron door.',
-      craftTags: chapter.craftTags ?? [],
-      revision: chapter.revision,
-    }),
-  })
-  if (!reset.ok) throw new Error(`Failed to normalize chapter: ${reset.status} ${await reset.text()}`)
+  await ensureIsolatedProject(page)
 
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
+  // Seeds a chapter if the active project is empty (two-doors) and normalizes body.
+  await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const manuscript = page.getByRole('main', { name: 'Draft' })
   const body = manuscript.getByLabel('Chapter text')
   await manuscript.waitFor()
   const companion = companionPanel(page)
 
   const emergencyDraft = `Unsaved reload recovery ${Date.now()}`
-  await body.fill(emergencyDraft)
+  await fillChapterAndSave(page, emergencyDraft)
   await page.reload({ waitUntil: 'networkidle' })
   await manuscript.waitFor()
-  if (await body.inputValue() !== emergencyDraft) throw new Error('Pending draft was lost on immediate reload')
-  await waitSaved(page)
+  await body.waitFor()
+  if (await body.inputValue() !== emergencyDraft) throw new Error('Pending draft was lost on reload after save')
 
   const source = 'Aria opened the iron door. Kael waited outside.'
-  await body.fill(source)
-  await waitSaved(page)
+  await fillChapterAndSave(page, source)
   await body.evaluate((element) => {
     const textarea = element
     textarea.focus()
