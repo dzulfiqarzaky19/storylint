@@ -2,17 +2,21 @@
 
 Multi-agent work fails as **silent progress**, not as bad code. Coordinators cannot see your worktree. One line on a state change beats a perfect report at the end.
 
-Sibling to [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) (push / origin hash / worktrees). This file is **cadence and ownership**.
+Sibling to [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) (push / origin hash / worktrees). Pipeline + gates: [AGENT_PIPELINE.md](./AGENT_PIPELINE.md). Tickets: [tickets/README.md](./tickets/README.md). Audit measure handoff: [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md). This file is **cadence and ownership**.
 
 ---
 
 ## Workers
 
+### 0. Priority check before implement work
+
+Before starting implement work: run `npm run tickets:check` (optional `--agent=` / `--story=`). Pick highest open P0, else highest P1 for the assigned story, else the assigned ticket. Do not start lower priority while a P0 is open unless founder/rat override is on the ticket. Before land: ticket exists and status → `in_review`/`landing`. Full rules: [tickets/README.md](./tickets/README.md).
+
 ### 1. Report on STATE CHANGE, not only on task completion
 
 Send a one-liner when any of these land:
 
-- a commit (include branch + sha)
+- a commit (include branch + sha; **include ticket id** when working a ticket, e.g. `T-001`)
 - a blocker appears or clears
 - scope discovery ("this is larger / wrong file / needs X first")
 - a handoff (you took work, or you gave it away)
