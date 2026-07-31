@@ -65,6 +65,15 @@ const FORBIDDEN_IN_GATES = [
     id: 'hardcoded-localhost-4174',
     re: /['"`]https?:\/\/(localhost|127\.0\.0\.1):4174\b/,
   },
+  {
+    // data/ is gitignored. Selecting ambient 'default' measures the machine, not the product.
+    id: 'ambient-default-project',
+    re: /select(?:Option|ProjectByValue|ProjectByLabel)\s*\(\s*(?:page\s*,\s*)?['"`]default['"`]/,
+  },
+  {
+    id: 'ambient-data-project-json',
+    re: /data\/project\.json|data\\project\.json/,
+  },
 ]
 
 function listScripts(dir, out = []) {
