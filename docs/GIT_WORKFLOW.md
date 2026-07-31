@@ -179,3 +179,10 @@ Also follow [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md): report on state change, no
 4. Validation ran on the **merge result**
 5. No force-push; no shared rebase
 6. Work happened in **your** worktree; shared tree left on `origin/dev`
+
+
+## Verification vs mutation
+
+- Never combine a verification command with a mutating one.
+- Never filter the output of a command that mutates a remote.
+- See [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) §9–10.
