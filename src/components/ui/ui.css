@@ -259,13 +259,18 @@
   color: var(--color-text-muted);
 }
 
-/* Drawer — narrow-width overlay for binder/agent */
+/* Drawer — narrow-width overlay for binder/agent.
+   Nav sheet, not a blocking decision modal: backdrop click dismisses (Drawer.tsx).
+   On phone the panel must leave a real outside strip so manuscript/Lab taps hit the
+   backdrop instead of the panel body (BF/BL @390: 272px panel ate the paper center). */
 
 .ui-drawer__backdrop {
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
   background: var(--color-surface-overlay);
+  /* Explicit hit target — dimmed so "tap paper to leave" is taught, not silent. */
+  cursor: pointer;
 }
 
 .ui-drawer {
@@ -279,6 +284,15 @@
   background: var(--color-surface);
   box-shadow: var(--shadow-md);
   overflow: auto;
+}
+
+/* Compact: leave ≥48% of the viewport outside the sheet so paper center is free. */
+@media (max-width: 767px) {
+  .ui-drawer {
+    /* ~40vw: paper center free under binder+companion @390. */
+    width: min(var(--size-agent), 40vw);
+    max-width: calc(100% - 14rem);
+  }
 }
 
 .ui-drawer:focus-visible {

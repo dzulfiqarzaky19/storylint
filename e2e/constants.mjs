@@ -10,6 +10,8 @@ export const ALL_FEATURE_SMOKES = Object.freeze([
   'e2e/slice-l-smoke.mjs',
   // AZ P0: Canon binder list scroll survives Back at 68 sheets (focus must not fight F1).
   'e2e/binder-scroll-restore-smoke.mjs',
+  // BL: phone drawer outside-tap dismisses; job surface reachable @390.
+  'e2e/bl-phone-drawer-smoke.mjs',
 ])
 
 /**
