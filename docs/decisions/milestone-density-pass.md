@@ -153,7 +153,7 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 
 ## What we learned about verification
 
-**Root cause:** a check that cannot say **what it measured** (on which HEAD, which bundle, which element, visible how) is not evidence. Seven ways checks lied this session, same disease:
+**Root cause:** a check that cannot say **what it measured** (on which HEAD, which bundle, which element, visible how) is not evidence. Ways checks lied this session — same disease (unattributed input):
 
 | Lie | What we saw |
 |-----|-------------|
@@ -164,13 +164,16 @@ Deliberate debt. Understood. Not forgotten. Act here before rediscovering by acc
 | Label ownership | Asserting on aria-label / visible copy the product may rewrite |
 | Unproven scoreboard | Historical PASS rows reused as current desk truth |
 | Split-origin stack | Owned UI + stranger API (e.g. smoke UI owned, API still on `:4174`) — still an **unattributed** measurement |
+| Ambient data (9th) | `slice-j` `selectOption('default')` needs gitignored `data/project.json`. Warm worktree PASS, bare FAIL — looked like a flake; was deterministic ambient state. |
 
-**Four rules (keep):**
+**Rules (keep):**
 
 1. **Provenance or it is not evidence.** Owned server, git HEAD, served bundle hash — or refuse (not green). Provenance must cover **every origin a test talks to**, not only the one it renders.
 2. **Never infer visibility from geometry.** `checkVisibility` + closed-`<details>` — [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md).
 3. **Absence is not a pass.** PASS / FAIL / **NOT-MEASURED**; NOT-MEASURED fails the gate.
 4. **Assert on behaviour, never on a label you do not own.** Prefer roles, `data-*`, and stable structure over marketing copy.
+5. **A test that depends on state it did not create measures the machine, not the product.** Gitignored files are ambient. Seed or refuse inside the check. (ninth lie)
+6. **Never combine verify with mutate; never filter mutator output.** Same principle applied to actions — [STANDING_RULES](./STANDING_RULES.md) §9–10.
 
 **The gate held the milestone.** Two test-side failures, no product impact, and we waited anyway. A gate that can be overridden by the person who built it is advisory, not a gate.
 
