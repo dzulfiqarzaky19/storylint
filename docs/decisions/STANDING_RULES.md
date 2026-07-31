@@ -14,6 +14,8 @@
 6. **A fixture that changes the state under test is not a fixture.** Empty checks on empty; density/hierarchy on seeded. Forced-open companion is labeled and is not default-rail evidence. ([calm-budget-r3-ox](./calm-budget-r3-ox.md), [CALM_BUDGET](../CALM_BUDGET.md) r3)
 7. **Verify a finding still describes the code before building against it.** Worktree ≠ truth; `git show origin/dev:path`. ([CODE_VERIFY](../CODE_VERIFY.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
 8. **A test may only interact with entities it created in that run.** Depending on a pre-existing project, file, or option the smoke did not create measures the machine, not the product. Create both sides of a switch test inside the check. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md); ambient-gitignored-data mechanism **disproven**)
+8a. **A diagnostic proven only on the happy path is not proven.** Step labels, timers and failure logs exist for the failure path — fault-inject once and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (badger step timings, verified happy-path only)
+8b. **State what you did not verify.** A verdict with no stated limits has unknown limits. Explicit non-claims are what make a PASS worth reading.
 
 ## Actions (same disease as unattributed measurement)
 
@@ -55,6 +57,11 @@ Citable green = `npm run test:green` only (not a lone smoke, not an unproven cal
 27. **L2 composition E2E on `origin/dev` before story close / main** — isolation green ≠ composition green. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
 28. **No start lower priority while a P0 is open** without founder/rat override on the ticket. Run `npm run tickets:check`. ([tickets/README](../tickets/README.md))
 29. **Measure condition labels / probe chrome are not default product evidence.** Assert behaviour and state; probes may aid reports only. ([AUDIT_HANDOFF](../AUDIT_HANDOFF.md))
+30. **Code review and E2E verify are different questions.** "Is the change sound?" (reads the diff) vs "did the ticket's intent land on the running product?" (drives the app, does not read the diff). Neither substitutes for the other. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+31. **A failed E2E verify is a bug, not a review rejection.** It opens a ticket at ≥ prior priority and re-enters the sprint; it does not revert the land. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+32. **The coordinator is not an approval gate before landing.** Review → land → verify. A coordinator inbox between "reviewed" and "landed" is what produced the 83-commit dev/main drift. ([AGENT_PIPELINE § Sprint model](../AGENT_PIPELINE.md))
+33. **`dev → main` at a named milestone, never at a commit count.** ([AGENT_PIPELINE](../AGENT_PIPELINE.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
+34. **Authority claims need citable words.** "X asked for this" must come with what X actually said. A missing citation disproves the citation, **not** the claim — re-ask rather than concluding it was invented. (rat scar: koala pipeline land)
 
 ## Still open
 

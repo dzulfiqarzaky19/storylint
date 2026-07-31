@@ -12,6 +12,10 @@ Sibling to [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) (push / origin hash / worktrees)
 
 Before starting implement work: run `npm run tickets:check` (optional `--agent=` / `--story=`). Pick highest open P0, else highest P1 for the assigned story, else the assigned ticket. Do not start lower priority while a P0 is open unless founder/rat override is on the ticket. Before land: ticket exists and status → `in_review`/`landing`. Full rules: [tickets/README.md](./tickets/README.md).
 
+**Work arrives by sprint assignment.** The coordinator holds one ranked queue and assigns from it; do not self-select from the backlog, and do not pick up a new item after finishing one without checking in. A sprint runs **until its batch is done** — there is no clock, so correctness beats speed. Model: [AGENT_PIPELINE § Sprint model](./AGENT_PIPELINE.md).
+
+**Do not wait on the coordinator to approve a land.** The chain is review → land → E2E verify. Coordinator sits at assignment, not at the merge.
+
 ### 1. Report on STATE CHANGE, not only on task completion
 
 Send a one-liner when any of these land:

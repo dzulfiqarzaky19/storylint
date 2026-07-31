@@ -19,7 +19,7 @@ Clone → read **this page** → follow one lane. Do not browse the folder as a 
 | Read | Owns |
 |------|------|
 | [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) | Branch off `origin/dev`, `--no-ff`, **push is part of merge**, report origin hash |
-| [AGENT_PIPELINE.md](./AGENT_PIPELINE.md) | **L1 → land → L2 → main** founder loop; tickets + audit entry; no squash-to-dev |
+| [AGENT_PIPELINE.md](./AGENT_PIPELINE.md) | **Sprint model** + **L1 → review → land → E2E verify → L2 → main** founder loop; the two verification lanes; tickets + audit entry; no squash-to-dev |
 | [tickets/README.md](./tickets/README.md) | In-repo tickets + priority check (`npm run tickets:check`) |
 | [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md) | Measure report done-criteria → ticket with shortest repro |
 | [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) | State-change reports, shippable slices, handoffs, coordinator anti-duplicate |
@@ -60,6 +60,7 @@ When a decision is superseded, the file stays; the banner points at what replace
 | Token values | **TOKENS** + `src/design/tokens.css` | No hex in features |
 | Git / origin truth | **GIT_WORKFLOW** | Reports use origin hash |
 | L1/L2 pipeline + land vehicle | **AGENT_PIPELINE** | Link; do not restate land script |
+| Sprint model + who gates what | **AGENT_PIPELINE** | Link; do not restate the flow diagram |
 | Tickets / priority | **tickets/** | `npm run tickets:check` |
 | Swarm cadence | **AGENT_PROTOCOL** | — |
 | “What almost went wrong” | **DOCTRINE_AUDIT** + **decisions/** | Not a second IA |
