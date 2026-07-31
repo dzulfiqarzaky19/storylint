@@ -38,10 +38,14 @@ Thumbs.db
 coverage
 *.tsbuildinfo
 # --- e2e/output split (intentional) ---
-# Throwaway / regenerable: screenshots, probe JSON, skill dumps, run progress, machine runs.
-# Durable judgments live in docs/decisions/ (tracked). Do not force-add shot folders.
-# If a review needs a shot, cite the path (e.g. e2e/output/design-review-r1/) — regenerate via e2e/*.mjs.
+# Tracked: judgments (docs/decisions/) AND measurements-over-time that a future
+# reader cannot cheaply reconstruct (e.g. calm-budget-run.md scoreboard at a
+# known commit — git-diffable product state vs the calm bar). Regenerable is
+# not the test; durable informational value is.
+# Ignored: raw evidence dumps — shots, probe JSON/logs, skill dumps, drive scratch.
+# Cite shot paths from reviews; do not commit shot folders.
 e2e/output/
+!e2e/output/calm-budget-run.md
 
 # AI assistant harness (LOCAL ONLY — never commit / never push)
 # Reason: branch checkouts must not swap the agent's brain or skills.
