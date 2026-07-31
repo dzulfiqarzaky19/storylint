@@ -26,6 +26,7 @@
 | [design-review-l2.md](./design-review-l2.md) | design-review | ox | ACCEPT L2 kind-label revert → Characters/Lore/World/Organizations |
 | [ia-final-qa.md](./ia-final-qa.md) | qa-record | qa (ia-final-qa.mjs) | PASS 14/14 J1/J2/J3 + Canon entry @ 6a2a74b |
 | [ia-step1-qa.md](./ia-step1-qa.md) | qa-record | qa (ia-step1-qa.mjs) | PASS with nits — IA step-1 naming/entry @ 67592a1/b68703e |
+| [milestone-density-pass.md](./milestone-density-pass.md) | milestone-notes | horse | Density-pass founder summary @ 4327572; holds = calm gate + Canon dirty-guard; deliberate non-goals |
 | [orchestrator-ux-faults.md](./orchestrator-ux-faults.md) | review-handoff | hamster | Priority UX fault queue for orchestrator (request changes) |
 | [ux-report.md](./ux-report.md) | review | hamster | Full UX drive report; paint doctrine Kobo/brass not skill OLED |
 
