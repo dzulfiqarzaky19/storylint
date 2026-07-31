@@ -173,7 +173,7 @@ Faces: Chat · Spark · Inbox
 **In**
 
 - Network + Family views of **accepted** relationships
-- Kind filters (character/lore/world/org)
+- Kind filters (enums `character`/`lore`/`world`/`organization`; **labels** Characters/Lore/World/Organizations per [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) — binder uses labels; graph chips must not stay raw enums)
 - Node → open sheet (Level-3 Canon thing)
 - Pending edges hidden until Accept (**ships**)
 
