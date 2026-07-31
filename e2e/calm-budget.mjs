@@ -22,6 +22,12 @@ import { createHash } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import {
   reloadApp,
+  found,
+  notFound,
+  isFound,
+  isNotFound,
+  asMeasurement,
+  requireFound,
   armHardTimeout,
   assertVisibilityPredicate,
   beforeMeasure,
@@ -49,8 +55,16 @@ import { resolveMeasurementTarget } from './owned-stack.mjs'
 /** Set after resolveMeasurementTarget — never default to a stranger on :5173. */
 let UI = ''
 const OUT_DIR = 'e2e/output'
-const OUT_MD = `${OUT_DIR}/calm-budget-run.md`
-const OUT_JSON = `${OUT_DIR}/calm-budget-run.json`
+// Default write is UNTRACKED so a run never dirties the tree / blocks checkout.
+// --record updates the tracked scoreboard (deliberate baseline commit).
+// A tool must not write a tracked path as a side effect of running (rat / crab).
+const RECORD_SCOREBOARD = process.argv.includes('--record')
+const OUT_MD = RECORD_SCOREBOARD
+  ? `${OUT_DIR}/calm-budget-run.md`
+  : `${OUT_DIR}/calm-budget-last.md`
+const OUT_JSON = RECORD_SCOREBOARD
+  ? `${OUT_DIR}/calm-budget-run.json`
+  : `${OUT_DIR}/calm-budget-last.json`
 
 /** Format every touch fail sample for console / measured (not just [0]). */
 function formatTouchSamples(samples) {
@@ -165,6 +179,27 @@ function notMeasuredFail(id, surface, reason) {
     'absence is not pass',
   )
 }
+
+/**
+ * Record a check only when the measurement is found.
+ * notFound → NOT-MEASURED HARD (never PASS).
+ * found → run pass(value). Intentional empty surfaces use found(0), not notFound.
+ */
+function judgeMeasured(id, sev, doc, surface, measurement, { pass, measured, threshold, note, samples } = {}) {
+  if (!isFound(measurement)) {
+    const reason = isNotFound(measurement)
+      ? measurement.reason
+      : (measurement?.reason || measurement?.status || 'measurement not found|found')
+    notMeasuredFail(id, surface, reason)
+    return false
+  }
+  const value = measurement.value
+  const ok = typeof pass === 'function' ? !!pass(value) : !!pass
+  const measuredText = typeof measured === 'function' ? measured(value) : String(measured ?? value)
+  add(id, sev, doc, surface, ok, measuredText, threshold, note, samples)
+  return ok
+}
+
 
 async function withSurface(id, surface, fn) {
   try {
@@ -853,40 +888,43 @@ async function runInboxWallFixture(browser) {
     }
 
     const measured = await measureInboxWall(page)
+    // Measurement must distinguish: empty-and-ok vs could-not-find.
+    // pending>=8 with cardVisible===0 is NOT-MEASURED (octopus instance + class API).
+    // inboxWall===false alone at cardVisible===0 was pass-on-absence (rule 4).
+    // Selectors include companion inbox fold hooks (octopus 11463e4).
+    let inboxMeasure
     if (measured.face && !/^inbox$/i.test(measured.face)) {
-      preconditionFail(
-        'B3-inbox-wall@volume',
-        'companion Inbox@1440 volume=30',
-        new PreconditionError('precondition not met: Inbox face not proven (face=' + measured.face + ')'),
+      inboxMeasure = notFound('Inbox face not proven (face=' + measured.face + ')')
+    } else if (proof.pending >= 8 && measured.cardVisible === 0) {
+      inboxMeasure = notFound(
+        'pending=' + proof.pending + ' cardVisible=0 cardDom=' + measured.cardDom
+          + ' badge=' + measured.badgeText + ' (seeded proposals not seen)',
       )
-      return
-    }
-    // Bear rule 4: pending volume with zero visible cards is NOT calm — it is
-    // an unmeasured face (broken selector / fold rename / mount miss).
-    if (proof.pending >= 8 && measured.cardVisible === 0) {
-      notMeasuredFail(
-        'B3-inbox-wall@volume',
-        'companion Inbox@1440 volume=30',
-        'pending=' + proof.pending + ' cardVisible=0 cardDom=' + measured.cardDom + ' badge=' + measured.badgeText + ' (seeded proposals not seen)',
-      )
-      return
+    } else if (!measured.face && measured.cardDom === 0 && measured.cardVisible === 0) {
+      inboxMeasure = notFound('Inbox surface produced no face attr and no proposal cards')
+    } else {
+      inboxMeasure = found(measured)
     }
     // Honest red while product packs all cards / grows the panel.
     // Pass criteria (ox AV): internal scrollport + not a dense first-screen wall.
-    add(
+    judgeMeasured(
       'B3-inbox-wall@volume',
       'HARD',
       'CALM_BUDGET.md B3-inbox-wall · Inbox at 30 pending is not a wall (internal scroll + calm fold)',
       'companion Inbox@1440 volume=30',
-      measured.inboxWall === false,
-      'inboxWall=' + measured.inboxWall
-        + ' cardVisible=' + measured.cardVisible
-        + ' pending=' + proof.pending
-        + ' scrollH=' + measured.scrollH
-        + ' clientH=' + measured.clientH
-        + ' internalScroll=' + measured.internalScroll
-        + ' badge=' + measured.badgeText,
-      'inboxWall=false at volume 30; cardVisible>0 when pending>=8',
+      inboxMeasure,
+      {
+        pass: (v) => v.inboxWall === false,
+        measured: (v) =>
+          'inboxWall=' + v.inboxWall
+          + ' cardVisible=' + v.cardVisible
+          + ' pending=' + proof.pending
+          + ' scrollH=' + v.scrollH
+          + ' clientH=' + v.clientH
+          + ' internalScroll=' + v.internalScroll
+          + ' badge=' + v.badgeText,
+        threshold: 'inboxWall=false at volume 30; cardVisible>0 when pending>=8',
+      },
     )
   } finally {
     await page.close()
@@ -1119,43 +1157,61 @@ async function runViewport(browser, width, height, label, projectId) {
     }
 
     // --- B2 topbar ---
-    const top = await measureTopbar(page)
-    add(
+    const topRaw = await measureTopbar(page)
+    const topM = topRaw.missing
+      ? notFound('shell topbar missing')
+      : found(topRaw)
+    // Keep `top` for B6-top-job later in this viewport; only judge when found.
+    const top = isFound(topM) ? topM.value : { topJobPrimaryCount: undefined, missing: true }
+    judgeMeasured(
       `B2-job-primary@${label}`,
       'HARD',
       'CALM_BUDGET.md B2-job-primary · Continuity/Export/Research/Review/New top primary = 0',
       `topbar@${label}`,
-      (top.topJobPrimaryCount || 0) === 0,
-      `topJobPrimaryCount=${top.topJobPrimaryCount || 0}${top.jobPrimaryLabels?.length ? ` [${top.jobPrimaryLabels.join(',')}]` : ''}`,
-      '=0',
+      topM,
+      {
+        pass: (v) => (v.topJobPrimaryCount || 0) === 0,
+        measured: (v) =>
+          `topJobPrimaryCount=${v.topJobPrimaryCount || 0}${v.jobPrimaryLabels?.length ? ` [${v.jobPrimaryLabels.join(',')}]` : ''}`,
+        threshold: '=0',
+      },
     )
-    add(
+    judgeMeasured(
       `B2-ecosystem@${label}`,
       'HARD',
       'CALM_BUDGET.md B2-ecosystem · ecosystemVisible = 3',
       `topbar@${label}`,
-      top.ecosystemVisible === 3,
-      `ecosystemVisible=${top.ecosystemVisible} [${(top.ecoLabels || []).join(',')}]`,
-      '=3',
+      topM,
+      {
+        pass: (v) => v.ecosystemVisible === 3,
+        measured: (v) => `ecosystemVisible=${v.ecosystemVisible} [${(v.ecoLabels || []).join(',')}]`,
+        threshold: '=3',
+      },
     )
     if (width <= 400) {
-      add(
+      judgeMeasured(
         'B2-truncation',
         'HARD',
         'CALM_BUDGET.md B2-truncation · placeLabelClipped = 0 @390',
         'topbar@390',
-        (top.placeLabelClipped || 0) === 0,
-        `placeLabelClipped=${top.placeLabelClipped || 0}`,
-        '=0',
+        topM,
+        {
+          pass: (v) => (v.placeLabelClipped || 0) === 0,
+          measured: (v) => `placeLabelClipped=${v.placeLabelClipped || 0}`,
+          threshold: '=0',
+        },
       )
-      add(
+      judgeMeasured(
         'B2-top-count-warn',
         'WARN',
         'CALM_BUDGET.md B2-top-count-warn · top controls > 8 without overflow',
         'topbar@390',
-        (top.topControlCount || 0) <= 8,
-        `topControlCount=${top.topControlCount || 0}`,
-        '≤8',
+        topM,
+        {
+          pass: (v) => (v.topControlCount || 0) <= 8,
+          measured: (v) => `topControlCount=${v.topControlCount || 0}`,
+          threshold: '≤8',
+        },
       )
     }
 
@@ -1332,27 +1388,35 @@ async function runViewport(browser, width, height, label, projectId) {
       return true
     })
     if (labSurfaceOk) {
-      const lab = await measureLab(page)
-      if (!lab.missing) {
-        add(
-          `B4-lab-empty-filter@${label}`,
-          'HARD',
-          'CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0',
-          `Lab@${label}`,
-          lab.labFilterWhenEmpty === false,
-          `cards=${lab.cardCount} filterWhenEmpty=${lab.labFilterWhenEmpty}`,
-          'false',
-        )
-        add(
-          `B4-lab-kind-strips@${label}`,
-          'HARD',
-          'CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1',
-          `Lab@${label}`,
-          lab.kindFullStrips <= 1,
-          `kindFullStrips=${lab.kindFullStrips}`,
-          '≤1',
-        )
-      }
+      const labRaw = await measureLab(page)
+      const labM = labRaw.missing
+        ? notFound('Lab root missing')
+        : found(labRaw)
+      // cards===0 is intentional empty → found. Root missing → notFound.
+      judgeMeasured(
+        `B4-lab-empty-filter@${label}`,
+        'HARD',
+        'CALM_BUDGET.md B4-lab-empty-filter · no filter when cards=0',
+        `Lab@${label}`,
+        labM,
+        {
+          pass: (v) => v.labFilterWhenEmpty === false,
+          measured: (v) => `cards=${v.cardCount} filterWhenEmpty=${v.labFilterWhenEmpty}`,
+          threshold: 'false',
+        },
+      )
+      judgeMeasured(
+        `B4-lab-kind-strips@${label}`,
+        'HARD',
+        'CALM_BUDGET.md B4-lab-kind-strips · kindFullStrips ≤ 1',
+        `Lab@${label}`,
+        labM,
+        {
+          pass: (v) => v.kindFullStrips <= 1,
+          measured: (v) => `kindFullStrips=${v.kindFullStrips}`,
+          threshold: '≤1',
+        },
+      )
     }
 
     // Craft on Draft
@@ -1361,32 +1425,37 @@ async function runViewport(browser, width, height, label, projectId) {
       return true
     })
     if (draftCraftOk) {
-      const craft = await measureCraft(page)
-      if (craft.missing || craft.notMeasured || !craft.foundStrip) {
-        notMeasuredFail(
-          width >= 1200 ? 'B4-craft-desktop' : 'B4-craft-phone',
-          `Draft craft@${label}`,
-          craft.reason || 'craft surface not found',
-        )
-      } else if (width >= 1200) {
-        add(
+      const craftRaw = await measureCraft(page)
+      const craftM = (craftRaw.missing || craftRaw.notMeasured || !craftRaw.foundStrip)
+        ? notFound(craftRaw.reason || 'craft surface selectors matched nothing', { raw: craftRaw })
+        : found(craftRaw)
+      if (width >= 1200) {
+        judgeMeasured(
           'B4-craft-desktop',
           'HARD',
           'CALM_BUDGET.md B4-craft-desktop · craft visible ≤ 5 + overflow',
           'Draft craft@1440',
-          craft.chipVisibleCount <= 5,
-          `chipVisibleCount=${craft.chipVisibleCount} [${(craft.chipLabels || []).join(',')}] foundStrip=${craft.foundStrip}`,
-          '≤5',
+          craftM,
+          {
+            pass: (v) => v.chipVisibleCount <= 5,
+            measured: (v) =>
+              `chipVisibleCount=${v.chipVisibleCount} [${(v.chipLabels || []).join(',')}] foundStrip=${v.foundStrip}`,
+            threshold: '≤5',
+          },
         )
       } else {
-        add(
+        judgeMeasured(
           'B4-craft-phone',
           'HARD',
           'CALM_BUDGET.md B4-craft-phone · craft collapsed disclosure default @390',
           'Draft craft@390',
-          craft.craftCollapsedDefault === true,
-          `collapsed=${craft.craftCollapsedDefault} chips=${craft.chipVisibleCount} detailsOpen=${craft.detailsOpen}`,
-          'true (disclosure collapsed; absence ≠ pass)',
+          craftM,
+          {
+            pass: (v) => v.craftCollapsedDefault === true,
+            measured: (v) =>
+              `collapsed=${v.craftCollapsedDefault} chips=${v.chipVisibleCount} detailsOpen=${v.detailsOpen}`,
+            threshold: 'true (disclosure collapsed; absence ≠ pass)',
+          },
         )
       }
     }
@@ -1483,14 +1552,17 @@ async function runViewport(browser, width, height, label, projectId) {
     }
 
     if (width >= 1200) {
-      add(
+      judgeMeasured(
         'B6-top-job',
         'HARD',
         'CALM_BUDGET.md B6-top-job · solid job primaries = 0',
         'topbar',
-        (top.topJobPrimaryCount || 0) === 0,
-        `topJobPrimaryCount=${top.topJobPrimaryCount || 0}`,
-        '=0',
+        top.missing ? notFound('shell topbar missing') : found(top),
+        {
+          pass: (v) => (v.topJobPrimaryCount || 0) === 0,
+          measured: (v) => `topJobPrimaryCount=${v.topJobPrimaryCount || 0}`,
+          threshold: '=0',
+        },
       )
     }
 
@@ -1733,7 +1805,7 @@ writeFileSync(OUT_MD, md)
 // Determinism fingerprint ignores timestamps / project ids in measured paths that include them.
 const fingerprint = checks.map((c) => `${c.id}|${c.pass ? 'P' : c.sev === 'HARD' ? 'F' : 'W'}|${c.measured}|${c.threshold}`).join('\n')
 writeFileSync(OUT_JSON, JSON.stringify({ meta, checks, fingerprint }, null, 2))
-console.log(`\nWrote ${OUT_MD}`)
+console.log(`\nWrote ${OUT_MD}` + (RECORD_SCOREBOARD ? ' (tracked scoreboard --record)' : ' (untracked run artifact)'))
 console.log(`HARD fails: ${hardFails} / checks: ${checks.length}`)
 console.log(`FINGERPRINT ${hashFingerprint(fingerprint)}`)
 process.exit(hardFails > 0 ? 1 : 0)
