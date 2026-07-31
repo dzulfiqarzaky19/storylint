@@ -432,7 +432,8 @@ export function AgentPanel({
               hint="Continue, Rewrite, and Brainstorm land on the open Draft page. Start one chapter, then come back here to write with the companion."
               action={
                 onAddChapter ? (
-                  <Button variant="primary" onClick={onAddChapter}>
+                  // One primary per job (ox): binder New chapter owns Draft empty create.
+                  <Button variant="ghost" onClick={onAddChapter}>
                     Write first chapter
                   </Button>
                 ) : undefined
@@ -480,7 +481,8 @@ export function AgentPanel({
               hint="Check is the only place Continuity lives. It reads your chapter against accepted Canon, then leaves findings as marks and Inbox proposals — it never changes Canon on its own."
               action={
                 onAddChapter ? (
-                  <Button variant="primary" onClick={onAddChapter}>
+                  // One primary per job (ox): binder New chapter owns Draft empty create.
+                  <Button variant="ghost" onClick={onAddChapter}>
                     Write first chapter
                   </Button>
                 ) : undefined
@@ -588,7 +590,9 @@ export function AgentPanel({
                 : 'Chat, Write, and Check all work on an open Draft chapter. Start one chapter — that is the first door into the companion.'}
             action={
               onAddChapter ? (
-                <Button variant="primary" onClick={onAddChapter}>
+                // One primary per job (ox): binder New chapter owns Draft empty create.
+                // Companion invites stay quiet when dual-rail shows both doors.
+                <Button variant="ghost" onClick={onAddChapter}>
                   Write first chapter
                 </Button>
               ) : undefined
