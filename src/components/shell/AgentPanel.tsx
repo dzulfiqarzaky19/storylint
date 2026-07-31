@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
@@ -44,7 +44,8 @@ const FACES: Record<CompanionContext, CompanionFace[]> = {
 /**
  * D6 density: at most 3 equal primary faces.
  * Inbox is always a badge-style rail item (not a primary).
- * Research (and any excess) live under More.
+ * Overflow faces: one item collapses to a plain quiet control (no More menu costume).
+ * Two or more overflow faces restore a real More menu (APG) — deliberate, not missing.
  */
 const PRIMARY_FACES: Record<CompanionContext, CompanionFace[]> = {
   writing: ['chat', 'write', 'check'],
@@ -191,6 +192,17 @@ export function AgentPanel({
     setFace(next)
     lastFaceByContext.current[companionContext] = next
     setMoreOpen(false)
+    // Overflow secondary (Research) can sit past the face-row scroll edge.
+    queueMicrotask(() => {
+      const root = document.querySelector<HTMLElement>('.companion__faces')
+      if (!root) return
+      const label = FACE_LABEL[next]
+      const tabs = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))
+      const active = tabs.find((tab) =>
+        (tab.textContent || '').replace(/\s+/g, ' ').trim().startsWith(label),
+      )
+      active?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    })
   }
 
   function renderProposals(list: Proposal[]) {
@@ -286,6 +298,33 @@ export function AgentPanel({
     ?? (companionContext === 'lab' ? '@lab' : companionContext === 'graph' ? '@graph' : `@${chapterTitle || 'chapter'}`)
 
   const overflowActive = overflow.includes(face)
+  const facesRef = useRef<HTMLDivElement | null>(null)
+
+  function onFacesKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') {
+      return
+    }
+    // Menus own their own keys; do not steal while a More menu is open.
+    if (moreOpen) return
+    const root = facesRef.current
+    if (!root) return
+    const tabs = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'))
+    if (tabs.length === 0) return
+    const active = document.activeElement
+    const index = tabs.findIndex((tab) => tab === active)
+    if (index < 0) return
+    event.preventDefault()
+    let next = index
+    if (event.key === 'ArrowRight') next = (index + 1) % tabs.length
+    else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length
+    else if (event.key === 'Home') next = 0
+    else if (event.key === 'End') next = tabs.length - 1
+    const tab = tabs[next]
+    tab?.focus()
+    // Face row is overflow-x; keep the focused tab on-screen (Research secondary).
+    tab?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    tab?.click()
+  }
 
   return (
     <div className="panel" data-companion-context={companionContext} data-companion-face={face}>
@@ -294,7 +333,13 @@ export function AgentPanel({
         {onClose ? <IconButton label="Close companion" onClick={onClose}>✕</IconButton> : null}
       </div>
 
-      <div className="companion__faces" role="tablist" aria-label="Companion faces">
+      <div
+        className="companion__faces"
+        role="tablist"
+        aria-label="Companion faces"
+        ref={facesRef}
+        onKeyDown={onFacesKeyDown}
+      >
         {primaries.map((candidate) => (
           <Button
             key={candidate}
@@ -321,7 +366,18 @@ export function AgentPanel({
           </Button>
         ) : null}
 
-        {overflow.length > 0 ? (
+        {overflow.length === 1 ? (
+          // One overflow face: plain quiet control. No menu costume (ox Research shape).
+          <Button
+            role="tab"
+            className="companion__face-secondary"
+            aria-selected={face === overflow[0]}
+            aria-pressed={face === overflow[0]}
+            onClick={() => selectFace(overflow[0])}
+          >
+            {FACE_LABEL[overflow[0]]}
+          </Button>
+        ) : overflow.length > 1 ? (
           <div className="companion__more" ref={moreRef}>
             <Button
               role="tab"

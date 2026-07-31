@@ -108,3 +108,10 @@
     max-width: 5.5rem;
   }
 }
+
+
+/* Quiet secondary overflow face (single-item collapse; not a primary peer). */
+.companion__face-secondary {
+  opacity: 0.82;
+  font-weight: 500;
+}

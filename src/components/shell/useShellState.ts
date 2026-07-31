@@ -173,7 +173,9 @@ export function useShellState(): ShellState {
   useEffect(() => {
     if (!focus) return
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setFocus(false)
+      // Innermost wins: sheet leave / dialogs stopPropagation + preventDefault.
+      if (event.key !== 'Escape' || event.defaultPrevented) return
+      setFocus(false)
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
