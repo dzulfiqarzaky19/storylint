@@ -633,6 +633,11 @@
   color: var(--color-text);
 }
 
+.manuscript__craft-tag--more {
+  border-style: dashed;
+  color: var(--color-text-muted);
+}
+
 /* Phone craft-tag density (S4): one summary row until expanded. */
 .manuscript__craft-tags-disclosure {
   margin: 0;
