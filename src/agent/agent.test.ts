@@ -8,10 +8,7 @@ const project: Project = {
   title: 'Storylint',
   chapters: [{ id: 'chapter-1', title: 'Opening', body: 'Aria meets Kael.', craftTags: [], revision: 0 }],
   sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
-<<<<<<< HEAD
-=======
   lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
->>>>>>> storylint/lab-slice
 }
 
 const fixtureConfig = {
@@ -26,22 +23,13 @@ test('fixture sheet request returns structured pending proposal pack without mut
   assert.ok(result.proposals.length >= 2)
   assert.equal(new Set(result.proposals.map((proposal) => proposal.packId)).size, 1)
   assert.equal(result.proposals.every((proposal) => proposal.status === 'pending'), true)
-<<<<<<< HEAD
-=======
   assert.equal(result.labCards.length, 0)
->>>>>>> storylint/lab-slice
   assert.deepEqual(project, before)
 })
 
 test('fixture generic chat returns project-aware help without a proposal', async () => {
   const result = await runAgent(project, 'chapter-1', 'What should I do next?', fixtureConfig)
   assert.equal(result.proposals.length, 0)
-<<<<<<< HEAD
-  assert.match(result.message, /Opening/)
-})
-
-test('configured live adapter is selected once', async () => {
-=======
   assert.equal(result.labCards.length, 0)
   assert.match(result.message, /fixture mode/i)
   assert.match(result.message, /Opening/)
@@ -72,7 +60,6 @@ test('fixture sheet request still wins over lab-ish wording', async () => {
 })
 
 test('configured live adapter is selected for sheet asks', async () => {
->>>>>>> storylint/lab-slice
   let calls = 0
   const result = await runAgent(
     project,
@@ -93,8 +80,6 @@ test('configured live adapter is selected for sheet asks', async () => {
   assert.equal(result.mode, 'live')
   assert.equal(calls, 1)
   assert.equal(result.proposals[0].sheetKind, 'organization')
-<<<<<<< HEAD
-=======
   assert.equal(result.labCards.length, 0)
 })
 
@@ -139,5 +124,4 @@ test('live Lab brainstorm adapter can return labCards', async () => {
   assert.equal(calls, 1)
   assert.equal(result.labCards.length, 1)
   assert.equal(result.proposals.length, 0)
->>>>>>> storylint/lab-slice
 })

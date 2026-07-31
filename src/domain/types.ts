@@ -101,10 +101,6 @@ export type ResearchNote = {
   sources: ResearchSource[]
 }
 
-<<<<<<< HEAD
-export type Project = {
-  schemaVersion: 1
-=======
 export const LAB_CARD_KINDS = [
   'beat',
   'place',
@@ -150,7 +146,6 @@ export type Lab = {
 export type Project = {
   /** 1 = pre-Lab projects (migrated on load). 2 = Lab field required. */
   schemaVersion: 1 | 2
->>>>>>> storylint/lab-slice
   title: string
   chapters: Chapter[]
   sheets: Sheet[]
@@ -158,10 +153,7 @@ export type Project = {
   rejectedFingerprints: string[]
   marks: Mark[]
   researchNotes: ResearchNote[]
-<<<<<<< HEAD
-=======
   lab: Lab
->>>>>>> storylint/lab-slice
 }
 
 export type LintResult = {

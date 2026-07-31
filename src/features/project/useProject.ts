@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-<<<<<<< HEAD
-import type { Chapter, Fact, Project, Sheet } from '../../domain/types.ts'
-=======
 import type { Chapter, Fact, LabCardKind, Project, Sheet, SheetKind } from '../../domain/types.ts'
->>>>>>> storylint/lab-slice
 import type { ApplyCard } from '../../cowrite/types.ts'
 import * as api from './api.ts'
 
@@ -74,16 +70,12 @@ export type ProjectController = {
   activeProjectId: string
   switchProject: (id: string) => Promise<void>
   createProject: (id: string, title: string) => Promise<void>
-<<<<<<< HEAD
-  exportProject: () => Promise<void>
-=======
     exportProject: () => Promise<void>
   createLabCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
   patchLabCard: (cardId: string, patch: { title?: string; body?: string; kind?: LabCardKind }) => Promise<Project>
   archiveLabCard: (cardId: string) => Promise<void>
   pinLabCard: (cardId: string, pinned?: boolean) => Promise<void>
   promoteLabCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<api.PromoteLabResponse>
->>>>>>> storylint/lab-slice
 }
 
 /** API-backed project state. Chapter writes debounce; structured bible edits save explicitly. */
@@ -426,31 +418,21 @@ export function useProject(): ProjectController {
         if (generation !== projectGenerationRef.current) throw new Error('Project switched during Continuity')
         return api.runContinuity(chapterId)
       })())
-<<<<<<< HEAD
-=======
       if (generation !== projectGenerationRef.current) return null
->>>>>>> storylint/lab-slice
       if (!applyIfCurrent(generation, result.project)) return null
       setContinuity({ running: false, mode: result.mode, counts: result.counts })
       setError(null)
       return result
     } catch (caught) {
       if (generation === projectGenerationRef.current) {
-<<<<<<< HEAD
-        setContinuity((current) => ({ ...current, running: false }))
-=======
->>>>>>> storylint/lab-slice
         setError(caught instanceof Error ? caught.message : 'Continuity failed')
       }
       throw caught
     } finally {
       continuityRunningRef.current = false
-<<<<<<< HEAD
-=======
       if (generation === projectGenerationRef.current) {
         setContinuity((current) => (current.running ? { ...current, running: false } : current))
       }
->>>>>>> storylint/lab-slice
     }
   }, [flushChapter])
 
@@ -603,8 +585,6 @@ export function useProject(): ProjectController {
     switchProject,
     createProject,
     exportProject,
-<<<<<<< HEAD
-=======
     createLabCard: async (input) => {
       const generation = beginMutation()
       if (generation === null) throw new Error('Project switch in progress')
@@ -680,6 +660,5 @@ export function useProject(): ProjectController {
         throw caught
       }
     },
->>>>>>> storylint/lab-slice
   }
 }

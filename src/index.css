@@ -23,18 +23,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-<<<<<<< HEAD
-/* Scroll still works; bars hidden everywhere (wheel/trackpad/keys). */
-* {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-*::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
-=======
 /* Thin rail scrollbars; manuscript paper stays clean (see shell.css). */
 * {
   scrollbar-width: thin;
@@ -90,5 +78,4 @@ body {
   text-decoration: none;
   outline: var(--focus-ring-width) solid var(--color-focus-ring);
   outline-offset: var(--focus-ring-offset);
->>>>>>> storylint/lab-slice
 }

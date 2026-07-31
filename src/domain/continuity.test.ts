@@ -43,11 +43,7 @@ function fixtureProject(): Project {
     proposals: [],
     rejectedFingerprints: [],
     marks: [],
-<<<<<<< HEAD
-    researchNotes: [],
-=======
     researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
->>>>>>> storylint/lab-slice
   }
 }
 

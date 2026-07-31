@@ -16,26 +16,18 @@ function readTokenPx(name: string, fallback: number): number {
 function graphGeometry() {
   const width = readTokenPx('--size-graph-view-w', 800)
   const height = readTokenPx('--size-graph-view-h', 520)
-<<<<<<< HEAD
-=======
   const networkNodeRadius = readTokenPx('--size-graph-network-node', 56) / 2
   const networkLabelY = networkNodeRadius + readTokenPx('--space-5', 20)
->>>>>>> storylint/lab-slice
   return {
     width,
     height,
     centerX: width / 2,
     centerY: height / 2,
-<<<<<<< HEAD
-    radius: readTokenPx('--size-graph-radius', 185),
-    nodeRadius: readTokenPx('--size-graph-node', 76) / 2,
-=======
     radius: readTokenPx('--size-graph-radius', 180),
     innerRadius: readTokenPx('--size-graph-radius-inner', 100),
     networkNodeRadius,
     networkLabelY,
     networkKindY: networkLabelY + readTokenPx('--space-4', 16),
->>>>>>> storylint/lab-slice
     familyNodeW: readTokenPx('--size-graph-node', 76) + readTokenPx('--space-8', 32),
     familyNodeH: readTokenPx('--size-graph-node', 76) + readTokenPx('--space-3', 12),
     familyGapX: readTokenPx('--space-8', 32) + readTokenPx('--space-4', 16),
@@ -46,8 +38,6 @@ function graphGeometry() {
   }
 }
 
-<<<<<<< HEAD
-=======
 function networkPosition(index: number, count: number, geometry: ReturnType<typeof graphGeometry>) {
   if (count === 1) return { x: geometry.centerX, y: geometry.centerY }
   if (count <= 12) {
@@ -75,7 +65,6 @@ function networkLabel(label: string, dense: boolean): string {
   return dense && label.length > 12 ? `${label.slice(0, 11).trimEnd()}…` : label
 }
 
->>>>>>> storylint/lab-slice
 function pointsPath(points: Array<{ x: number; y: number }>): string {
   return points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x} ${point.y}`).join(' ')
 }
@@ -116,20 +105,10 @@ export function RelationshipGraph({
     paddingX: geometry.familyPad,
     paddingY: geometry.familyPad,
   }), [geometry, graph])
-<<<<<<< HEAD
-  const networkPositions = useMemo(() => new Map(graph.nodes.map((node, index) => {
-    const angle = graph.nodes.length <= 1 ? 0 : (Math.PI * 2 * index) / graph.nodes.length - Math.PI / 2
-    return [node.id, {
-      x: graph.nodes.length === 1 ? geometry.centerX : geometry.centerX + Math.cos(angle) * geometry.radius,
-      y: graph.nodes.length === 1 ? geometry.centerY : geometry.centerY + Math.sin(angle) * geometry.radius,
-    }]
-  })), [geometry, graph.nodes])
-=======
   const networkPositions = useMemo(() => new Map(graph.nodes.map((node, index) => [
     node.id,
     networkPosition(index, graph.nodes.length, geometry),
   ])), [geometry, graph.nodes])
->>>>>>> storylint/lab-slice
   const familyPositions = useMemo(
     () => new Map(family.positions.map((position) => [position.id, position])),
     [family.positions],
@@ -214,30 +193,18 @@ export function RelationshipGraph({
   const empty = view === 'family' ? family.nodes.length === 0 : graph.nodes.length === 0
 
   return (
-<<<<<<< HEAD
-    <main className="graph" aria-label="Relationship graph">
-=======
     <main id="workspace" className="graph" aria-label="Relationship graph" tabIndex={-1}>
->>>>>>> storylint/lab-slice
       <header className="graph__header">
         <div>
           <h2>Relationships</h2>
           <p>Accepted bible facts only. Pending proposals never render as edges.</p>
         </div>
         <div className="graph__toolbar">
-<<<<<<< HEAD
-          <div className="graph__view" aria-label="Graph view">
-            <Button aria-pressed={view === 'network'} onClick={() => setView('network')}>Network</Button>
-            <Button aria-pressed={view === 'family'} onClick={() => setView('family')}>Family</Button>
-          </div>
-          <div className="graph__filters" aria-label="Filter by sheet kind">
-=======
           <div className="graph__view" role="group" aria-label="Graph view">
             <Button aria-pressed={view === 'network'} onClick={() => setView('network')}>Network</Button>
             <Button aria-pressed={view === 'family'} onClick={() => setView('family')}>Family</Button>
           </div>
           <div className="graph__filters" role="group" aria-label="Filter by sheet kind">
->>>>>>> storylint/lab-slice
             {SHEET_KINDS.map((kind) => (
               <Button key={kind} aria-pressed={kinds.has(kind)} onClick={() => toggleKind(kind)}>{kind}</Button>
             ))}
@@ -246,14 +213,6 @@ export function RelationshipGraph({
       </header>
 
       {empty ? (
-<<<<<<< HEAD
-        <EmptyState
-          title={view === 'family' ? 'No family tree yet' : 'No visible sheets'}
-          hint={view === 'family'
-            ? 'Add character sheets and accepted kinship facts such as parent_of, spouse_of, or sibling_of.'
-            : 'Enable a sheet kind or create a bible sheet.'}
-        />
-=======
         <div className="graph__empty">
           <EmptyState
             title={view === 'family' ? 'No family tree yet' : 'No visible sheets'}
@@ -262,7 +221,6 @@ export function RelationshipGraph({
               : 'Enable a sheet kind or create a bible sheet.'}
           />
         </div>
->>>>>>> storylint/lab-slice
       ) : view === 'network' ? (
         <svg className="graph__canvas" viewBox={`0 0 ${geometry.width} ${geometry.height}`} role="img" aria-label="Bible relationship network">
           <defs><marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" /></marker></defs>
@@ -291,18 +249,11 @@ export function RelationshipGraph({
                 onClick={() => onOpenSheet(node.id)} onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onOpenSheet(node.id) }
                 }}>
-<<<<<<< HEAD
-                <circle r={geometry.nodeRadius} />
-                <text className="graph__portrait" textAnchor="middle" y="-4">{node.portrait || node.label.slice(0, 2).toUpperCase()}</text>
-                <text className="graph__label" textAnchor="middle" y={geometry.nodeRadius + 20}>{node.label}</text>
-                <text className="graph__kind" textAnchor="middle" y={geometry.nodeRadius + 35}>{node.kind}</text>
-=======
                 <title>{node.label} · {node.kind}</title>
                 <circle r={geometry.networkNodeRadius} />
                 <text className="graph__portrait" textAnchor="middle" y="-4">{node.portrait || node.label.slice(0, 2).toUpperCase()}</text>
                 <text className="graph__label" textAnchor="middle" y={geometry.networkLabelY}>{networkLabel(node.label, graph.nodes.length > 12)}</text>
                 <text className="graph__kind" textAnchor="middle" y={geometry.networkKindY}>{node.kind}</text>
->>>>>>> storylint/lab-slice
               </g>
             )
           })}

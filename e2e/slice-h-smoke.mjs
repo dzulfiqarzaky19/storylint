@@ -12,16 +12,6 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
   const before = await page.evaluate(() => fetch('/api/project').then((response) => response.json()))
-<<<<<<< HEAD
-  await page.getByRole('button', { name: 'Research', exact: true }).click()
-  await page.getByLabel('Research query').fill(`medieval archive access customs smoke-${Date.now()}`)
-  await page.locator('form').getByRole('button', { name: 'Research', exact: true }).click()
-  const card = page.locator('.research-card').first()
-  await card.getByText('Controlled archive access').waitFor({ timeout: 10000 })
-  await card.getByText('International Council on Archives — Principles of Access').waitFor({ timeout: 5000 })
-  await card.getByRole('button', { name: 'Pin' }).click()
-  await page.getByText('Pinned notes').waitFor({ timeout: 5000 })
-=======
   const companion = page.locator('.panel[data-companion-context]').first()
   const faces = companion.getByRole('tablist', { name: 'Companion faces' })
 
@@ -34,7 +24,6 @@ try {
   await card.getByText('International Council on Archives — Principles of Access').waitFor({ timeout: 5000 })
   await card.getByRole('button', { name: 'Pin' }).click()
   await companion.getByText('Pinned notes').waitFor({ timeout: 5000 })
->>>>>>> storylint/lab-slice
   await card.getByRole('button', { name: 'Propose to sheet' }).click()
   await page.waitForFunction(
     (count) => fetch('/api/project').then((response) => response.json()).then((project) => project.proposals.length > count),
@@ -50,13 +39,8 @@ try {
   }
 
   await page.screenshot({ path: 'e2e/output/slice-h-research.png', fullPage: true })
-<<<<<<< HEAD
-  await page.getByRole('button', { name: 'Agent', exact: true }).click()
-  await page.getByRole('button', { name: 'Accept' }).first().waitFor({ timeout: 5000 })
-=======
   await faces.getByRole('button', { name: /^Inbox/ }).click()
   await companion.getByRole('button', { name: 'Accept' }).first().waitFor({ timeout: 5000 })
->>>>>>> storylint/lab-slice
   await page.screenshot({ path: 'e2e/output/slice-h-smoke.png', fullPage: true })
   console.log('PASS: dedicated cited research panel; Pin persists note; Propose creates pending lore; no auto-canon or chat dump')
 } finally {

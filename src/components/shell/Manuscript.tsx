@@ -99,11 +99,7 @@ export function Manuscript({
   }, [])
 
   return (
-<<<<<<< HEAD
-    <main className="manuscript" aria-label="Manuscript">
-=======
     <main id="workspace" className="manuscript" aria-label="Manuscript" tabIndex={-1}>
->>>>>>> storylint/lab-slice
       <div className="manuscript__page">
         <div className="manuscript__sheet">
           <header className="manuscript__header">
@@ -185,8 +181,6 @@ export function Manuscript({
                 const { selectionStart: start, selectionEnd: end, value } = event.currentTarget
                 onSelectionChange({ start, end, text: value.slice(start, end) })
               }}
-<<<<<<< HEAD
-=======
               onKeyUp={(event) => {
                 const { selectionStart: start, selectionEnd: end, value } = event.currentTarget
                 onSelectionChange({ start, end, text: value.slice(start, end) })
@@ -195,7 +189,6 @@ export function Manuscript({
                 const { selectionStart: start, selectionEnd: end, value } = event.currentTarget
                 onSelectionChange({ start, end, text: value.slice(start, end) })
               }}
->>>>>>> storylint/lab-slice
               placeholder="Write…"
               aria-label="Chapter text"
               readOnly={readOnly}

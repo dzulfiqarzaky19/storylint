@@ -2,20 +2,12 @@ import type { LlmConfig } from '../llm/types.ts'
 
 export class LlmError extends Error {}
 
-<<<<<<< HEAD
-export async function completeJson(
-  config: LlmConfig,
-  system: string,
-  user: string,
-): Promise<unknown> {
-=======
 async function completeRaw(
   config: LlmConfig,
   system: string,
   user: string,
   temperature: number,
 ): Promise<string> {
->>>>>>> storylint/lab-slice
   if (!config.baseUrl || !config.model) throw new LlmError('LLM_BASE_URL and LLM_MODEL are required')
   let response: Response
   try {
@@ -29,11 +21,7 @@ async function completeRaw(
         model: config.model,
         messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
         max_tokens: config.maxTokens,
-<<<<<<< HEAD
-        temperature: 0.1,
-=======
         temperature,
->>>>>>> storylint/lab-slice
       }),
       signal: AbortSignal.timeout(300_000),
     })
@@ -68,9 +56,6 @@ async function completeRaw(
       ).join('')
     : message.content
   if (typeof content !== 'string') throw new LlmError('LLM response content is invalid')
-<<<<<<< HEAD
-  return parseJsonObject(content)
-=======
   return content
 }
 
@@ -91,7 +76,6 @@ export async function completeJson(
   user: string,
 ): Promise<unknown> {
   return parseJsonObject(await completeRaw(config, system, user, 0.1))
->>>>>>> storylint/lab-slice
 }
 
 function parseJsonObject(content: string): unknown {

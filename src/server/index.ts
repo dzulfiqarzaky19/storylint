@@ -5,22 +5,14 @@ import { ProjectStore } from './store.ts'
 
 const root = resolve(fileURLToPath(new URL('../../', import.meta.url)))
 const store = new ProjectStore(resolve(root, 'data/project.json'), {
-<<<<<<< HEAD
-  schemaVersion: 1,
-=======
   schemaVersion: 2,
->>>>>>> storylint/lab-slice
   title: 'Storylint',
   chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
   sheets: [],
   proposals: [],
   rejectedFingerprints: [],
   marks: [],
-<<<<<<< HEAD
-  researchNotes: [],
-=======
   researchNotes: [], lab: { boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: [] }], cards: [] },
->>>>>>> storylint/lab-slice
 })
 const port = Number.parseInt(process.env.STORYLINT_PORT ?? '4174', 10)
 

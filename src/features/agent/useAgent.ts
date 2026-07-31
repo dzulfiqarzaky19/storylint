@@ -15,14 +15,6 @@ export function useAgent(
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([])
   const [sending, setSending] = useState(false)
   const [tipsDismissed, setTipsDismissed] = useState(false)
-<<<<<<< HEAD
-  const sessionRef = useRef(0)
-
-  async function send(chapterId: string, text: string, prepare?: () => Promise<void>) {
-    if (sending) return
-    const generation = beginMutation()
-    if (generation === null) return
-=======
   const [llmMode, setLlmMode] = useState<'fixture' | 'live' | null>(null)
   const sessionRef = useRef(0)
 
@@ -46,7 +38,6 @@ export function useAgent(
       ])
       return
     }
->>>>>>> storylint/lab-slice
     const session = sessionRef.current
     const id = Date.now()
     setTranscript((current) => [...current, { id: `user-${id}`, role: 'user', text }])
@@ -61,10 +52,7 @@ export function useAgent(
       })())
       if (session !== sessionRef.current || generation !== projectGeneration()) return
       onProject(result.project, generation)
-<<<<<<< HEAD
-=======
       setLlmMode(result.mode)
->>>>>>> storylint/lab-slice
       setTranscript((current) => [
         ...current,
         { id: `assistant-${id}`, role: 'assistant', text: result.message },
@@ -187,19 +175,13 @@ export function useAgent(
     sessionRef.current += 1
     setTranscript([])
     setSending(false)
-<<<<<<< HEAD
-=======
     setLlmMode(null)
->>>>>>> storylint/lab-slice
   }, [])
 
   return {
     transcript,
     sending,
-<<<<<<< HEAD
-=======
     llmMode,
->>>>>>> storylint/lab-slice
     tipsDismissed,
     dismissTips: () => setTipsDismissed(true),
     send,

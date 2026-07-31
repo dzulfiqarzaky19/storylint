@@ -1,10 +1,4 @@
 import { claimFingerprint } from '../domain/fingerprint.ts'
-<<<<<<< HEAD
-import type { Claim, Project, Proposal, SheetKind } from '../domain/types.ts'
-import { completeJson } from '../server/llm.ts'
-import { hasLiveLlm, type LlmConfig } from '../llm/types.ts'
-import type { AgentModelResponse, AgentRunResult, SheetPack } from './types.ts'
-=======
 import type { Claim, LabCardKind, Project, Proposal, SheetKind } from '../domain/types.ts'
 import { completeJson, completeText } from '../server/llm.ts'
 import { hasLiveLlm, type LlmConfig } from '../llm/types.ts'
@@ -15,7 +9,6 @@ const SHEET_ASK =
 
 const LAB_ASK =
   /(?:brainstorm|spark|fork|what[- ]?if|lab\b|onto the bench|for the lab|@lab)/i
->>>>>>> storylint/lab-slice
 
 export type AgentCompletion = (
   config: LlmConfig,
@@ -42,8 +35,6 @@ function parsePack(value: unknown): SheetPack | null {
   return { name: raw.name.trim(), kind: raw.kind as SheetKind, summary: raw.summary.trim(), facts }
 }
 
-<<<<<<< HEAD
-=======
 function parseLabCards(value: unknown): LabCardDraft[] {
   if (value == null) return []
   if (!Array.isArray(value)) throw new Error('Invalid lab cards')
@@ -62,7 +53,6 @@ function parseLabCards(value: unknown): LabCardDraft[] {
   })
 }
 
->>>>>>> storylint/lab-slice
 function proposalsFrom(pack: SheetPack, chapterId: string, requestText: string): Proposal[] {
   const packKey = `${pack.kind}:${pack.name.toLocaleLowerCase('en-US')}:${requestText}`
   const packId = `sheet-pack-${stableHash(packKey)}`
@@ -105,13 +95,6 @@ function stableHash(value: string): string {
   return (hash >>> 0).toString(16).padStart(8, '0')
 }
 
-<<<<<<< HEAD
-function fixtureResponse(project: Project, chapterId: string, message: string): AgentModelResponse {
-  const chapter = project.chapters.find((candidate) => candidate.id === chapterId)
-  const sheetAsk = /(?:create|draft|make|fill|flesh).*(?:character|organization|sheet)|(?:character|organization).*(?:sheet|profile)/i.test(message)
-  if (!sheetAsk) {
-    return { message: `For ${chapter?.title ?? 'this chapter'}, keep drafting, then run Continuity after the scene.`, sheetPack: null }
-=======
 function projectContext(project: Project, chapterId: string): string {
   const chapter = project.chapters.find((candidate) => candidate.id === chapterId)
   const sheets = project.sheets.length === 0
@@ -191,7 +174,6 @@ function fixtureResponse(project: Project, chapterId: string, message: string): 
       sheetPack: null,
       labCards: [],
     }
->>>>>>> storylint/lab-slice
   }
   const organization = /organization|order/i.test(message)
   return {
@@ -205,24 +187,11 @@ function fixtureResponse(project: Project, chapterId: string, message: string): 
           { key: 'role', value: 'supporting character', statement: 'Role: supporting character' },
           { key: 'goal', value: 'undecided', statement: 'Goal: undecided' },
         ] },
-<<<<<<< HEAD
-=======
     labCards: [],
->>>>>>> storylint/lab-slice
   }
 }
 
 async function liveResponse(config: LlmConfig, project: Project, chapterId: string, message: string): Promise<AgentModelResponse> {
-<<<<<<< HEAD
-  const chapter = project.chapters.find((candidate) => candidate.id === chapterId)
-  const raw = await completeJson(
-    config,
-    'You are Storylint sheet assistance. Respond as JSON: {"message": string, "sheetPack": null or {"name": string, "kind": "character"|"lore"|"world"|"organization", "summary": string, "facts": [{"key": string,"value": string,"statement": string}]}}. Only return a sheetPack when the user asks to create or fill a sheet. Everything is proposal-only until Accept.',
-    `Current chapter: ${chapter?.title ?? ''}\n${chapter?.body ?? ''}\n\nExisting sheets: ${project.sheets.map((sheet) => `${sheet.kind}:${sheet.name}`).join(', ')}\n\nUser: ${message}`,
-  )
-  if (typeof raw !== 'object' || raw === null || !('message' in raw) || typeof raw.message !== 'string') throw new Error('Invalid agent response')
-  return { message: raw.message, sheetPack: parsePack('sheetPack' in raw ? raw.sheetPack : null) }
-=======
   const context = projectContext(project, chapterId)
   if (LAB_ASK.test(message) && !SHEET_ASK.test(message)) {
     const raw = await completeJson(
@@ -264,7 +233,6 @@ async function liveResponse(config: LlmConfig, project: Project, chapterId: stri
     `${context}\n\nUser: ${message}`,
   )
   return { message: reply, sheetPack: null, labCards: [] }
->>>>>>> storylint/lab-slice
 }
 
 export async function runAgent(
@@ -279,17 +247,11 @@ export async function runAgent(
     ? fixtureResponse(project, chapterId, message)
     : await completion(config, project, chapterId, message)
   const sheetPack = parsePack(response.sheetPack)
-<<<<<<< HEAD
-=======
   const labCards = parseLabCards(response.labCards ?? [])
->>>>>>> storylint/lab-slice
   return {
     mode,
     message: response.message,
     proposals: sheetPack ? proposalsFrom(sheetPack, chapterId, message) : [],
-<<<<<<< HEAD
-=======
     labCards,
->>>>>>> storylint/lab-slice
   }
 }

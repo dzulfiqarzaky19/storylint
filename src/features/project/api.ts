@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import type { Chapter, Fact, Project, Proposal, Sheet } from '../../domain/types.ts'
-=======
 import type { Chapter, Fact, LabCardKind, Project, Proposal, Sheet, SheetKind } from '../../domain/types.ts'
->>>>>>> storylint/lab-slice
 import type { ApplyCard, CowriteRequest, CowriteResult } from '../../cowrite/types.ts'
 import type { ReviewKind, ReviewResult } from '../../review/types.ts'
 import type { ResearchNote } from '../../domain/types.ts'
@@ -179,8 +175,6 @@ export function applySuggestion(chapterId: string, card: ApplyCard): Promise<Pro
     }),
   })
 }
-<<<<<<< HEAD
-=======
 
 export function createLabCard(input: {
   boardId?: string
@@ -232,4 +226,3 @@ export function promoteLabCard(cardId: string, input: {
 export function createLabBoard(title: string): Promise<Project> {
   return request('/api/lab/boards', { method: 'POST', body: JSON.stringify({ title }) })
 }
->>>>>>> storylint/lab-slice

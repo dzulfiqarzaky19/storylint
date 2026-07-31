@@ -88,10 +88,7 @@ Fiction IDE: draft on a clean page; agent knows your world and works with you; *
 | “IDE + agent for your serial” | “AI stays in the margins” (undersells) |
 | “Accept before it hits canon or the page” | “We never help you write” |
 | “Fewer notes because the agent reviews” | “Set and forget novel factory” |
-<<<<<<< HEAD
-=======
 
 ### Personas (ops)
 
 Working beachhead table for agents: [PERSONAS.md](./PERSONAS.md). Keep insight there — do **not** encode customer types as app `const` / feature flags until multi-segment product needs it.
->>>>>>> storylint/lab-slice

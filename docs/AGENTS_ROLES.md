@@ -1,24 +1,10 @@
-<<<<<<< HEAD
-# Coder · Reviewer · Verifier
-=======
 # Coder · Reviewer · UX · Verifier
->>>>>>> storylint/lab-slice
 
 ## Shared
 
 | | |
 |--|--|
 | Product | [PRD.md](./PRD.md) |
-<<<<<<< HEAD
-| Rules | [../CLAUDE.md](../CLAUDE.md) |
-| Slices / status | [BUILD.md](./BUILD.md) |
-| Skin | [design/TOKENS.md](./design/TOKENS.md) — Kobo paper, **not** AI blue |
-| UI e2e | [E2E.md](./E2E.md) |
-| Apply/Accept | [04-agents.md](./04-agents.md) |
-
-**Phase:** only the assigned BUILD slice (see status table).
-
-=======
 | Local harness (optional) | `CLAUDE.md` on disk only — **not in git** |
 | Slices / status | [BUILD.md](./BUILD.md) |
 | Skin | [design/TOKENS.md](./design/TOKENS.md) — Kobo paper, **not** AI blue |
@@ -144,7 +130,6 @@ Coder (slice N) → Reviewer (slice N) → UX (if UI) → Verifier → commit �
 Skip Reviewer only for: pure docs typo, or one-line token value the human already checked.  
 Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 
->>>>>>> storylint/lab-slice
 ---
 
 ## Coder
@@ -153,11 +138,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 
 1. Read BUILD **status** — don’t rebuild Done slices  
 2. Read slice In/Out  
-<<<<<<< HEAD
-3. UI work → TOKENS + 03-ux + E2E  
-=======
 3. UI work → TOKENS + 03-ux + PERSONAS + E2E  
->>>>>>> storylint/lab-slice
 
 ### While
 
@@ -168,10 +149,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 - No auth; no auto Apply/Accept  
 - UI slices: browser smoke per E2E (`channel: 'msedge'` here)  
 - Smallest diff  
-<<<<<<< HEAD
-=======
 - **Commits:** § Commit story — layered subjects, whole project, no harness, no `wip`  
->>>>>>> storylint/lab-slice
 
 ### Done
 
@@ -179,10 +157,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 - `npm test` + `npm run build` (+ lint)  
 - E2E screenshot if UI touched  
 - Short report: files, commands, blockers  
-<<<<<<< HEAD
-=======
 - Commit(s) named per § Commit story (not one dump at the end unless truly atomic)  
->>>>>>> storylint/lab-slice
 
 ### Do not
 
@@ -190,8 +165,6 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 - Invent Obsidian/VS Code/AI-blue colors  
 - Hardcode rail/paper widths in shell CSS  
 - Skip E2E on UI changes  
-<<<<<<< HEAD
-=======
 - Junk commit subjects (`wip` / `tmp` / “misc”) or AI harness in git  
 
 ---
@@ -206,7 +179,6 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 | **Verifier** | **No** (fail from command/Playwright output) | **Yes — required** for UI |
 
 If UX/Verifier start spelunking `src/` for “why,” they’ve left role — file a blocker and stop.
->>>>>>> storylint/lab-slice
 
 ---
 
@@ -224,10 +196,7 @@ Fail if:
 | Auth / client secrets | |
 | Gen chips in manuscript | |
 | Layout magic numbers | |
-<<<<<<< HEAD
-=======
 | Commit story | `wip`/harness files/unrelated mega-commit; see § Commit story |
->>>>>>> storylint/lab-slice
 
 Output:
 
@@ -241,10 +210,6 @@ Non-blocking:
 
 ---
 
-<<<<<<< HEAD
-## Verifier
-
-=======
 ## UX
 
 **Name:** **UX** (not “UI designer”). Owns **visual doctrine + ease-of-use + task flow**.  
@@ -327,24 +292,10 @@ Fail closed if Playwright cannot run or any expected path breaks.
 
 ### Always
 
->>>>>>> storylint/lab-slice
 ```bash
 cd d:/dev/projects/storylint
 npm test
 npm run build
-<<<<<<< HEAD
-npm run lint   # if present
-```
-
-UI slices: [E2E.md](./E2E.md) — boot servers, Playwright **msedge**, smoke Focus/paper/Continuity/Apply as relevant, `e2e/output/*.png`.
-
-```
-Verdict: pass | fail
-Commands:
-- …
-Manual / e2e:
-- …
-=======
 npm run lint
 ```
 
@@ -372,27 +323,14 @@ Playwright:
 - scripts run: …
 - assertions: …
 - screenshots: e2e/output/…
->>>>>>> storylint/lab-slice
 Failures:
 - …
 ```
 
-<<<<<<< HEAD
-No fixes in verifier role.
-
-=======
->>>>>>> storylint/lab-slice
 ---
 
 ## Prompt stubs
 
-<<<<<<< HEAD
-**Coder:** `BUILD slice {F|G|…} only. CLAUDE + TOKENS. Test-first domain. E2E if UI. Report commands.`
-
-**Reviewer:** `Slice {N}. AGENTS_ROLES fail gates. Diff only.`
-
-**Verifier:** `Slice {N}. BUILD + E2E evidence. Pass/fail only.`
-=======
 **Coder:** `BUILD slice {N} only. TOKENS + AGENTS_ROLES commit story. Test-first domain. Layered commits. Playwright smoke if UI. Report commands. Never commit harness.`
 
 **Reviewer:** `Slice {N}. AGENTS_ROLES fail gates. Diff only. No code.`
@@ -400,4 +338,3 @@ No fixes in verifier role.
 **UX:** `Follow docs/UX_PASS.md. Phase1 ux-drive · Phase2 ux-drive-graph (full graph). Progress on disk. Report md. ≤4 PNGs/session. Chat 3 lines. STOP.`
 
 **Verifier:** `Slice {N}. NO code read. npm test/build/lint + Playwright msedge — assert flows. Screenshots. pass|fail only. No fixes.`
->>>>>>> storylint/lab-slice

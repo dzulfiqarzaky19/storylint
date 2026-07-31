@@ -4,8 +4,6 @@ import { dirname, resolve } from 'node:path'
 import { runContinuity } from '../continuity/run.ts'
 import { runAgent } from '../agent/run.ts'
 import { acceptProposal, rejectProposal } from '../domain/proposals.ts'
-<<<<<<< HEAD
-=======
 import {
   archiveLabCard,
   createLabBoard,
@@ -18,7 +16,6 @@ import {
   LAB_CARD_KINDS,
 } from '../domain/lab.ts'
 import { SHEET_KINDS } from '../domain/types.ts'
->>>>>>> storylint/lab-slice
 import { claimFingerprint } from '../domain/fingerprint.ts'
 import { deleteFact, patchChapter, upsertChapter, upsertFact, upsertSheet } from '../domain/project.ts'
 import { ProjectStore } from './store.ts'
@@ -156,17 +153,10 @@ export function createServer(store: ProjectStore) {
           if (error instanceof ConflictError) throw error
         }
         const project = {
-<<<<<<< HEAD
-          schemaVersion: 1 as const,
-          title: raw.title.trim(),
-          chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
-          sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [],
-=======
           schemaVersion: 2 as const,
           title: raw.title.trim(),
           chapters: [{ id: 'chapter-1', title: 'Chapter One', body: '', craftTags: [], revision: 0 }],
           sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: emptyLab(),
->>>>>>> storylint/lab-slice
         }
         const created = new ProjectStore(path)
         await created.save(project)
@@ -451,17 +441,6 @@ export function createServer(store: ProjectStore) {
         const snapshot = await store.load()
         const chapter = snapshot.chapters.find((candidate) => candidate.id === raw.chapterId)
         if (!chapter) throw new Error(`Chapter not found: ${raw.chapterId}`)
-<<<<<<< HEAD
-        const contextVersion = JSON.stringify({ body: chapter.body, sheets: snapshot.sheets })
-        const result = await runAgent(snapshot, raw.chapterId, raw.message.trim(), llmConfig())
-        let project = snapshot
-        if (result.proposals.length > 0) {
-          project = await store.update((project) => {
-            const currentChapter = project.chapters.find((candidate) => candidate.id === raw.chapterId)
-            const currentVersion = JSON.stringify({ body: currentChapter?.body, sheets: project.sheets })
-            if (currentVersion !== contextVersion) throw new Error('Project context changed during agent request; send it again')
-            return {
-=======
         const contextVersion = JSON.stringify({ body: chapter.body, sheets: snapshot.sheets, lab: snapshot.lab })
         const result = await runAgent(snapshot, raw.chapterId, raw.message.trim(), llmConfig())
         let project = snapshot
@@ -471,7 +450,6 @@ export function createServer(store: ProjectStore) {
             const currentVersion = JSON.stringify({ body: currentChapter?.body, sheets: project.sheets, lab: project.lab })
             if (currentVersion !== contextVersion) throw new Error('Project context changed during agent request; send it again')
             let nextProject = {
->>>>>>> storylint/lab-slice
               ...project,
               proposals: [
                 ...project.proposals,
@@ -480,11 +458,6 @@ export function createServer(store: ProjectStore) {
                 ),
               ],
             }
-<<<<<<< HEAD
-          })
-        }
-        return { ...result, project }
-=======
             for (const draft of result.labCards) {
               nextProject = createLabCard(ensureLab(nextProject), {
                 boardId: draft.boardId,
@@ -497,7 +470,6 @@ export function createServer(store: ProjectStore) {
           })
         }
         return { mode: result.mode, message: result.message, proposals: result.proposals, project }
->>>>>>> storylint/lab-slice
       },
     },
     {
@@ -565,8 +537,6 @@ export function createServer(store: ProjectStore) {
           }
         }),
     },
-<<<<<<< HEAD
-=======
 
     {
       method: 'POST',
@@ -662,7 +632,6 @@ export function createServer(store: ProjectStore) {
         return { project, as: meta?.as, proposalIds: meta?.proposalIds, chapterId: meta?.chapterId }
       },
     },
->>>>>>> storylint/lab-slice
     {
       method: 'POST',
       pattern: /^\/api\/proposals\/([^/]+)\/reject$/,

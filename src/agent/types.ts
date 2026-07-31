@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import type { Fact, Proposal, SheetKind } from '../domain/types.ts'
-=======
 import type { Fact, LabCardKind, Proposal, SheetKind } from '../domain/types.ts'
->>>>>>> storylint/lab-slice
 import type { ApplyCard } from '../cowrite/types.ts'
 import type { ReviewResult } from '../review/types.ts'
 
@@ -13,11 +9,6 @@ export type SheetPack = {
   facts: Array<Pick<Fact, 'key' | 'value' | 'statement'>>
 }
 
-<<<<<<< HEAD
-export type AgentModelResponse = {
-  message: string
-  sheetPack: SheetPack | null
-=======
 export type LabCardDraft = {
   kind: LabCardKind
   title: string
@@ -29,17 +20,13 @@ export type AgentModelResponse = {
   message: string
   sheetPack: SheetPack | null
   labCards?: LabCardDraft[] | null
->>>>>>> storylint/lab-slice
 }
 
 export type AgentRunResult = {
   mode: 'fixture' | 'live'
   message: string
   proposals: Proposal[]
-<<<<<<< HEAD
-=======
   labCards: LabCardDraft[]
->>>>>>> storylint/lab-slice
 }
 
 export type TranscriptEntry =

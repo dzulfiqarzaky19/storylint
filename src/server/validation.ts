@@ -1,11 +1,6 @@
 import {
   CLAIM_KINDS,
   CRAFT_TAGS,
-<<<<<<< HEAD
-  SHEET_KINDS,
-  type Chapter,
-  type Fact,
-=======
   LAB_CARD_KINDS,
   LAB_CARD_STATUSES,
   SHEET_KINDS,
@@ -14,17 +9,13 @@ import {
   type Lab,
   type LabBoard,
   type LabCard,
->>>>>>> storylint/lab-slice
   type Mark,
   type Project,
   type Proposal,
   type ResearchNote,
   type Sheet,
 } from '../domain/types.ts'
-<<<<<<< HEAD
-=======
 import { emptyLab } from '../domain/lab.ts'
->>>>>>> storylint/lab-slice
 
 type ObjectValue = Record<string, unknown>
 
@@ -204,12 +195,6 @@ function number(value: unknown, name: string): number {
   return value
 }
 
-<<<<<<< HEAD
-/** Validate disk data at the trust boundary; malformed files never enter domain/UI. */
-export function parseProject(value: unknown): Project {
-  const raw = object(value, 'project')
-  if (raw.schemaVersion !== 1) throw new Error('Unsupported project schemaVersion')
-=======
 
 function parseLabCard(value: unknown): LabCard {
   const raw = object(value, 'lab card')
@@ -271,19 +256,13 @@ function parseLab(value: unknown): Lab {
 export function parseProject(value: unknown): Project {
   const raw = object(value, 'project')
   if (raw.schemaVersion !== 1 && raw.schemaVersion !== 2) throw new Error('Unsupported project schemaVersion')
->>>>>>> storylint/lab-slice
   if (!Array.isArray(raw.chapters)) throw new Error('project.chapters must be an array')
   if (!Array.isArray(raw.sheets)) throw new Error('project.sheets must be an array')
   if (!Array.isArray(raw.proposals)) throw new Error('project.proposals must be an array')
   if (raw.marks !== undefined && !Array.isArray(raw.marks)) throw new Error('project.marks must be an array')
-<<<<<<< HEAD
-  return {
-    schemaVersion: 1,
-=======
   const lab = raw.lab === undefined ? emptyLab() : parseLab(raw.lab)
   return {
     schemaVersion: 2,
->>>>>>> storylint/lab-slice
     title: string(raw.title, 'project.title'),
     chapters: raw.chapters.map(parseChapter),
     sheets: raw.sheets.map(parseSheet),
@@ -291,9 +270,6 @@ export function parseProject(value: unknown): Project {
     rejectedFingerprints: stringArray(raw.rejectedFingerprints, 'project.rejectedFingerprints'),
     marks: Array.isArray(raw.marks) ? raw.marks.map(parseMark) : [],
     researchNotes: Array.isArray(raw.researchNotes) ? raw.researchNotes.map(parseResearchNote) : [],
-<<<<<<< HEAD
-=======
     lab,
->>>>>>> storylint/lab-slice
   }
 }
