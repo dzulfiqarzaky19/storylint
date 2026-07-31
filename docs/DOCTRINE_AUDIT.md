@@ -5,6 +5,7 @@
 **Branch work:** `storylint/doc-contradictions`  
 **Authority:** [IA_MAP.md](./IA_MAP.md) rulings + founder decisions win. Shipped = `src` on audit head. Product forks → rat (not resolved here).  
 **Why:** twice in one session a doc nearly caused a wrong build (faces ≤3; Canon sheet→center). Catch the rest before process luck runs out.
+**Corpus map:** [README.md](./README.md). This file is a **hazard index**, not a second IA. Latest code check: [CODE_VERIFY.md](./CODE_VERIFY.md).
 
 ---
 
@@ -85,7 +86,7 @@
 |--|--|
 | **Claim A** | `docs/design/CANON-VOCABULARY.md` — display **Characters / Lore / World / Organizations**; never invent People/Places&things/Groups in polish PRs. |
 | **Claim B** | `docs/IA_MAP.md:176` lists “Kind filters (character/lore/world/org)” as **data** kinds (enums). |
-| **Shipped** | Binder uses `SHEET_KIND_LABEL` → Characters… (`workspace.ts`). **Graph** `RelationshipGraph.tsx` filter buttons render **raw** `{kind}` (`character`, …). |
+| **Shipped** | Binder uses `SHEET_KIND_LABEL` → Characters… (`workspace.ts:7-12`). **Graph still raw @ origin/dev:** `RelationshipGraph.tsx:265` filter `{kind}`; `:343` node `graph__kind` `{node.kind}`. No label import yet (Task AD verify). |
 | **Locked** | Vocabulary doc + L2 revert: author-facing labels = Characters/Lore/World/Organizations. |
 | **Resolution** | **Doc vs code gap** (not two docs fighting). Flag for implementer: map chips must use `SHEET_KIND_LABEL`. No product fork. Optional one-line IA note that filter **labels** follow vocabulary (enums stay lowercase). **IA note added** this branch. |
 
@@ -164,7 +165,7 @@
 | Continuity ≠ ecosystem | IA §6 (after fixes above) | Off top bar; Check entry |
 | Draft = prose home | IA §4.1, J1 | `workspaceMode: 'manuscript'` + Draft label |
 | Chapters never become Canon | Lab promote: beat → `chapter-stub` (Draft); sparks → `sheet-proposal` + Accept | `domain/lab.ts` `PromoteAs` |
-| Kind labels Characters/Lore/World/Organizations | CANON-VOCABULARY; binder `SHEET_KIND_LABEL` | Binder OK; **graph chips still raw** (C5) |
+| Kind labels Characters/Lore/World/Organizations | CANON-VOCABULARY; binder `SHEET_KIND_LABEL` | Binder OK; **graph chips still raw** (`RelationshipGraph.tsx:265`) (C5) |
 
 `docs/GIT_WORKFLOW.md` — process only; no product IA fight found this pass.  
 `docs/design/TOKENS.md` / STITCH / REFERENCES — no ecosystem/depth fights found.  

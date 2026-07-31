@@ -1,5 +1,7 @@
 # CANON-VOCABULARY
 
+**Owns:** user-facing **words**. Structure stays in [../IA_MAP.md](../IA_MAP.md). Density numbers in [../CALM_BUDGET.md](../CALM_BUDGET.md).
+
 **Status:** design authority (docs-only)  
 **Date:** 2026-07-31  
 **Owner:** design sign-off required to change any **user-facing noun** in this file  

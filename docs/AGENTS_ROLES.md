@@ -11,6 +11,12 @@
 | UI e2e | [E2E.md](./E2E.md) — Playwright **msedge** |
 | Apply/Accept | [04-agents.md](./04-agents.md) |
 | UX doctrine | [03-ux.md](./03-ux.md) |
+| Structure lock | [IA_MAP.md](./IA_MAP.md) |
+| Words | [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) |
+| Density bar | [CALM_BUDGET.md](./CALM_BUDGET.md) |
+| Git / origin | [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) |
+| Swarm cadence | [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) |
+| Docs map | [README.md](./README.md) |
 | Who it’s for | [PERSONAS.md](./PERSONAS.md) — beachhead only; not a fifth agent |
 
 **Phase:** only the assigned BUILD slice (see status table).

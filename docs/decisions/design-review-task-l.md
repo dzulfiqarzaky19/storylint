@@ -1,4 +1,5 @@
 <!--
+  SUPERSEDED IN PART: kind renames REJECTED — see design-review-l2.md + design/CANON-VOCABULARY.md. Binder polish ACCEPTs still stand.
   Tracked decision record (moved from e2e/output/design-review-task-l.md).
   Author: ox
   Kind: design-review

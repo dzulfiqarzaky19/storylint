@@ -2,7 +2,8 @@
 
 **Status:** locked product map (target language + current wiring)  
 **Depends on:** [PRD.md](./PRD.md) · [03-ux.md](./03-ux.md) journeys · [PERSONAS.md](./PERSONAS.md) · [design/LAB.md](./design/LAB.md)  
-**Research pack:** [research/ui-ux](./research/ui-ux/README.md)
+**Research pack:** [research/ui-ux](./research/ui-ux/README.md)  
+**Corpus map:** [README.md](./README.md) · density numbers: [CALM_BUDGET.md](./CALM_BUDGET.md) · words: [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md)
 **Not:** a fourth ecosystem, new panels, or depth > 3
 
 ---
@@ -189,7 +190,8 @@ Faces: Chat · Inspect · Inbox
 
 ### 4.4 Canon sheet (binder detail stack)
 
-**Where:** binder detail stack (per §2 ruling), not a center surface.
+**Where:** binder detail stack (per §2 ruling), not a center surface.  
+**ships (Task V / F1):** list stays mounted under the detail layer; Back restores scroll — not a destructive list swap (`Binder.tsx` `binder__stack-list` + `binder__stack-detail`).
 
 **In**
 

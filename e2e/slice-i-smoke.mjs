@@ -2,7 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
-import { companionPanel, openCompanionFace, ensureIsolatedProject, ensureDraftReady } from './helpers.mjs'
+import { closeSheetDetail, companionPanel, openCompanionFace, ensureIsolatedProject, ensureDraftReady } from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -54,7 +54,7 @@ try {
   await firstNode.click()
   await page.getByLabel('Name').waitFor({ timeout: 5000 })
   if (await page.getByLabel('Name').inputValue() !== firstName) throw new Error('Node did not open its sheet')
-  await page.getByRole('button', { name: 'Back to binder' }).click()
+  await closeSheetDetail(page)
 
   await graph.getByRole('button', { name: 'lore', exact: true }).click()
   const nodesFiltered = await graph.locator('.graph__node').count()
