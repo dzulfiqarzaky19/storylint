@@ -54,7 +54,7 @@ Matches IA_MAP §15, reinforced by external practice:
 |--------|-----|
 | Single project identity | Duplicate titles = orientation noise |
 | Rare actions to overflow | Hick’s law / hierarchy |
-| Continuity as Check-primary; top shortcut temporary | Contextual disclosure migration |
+| Continuity only in Check (no top shortcut — migration finished) | Contextual disclosure migration |
 
 ### P2 — Canon entry
 

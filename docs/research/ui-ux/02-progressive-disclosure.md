@@ -83,7 +83,7 @@ For a writing IDE, **conditional + contextual** beat long staged onboarding.
 
 ### Demote over time
 
-A top-level shortcut can exist while a better home is weak (e.g. top Continuity while Check is still learning), then move to overflow once the contextual home is discoverable. That is a **migration** disclosure strategy, not a permanent double home.
+Migration dual-homes are temporary. **Continuity migration is finished:** Check is the only entry; do not re-add a top-bar Continuity shortcut.
 
 ---
 
