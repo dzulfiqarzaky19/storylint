@@ -13,6 +13,7 @@ import {
   waitSaved,
   ensureDraftReady,
   ensureIsolatedProject,
+  reclaimIsolatedProject,
   fillChapterAndSave,
   requireUiOrigin,
   setApiBase
@@ -31,7 +32,7 @@ const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 
 try {
   await installFixtureLlmRoutes(page)
-  await ensureIsolatedProject(page)
+  const projectId = await ensureIsolatedProject(page)
 
   await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
   // Seeds a chapter if the active project is empty (two-doors) and normalizes body.
@@ -96,6 +97,7 @@ try {
   await page.getByRole('button', { name: 'Exit focus mode' }).click()
 
   await page.screenshot({ path: 'e2e/output/slice-e-smoke.png', fullPage: true })
+  await reclaimIsolatedProject(projectId)
   console.log('PASS: generation is panel-only; Apply inserts; Dismiss discards; editor has no gen controls; Focus round-trip')
 } finally {
   clearHardTimeout()

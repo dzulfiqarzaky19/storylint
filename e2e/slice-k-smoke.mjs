@@ -7,9 +7,12 @@ import {
   closeSheetDetail,
   companionPanel,
   openCompanionFace,
+  ensureIsolatedProject,
+  reclaimIsolatedProject,
   getApiBase,
+  requireApiOrigin,
   requireUiOrigin,
-  setApiBase
+  setApiBase,
 } from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
 
@@ -49,7 +52,6 @@ async function proposeAndAccept(page) {
   await page.getByRole('button', { name: 'Canon' }).click()
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   await graph.waitFor()
-  // D4: Propose is collapsed by default at every width — open it before touching fields.
   await openProposeEditor(graph)
   const selects = graph.locator('.graph__editor select')
   await selects.nth(0).selectOption(parentId)
@@ -72,12 +74,20 @@ async function proposeAndAccept(page) {
 }
 
 if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
+requireApiOrigin()
 const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
+let projectId = null
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  // Own private project BEFORE any API write (lie 11 — never seed ambient/default).
+  projectId = await ensureIsolatedProject(desktop, {
+    id: `e2e-slice-k-${process.pid}-${stamp.toString(36)}`,
+    title: 'Slice K Family',
+  })
   await seedCharacters(desktop.request)
   await desktop.goto(UI, { waitUntil: 'networkidle' })
+  await reclaimIsolatedProject(projectId)
   await reloadApp(desktop)
   const graph = await proposeAndAccept(desktop)
   await graph.getByRole('button', { name: 'Family', exact: true }).click()
@@ -93,6 +103,7 @@ try {
 
   const narrow = await browser.newPage({ viewport: { width: 1024, height: 900 } })
   await narrow.goto(UI, { waitUntil: 'networkidle' })
+  await reclaimIsolatedProject(projectId)
   await narrow.getByRole('button', { name: 'Canon' }).click()
   const narrowGraph = narrow.getByRole('main', { name: 'Relationship graph' })
   await narrowGraph.waitFor()
@@ -101,6 +112,8 @@ try {
   await narrow.setViewportSize({ width: 767, height: 900 })
   await narrow.screenshot({ path: 'e2e/output/slice-k-narrow.png', fullPage: true })
   await narrow.close()
+  // End on our mint so all-smoke runtime check sees owned active id.
+  await reclaimIsolatedProject(projectId)
   await desktop.close()
   console.log('PASS: family tree view, node open sheet, network toggle, pending-until-Accept, desktop+narrow screenshots')
 } finally {

@@ -7,6 +7,7 @@ import {
   companionPanel,
   openCompanionFace,
   ensureIsolatedProject,
+  reclaimIsolatedProject,
   ensureDraftReady,
   getApiBase,
   requireUiOrigin,
@@ -51,7 +52,7 @@ const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
-  await ensureIsolatedProject(page)
+  const projectId = await ensureIsolatedProject(page)
   await seedSheets(page.request)
   await page.goto(UI, { waitUntil: 'networkidle' })
   await ensureDraftReady(page, { body: 'Graph round-trip body.' })
@@ -99,6 +100,7 @@ try {
   if (await page.getByLabel('Chapter text').inputValue() !== manuscriptBody) throw new Error('Graph round-trip changed manuscript')
 
   await page.screenshot({ path: 'e2e/output/slice-i-smoke.png', fullPage: true })
+  await reclaimIsolatedProject(projectId)
   console.log('PASS: graph nodes/portrait labels, kind filter, node sheet navigation, pending edge hidden until Accept, editor round-trip')
 } finally {
   await browser.close()

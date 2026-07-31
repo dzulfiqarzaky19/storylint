@@ -10,6 +10,7 @@ import {
   installFixtureLlmRoutes,
   openCompanionFace,
   ensureIsolatedProject,
+  reclaimIsolatedProject,
   requireUiOrigin,
   setApiBase
 } from './helpers.mjs'
@@ -28,7 +29,7 @@ const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 try {
   // Deterministic research path (default). Live path only with STORYLINT_E2E_LIVE_LLM=1.
   await installFixtureLlmRoutes(page)
-  await ensureIsolatedProject(page)
+  const projectId = await ensureIsolatedProject(page)
   await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
   const before = await page.evaluate(() => fetch('/api/project').then((response) => response.json()))
   const companion = companionPanel(page)
@@ -62,6 +63,7 @@ try {
   await openCompanionFace(companion, 'Inbox')
   await companion.getByRole('button', { name: 'Accept' }).first().waitFor({ timeout: 5000 })
   await page.screenshot({ path: 'e2e/output/slice-h-smoke.png', fullPage: true })
+  await reclaimIsolatedProject(projectId)
   console.log('PASS: dedicated cited research panel; Pin persists note; Propose creates pending lore; no auto-canon or chat dump')
 } finally {
   clearHardTimeout()

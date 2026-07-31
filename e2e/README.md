@@ -65,6 +65,8 @@ Do not invent alternate definitions of green. `npm test` is unit-only and does *
 9. **Smoke depended on an entity it did not create** - the verified property under lie 8. Not "gitignored data" until someone proves that mechanism. Guard symptom bans (`selectOption('default')`, `data/project.json`) are narrower than the invariant (only touch entities minted this run) — do not mistake the guard for a proof of the invariant.
 10. **Locator by unowned copy** - `closeSheetDetail` waited for list state (good) but found Back via `getByRole(..., { name: 'Back', exact: true })` (bad). AU set `aria-label="Back, editing {title}"` which overrides accessible name; slice-f/i/k hung. Rule 3 applies to **locators**. Fix: `[data-binder-back]` hook + list wait.
 
+11. **Smoke inherits a sibling's active container** — slice-k/l had zero `ensureIsolatedProject` calls after a commit titled "isolate projects" opened both files and only hardened selectors (hawk/rat). After slice-j they ran inside Harbor Draft; when first, they seeded Mira/Kael into shared `default` via `PUT /api/sheets` (server resolves ambient `activeProjectId`). Lie-9 banned the string `data/project.json`; they never typed it. **Guard checks spelling; the invariant is reachability.** Fix: mint before write; end on that mint; `all-smoke` **runtime** asserts post-smoke active ∈ minted set (missing mint = FAIL not skip). Suite bookend restores `active-project`; sweeps orphan harness `e2e-*.json`. Fresh stack ≠ fresh container.
+
 Fail closed. A measurement that cannot name what it measured is not evidence.
 
 ## Tracked path side effect (scoreboard)
@@ -258,3 +260,8 @@ stop()
 ## Feature smokes
 
 Listed in `constants.mjs` → `ALL_FEATURE_SMOKES`, run by `all-smoke.mjs` with per-smoke hard timeouts and a green/red summary.
+
+
+## Runtime isolation (active container)
+
+After every smoke in `ALL_FEATURE_SMOKES`: server `activeProjectId` **must** be a non-`default` id **this smoke minted this run**. Missing mint = FAIL. `default` = FAIL. Sibling id = FAIL. Observed via `STORYLINT_ISOLATION_REPORT` from `ensureIsolatedProject` — discarding the return still registers. Suite bookend: active after equals active before; orphan harness projects swept.
