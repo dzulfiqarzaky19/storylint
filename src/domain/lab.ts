@@ -309,7 +309,8 @@ export function promoteLabCard(
 
   if (canPromoteToChapter(card.kind)) {
     const chapterId = newId('chapter')
-    const title = (input.chapterTitle ?? card.title).trim() || 'Untitled chapter'
+    // Display placeholders live in chapterListLabel / export slug — never store invented text.
+    const title = (input.chapterTitle ?? card.title).trim()
     const stamp = nowIso()
     const nextCard: LabCard = {
       ...card,
