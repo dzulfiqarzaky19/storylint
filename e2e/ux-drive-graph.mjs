@@ -20,6 +20,7 @@ const API = 'http://127.0.0.1:4174'
 const UI = 'http://localhost:5173/'
 const KINDS = ['character', 'lore', 'world', 'organization']
 const stamp = Date.now()
+const tag = stamp.toString(36).slice(-4)
 const ids = {
   parent: `uxg-parent-${stamp}`,
   child: `uxg-child-${stamp}`,
@@ -29,12 +30,12 @@ const ids = {
   org: `uxg-org-${stamp}`,
 }
 const names = {
-  parent: `UXG Parent ${stamp}`,
-  child: `UXG Child ${stamp}`,
-  spouse: `UXG Spouse ${stamp}`,
-  lore: `UXG Lore ${stamp}`,
-  world: `UXG World ${stamp}`,
-  org: `UXG Org ${stamp}`,
+  parent: `Mira Parent-${tag}`,
+  child: `Kael-${tag}`,
+  spouse: `Sera Spouse-${tag}`,
+  lore: `River Oath-${tag}`,
+  world: `Ember Coast-${tag}`,
+  org: `Lantern Order-${tag}`,
 }
 
 const notes = []

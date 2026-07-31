@@ -9,7 +9,8 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 mkdirSync('e2e/output', { recursive: true })
 
 const stamp = Date.now()
-const cardTitle = `Siege gate ${stamp}`
+const tag = stamp.toString(36).slice(-4)
+const cardTitle = `Siege gate-${tag}`
 
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {

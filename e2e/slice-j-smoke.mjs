@@ -12,7 +12,8 @@ const context = await browser.newContext({ viewport: { width: 1440, height: 900 
 const page = await context.newPage()
 try {
   await page.goto('http://localhost:5173/', { waitUntil: 'networkidle' })
-  const title = `Project Smoke ${Date.now()}`
+  const tag = Date.now().toString(36).slice(-4)
+  const title = `Harbor Draft-${tag}`
   await page.getByRole('button', { name: 'Project menu' }).click()
   await page.getByRole('menuitem', { name: 'New project' }).click()
   await page.getByLabel('New project title').fill(title)

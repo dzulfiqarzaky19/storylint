@@ -9,10 +9,11 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 mkdirSync('e2e/output', { recursive: true })
 
 const stamp = Date.now()
+const tag = stamp.toString(36).slice(-4)
 const parentId = `k2-parent-${stamp}`
 const childId = `k2-child-${stamp}`
-const parentName = `K2 Parent ${stamp}`
-const childName = `K2 Child ${stamp}`
+const parentName = `Mira Parent-${tag}`
+const childName = `Kael-${tag}`
 
 async function seedCharacters(request) {
   for (const sheet of [
