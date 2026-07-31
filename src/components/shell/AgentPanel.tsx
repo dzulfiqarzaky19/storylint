@@ -78,6 +78,7 @@ export type AgentPanelProps = {
   continuityRunning: boolean
   continuityMode: 'fixture' | 'live' | null
   continuityCounts?: { red: number; yellow: number; proposals: number } | null
+  continuityError?: string | null
   onRunContinuity: () => Promise<void>
   onAcceptProposal: (id: string, edits?: ProposalEdits) => Promise<void>
   onEditProposal: (id: string, edits: ProposalEdits) => Promise<void>
@@ -99,7 +100,7 @@ export type AgentPanelProps = {
 export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle,
   companionContext = 'writing', contextLabel,
-  proposals, continuityRunning, continuityMode, continuityCounts,
+  proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
@@ -153,7 +154,8 @@ export function AgentPanel({
 
   const statusLine = useMemo(() => {
     const bits: string[] = []
-    if (continuityRunning) bits.push('Continuity running…')
+    if (continuityRunning) bits.push('Continuity working…')
+    else if (continuityError) bits.push(`Continuity failed: ${continuityError}`)
     else if (continuityMode) {
       const counts = continuityCounts
       if (counts && counts.red + counts.yellow + counts.proposals === 0) {
@@ -167,23 +169,28 @@ export function AgentPanel({
     if (llmMode === 'fixture') bits.push('Chat fixture')
     else if (llmMode === 'live') bits.push('Chat live')
     return bits.join(' · ')
-  }, [continuityCounts, continuityMode, continuityRunning, llmMode])
+  }, [continuityCounts, continuityError, continuityMode, continuityRunning, llmMode])
+
+  // One assistant, one job: agent lane and Continuity share a single busy gate.
+  const assistantBusy = sending || continuityRunning
 
   const continuityState = continuityRunning
     ? 'running'
-    : continuityMode
-      ? 'ready'
-      : 'idle'
+    : continuityError
+      ? 'failed'
+      : continuityMode
+        ? 'ready'
+        : 'idle'
 
   function send() {
     const text = draft.trim()
-    if (!text || sending) return
+    if (!text || assistantBusy) return
     onSend(text)
     setDraft('')
   }
 
   function generate(skill: CowriteSkill) {
-    if (sending) return
+    if (assistantBusy) return
     const instruction = draft.trim() || (skill === 'rewrite' ? 'Rewrite this selection' : `${skill} this scene`)
     void onGenerateCowrite(skill, instruction).then(() => setDraft('')).catch(() => undefined)
   }
@@ -454,20 +461,20 @@ export function AgentPanel({
                 placeholder="Optional instruction for co-write…"
                 aria-label="Co-write instruction"
                 rows={2}
-                disabled={sending}
+                disabled={assistantBusy}
               />
               <div className="agent__cowrite-actions" aria-label="Co-write skills">
-                <Button disabled={sending} onClick={() => generate('continue')}>
-                  Continue
+                <Button disabled={assistantBusy} onClick={() => generate('continue')}>
+                  {assistantBusy ? 'Working…' : 'Continue'}
                 </Button>
                 <Button
-                  disabled={sending || selection.start === selection.end}
+                  disabled={assistantBusy || selection.start === selection.end}
                   onClick={() => generate('rewrite')}
                 >
-                  Rewrite
+                  {assistantBusy ? 'Working…' : 'Rewrite'}
                 </Button>
-                <Button disabled={sending} onClick={() => generate('brainstorm')}>
-                  Brainstorm
+                <Button disabled={assistantBusy} onClick={() => generate('brainstorm')}>
+                  {assistantBusy ? 'Working…' : 'Brainstorm'}
                 </Button>
               </div>
             </div>
@@ -494,7 +501,11 @@ export function AgentPanel({
             <div className="companion__check-body" aria-label="Check summary">
               {continuityRunning ? (
                 <p className="companion__check-summary" data-continuity-state="running" aria-live="polite">
-                  Continuity is running on this chapter…
+                  Continuity is working on this chapter…
+                </p>
+              ) : continuityError ? (
+                <p className="companion__check-summary" data-continuity-state="failed" role="alert" aria-live="assertive">
+                  Continuity could not finish: {continuityError}. Last result is not current — run Continuity again when ready.
                 </p>
               ) : continuityMode ? (
                 <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
@@ -516,15 +527,15 @@ export function AgentPanel({
               <div className="agent__cowrite-actions" aria-label="Check tools">
                 <Button
                   variant="primary"
-                  disabled={continuityRunning}
+                  disabled={assistantBusy}
                   data-continuity-state={continuityState}
                   aria-busy={continuityRunning}
                   onClick={() => void onRunContinuity().catch(() => undefined)}
                 >
-                  {continuityRunning ? 'Running…' : 'Run Continuity'}
+                  {continuityRunning ? 'Working…' : 'Run Continuity'}
                 </Button>
-                <Button disabled={sending} onClick={() => void onRunReview('review').catch(() => undefined)}>Review</Button>
-                <Button disabled={sending} onClick={() => void onRunReview('craft').catch(() => undefined)}>Craft</Button>
+                <Button disabled={assistantBusy} onClick={() => void onRunReview('review').catch(() => undefined)}>{sending ? 'Working…' : 'Review'}</Button>
+                <Button disabled={assistantBusy} onClick={() => void onRunReview('craft').catch(() => undefined)}>{sending ? 'Working…' : 'Craft'}</Button>
               </div>
             </div>
           </>
@@ -535,10 +546,10 @@ export function AgentPanel({
           <div className="panel__footer">
             <p className="continuity-privacy">One tap seeds a brainstorm prompt. Cards land on the Lab bench only.</p>
             <div className="agent__cowrite-actions" aria-label="Spark presets">
-              <Button onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>Place</Button>
-              <Button onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>Character</Button>
-              <Button onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>Beat</Button>
-              <Button onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>What-if</Button>
+              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('place') ?? onSend('Brainstorm 3 places for the current board')}>{assistantBusy ? 'Working…' : 'Place'}</Button>
+              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('character-spark') ?? onSend('Spark a character for the Lab bench')}>{assistantBusy ? 'Working…' : 'Character'}</Button>
+              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('beat') ?? onSend('Suggest 3 plot beats for the Lab')}>{assistantBusy ? 'Working…' : 'Beat'}</Button>
+              <Button disabled={assistantBusy} onClick={() => onSparkPreset?.('what-if') ?? onSend('Fork a what-if for the Lab')}>{assistantBusy ? 'Working…' : 'What-if'}</Button>
             </div>
           </div>
         </>
@@ -560,13 +571,13 @@ export function AgentPanel({
             <div className="agent__composer-actions">
               <Button
                 variant="primary"
-                disabled={sending}
+                disabled={assistantBusy}
                 onClick={() => {
                   if (draft.trim()) send()
                   else onSend(`Draft a character sheet pack for ${chapterTitle}`)
                 }}
               >
-                {sending ? 'Working…' : 'Propose'}
+                {assistantBusy ? 'Working…' : 'Propose'}
               </Button>
             </div>
           </div>
@@ -624,8 +635,8 @@ export function AgentPanel({
               rows={3}
             />
             <div className="agent__composer-actions">
-              <Button variant="primary" onClick={send} disabled={sending || draft.trim().length === 0}>
-                {sending ? 'Sending…' : 'Send'}
+              <Button variant="primary" onClick={send} disabled={assistantBusy || draft.trim().length === 0}>
+                {assistantBusy ? 'Working…' : 'Send'}
               </Button>
             </div>
           </div>

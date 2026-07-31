@@ -54,7 +54,12 @@ export type ProjectController = {
   saveSheet: (sheet: Sheet) => Promise<void>
   saveFact: (sheetId: string, fact: Fact) => Promise<void>
   deleteFact: (sheetId: string, factId: string) => Promise<void>
-  continuity: { running: boolean; mode: 'fixture' | 'live' | null; counts: { red: number; yellow: number; proposals: number } | null }
+  continuity: {
+    running: boolean
+    mode: 'fixture' | 'live' | null
+    counts: { red: number; yellow: number; proposals: number } | null
+    error: string | null
+  }
   runContinuity: (chapterId: string) => Promise<api.ContinuityResponse | null>
   acceptProposal: (id: string, edits?: api.ProposalEdits) => Promise<void>
   editProposal: (id: string, edits: api.ProposalEdits) => Promise<void>
@@ -86,10 +91,16 @@ export function useProject(): ProjectController {
   const [saveState, setSaveState] = useState<SaveState>('idle')
   const [projects, setProjects] = useState<api.ProjectSummary[]>([])
   const [activeProjectId, setActiveProjectId] = useState('default')
-  const [continuity, setContinuity] = useState<{ running: boolean; mode: 'fixture' | 'live' | null; counts: { red: number; yellow: number; proposals: number } | null }>({
+  const [continuity, setContinuity] = useState<{
+    running: boolean
+    mode: 'fixture' | 'live' | null
+    counts: { red: number; yellow: number; proposals: number } | null
+    error: string | null
+  }>({
     running: false,
     mode: null,
     counts: null,
+    error: null,
   })
   const projectRef = useRef<Project | null>(null)
   const activeProjectIdRef = useRef('default')
@@ -411,7 +422,7 @@ export function useProject(): ProjectController {
     const generation = beginMutation()
     if (generation === null) return null
     continuityRunningRef.current = true
-    setContinuity((current) => ({ ...current, running: true }))
+    setContinuity((current) => ({ ...current, running: true, error: null }))
     try {
       const result = await trackMutation((async () => {
         await flushChapter(chapterId)
@@ -420,12 +431,15 @@ export function useProject(): ProjectController {
       })())
       if (generation !== projectGenerationRef.current) return null
       if (!applyIfCurrent(generation, result.project)) return null
-      setContinuity({ running: false, mode: result.mode, counts: result.counts })
+      setContinuity({ running: false, mode: result.mode, counts: result.counts, error: null })
       setError(null)
       return result
     } catch (caught) {
       if (generation === projectGenerationRef.current) {
-        setError(caught instanceof Error ? caught.message : 'Continuity failed')
+        const message = caught instanceof Error ? caught.message : 'Continuity failed'
+        // Stale success after fail is a lie: drop last ready result; face owns this-run outcome.
+        setContinuity({ running: false, mode: null, counts: null, error: message })
+        setError(message)
       }
       throw caught
     } finally {
@@ -520,7 +534,7 @@ export function useProject(): ProjectController {
       setActiveId(projectId)
       setCurrent(restored)
       setSaveState(restored.chapters.some((chapter) => drafts.get(chapter.id)) ? 'saving' : 'idle')
-      setContinuity({ running: false, mode: null, counts: null })
+      setContinuity({ running: false, mode: null, counts: null, error: null })
     } finally {
       editLockRef.current = false
     }
