@@ -136,7 +136,7 @@ Research is **not** a twin of Agent with a second kitchen sink.
 
 | Entry | Behavior |
 |-------|----------|
-| Face **Research** from Writing/Details (optional 4th slot **or** under Check/More) | Query · results · Pin / Propose only |
+| Face **Research** from Writing/Details via **More → Research** (overflow menuitem; not a peer primary tab) | Query · results · Pin / Propose only |
 | From Lab | Prefer “search for this place card” → results can **Pin to Lab card** notes (v1.5); v1: Propose sheet still Accept-gated |
 
 **Research body (only):**
@@ -216,7 +216,7 @@ const FACES: Record<WorkspaceContext, CompanionFace[]> = {
 - [ ] Opening a sheet shows Details faces; Fill proposes, does not Apply prose  
 - [ ] Context change resets to Chat  
 - [ ] Pending count badge → Inbox; Accept still gated  
-- [ ] Research face has no co-write / no continuity essay  
+- [ ] Research (More → Research) has no co-write / no continuity essay  
 - [ ] E2E screenshots: `companion-writing.png`, `companion-lab.png`, `companion-details.png`  
 - [ ] No new hex; segment control uses existing button/badge tokens  
 

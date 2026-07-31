@@ -12,7 +12,8 @@
     "ux:shell": "node e2e/ux-drive.mjs",
     "ux:graph": "node e2e/ux-drive-graph.mjs",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "calm": "node e2e/calm-budget.mjs"
   },
   "dependencies": {
     "react": "^19.2.7",
