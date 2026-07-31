@@ -38,6 +38,8 @@ const LEGACY_EXPLORATORY = new Set([
   // Bear D1 rail measure — port to helpers+owned-stack after seal.
   'rail-budget.mjs',
   'binder-resting.mjs',
+  // Koala B5 face touch probe - port after product fix.
+  'b5-face-touch.mjs',
 ])
 
 const FORBIDDEN_IN_GATES = [
@@ -58,6 +60,10 @@ const FORBIDDEN_IN_GATES = [
   {
     id: 'hardcoded-localhost-5173',
     re: /goto\(\s*['"`]https?:\/\/(localhost|127\.0\.0\.1):5173/,
+  },
+  {
+    id: 'hardcoded-localhost-4174',
+    re: /['"`]https?:\/\/(localhost|127\.0\.0\.1):4174\b/,
   },
 ]
 

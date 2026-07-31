@@ -626,7 +626,8 @@ export async function requireCompanionFace(page, name, { timeout = PRECONDITION_
   return readUiSurface(page)
 }
 
-let API_BASE = process.env.STORYLINT_API || 'http://127.0.0.1:4174'
+/** Unset until setApiBase / requireApiOrigin — never silently default to stranger :4174. */
+let API_BASE = process.env.STORYLINT_API ? String(process.env.STORYLINT_API).replace(/\/$/, '') : ''
 
 /** Point helpers at an owned/ephemeral API origin. Call before any apiJson use. */
 export function setApiBase(origin) {
@@ -637,6 +638,31 @@ export function setApiBase(origin) {
 }
 
 export function getApiBase() {
+  return API_BASE
+}
+
+/**
+ * API origin for gates/smokes that talk to the backend.
+ * No default to :4174. Parent must own the stack and set STORYLINT_API, or call setApiBase.
+ * An owned UI + stranger API is still an unattributed measurement.
+ */
+export function requireApiOrigin() {
+  const fromEnv = process.env.STORYLINT_API || ''
+  if (fromEnv) API_BASE = fromEnv.replace(/\/$/, '')
+  if (!API_BASE) {
+    throw new PreconditionError(
+      'precondition not met: STORYLINT_API is unset and setApiBase was never called. ' +
+        'Run via npm run test:e2e / npm run test:green (owned stack). Refusing stranger default :4174.',
+    )
+  }
+  if (/^https?:\/\/(localhost|127\.0\.0\.1):4174\/?$/i.test(API_BASE)) {
+    if (process.env.STORYLINT_ALLOW_EXTERNAL_UI !== '1') {
+      throw new PreconditionError(
+        `precondition not met: API origin ${API_BASE} is the shared stranger port. ` +
+          'Own the stack or set STORYLINT_ALLOW_EXTERNAL_UI=1 after proving this API is this commit.',
+      )
+    }
+  }
   return API_BASE
 }
 
@@ -652,6 +678,29 @@ export function requireUiOrigin() {
     )
   }
   return ui.endsWith('/') ? ui : `${ui}/`
+}
+
+/** Binder root panel. Prefer heading filter (stable). */
+export function binderPanel(page) {
+  return page.locator('.panel').filter({ has: page.getByRole('heading', { name: 'Binder' }) }).first()
+}
+
+/**
+ * Open a new sheet from the binder Canon section.
+ * Asserts the sheet editor lands (behaviour), not which of two "New sheet" labels was clicked.
+ * Graph empty CTA and binder share one door but both buttons match the bare name.
+ */
+export async function openNewSheetFromBinder(page, { timeout = PRECONDITION_TIMEOUT_MS } = {}) {
+  await ensureBinderOpen(page)
+  const binder = binderPanel(page)
+  await binder.waitFor({ timeout })
+  const btn = binder.getByRole('button', { name: 'New sheet', exact: true })
+  if ((await btn.count()) === 0) {
+    throw new PreconditionError('precondition not met: binder New sheet control missing')
+  }
+  await btn.click()
+  await page.locator('[data-binder-detail="sheet"]').first().waitFor({ timeout })
+  await page.getByLabel('Name', { exact: true }).waitFor({ timeout })
 }
 
 

@@ -295,7 +295,14 @@ export function Binder({
           })}
         </div>
       )}
-      <Button onClick={onAddChapter}>New chapter</Button>
+      {/*
+        One primary per job (ox): Draft true-empty dual-rail — binder owns create.
+        Companion "Write first chapter" demotes to ghost; this stays solid while empty.
+        Populated lists keep the quiet footer recipe (default ghost).
+      */}
+      <Button variant={chapters.length === 0 ? 'primary' : undefined} onClick={onAddChapter}>
+        New chapter
+      </Button>
     </section>
   )
 
@@ -338,7 +345,16 @@ export function Binder({
           </div>
         )
       })}
-      <Button ref={newSheetBtnRef} variant="primary" onClick={openNewSheet}>
+      {/*
+        One primary per job (ox): Canon true-empty — map empty CTA owns create.
+        Binder demotes to ghost while no sheets; restores solid once the list is navigator.
+        Filtered-empty still has sheets, so binder stays solid (map create is already off).
+      */}
+      <Button
+        ref={newSheetBtnRef}
+        variant={sheets.length === 0 ? 'ghost' : 'primary'}
+        onClick={openNewSheet}
+      >
         New sheet
       </Button>
     </section>

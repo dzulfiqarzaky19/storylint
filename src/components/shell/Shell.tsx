@@ -154,6 +154,8 @@ export function Shell() {
 
   async function runContinuity() {
     if (!activeChapter) return
+    // One assistant, one job: do not start Continuity while an agent request is in flight.
+    if (agentState.sending) return
     const session = agentState.session()
     const result = await project.runContinuity(activeChapter.id)
     if (result) agentState.addContinuityCard(result.mode, result.counts, session)
@@ -290,6 +292,7 @@ export function Shell() {
       continuityRunning={project.continuity.running}
       continuityMode={project.continuity.mode}
       continuityCounts={project.continuity.counts}
+      continuityError={project.continuity.error}
       onRunContinuity={runContinuity}
       onAcceptProposal={project.acceptProposal}
       onEditProposal={project.editProposal}
@@ -298,7 +301,7 @@ export function Shell() {
       llmMode={agentState.llmMode}
       selection={selection}
       onGenerateCowrite={async (skill, instruction) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
         await agentState.generateCowrite({
           chapterId,
@@ -316,7 +319,7 @@ export function Shell() {
       }}
       onDismissCard={agentState.dismissCard}
       onRunReview={async (kind) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
         await agentState.runReview(chapterId, kind, () => project.flushChapter(chapterId))
       }}
@@ -327,12 +330,12 @@ export function Shell() {
         })
       }}
       onSend={(text) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running) return
         const chapterId = activeChapter.id
         void agentState.send(chapterId, text, () => project.flushChapter(chapterId))
       }}
       onSparkPreset={(kind) => {
-        if (!activeChapter) return
+        if (!activeChapter || project.continuity.running || agentState.sending) return
         const chapterId = activeChapter.id
         const prompts: Record<typeof kind, string> = {
           place: 'Brainstorm 3 places for the Lab bench',
