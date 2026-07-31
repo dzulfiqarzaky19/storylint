@@ -154,4 +154,25 @@ if (failures.length) {
   console.error('See e2e/README.md.')
   process.exit(1)
 }
+// pass-on-absence class: calm must use Measurement API; volume wall checks must notFound on empty
+const calmPath = scripts.find((f) => f.replace(/\\/g, '/').endsWith('calm-budget.mjs'))
+if (calmPath) {
+  const calmSrc = readFileSync(calmPath, 'utf8')
+  if (!/\bjudgeMeasured\b/.test(calmSrc) || !/\bnotFound\b/.test(calmSrc) || !/\bfound\b/.test(calmSrc)) {
+    failures.push('calm-budget.mjs: must use found/notFound/judgeMeasured (pass-on-absence class API)')
+  }
+  // B3 wall: failure must not be only inboxWall===false without a notFound path on zero cards
+  if (/inboxWall\s*===\s*false/.test(calmSrc) && !/cardVisible\s*===\s*0/.test(calmSrc) && !/notFound\(/.test(calmSrc)) {
+    failures.push('calm-budget.mjs: B3-inbox-wall threshold without absence/notFound path (pass-on-absence)')
+  }
+}
+
+if (failures.length) {
+  console.error('\nFAIL: e2e helper convention violations:')
+  for (const fail of failures) console.error(` - ${fail}`)
+  console.error('\nRule: UI gates measure only through e2e/helpers.mjs.')
+  console.error('Precondition before measure. No self-contained face/mode fallbacks.')
+  console.error('See e2e/README.md.')
+  process.exit(1)
+}
 console.log('PASS: e2e helper convention holds')

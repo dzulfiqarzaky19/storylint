@@ -7,7 +7,8 @@ Deterministic browser smokes and gates for Storylint.
 | Command | Purpose |
 |---------|---------|
 | `npm run test:e2e` | Feature smokes (`e2e/all-smoke.mjs`) |
-| `npm run calm` | CALM_BUDGET geometry/face checker |
+| `npm run calm` | CALM_BUDGET geometry/face checker (writes **untracked** `e2e/output/calm-budget-last.md`) |
+| `npm run calm:record` | Same checker; updates **tracked** scoreboard `e2e/output/calm-budget-run.md` |
 | `npm run test:e2e:guard` | Convention guard: measurement scripts must use helpers |
 | `npm run test:green` | **ONE green:** guard + build + unit + owned smokes + calm |
 
@@ -65,6 +66,39 @@ Do not invent alternate definitions of green. `npm test` is unit-only and does *
 10. **Locator by unowned copy** - `closeSheetDetail` waited for list state (good) but found Back via `getByRole(..., { name: 'Back', exact: true })` (bad). AU set `aria-label="Back, editing {title}"` which overrides accessible name; slice-f/i/k hung. Rule 3 applies to **locators**. Fix: `[data-binder-back]` hook + list wait.
 
 Fail closed. A measurement that cannot name what it measured is not evidence.
+
+## Tracked path side effect (scoreboard)
+
+> **A tool must not write to a tracked path as a side effect of running.**
+
+If it does, every run dirties the tree. That blocks `git checkout`, and worse: a failed detach can leave the worktree on a stale commit while the checker reports numbers that look current (crab: nearly reported 114/115 against the wrong head).
+
+| Role | Path | When |
+|------|------|------|
+| Run artifact (default) | `e2e/output/calm-budget-last.md` (+ `.json`) | every `npm run calm` / `test:green` |
+| Scoreboard baseline | `e2e/output/calm-budget-run.md` | only `npm run calm:record` / `calm -- --record` |
+
+Default stays ignored under `e2e/output/`. The scoreboard exception in `.gitignore` is for deliberate baseline commits, not per-run output. Same split as tracked judgments vs untracked evidence dumps.
+
+Always verify the head you **measured** (`git rev-parse HEAD` after the run, provenance in the artifact), never only the head you asked for.
+
+## Pass-on-absence (rule 4, structural)
+
+> A check whose only FAIL path is `count >= N` **passes at count 0**.
+
+That is bear's B4-craft-phone defect and B3-inbox-wall@volume reproduced after the rule was known. Memory is not a mechanism.
+
+Three outcomes must stay distinguishable:
+
+| Outcome | API | Verdict |
+|---------|-----|---------|
+| Thing absent and should be | `found(0)` / `found({ absent: true })` | predicate PASS |
+| Thing present within budget | `found(value)` | predicate PASS/FAIL |
+| Could not find what we judge | `notFound(reason)` | **NOT-MEASURED** HARD |
+
+Use `judgeMeasured(id, sev, doc, surface, measurement, { pass, measured, threshold })`. It refuses a verdict on `notFound` — the next author cannot write pass-on-absence without bypassing the helper.
+
+Intentional emptiness is still **found** (we found the empty surface). `notFound` means the checker cannot name what it measured.
 
 ## Navigation waits (networkidle trap)
 
@@ -167,6 +201,8 @@ Rules enforced by helpers:
 | `ensureCompanionOpen` / `ensureBinderOpen` | Rail visibility |
 | `dismissDrawers(page)` | Clear narrow-layout backdrops |
 | `armHardTimeout(label)` | Process wall clock |
+| `found(value)` / `notFound(reason)` | Measurement result — never PASS on absence |
+| `asMeasurement(raw)` / `requireFound(m, onNF)` | Wrap legacy missing flags; refuse verdict on notFound |
 | `PreconditionError` | Thrown when surface/face/project did not land |
 
 ### Companion faces (D6)
