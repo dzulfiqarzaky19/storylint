@@ -5,9 +5,12 @@ import { mkdirSync } from 'node:fs'
 import {
   companionPanel,
   openCompanionFace,
+  ensureIsolatedProject,
+  reclaimIsolatedProject,
   requireApiOrigin,
   requireUiOrigin,
   setApiBase,
+  reloadApp,
 } from './helpers.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
@@ -23,9 +26,16 @@ if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
 const API = requireApiOrigin()
 const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
+let projectId = null
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  projectId = await ensureIsolatedProject(page, {
+    id: `e2e-slice-l-${process.pid}-${stamp.toString(36)}`,
+    title: 'Slice L Lab',
+  })
   await page.goto(UI, { waitUntil: 'domcontentloaded' })
+  await reclaimIsolatedProject(projectId)
+  await reloadApp(page)
 
   await page.getByRole('button', { name: 'Lab', exact: true }).click()
   const lab = page.getByRole('main', { name: 'Lab' })
@@ -47,7 +57,6 @@ try {
   await card.getByRole('button', { name: 'Pin' }).click()
   await card.getByText('Pinned').waitFor({ timeout: 5000 })
 
-  // Same owned API the UI talks to — never stranger :4174.
   const sheetsBefore = await page.request.get(`${API}/api/project`).then(async (response) => {
     if (!response.ok()) throw new Error(`project load failed: ${response.status()}`)
     const project = await response.json()
@@ -85,6 +94,7 @@ try {
     await binder.getByRole('heading', { name: 'Lab' }).waitFor()
   }
 
+  await reclaimIsolatedProject(projectId)
   await page.close()
   console.log('PASS: Lab bench create/pin/promote pre-canon, Companion faces, Graph ignores Lab, screenshot')
 } finally {
