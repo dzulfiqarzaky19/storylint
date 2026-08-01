@@ -1,11 +1,52 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { SHEET_KINDS, type Project, type SheetKind } from '../../domain/types.ts'
 import { layoutFamilyTree } from '../../graph/familyTree.ts'
+import {
+  chooseNetworkSlice,
+  countKinds,
+  emptyNetworkSliceState,
+  networkSliceView,
+  reconcileNetworkSlice,
+  sameNetworkSliceState,
+  type NetworkSliceSelection,
+  type NetworkSliceState,
+} from '../../graph/networkSlice.ts'
 import { projectGraph, type GraphEdge } from '../../graph/projectGraph.ts'
 import { proposeGraphEdge } from '../project/api.ts'
 import { SHEET_KIND_LABEL } from '../../components/shell/workspace.ts'
 import { Button, EmptyState, Input } from '../../components/ui'
 import './graph.css'
+
+const NETWORK_LAST_KIND_KEY = 'storylint.networkLastKind.v1'
+
+function readLastUsedKind(projectId: string): SheetKind | null {
+  if (typeof window === 'undefined' || !projectId) return null
+  try {
+    const raw = window.localStorage.getItem(NETWORK_LAST_KIND_KEY)
+    if (!raw) return null
+    const map = JSON.parse(raw) as Record<string, unknown>
+    const value = map?.[projectId]
+    if (typeof value === 'string' && (SHEET_KINDS as readonly string[]).includes(value)) {
+      return value as SheetKind
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
+function writeLastUsedKind(projectId: string, kind: SheetKind | null) {
+  if (typeof window === 'undefined' || !projectId || !kind) return
+  try {
+    const raw = window.localStorage.getItem(NETWORK_LAST_KIND_KEY)
+    const map = raw ? JSON.parse(raw) as Record<string, unknown> : {}
+    const next = map && typeof map === 'object' ? map : {}
+    next[projectId] = kind
+    window.localStorage.setItem(NETWORK_LAST_KIND_KEY, JSON.stringify(next))
+  } catch {
+    // ignore quota / private mode
+  }
+}
 
 /** Dense network: hide non-active labels to stop collisions. */
 const NETWORK_DENSE_NODE_THRESHOLD = 8
@@ -96,6 +137,7 @@ function pointsPath(points: Array<{ x: number; y: number }>): string {
 
 export function RelationshipGraph({
   project,
+  projectId = 'default',
   onProject,
   onOpenSheet,
   onNewSheet,
@@ -104,6 +146,8 @@ export function RelationshipGraph({
   beginMutation,
 }: {
   project: Project
+  /** Active project id for last-used kind seed (system enter only). */
+  projectId?: string
   onProject: (project: Project, generation?: number) => void
   onOpenSheet: (sheetId: string) => void
   onNewSheet?: () => void
@@ -111,7 +155,10 @@ export function RelationshipGraph({
   trackMutation: <T>(operation: Promise<T>) => Promise<T>
   beginMutation: () => number | null
 }) {
-  const [kinds, setKinds] = useState<Set<SheetKind>>(() => new Set(SHEET_KINDS))
+  const [sliceState, setSliceState] = useState<NetworkSliceState>(() => ({
+    ...emptyNetworkSliceState(),
+    lastUsedKind: readLastUsedKind(projectId),
+  }))
   const [view, setView] = useState<'network' | 'family'>('network')
   const [from, setFrom] = useState(project.sheets[0]?.id ?? '')
   const [to, setTo] = useState(project.sheets[1]?.id ?? '')
@@ -130,6 +177,15 @@ export function RelationshipGraph({
   const fromFieldRef = useRef<HTMLSelectElement | null>(null)
   const focusFromFieldRef = useRef(false)
   const geometry = useMemo(() => graphGeometry(phone), [phone])
+  const kindCounts = useMemo(
+    () => countKinds(project.sheets.map((sheet) => sheet.kind)),
+    [project.sheets],
+  )
+  const sliceView = useMemo(
+    () => networkSliceView(sliceState, kindCounts, SHEET_KIND_LABEL),
+    [sliceState, kindCounts],
+  )
+  const kinds = sliceView.kinds
   const graph = useMemo(() => projectGraph(project, kinds), [project, kinds])
   const family = useMemo(() => layoutFamilyTree(graph, {
     nodeWidth: geometry.familyNodeW,
@@ -173,11 +229,26 @@ export function RelationshipGraph({
     fromFieldRef.current?.focus()
   }, [editorOpen])
 
-  function toggleKind(kind: SheetKind) {
-    setKinds((current) => {
-      const next = new Set(current)
-      if (next.has(kind)) next.delete(kind)
-      else next.add(kind)
+  // Seed last-used kind when the active project changes (fresh session sliceSource=system).
+  useEffect(() => {
+    setSliceState({
+      ...emptyNetworkSliceState(),
+      lastUsedKind: readLastUsedKind(projectId),
+    })
+  }, [projectId])
+
+  // Reconcile thresholded default kind-slice when Canon cardinality changes.
+  useEffect(() => {
+    setSliceState((current) => {
+      const next = reconcileNetworkSlice(current, kindCounts)
+      return sameNetworkSliceState(current, next) ? current : next
+    })
+  }, [kindCounts])
+
+  function applyAuthorSelection(selection: NetworkSliceSelection) {
+    setSliceState((current) => {
+      const next = chooseNetworkSlice(current, selection)
+      if (next.lastUsedKind) writeLastUsedKind(projectId, next.lastUsedKind)
       return next
     })
   }
@@ -293,6 +364,10 @@ export function RelationshipGraph({
       data-graph-dense={denseNetwork ? 'true' : 'false'}
       data-graph-phone={phone ? 'true' : 'false'}
       data-canon-empty={noSheets ? 'true' : 'false'}
+      data-slice-source={sliceView.sliceSource}
+      data-slice-mode={sliceView.selection.mode}
+      data-slice-kind={sliceView.selection.mode === 'kind' ? sliceView.selection.kind : 'all'}
+      data-network-n={String(sliceView.totalN)}
       aria-label="Relationship graph"
       tabIndex={-1}
     >
@@ -300,6 +375,16 @@ export function RelationshipGraph({
         <div>
           <h2>Relationships</h2>
           <p className="graph__lede" title="Accepted Canon facts only. Pending proposals never render as edges.">Accepted links only</p>
+          {sliceView.honesty ? (
+            <p
+              className="graph__honesty"
+              role="status"
+              data-graph-honesty="true"
+              aria-live="polite"
+            >
+              Showing {sliceView.honesty.visible} of {sliceView.honesty.total} · {sliceView.honesty.kindLabel}
+            </p>
+          ) : null}
         </div>
         <div className="graph__toolbar">
           <div className="graph__view" role="group" aria-label="Graph view">
@@ -307,8 +392,22 @@ export function RelationshipGraph({
             <Button aria-pressed={view === 'family'} onClick={() => setView('family')}>Family</Button>
           </div>
           <div className="graph__filters" role="group" aria-label="Filter by sheet kind">
+            <Button
+              aria-pressed={sliceView.selection.mode === 'all'}
+              data-slice-chip="all"
+              onClick={() => applyAuthorSelection({ mode: 'all' })}
+            >
+              All
+            </Button>
             {SHEET_KINDS.map((kind) => (
-              <Button key={kind} aria-pressed={kinds.has(kind)} onClick={() => toggleKind(kind)}>{SHEET_KIND_LABEL[kind]}</Button>
+              <Button
+                key={kind}
+                aria-pressed={sliceView.selection.mode === 'kind' && sliceView.selection.kind === kind}
+                data-slice-chip={kind}
+                onClick={() => applyAuthorSelection({ mode: 'kind', kind })}
+              >
+                {SHEET_KIND_LABEL[kind]}
+              </Button>
             ))}
           </div>
         </div>
@@ -324,7 +423,7 @@ export function RelationshipGraph({
               ? 'Canon holds what is true: the characters, places, and groups your story treats as settled. Start with one sheet.'
               : view === 'family'
                 ? 'Add character sheets and accepted kinship facts such as parent_of, spouse_of, or sibling_of.'
-                : 'Turn a sheet kind back on to see it.'}
+                : 'Choose All or another kind to widen the map.'}
             action={noSheets && onNewSheet ? (
               <Button variant="primary" className="graph__empty-cta" onClick={onNewSheet}>New sheet</Button>
             ) : undefined}

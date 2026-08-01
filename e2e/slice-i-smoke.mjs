@@ -72,7 +72,8 @@ try {
   await graph.getByRole('button', { name: 'Lore', exact: true }).click()
   const nodesFiltered = await graph.locator('.graph__node').count()
   if (nodesFiltered >= nodesBefore) throw new Error('Kind filter did not reduce graph nodes')
-  await graph.getByRole('button', { name: 'Lore', exact: true }).click()
+  // C1 exclusive kind-slice: restore via All (second Lore click stays Lore).
+  await graph.getByRole('button', { name: 'All', exact: true }).click()
 
   // D4: Propose is collapsed by default at every width - open it before touching fields.
   const editor = await openProposeEditor(graph)

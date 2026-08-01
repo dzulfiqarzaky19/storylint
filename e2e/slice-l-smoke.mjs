@@ -15,6 +15,8 @@ import {
   reloadApp,
   PRECONDITION_TIMEOUT_MS,
 } from './helpers.mjs'
+import { makeStep, assertStepPhases } from './step-label.mjs'
+import { SLICE_L_PHASES } from './step-phases.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -24,12 +26,7 @@ mkdirSync('e2e/output', { recursive: true })
 const stamp = Date.now()
 const tag = stamp.toString(36).slice(-4)
 const cardTitle = `Siege gate-${tag}`
-const STEP_T0 = Date.now()
-function step(label) {
-  // Sync write so a stall after this line still leaves the label on the pipe
-  // before Playwright's bare timeout kills the process (E1 stall-proof).
-  process.stdout.write(`[slice-l +${Date.now() - STEP_T0}ms] ${label}\n`)
-}
+const step = makeStep('slice-l')
 
 if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
 const API = requireApiOrigin()
@@ -133,6 +130,7 @@ try {
   await reclaimIsolatedProject(projectId)
   await page.close()
   step('PASS')
+  assertStepPhases(step, SLICE_L_PHASES, 'slice-l')
   console.log('PASS: Lab bench create/pin/promote pre-canon, Companion faces, Graph ignores Lab, screenshot')
 } finally {
   await browser.close()

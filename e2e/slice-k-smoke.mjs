@@ -18,6 +18,8 @@ import {
   PRECONDITION_TIMEOUT_MS,
 } from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
+import { makeStep, assertStepPhases } from './step-label.mjs'
+import { SLICE_K_PHASES } from './step-phases.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -30,12 +32,7 @@ const parentId = `k2-parent-${stamp}`
 const childId = `k2-child-${stamp}`
 const parentName = `Mira Parent-${tag}`
 const childName = `Kael-${tag}`
-const STEP_T0 = Date.now()
-function step(label) {
-  // Sync write so a stall after this line still leaves the label on the pipe
-  // before Playwright's bare timeout kills the process (E1 stall-proof).
-  process.stdout.write(`[slice-k +${Date.now() - STEP_T0}ms] ${label}\n`)
-}
+const step = makeStep('slice-k')
 
 /** First nav and reload: never networkidle on owned stacks (companion/LLM sockets). */
 async function gotoApp(page, ui) {
@@ -164,6 +161,7 @@ try {
   await reclaimIsolatedProject(projectId)
   await desktop.close()
   step('PASS')
+  assertStepPhases(step, SLICE_K_PHASES, 'slice-k')
   console.log('PASS: family tree view, node open sheet, network toggle, pending-until-Accept, desktop+narrow screenshots')
 } finally {
   await browser.close()
