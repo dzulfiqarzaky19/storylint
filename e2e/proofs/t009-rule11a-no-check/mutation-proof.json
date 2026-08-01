@@ -1,0 +1,37 @@
+{
+  "when": "2026-08-01T01:43:44.656Z",
+  "head": null,
+  "pass": true,
+  "decision": "Put --experimental-test-module-mocks on npm test (not separate script). Measured 230/230 identical with/without flag before wiring. Ticket acceptance names the flag on test script. Caveat: cheap here (Node mock.module); not generally cheap.",
+  "results": [
+    {
+      "step": "baseline",
+      "code": 0,
+      "ms": 1939,
+      "summary": "ℹ tests 231\nℹ suites 0\nℹ pass 231\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1580.2001",
+      "failNames": [],
+      "ruleFail": true,
+      "ok": true
+    },
+    {
+      "step": "retry-inserted",
+      "code": 1,
+      "ms": 1829,
+      "failNames": [
+        "saveDirect does not retry a once-failed atomic rename (rule 11a)",
+        "failing tests:",
+        "saveDirect does not retry a once-failed atomic rename (rule 11a)"
+      ],
+      "summary": "ℹ tests 231\nℹ suites 0\nℹ pass 230\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1475.3615",
+      "ok": true
+    },
+    {
+      "step": "restored",
+      "code": 0,
+      "ms": 1699,
+      "failNames": [],
+      "summary": "ℹ tests 231\nℹ suites 0\nℹ pass 231\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1364.1133",
+      "ok": true
+    }
+  ]
+}
