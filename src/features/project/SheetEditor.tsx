@@ -130,13 +130,17 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
 
   const dirty = useMemo(() => isSheetIdentityDirty(draft, loaded), [draft, loaded])
 
-  // Durable dirty: crash copy of form dirty (not Canon write).
+  // Durable dirty: crash copy while dirty only.
+  // Never remove from this effect — clean open would race restore and wipe conflict/apply keys.
+  // Clear only on Save / Discard / Keep Canon / drop-equal-server (explicit ends).
   useEffect(() => {
     if (!projectId) return
-    if (conflict || staleConfirm) return // do not overwrite stored draft while chooser open
+    if (conflict || staleConfirm) return
+    if (!dirty) return
     const sheetKey = draft.id || sheet?.id || '__new__'
     storeSheetIdentityDraft(projectId, sheetKey, draft, loaded)
-  }, [projectId, draft, loaded, conflict, staleConfirm, sheet?.id])
+  }, [projectId, draft, loaded, dirty, conflict, staleConfirm, sheet?.id])
+
   const canSave = Boolean(draft.name.trim())
   const displayName = draft.name.trim() || 'this sheet'
 
