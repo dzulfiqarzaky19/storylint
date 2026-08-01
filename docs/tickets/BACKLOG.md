@@ -11,6 +11,7 @@ Validate: `npm run tickets:check`
 | [T-001](./T-001.md) | P1 | open | lab-lifecycle | Lab archive Restore + Promoted dismiss | unassigned |
 | [T-002](./T-002.md) | P1 | integrated | agent-pipeline | Formalize L2 story/composition gate | horse |
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back | buffalo |
+| [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
 
 ## Closed / not open
 
@@ -21,4 +22,4 @@ Validate: `npm run tickets:check`
 
 ## Next free id
 
-`T-006`
+`T-007`

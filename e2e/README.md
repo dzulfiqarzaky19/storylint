@@ -286,6 +286,17 @@ After every smoke in `ALL_FEATURE_SMOKES`: server `activeProjectId` **must** be 
 
 Do **not** filter the output of a run you might need to diagnose (`findstr`/`grep` pipelines that drop Playwright timeout bodies). Capture whole, filter when reading. Step labels on k/l (`[slice-k +Nms] …`) are proven to survive a stall — see `e2e/prove-step-stall.mjs` and `e2e/proofs/E1-step-stall-proof.txt`.
 
+### Cause lines on full `test:green` (T-006)
+
+When a land/baseline death leaves **output but no cause** (no stack, no FINGERPRINT, exit 1), re-run under:
+
+```bash
+node scripts/capture-test-green-cause.mjs
+node scripts/capture-test-green-cause.mjs --n 3 --label b2-full-chain
+```
+
+Mirrors land `runCapture` spawn shape (piped stdio, Windows `npm.cmd` shell line) **without** merge/push. Appends `[cause] spawn|exit|close` with pid, code, signal, exit-vs-close order, and elapsed ms into the log under `_land_run/`. Open ticket: [T-006](../docs/tickets/T-006.md). Does not replace `scripts/land.mjs` instrumentation (separate path).
+
 ## Nav waitUntil
 
 Never `waitUntil: 'networkidle'` on owned stacks. Companion/LLM sockets keep the network busy and burn Playwright's ~30s default. Use `domcontentloaded` + a real readiness locator.
