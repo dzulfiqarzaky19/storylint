@@ -1,10 +1,11 @@
 /**
- * D1 — binder resting state on a brand-new empty project.
- * Verifies the binder never rests as a void: every group paints a label, a
- * one-line empty state, and one obvious next move.
+ * D1 MANUAL DIAGNOSTIC — binder resting state on empty project
  *
- *   node e2e/binder-resting.mjs        (RAIL_UI overrides the origin)
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * Resting-state probe; can fail via process.exit(failed ? 1 : 0). No green owner this pass.
+ * Run: node e2e/binder-resting.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
