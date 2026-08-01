@@ -1,6 +1,6 @@
 import { createServer as createNodeServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import { runContinuity } from '../continuity/run.ts'
 import { runAgent } from '../agent/run.ts'
 import { acceptProposal, rejectProposal } from '../domain/proposals.ts'
@@ -83,17 +83,15 @@ function routeSegment(value: string): string {
 }
 
 export function createServer(store: ProjectStore) {
-  const defaultProjectPath = store.filePath
-  const dataDirectory = dirname(defaultProjectPath)
-  const projectsDirectory = resolve(dataDirectory, 'projects')
+  const fileRoot = store.root
+  const dataDirectory = fileRoot.dataDirectory
+  const projectsDirectory = fileRoot.projectsDirectory
   const activeProjectFile = resolve(dataDirectory, 'active-project.txt')
   let activeProjectId = 'default'
   let initialization: Promise<void> | null = null
 
   function projectPath(id: string): string {
-    if (id === 'default') return defaultProjectPath
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new Error('Invalid project id')
-    return resolve(projectsDirectory, `${id}.json`)
+    return fileRoot.pathFor(id)
   }
 
   async function initializeActiveProject(): Promise<void> {
@@ -130,7 +128,7 @@ export function createServer(store: ProjectStore) {
         const projects = []
         for (const id of ids) {
           try {
-            const project = await new ProjectStore(projectPath(id)).load()
+            const project = await fileRoot.openId(id).load()
             projects.push({ id, title: project.title })
           } catch {
             // Ignore malformed project files; opening them would fail validation too.
@@ -162,7 +160,7 @@ export function createServer(store: ProjectStore) {
           chapters: [],
           sheets: [], proposals: [], rejectedFingerprints: [], marks: [], researchNotes: [], lab: emptyLab(),
         }
-        const created = new ProjectStore(path)
+        const created = fileRoot.openId(raw.id)
         await created.save(project)
         await store.switchFile(path)
         activeProjectId = raw.id
