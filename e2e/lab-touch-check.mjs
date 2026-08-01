@@ -12,7 +12,8 @@ const BASE = process.env.LAB_BASE ?? 'http://localhost:5188'
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
-  await page.goto(BASE, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await page.getByRole('button', { name: 'Lab', exact: true }).click()
   await page.getByRole('main', { name: 'Lab' }).waitFor()
   await page.waitForTimeout(400)

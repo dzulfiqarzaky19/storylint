@@ -1,0 +1,51 @@
+T-002 L2 reverse-direction mutation proof (Draft->Canon)
+head=d9a2e48faf2c19a5cfd069eff1a5dae947d6b781 short=d9a2e48
+worktree_dirty=YES
+mutation: PUT /api/chapters/:id wipes project.sheets before upsertChapter
+command: npm run test:l2
+exit=1
+load_bearing_red=YES
+expected: FAIL with composition: sheet ... missing after post-seed Draft write
+restored: src/server/http.ts returned to pre-mutation text (no product change)
+
+--- transcript ---
+
+> storylint@0.0.0 test:l2
+> node e2e/guard-helpers.mjs && node e2e/l2-composition.mjs
+
+e2e helper guard: scanned 37 scripts
+legacy-exploratory  b5-face-touch.mjs (not yet on helpers)
+legacy-exploratory  binder-resting.mjs (not yet on helpers)
+gate-ok  binder-scroll-restore-smoke.mjs
+gate-ok  bl-phone-drawer-smoke.mjs
+gate-ok  calm-budget.mjs
+gate-ok  canon-load-audit.mjs
+gate-ok  canon-under-load-az.mjs
+legacy-exploratory  d6-companion-shots.mjs (not yet on helpers)
+legacy-exploratory  graph-audit.mjs (not yet on helpers)
+gate-ok  l2-composition.mjs
+legacy-exploratory  rail-budget.mjs (not yet on helpers)
+gate-ok  slice-e-smoke.mjs
+gate-ok  slice-f-smoke.mjs
+gate-ok  slice-g-smoke.mjs
+gate-ok  slice-h-smoke.mjs
+gate-ok  slice-i-smoke.mjs
+gate-ok  slice-j-smoke.mjs
+gate-ok  slice-k-smoke.mjs
+gate-ok  slice-l-smoke.mjs
+legacy-exploratory  ux-drive-graph.mjs (not yet on helpers)
+legacy-exploratory  ux-drive.mjs (helpers ok)
+PASS: e2e helper convention holds
+[owned-stack] building D:\dev\projects\storylint-t002-close @ d9a2e48
+[owned-stack] api :60881 ui :60882
+[l2] owned=true ui=http://127.0.0.1:60882/ api=http://127.0.0.1:60881 head=d9a2e48 shell=54884172c616
+[l2] active-project before: e2e-calm-inbox-wall-8276-ms9ma9sm
+[l2 +437ms] PASS mint
+[l2 +1271ms] PASS draft-write
+[l2 +1362ms] PASS canon-seed-sheet
+[l2] active-project after restore: e2e-calm-inbox-wall-8276-ms9ma9sm
+[l2] swept 1 orphan harness projects
+[l2] wrote D:\dev\projects\storylint-t002-close\e2e\output\l2-composition-last.md
+
+
+FAIL l2-composition: composition: sheet l2-sheet-1785543921903 missing after post-seed Draft write (sheets=)

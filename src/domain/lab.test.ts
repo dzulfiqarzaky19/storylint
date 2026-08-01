@@ -4,12 +4,17 @@ import { acceptProposal } from './proposals.ts'
 import {
   archiveLabCard,
   createLabCard,
+  dismissAllPromotedLabCards,
+  dismissPromotedLabCard,
   emptyLab,
   ensureLab,
   labBodies,
+  patchLabCard,
   pinLabCard,
   promoteLabCard,
+  restoreLabCard,
 } from './lab.ts'
+import { parseProject } from '../server/validation.ts'
 import type { Project } from './types.ts'
 
 function seed(): Project {
@@ -58,6 +63,57 @@ test('create edit archive and pin lab cards', () => {
   assert.equal(project.lab.cards.length, 1)
 })
 
+test('archive is a state with Restore back to active — no hard delete', () => {
+  // Interleaved: archive two of five, restore one, others stay put.
+  // Uniform all-archived/all-active cases hide off-by-one bugs.
+  let project = seed()
+  const titles = ['A-keep', 'B-archive-restore', 'C-keep', 'D-archive-stay', 'E-keep']
+  for (const title of titles) {
+    project = createLabCard(project, {
+      kind: 'character-spark',
+      title,
+      body: title,
+    })
+  }
+  assert.equal(project.lab.cards.length, 5)
+  const byTitle = (title: string) => {
+    const card = project.lab.cards.find((candidate) => candidate.title === title)
+    assert.ok(card, `missing card ${title}`)
+    return card
+  }
+  const restoreId = byTitle('B-archive-restore').id
+  const stayArchivedId = byTitle('D-archive-stay').id
+  const keepIds = ['A-keep', 'C-keep', 'E-keep'].map((title) => byTitle(title).id)
+
+  project = archiveLabCard(project, restoreId)
+  project = archiveLabCard(project, stayArchivedId)
+
+  assert.equal(byTitle('B-archive-restore').status, 'archived')
+  assert.equal(byTitle('D-archive-stay').status, 'archived')
+  for (const id of keepIds) {
+    assert.equal(project.lab.cards.find((card) => card.id === id)?.status, 'active')
+  }
+
+  project = restoreLabCard(project, restoreId)
+
+  assert.equal(project.lab.cards.find((card) => card.id === restoreId)?.status, 'active')
+  assert.equal(project.lab.cards.find((card) => card.id === restoreId)?.title, 'B-archive-restore')
+  assert.equal(project.lab.cards.find((card) => card.id === stayArchivedId)?.status, 'archived')
+  for (const id of keepIds) {
+    assert.equal(project.lab.cards.find((card) => card.id === id)?.status, 'active')
+  }
+  assert.equal(project.lab.cards.length, 5)
+
+  // Restore is Lab-only: no chapters/sheets/proposals invented.
+  assert.equal(project.chapters.length, 1)
+  assert.equal(project.sheets.length, 0)
+  assert.equal(project.proposals.length, 0)
+})
+test('restore rejects non-archived cards', () => {
+  const project = createLabCard(seed(), { kind: 'lore-spark', title: 'Keep' })
+  assert.throws(() => restoreLabCard(project, project.lab.cards[0].id), /Only archived/i)
+})
+
 test('promote character-spark creates pending proposals only — no sheet facts', () => {
   let project = createLabCard(seed(), {
     kind: 'character-spark',
@@ -98,6 +154,24 @@ test('promote beat creates chapter stub without body prose from lab', () => {
   assert.equal(project.sheets.length, 0)
 })
 
+test('promote beat with blank chapterTitle stores empty — never invents Untitled chapter', () => {
+  // Guards the API/whitespace path. UI createLabCard rejects empty title (400),
+  // so a user cannot walk this via the form today — still required for the promote
+  // contract when chapterTitle is explicit whitespace.
+  let project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Card working title',
+    body: 'Author left the promote chapter title blank on purpose',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, { chapterTitle: '   ' })
+  project = result.project
+  const chapter = project.chapters.find((candidate) => candidate.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, '')
+  assert.notEqual(chapter.title, 'Untitled chapter')
+  assert.notEqual(chapter.title, 'Untitled')
+  assert.equal(chapter.body, '')
+})
 test('what-if cannot promote to sheet or chapter', () => {
   const project = createLabCard(seed(), { kind: 'what-if', title: 'Treaty fails' })
   assert.throws(
@@ -117,4 +191,115 @@ test('lab bodies helper exposes card text for ignore checks', () => {
   const bodies = labBodies(project)
   assert.equal(bodies.some((body) => body.includes('False bible')), true)
   assert.equal(bodies.some((body) => body.includes('never become continuity')), true)
+})
+
+
+test('createLabCard defaults source to author; model when requested', () => {
+  const author = createLabCard(seed(), { kind: 'beat', title: 'Mine' })
+  assert.equal(author.lab.cards[0].source, 'author')
+  const model = createLabCard(seed(), { kind: 'beat', title: 'Sparked', source: 'model' })
+  assert.equal(model.lab.cards[0].source, 'model')
+})
+
+test('legacy load without source migrates to author — never invents model', () => {
+  const legacy = {
+    schemaVersion: 2,
+    title: 'Legacy',
+    chapters: [],
+    sheets: [],
+    proposals: [],
+    rejectedFingerprints: [],
+    marks: [],
+    researchNotes: [],
+    lab: {
+      boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: ['c1'] }],
+      cards: [{
+        id: 'c1',
+        boardId: 'lab-board-bench',
+        kind: 'beat',
+        title: 'Old card',
+        body: 'no source field',
+        status: 'active',
+        createdAt: '2020-01-01T00:00:00.000Z',
+        updatedAt: '2020-01-01T00:00:00.000Z',
+      }],
+    },
+  }
+  const parsed = parseProject(legacy)
+  assert.equal(parsed.lab.cards[0].source, 'author')
+})
+
+test('author edit of model card flips source to author (sheetIdentityDirty-style normalize)', () => {
+  let project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Model beat',
+    body: 'from spark',
+    source: 'model',
+  })
+  const id = project.lab.cards[0].id
+  assert.equal(project.lab.cards[0].source, 'model')
+  // Whitespace-only no-op does not flip
+  project = patchLabCard(project, id, { title: '  Model beat  ', body: 'from spark' })
+  assert.equal(project.lab.cards[0].source, 'model')
+  // Substantive edit flips
+  project = patchLabCard(project, id, { title: 'My beat now' })
+  assert.equal(project.lab.cards[0].source, 'author')
+  assert.equal(project.lab.cards[0].title, 'My beat now')
+})
+
+test('dismiss promoted is Lab receipt only — proposals and chapters stay', () => {
+  let project = createLabCard(seed(), {
+    kind: 'character-spark',
+    title: 'Riven',
+    body: 'Glass',
+    source: 'model',
+  })
+  const sparkId = project.lab.cards[0].id
+  const promoted = promoteLabCard(project, sparkId)
+  project = promoted.project
+  assert.equal(project.lab.cards[0].status, 'promoted')
+  const proposalCount = project.proposals.length
+  assert.ok(proposalCount >= 1)
+
+  project = createLabCard(project, { kind: 'beat', title: 'Siege', source: 'model' })
+  const beat = project.lab.cards.find((c) => c.title === 'Siege')
+  assert.ok(beat)
+  const beatId = beat.id
+  const chapterPromote = promoteLabCard(project, beatId, { chapterTitle: 'Siege night' })
+  project = chapterPromote.project
+  const chapterCount = project.chapters.length
+  assert.equal(chapterCount, 2)
+
+  project = dismissPromotedLabCard(project, sparkId)
+  assert.equal(project.lab.cards.find((c) => c.id === sparkId)?.status, 'archived')
+  assert.equal(project.proposals.length, proposalCount)
+  assert.equal(project.chapters.length, chapterCount)
+
+  // promoted beat still there
+  assert.equal(project.lab.cards.find((c) => c.id === beatId)?.status, 'promoted')
+  project = dismissAllPromotedLabCards(project)
+  assert.equal(project.lab.cards.find((c) => c.id === beatId)?.status, 'archived')
+  assert.equal(project.proposals.length, proposalCount)
+  assert.equal(project.chapters.length, chapterCount)
+  // chapter title still stored
+  assert.equal(project.chapters.find((c) => c.id === chapterPromote.chapterId)?.title, 'Siege night')
+})
+
+test('dismiss rejects non-promoted cards', () => {
+  const project = createLabCard(seed(), { kind: 'beat', title: 'Live' })
+  assert.throws(() => dismissPromotedLabCard(project, project.lab.cards[0].id), /Only promoted/i)
+})
+
+test('model beat promote still writes chapter when chapterTitle supplied (UI confirm collects it)', () => {
+  let project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'LLM invented title',
+    source: 'model',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, { chapterTitle: 'Author confirmed' })
+  project = result.project
+  const chapter = project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, 'Author confirmed')
+  assert.equal(chapter.body, '')
 })

@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import {
   ensureIsolatedProject,
+  reclaimIsolatedProject,
   requireApiOrigin,
   requireUiOrigin,
   selectProjectByValue,
@@ -115,6 +116,7 @@ try {
   for (let i = 1; i < marks.length; i++) {
     steps.push(`${marks[i].label}=${marks[i].t - marks[i - 1].t}ms`)
   }
+  await reclaimIsolatedProject(harborId)
   console.log(`PASS: create/switch owned projects preserves prose; Markdown ZIP downloads (${total}ms)`)
   console.log(`TIMING ${total}ms :: ${steps.join(' ')}`)
 } finally {

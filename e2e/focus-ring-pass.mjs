@@ -73,7 +73,8 @@ async function tabUntil(page, predicate, max = 40) {
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   page.setDefaultTimeout(15_000)
-  await page.goto(stack.ui, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(stack.ui, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await page.waitForSelector('.shell')
 
   await page.keyboard.press('Tab')

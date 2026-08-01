@@ -65,7 +65,8 @@ async function seedTwoSheets(request) {
 }
 
 async function openCanon(page) {
-  await page.goto(UI, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await page.reload({ waitUntil: 'domcontentloaded' })
   const canon = page.getByRole('button', { name: 'Canon', exact: true })
   if (await canon.count()) await canon.click()

@@ -113,7 +113,8 @@ async function dismissSheetDetail(page) {
 }
 
 async function openCanon(page) {
-  await page.goto(UI, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   const graph = page.getByRole('main', { name: 'Relationship graph' })
   if (!(await graph.count())) {
     await page.getByRole('button', { name: 'Canon', exact: true }).click()

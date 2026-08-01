@@ -1,18 +1,21 @@
 import { claimFingerprint } from './fingerprint.ts'
+import { normalizeIdentityText } from './identityText.ts'
 import {
   LAB_CARD_KINDS,
+  LAB_CARD_SOURCES,
   LAB_CARD_STATUSES,
   type Lab,
   type LabBoard,
   type LabCard,
   type LabCardKind,
+  type LabCardSource,
   type LabCardStatus,
   type Project,
   type Proposal,
   type SheetKind,
 } from './types.ts'
 
-export { LAB_CARD_KINDS, LAB_CARD_STATUSES }
+export { LAB_CARD_KINDS, LAB_CARD_SOURCES, LAB_CARD_STATUSES }
 export const LAB_PIN_SOFT_CAP = 5
 
 const DEFAULT_BOARD_ID = 'lab-board-bench'
@@ -63,6 +66,8 @@ export type CreateLabCardInput = {
   kind: LabCardKind
   title: string
   body?: string
+  /** Defaults to author. Chat/Spark must pass model. */
+  source?: LabCardSource
   touches?: LabCard['touches']
 }
 
@@ -74,6 +79,8 @@ export function createLabCard(project: Project, input: CreateLabCardInput): Proj
   boardOrThrow(lab, boardId)
   const title = input.title.trim()
   if (!title) throw new Error('Lab card title is required')
+  const source: LabCardSource = input.source ?? 'author'
+  if (!LAB_CARD_SOURCES.includes(source)) throw new Error('Lab card source is invalid')
   const stamp = nowIso()
   const card: LabCard = {
     id: newId('lab-card'),
@@ -82,6 +89,7 @@ export function createLabCard(project: Project, input: CreateLabCardInput): Proj
     title,
     body: (input.body ?? '').trim(),
     status: 'active',
+    source,
     touches: input.touches,
     createdAt: stamp,
     updatedAt: stamp,
@@ -97,6 +105,18 @@ export function createLabCard(project: Project, input: CreateLabCardInput): Proj
 
 export type PatchLabCardInput = Partial<Pick<LabCard, 'title' | 'body' | 'kind' | 'touches'>>
 
+/**
+ * Lab title/body identity for source-flip.
+ * Uses shared normalizeIdentityText — same trim rule as sheet name/summary/notes/portrait.
+ * Do not reintroduce a local trim here; coupling is by construction (hawk/rat).
+ */
+export function normalizeLabCardText(title: string, body: string): { title: string; body: string } {
+  return {
+    title: normalizeIdentityText(title),
+    body: normalizeIdentityText(body),
+  }
+}
+
 export function patchLabCard(project: Project, cardId: string, patch: PatchLabCardInput): Project {
   const base = ensureLab(project)
   const lab = requireLab(base)
@@ -104,12 +124,20 @@ export function patchLabCard(project: Project, cardId: string, patch: PatchLabCa
   if (current.status === 'archived') throw new Error('Archived lab cards cannot be edited')
   const title = patch.title === undefined ? current.title : patch.title.trim()
   if (!title) throw new Error('Lab card title is required')
+  const body = patch.body === undefined ? current.body : patch.body
+  // Author took the pen: any substantive title/body change flips model → author.
+  const before = normalizeLabCardText(current.title, current.body)
+  const after = normalizeLabCardText(title, body)
+  const textChanged = before.title !== after.title || before.body !== after.body
+  const source: LabCardSource =
+    textChanged && current.source === 'model' ? 'author' : current.source
   const next: LabCard = {
     ...current,
     title,
-    body: patch.body === undefined ? current.body : patch.body,
+    body,
     kind: patch.kind ?? current.kind,
     touches: patch.touches === undefined ? current.touches : patch.touches,
+    source,
     updatedAt: nowIso(),
   }
   return {
@@ -134,6 +162,69 @@ export function archiveLabCard(project: Project, cardId: string): Project {
         card.id === cardId
           ? { ...card, status: 'archived', updatedAt: nowIso() }
           : card,
+      ),
+    },
+  }
+}
+
+/**
+ * Dismiss a Promoted receipt from Lab only.
+ * Does not undo Canon proposals, accepted facts, or Draft chapters.
+ * Soft-archives the card so Restore remains available (T-001).
+ */
+export function dismissPromotedLabCard(project: Project, cardId: string): Project {
+  const base = ensureLab(project)
+  const lab = requireLab(base)
+  const card = cardOrThrow(lab, cardId)
+  if (card.status !== 'promoted') {
+    throw new Error(`Only promoted lab cards can be dismissed (got ${card.status})`)
+  }
+  return {
+    ...base,
+    lab: {
+      ...lab,
+      cards: lab.cards.map((candidate) =>
+        candidate.id === cardId
+          ? { ...candidate, status: 'archived', updatedAt: nowIso() }
+          : candidate,
+      ),
+    },
+  }
+}
+
+/**
+ * Dismiss every Promoted receipt on the Lab. Lab-only; Canon/Draft untouched.
+ */
+export function dismissAllPromotedLabCards(project: Project): Project {
+  const base = ensureLab(project)
+  const lab = requireLab(base)
+  const stamp = nowIso()
+  let changed = false
+  const cards = lab.cards.map((card) => {
+    if (card.status !== 'promoted') return card
+    changed = true
+    return { ...card, status: 'archived' as const, updatedAt: stamp }
+  })
+  if (!changed) return base
+  return { ...base, lab: { ...lab, cards } }
+}
+
+/** Restore returns an archived card to the live bench (active). v1: no hard delete. */
+export function restoreLabCard(project: Project, cardId: string): Project {
+  const base = ensureLab(project)
+  const lab = requireLab(base)
+  const card = cardOrThrow(lab, cardId)
+  if (card.status !== 'archived') {
+    throw new Error(`Only archived lab cards can be restored (got ${card.status})`)
+  }
+  return {
+    ...base,
+    lab: {
+      ...lab,
+      cards: lab.cards.map((candidate) =>
+        candidate.id === cardId
+          ? { ...candidate, status: 'active', updatedAt: nowIso() }
+          : candidate,
       ),
     },
   }
@@ -309,7 +400,8 @@ export function promoteLabCard(
 
   if (canPromoteToChapter(card.kind)) {
     const chapterId = newId('chapter')
-    const title = (input.chapterTitle ?? card.title).trim() || 'Untitled chapter'
+    // Display placeholders live in chapterListLabel / export slug — never store invented text.
+    const title = (input.chapterTitle ?? card.title).trim()
     const stamp = nowIso()
     const nextCard: LabCard = {
       ...card,

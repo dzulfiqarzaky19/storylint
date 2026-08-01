@@ -224,6 +224,7 @@ export function Shell() {
   const binder = (onClose?: () => void) =>
     project.project ? (
       <Binder
+        projectId={project.activeProjectId}
         chapters={project.project.chapters}
         sheets={project.project.sheets}
         lab={project.project.lab}
@@ -473,6 +474,7 @@ export function Shell() {
             onCreateCard={project.createLabCard}
             onPatchCard={project.patchLabCard}
             onArchiveCard={project.archiveLabCard}
+            onRestoreCard={project.restoreLabCard}
             onPinCard={project.pinLabCard}
             onPromoteCard={async (cardId, input) => {
               const result = await project.promoteLabCard(cardId, input)
@@ -482,6 +484,8 @@ export function Shell() {
               }
               return result
             }}
+            onDismissPromotedCard={project.dismissPromotedLabCard}
+            onDismissAllPromoted={project.dismissAllPromotedLabCards}
             onOpenAgent={() => {
               if (!shell.isOpen('agent')) shell.toggle('agent')
             }}

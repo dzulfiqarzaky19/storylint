@@ -11,6 +11,7 @@ Deterministic browser smokes and gates for Storylint.
 | `npm run calm:record` | Same checker; updates **tracked** scoreboard `e2e/output/calm-budget-run.md` |
 | `npm run test:e2e:guard` | Convention guard: measurement scripts must use helpers |
 | `npm run test:green` | **ONE green:** guard + build + unit + owned smokes + calm |
+| `npm run test:l2` | **L2 composition:** guard + same-project Draft→Canon→Lab journey (not renamed all-smoke) |
 
 ## Provenance (what did we measure?)
 
@@ -64,6 +65,8 @@ Do not invent alternate definitions of green. `npm test` is unit-only and does *
 8. **Nondeterministic check (misdiagnosed twice)** - same commit looked PASS/FAIL across worktrees for slice-j. First diagnosis (rat): race on selectOption. Retracted. Second diagnosis (rat, from pig's seed remark): ambient gitignored `data/` so `default` was missing in bare trees. **Disproved by negative control:** server `http.ts` always synthesises `activeProjectId='default'` and lists `default` first — wiping `data/` does not remove the option. Root cause of the cross-worktree failures is **not established**. The smoke still depended on a project it did not create, which is wrong regardless. Fix: create every project via `ensureIsolatedProject`; never `selectOption('default')`. Proven 5/5 bare with honest open question on mechanism. A fix can be correct while its stated cause is wrong; shipping a confident wrong cause stops the next person looking (scar: rat, twice in one hour — correlation → mechanism without reading the code that settles it).
 9. **Smoke depended on an entity it did not create** - the verified property under lie 8. Not "gitignored data" until someone proves that mechanism. Guard symptom bans (`selectOption('default')`, `data/project.json`) are narrower than the invariant (only touch entities minted this run) — do not mistake the guard for a proof of the invariant.
 10. **Locator by unowned copy** - `closeSheetDetail` waited for list state (good) but found Back via `getByRole(..., { name: 'Back', exact: true })` (bad). AU set `aria-label="Back, editing {title}"` which overrides accessible name; slice-f/i/k hung. Rule 3 applies to **locators**. Fix: `[data-binder-back]` hook + list wait.
+
+11. **Smoke inherits a sibling's active container** — slice-k/l had zero `ensureIsolatedProject` calls after a commit titled "isolate projects" opened both files and only hardened selectors (hawk/rat). After slice-j they ran inside Harbor Draft; when first, they seeded Mira/Kael into shared `default` via `PUT /api/sheets` (server resolves ambient `activeProjectId`). Lie-9 banned the string `data/project.json`; they never typed it. **Guard checks spelling; the invariant is reachability.** Fix: mint before write; end on that mint; `all-smoke` **runtime** asserts post-smoke active ∈ minted set (missing mint = FAIL not skip). Suite bookend restores `active-project`; sweeps orphan harness `e2e-*.json`. Fresh stack ≠ fresh container.
 
 Fail closed. A measurement that cannot name what it measured is not evidence.
 
@@ -255,6 +258,34 @@ await requireCompanionFace(page, 'Inspect')
 stop()
 ```
 
+## L2 composition
+
+Isolation green is not composition green.
+
+| `npm run test:green` / all-smoke | `npm run test:l2` |
+|--|--|
+| L1 change-level | Story/composition on integrated tip |
+| Each smoke mints its own project | **One** project shared across Draft, Canon, Lab |
+| Proves features alone | Proves body + sheet + active survive multi-surface use |
+
+Command: `npm run test:l2` → `e2e/guard-helpers.mjs` + `e2e/l2-composition.mjs`.
+Owned stack + provenance + fail-closed (same as test:green). Artifacts: `e2e/output/l2-composition-last.md`.
+Do not grow L2 by re-listing isolated smokes. Add checks only when they require a shared container.
+
+**Named claim only.** L2 load-bearing mutations prove two directions on the shared project: Canon sheet PUT cannot blank Draft bodies; Draft chapter PUT cannot wipe/rename Canon sheets. Lab is walked for container stickiness, not for a Lab-clobber mutation. Inbox/graph are out of scope. Do not quote `test:l2` as general multi-surface composition-safe.
 ## Feature smokes
 
 Listed in `constants.mjs` → `ALL_FEATURE_SMOKES`, run by `all-smoke.mjs` with per-smoke hard timeouts and a green/red summary.
+
+
+## Runtime isolation (active container)
+
+After every smoke in `ALL_FEATURE_SMOKES`: server `activeProjectId` **must** be a non-`default` id **this smoke minted this run**. Missing mint = FAIL. `default` = FAIL. Sibling id = FAIL. Observed via `STORYLINT_ISOLATION_REPORT` from `ensureIsolatedProject` — discarding the return still registers. Suite bookend: active after equals active before; orphan harness projects swept.
+
+## Diagnostic capture
+
+Do **not** filter the output of a run you might need to diagnose (`findstr`/`grep` pipelines that drop Playwright timeout bodies). Capture whole, filter when reading. Step labels on k/l (`[slice-k +Nms] …`) are proven to survive a stall — see `e2e/prove-step-stall.mjs` and `e2e/proofs/E1-step-stall-proof.txt`.
+
+## Nav waitUntil
+
+Never `waitUntil: 'networkidle'` on owned stacks. Companion/LLM sockets keep the network busy and burn Playwright's ~30s default. Use `domcontentloaded` + a real readiness locator.

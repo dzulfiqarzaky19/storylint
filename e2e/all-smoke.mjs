@@ -1,12 +1,20 @@
 import { spawn } from 'node:child_process'
+import { existsSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { ALL_FEATURE_SMOKES } from './constants.mjs'
-import { HARD_SMOKE_TIMEOUT_MS, setApiBase } from './helpers.mjs'
+import {
+  HARD_SMOKE_TIMEOUT_MS,
+  setApiBase,
+  readServerActiveProjectId,
+  restoreActiveProject,
+  sweepOrphanE2eProjects,
+  defaultDataDirectory,
+  assertSmokeOwnedActive,
+} from './helpers.mjs'
 import { resolveMeasurementTarget } from './owned-stack.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-// Per-smoke wall clock. Fixture path should finish well under this; live LLM may need STORYLINT_E2E_LIVE_LLM=1 + higher budget.
 const PER_SMOKE_TIMEOUT_MS = Number.parseInt(process.env.STORYLINT_E2E_SMOKE_TIMEOUT_MS ?? String(HARD_SMOKE_TIMEOUT_MS), 10)
 
 function runSmoke(relPath, env) {
@@ -19,7 +27,6 @@ function runSmoke(relPath, env) {
     })
     const timer = setTimeout(() => {
       child.kill('SIGTERM')
-      // Windows: force-kill if still alive shortly after.
       setTimeout(() => {
         try { child.kill('SIGKILL') } catch { /* already gone */ }
       }, 2000).unref?.()
@@ -38,7 +45,18 @@ function runSmoke(relPath, env) {
   })
 }
 
-// Own the measurement stack once for the whole suite. Children inherit proven UI/API.
+function readMintReport(reportPath) {
+  if (!existsSync(reportPath)) return []
+  try {
+    const body = JSON.parse(readFileSync(reportPath, 'utf8'))
+    return Array.isArray(body.minted) ? body.minted : []
+  } catch {
+    return []
+  } finally {
+    try { unlinkSync(reportPath) } catch { /* ignore */ }
+  }
+}
+
 let stack
 try {
   stack = await resolveMeasurementTarget({ root })
@@ -53,10 +71,15 @@ const childEnv = {
   ...process.env,
   STORYLINT_UI: stack.ui,
   STORYLINT_API: stack.api,
-  // Children consume the parent-owned stack; do not re-own.
   STORYLINT_ALLOW_EXTERNAL_UI: '1',
+  STORYLINT_HEAD: stack.shortHead,
 }
 console.log(`[owned=${stack.owned}] ui=${stack.ui} api=${stack.api} head=${stack.shortHead} shell=${stack.shellCss?.sha256_12}`)
+
+// Bookend: fresh stack ≠ fresh container (active-project.txt persists).
+const activeBefore = await readServerActiveProjectId()
+console.log(`[isolation] active-project before suite: ${activeBefore}`)
+mkdirSync(resolve(root, 'e2e/output'), { recursive: true })
 
 const results = []
 console.log(`Running ${ALL_FEATURE_SMOKES.length} feature smokes… (timeout ${PER_SMOKE_TIMEOUT_MS}ms each)`)
@@ -65,20 +88,62 @@ try {
   for (const relPath of ALL_FEATURE_SMOKES) {
     console.log(`\n===== ${relPath} =====`)
     const started = Date.now()
+    const reportPath = resolve(root, 'e2e/output', `.iso-${process.pid}-${Date.now().toString(36)}.json`)
+    const env = { ...childEnv, STORYLINT_ISOLATION_REPORT: reportPath }
     try {
-      await runSmoke(relPath, childEnv)
-      results.push({ relPath, ok: true, ms: Date.now() - started })
+      await runSmoke(relPath, env)
+      // Runtime isolation BEFORE any suite-level restore. Missing mint = FAIL (not skip).
+      const minted = readMintReport(reportPath)
+      await assertSmokeOwnedActive({ smokePath: relPath, minted })
+      const activeAfter = await readServerActiveProjectId()
+      console.log(`[isolation] ${relPath} ok active=${activeAfter} minted=${minted.join(',')}`)
+      results.push({ relPath, ok: true, ms: Date.now() - started, activeAfter, minted })
     } catch (error) {
+      try { if (existsSync(reportPath)) unlinkSync(reportPath) } catch { /* ignore */ }
       results.push({
         relPath,
         ok: false,
         ms: Date.now() - started,
         error: error instanceof Error ? error.message : String(error),
       })
-      // Keep going so the report is a true green/red list, not first-failure only.
     }
   }
 } finally {
+  try {
+    const target = activeBefore || 'default'
+    await restoreActiveProject(target)
+    const activeAfterSuite = await readServerActiveProjectId()
+    if (activeAfterSuite !== target) {
+      console.error(`FAIL isolation bookend: want=${target} got=${activeAfterSuite}`)
+      results.push({
+        relPath: '(suite-active-project-bookend)',
+        ok: false,
+        ms: 0,
+        error: `active want=${target} got=${activeAfterSuite}`,
+      })
+    } else {
+      console.log(`[isolation] active-project after suite restored: ${activeAfterSuite}`)
+    }
+  } catch (error) {
+    console.error('FAIL isolation restore: ' + (error instanceof Error ? error.message : error))
+    results.push({
+      relPath: '(suite-active-project-bookend)',
+      ok: false,
+      ms: 0,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+  try {
+    const swept = sweepOrphanE2eProjects({
+      dataDir: defaultDataDirectory(root),
+      keepIds: [activeBefore, 'default'].filter(Boolean),
+    })
+    if (swept.removed.length) {
+      console.log(`[isolation] swept ${swept.removed.length} orphan harness project files`)
+    }
+  } catch (error) {
+    console.warn('[isolation] sweep skipped: ' + (error instanceof Error ? error.message : error))
+  }
   try { await stack.stop() } catch { /* ignore */ }
 }
 

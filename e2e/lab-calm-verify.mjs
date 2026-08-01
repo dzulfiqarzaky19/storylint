@@ -64,7 +64,8 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
   for (const [label, viewport] of [['1440', { width: 1440, height: 900 }], ['390', { width: 390, height: 844 }]]) {
     const page = await browser.newPage({ viewport })
-    await page.goto(BASE, { waitUntil: 'networkidle' })
+    // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+    await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 30_000 })
     await page.getByRole('button', { name: 'Lab', exact: true }).click()
     await page.getByRole('main', { name: 'Lab' }).waitFor()
     await page.waitForTimeout(400)
@@ -87,7 +88,7 @@ try {
 
   // Seeded bench: filter row returns, and filtered-empty must NOT say "Nothing on the bench".
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
-  await page.goto(BASE, { waitUntil: 'networkidle' })
+  await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   const project = await page.request.get(`${API}/api/project`).then((r) => r.json())
   const boardId = project.lab.boards[0].id
   for (const [kind, title] of [['place', 'Glass quarter'], ['beat', 'The gate gives way']]) {

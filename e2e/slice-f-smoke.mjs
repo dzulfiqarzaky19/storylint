@@ -5,6 +5,7 @@ import { mkdirSync } from 'node:fs'
 import {
   closeSheetDetail,
   ensureIsolatedProject,
+  reclaimIsolatedProject,
   ensureDraftReady,
   waitSaved,
   requireUiOrigin,
@@ -21,8 +22,8 @@ const UI = requireUiOrigin()
 const browser = await chromium.launch({ channel: 'msedge', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 try {
-  await ensureIsolatedProject(page)
-  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
+  const projectId = await ensureIsolatedProject(page)
+  await page.goto(requireUiOrigin(), { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const manuscript = page.getByRole('main', { name: 'Draft' })
   await manuscript.waitFor()
@@ -71,6 +72,7 @@ try {
   if (await craftTag.isVisible()) throw new Error('Craft tags remain visible in Focus')
   await page.getByRole('button', { name: 'Exit focus mode' }).click()
 
+  await reclaimIsolatedProject(projectId)
   console.log('PASS: portrait/icon persists; lore hints stay freeform; manual craft tags save/hide in Focus; reading profile and responsive paper render')
 } finally {
   await browser.close()

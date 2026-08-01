@@ -265,7 +265,8 @@ try {
   page.setDefaultTimeout(15000)
 
   // —— A. EMPTY-ish: open graph before our seed (may have prior smoke data; still exercise empty filters)
-  await page.goto(UI, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(UI, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   let graph = await openGraph(page)
   checkpoint('opened-preseed')
 

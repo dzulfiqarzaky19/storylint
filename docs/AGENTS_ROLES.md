@@ -15,11 +15,22 @@
 | Words | [design/CANON-VOCABULARY.md](./design/CANON-VOCABULARY.md) |
 | Density bar | [CALM_BUDGET.md](./CALM_BUDGET.md) |
 | Git / origin | [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) |
+| Pipeline L1/L2 | [AGENT_PIPELINE.md](./AGENT_PIPELINE.md) |
+| Tickets | [tickets/README.md](./tickets/README.md) |
 | Swarm cadence | [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) |
 | Docs map | [README.md](./README.md) |
 | Who it’s for | [PERSONAS.md](./PERSONAS.md) — beachhead only; not a fifth agent |
 
 **Phase:** only the assigned BUILD slice (see status table).
+
+## Pipeline + tickets
+
+Work follows [AGENT_PIPELINE.md](./AGENT_PIPELINE.md): **sprint (rat ranks) → assign → code → L1 owned-stack Playwright → code review → `npm run land` (`--no-ff` bubble) → E2E verify on the running product → story pool on `dev` → L2 composition E2E → main at a named milestone.** In-repo tickets and priority check: [tickets/README.md](./tickets/README.md) (`npm run tickets:check` before start). **Verifier** owns reading L1 and L2 proof output (fail closed from commands/Playwright; no code spelunk). Audit measure handoffs: [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md).
+
+Two things that are easy to get wrong and are owned by AGENT_PIPELINE, not restated here:
+
+- **The coordinator is not an approval gate before landing.** Review, then land, then verify. Do not idle waiting on rat to bless a merge.
+- **Code review and E2E verify are different questions** — "is it sound?" vs "did the intent land on the running product?" A failed E2E verify is a **bug ticket**, not a review rejection, and does not revert the land.
 
 ## AI harness stays local
 
@@ -125,7 +136,7 @@ Reviewer may **request changes** if the diff is fine but the commit story is jun
 ## Review is mandatory
 
 ```
-Coder (slice N) → Reviewer (slice N) → UX (if UI) → Verifier → commit → next slice
+Coder (slice N) → Reviewer (slice N) → UX (if UI) → Verifier → land → E2E verify (intent on running product) → next slice
 ```
 
 - **Do not** start slice N+1 until Reviewer would **approve** N.  
@@ -183,6 +194,7 @@ Skip UX only for: pure domain/API with **zero** UI/CSS/shell files.
 | **Reviewer** | **Yes — primary job** | Optional; only if a gate needs proof |
 | **UX** | **No** (unless a surface is unreachable without a selector hint) | **Yes — required** |
 | **Verifier** | **No** (fail from command/Playwright output) | **Yes — required** for UI |
+| **E2E Verifier** (post-land, intent) | **No** — the diff is the Reviewer's | **Yes — required.** Asks only: did the ticket's intent land on the running product? Files bugs; never fixes |
 
 If UX/Verifier start spelunking `src/` for “why,” they’ve left role — file a blocker and stop.
 

@@ -21,7 +21,8 @@ const browser = await chromium.launch({ channel: 'msedge', headless: true })
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } })
   page.setDefaultTimeout(15_000)
-  await page.goto(stack.ui, { waitUntil: 'networkidle' })
+  // never networkidle on owned stacks — companion/LLM sockets burn ~30s
+  await page.goto(stack.ui, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await page.waitForSelector('.shell')
 
   // Open companion (drawer on phone)
@@ -123,7 +124,7 @@ try {
 
   // Desktop control check: faces must NOT be forced to 44 at 1440
   const desk = await browser.newPage({ viewport: { width: 1440, height: 900 } })
-  await desk.goto(stack.ui, { waitUntil: 'networkidle' })
+  await desk.goto(stack.ui, { waitUntil: 'domcontentloaded', timeout: 30_000 })
   const hide = desk.getByRole('button', { name: /Show companion|Hide companion/i }).first()
   if (/Show companion/i.test((await hide.getAttribute('aria-label')) || '')) await hide.click()
   await desk.waitForTimeout(200)

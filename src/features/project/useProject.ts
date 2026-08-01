@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Chapter, Fact, LabCardKind, Project, Sheet, SheetKind } from '../../domain/types.ts'
+import type { Chapter, Fact, LabCardKind, LabCardSource, Project, Sheet, SheetKind } from '../../domain/types.ts'
 import type { ApplyCard } from '../../cowrite/types.ts'
 import * as api from './api.ts'
 
@@ -76,11 +76,14 @@ export type ProjectController = {
   switchProject: (id: string) => Promise<void>
   createProject: (id: string, title: string) => Promise<void>
     exportProject: () => Promise<void>
-  createLabCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
+  createLabCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string; source?: LabCardSource }) => Promise<Project>
   patchLabCard: (cardId: string, patch: { title?: string; body?: string; kind?: LabCardKind }) => Promise<Project>
   archiveLabCard: (cardId: string) => Promise<void>
+  restoreLabCard: (cardId: string) => Promise<void>
   pinLabCard: (cardId: string, pinned?: boolean) => Promise<void>
   promoteLabCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<api.PromoteLabResponse>
+  dismissPromotedLabCard: (cardId: string) => Promise<void>
+  dismissAllPromotedLabCards: () => Promise<void>
 }
 
 /** API-backed project state. Chapter writes debounce; structured Canon edits save explicitly. */
@@ -643,6 +646,20 @@ export function useProject(): ProjectController {
         throw caught
       }
     },
+    restoreLabCard: async (cardId) => {
+      const generation = beginMutation()
+      if (generation === null) throw new Error('Project switch in progress')
+      try {
+        const saved = await trackMutation(api.restoreLabCard(cardId))
+        if (!applyIfCurrent(generation, saved)) return
+        setError(null)
+      } catch (caught) {
+        if (generation === projectGenerationRef.current) {
+          setError(caught instanceof Error ? caught.message : 'Failed to restore lab card')
+        }
+        throw caught
+      }
+    },
     pinLabCard: async (cardId, pinned = true) => {
       const generation = beginMutation()
       if (generation === null) throw new Error('Project switch in progress')
@@ -670,6 +687,34 @@ export function useProject(): ProjectController {
       } catch (caught) {
         if (generation === projectGenerationRef.current) {
           setError(caught instanceof Error ? caught.message : 'Failed to promote lab card')
+        }
+        throw caught
+      }
+    },
+    dismissPromotedLabCard: async (cardId) => {
+      const generation = beginMutation()
+      if (generation === null) throw new Error('Project switch in progress')
+      try {
+        const saved = await trackMutation(api.dismissPromotedLabCard(cardId))
+        if (!applyIfCurrent(generation, saved)) return
+        setError(null)
+      } catch (caught) {
+        if (generation === projectGenerationRef.current) {
+          setError(caught instanceof Error ? caught.message : 'Failed to dismiss promoted card')
+        }
+        throw caught
+      }
+    },
+    dismissAllPromotedLabCards: async () => {
+      const generation = beginMutation()
+      if (generation === null) throw new Error('Project switch in progress')
+      try {
+        const saved = await trackMutation(api.dismissAllPromotedLabCards())
+        if (!applyIfCurrent(generation, saved)) return
+        setError(null)
+      } catch (caught) {
+        if (generation === projectGenerationRef.current) {
+          setError(caught instanceof Error ? caught.message : 'Failed to dismiss promoted cards')
         }
         throw caught
       }

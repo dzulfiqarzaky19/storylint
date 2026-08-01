@@ -1,3 +1,6 @@
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve as resolvePath } from 'node:path'
+import { fileURLToPath } from 'node:url'
 /**
  * Shared Playwright helpers for feature smokes and UI measurement gates.
  * Keep LLM-dependent paths deterministic: route-stub fixture payloads by default.
@@ -885,6 +888,149 @@ export async function fetchProjects() {
  * Never reuse shared fixture ids (doors2, default, etc).
  * Returns the private project id — keep it and reclaim before measuring.
  */
+/**
+ * Process-local mint ledger. Cross-process: STORYLINT_ISOLATION_REPORT JSON for all-smoke.
+ * Runtime check observes OUTCOME (active ∈ minted). Missing mint = FAIL not skip (hawk).
+ */
+const __mintedIsolatedIds = new Set()
+
+export function getMintedIsolatedProjectIds() {
+  return [...__mintedIsolatedIds]
+}
+
+export function clearMintedIsolatedProjectIds() {
+  __mintedIsolatedIds.clear()
+}
+
+/** data/ under the repo (API default when STORYLINT_DATA unset). */
+export function defaultDataDirectory(root = resolvePath(dirname(fileURLToPath(import.meta.url)), '..')) {
+  return join(root, 'data')
+}
+
+/**
+ * Sweep orphan harness project files. Same defect as sticky active-project.txt:
+ * mint without suite bookend leaves e2e-*.json and a dirty "fresh" server.
+ * Never deletes default / doors*. Keeps active id + keepIds.
+ */
+export function sweepOrphanE2eProjects({
+  dataDir = defaultDataDirectory(),
+  keepIds = [],
+} = {}) {
+  const projectsDir = join(dataDir, 'projects')
+  if (!existsSync(projectsDir)) return { removed: [], kept: [] }
+  const keep = new Set(keepIds.filter(Boolean))
+  try {
+    const activePath = join(dataDir, 'active-project.txt')
+    if (existsSync(activePath)) {
+      const active = readFileSync(activePath, 'utf8').trim()
+      if (active) keep.add(active)
+    }
+  } catch { /* ignore */ }
+  const removed = []
+  const kept = []
+  for (const name of readdirSync(projectsDir)) {
+    if (!name.endsWith('.json')) continue
+    const id = name.slice(0, -5)
+    if (id === 'default' || /^doors/i.test(id)) {
+      kept.push(id)
+      continue
+    }
+    // Harness mints only — do not delete author projects.
+    if (!/^(e2e|slice|k2-|sr-|bl-)/i.test(id)) {
+      kept.push(id)
+      continue
+    }
+    if (keep.has(id)) {
+      kept.push(id)
+      continue
+    }
+    try {
+      unlinkSync(join(projectsDir, name))
+      removed.push(id)
+    } catch {
+      kept.push(id)
+    }
+  }
+  return { removed, kept: [...keep] }
+}
+
+/** Restore server active pointer via activate (persists active-project.txt). */
+export async function restoreActiveProject(projectId = 'default') {
+  if (!projectId) throw new PreconditionError('precondition not met: restoreActiveProject needs projectId')
+  // default lives at data/project.json and may be absent in bare trees — synthesise empty fixture.
+  if (projectId === 'default') {
+    const dataDir = defaultDataDirectory()
+    const defaultPath = join(dataDir, 'project.json')
+    if (!existsSync(defaultPath)) {
+      mkdirSync(dataDir, { recursive: true })
+      writeFileSync(
+        defaultPath,
+        JSON.stringify({
+          schemaVersion: 2,
+          title: 'Storylint',
+          chapters: [],
+          sheets: [],
+          proposals: [],
+          rejectedFingerprints: [],
+          marks: [],
+          researchNotes: [],
+          lab: { boards: [{ id: 'bench', title: 'Bench', cardIds: [] }], cards: [] },
+        }, null, 2),
+      )
+    }
+    writeFileSync(join(dataDir, 'active-project.txt'), 'default\n', 'utf8')
+  }
+  const activated = await apiJson(`/api/projects/${encodeURIComponent(projectId)}/activate`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: '{}',
+  })
+  if (!activated.ok) {
+    throw new PreconditionError(
+      `precondition not met: restore active ${projectId} failed (${activated.status} ${activated.text})`,
+    )
+  }
+  const listing = await fetchProjects()
+  if (listing?.activeProjectId !== projectId) {
+    throw new PreconditionError(
+      `precondition not met: active after restore want=${projectId} got=${listing?.activeProjectId}`,
+    )
+  }
+  return projectId
+}
+
+export async function readServerActiveProjectId() {
+  const listing = await fetchProjects()
+  return listing?.activeProjectId ?? null
+}
+
+/**
+ * Runtime isolation proof (hawk/rat). Three distinct FAILs — never vacuous skip:
+ * 1. no minted id this run
+ * 2. active is default/doors (shared fixture)
+ * 3. active is a sibling's id (not in this smoke's minted set)
+ */
+export async function assertSmokeOwnedActive({ smokePath, minted }) {
+  const list = Array.isArray(minted) ? minted : [...(minted || [])]
+  const activeId = await readServerActiveProjectId()
+  if (!list.length) {
+    throw new PreconditionError(
+      `isolation NOT-MEASURED: ${smokePath} minted nothing (no ensureIsolatedProject this run); active=${activeId}`,
+    )
+  }
+  if (!activeId || activeId === 'default' || /^doors/i.test(activeId)) {
+    throw new PreconditionError(
+      `isolation: ${smokePath} left active on shared fixture "${activeId}" (minted ${list.join(',')})`,
+    )
+  }
+  if (!list.includes(activeId)) {
+    throw new PreconditionError(
+      `isolation: ${smokePath} left active=${activeId} not in minted=[${list.join(', ')}] (sibling or discarded mint)`,
+    )
+  }
+  return { activeId, minted: list }
+}
+
 export async function ensureIsolatedProject(page, { id, title = 'E2E Health' } = {}) {
   const projectId = id || `e2e-${process.pid}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
   if (projectId === 'default' || /^doors/i.test(projectId)) {
@@ -905,6 +1051,22 @@ export async function ensureIsolatedProject(page, { id, title = 'E2E Health' } =
   }
 
   await reclaimIsolatedProject(projectId)
+  __mintedIsolatedIds.add(projectId)
+  // Child → parent ledger for all-smoke. Discarding the return value still registers.
+  try {
+    const reportPath = process.env.STORYLINT_ISOLATION_REPORT
+    if (reportPath) {
+      let body = { minted: [] }
+      if (existsSync(reportPath)) {
+        try { body = JSON.parse(readFileSync(reportPath, 'utf8')) || body } catch { body = { minted: [] } }
+      } else {
+        try { mkdirSync(dirname(reportPath), { recursive: true }) } catch { /* ignore */ }
+      }
+      const minted = Array.isArray(body.minted) ? body.minted : []
+      if (!minted.includes(projectId)) minted.push(projectId)
+      writeFileSync(reportPath, JSON.stringify({ minted, pid: process.pid, at: new Date().toISOString() }))
+    }
+  } catch { /* parent fails closed if report missing */ }
   // Best-effort UI select if page already navigated.
   if (page) {
     try {

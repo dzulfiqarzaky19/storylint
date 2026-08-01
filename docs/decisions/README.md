@@ -28,6 +28,8 @@ A reader should find the ruling that governs their question in the tables below 
 | [new-project-vs-first-boot.md](./new-project-vs-first-boot.md) | First boot may seed Chapter One; **New project stays empty** — two arrivals, one empty rulebook when empty. |
 | [seeded-default-first-impression.md](./seeded-default-first-impression.md) | Seeded-default is a third arrival; P1 empty title + Continuity gated on prose. |
 | [lab-lifecycle-ends.md](./lab-lifecycle-ends.md) | Lab transient; Promoted = dismissible receipts; archive + Restore; no hard delete v1. |
+| [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md) | **BINDING:** consent destination-shaped; LabCard `source`; chapter promote of model cards needs title confirm; sheet path keeps Accept. |
+| [lab-promote-domain-title.md](./lab-promote-domain-title.md) | **BINDING:** domain never auto-picks model card title into chapter; explicit chapterTitle only; same principle as T-004 Save-only. |
 | [canon-under-load-az.md](./canon-under-load-az.md) | Family not sparse; Network@scale known limit; binder scroll restore P0; no search from 68. |
 | [empty-canon-send-proposal-weight.md](./empty-canon-send-proposal-weight.md) | Empty Canon Send demoted until real sheet path exists. |
 | [draft-under-load-av.md](./draft-under-load-av.md) | Draft/Inbox under load: fold not bulk Accept; Continuity multi-run does not reopen wall. |
@@ -40,7 +42,8 @@ A reader should find the ruling that governs their question in the tables below 
 | [calm-budget-r3-ox.md](./calm-budget-r3-ox.md) | Green≠calm yet; structure over ratios; M1–M11; live numbers in [CALM_BUDGET](../CALM_BUDGET.md) r3. |
 | [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) | Earlier HARD/WARN judgment method (B1≥40 floor, faces≤5 ceiling). **Live bar = CALM r3.** |
 | [sheet-dirty-leave-guard.md](./sheet-dirty-leave-guard.md) | **FIXED:** in-app Canon dirty leave → Save/Discard/Cancel (navigation only). |
-| [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md) | **OPEN:** refresh/tab-close still drops dirty identity; fix = draft persistence, **not** beforeunload. |
+| [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md) | **Defect record:** refresh/tab-close drops dirty identity; process-lifetime hole (ruled). |
+| [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md) | **BINDING (P0 T-004):** durable dirty local draft; restore as dirty; conflict chooser; not a second Canon write path. |
 
 ### Design reviews / audits / QA (historical or milestone)
 
@@ -74,7 +77,8 @@ Reversed decisions are the most instructive. Keep the file; point here.
 | Family sparse under load (D4 nit) | **CLOSED** | [canon-under-load-az.md](./canon-under-load-az.md) |
 | [calm-budget-authority-ox.md](./calm-budget-authority-ox.md) as live number bar | **Superseded as live bar** | [CALM_BUDGET](../CALM_BUDGET.md) r3 + [calm-budget-r3-ox.md](./calm-budget-r3-ox.md) (method still useful) |
 | [ia-step1-qa.md](./ia-step1-qa.md) as latest IA QA | **Superseded as latest** | [ia-final-qa.md](./ia-final-qa.md) (keep both) |
-| In-app dirty leave “unfixed” | **Fixed** | [sheet-dirty-leave-guard.md](./sheet-dirty-leave-guard.md); refresh loss still [open](./sheet-identity-refresh-loss.md) |
+| In-app dirty leave “unfixed” | **Fixed** | [sheet-dirty-leave-guard.md](./sheet-dirty-leave-guard.md) |
+| Refresh loss “beforeunload or nothing” / auto-drop draft on server move | **Ruled** | [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md) — durable dirty + conflict chooser |
 | Unproven `:5173` calm PASS | **Resolved as gate** | badger owned-stack refuse; see r3 §7.1 |
 
 ---
@@ -83,16 +87,20 @@ Reversed decisions are the most instructive. Keep the file; point here.
 
 Short list only — do not grow into a second backlog novel.
 
-1. **Refresh / tab-close loses dirty Canon identity** — [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md); durable fix = draft persistence, not `beforeunload`.
-2. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
-3. **Binder list scroll restore after detail Back** — AZ P0; last product hold before density milestone two ([canon-under-load-az](./canon-under-load-az.md)).
-4. **Lab archive Restore + Promoted dismiss** — ruled ([lab-lifecycle-ends](./lab-lifecycle-ends.md)); implementation follow-on.
-5. **Network@scale product model** — known hairball; options deferred in AZ (not a density hotfix).
-6. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'`). Ambient-gitignored-data mechanism **disproven**.
-7. **`reload`+`networkidle` banned suite-wide** residual: first-`goto` `networkidle` still widespread, including calm gate waits.
+1. **Lab promote domain title table (build)** — ruled ([lab-promote-domain-title](./lab-promote-domain-title.md)); UI source-gate may already be in flight; domain must match table.
+1. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
+2. **Binder list scroll restore after detail Back** — AZ; T-003 measurement landed; product hold may remain ([canon-under-load-az](./canon-under-load-az.md)).
+3. **Lab Promoted dismiss** — Restore landed; dismiss half follow-on ([lab-lifecycle-ends](./lab-lifecycle-ends.md)).
+4. **Network@scale build** — product model ruled ([network-at-volume](./network-at-volume.md)); implementation follow-on.
+5. **slice-j original failure mode unexplained.** Fix removes the bad dependency (create both projects; never select `'default'`). Ambient-gitignored-data mechanism **disproven**.
+6. **`reload`+`networkidle` banned suite-wide** residual: first-`goto` `networkidle` still widespread, including calm gate waits.
+
 
 ### Closed this session (do not re-open without new evidence)
 
+- ~~**Lab promote domain title inherit (UI-only gate)**~~ — **RULED (b)**. [lab-promote-domain-title.md](./lab-promote-domain-title.md).
+- ~~**Lab promote consent / provenance (product model)**~~ — **RULED**. [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md); build follow-on.
+- ~~**Refresh / tab-close dirty identity (product model)**~~ — **RULED P0**. [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md); build = T-004 buffalo.
 - ~~**B6-primary-per-job**~~ — **LANDED**. Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
 - ~~**AY Inbox fold + ox B lock**~~ — **ACCEPT** @ `78aee53`.
 - ~~**Empty-Canon Send weight**~~ — ruled + landed path.

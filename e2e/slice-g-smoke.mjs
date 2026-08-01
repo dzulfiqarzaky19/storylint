@@ -13,6 +13,7 @@ import {
   waitSaved,
   ensureDraftReady,
   ensureIsolatedProject,
+  reclaimIsolatedProject,
   fillChapterAndSave,
   requireUiOrigin,
   setApiBase
@@ -31,8 +32,8 @@ const page = await browser.newPage({ viewport: { ...DEFAULT_VIEWPORT } })
 
 try {
   await installFixtureLlmRoutes(page)
-  await ensureIsolatedProject(page)
-  await page.goto(requireUiOrigin(), { waitUntil: 'networkidle' })
+  const projectId = await ensureIsolatedProject(page)
+  await page.goto(requireUiOrigin(), { waitUntil: 'domcontentloaded', timeout: 30_000 })
   await ensureDraftReady(page, { body: 'Aria opened the iron door.' })
   const body = page.getByRole('main', { name: 'Draft' }).getByLabel('Chapter text')
   const companion = companionPanel(page)
@@ -82,6 +83,7 @@ try {
   if (await body.inputValue() !== before) throw new Error('Craft check changed manuscript')
 
   await page.screenshot({ path: 'e2e/output/slice-g-smoke.png', fullPage: true })
+  await reclaimIsolatedProject(projectId)
   console.log('PASS: Review and craft check are on-demand neutral panel findings; tags require explicit add; no manuscript or continuity-mark writes')
 } finally {
   clearHardTimeout()

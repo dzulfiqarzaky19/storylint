@@ -148,7 +148,7 @@ Locks that are IA or vocabulary still live in [IA_MAP](../IA_MAP.md) · [CALM_BU
 | Position | Therefore | Cite |
 |---|---|---|
 | **Family** under multi-gen mesh is **usable** on desktop (not sparse). | D4 “family sparse under load” is **closed** for desktop mesh. Phone Family re-measure still open before Family chrome tips. Do not schedule fill-the-family work. | [canon-under-load-az](./canon-under-load-az.md) |
-| **Network** at full cast (~60+) is a **known hairball** — dense mode is honest and still not a cast directory. | **Default lean until dogfood:** Network is overview-only at full cast; author **filters by kind** to read names (option A). Do not density-hotfix the canvas. Cluster/pan-zoom deferred, not denied. | same |
+| **Network** at volume must answer a finishable question. | **Thresholded default kind-slice (B):** full graph when N < 24; auto Characters/last-used when N ≥ 24; honesty line Showing x of N; All always available. Pure filter-first (A) rejected (fails at 5 nodes). Cluster deferred. | [network-at-volume](./network-at-volume.md) |
 | Binder list @60+ is navigable with kind sections. | **Do not build search from AZ’s 68-sheet pass alone.** Reopen when a real bible shows find-failure (e.g. timed find fails, or sustained pain above ~30 per kind). | same |
 | Binder **scroll position must restore** after sheet detail Back. | Navigation state bug, not a reason to virtualize or redesign the binder. | same |
 
@@ -208,7 +208,7 @@ Settled ≠ shipped every follow-on.
 | Lab archive Restore + Promoted dismiss | Ruled; implementation follow-on, not density chrome |
 | Seeded-default P1 / B6-runnable-solid proof | Entitlement letter; confirm green on seed fixtures |
 | Refresh/tab-close Canon identity | Draft persistence debt |
-| Network@scale beyond filter-first lean | Cluster / pan-zoom deferred |
+| Network@volume implementation | Ruled — [network-at-volume](./network-at-volume.md); cluster still deferred |
 | Pin/Propose local Working… affordance | P2 polish |
 | Phone B6 @390 drawer-open + cross-ecosystem create solids | Fixture gap; demote per §2.4 |
 | SR live-region channel budget after Continuity | AU killed same-fact dupes; multi-polite still loud — design later, not density blocker |
