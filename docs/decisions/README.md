@@ -20,8 +20,9 @@ A reader should find the ruling that governs their question in the tables below 
 | [density-pass-settled-positions.md](./density-pass-settled-positions.md) | **Ox close-out:** settled product positions — do not relitigate without evidence (not the incident log). |
 | [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md) | Visibility is never inferred from geometry; absence ≠ pass; dead selector = fail. |
 | [check-occupies-slot.md](./check-occupies-slot.md) | **BINDING 8c (3 duties):** fail-when-product-breaks; reached by a reporter (else diagnostic not gate); executed before citation. Unwired red = silent. |
-| [mutation-must-build.md](./mutation-must-build.md) | **BINDING:** mutation survival only counts if BUILD_EXIT=0 and mutated line executes; else NOT-MEASURED. |
+| [mutation-must-build.md](./mutation-must-build.md) | **BINDING 8d (3 legs):** BUILD_EXIT=0; mutated line executes; property actually gone (not partial replace). Else NOT-MEASURED. |
 | [report-line-strength.md](./report-line-strength.md) | **BINDING 8e:** report token ≤ check strength; `gate-ok`→`convention-ok`; `diagnostic` for MANUAL DIAGNOSTIC; guard silent on runners. |
+| [unprotectable-instructions.md](./unprotectable-instructions.md) | **BINDING 8f (limit):** reader-only instructions are unprotectable; keep few + adjacent; prefer checks; remote duplicates rot. |
 | [one-primary-door-per-job.md](./one-primary-door-per-job.md) | One solid primary per job in the **whole viewport**; dual New sheet / dual first-chapter doors are not calm. |
 | [runnable-solid-precondition.md](./runnable-solid-precondition.md) | Solid must not advertise a job that cannot succeed; weight ≠ entitlement. |
 | [boolean-hides-multi-state.md](./boolean-hides-multi-state.md) | Do not collapse multi-state domains into booleans; fixture real states. |
@@ -103,6 +104,8 @@ Short list only — do not grow into a second backlog novel.
 
 ### Closed this session (do not re-open without new evidence)
 
+- ~~**8f unprotectable instructions (E1-2 comment limit)**~~ — **RULED**. [unprotectable-instructions.md](./unprotectable-instructions.md).
+- ~~**8d third leg (property still present)**~~ — **RULED** into [mutation-must-build.md](./mutation-must-build.md).
 - ~~**gate-ok costume (convention as execution)**~~ — **RULED**. [report-line-strength.md](./report-line-strength.md); standing **8e**; token `convention-ok` / `diagnostic`.
 - ~~**Save chip blank on error (false idle)**~~ — **RULED**. [save-chip-error-not-idle.md](./save-chip-error-not-idle.md). Chip: **Not saved**. Idle stays blank.
 - ~~**8c extend (unwired / not-run)**~~ — **RULED** into [check-occupies-slot.md](./check-occupies-slot.md) three duties.
@@ -125,7 +128,7 @@ Short list only — do not grow into a second backlog novel.
 | Keep tracked | Leave ignored |
 |---|---|
 | Judgments / adjudications / design reviews (this folder) | Screenshots, webp, shot folders |
-| Measurements-over-time scoreboard `calm-budget-run.md` | Probe JSON / logs / skill dumps |
+| Measurements-over-time scoreboard `e2e/output/calm-budget-run.md` | Probe JSON / logs / skill dumps |
 
 ## How to add a decision
 
