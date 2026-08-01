@@ -33,3 +33,7 @@ Cross-link in STANDING_RULES is enough; collapsing loses the failure-path proof 
 ## Instrument validity
 
 **8d** ([mutation-must-build](./mutation-must-build.md)) sits above §3/8a/8c: those ask whether the **check** is honest; 8d asks whether the **mutation used to test the check** was real (builds + executes). Still do not collapse.
+
+## 8c grew to three duties
+
+Object honesty was not enough: unwired and never-run checks are the same disease family. See [check-occupies-slot](./check-occupies-slot.md). Still do not collapse with §3 or 8a.
