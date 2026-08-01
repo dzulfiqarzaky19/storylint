@@ -4,6 +4,58 @@
 
 **Density-pass product map (conclusions, not incidents):** [density-pass-settled-positions](./density-pass-settled-positions.md).
 
+---
+
+## How to use this page
+
+**Daily set — carry these.** Everything else is a scar appendix: normative when it applies, searched
+when the domain hits, not memorized.
+
+| # | Rule |
+|---|---|
+| 1–8f | Measure honestly. A check that could not have failed is not a check |
+| 11–11c | Boring mechanism first; no discard-as-fix |
+| 12–13a | Class over instance |
+| 14 | Multi-state honesty |
+| 40 | L1 owned-stack Playwright before land |
+| 44 | Code review and E2E verify are different questions |
+| 45 | A failed verify is a bug ticket, not a revert |
+| 46 | The coordinator is not an approval gate |
+| 47 | `dev → main` every 5 lands, milestone named on the subject |
+| 48 | A missing citation disproves the citation, not the claim |
+| 49 | One land per feature, not per step |
+| 50 | Two lanes: feature vs bugfix |
+| 51–52 | Coder self-reviews end to end; failed review goes back to the coder |
+
+Product chrome rules (15–26) apply **when you touch that surface**, not otherwise.
+
+**Gates are enforcers, not a parallel doctrine.** Gate A (proof-provenance), Gate B
+(mutant-validity), and slot-occupancy are tools that enforce 8c/8d/8e. If you are asking "is Gate B a
+rule or a tool" — it is a tool, and the rule it enforces is 8d.
+
+### Renumbering (2026-08-01)
+
+The Pipeline block used to restart at 26, so **rule 26 and rule 35 each named two different rules**.
+Addresses must be unique or a citation is ambiguous. The pipeline block moved to **40–53**; rules
+1–26 kept their numbers because they are cited across tickets, decisions and handoffs.
+
+| Old cite | Now |
+|---|---|
+| 26 (pipeline: L1 before land) | **40** |
+| 27 · 28 · 29 | 41 · 42 · 43 |
+| 30 (review ≠ verify) | **44** |
+| 31 (failed verify = bug) | **45** |
+| 32 (coordinator not a gate) | **46** |
+| 33 (dev→main cadence) | **47** |
+| 34 (citation ≠ claim) | **48** |
+| 35 (one land per feature) | **49** |
+| 36 · 37 · 38 · 39 | 50 · 51 · 52 · 53 |
+
+`26` and `35` now mean only the **product/process-letter** rules that always held those slots.
+A pre-2026-08-01 citation of 26–39 in an old ticket or DM means the row above.
+
+---
+
 ## Measurement (evidence)
 
 1. **If a check cannot state what it examined and at what commit, its output is not evidence.** Owned stack + HEAD + served bundle (every origin the test talks to) — or refuse, never green. ([milestone-density-pass](./milestone-density-pass.md), [calm-budget-r3-ox](./calm-budget-r3-ox.md) FG7)
@@ -79,15 +131,20 @@ Citable green = `npm run test:green` only (not a lone smoke, not an unproven cal
 
 ## Pipeline + tickets (process)
 
-26. **L1 owned-stack Playwright before land** for product/UI fixes — isolation proof on the change; then `npm run land` only. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
-27. **L2 composition E2E on `origin/dev` before story close / main** — isolation green ≠ composition green. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
-28. **No start lower priority while a P0 is open** without founder/rat override on the ticket. Run `npm run tickets:check`. ([tickets/README](../tickets/README.md))
-29. **Measure condition labels / probe chrome are not default product evidence.** Assert behaviour and state; probes may aid reports only. ([AUDIT_HANDOFF](../AUDIT_HANDOFF.md))
-30. **Code review and E2E verify are different questions.** "Is the change sound?" (reads the diff) vs "did the ticket's intent land on the running product?" (drives the app, does not read the diff). Neither substitutes for the other. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
-31. **A failed E2E verify is a bug, not a review rejection.** It opens a ticket at ≥ prior priority and re-enters the sprint; it does not revert the land. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
-32. **The coordinator is not an approval gate before landing.** Review → land → verify. A coordinator inbox between "reviewed" and "landed" is what produced the 83-commit dev/main drift. ([AGENT_PIPELINE § Sprint model](../AGENT_PIPELINE.md))
-33. **`dev → main` at a named milestone, never at a commit count.** ([AGENT_PIPELINE](../AGENT_PIPELINE.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
-34. **Authority claims need citable words.** "X asked for this" must come with what X actually said. A missing citation disproves the citation, **not** the claim — re-ask rather than concluding it was invented. (rat scar: koala pipeline land)
+40. **L1 owned-stack Playwright before land** for product/UI fixes — isolation proof on the change; then `npm run land` only. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+41. **L2 composition E2E on `origin/dev` before story close / main** — isolation green ≠ composition green. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+42. **No start lower priority while a P0 is open** without founder/rat override on the ticket. Run `npm run tickets:check`. ([tickets/README](../tickets/README.md))
+43. **Measure condition labels / probe chrome are not default product evidence.** Assert behaviour and state; probes may aid reports only. ([AUDIT_HANDOFF](../AUDIT_HANDOFF.md))
+44. **Code review and E2E verify are different questions.** "Is the change sound?" (reads the diff) vs "did the ticket's intent land on the running product?" (drives the app, does not read the diff). Neither substitutes for the other. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+45. **A failed E2E verify is a bug, not a review rejection.** It opens a ticket at ≥ prior priority and re-enters the sprint; it does not revert the land. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
+46. **The coordinator is not an approval gate before landing.** Review → land → verify. A coordinator inbox between "reviewed" and "landed" is what produced the 83-commit dev/main drift. ([AGENT_PIPELINE § Sprint model](../AGENT_PIPELINE.md))
+47. **`dev → main` at every 5 lands, with a named milestone on the merge subject.** The count is the trigger; the name is what the subject says. Both hold. Supersedes the earlier "never at a commit count" wording, which read as forbidding the founder's own cadence — corrected 2026-08-01 after rat cited it against horse. ([AGENT_PIPELINE](../AGENT_PIPELINE.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
+48. **Authority claims need citable words.** "X asked for this" must come with what X actually said. A missing citation disproves the citation, **not** the claim — re-ask rather than concluding it was invented. (rat scar: koala pipeline land)
+49. **One land per feature, not per step.** A land is the unit the founder reads; it should be a thing they can name. A ticket lands with its own close. Review follow-ups fold into the branch before it lands, not after it. Batch only what shares a reason — independent risk, separate tickets, and hotfixes still land separately. (founder, 2026-08-01, after 128 lands in one day; [GIT_WORKFLOW § Land granularity](../GIT_WORKFLOW.md#land-granularity))
+50. **Two lanes, chosen by whether anything must be verified together.** *Feature lane:* `storylint/<feature>-ticket-NN` → `storylint/<feature>` → (E2E on the whole feature) → `dev`; landing a feature ticket straight on `dev` skips that gate. *Bugfix lane:* one `T-###`, `storylint/<topic>`, straight to `dev` — an integration branch buys no evidence when there is nothing to compose. A bugfix that grows into several interdependent tickets becomes a feature. ([FEATURE_PIPELINE § Two lanes](../FEATURE_PIPELINE.md))
+51. **A coder self-reviews end to end before handing up.** Not "the unit test passes" — drive the real path and be able to say what would have shown it broken. A reviewer is not the coder's test runner. ([FEATURE_PIPELINE § Stage 3](../FEATURE_PIPELINE.md))
+52. **A failed review goes back to the coder, not to the coordinator.** The coordinator splits, assigns, pools and opens fix tickets; it is not a relay for review outcomes. ([FEATURE_PIPELINE § Stage 4](../FEATURE_PIPELINE.md))
+53. **Run the documented workflow before publishing it.** The feature-pipeline doc told coders to branch `storylint/lab-lifecycle-ticket-01`; `land.mjs` refused that exact name. Caught by executing the instructions, not by reading them. A workflow nobody has run is a hypothesis. (rat scar, 2026-08-01)
 
 ## Still open
 

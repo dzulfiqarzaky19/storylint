@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
- * Land a topic branch onto origin/dev the only correct way.
+ * Land a topic branch onto its target branch the only correct way.
+ * Target is origin/dev by default, or a feature integration branch via --into.
  *
  *   npm run land -- storylint/<topic> --summary "<why>"
  *
- * Enforces: clean tree → baseline test:green on origin/dev → merge
- * origin/dev into topic → test:green on that result → no-worse compare
- * by failure identity → detach origin/dev → merge --no-ff topic →
- * push HEAD:dev → fetch and print the ORIGIN hash.
+ * Enforces: clean tree → baseline test:green on the TARGET → merge
+ * TARGET into topic → test:green on that result → no-worse compare
+ * by failure identity → detach TARGET → merge --no-ff topic →
+ * push HEAD:<target> → fetch and print the ORIGIN hash.
  *
  * Gate rule (rat 2026-07-31): LAND ON NO-WORSE, NOT ON GREEN.
  * - Failure on dev and still on merge result → PRE-EXISTING (report, do not block)
@@ -39,7 +40,23 @@ import {
 } from './land-gate.mjs'
 
 const MAX_PUSH_ATTEMPTS = 3
-const DEV_REF = 'origin/dev'
+const DEFAULT_TARGET = 'dev'
+
+/**
+ * Land target. `dev` by default; a feature integration branch when a ticket
+ * lands into its feature (founder pipeline 2026-08-01:
+ * storylint/<kebab>-ticket-NN -> storylint/<kebab> -> dev).
+ * Every ref below derives from this, so the no-worse baseline, the merge, the push
+ * and the read-back all name the SAME branch. They must never diverge: a baseline
+ * measured against one branch and pushed to another is not a gate.
+ */
+let TARGET = DEFAULT_TARGET
+let TARGET_REF = 'origin/' + DEFAULT_TARGET
+
+function setTarget(branch) {
+  TARGET = branch
+  TARGET_REF = 'origin/' + branch
+}
 const IS_WIN = process.platform === 'win32'
 const LAND_DIR = join(process.cwd(), '_land_run')
 
@@ -63,10 +80,13 @@ Required:
   --summary <text>    short reason used in the merge commit message
 
 Optional:
+  --into <branch>     land into this branch instead of dev (must already exist on origin).
+                      Feature pipeline: storylint/<kebab>-ticket-NN lands into
+                      storylint/<kebab>; that feature branch lands into dev after E2E.
   --max-attempts <n>  push-reject retries of the whole sequence (default ${MAX_PUSH_ATTEMPTS})
   --allow-known       reserved / OFF by default; not required for no-worse lands
 
-Gate: NO-WORSE vs a fresh origin/dev baseline from the same run (not a cache).
+Gate: NO-WORSE vs a fresh baseline of the TARGET branch from the same run (not a cache).
 Compare by failure identity (guard/build/unit/smoke/calm), not by count. Print both sets.
 Infrastructure / void runs are NOT-MEASURED and hard-abort — never a no-worse tie.
 Missing node_modules is refused up front. There is no --skip-tests.
@@ -81,6 +101,7 @@ function parseArgs(argv) {
   let summary = null
   let maxAttempts = MAX_PUSH_ATTEMPTS
   let allowKnown = false
+  let into = DEFAULT_TARGET
 
   for (let i = 0; i < args.length; i++) {
     const a = args[i]
@@ -96,6 +117,15 @@ function parseArgs(argv) {
     }
     if (a.startsWith('--summary=')) {
       summary = a.slice('--summary='.length)
+      continue
+    }
+    if (a === '--into') {
+      into = args[++i]
+      if (!into) fail('Missing value for --into')
+      continue
+    }
+    if (a.startsWith('--into=')) {
+      into = a.slice('--into='.length)
       continue
     }
     if (a === '--max-attempts') {
@@ -122,14 +152,45 @@ function parseArgs(argv) {
   if (!summary || !summary.trim()) {
     fail('Required: --summary "<why this lands>"')
   }
-  if (!/^storylint\/[A-Za-z0-9._-]+$/.test(topic)) {
-    fail(`Topic must look like storylint/<kebab> (got ${topic})`)
+  // Accepted topic shapes:
+  //   storylint/<kebab>              standalone work landing on dev
+  //   storylint/<kebab>                     any topic: standalone, bugfix, or a
+  //                                         feature integration branch
+  //   storylint/<kebab>-ticket-NN[-fix-NN]  a coder branch inside that feature
+  //
+  // One namespace. A feature is named by what it IS (storylint/lab-lifecycle),
+  // never by a counter, and its tickets are that name plus -ticket-NN, so the
+  // relationship reads without a lookup.
+  const STORYLINT_TOPIC = /^storylint\/[A-Za-z0-9._-]+$/
+  if (!STORYLINT_TOPIC.test(topic)) {
+    fail(
+      `Topic must look like storylint/<kebab> (got ${topic})`,
+    )
   }
   if (/\b(main|master)\b/i.test(topic)) {
     fail(`Topic name must not contain main/master tokens: ${topic}`)
   }
 
-  return { topic, summary: summary.trim(), maxAttempts, allowKnown }
+  // The target may be dev or a feature integration branch. NEVER main:
+  // main receives only merges from dev, on the founder account (GIT_WORKFLOW).
+  // A land target is dev, or a feature integration branch (storylint/<kebab>).
+  // Refusing everything else stops a typo from creating a branch on origin, and
+  // stops main from ever being a target: main receives merges from dev only.
+  if (!/^(dev|storylint\/[a-z0-9]+(-[a-z0-9]+)*)$/.test(into)) {
+    fail(
+      `--into must be dev or storylint/<kebab> (got ${into}).\n` +
+        '  e.g. --into storylint/lab-lifecycle\n' +
+        '  main is not a land target: it receives merges from dev only.',
+    )
+  }
+  if (/\b(main|master)\b/i.test(into)) {
+    fail(`--into must not contain main/master tokens: ${into}`)
+  }
+  if (into === topic || `storylint/${into}` === topic) {
+    fail(`--into ${into} is the topic itself; a branch cannot land into itself`)
+  }
+
+  return { topic, summary: summary.trim(), maxAttempts, allowKnown, into }
 }
 
 function fail(message, code = 1) {
@@ -334,8 +395,8 @@ function assertOnTopic(topic) {
 function fetchOrigin() {
   banner('fetch origin')
   run('git', ['fetch', 'origin'])
-  const tip = gitCapture(['rev-parse', '--short', DEV_REF])
-  console.log(`land: ${DEV_REF} = ${tip}`)
+  const tip = gitCapture(['rev-parse', '--short', TARGET_REF])
+  console.log(`land: ${TARGET_REF} = ${tip}`)
   return tip
 }
 
@@ -383,10 +444,10 @@ async function runTestGreenLabeled(label) {
 }
 
 async function captureDevBaseline(topic) {
-  banner('3/9 baseline test:green on origin/dev (same run, not a cache)')
-  const devTip = gitCapture(['rev-parse', '--short', DEV_REF])
-  console.log(`land: detaching at ${DEV_REF} (${devTip}) for baseline`)
-  run('git', ['checkout', '--detach', DEV_REF])
+  banner(`3/9 baseline test:green on ${TARGET_REF} (same run, not a cache)`)
+  const devTip = gitCapture(['rev-parse', '--short', TARGET_REF])
+  console.log(`land: detaching at ${TARGET_REF} (${devTip}) for baseline`)
+  run('git', ['checkout', '--detach', TARGET_REF])
   discardGeneratedNoise()
 
   let baseline
@@ -399,22 +460,22 @@ async function captureDevBaseline(topic) {
     discardGeneratedNoise()
   }
 
-  console.log(`\nland: BASELINE origin/dev@${baseline.head}`)
+  console.log(`\nland: BASELINE ${TARGET_REF}@${baseline.head}`)
   console.log(formatFailSet(baseline.failures))
   return baseline
 }
 
 function mergeDevIntoTopic(topic) {
-  banner('4/9 merge origin/dev INTO topic')
-  console.log(`land: merging ${DEV_REF} into ${topic} (topic stays checked out)`)
-  const status = run('git', ['merge', DEV_REF, '-m', `Merge ${DEV_REF} into ${topic}`], {
+  banner(`4/9 merge ${TARGET_REF} INTO topic`)
+  console.log(`land: merging ${TARGET_REF} into ${topic} (topic stays checked out)`)
+  const status = run('git', ['merge', TARGET_REF, '-m', `Merge ${TARGET_REF} into ${topic}`], {
     allowFail: true,
   })
   if (status !== 0) {
     const unmerged = gitOk(['diff', '--name-only', '--diff-filter=U'])
       ? gitCapture(['diff', '--name-only', '--diff-filter=U'])
       : ''
-    console.error('\nland: merge conflict bringing origin/dev into the topic.')
+    console.error(`\nland: merge conflict bringing ${TARGET_REF} into the topic.`)
     console.error('land: refusing to auto-resolve. Fix by hand, commit, re-run land.')
     if (unmerged) console.error(`land: unmerged paths:\n${unmerged}`)
     console.error('\n  git status')
@@ -423,7 +484,7 @@ function mergeDevIntoTopic(topic) {
     console.error(`  npm run land -- ${topic} --summary "..."`)
     exit(status)
   }
-  console.log('land: topic now contains origin/dev')
+  console.log(`land: topic now contains ${TARGET_REF}`)
 }
 
 async function gateNoWorse(baseline, topic) {
@@ -435,7 +496,7 @@ async function gateNoWorse(baseline, topic) {
   console.log('\n' + '='.repeat(72))
   console.log('land: FAILURE SET COMPARE (by identity, not count)')
   console.log('='.repeat(72))
-  console.log(`\nBASELINE measurement=${baseline.measurement} origin/dev @ ${baseline.head} (${baseline.failures.size})`)
+  console.log(`\nBASELINE measurement=${baseline.measurement} ${TARGET_REF} @ ${baseline.head} (${baseline.failures.size})`)
   console.log(formatFailSet(baseline.failures))
   console.log(`\nCANDIDATE measurement=${candidate.measurement} topic-after-dev @ ${candidate.head} (${candidate.failures.size})`)
   console.log(formatFailSet(candidate.failures))
@@ -456,7 +517,7 @@ async function gateNoWorse(baseline, topic) {
   console.log('='.repeat(72))
 
   if (preExisting.length) {
-    console.log('\nland: proceeding with PRE-EXISTING reds named above (inherited from origin/dev).')
+    console.log(`\nland: proceeding with PRE-EXISTING reds named above (inherited from ${TARGET_REF}).`)
   } else if (candidate.failures.size === 0 && candidate.measurement === 'measured') {
     console.log('\nland: both sides green — land normally.')
   } else {
@@ -479,14 +540,14 @@ async function gateNoWorse(baseline, topic) {
 }
 
 function createNoFfBubble(topic, summary) {
-  banner('6/9 detach origin/dev and merge --no-ff topic')
-  const message = `Merge ${topic} into dev: ${summary}`
+  banner(`6/9 detach ${TARGET_REF} and merge --no-ff topic`)
+  const message = `Merge ${topic} into ${TARGET}: ${summary}`
   console.log(`land: merge message:\n  ${message}`)
 
-  run('git', ['checkout', '--detach', DEV_REF])
+  run('git', ['checkout', '--detach', TARGET_REF])
   const status = run('git', ['merge', '--no-ff', topic, '-m', message], { allowFail: true })
   if (status !== 0) {
-    console.error('\nland: --no-ff merge of topic into detached origin/dev failed.')
+    console.error(`\nland: --no-ff merge of topic into detached ${TARGET_REF} failed.`)
     console.error('land: returning to topic branch if possible.')
     run('git', ['merge', '--abort'], { allowFail: true })
     run('git', ['checkout', topic], { allowFail: true })
@@ -509,21 +570,21 @@ function createNoFfBubble(topic, summary) {
   return { head, message }
 }
 
-function pushHeadToDev() {
-  banner('7/9 push HEAD:dev (full output, unfiltered)')
+function pushHeadToTarget() {
+  banner(`7/9 push HEAD:${TARGET} (full output, unfiltered)`)
   // CRITICAL: never filter this output. A push you cannot see is unattributed.
-  return run('git', ['push', 'origin', 'HEAD:dev'], { allowFail: true })
+  return run('git', ['push', 'origin', `HEAD:${TARGET}`], { allowFail: true })
 }
 
-function readOriginDev() {
+function readOriginTarget() {
   banner('8/9 fetch and read ORIGIN hash back (never assume push landed)')
   run('git', ['fetch', 'origin'])
-  run('git', ['log', '--oneline', '-1', '--decorate', DEV_REF])
-  run('git', ['rev-parse', DEV_REF])
-  const short = gitCapture(['rev-parse', '--short', DEV_REF])
-  const full = gitCapture(['rev-parse', DEV_REF])
-  const subject = gitCapture(['log', '-1', '--format=%s', DEV_REF])
-  const parents = gitCapture(['rev-list', '--parents', '-n', '1', DEV_REF]).split(/\s+/)
+  run('git', ['log', '--oneline', '-1', '--decorate', TARGET_REF])
+  run('git', ['rev-parse', TARGET_REF])
+  const short = gitCapture(['rev-parse', '--short', TARGET_REF])
+  const full = gitCapture(['rev-parse', TARGET_REF])
+  const subject = gitCapture(['log', '-1', '--format=%s', TARGET_REF])
+  const parents = gitCapture(['rev-list', '--parents', '-n', '1', TARGET_REF]).split(/\s+/)
   return { short, full, subject, parents }
 }
 
@@ -544,22 +605,26 @@ async function landOnce(topic, summary) {
   mergeDevIntoTopic(topic)
 
   const dirty = gitCapture(['status', '--porcelain'])
-  if (dirty) fail(`tree dirty after merging ${DEV_REF} into topic:\n${dirty}`)
+  if (dirty) fail(`tree dirty after merging ${TARGET_REF} into topic:\n${dirty}`)
 
   const compare = await gateNoWorse(baseline, topic)
   createNoFfBubble(topic, summary)
-  const pushStatus = pushHeadToDev()
+  const pushStatus = pushHeadToTarget()
   return { pushStatus, compare }
 }
 
 async function main() {
-  const { topic, summary, maxAttempts, allowKnown } = parseArgs(process.argv)
+  const { topic, summary, maxAttempts, allowKnown, into } = parseArgs(process.argv)
 
-  console.log('land: storylint topic → origin/dev')
+  // Must happen before any ref is read, so baseline/merge/push/read-back agree.
+  setTarget(into)
+
+  console.log(`land: storylint topic → ${TARGET_REF}`)
   console.log(`land: topic=${topic}`)
   console.log(`land: summary=${summary}`)
   console.log(`land: max-attempts=${maxAttempts}`)
-  console.log('land: gate=NO-WORSE (fresh origin/dev baseline, identity compare, NOT-MEASURED aborts)')
+  console.log(`land: target=${TARGET_REF}`)
+  console.log(`land: gate=NO-WORSE (fresh ${TARGET_REF} baseline, identity compare, NOT-MEASURED aborts)`)
   if (allowKnown) {
     console.log('land: --allow-known noted (no-worse already permits pre-existing reds)')
   }
@@ -582,7 +647,7 @@ async function main() {
 
     if (pushStatus === 0) break
 
-    console.error(`\nland: push HEAD:dev rejected or failed (exit ${pushStatus}).`)
+    console.error(`\nland: push HEAD:${TARGET} rejected or failed (exit ${pushStatus}).`)
     if (attempt >= maxAttempts) {
       restoreTopic(topic)
       fail(
@@ -598,19 +663,19 @@ async function main() {
     discardGeneratedNoise()
   }
 
-  const origin = readOriginDev()
+  const origin = readOriginTarget()
 
   if (origin.parents.length < 3) {
     restoreTopic(topic)
     fail(
-      `origin/dev ${origin.short} is NOT a merge commit after land.\n` +
+      `${TARGET_REF} ${origin.short} is NOT a merge commit after land.\n` +
         `subject: ${origin.subject}\n` +
         'Someone or something pushed a raw tip. Do not treat this as a successful land.',
     )
   }
 
-  if (!origin.subject.startsWith(`Merge ${topic} into dev:`)) {
-    console.error(`land: WARNING — origin/dev subject is not our bubble:`)
+  if (!origin.subject.startsWith(`Merge ${topic} into ${TARGET}:`)) {
+    console.error(`land: WARNING — ${TARGET_REF} subject is not our bubble:`)
     console.error(`  expected prefix: Merge ${topic} into dev:`)
     console.error(`  actual: ${origin.subject}`)
     console.error('land: printing what origin actually has. Investigate before claiming success.')
@@ -619,8 +684,9 @@ async function main() {
   restoreTopic(topic)
 
   banner('DONE')
-  console.log(`origin/dev=${origin.short}`)
-  console.log(`origin/dev_full=${origin.full}`)
+  console.log(`${TARGET_REF}=${origin.short}`)
+  console.log(`${TARGET_REF}_full=${origin.full}`)
+  console.log(`target=${TARGET}`)
   console.log(`subject=${origin.subject}`)
   console.log(`parents=${origin.parents.slice(1).map((p) => p.slice(0, 7)).join(' + ')}`)
   console.log(`topic=${topic}`)

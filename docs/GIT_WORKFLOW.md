@@ -32,12 +32,16 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
 
    Full founder flow: topic branch → hawk reviews → not ok, author retries → ok, author lands to `dev` via `npm run land` → every 5 lands, horse merges `dev → main`.
 
+   **One land per feature, not per commit-sized step (founder-set 2026-08-01).** A land is the unit the
+   founder reads. It should be a thing they can recognize as a feature, a fix, or a closed ticket —
+   not one step of the work that produced it. See [Land granularity](#land-granularity).
+
    Check the count before deciding:
    ```
    git rev-list --count --first-parent origin/main..origin/dev
    ```
 
-   **Scar:** this rule lived only in conversation. rat grepped the docs, found nothing, and told horse the rule was invented — reporting "not in the docs" as if it disproved "the founder set it". A missing citation disproves the citation, not the claim ([STANDING_RULES](./decisions/STANDING_RULES.md) 34). Drift reached 28 lands before the first merge, then 20 before this was caught. A rule that is not written down is one bad memory away from being overridden.
+   **Scar:** this rule lived only in conversation. rat grepped the docs, found nothing, and told horse the rule was invented — reporting "not in the docs" as if it disproved "the founder set it". A missing citation disproves the citation, not the claim ([STANDING_RULES](./decisions/STANDING_RULES.md) 48). Drift reached 28 lands before the first merge, then 20 before this was caught. A rule that is not written down is one bad memory away from being overridden.
 
 ### Manual land sequence (fallback / understanding only)
 
@@ -73,6 +77,38 @@ When a correct procedure is reliably performed incorrectly, more documentation w
 - Prefix `storylint/`, short kebab topic: `storylint/canon-entry`, `storylint/density-polish`
 - Never put `main` or `master` tokens in branch names (push hooks refuse them)
 - One topic per branch. QA-only work that produces no commits needs no branch.
+
+### Feature pipeline names (2026-08-01)
+
+Feature work uses a second naming family — see [FEATURE_PIPELINE.md](./FEATURE_PIPELINE.md):
+
+**One namespace: everything is `storylint/<kebab>`.** A feature is named by what it *is*
+(`storylint/lab-lifecycle`), never by a counter, and its ticket branches are that name plus
+`-ticket-NN`. The relationship reads without a lookup table, and `feature-01` tells a reader
+nothing six weeks later.
+
+| Branch | Cut from | Lands into |
+|---|---|---|
+| `storylint/<feature>` (integration) | `origin/dev` | `dev`, after the feature's E2E passes |
+| `storylint/<feature>-ticket-NN` (coder) | `origin/storylint/<feature>` | `storylint/<feature>`, by the reviewer |
+| `storylint/<feature>-ticket-NN-fix-NN` | `origin/storylint/<feature>` | `storylint/<feature>`, same as any ticket |
+
+```
+npm run land -- storylint/lab-lifecycle-ticket-01 --summary "<what it does>" --into storylint/lab-lifecycle
+npm run land -- storylint/lab-lifecycle --summary "<feature summary>"          # target defaults to dev
+```
+
+`--into` runs the **same** no-worse gate against the feature branch: fresh `test:green` baseline on
+`origin/storylint/<feature>`, merge, `test:green` again, identity compare, `--no-ff` bubble, push, read back.
+Every ref derives from one variable, so the gate cannot measure one branch while the push writes
+another. `--into main` is refused: `main` receives merges from `dev` only.
+
+**Scar:** the first revision of this pipeline used numbered names (`feature-01`,
+`feature-01-ticket-01`) and the doc told coders to branch them — but `land.mjs` refused those names
+outright, because it only accepted `storylint/<kebab>`. The documented workflow would have failed on
+first use. Found by running the commands, not by re-reading them
+([STANDING_RULES](./decisions/STANDING_RULES.md) 53). The founder then corrected the scheme itself:
+kebab slugs under the existing prefix, which is what the script already enforced.
 
 ## History rules (why "beautiful")
 
@@ -213,6 +249,57 @@ git diff --stat $(git merge-base origin/dev origin/main) origin/main
 If either shows unique non-merge commits or a tree delta, stop and tell the coordinator. That is a real fork, not a bubble.
 
 **Observed false alarm (2026-07-31):** AF stopped on `184bb3e` (pure merge bubble; tree identical to second parent / merge-base). Cost real agent time; do not repeat.
+
+## Land granularity
+
+**Rule (founder-set 2026-08-01): one land per feature.** Batch the steps that produce a feature onto
+one branch and land once. Do not land each step.
+
+### The scar (measured, 2026-08-01)
+
+`origin/dev` took **128 lands in one day**. The founder's read: "it's already 500 PRs only for today,
+I don't want it to be too many, make PR per feature instead."
+
+The count is what they experience, and their instinct was right even though the exact number differed.
+What produced 128:
+
+| Pattern | Example | Should have been |
+|---|---|---|
+| Ticket work split from its own close | `t005-path-lock`, `t005-done`, `t005-close` (3 lands) | 1 land: fix + ticket status together |
+| Review follow-ups landed separately | `falcon-caveat-land`, `falcon-followup-land`, `falcon-t008-land` | fold into the branch under review before it lands |
+| Corpus/doc entries one per idea | `ox-8d-property-gone`, `ox-8f-verdict-predicate`, `ox-gate-ok-vocab` | 1 land per session's corpus additions |
+| A gate split across its own parts | `gate-b-mutant-validity`, `gate-b-header-notes` | 1 land: the gate and its notes |
+
+**21 of the 128 were pure bookkeeping** — ticket closes, board syncs, drift sweeps — landed apart from
+the work they described. That is the cheapest half of the fix: a ticket's status change belongs in the
+same land as the change that earned it.
+
+### What counts as one feature
+
+One land = one thing the founder would name. Concretely:
+
+- A ticket and its close, together. `T-005 path lock` is one land, not fix → done → close.
+- A gate and everything that makes it real: mechanism, self-test, wiring, notes.
+- A review cycle's outcome. hawk's findings get folded into the branch **before** it lands, not landed
+  after it as repair. If review requires a change, amend the branch and re-land it once.
+- A sweep across many files for one reason, e.g. one `l1_proof` citation sweep.
+
+### What still justifies a separate land
+
+Do not batch to hit a number. These stay separate:
+
+- **Independent risk.** Two changes that could each break something different, where a revert should be
+  able to take one without the other.
+- **Different reviewers or different tickets.** Two tickets are two lands even if touched the same hour.
+- **A hotfix.** Never batch an urgent fix behind unrelated work.
+- **A land that is already green and pushed.** Never rewrite published history to make the count prettier
+  (History honesty over graph beauty, above).
+
+### Consequence for the `dev → main` cadence
+
+Every-5 is unchanged, but its meaning improves: 5 lands should now be **5 features**, not 5 steps. Horse's
+merge subject names the milestone, and with per-feature lands that name gets easier to write honestly —
+if a milestone summary is hard to state, the batch was probably fragments rather than features.
 
 ## Verification vs mutation
 
