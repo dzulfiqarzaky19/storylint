@@ -25,6 +25,21 @@
  *   - literal template anchors miss after indent normalisation (leg 2)
  *   - node:test summary lines use the info glyph (tests N), not only "# tests"
  *
+ * Header contract (measured / named so future legs re-check):
+ *   1. LEG INDEPENDENCE IS MEASURED, not assumed. hawk @ GATE B land:
+ *      neutering leg1/2/3 each fails only its own test(s); collateral ZERO.
+ *      Re-check when adding a fifth leg.
+ *   2. HAPPY-PATH GUARDS OVER-REJECTION. Reject tests catch under-throw;
+ *      only happy path catches throw-for-everything. Do not trim it.
+ *   3. COUNT CHECK = TOO-LITTLE / TOO-MUCH PAIR. expectedRemovals /
+ *      expectedRemaining exist because a mutant can remove too little
+ *      (8d false survival) OR too much (whole-construct kill flattering
+ *      the fixture). The machine cannot choose grain; it can refuse a
+ *      mutant that removed 2 when you declared 1.
+ *   4. THE VERDICT PREDICATE IS UNTESTED CODE (hawk item 15). Gate B
+ *      validates the mutant. Nothing validates the checker's own
+ *      pass/fail sentence. Four green legs != a correct answer.
+ *
  * @see docs/decisions/mutation-must-build.md (8d)
  */
 import { readFileSync, writeFileSync } from 'node:fs'
