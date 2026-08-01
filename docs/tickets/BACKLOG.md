@@ -10,6 +10,8 @@ Validate: `npm run tickets:check`
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back (AZ hold) | buffalo |
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
 | [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
+| [T-010](./T-010.md) | P2 | open | none | Companion face row has 1px of fit; Inbox badge re-clips Research at rest | unassigned |
+| [T-011](./T-011.md) | P3 | open | none | Mutation lock name claims an outcome its source-text assertions cannot establish | unassigned |
 
 ## Closed / not open
 
@@ -25,7 +27,7 @@ Validate: `npm run tickets:check`
 
 ## Next free id
 
-`T-010`
+`T-012`
 
 ## Notes
 
