@@ -94,7 +94,7 @@ console.log(`[l2] active-project before: ${activeBefore}`)
 const stamp = Date.now()
 const tag = stamp.toString(36).slice(-5)
 const projectIdWant = `e2e-l2-${process.pid}-${stamp.toString(36)}`
-let chapterBody = `L2 composition draft ${tag} — Aria kept the seal and the corridor in one breath.`
+const chapterBody = `L2 composition draft ${tag} — Aria kept the seal and the corridor in one breath.`
 const sheetId = `l2-sheet-${stamp}`
 const sheetName = `L2 Mira-${tag}`
 
@@ -192,6 +192,15 @@ try {
   if (!seeded) {
     notMeasured(`sheet ${sheetId} missing from active project after PUT (active sheets=${(afterSeed.sheets || []).length})`)
   }
+  // Forward checkpoint: Canon sheet seed must not clobber Draft body.
+  // Runs BEFORE any post-seed Draft rewrite so a later write cannot repair the damage
+  // (hawk REQUEST CHANGES @ d9a2e48 — reassigning chapterBody hid Canon→Draft clobber).
+  const bodyAfterSeed = afterSeed.chapters?.[0]?.body
+  if (!bodyAfterSeed || bodyAfterSeed !== chapterBody) {
+    fail(
+      `composition: draft body lost after Canon sheet seed — want ${JSON.stringify(chapterBody.slice(0, 48))}… got ${JSON.stringify(String(bodyAfterSeed ?? '').slice(0, 48))}…`,
+    )
+  }
   step('canon-seed-sheet', { sheetId, sheetName })
 
   // UI must remount project doc after API seed (same class as slice-k seed→goto).
@@ -207,6 +216,7 @@ try {
   // Without this step, a chapter PUT that blanks sheets only hits an empty list and
   // sheet-survived stays green (ordering gap hawk found @ 74a8dc7).
   // Distinct body forces a real chapter PUT (same-body fill can skip network save).
+  // chapterBody stays fixed (forward subject); postSeedBody is the later journey truth.
   const postSeedBody = chapterBody + ' Aria kept the sheet name in mind.'
   await gotoWorkspace(page, 'draft', { ensureCompanion: false })
   await fillChapterAndSave(page, postSeedBody)
@@ -215,8 +225,6 @@ try {
   if ((afterDraftRewrite.chapters?.[0]?.body) !== postSeedBody) {
     fail('draft body mismatch after post-seed chapter rewrite')
   }
-  // Journey subject body becomes the post-seed rewrite for later draft-survived.
-  chapterBody = postSeedBody
   const sheetAfterDraft = (afterDraftRewrite.sheets || []).find((s) => s.id === sheetId)
   if (!sheetAfterDraft) {
     fail(
@@ -262,13 +270,14 @@ try {
   await assertActiveProject(projectId, { page })
   step('reload-same-project')
 
-  // Prove Draft body still the one we wrote (not empty / not sibling residue).
+  // Prove Draft body is still the post-seed rewrite (not empty / not sibling residue).
+  // Forward Canon→Draft clobber is caught earlier at canon-seed-sheet (pre post-seed write).
   await gotoWorkspace(page, 'draft', { ensureCompanion: false })
   await draftMain.getByLabel('Chapter text').waitFor({ timeout: PRECONDITION_TIMEOUT_MS })
   const bodyAfter = await draftMain.getByLabel('Chapter text').inputValue()
-  if (bodyAfter !== chapterBody) {
+  if (bodyAfter !== postSeedBody) {
     fail(
-      `composition: draft body lost after Canon+Lab+reload — want ${JSON.stringify(chapterBody.slice(0, 48))}… got ${JSON.stringify(bodyAfter.slice(0, 48))}…`,
+      `composition: draft body lost after Canon+Lab+reload — want ${JSON.stringify(postSeedBody.slice(0, 48))}… got ${JSON.stringify(bodyAfter.slice(0, 48))}…`,
     )
   }
   step('draft-survived')

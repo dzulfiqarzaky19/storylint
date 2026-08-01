@@ -1,13 +1,12 @@
-T-002 L2 composition mutation proof
-head=ea0500aa09b1df5d602ffc44fb616ee4b5afeecc short=ea0500a
+T-002 L2 forward-direction mutation proof (Canon->Draft)
+head=d9a2e48faf2c19a5cfd069eff1a5dae947d6b781 short=d9a2e48
+worktree_dirty=YES
 mutation: PUT /api/sheets/:id blanks all chapter bodies before upsertSheet
-  (cross-surface clobber: Canon write destroys Draft body on same project)
 command: npm run test:l2
 exit=1
 load_bearing_red=YES
-
-expected: FAIL with composition: draft body lost after Canon+Lab+reload
-restored: src/server/http.ts returned to HEAD (no product change)
+expected: FAIL with composition: draft body lost after Canon sheet seed
+restored: src/server/http.ts returned to pre-mutation text (no product change)
 
 --- transcript ---
 
@@ -37,19 +36,15 @@ gate-ok  slice-l-smoke.mjs
 legacy-exploratory  ux-drive-graph.mjs (not yet on helpers)
 legacy-exploratory  ux-drive.mjs (helpers ok)
 PASS: e2e helper convention holds
-[owned-stack] building D:\dev\projects\storylint-t002-close @ ea0500a
-[owned-stack] api :58177 ui :58178
-[l2] owned=true ui=http://127.0.0.1:58178/ api=http://127.0.0.1:58177 head=ea0500a shell=54884172c616
-[l2] active-project before: e2e-calm-inbox-wall-13576-ms9lvvgp
-[l2 +642ms] PASS mint
-[l2 +1531ms] PASS draft-write
-[l2 +1605ms] PASS canon-seed-sheet
-[l2 +1732ms] PASS canon-ui
-[l2 +1777ms] PASS lab-ui
-[l2 +1870ms] PASS reload-same-project
-[l2] active-project after restore: e2e-calm-inbox-wall-13576-ms9lvvgp
+[owned-stack] building D:\dev\projects\storylint-t002-close @ d9a2e48
+[owned-stack] api :53754 ui :53755
+[l2] owned=true ui=http://127.0.0.1:53755/ api=http://127.0.0.1:53754 head=d9a2e48 shell=54884172c616
+[l2] active-project before: e2e-calm-inbox-wall-8276-ms9ma9sm
+[l2 +518ms] PASS mint
+[l2 +1533ms] PASS draft-write
+[l2] active-project after restore: e2e-calm-inbox-wall-8276-ms9ma9sm
 [l2] swept 1 orphan harness projects
 [l2] wrote D:\dev\projects\storylint-t002-close\e2e\output\l2-composition-last.md
 
 
-FAIL l2-composition: composition: draft body lost after Canon+Lab+reload — want "L2 composition draft lyknd — Aria kept the seal "… got ""…
+FAIL l2-composition: composition: draft body lost after Canon sheet seed — want "L2 composition draft mqucr — Aria kept the seal "… got ""…
