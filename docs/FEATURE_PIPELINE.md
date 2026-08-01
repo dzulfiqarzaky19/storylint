@@ -18,9 +18,9 @@ Not everything is a feature. Pick the lane by asking **what has to be true befor
 | | **Feature lane** | **Bugfix lane** |
 |---|---|---|
 | When | New capability, multi-ticket work, anything where tickets must be verified *together* | A defect in shipped behaviour. One ticket, one coder |
-| Ticket id | `feature-NN-ticket-MM` | `T-###` (existing scheme) |
-| Branch | `feature-NN-ticket-MM` off `origin/feature-NN` | `storylint/<topic>` off `origin/dev` |
-| Lands into | `feature-NN`, then `dev` after feature E2E | **straight to `dev`** |
+| Ticket id | `<feature>-ticket-NN` (no branch prefix), e.g. `lab-lifecycle-ticket-01` | `T-###` (existing scheme) |
+| Branch | `storylint/<feature>-ticket-NN` off `origin/storylint/<feature>` | `storylint/<topic>` off `origin/dev` |
+| Lands into | `storylint/<feature>`, then `dev` after feature E2E | **straight to `dev`** |
 | Gate before `dev` | Reviewer, then E2E on the **whole feature** | Reviewer, then the fix's own verification |
 | Integration branch | Yes, rat creates it | **No** |
 
@@ -41,7 +41,7 @@ T-###  →  coder codes it AND self-reviews end to end
        →  reviewer checks the diff
              failed? back to the coder
              passed? lands to dev, reports to rat
-       →  rat closes the ticket in the same land (standing rule 35)
+       →  rat closes the ticket in the same land (standing rule 49)
 ```
 
 ```
@@ -50,11 +50,11 @@ npm run land -- storylint/<topic> --summary "<what this fixes>"
 ```
 
 **A bugfix that turns out to need several tickets is a feature.** If the fix grows to where the
-pieces must be verified together, stop and open a `feature-NN`. The lane is chosen by the work's
+pieces must be verified together, stop and open a `storylint/<feature>`. The lane is chosen by the work's
 shape, not by what it was called when it was filed.
 
 **E2E-verify a bugfix too.** Skipping the feature branch does not mean skipping verification that
-the fix landed on the running product — that is standing rule 30 and it applies in both lanes. What
+the fix landed on the running product — that is standing rule 44 and it applies in both lanes. What
 the bugfix lane drops is *composition* testing, because there is nothing to compose.
 
 ---
@@ -62,21 +62,21 @@ the bugfix lane drops is *composition* testing, because there is nothing to comp
 ## The shape (feature lane)
 
 ```
-feature-01                      ← integration branch, rat creates it
-├── feature-01-ticket-01        ← coder branch
-├── feature-01-ticket-02
-└── feature-01-ticket-03
+storylint/lab-lifecycle                      ← integration branch, rat creates it
+├── storylint/lab-lifecycle-ticket-01        ← coder branch
+├── storylint/lab-lifecycle-ticket-02
+└── storylint/lab-lifecycle-ticket-03
 
 ticket branch
   → coder writes it AND re-reviews their own work end to end
       failed? coder fixes it. Does not hand up a known-broken change.
   → reviewer checks it
       failed? back to the coder (not to rat)
-      passed? lands into feature-01, reports to rat
+      passed? lands into storylint/lab-lifecycle, reports to rat
   → rat pools tickets until the feature is complete
   → E2E tester runs the WHOLE feature
-      passed? merges feature-01 → dev, reports to rat
-      failed? back to rat, who opens feature-01-ticket-01-fix-01 and restarts at step 1
+      passed? merges storylint/lab-lifecycle → dev, reports to rat
+      failed? back to rat, who opens storylint/lab-lifecycle-ticket-01-fix-01 and restarts at step 1
   → dev pools features
   → integration testing across ALL features: did this break other work?
       new bug? report to rat, who opens tickets
@@ -90,15 +90,16 @@ rat receives or proposes a feature, then splits it.
 
 | Rule | Why |
 |---|---|
-| Feature id is `feature-NN` (`feature-01`, `feature-02`) | The branch name and the ticket ids derive from it |
-| Ticket ids are `feature-NN-ticket-MM` | The name says which feature it belongs to; no lookup needed |
+| A feature is named by **what it is**, in kebab: `lab-lifecycle`, `canon-map`. Never a counter | A name a reader still understands six weeks later; `feature-01` tells nobody anything |
+| Ticket ids are `<feature>-ticket-NN`: `lab-lifecycle-ticket-01` | The id says which feature it belongs to; no lookup needed |
+| Branches are the id under the existing prefix: `storylint/lab-lifecycle-ticket-01` | One branch namespace. `storylint/` is the only prefix in the repo |
 | One ticket = one coder's complete unit of work | A ticket that needs two people is two tickets |
 | Tickets should be independently reviewable | A reviewer must be able to judge it without the other tickets |
-| rat creates the `feature-NN` branch **before** assigning | Ticket branches need it to exist to land into |
+| rat creates the `storylint/<feature>` branch **before** assigning | Ticket branches need it to exist to land into |
 
 ```
 git fetch origin
-git push origin origin/dev:refs/heads/feature-01   # branch off current dev
+git push origin origin/dev:refs/heads/storylint/lab-lifecycle   # branch off current dev
 ```
 
 The feature branch starts as a copy of `dev`. It is an integration branch: only ticket lands write it.
@@ -115,17 +116,17 @@ Every ticket goes to one coder. rat records owner and status on the ticket.
 
 **rat is not an approval gate for code quality.** rat splits, assigns, pools, and opens fix tickets.
 rat does not sit between "reviewed" and "landed" — that inbox is what produced the 83-commit
-dev/main drift ([STANDING_RULES](./decisions/STANDING_RULES.md) 32).
+dev/main drift ([STANDING_RULES](./decisions/STANDING_RULES.md) 46).
 
 ---
 
 ## Stage 3 — Coder
 
-Branch: `feature-NN-ticket-MM`, cut from the **feature branch**, not from `dev`.
+Branch: `storylint/<feature>-ticket-NN`, cut from the **feature branch**, not from `dev`.
 
 ```
 git fetch origin
-git checkout -B feature-01-ticket-01 origin/feature-01
+git checkout -B storylint/lab-lifecycle-ticket-01 origin/storylint/lab-lifecycle
 ```
 
 **The coder's duty is a finished, self-verified change.**
@@ -148,7 +149,7 @@ failed is not a check ([STANDING_RULES](./decisions/STANDING_RULES.md) §Measure
 ## Stage 4 — Reviewer
 
 The reviewer reads the diff and judges the change. This is a different question from "does it work"
-(that is E2E, stage 5) — see [STANDING_RULES](./decisions/STANDING_RULES.md) 30.
+(that is E2E, stage 5) — see [STANDING_RULES](./decisions/STANDING_RULES.md) 44.
 
 | Outcome | Action |
 |---|---|
@@ -156,20 +157,20 @@ The reviewer reads the diff and judges the change. This is a different question 
 | **Passed** | The reviewer lands the ticket into the feature branch, then reports to rat. |
 
 ```
-npm run land -- feature-01-ticket-01 --summary "<what this ticket does>" --into feature-01
+npm run land -- storylint/lab-lifecycle-ticket-01 --summary "<what this ticket does>" --into storylint/lab-lifecycle
 ```
 
-`--into feature-01` runs the full no-worse gate **against the feature branch**: fresh `test:green`
-baseline on `origin/feature-01`, merge, `test:green` again, identity compare, `--no-ff` bubble, push,
+`--into storylint/lab-lifecycle` runs the full no-worse gate **against the feature branch**: fresh `test:green`
+baseline on `origin/storylint/lab-lifecycle`, merge, `test:green` again, identity compare, `--no-ff` bubble, push,
 read back. Same gate as a dev land, different target.
 
-Then report to rat: ticket id, `origin/feature-01` hash after the land.
+Then report to rat: ticket id, `origin/storylint/lab-lifecycle` hash after the land.
 
 ---
 
 ## Stage 5 — Feature complete → E2E tester
 
-When every ticket in the feature has landed on `feature-NN`, rat hands the **whole feature** to an
+When every ticket in the feature has landed on `storylint/<feature>`, rat hands the **whole feature** to an
 E2E tester.
 
 The E2E tester drives the running product across the feature as a user would — not per ticket, the
@@ -178,14 +179,14 @@ what composition testing exists to catch (isolation green ≠ composition green)
 
 | Outcome | Action |
 |---|---|
-| **Passed** | The E2E tester merges `feature-NN` → `dev` and reports to rat with the `origin/dev` hash. |
-| **Failed** | Report to **rat**, who opens `feature-NN-ticket-MM-fix-KK` and restarts at stage 1. |
+| **Passed** | The E2E tester merges `storylint/<feature>` → `dev` and reports to rat with the `origin/dev` hash. |
+| **Failed** | Report to **rat**, who opens `storylint/<feature>-ticket-NN-fix-NN` and restarts at stage 1. |
 
 ```
-npm run land -- feature-01 --summary "<feature summary>"      # target defaults to dev
+npm run land -- storylint/lab-lifecycle --summary "<feature summary>"      # target defaults to dev
 ```
 
-**Fix tickets restart the pipeline.** `feature-01-ticket-01-fix-01` is a real ticket: coder,
+**Fix tickets restart the pipeline.** `storylint/lab-lifecycle-ticket-01-fix-01` is a real ticket: coder,
 self-review, reviewer, land into the feature branch, E2E again. It does not shortcut to `dev`.
 
 ---
@@ -200,7 +201,7 @@ owner can:
 - Any new bug that belongs to no single feature?
 
 **New bug? Report to rat, who opens tickets.** An integration failure is a bug ticket, not a revert
-([STANDING_RULES](./decisions/STANDING_RULES.md) 31).
+([STANDING_RULES](./decisions/STANDING_RULES.md) 45).
 
 `dev → main` remains the founder cadence: every 5 lands, milestone named on the subject.
 
@@ -213,7 +214,7 @@ Every handoff names what happened and where.
 | Role | Reports | Must include |
 |---|---|---|
 | Coder | to rat, when self-review passes | branch, commit, **what you verified and how it could have failed** |
-| Reviewer | to coder on fail; to rat on pass | ticket id, `origin/feature-NN` hash after land |
+| Reviewer | to coder on fail; to rat on pass | ticket id, `origin/storylint/<feature>` hash after land |
 | E2E tester | to rat | pass: `origin/dev` hash. fail: what broke, shortest repro |
 | Integration tester | to rat | new bugs with shortest repro |
 
@@ -239,7 +240,7 @@ Report on **state change**, not only at the end ([AGENT_PROTOCOL.md](./AGENT_PRO
 - **Reviewer sends a failure to rat instead of the coder** — adds a hop, loses context
 - **Landing a feature ticket straight to `dev`** — it bypasses the feature's E2E gate
 - **Routing a one-ticket bugfix through a feature branch** — two extra merges, no extra evidence
-- **Merging `feature-NN` → `dev` before every ticket has landed** — the E2E ran on a partial feature
+- **Merging `storylint/<feature>` → `dev` before every ticket has landed** — the E2E ran on a partial feature
 - **Treating an E2E failure as grounds to revert** — it is a fix ticket
 - **A fix ticket that skips review** — fix tickets are tickets
 - **Splitting so finely that no ticket is reviewable alone**, or so coarsely that one ticket is a

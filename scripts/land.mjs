@@ -44,7 +44,8 @@ const DEFAULT_TARGET = 'dev'
 
 /**
  * Land target. `dev` by default; a feature integration branch when a ticket
- * lands into its feature (founder pipeline 2026-08-01: ticket -> feature-NN -> dev).
+ * lands into its feature (founder pipeline 2026-08-01:
+ * storylint/<kebab>-ticket-NN -> storylint/<kebab> -> dev).
  * Every ref below derives from this, so the no-worse baseline, the merge, the push
  * and the read-back all name the SAME branch. They must never diverge: a baseline
  * measured against one branch and pushed to another is not a gate.
@@ -80,8 +81,8 @@ Required:
 
 Optional:
   --into <branch>     land into this branch instead of dev (must already exist on origin).
-                      Feature pipeline: ticket branches land into feature-NN;
-                      the feature branch lands into dev after E2E.
+                      Feature pipeline: storylint/<kebab>-ticket-NN lands into
+                      storylint/<kebab>; that feature branch lands into dev after E2E.
   --max-attempts <n>  push-reject retries of the whole sequence (default ${MAX_PUSH_ATTEMPTS})
   --allow-known       reserved / OFF by default; not required for no-worse lands
 
@@ -153,17 +154,17 @@ function parseArgs(argv) {
   }
   // Accepted topic shapes:
   //   storylint/<kebab>              standalone work landing on dev
-  //   feature-NN-ticket-MM[-fix-KK]  coder branch in the feature pipeline
-  //   feature-NN                     the integration branch itself, landing into dev
-  //                                  after its tickets are in and E2E passed
+  //   storylint/<kebab>                     any topic: standalone, bugfix, or a
+  //                                         feature integration branch
+  //   storylint/<kebab>-ticket-NN[-fix-NN]  a coder branch inside that feature
+  //
+  // One namespace. A feature is named by what it IS (storylint/lab-lifecycle),
+  // never by a counter, and its tickets are that name plus -ticket-NN, so the
+  // relationship reads without a lookup.
   const STORYLINT_TOPIC = /^storylint\/[A-Za-z0-9._-]+$/
-  const FEATURE_TICKET = /^feature-[0-9]{2,}-ticket-[0-9]{2,}(-fix-[0-9]{2,})?$/
-  const FEATURE_BRANCH = /^feature-[0-9]{2,}(-[A-Za-z0-9._-]+)?$/
-  const shapeOk =
-    STORYLINT_TOPIC.test(topic) || FEATURE_TICKET.test(topic) || FEATURE_BRANCH.test(topic)
-  if (!shapeOk) {
+  if (!STORYLINT_TOPIC.test(topic)) {
     fail(
-      `Topic must be storylint/<kebab>, feature-NN-ticket-MM, or feature-NN (got ${topic})`,
+      `Topic must look like storylint/<kebab> (got ${topic})`,
     )
   }
   if (/\b(main|master)\b/i.test(topic)) {
@@ -172,11 +173,18 @@ function parseArgs(argv) {
 
   // The target may be dev or a feature integration branch. NEVER main:
   // main receives only merges from dev, on the founder account (GIT_WORKFLOW).
-  if (!/^(dev|feature-[0-9]{2,}(-[A-Za-z0-9._-]+)?)$/.test(into)) {
+  // A land target is dev, or a feature integration branch (storylint/<kebab>).
+  // Refusing everything else stops a typo from creating a branch on origin, and
+  // stops main from ever being a target: main receives merges from dev only.
+  if (!/^(dev|storylint\/[a-z0-9]+(-[a-z0-9]+)*)$/.test(into)) {
     fail(
-      `--into must be dev or feature-NN (got ${into}).\n` +
+      `--into must be dev or storylint/<kebab> (got ${into}).\n` +
+        '  e.g. --into storylint/lab-lifecycle\n' +
         '  main is not a land target: it receives merges from dev only.',
     )
+  }
+  if (/\b(main|master)\b/i.test(into)) {
+    fail(`--into must not contain main/master tokens: ${into}`)
   }
   if (into === topic || `storylint/${into}` === topic) {
     fail(`--into ${into} is the topic itself; a branch cannot land into itself`)

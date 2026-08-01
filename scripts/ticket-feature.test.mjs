@@ -68,11 +68,11 @@ function checkWith(files) {
 
 test('a well-formed feature ticket validates', () => {
   const { status, out } = checkWith({
-    'feature-01-ticket-01.md': frontmatter({
-      id: 'feature-01-ticket-01',
-      branch: 'feature-01-ticket-01',
-      feature: 'feature-01',
-      lands_into: 'feature-01',
+    'lab-lifecycle-ticket-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01',
+      branch: 'lab-lifecycle-ticket-01',
+      feature: 'lab-lifecycle',
+      lands_into: 'lab-lifecycle',
     }),
   })
   assert.equal(status, 0, `expected clean exit, got:\n${out}`)
@@ -82,11 +82,11 @@ test('feature tickets are actually LOADED, not silently skipped', () => {
   // Guards the loader glob. If feature-*.md stops matching, every rule below
   // becomes dead code that passes by never running.
   const { out } = checkWith({
-    'feature-01-ticket-01.md': frontmatter({
-      id: 'feature-01-ticket-01',
-      branch: 'feature-01-ticket-01',
-      feature: 'feature-01',
-      lands_into: 'feature-01',
+    'lab-lifecycle-ticket-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01',
+      branch: 'lab-lifecycle-ticket-01',
+      feature: 'lab-lifecycle',
+      lands_into: 'lab-lifecycle',
     }),
   })
   assert.match(out, /1 file\(s\)/, 'checker must report the feature ticket as loaded')
@@ -95,10 +95,10 @@ test('feature tickets are actually LOADED, not silently skipped', () => {
 test('a feature ticket that lands into dev is REJECTED', () => {
   // The load-bearing rule: landing a ticket on dev skips the feature E2E gate.
   const { status, out } = checkWith({
-    'feature-01-ticket-01.md': frontmatter({
-      id: 'feature-01-ticket-01',
-      branch: 'feature-01-ticket-01',
-      feature: 'feature-01',
+    'lab-lifecycle-ticket-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01',
+      branch: 'lab-lifecycle-ticket-01',
+      feature: 'lab-lifecycle',
       lands_into: 'dev',
     }),
   })
@@ -108,24 +108,24 @@ test('a feature ticket that lands into dev is REJECTED', () => {
 
 test('a feature ticket landing into the WRONG feature is rejected', () => {
   const { status, out } = checkWith({
-    'feature-01-ticket-01.md': frontmatter({
-      id: 'feature-01-ticket-01',
-      branch: 'feature-01-ticket-01',
-      feature: 'feature-01',
-      lands_into: 'feature-02',
+    'lab-lifecycle-ticket-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01',
+      branch: 'lab-lifecycle-ticket-01',
+      feature: 'lab-lifecycle',
+      lands_into: 'canon-map',
     }),
   })
   assert.notEqual(status, 0)
-  assert.match(out, /must be feature-01/)
+  assert.match(out, /must be lab-lifecycle/)
 })
 
 test('a feature field disagreeing with the id is rejected', () => {
   const { status, out } = checkWith({
-    'feature-01-ticket-01.md': frontmatter({
-      id: 'feature-01-ticket-01',
-      branch: 'feature-01-ticket-01',
-      feature: 'feature-09',
-      lands_into: 'feature-01',
+    'lab-lifecycle-ticket-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01',
+      branch: 'lab-lifecycle-ticket-01',
+      feature: 'other-feature',
+      lands_into: 'lab-lifecycle',
     }),
   })
   assert.notEqual(status, 0)
@@ -134,11 +134,11 @@ test('a feature field disagreeing with the id is rejected', () => {
 
 test('a branch that is not the ticket id is rejected', () => {
   const { status, out } = checkWith({
-    'feature-01-ticket-01.md': frontmatter({
-      id: 'feature-01-ticket-01',
+    'lab-lifecycle-ticket-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01',
       branch: 'storylint/something-else',
-      feature: 'feature-01',
-      lands_into: 'feature-01',
+      feature: 'lab-lifecycle',
+      lands_into: 'lab-lifecycle',
     }),
   })
   assert.notEqual(status, 0)
@@ -148,11 +148,11 @@ test('a branch that is not the ticket id is rejected', () => {
 test('a fix ticket is a valid feature ticket', () => {
   // Fix tickets re-enter the pipeline and must validate like any other.
   const { status, out } = checkWith({
-    'feature-01-ticket-01-fix-01.md': frontmatter({
-      id: 'feature-01-ticket-01-fix-01',
-      branch: 'feature-01-ticket-01-fix-01',
-      feature: 'feature-01',
-      lands_into: 'feature-01',
+    'lab-lifecycle-ticket-01-fix-01.md': frontmatter({
+      id: 'lab-lifecycle-ticket-01-fix-01',
+      branch: 'lab-lifecycle-ticket-01-fix-01',
+      feature: 'lab-lifecycle',
+      lands_into: 'lab-lifecycle',
     }),
   })
   assert.equal(status, 0, `expected clean exit, got:\n${out}`)
