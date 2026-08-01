@@ -201,6 +201,12 @@ export function archiveLabCard(cardId: string): Promise<Project> {
   })
 }
 
+export function restoreLabCard(cardId: string): Promise<Project> {
+  return request(`/api/lab/cards/${encodeURIComponent(cardId)}/restore`, {
+    method: 'POST', body: '{}',
+  })
+}
+
 export function pinLabCard(cardId: string, pinned = true): Promise<Project> {
   return request(`/api/lab/cards/${encodeURIComponent(cardId)}/pin`, {
     method: 'POST', body: JSON.stringify({ pinned }),

@@ -79,6 +79,7 @@ export type ProjectController = {
   createLabCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
   patchLabCard: (cardId: string, patch: { title?: string; body?: string; kind?: LabCardKind }) => Promise<Project>
   archiveLabCard: (cardId: string) => Promise<void>
+  restoreLabCard: (cardId: string) => Promise<void>
   pinLabCard: (cardId: string, pinned?: boolean) => Promise<void>
   promoteLabCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<api.PromoteLabResponse>
 }
@@ -639,6 +640,20 @@ export function useProject(): ProjectController {
       } catch (caught) {
         if (generation === projectGenerationRef.current) {
           setError(caught instanceof Error ? caught.message : 'Failed to archive lab card')
+        }
+        throw caught
+      }
+    },
+    restoreLabCard: async (cardId) => {
+      const generation = beginMutation()
+      if (generation === null) throw new Error('Project switch in progress')
+      try {
+        const saved = await trackMutation(api.restoreLabCard(cardId))
+        if (!applyIfCurrent(generation, saved)) return
+        setError(null)
+      } catch (caught) {
+        if (generation === projectGenerationRef.current) {
+          setError(caught instanceof Error ? caught.message : 'Failed to restore lab card')
         }
         throw caught
       }

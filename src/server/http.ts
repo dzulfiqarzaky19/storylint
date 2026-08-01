@@ -6,6 +6,7 @@ import { runAgent } from '../agent/run.ts'
 import { acceptProposal, rejectProposal } from '../domain/proposals.ts'
 import {
   archiveLabCard,
+  restoreLabCard,
   createLabBoard,
   createLabCard,
   emptyLab,
@@ -599,6 +600,12 @@ export function createServer(store: ProjectStore) {
       pattern: /^\/api\/lab\/cards\/([^/]+)\/archive$/,
       handle: async ([cardId]) =>
         store.update((project) => archiveLabCard(ensureLab(project), routeSegment(cardId))),
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/cards\/([^/]+)\/restore$/,
+      handle: async ([cardId]) =>
+        store.update((project) => restoreLabCard(ensureLab(project), routeSegment(cardId))),
     },
     {
       method: 'POST',
