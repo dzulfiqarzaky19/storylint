@@ -1,16 +1,21 @@
 /**
  * GATE B — mutant validity preamble (standing 8d as a control).
  *
- * Before any mutant suite run, assert three legs and abort as MUTANT_INVALID
+ * Before any mutant suite run, assert four legs and abort as MUTANT_INVALID
  * (exit 2) otherwise — distinct from exit 1 (test failure / real death):
  *
  *   1. BUILD succeeds (optional but recommended when product TS is in play)
  *   2. ANCHOR was FOUND (the thing you meant to change existed)
  *   3. PROPERTY is verifiably GONE from the mutated source
+ *   4. SUITE ran a nonzero test count AND the count was PARSED, not assumed
+ *      (assertSuiteRan). A survival against a suite that did not run is pure
+ *      not-measured.
  *
- * Optional 4th leg (hawk, same session): the suite must be observed to have
- * executed a nonzero number of tests. A survival against a suite that did
- * not run is pure not-measured.
+ * Sibling guidance (not a fifth leg — cannot assert mechanically; 8f):
+ *   A MUTANT THAT KILLS A WHOLE CONSTRUCT DOES NOT PROVE ITS PARTS ARE COVERED.
+ *   For alternations, boolean chains, and lists: mutate ONE ARM AT A TIME.
+ *   Fixtures must isolate one marker per case. A whole-regex neuter that dies
+ *   can flatter two unprotected arms (falcon/hawk E1 LOCAL_STEP_RE).
  *
  * Shape from hawk's per-mutant throwaways (no library existed to import).
  * Instances that burned us today:
@@ -18,6 +23,7 @@
  *   - two-marker fixture flattered a whole-regex neuter (leg 3 / granularity)
  *   - TAP parse "fail count ?" misread as survival (leg 4)
  *   - literal template anchors miss after indent normalisation (leg 2)
+ *   - node:test summary lines use the info glyph (tests N), not only "# tests"
  *
  * @see docs/decisions/mutation-must-build.md (8d)
  */

@@ -44,18 +44,31 @@ const RUNNER_FILES = [
   'scripts/land.mjs',
 ]
 
-function listCandidates() {
+function listDirMjs(dir, { includeTests }) {
   const out = []
-  for (const dir of ['e2e', 'scripts']) {
-    const abs = resolve(root, dir)
-    if (!existsSync(abs)) continue
-    for (const name of readdirSync(abs)) {
-      if (!/\.(mjs|js|cjs)$/.test(name)) continue
-      if (/\.test\.(mjs|js|cjs)$/.test(name)) continue // glob already runs these
-      out.push({ name, rel: `${dir}/${name}`, abs: resolve(abs, name) })
-    }
+  const abs = resolve(root, dir)
+  if (!existsSync(abs)) return out
+  for (const name of readdirSync(abs)) {
+    if (!/\.(mjs|js|cjs)$/.test(name)) continue
+    const isTest = /\.test\.(mjs|js|cjs)$/.test(name)
+    if (isTest && !includeTests) continue
+    out.push({ name, rel: `${dir}/${name}`, abs: resolve(abs, name) })
   }
   return out
+}
+
+/** Can-fail candidates: non-test modules (tests are already glob-run). */
+function listCandidates() {
+  return [...listDirMjs('e2e', { includeTests: false }), ...listDirMjs('scripts', { includeTests: false })]
+}
+
+/**
+ * Import graph sources: candidates PLUS *.test.mjs.
+ * A library only imported by its gated test is still wired (GATE B pattern:
+ * scripts/mutant-validity.mjs imported by scripts/mutant-validity.test.mjs).
+ */
+function listImportGraph() {
+  return [...listDirMjs('e2e', { includeTests: true }), ...listDirMjs('scripts', { includeTests: true })]
 }
 
 function canFail(src) {
@@ -69,20 +82,21 @@ function runnerCorpus() {
 }
 
 /** Imported by another repo file => library, invoked through its importer. */
-function importedBySomeone(name, files) {
+function importedBySomeone(name, graph) {
   const needle = new RegExp(`from\\s+['"][^'"]*${name.replace('.', '\\.')}['"]`)
-  return files.some((f) => f.name !== name && needle.test(readFileSync(f.abs, 'utf8')))
+  return graph.some((f) => f.name !== name && needle.test(readFileSync(f.abs, 'utf8')))
 }
 
 test('8c: every can-fail check is either wired to a runner or marked MANUAL DIAGNOSTIC', () => {
   const files = listCandidates()
+  const graph = listImportGraph()
   const corpus = runnerCorpus()
   const orphans = []
 
   for (const f of files) {
     const src = readFileSync(f.abs, 'utf8')
     if (!canFail(src)) continue
-    if (importedBySomeone(f.name, files)) continue
+    if (importedBySomeone(f.name, graph)) continue
     if (corpus.includes(f.name)) continue
     if (MANUAL_DIAGNOSTIC_RE.test(src)) continue
     orphans.push(f.rel)

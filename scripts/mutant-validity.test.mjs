@@ -2,16 +2,29 @@
  * GATE B — prove each mutant-validity leg independently rejects.
  *
  * Exit taxonomy locked here:
- *   MUTANT_INVALID (code) ↔ throw MutantInvalidError ↔ process exit 2 at CLI edge
+ *   MUTANT_INVALID (code) / MutantInvalidError / process exit 2 at CLI edge
  *   test failure remains node:test fail (exit 1 at harness)
  *
- * Three required legs (rat) + suite-ran (hawk 4th, same session):
+ * Four required legs:
  *   1. BUILD_FAILED
  *   2. ANCHOR_NOT_FOUND
  *   3. PROPERTY_NOT_REMOVED (partial replace / multi-occurrence)
  *   4. SUITE_RAN_ZERO_TESTS / SUITE_COUNTS_UNPARSED
  *
- * Happy path: apply a real one-occurrence strip, property gone, restore.
+ * Happy path: apply a real multi-occurrence strip, property gone, restore.
+ * THE HAPPY-PATH TEST IS WHAT MAKES SELF-VOUCHING SAFE. The four reject tests
+ * catch a helper that stops throwing. They do NOT catch a helper that throws
+ * MutantInvalidError for EVERYTHING — that mutant passes all reject cases and
+ * is killed only by the happy path, where a valid mutant must be allowed through.
+ * Trimming "redundant" happy-path coverage would silently remove the only guard
+ * against a gate that rejects everything (looks like maximum safety; is blindness).
+ *
+ * Self-reference: every leg test CALLS applyMutant/withMutant from the helper.
+ * Fixture inputs are hand-built (temp files, partial replace, missing anchor,
+ * fake build). The helper is not reimplemented here — a second hand-rolled
+ * ANCHOR_NOT_FOUND check would be the isolated-copy shape this file exists
+ * to prevent. Confidence is "public API throws the right reason", not a
+ * private twin of the legs.
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
