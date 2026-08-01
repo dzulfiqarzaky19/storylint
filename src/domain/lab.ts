@@ -273,7 +273,12 @@ export type PromoteAs = 'sheet-proposal' | 'chapter-stub'
 export type PromoteLabCardInput = {
   /** Required for place/lore-spark; optional override for character-spark. */
   sheetKind?: SheetKind
-  /** Optional chapter title override for beat → chapter-stub. */
+  /**
+   * Optional chapter title for beat → chapter-stub.
+   * Semantics are source-dependent (lab-promote-domain-title):
+   * author + omit → card.title; model + omit → '' (never auto-pick model card title).
+   * When provided (including ''), stores trim only — never invents Untitled / Chapter N.
+   */
   chapterTitle?: string
 }
 
@@ -400,8 +405,14 @@ export function promoteLabCard(
 
   if (canPromoteToChapter(card.kind)) {
     const chapterId = newId('chapter')
-    // Display placeholders live in chapterListLabel / export slug — never store invented text.
-    const title = (input.chapterTitle ?? card.title).trim()
+    // Binding: docs/decisions/lab-promote-domain-title.md — model titles only via explicit chapterTitle.
+    // author + omitted → card.title; model + omitted → '' (never inherit ambient model text).
+    const title =
+      input.chapterTitle !== undefined
+        ? input.chapterTitle.trim()
+        : card.source === 'model'
+          ? ''
+          : card.title.trim()
     const stamp = nowIso()
     const nextCard: LabCard = {
       ...card,

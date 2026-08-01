@@ -19,9 +19,12 @@ A reader should find the ruling that governs their question in the tables below 
 | [STANDING_RULES.md](./STANDING_RULES.md) | **The short rule set** extracted from this corpus (read first). |
 | [density-pass-settled-positions.md](./density-pass-settled-positions.md) | **Ox close-out:** settled product positions — do not relitigate without evidence (not the incident log). |
 | [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md) | Visibility is never inferred from geometry; absence ≠ pass; dead selector = fail. |
+| [check-occupies-slot.md](./check-occupies-slot.md) | **BINDING 8c (3 duties):** fail-when-product-breaks; reached by a reporter (else diagnostic not gate); executed before citation. Unwired red = silent. |
+| [mutation-must-build.md](./mutation-must-build.md) | **BINDING:** mutation survival only counts if BUILD_EXIT=0 and mutated line executes; else NOT-MEASURED. |
 | [one-primary-door-per-job.md](./one-primary-door-per-job.md) | One solid primary per job in the **whole viewport**; dual New sheet / dual first-chapter doors are not calm. |
 | [runnable-solid-precondition.md](./runnable-solid-precondition.md) | Solid must not advertise a job that cannot succeed; weight ≠ entitlement. |
 | [boolean-hides-multi-state.md](./boolean-hides-multi-state.md) | Do not collapse multi-state domains into booleans; fixture real states. |
+| [save-chip-error-not-idle.md](./save-chip-error-not-idle.md) | **BINDING:** save chip paints error as Not saved; must not collapse to blank idle (false idle). Toast keeps message; chip keeps SaveState. |
 | [research-face-shape.md](./research-face-shape.md) | Research is a face, not a primary peer; **one-item More collapses to a plain Research control**; cardinality justifies the control (APG menu greenlight **retracted**). |
 | [companion-one-assistant.md](./companion-one-assistant.md) | Companion = one assistant, one in-flight job, one busy lexicon; no run-id parallel model. |
 | [companion-lock-jobs-vs-decisions.md](./companion-lock-jobs-vs-decisions.md) | Jobs share assistantBusy; decisions (Accept/Apply/Pin) stay local-free. Panel ≠ unit of work. |
@@ -87,6 +90,7 @@ Reversed decisions are the most instructive. Keep the file; point here.
 
 Short list only — do not grow into a second backlog novel.
 
+0. **Save chip error paint (build)** — ruled ([save-chip-error-not-idle](./save-chip-error-not-idle.md)); horse builds after ox. Chip **Not saved**; idle blank.
 1. **Lab promote domain title table (build)** — ruled ([lab-promote-domain-title](./lab-promote-domain-title.md)); UI source-gate may already be in flight; domain must match table.
 1. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
 2. **Binder list scroll restore after detail Back** — AZ; T-003 measurement landed; product hold may remain ([canon-under-load-az](./canon-under-load-az.md)).
@@ -98,6 +102,10 @@ Short list only — do not grow into a second backlog novel.
 
 ### Closed this session (do not re-open without new evidence)
 
+- ~~**Save chip blank on error (false idle)**~~ — **RULED**. [save-chip-error-not-idle.md](./save-chip-error-not-idle.md). Chip: **Not saved**. Idle stays blank.
+- ~~**8c extend (unwired / not-run)**~~ — **RULED** into [check-occupies-slot.md](./check-occupies-slot.md) three duties.
+- ~~**Mutation must build / execute (false survival)**~~ — **RULED**. [mutation-must-build.md](./mutation-must-build.md); standing **8d**.
+- ~~**Check occupies the slot (isolated-copy green)**~~ — **RULED**. [check-occupies-slot.md](./check-occupies-slot.md); standing **8c**.
 - ~~**Lab promote domain title inherit (UI-only gate)**~~ — **RULED (b)**. [lab-promote-domain-title.md](./lab-promote-domain-title.md).
 - ~~**Lab promote consent / provenance (product model)**~~ — **RULED**. [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md); build follow-on.
 - ~~**Refresh / tab-close dirty identity (product model)**~~ — **RULED P0**. [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md); build = T-004 buffalo.

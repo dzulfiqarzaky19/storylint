@@ -16,12 +16,27 @@
 8. **A test may only interact with entities it created in that run.** Depending on a pre-existing project, file, or option the smoke did not create measures the machine, not the product. Create both sides of a switch test inside the check. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md); ambient-gitignored-data mechanism **disproven**)
 8a. **A diagnostic proven only on the happy path is not proven.** Step labels, timers and failure logs exist for the failure path — fault-inject once and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (badger step timings, verified happy-path only; keep distinct from §3 — [standing-8a-vs-absence](./standing-8a-vs-absence.md))
 8b. **State what you did not verify.** A verdict with no stated limits has unknown limits. Explicit non-claims are what make a PASS worth reading.
+8c. **A check is evidence only if it can fail the product, is reached by a reporter, and was actually run before citation.** (1) Cannot-fail-when-product-breaks occupies the slot — name the production symbol or it is an isolated-copy proof. (2) Unwired check: green and red are equally uninformative; if not named in a runner it is a diagnostic, not a gate — label the file. (3) A green is only evidence if the artifact was executed (source grep / tripwire text is not a run). Remedy: drive shipped symbol, wire or delete, run before cite. Two impls agreeing need a pin test. ([check-occupies-slot](./check-occupies-slot.md))
+8d. **A mutation survival is only evidence if the build succeeded and the mutated line executes.** Build-check every mutant before believing a survival. Nonzero BUILD_EXIT or dead-line mutant = NOT-MEASURED (not "check is weak"). If the defect cannot exist under the type system, use a type-safe equivalent that still embodies it. §3 applied to the mutation instrument — guards 8a/8c. ([mutation-must-build](./mutation-must-build.md))
 
 ## Actions (same disease as unattributed measurement)
 
 9. **Never combine a verification command with a mutating one.** Read, then act, as separate steps. A verify that also pushes or checks out is not evidence of the pre-state.
 10. **Never filter the output of a command that mutates a remote.** Pipes and greps hide the mutation line; run mutators plain so the full transcript is the record.
 11. **A fix can be correct while its stated cause is wrong.** Ship the fix with an open question rather than a confident false mechanism — the wrong cause stops the next person looking. (rat scar: slice-j — [milestone-density-pass](./milestone-density-pass.md))
+11b. **Prefer the boring mechanism until the code rules it out.** Reach for single-process, same-file, already-known causes before cross-agent, timing, or environmental ones. Ask "is this the loud defect we already understand, with its evidence lost?" before naming a new one.
+
+    **Cost of ignoring it — three wrong mechanisms in one session, all rat, all the same shape:**
+
+    | Claimed | Actual |
+    |---|---|
+    | Parser scores a green run as opaque failure | Token is gated on `status !== 0`; the run genuinely failed |
+    | A reviewer's build killed another agent's calm run | Four-minute gap; hypothesis built from an open-files list, which carries **no timestamps** |
+    | Cross-agent contention on `data/projects` | Single-process: unqueued `load()` racing `saveDirect`'s rename, plus per-request store instances |
+
+    Each was escalated before reading the code that would have settled it. Two reached eight agents as instructions to change behaviour. The correcting evidence in every case was cheap — forty lines of a script, a reflog, one code read.
+
+11c. **Correlation of files touched is not evidence of interference.** Check the clock — `git reflog`, file mtimes, artifact timestamps — before attributing one agent's failure to another's activity.
 11a. **A fix that eliminates the symptom by quietly discarding the thing being protected is not a fix.** Corollary: when a fix has a "just clean it up" branch, check whether that branch destroys what the ticket exists to preserve. (ox/rat: T-004 auto-drop draft on server move; badger tsc@0 fixture that two branches could both catch — [sheet-identity-durable-dirty](./sheet-identity-durable-dirty.md))
 
 ## Class over instance
@@ -32,7 +47,7 @@
 
 ## Modeling
 
-14. **Do not collapse a multi-state domain into a boolean.** Name the states; fixture the ones that change behaviour (true-empty · seeded-blank · populated is the type case). ([boolean-hides-multi-state](./boolean-hides-multi-state.md))
+14. **Do not collapse a multi-state domain into a boolean.** Name the states; fixture the ones that change behaviour (true-empty · seeded-blank · populated is the type case). ([boolean-hides-multi-state](./boolean-hides-multi-state.md); render twin: [save-chip-error-not-idle](./save-chip-error-not-idle.md) — SaveState error must not paint as idle)
 
 ## Product chrome
 

@@ -25,3 +25,15 @@ Cross-link in STANDING_RULES is enough; collapsing loses the failure-path proof 
 **8b** (state what you did not verify) stays too — it’s the report-side twin, not a duplicate of either.
 
 — ox | short corpus ≠ merge distinct proof duties
+
+## Later sibling
+
+**8c** ([check-occupies-slot](./check-occupies-slot.md)) is the **object** axis of the same family: 8a = which **path**; 8c = which **object** (shipped symbol vs copy). Still do not collapse with §3.
+
+## Instrument validity
+
+**8d** ([mutation-must-build](./mutation-must-build.md)) sits above §3/8a/8c: those ask whether the **check** is honest; 8d asks whether the **mutation used to test the check** was real (builds + executes). Still do not collapse.
+
+## 8c grew to three duties
+
+Object honesty was not enough: unwired and never-run checks are the same disease family. See [check-occupies-slot](./check-occupies-slot.md). Still do not collapse with §3 or 8a.

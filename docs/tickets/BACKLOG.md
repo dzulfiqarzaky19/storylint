@@ -6,19 +6,30 @@ Validate: `npm run tickets:check`
 
 | ID | P | Status | Story | Title | Owner |
 |----|---|--------|-------|-------|-------|
-| [T-004](./T-004.md) | P0 | in_progress | none | Sheet dirty identity survives refresh | buffalo |
-| [T-005](./T-005.md) | P1 | open | none | Project atomic rename EPERM can fail saves on Windows | unassigned |
-| [T-001](./T-001.md) | P1 | open | lab-lifecycle | Lab archive Restore + Promoted dismiss | unassigned |
+| [T-005](./T-005.md) | P1 | landing | none | Project atomic rename EPERM can fail saves on Windows | octopus |
 | [T-002](./T-002.md) | P1 | integrated | agent-pipeline | Formalize L2 story/composition gate | horse |
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back | buffalo |
+| [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 — instrument DONE both paths; passive watch for live hit | unassigned |
+| [T-007](./T-007.md) | P2 | open | none | All ProjectStore paths must derive from one root (lock key is path-string identity) | unassigned |
+| [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
+| [T-009](./T-009.md) | P2 | open | none | Standing rule 11a (no EPERM retry) has no check — a sleep-then-retry passes the whole suite | unassigned |
 
 ## Closed / not open
 
 | ID | Note |
 |----|------|
+| ~~T-004~~ | Durable dirty sheet identity **done**. Land `9713335`; hawk APPROVE @ daf3a97. 7d stale confirm remains open follow-on. |
+| ~~T-001~~ | Lab lifecycle ends **done**. Restore octopus `d3570f4`; dismiss/source-gate/wiring dolphin `7fc4d17`/`5331466`/`9fac01d` (koala). Domain-title 25c = follow-on, not T-001. |
 | ~~BL phone drawer~~ | Integrated on origin/dev @ `bd56a5d` (dismiss-on-outside). No open ticket. |
 | ~~BA/BF a11y local-only~~ | Prior a11y lands on dev (face tabs, focus). Fresh a11y topic work files new tickets if needed. |
 
 ## Next free id
 
-`T-006`
+`T-010`
+
+## Notes
+
+T-007/T-008/T-009 filed by falcon out of the T-005 review, at rat's request. None is a defect in
+T-005 — that fix is correct and approved @ `f1d4a96`. All three are **preconditions the fix
+depends on that nothing enforces**. Triage: a single-process EPERM on the atomic rename is a
+T-005 regression; a multi-process one is T-008 firing.
