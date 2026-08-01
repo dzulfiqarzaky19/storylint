@@ -1,16 +1,11 @@
 /**
- * P0 empty-Canon rubric + shots.
+ * MANUAL DIAGNOSTIC — P0 empty-Canon rubric + shots
  *
- * The worst resting state in the product was an empty Canon: the propose form took the fold and
- * the only available action was proposing an edge between two sheets that did not exist. This
- * asserts the map's own empty state owns the fold, offers exactly one primary move, and keeps
- * propose present but demoted.
- *
- * Visibility discipline: never infer "is it showing" from layout boxes or computed styles. A
- * collapsed <details> still reports a layout box in Chromium. Open/closed is read from the
- * authoritative `open` property, and on-screen presence from Element.checkVisibility.
- * Geometry is used only to compare sizes of things already known to be visible.
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Evidence/shots pack; calm covers resting density gates.
+ * Run: node e2e/canon-empty-shots.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
