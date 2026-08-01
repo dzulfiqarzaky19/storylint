@@ -5,7 +5,7 @@ import { runContinuity } from './run.ts'
 import { parseClaims } from './live.ts'
 import type { Project, Proposal } from '../domain/types.ts'
 
-const fixture = await readFile(new URL('../../docs/fixtures/continuity-sample.md', import.meta.url), 'utf8')
+const fixture = await readFile(new URL('./fixtures/continuity-sample.md', import.meta.url), 'utf8')
 
 function project(): Project {
   return {

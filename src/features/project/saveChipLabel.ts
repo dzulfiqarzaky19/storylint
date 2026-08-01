@@ -2,7 +2,7 @@ import type { SaveState } from './useProject.ts'
 
 /**
  * Topbar save-status chip text for a SaveState.
- * Binding: docs/decisions/save-chip-error-not-idle.md
+ * Rule:
  *   saving → 'Saving…' | saved → 'Saved' | error → 'Not saved' | idle → ''
  * Idle blank is honest rest. Error must not share idle's paint (false idle).
  */

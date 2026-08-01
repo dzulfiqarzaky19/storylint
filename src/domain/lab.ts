@@ -405,7 +405,7 @@ export function promoteLabCard(
 
   if (canPromoteToChapter(card.kind)) {
     const chapterId = newId('chapter')
-    // Binding: docs/decisions/lab-promote-domain-title.md — model titles only via explicit chapterTitle.
+    // Rule: model titles only via explicit chapterTitle.
     // author + omitted → card.title; model + omitted → '' (never inherit ambient model text).
     const title =
       input.chapterTitle !== undefined

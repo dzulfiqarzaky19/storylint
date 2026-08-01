@@ -22,9 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# land / cause-capture transcripts (keep local; never commit)
-_land_run/
-
 # editor / OS
 .vscode/*
 !.vscode/extensions.json
@@ -40,23 +37,9 @@ Thumbs.db
 # test / coverage
 coverage
 *.tsbuildinfo
-# --- e2e/output split (intentional) ---
-# Tracked: judgments (docs/decisions/) AND deliberate scoreboard baselines.
-# calm-budget-run.md is the TRACKED scoreboard — updated only via
-#   npm run calm -- --record   (or npm run calm:record)
-# Default calm writes calm-budget-last.md/.json (untracked). A tool must not
-# write a tracked path as a side effect of running — that dirties the tree,
-# blocks checkout, and can leave a checker measuring a stale detached head
-# (crab scar: detach failed, nearly reported 114/115 against the wrong commit).
-# Ignored: raw evidence dumps — shots, probe JSON/logs, skill dumps, last-run.
-# Cite shot paths from reviews; do not commit shot folders.
-e2e/output/
-!e2e/output/calm-budget-run.md
 
-# AI assistant harness (LOCAL ONLY — never commit / never push)
-# Reason: branch checkouts must not swap the agent's brain or skills.
-# Product docs about the in-app agent panel stay tracked (docs/04-agents.md, etc.).
-# Full rule: docs/AGENTS_ROLES.md § "AI harness stays local"
+# AI assistant harness (LOCAL ONLY - never commit / never push)
+# Branch checkouts must not swap the assistant brain or skills.
 .claude/
 CLAUDE.md
 CLAUDE.local.md
