@@ -1,0 +1,16 @@
+--- proof-provenance ---
+head: ea0500aa09b1df5d602ffc44fb616ee4b5afeecc
+worktree_dirty: false
+command: node e2e/proofs/calm-crash/loop.mjs
+exit: 1
+timestamp: 2026-08-01T07:06:00.000Z
+--- end-proof-provenance ---
+
+{"i":1,"code":0,"ms":27749,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-01.log"}
+{"i":2,"code":0,"ms":21807,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-02.log"}
+{"i":3,"code":0,"ms":24416,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-03.log"}
+{"i":4,"code":0,"ms":24099,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-04.log"}
+{"i":5,"code":0,"ms":21193,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-05.log"}
+{"i":6,"code":0,"ms":19009,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-06.log"}
+{"i":7,"code":0,"ms":18766,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-07.log"}
+{"i":8,"code":1,"ms":6271,"kind":"died-after-self-tests-no-identity","hasHard":false,"hasFp":false,"hasVis":true,"hasB6":true,"hasRunEnd":false,"hasTimeout":false,"hasRefuse":false,"bytes":1377,"outPath":"e2e\\proofs\\calm-crash\\run-08.log"}
