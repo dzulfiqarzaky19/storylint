@@ -1,18 +1,28 @@
 /**
- * E1 MANUAL DIAGNOSTIC — prove shipping step labels survive a stall
+ * E1 MANUAL DIAGNOSTIC - prove shipping step labels survive a stall.
  *
- * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
- * NOT part of the green suite (test:green / ALL_FEATURE_SMOKES).
- * Static half belongs in unit tests / shared lock; dynamic stall needs owned stack.
- * Token records how this file is invoked — not whether every check can fail.
- * Run by hand when changing step labelling.
- */
+ * NOT part of the green suite (npm test / test:green / ALL_FEATURE_SMOKES).
+ * Static half is gated via scripts/e1-step-label.test.mjs ->
+ * checkShippingMakeStepImports; the dynamic stall needs an owned stack.
+ *
+ * Bound to the real module, not a throwaway copy:
+ *   1) Static: slice-k/l must import makeStep from ./step-label.mjs
+ *      (multi-specifier OK; no local STEP_T0 / function step).
+ *   2) Dynamic: a child imports the SAME makeStep helper, emits STALL-INJECT,
+ *      then forces a Playwright timeout. Parent captures FULL output.
+ *
+ * Pass only if both checks hold and the stall label appears before non-zero exit.
+ * Run by hand / when changing step labelling.
+ *
+ * The MANUAL DIAGNOSTIC token records how this file is INVOKED - not whether
+ * every check inside it can fail. See docs/tickets/UNWIRED-CHECKS.md. */
 
 import { spawn } from 'node:child_process'
-import { writeFileSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs'
+import { writeFileSync, mkdirSync, unlinkSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveMeasurementTarget } from './owned-stack.mjs'
+import { checkShippingMakeStepImports } from './step-import-lock.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const e2e = resolve(root, 'e2e')
@@ -20,30 +30,10 @@ mkdirSync(resolve(root, 'e2e/proofs'), { recursive: true })
 
 const stallSmokePath = resolve(e2e, '_stall_slice_k_throwaway.mjs')
 const artifactPath = resolve(e2e, 'proofs/E1-step-stall-proof.txt')
-const stepLabelPath = resolve(e2e, 'step-label.mjs')
 
 function assertShippingImportsMakeStep() {
-  const shipping = ['slice-k-smoke.mjs', 'slice-l-smoke.mjs']
-  const importRe = /import\s*\{\s*makeStep\s*\}\s*from\s*['"]\.\/step-label\.mjs['"]/
-  const localStepRe = /\bconst\s+STEP_T0\b|\bfunction\s+step\s*\(\s*label\s*\)/
-  const problems = []
-  for (const name of shipping) {
-    const src = readFileSync(resolve(e2e, name), 'utf8')
-    if (!importRe.test(src)) {
-      problems.push(`${name}: missing import { makeStep } from './step-label.mjs'`)
-    }
-    if (localStepRe.test(src)) {
-      problems.push(`${name}: local STEP_T0 / function step reintroduced (must use makeStep)`)
-    }
-  }
-  const helper = readFileSync(stepLabelPath, 'utf8')
-  if (!/export\s+function\s+makeStep\s*\(/.test(helper)) {
-    problems.push('step-label.mjs: export function makeStep missing')
-  }
-  if (!/process\.stdout\.write/.test(helper)) {
-    problems.push('step-label.mjs: must sync-write via process.stdout.write')
-  }
-  if (problems.length) {
+  const { ok, problems } = checkShippingMakeStepImports(e2e)
+  if (!ok) {
     console.error('FAIL E1 static: shipping path not bound to step-label.mjs')
     for (const p of problems) console.error('  -', p)
     process.exit(1)
