@@ -27,6 +27,7 @@
  */
 
 import { spawn, spawnSync } from 'node:child_process'
+import { performance } from 'node:perf_hooks'
 import { exit } from 'node:process'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -179,8 +180,13 @@ function run(command, args, { allowFail = false, env } = {}) {
 }
 
 /**
- * Run a command, stream stdout/stderr live (unfiltered), and capture full text.
- * Used for test:green so we can parse failure identities without hiding output.
+ * Run a command, stream stdout/stderr live (unfiltered), capture full text.
+ * Report-only cause lines land in the same buffer (and thus _land_run logs):
+ *   [cause] spawn pid=… shell=… cmd=…
+ *   [cause] exit  pid=… code=… signal=… elapsed_ms=… first=exit|close
+ *   [cause] close pid=… code=… signal=… elapsed_ms=… first=… exit_to_close_ms=…
+ * Distinguishes exited-N from terminated-by-signal; exit-vs-close order matters
+ * for silent calm death (horse/B2). No product verdict change.
  */
 function runCapture(command, args, { env } = {}) {
   const resolved = resolveCmd(command)
@@ -188,6 +194,7 @@ function runCapture(command, args, { env } = {}) {
   console.log(`\n$ ${printable}\n`)
 
   const useShellLine = IS_WIN && /\.cmd$/i.test(resolved)
+  const t0 = performance.now()
   return new Promise((resolvePromise) => {
     const child = useShellLine
       ? spawn(printable, {
@@ -202,17 +209,51 @@ function runCapture(command, args, { env } = {}) {
         })
 
     let out = ''
+    let firstEvent = null
+    let exitInfo = null
     const onChunk = (buf, stream) => {
       const text = buf.toString('utf8')
       out += text
       stream.write(text)
     }
+    const stamp = (kind, payload) => {
+      const line = `[cause] ${kind} ${payload}\n`
+      out += line
+      // cause lines ride stderr so they are obvious next to product stdout
+      process.stderr.write(line)
+    }
+    const logSpawn = () => {
+      stamp('spawn', `pid=${child.pid ?? 'null'} shell=${useShellLine} cmd=${printable}`)
+    }
+    logSpawn()
+    if (child.pid == null) child.once('spawn', logSpawn)
+
     child.stdout.on('data', (b) => onChunk(b, process.stdout))
     child.stderr.on('data', (b) => onChunk(b, process.stderr))
     child.on('error', (error) => {
+      const elapsed = Math.round(performance.now() - t0)
+      stamp('error', `pid=${child.pid ?? 'null'} msg=${error.message} elapsed_ms=${elapsed}`)
       fail(`failed to spawn ${resolved}: ${error.message}`)
     })
-    child.on('close', (code) => {
+    child.on('exit', (code, signal) => {
+      const elapsed = Math.round(performance.now() - t0)
+      if (!firstEvent) firstEvent = 'exit'
+      exitInfo = { code, signal, elapsed_ms: elapsed }
+      stamp(
+        'exit',
+        `pid=${child.pid ?? 'null'} code=${code === null ? 'null' : code} signal=${signal ?? 'null'} elapsed_ms=${elapsed} first=${firstEvent}`,
+      )
+    })
+    child.on('close', (code, signal) => {
+      const elapsed = Math.round(performance.now() - t0)
+      if (!firstEvent) firstEvent = 'close'
+      const exitToClose =
+        exitInfo != null ? Math.max(0, elapsed - exitInfo.elapsed_ms) : null
+      stamp(
+        'close',
+        `pid=${child.pid ?? 'null'} code=${code === null ? 'null' : code} signal=${signal ?? 'null'} elapsed_ms=${elapsed} first=${firstEvent}` +
+          (exitToClose != null ? ` exit_to_close_ms=${exitToClose}` : ''),
+      )
       resolvePromise({ status: code ?? 1, output: out })
     })
   })
