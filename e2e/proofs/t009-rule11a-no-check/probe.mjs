@@ -13,6 +13,13 @@
 //     no-retry code -> 1 attempt, save REJECTS, dest unchanged      -> exit 0
 //     retry code    -> 2 attempts, save RESOLVES, bad bytes on disk -> exit 1
 //
+// LOAD-BEARING PRECONDITION, before you copy this pattern: a retry is genuinely NOT observable
+// from the end state. What makes it observable here is a MID-CALL SEAM - choosing the
+// environment's behaviour partway through the call, then relenting. That is a property of this
+// runtime (Node supplies mock.module), not a general insight about retries. Without an
+// equivalent seam this approach is not available and a labelled tripwire or an honest written
+// admission is the correct answer instead. See docs/tickets/T-009.md.
+//
 // Run: node --experimental-strip-types --experimental-test-module-mocks e2e/proofs/t009-rule11a-no-check/probe.mjs
 import { mock } from 'node:test'
 import { mkdtemp, readFile } from 'node:fs/promises'
