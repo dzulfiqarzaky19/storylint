@@ -11,7 +11,10 @@ Validate: `npm run tickets:check`
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
 | [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
 | [T-010](./T-010.md) | P2 | open | none | Companion face row has 1px of fit; Inbox badge re-clips Research at rest | unassigned |
+| [T-012](./T-012.md) | P2 | open | none | Canon shows two equal primary "New sheet" buttons in one view | unassigned |
+| [T-013](./T-013.md) | P2 | open | none | Canon offers "Propose new edge" with zero nodes to connect | unassigned |
 | [T-011](./T-011.md) | P3 | open | none | Mutation lock name claims an outcome its source-text assertions cannot establish | unassigned |
+| [T-014](./T-014.md) | P3 | open | none | Lab composer stretches to full viewport width | unassigned |
 
 ## Closed / not open
 
@@ -27,7 +30,7 @@ Validate: `npm run tickets:check`
 
 ## Next free id
 
-`T-012`
+`T-015`
 
 ## Notes
 
