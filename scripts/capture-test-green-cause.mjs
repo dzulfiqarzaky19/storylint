@@ -1,22 +1,14 @@
 #!/usr/bin/env node
 /**
- * Land-shaped test:green capture with CAUSE lines (horse / B2 silent-calm).
+ * MANUAL DIAGNOSTIC — land-shaped test:green capture with CAUSE lines
  *
- * Standalone fallback. scripts/land.mjs runCapture now embeds the same
- * [cause] lines (pid/code/signal/exit-vs-close/elapsed). Keep this tool for
- * land-shaped N loops without a full land.mjs run.
- *
- * Usage:
- *   node scripts/capture-test-green-cause.mjs
- *   node scripts/capture-test-green-cause.mjs --n 3 --label quiet-land-shaped
- *
- * Emits into the capture buffer (and _land_run/<label>.log):
- *   [cause] spawn pid=… cmd=…
- *   [cause] exit  pid=… code=… signal=… elapsed_ms=… first=exit
- *   [cause] close pid=… code=… signal=… elapsed_ms=… first=… exit_to_close_ms=…
- *
- * Report-only. No push. No product fix.
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of npm test / test:green. Standalone evidence-capture tool (T-006 / e2e/README).
+ * land.mjs embeds the same [cause] lines; keep this for N-loops without full land.
+ * Narrative cause output is not a pass/fail gate — do not wire as a package test script.
+ * Run: node scripts/capture-test-green-cause.mjs
  */
+
 import { spawn } from 'node:child_process'
 import { mkdirSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
