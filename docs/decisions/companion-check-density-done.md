@@ -37,9 +37,9 @@ next: review → land → E2E verify; rat may file follow-on tickets from open l
 |------|--------|
 | Unit `checkTools.test.ts` | 7/7 (incl. post-run density mutation lock) |
 | `npm run build` | green |
-| Playwright Edge owned-stack `e2e/_check-face-verify.mjs` | PASS |
+| Playwright Edge owned-stack Check density verify (session probe, not retained) | PASS |
 | Browser bridge (Firefox) live drive | PASS — resting sparse + post-run Continuity |
-| Full companion face drive `e2e/_companion-face-drive.mjs` | 80/80 PASS @ `0fb789d` (every face/button/scroll; no face-body mismatch; labels not clipped) |
+| Full companion face drive (session probe, not retained) | 80/80 PASS @ `0fb789d` |
 
 Shots: `e2e/output/check-face-tools.png`, `e2e/output/check-face-craft-help.png`, `e2e/output/companion-face-*.png`.
 
@@ -69,3 +69,7 @@ Improvement mode hit diminishing returns on Check face density. No further Check
 ## Handoff
 
 DM sent to rat session with this summary. Worker standing down unless reassigned.
+
+## Throwaway cleanup
+
+Ad-hoc `e2e/_check-face-verify.mjs` and `e2e/_companion-face-drive.mjs` were removed from the branch after the prove. Density locks remain in unit `checkTools.test.ts`. Skill: `throwaway-cleanup` (local harness).
