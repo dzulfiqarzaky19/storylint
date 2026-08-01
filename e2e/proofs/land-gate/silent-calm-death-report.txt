@@ -1,0 +1,134 @@
+Silent calm death — report only (horse)
+========================================
+When: 2026-08-01
+Scope: separate buffalo incomplete specimen from EPERM path. No product fix in this note.
+
+A. MERGE (separate milestone, completed first)
+---------------------------------------------
+origin/main = 59e6b21f6c1a4d1350cc5bd96da8339c1ef562ad
+subject: Merge dev into main: verification you can cite — sealed land gate, dual-direction L2, durable author work (dirty sheets, Lab promote, binder scroll)
+parents: 637f406 + 9713335 (origin/dev tip at merge)
+worktree: D:\dev\projects\storylint-release
+verify after fetch: no-merges origin/dev..origin/main empty; diff origin/main origin/dev empty; ancestor_ok=YES
+Justification: GIT_WORKFLOW L29 milestone merge (completed verified batch). No count rule.
+
+B. TWO SPECIMENS — DO NOT MERGE TICKETS
+---------------------------------------
+
+B1. Badger C1 land-inside-calm EPERM (stderr KEPT)
+  capture: C:\Users\Zaky\AppData\Local\Temp\jcode-bg-tasks\924297jzp3.output
+  also: origin/storylint/eperm-specimen-calm-c1 @ 4d350fc
+        e2e/proofs/slice-i-flake/land-c1-baseline-calm-eperm.output
+  timeline markers (verified by horse findstr on 924297jzp3.output):
+    L440  [b6-primary-visibility-self-test] ok
+    L469  [stderr] Error: ensureDraftReady normalize failed: 400
+          {"error":"EPERM: operation not permitted, rename
+           '...\\e2e-calm-25236-ms9ne09a.json.tmp' ->
+           '...\\e2e-calm-25236-ms9ne09a.json'"}
+    L470  at ensureDraftReady (e2e/helpers.mjs:1296:26)
+          at async runViewport (e2e/calm-budget.mjs:1100:5)
+    L478  land: measurement=not-measured exit=1
+    L480  not-measured:stage-died-without-identity:calm
+  conclusion:
+    - EPERM stack IS present under land capture.
+    - Boring "lost stderr collapses EPERM into silent exit 1" is FALSIFIED
+      for the land-inside-calm EPERM path.
+    - This IS the T-005 / octopus store-rename defect (ensureDraftReady → saveDirect rename).
+    - Gate identity is coarser (stage-died:calm), but the mechanism text is not lost.
+
+B2. Buffalo incomplete calm (NO EPERM text)
+  capture: e2e/proofs/land-gate/buffalo-calm-incomplete.output (30023 bytes)
+  worktree at time: storylint-bi-settled @ 81dc752
+  ports: api :62314 ui :62315
+  timeline:
+    [owned-stack] api :62314 ui :62315
+    [run-start] ...
+    [visibility-self-test] ok
+    [b6-primary-visibility-self-test] ok
+    <END of calm stdout — no further calm lines>
+    land: parsed failure set exit=1
+      - opaque:test-green-exit-1   (pre stage-died:calm classifier era on that tip)
+  horse findstr on specimen:
+    EPERM      — ZERO hits
+    Error:     — ZERO hits (product/stack; unit-test "fail" strings only earlier)
+    FINGERPRINT — ZERO
+    run-end     — ZERO
+    hard-timeout — ZERO
+  conclusion:
+    - NOT the same specimen as B1.
+    - Cannot be calm's normal throw path (that prints Error+stack; C1 proves capture keeps it).
+    - Cannot be calm's HARD-fail process.exit(1) (that prints FINGERPRINT + run-end first).
+    - Cannot be armHardTimeout (prints FAIL hard-timeout, exit 124).
+    - Remaining live candidates (unproven): external kill / parent teardown beating
+      process death after self-tests; port collision around 62314/62315; other
+      non-calm exit that leaves no stderr. Report only — no fix without named mechanism.
+
+C. CALM CONTROL-FLOW FACTS (code read, not inferred from one log)
+-----------------------------------------------------------------
+e2e/calm-budget.mjs:
+  - After b6 self-test ok → ensureIsolatedProject → runViewport (where C1 EPERM fires).
+  - Outer catch (~L1827): PreconditionError → REFUSE exit 2 + identity; else rethrow.
+  - finally: browser.close, stack.stop, clearHardTimeout.
+  - Only process.exit(1) is final summary after FINGERPRINT (~L1880) when HARD fails > 0.
+  - armHardTimeout → FAIL hard-timeout, exit 124.
+Therefore a log that ends at b6-ok with exit 1 and no Error/FINGERPRINT/hard-timeout
+is outside calm's named exit paths → distinct from EPERM throw.
+
+D. WHAT THIS DOES / DOES NOT CLAIM
+----------------------------------
+Claims:
+  1. Land-inside-calm EPERM keeps stderr (B1). Boring lost-stderr for that path is dead.
+  2. Buffalo incomplete (B2) has no EPERM text and is a separate open question.
+  3. Do not absorb B2 into T-005 without EPERM text in that specimen.
+Does not claim:
+  - Named mechanism for B2 (still open).
+  - That every silent exit 1 is or is not EPERM.
+  - Any product fix.
+
+E. FOLLOW-UP READS (2026-08-01 later)
+-------------------------------------
+Bare process.exit(1) in calm/owned-stack: DEAD
+  calm: only exit(1) is post-FINGERPRINT L1880; refuses are exit(2) with REFUSE print
+  owned-stack: no process.exit
+  helpers: exit(124) hard-timeout only
+
+land runCapture (scripts/land.mjs L185-217): pipes stdout+stderr, resolves on 'close' not 'exit'
+  → harness flush race DEAD (rat + horse)
+
+killTree self-kill of calm runner: FALSIFIED
+  taskkill /PID apiChild.pid /T /F — tree rooted at API child only (downward)
+  apiChild = spawn(process.execPath, server) direct child of calm; parent not in /T tree
+  sole stop() caller of killTree; no other taskkill in e2e/
+
+Quiet N=5 (npm run calm, not land):
+  5/5 green exit=0 FINGERPRINT yes EPERM=0 silent=0
+  ~20-23s each; logs C:\Users\Zaky\AppData\Local\Temp\calm_repro\
+  B2 NOT reproduced outside land parent tree
+
+Still open for B2 (unproven): external kill of calm PID under land; other pipeline actor; tip-specific at 81dc752
+Next boring surface if assigned: land-shaped capture / runCapture pid+exit reason — still report-only
+
+G. FULL-CHAIN PIPED CAPTURE (no land merge/push)
+-----------------------------------------------
+Tool: scripts/capture-test-green-cause.mjs (local; mirrors land runCapture; does not edit land.mjs)
+Badger A still owns real land.mjs instrument (queued after E1; will supersede fallback).
+
+N=3 npm run test:green as piped child @ tip 9238b6c:
+  3/3 green status=0 signal=null first=exit exit_to_close_ms=0
+  elapsed_ms: 71134, 77683, 73713
+  pids: 3556, 30184, 5620
+  markers each: Fp+ run-end+ b6+ EPERM-
+  FINGERPRINT eddd76a4
+  logs: _land_run/b2-full-chain-{1,2,3}.log + summary.jsonl
+
+Bounds: pipe + full prior stages do not force B2 on this tip at N=3.
+B2 still unreproduced. Next live hit needs instrumented land runCapture (badger).
+
+H. NEXT (if still assigned)
+---------------------------
+  - Wait badger tip SHA with runCapture cause lines; re-run under real land baseline shape if needed (still no merge loop)
+  - B2 open until live instrumented occurrence names code vs signal
+  - Do not absorb B2 into T-005 without EPERM text
+  - Do not fix without named mechanism
+  - Do not loop npm run land
+
