@@ -493,6 +493,7 @@ export function Shell() {
         ) : workspaceMode === 'graph' && project.project ? (
           <RelationshipGraph
             project={project.project}
+            projectId={project.activeProjectId}
             onProject={project.applyServerProject}
             projectGeneration={project.projectGeneration}
             trackMutation={project.trackMutation}
