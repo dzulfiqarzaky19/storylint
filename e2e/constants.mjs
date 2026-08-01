@@ -14,6 +14,8 @@ export const ALL_FEATURE_SMOKES = Object.freeze([
   'e2e/binder-scroll-restore-smoke.mjs',
   // BL: phone drawer outside-tap dismisses; job surface reachable @390.
   'e2e/bl-phone-drawer-smoke.mjs',
+  // T-010: resting face row fits with 2-digit Inbox badge (geometry, not source).
+  'e2e/t010-face-row-fit-smoke.mjs',
 ])
 
 /**
