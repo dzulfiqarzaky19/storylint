@@ -41,7 +41,7 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
    git rev-list --count --first-parent origin/main..origin/dev
    ```
 
-   **Scar:** this rule lived only in conversation. rat grepped the docs, found nothing, and told horse the rule was invented — reporting "not in the docs" as if it disproved "the founder set it". A missing citation disproves the citation, not the claim ([STANDING_RULES](./decisions/STANDING_RULES.md) 34). Drift reached 28 lands before the first merge, then 20 before this was caught. A rule that is not written down is one bad memory away from being overridden.
+   **Scar:** this rule lived only in conversation. rat grepped the docs, found nothing, and told horse the rule was invented — reporting "not in the docs" as if it disproved "the founder set it". A missing citation disproves the citation, not the claim ([STANDING_RULES](./decisions/STANDING_RULES.md) 48). Drift reached 28 lands before the first merge, then 20 before this was caught. A rule that is not written down is one bad memory away from being overridden.
 
 ### Manual land sequence (fallback / understanding only)
 
@@ -82,25 +82,33 @@ When a correct procedure is reliably performed incorrectly, more documentation w
 
 Feature work uses a second naming family — see [FEATURE_PIPELINE.md](./FEATURE_PIPELINE.md):
 
+**One namespace: everything is `storylint/<kebab>`.** A feature is named by what it *is*
+(`storylint/lab-lifecycle`), never by a counter, and its ticket branches are that name plus
+`-ticket-NN`. The relationship reads without a lookup table, and `feature-01` tells a reader
+nothing six weeks later.
+
 | Branch | Cut from | Lands into |
 |---|---|---|
-| `feature-NN` (integration) | `origin/dev` | `dev`, after the feature's E2E passes |
-| `feature-NN-ticket-MM` (coder) | `origin/feature-NN` | `feature-NN`, by the reviewer |
-| `feature-NN-ticket-MM-fix-KK` | `origin/feature-NN` | `feature-NN`, same as any ticket |
+| `storylint/<feature>` (integration) | `origin/dev` | `dev`, after the feature's E2E passes |
+| `storylint/<feature>-ticket-NN` (coder) | `origin/storylint/<feature>` | `storylint/<feature>`, by the reviewer |
+| `storylint/<feature>-ticket-NN-fix-NN` | `origin/storylint/<feature>` | `storylint/<feature>`, same as any ticket |
 
 ```
-npm run land -- feature-01-ticket-01 --summary "<what it does>" --into feature-01
-npm run land -- feature-01 --summary "<feature summary>"          # target defaults to dev
+npm run land -- storylint/lab-lifecycle-ticket-01 --summary "<what it does>" --into storylint/lab-lifecycle
+npm run land -- storylint/lab-lifecycle --summary "<feature summary>"          # target defaults to dev
 ```
 
 `--into` runs the **same** no-worse gate against the feature branch: fresh `test:green` baseline on
-`origin/feature-NN`, merge, `test:green` again, identity compare, `--no-ff` bubble, push, read back.
+`origin/storylint/<feature>`, merge, `test:green` again, identity compare, `--no-ff` bubble, push, read back.
 Every ref derives from one variable, so the gate cannot measure one branch while the push writes
 another. `--into main` is refused: `main` receives merges from `dev` only.
 
-**Scar:** the pipeline doc was written telling coders to branch `feature-01-ticket-01`, and
-`land.mjs` refused that exact name — it only accepted `storylint/<kebab>`. Found by running the
-documented commands, not by re-reading them ([STANDING_RULES](./decisions/STANDING_RULES.md) 39).
+**Scar:** the first revision of this pipeline used numbered names (`feature-01`,
+`feature-01-ticket-01`) and the doc told coders to branch them — but `land.mjs` refused those names
+outright, because it only accepted `storylint/<kebab>`. The documented workflow would have failed on
+first use. Found by running the commands, not by re-reading them
+([STANDING_RULES](./decisions/STANDING_RULES.md) 53). The founder then corrected the scheme itself:
+kebab slugs under the existing prefix, which is what the script already enforced.
 
 ## History rules (why "beautiful")
 

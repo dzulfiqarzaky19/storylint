@@ -168,7 +168,7 @@ function loadTickets() {
   const files = readdirSync(TICKETS_DIR).filter(
     (f) =>
       /^T-\d+\.md$/i.test(f) ||
-      /^feature-\d{2,}-ticket-\d{2,}(-fix-\d{2,})?\.md$/i.test(f),
+      /^[a-z0-9]+(-[a-z0-9]+)*-ticket-\d{2,}(-fix-\d{2,})?\.md$/.test(f),
   );
   const tickets = [];
   for (const f of files) {
@@ -190,12 +190,15 @@ function validate(tickets) {
     }
     // Two id families:
     //   T-###                          standalone ticket
-    //   feature-NN-ticket-MM[-fix-KK]  feature pipeline (FEATURE_PIPELINE.md)
+    //   <feature-kebab>-ticket-NN[-fix-NN]  feature pipeline (FEATURE_PIPELINE.md)
+    // The feature part is a slug naming what the feature IS, not a counter.
     const idStr = String(t.id || '');
     const isLegacyId = /^T-\d{3,}$/i.test(idStr);
-    const isFeatureId = /^feature-\d{2,}-ticket-\d{2,}(-fix-\d{2,})?$/i.test(idStr);
+    const isFeatureId = /^[a-z0-9]+(-[a-z0-9]+)*-ticket-\d{2,}(-fix-\d{2,})?$/.test(idStr);
     if (!isLegacyId && !isFeatureId) {
-      errors.push(`${t.file}: invalid id ${t.id} (want T-### or feature-NN-ticket-MM)`);
+      errors.push(
+        `${t.file}: invalid id ${t.id} (want T-### or <feature-kebab>-ticket-NN)`,
+      );
     } else {
       const id = String(t.id).toUpperCase();
       if (byId.has(id)) errors.push(`duplicate id ${id}: ${byId.get(id)} and ${t.file}`);
@@ -218,7 +221,7 @@ function validate(tickets) {
     // it, and must land into it — a ticket pointing at dev would skip the
     // feature's E2E gate, which is the whole reason the branch exists.
     const idLower = String(t.id || '').toLowerCase();
-    const featureFromId = idLower.match(/^(feature-\d{2,})-ticket-/);
+    const featureFromId = idLower.match(/^([a-z0-9]+(?:-[a-z0-9]+)*)-ticket-\d{2,}/);
     if (featureFromId) {
       const feature = featureFromId[1];
       if (t.feature && String(t.feature).toLowerCase() !== feature) {
@@ -226,13 +229,19 @@ function validate(tickets) {
           `${t.file}: feature ${t.feature} disagrees with id ${t.id} (expected ${feature})`,
         );
       }
-      const branch = String(t.branch || '').trim();
+      // branch may be written bare or with the storylint/ prefix.
+      const branch = String(t.branch || '')
+        .trim()
+        .replace(/^storylint\//, '');
       if (branch && branch !== '—' && branch.toLowerCase() !== idLower) {
         errors.push(
           `${t.file}: branch ${branch} should be the ticket id ${t.id}`,
         );
       }
-      const into = String(t.lands_into || '').trim();
+      // lands_into may be written bare or with the storylint/ branch prefix.
+      const into = String(t.lands_into || '')
+        .trim()
+        .replace(/^storylint\//, '');
       if (into && into.toLowerCase() !== feature) {
         errors.push(
           `${t.file}: lands_into ${into} must be ${feature} — a ticket landing anywhere ` +

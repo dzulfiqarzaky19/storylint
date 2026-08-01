@@ -47,13 +47,14 @@ const mutants = [
   {
     id: 'MUT-3',
     what: 'main accepted as a land target',
-    anchor: "  if (!/^(dev|feature-[0-9]{2,}(-[A-Za-z0-9._-]+)?)$/.test(into)) {",
+    anchor: "  if (!/^(dev|storylint\\/[a-z0-9]+(-[a-z0-9]+)*)$/.test(into)) {",
     replace: '  if (false) {',
     gone: (s) =>
-      // The topic-shape validation (FEATURE_BRANCH) uses the same regex
-      // fragment, so a whole-file check would find it and wrongly report the
-      // mutation failed. What must disappear is the TARGET check specifically.
-      !s.includes('.test(into)'),
+      // Two things now test `into`: the shape check and the main/master
+      // token check. A bare '.test(into)' probe would still match the
+      // survivor and wrongly report the mutation had not taken. Name the
+      // shape predicate specifically.
+      !s.includes('$/.test(into)) {'),
   },
   {
     id: 'MUT-4',

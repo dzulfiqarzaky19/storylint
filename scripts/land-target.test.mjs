@@ -107,30 +107,50 @@ test('setTarget keeps TARGET and TARGET_REF in lockstep', () => {
 test('main is refused as a land target', () => {
   const { status, out } = runLand(['storylint/any', '--summary', 's', '--into', 'main'])
   assert.notEqual(status, 0, 'must exit nonzero')
-  assert.match(out, /--into must be dev or feature-NN/)
+  assert.match(out, /--into must be dev or storylint\/<kebab>/)
   assert.match(out, /main is not a land target/)
 })
 
 test('master is refused as a land target', () => {
   const { status, out } = runLand(['storylint/any', '--summary', 's', '--into', 'master'])
   assert.notEqual(status, 0)
-  assert.match(out, /--into must be dev or feature-NN/)
+  assert.match(out, /--into must be dev or storylint\/<kebab>/)
+})
+
+test('a main token inside a feature target is refused', () => {
+  // storylint/main-thing matches the kebab shape but must still be refused:
+  // push hooks reject main/master tokens in branch names.
+  const { status, out } = runLand([
+    'storylint/any',
+    '--summary',
+    's',
+    '--into',
+    'storylint/main-thing',
+  ])
+  assert.notEqual(status, 0)
+  assert.match(out, /must not contain main\/master tokens/)
 })
 
 test('an arbitrary branch name is refused as a land target', () => {
   // Prevents a typo silently creating a new branch on origin.
   const { status, out } = runLand(['storylint/any', '--summary', 's', '--into', 'my-branch'])
   assert.notEqual(status, 0)
-  assert.match(out, /--into must be dev or feature-NN/)
+  assert.match(out, /--into must be dev or storylint\/<kebab>/)
 })
 
-test('feature-NN is accepted and reported as the target', () => {
+test('a kebab feature branch is accepted and reported as the target', () => {
   // Fails later (topic branch does not exist) but must pass validation and
   // print the target it was given, not dev.
-  const { out } = runLand(['storylint/no-such-topic', '--summary', 's', '--into', 'feature-07'])
-  assert.match(out, /land: target=origin\/feature-07/)
-  assert.match(out, /gate=NO-WORSE \(fresh origin\/feature-07 baseline/)
-  assert.doesNotMatch(out, /target=origin\/dev/)
+  const { out } = runLand([
+    'storylint/no-such-topic',
+    '--summary',
+    's',
+    '--into',
+    'storylint/lab-lifecycle',
+  ])
+  assert.match(out, /land: target=origin\/storylint\/lab-lifecycle/)
+  assert.match(out, /gate=NO-WORSE \(fresh origin\/storylint\/lab-lifecycle baseline/)
+  assert.doesNotMatch(out, /target=origin\/dev\b/)
 })
 
 test('default target is still dev when --into is omitted', () => {
@@ -141,11 +161,11 @@ test('default target is still dev when --into is omitted', () => {
 
 test('a branch cannot land into itself', () => {
   const { status, out } = runLand([
-    'storylint/feature-01',
+    'storylint/lab-lifecycle',
     '--summary',
     's',
     '--into',
-    'feature-01',
+    'storylint/lab-lifecycle',
   ])
   assert.notEqual(status, 0)
   assert.match(out, /cannot land into itself/)
@@ -158,7 +178,7 @@ test('--skip-tests is still refused on the feature path', () => {
     '--summary',
     's',
     '--into',
-    'feature-01',
+    'storylint/lab-lifecycle',
     '--skip-tests',
   ])
   assert.notEqual(status, 0)
@@ -166,34 +186,43 @@ test('--skip-tests is still refused on the feature path', () => {
 })
 
 /*
- * Topic shapes. The pipeline doc tells coders to branch `feature-01-ticket-01`.
- * Before this, land.mjs only accepted `storylint/<kebab>` and refused those names
- * outright — the documented workflow would have failed on first use. These lock
- * the documented names against the script that has to accept them.
+ * Topic shapes. One namespace: everything is storylint/<kebab>. A feature branch
+ * is storylint/<feature-slug>; its tickets are that name plus -ticket-NN, so the
+ * relationship reads without a lookup table.
+ *
+ * Scar kept: an earlier revision used feature-NN counters, and the pipeline doc
+ * told coders to branch names land.mjs refused outright. These lock the
+ * documented names against the script that has to accept them.
  */
 
-test('feature-NN-ticket-MM is accepted as a topic', () => {
-  const { out } = runLand(['feature-01-ticket-01', '--summary', 's', '--into', 'feature-01'])
-  assert.doesNotMatch(out, /Topic must be/)
-  assert.match(out, /land: topic=feature-01-ticket-01/)
+test('a kebab ticket branch is accepted as a topic', () => {
+  const { out } = runLand([
+    'storylint/lab-lifecycle-ticket-01',
+    '--summary',
+    's',
+    '--into',
+    'storylint/lab-lifecycle',
+  ])
+  assert.doesNotMatch(out, /Topic must look like/)
+  assert.match(out, /land: topic=storylint\/lab-lifecycle-ticket-01/)
 })
 
 test('a fix ticket branch is accepted as a topic', () => {
   // Fix tickets re-enter the pipeline, so their branch must land like any other.
   const { out } = runLand([
-    'feature-02-ticket-03-fix-01',
+    'storylint/lab-lifecycle-ticket-03-fix-01',
     '--summary',
     's',
     '--into',
-    'feature-02',
+    'storylint/lab-lifecycle',
   ])
-  assert.doesNotMatch(out, /Topic must be/)
-  assert.match(out, /land: topic=feature-02-ticket-03-fix-01/)
+  assert.doesNotMatch(out, /Topic must look like/)
+  assert.match(out, /land: topic=storylint\/lab-lifecycle-ticket-03-fix-01/)
 })
 
 test('a feature branch is accepted as a topic (it lands into dev)', () => {
-  const { out } = runLand(['feature-01', '--summary', 's'])
-  assert.doesNotMatch(out, /Topic must be/)
+  const { out } = runLand(['storylint/lab-lifecycle', '--summary', 's'])
+  assert.doesNotMatch(out, /Topic must look like/)
   assert.match(out, /land: target=origin\/dev/)
 })
 
@@ -203,15 +232,16 @@ test('storylint/<kebab> still works (standalone work did not break)', () => {
   assert.match(out, /land: topic=storylint\/some-topic/)
 })
 
-test('an arbitrary topic name is still refused', () => {
+test('an unprefixed topic name is still refused', () => {
+  // One namespace means a bare name is not a branch we land.
   const { status, out } = runLand(['randomjunk', '--summary', 's'])
   assert.notEqual(status, 0)
-  assert.match(out, /Topic must be storylint\/<kebab>, feature-NN-ticket-MM, or feature-NN/)
+  assert.match(out, /Topic must look like storylint\/<kebab>/)
 })
 
-test('a main token in a feature topic is still refused', () => {
-  // Widening the shapes must not open the main/master hole (push hooks refuse them).
-  const { status, out } = runLand(['feature-01-main-thing', '--summary', 's'])
+test('a main token in a topic is still refused', () => {
+  // Push hooks refuse main/master tokens in branch names.
+  const { status, out } = runLand(['storylint/main-thing', '--summary', 's'])
   assert.notEqual(status, 0)
   assert.match(out, /must not contain main\/master tokens/)
 })
