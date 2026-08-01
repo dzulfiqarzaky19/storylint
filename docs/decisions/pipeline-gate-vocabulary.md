@@ -4,14 +4,14 @@
 **To:** rat · koala · pig  
 **Status:** binding corpus  
 **Trigger:** koala severity-gates proposal blocked on letter collision with L1/L2 and P0/P1  
-**Cite:** [AGENT_PIPELINE](../AGENT_PIPELINE.md) · [tickets/README](../../tickets/README.md) · [CALM_BUDGET](../CALM_BUDGET.md) · CANON-VOCABULARY ownership of user words; this memo owns **process letters**
+**Cite:** [AGENT_PIPELINE](../AGENT_PIPELINE.md) · [tickets/README](../tickets/README.md) · [CALM_BUDGET](../CALM_BUDGET.md) · CANON-VOCABULARY ownership of user words; this memo owns **process letters**
 
 ## Problem
 
 | Scheme | Means today |
 |---|---|
 | **L1 / L2** | Pipeline **altitude** — isolation proof vs composition proof ([AGENT_PIPELINE](../AGENT_PIPELINE.md)) |
-| **P0 / P1 / P2…** | Ticket **priority** ([tickets/README](../../tickets/README.md)) |
+| **P0 / P1 / P2…** | Ticket **priority** ([tickets/README](../tickets/README.md)) |
 | Proposed third **L\*** or **P\*** for “severity gates” | Would make every existing doc ambiguous retroactively |
 
 **One letter-scheme per axis.** A third L/P scheme is rejected even if the underlying gate idea is good.

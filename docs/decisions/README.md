@@ -123,7 +123,7 @@ Short list only — do not grow into a second backlog novel.
 | Keep tracked | Leave ignored |
 |---|---|
 | Judgments / adjudications / design reviews (this folder) | Screenshots, webp, shot folders |
-| Measurements-over-time scoreboard `calm-budget-run.md` | Probe JSON / logs / skill dumps |
+| Measurements-over-time scoreboard `e2e/output/calm-budget-run.md` | Probe JSON / logs / skill dumps |
 
 ## How to add a decision
 

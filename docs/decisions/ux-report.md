@@ -11,7 +11,7 @@
 **Date:** 2026-07-31  
 **Verdict:** request changes  
 **Drives:** `node e2e/ux-drive.mjs` · `node e2e/ux-drive-graph.mjs` (fresh this session)  
-**Progress:** `e2e/output/ux-progress.md` · `ux-graph-progress.md` · `ux-notes.json`  
+**Progress:** `e2e/output/ux-progress.md` · `e2e/output/ux-graph-progress.md` · `e2e/output/ux-notes.json`  
 **Skill:** local `.claude/skills/ui-ux-pro-max` (structure/a11y only — **paint = docs/design/TOKENS.md**)
 
 ### Skill note
