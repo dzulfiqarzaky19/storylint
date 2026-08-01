@@ -2,6 +2,15 @@
 
 Founder flow. Same loop the founder runs; git vehicle is **`npm run land` + `--no-ff`**, not squash-to-dev.
 
+> **Superseded for feature work (2026-08-01): see [FEATURE_PIPELINE.md](./FEATURE_PIPELINE.md).**
+> The founder replaced the flat topic → dev model with a feature pipeline: a feature is split into
+> tickets, tickets land into a **feature integration branch**, and the feature reaches `dev` only
+> after end-to-end verification of the whole feature. **FEATURE_PIPELINE.md is the flow.**
+>
+> This page remains the reference for what does not change: **L1/L2 verification levels**, the
+> no-worse land gate, ticket status transitions, and the `dev → main` cadence. Where the two
+> disagree about *routing*, FEATURE_PIPELINE.md wins.
+
 Cross-links: [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) · [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) · [E2E.md](./E2E.md) · [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) · [tickets/README.md](./tickets/README.md) · [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md)
 
 ## Sprint model (founder-set)
@@ -14,7 +23,8 @@ Work is assigned in **sprints**, so priority is known before anyone picks anythi
 | Sprint boundary | **Until the batch is done.** Not a clock, not a commit count. |
 | Why no clock | We are not running against a release or inbound user requests. There is therefore **no reason to rush and every reason to be correct**. Slow and right beats fast. |
 | Grouping | By **theme**, not by severity. Half a story shipped is how docs end up claiming what the code does not do. |
-| `dev → main` | At a **named milestone** only — never at a commit count. |
+| `dev → main` | **Every 5 lands** (founder cadence), with a **named milestone** on the merge subject. Count triggers; name describes. |
+| Land granularity | **One land per feature**, not per step. A ticket lands with its own close. ([GIT_WORKFLOW § Land granularity](./GIT_WORKFLOW.md#land-granularity)) |
 
 A sprint closes when its items are landed **and** verified (below), not when they are merged.
 
@@ -30,7 +40,7 @@ sprint (rat holds priority) → rat assigns
       did not land → BUG → new ticket → back into the sprint at >= prior priority
 dev pools until the story/batch is complete
   → L2 story/composition E2E on origin/dev
-  → merge dev → main at a NAMED MILESTONE
+  → merge dev → main EVERY 5 LANDS, subject names the MILESTONE
 ```
 
 **The coordinator is not an approval gate in this flow.** rat assigns and ranks; the reviewer reviews; the coder lands; the verifier verifies. Inserting the coordinator between "reviewed" and "landed" is what produced an 83-commit drift between `dev` and `main` — every agent waited on one inbox.
@@ -80,7 +90,9 @@ Why both exist: a change can be perfectly reviewable and still not do what its t
 
 4. **PR is optional review UI.** Opening a GitHub PR does not write `dev`. **`npm run land` is the only *authorized* way to write `dev`** — and that is a **norm, not an enforcement**: git will still accept `git push origin HEAD:dev`, and [GIT_WORKFLOW](./GIT_WORKFLOW.md) documents a manual fallback for when the script itself is broken. There is no pre-receive hook. The rule holds because agents keep it, not because the repo stops you. Never `git push origin <topic>:dev` outside that documented fallback. Never squash-merge into `dev`.
 
-5. **`dev → main` only at milestones**, after L2 (and product verification) for the batch. Founder account. `--no-ff`. See GIT_WORKFLOW § Flow step 6.
+5. **`dev → main` every 5 lands**, after L2 (and product verification) for the batch, with the milestone named on the merge subject. Founder account. `--no-ff`. See GIT_WORKFLOW § Flow step 6.
+
+   With one land per feature, those 5 should read as 5 features. If the milestone name is hard to write, the batch was fragments.
 
 6. **A diagnostic proven only on the happy path is not proven.** Step timers, error labels, failure logs and timeout messages exist for the failure path — so **fault-inject** and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (Same disease as a check that passes on absence.)
 
@@ -130,5 +142,6 @@ Do **not** jump from a probe finding straight to land. Report criteria and hando
 - Use condition/probe chrome as default pass evidence
 - **Wait on the coordinator to approve a land** — review, then land, then verify
 - **Treat an E2E-verify failure as grounds to revert** — it is a bug ticket
-- **Merge `dev → main` on a commit count** instead of a named milestone
+- **Merge `dev → main` without naming the milestone** on the subject (the count triggers it; the name still has to be written)
+- **Land each step of one feature separately** — a ticket's fix, its status change, and its review follow-ups are one land
 - **Ship a failure diagnostic without forcing the failure once**
