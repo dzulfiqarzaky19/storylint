@@ -4,6 +4,7 @@ import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
 import { ApplyCard } from '../../features/agent/ApplyCard.tsx'
+import { CHECK_TOOLS, type CheckToolId } from '../../features/agent/checkTools.ts'
 import type { CowriteSkill } from '../../cowrite/types.ts'
 import type { CraftTag, Project } from '../../domain/types.ts'
 import { ResearchPanel } from '../../features/research/ResearchPanel.tsx'
@@ -116,7 +117,10 @@ export function AgentPanel({
   const [draft, setDraft] = useState('')
   const [face, setFace] = useState<CompanionFace>(DEFAULT_FACE[companionContext])
   const [moreOpen, setMoreOpen] = useState(false)
+  /** Which Check tool info popup is open (click/keyboard — not hover-only). */
+  const [checkHelpOpen, setCheckHelpOpen] = useState<CheckToolId | null>(null)
   const moreRef = useRef<HTMLDivElement | null>(null)
+  const checkToolsRef = useRef<HTMLDivElement | null>(null)
   // Session memory only: last face per ecosystem context. Reload still defaults to Chat.
   const lastFaceByContext = useRef<Partial<Record<CompanionContext, CompanionFace>>>({})
   /** AU-1: announce only on pending-count *change*, not first mount (load noise). */
@@ -178,6 +182,27 @@ export function AgentPanel({
       document.removeEventListener('keydown', onKey)
     }
   }, [moreOpen])
+
+  useEffect(() => {
+    if (!checkHelpOpen) return
+    function onPointerDown(event: MouseEvent) {
+      if (!checkToolsRef.current?.contains(event.target as Node)) setCheckHelpOpen(null)
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setCheckHelpOpen(null)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [checkHelpOpen])
+
+  // Leaving Check (or Writing) closes help so popups never orphan across faces.
+  useEffect(() => {
+    if (face !== 'check' || companionContext !== 'writing') setCheckHelpOpen(null)
+  }, [companionContext, face])
 
   const statusLine = useMemo(() => {
     const bits: string[] = []
@@ -624,33 +649,91 @@ export function AgentPanel({
               )}
               {renderTranscript({ apply: false, status: false })}
             </div>
-            <div className="panel__footer">
-              <div className="agent__cowrite-actions" aria-label="Check tools">
-                <Button
-                  variant={continuityRunnable || continuityRunning ? 'primary' : 'ghost'}
-                  disabled={assistantBusy || !continuityRunnable}
-                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before checking Continuity'}
-                  data-continuity-state={continuityState}
-                  data-continuity-runnable={continuityRunnable ? 'true' : 'false'}
-                  aria-busy={continuityRunning || undefined}
-                  onClick={() => void onRunContinuity().catch(() => undefined)}
-                >
-                  {continuityRunning ? 'Working…' : 'Run Continuity'}
-                </Button>
-                <Button
-                  disabled={assistantBusy}
-                  aria-busy={opActive('review') || undefined}
-                  onClick={() => void onRunReview('review').catch(() => undefined)}
-                >
-                  {opLabel('review', 'Review')}
-                </Button>
-                <Button
-                  disabled={assistantBusy}
-                  aria-busy={opActive('craft') || undefined}
-                  onClick={() => void onRunReview('craft').catch(() => undefined)}
-                >
-                  {opLabel('craft', 'Craft')}
-                </Button>
+                        <div className="panel__footer companion__check-footer">
+              <p className="companion__check-legend">
+                Continuity guards Canon. Review and Craft coach the scene only.
+              </p>
+              <div
+                className="companion__check-tools"
+                ref={checkToolsRef}
+                aria-label="Check tools"
+              >
+                {CHECK_TOOLS.map((tool) => {
+                  const helpOpen = checkHelpOpen === tool.id
+                  const helpId = `check-help-${tool.id}`
+                  const isContinuity = tool.id === 'continuity'
+                  const runDisabled = isContinuity
+                    ? assistantBusy || !continuityRunnable
+                    : assistantBusy
+                  const runBusy = isContinuity
+                    ? continuityRunning
+                    : opActive(tool.id === 'review' ? 'review' : 'craft')
+                  const runLabel = isContinuity
+                    ? (continuityRunning ? 'Working…' : tool.actionLabel)
+                    : opLabel(tool.id === 'review' ? 'review' : 'craft', tool.actionLabel)
+                  const runTitle = isContinuity
+                    ? (continuityRunnable
+                      ? 'Run Continuity on this chapter'
+                      : 'Write some prose before checking Continuity')
+                    : tool.blurb
+                  return (
+                    <div
+                      key={tool.id}
+                      className="companion__check-tool"
+                      data-check-tool={tool.id}
+                      data-check-primary={tool.primary ? 'true' : 'false'}
+                    >
+                      <div className="companion__check-tool-main">
+                        <div className="companion__check-tool-copy">
+                          <div className="companion__check-tool-title-row">
+                            <strong className="companion__check-tool-name">
+                              {tool.id === 'continuity' ? 'Continuity' : tool.actionLabel}
+                            </strong>
+                            <IconButton
+                              className="companion__check-info"
+                              label={`About ${tool.id === 'continuity' ? 'Continuity' : tool.actionLabel}`}
+                              aria-expanded={helpOpen}
+                              aria-controls={helpId}
+                              data-check-info={tool.id}
+                              onClick={() => setCheckHelpOpen((current) => current === tool.id ? null : tool.id)}
+                            >
+                              ?
+                            </IconButton>
+                          </div>
+                          <p className="companion__check-tool-blurb">{tool.blurb}</p>
+                        </div>
+                        <Button
+                          className="companion__check-run"
+                          variant={isContinuity && (continuityRunnable || continuityRunning) ? 'primary' : 'ghost'}
+                          disabled={runDisabled}
+                          title={runTitle}
+                          data-continuity-state={isContinuity ? continuityState : undefined}
+                          data-continuity-runnable={isContinuity ? (continuityRunnable ? 'true' : 'false') : undefined}
+                          data-check-run={tool.id}
+                          aria-busy={runBusy || undefined}
+                          onClick={() => {
+                            if (isContinuity) void onRunContinuity().catch(() => undefined)
+                            else if (tool.id === 'review' || tool.id === 'craft') void onRunReview(tool.id).catch(() => undefined)
+                          }}
+                        >
+                          {runLabel}
+                        </Button>
+                      </div>
+                      {helpOpen ? (
+                        <div
+                          id={helpId}
+                          className="companion__check-help"
+                          role="note"
+                          data-check-help={tool.id}
+                        >
+                          <p><span className="companion__check-help-k">What</span> {tool.what}</p>
+                          <p><span className="companion__check-help-k">When</span> {tool.when}</p>
+                          <p><span className="companion__check-help-k">After</span> {tool.outcome}</p>
+                        </div>
+                      ) : null}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           </>
