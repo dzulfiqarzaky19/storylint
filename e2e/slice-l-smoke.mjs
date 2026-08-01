@@ -15,7 +15,8 @@ import {
   reloadApp,
   PRECONDITION_TIMEOUT_MS,
 } from './helpers.mjs'
-import { makeStep } from './step-label.mjs'
+import { makeStep, assertStepPhases } from './step-label.mjs'
+import { SLICE_L_PHASES } from './step-phases.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -129,6 +130,7 @@ try {
   await reclaimIsolatedProject(projectId)
   await page.close()
   step('PASS')
+  assertStepPhases(step, SLICE_L_PHASES, 'slice-l')
   console.log('PASS: Lab bench create/pin/promote pre-canon, Companion faces, Graph ignores Lab, screenshot')
 } finally {
   await browser.close()
