@@ -87,6 +87,83 @@ test('switchFile serializes with concurrent updates so writes stay on the intend
   assert.equal((await store.load()).title, 'Second')
 })
 
+test('two ProjectStore instances on one path serialize load and save without EPERM', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'storylint-path-lock-'))
+  const file = join(dir, 'shared.json')
+  const seed = seedProject()
+  await new ProjectStore(file).save(seed)
+
+  const writers = Array.from({ length: 40 }, (_, index) => new ProjectStore(file))
+  const readers = Array.from({ length: 40 }, () => new ProjectStore(file))
+  const errors: unknown[] = []
+  await Promise.all([
+    ...writers.map((store, index) =>
+      store.save({ ...seed, title: `w-${index}` }).catch((error: unknown) => errors.push(error)),
+    ),
+    ...readers.map((store) =>
+      store.load().catch((error: unknown) => errors.push(error)),
+    ),
+  ])
+  assert.equal(errors.length, 0, `path lock failed: ${errors.map(String).join(' | ')}`)
+  const final = JSON.parse(await readFile(file, 'utf8')) as Project
+  assert.match(final.title, /^w-\d+$/)
+  assert.deepEqual(await readdir(dir), ['shared.json'])
+})
+
+test('GET /api/projects concurrent with chapter PUTs never returns EPERM', async () => {
+  await withServer(async (baseUrl) => {
+    await requestJson<Project>(`${baseUrl}/api/projects`, {
+      method: 'POST',
+      body: JSON.stringify({ id: 'race-story', title: 'Race Story' }),
+    })
+    const chapter = {
+      id: 'chapter-race',
+      title: 'One',
+      body: 'start',
+      craftTags: [] as string[],
+      revision: 0,
+    }
+    await requestJson<Project>(`${baseUrl}/api/chapters/${chapter.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(chapter),
+    })
+
+    const errors: string[] = []
+    const jobs: Promise<void>[] = []
+    for (let index = 0; index < 30; index += 1) {
+      jobs.push(
+        (async () => {
+          const response = await fetch(`${baseUrl}/api/projects`)
+          if (!response.ok) errors.push(`list ${response.status} ${await response.text()}`)
+        })(),
+      )
+      jobs.push(
+        (async () => {
+          const loaded = await requestJson<Project>(`${baseUrl}/api/project`)
+          const current = loaded.chapters.find((candidate) => candidate.id === chapter.id) ?? loaded.chapters[0]
+          const response = await fetch(`${baseUrl}/api/chapters/${current.id}`, {
+            method: 'PUT',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              ...current,
+              body: `body-${index}`,
+              revision: current.revision,
+            }),
+          })
+          if (!response.ok) {
+            const text = await response.text()
+            // 409 stale revision is fine under thrash; EPERM is not.
+            if (response.status !== 409) errors.push(`put ${response.status} ${text}`)
+          }
+        })(),
+      )
+    }
+    await Promise.all(jobs)
+    assert.equal(errors.some((entry) => /EPERM/i.test(entry)), false, errors.join(' | '))
+    assert.equal(errors.length, 0, errors.join(' | '))
+  })
+})
+
 test('failed async update leaves the saved project unchanged', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'storylint-failed-update-'))
   const store = new ProjectStore(join(dir, 'project.json'), seedProject())
