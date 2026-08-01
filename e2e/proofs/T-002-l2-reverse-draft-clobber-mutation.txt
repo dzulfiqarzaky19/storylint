@@ -1,0 +1,55 @@
+T-002 L2 reverse-direction mutation proof (Draft	o Canon)
+head=3d213b1308832aca010538db70a5aed2f1e6319b short=3d213b1
+mutation: PUT /api/chapters/:id wipes project.sheets before upsertChapter
+  (cross-surface clobber: Draft write destroys Canon sheets on same project)
+gate change required first: draft-after-seed step writes DISTINCT chapter body AFTER sheet seed
+  (same-body fill can skip network PUT; postSeedBody forces real chapter write)
+command: npm run test:l2
+exit=1
+load_bearing_red=YES
+marker_hits=['missing after post-seed Draft write', 'composition: sheet', 'FAIL l2-composition']
+
+expected: FAIL with composition: sheet ... missing after post-seed Draft write
+restored: src/server/http.ts returned to HEAD (no product change)
+
+--- transcript ---
+
+> storylint@0.0.0 test:l2
+> node e2e/guard-helpers.mjs && node e2e/l2-composition.mjs
+
+e2e helper guard: scanned 37 scripts
+legacy-exploratory  b5-face-touch.mjs (not yet on helpers)
+legacy-exploratory  binder-resting.mjs (not yet on helpers)
+gate-ok  binder-scroll-restore-smoke.mjs
+gate-ok  bl-phone-drawer-smoke.mjs
+gate-ok  calm-budget.mjs
+gate-ok  canon-load-audit.mjs
+gate-ok  canon-under-load-az.mjs
+legacy-exploratory  d6-companion-shots.mjs (not yet on helpers)
+legacy-exploratory  graph-audit.mjs (not yet on helpers)
+gate-ok  l2-composition.mjs
+legacy-exploratory  rail-budget.mjs (not yet on helpers)
+gate-ok  slice-e-smoke.mjs
+gate-ok  slice-f-smoke.mjs
+gate-ok  slice-g-smoke.mjs
+gate-ok  slice-h-smoke.mjs
+gate-ok  slice-i-smoke.mjs
+gate-ok  slice-j-smoke.mjs
+gate-ok  slice-k-smoke.mjs
+gate-ok  slice-l-smoke.mjs
+legacy-exploratory  ux-drive-graph.mjs (not yet on helpers)
+legacy-exploratory  ux-drive.mjs (helpers ok)
+PASS: e2e helper convention holds
+[owned-stack] building D:\dev\projects\storylint-t002-close @ 3d213b1
+[owned-stack] api :50465 ui :50466
+[l2] owned=true ui=http://127.0.0.1:50466/ api=http://127.0.0.1:50465 head=3d213b1 shell=54884172c616
+[l2] active-project before: e2e-calm-inbox-wall-8276-ms9ma9sm
+[l2 +457ms] PASS mint
+[l2 +1307ms] PASS draft-write
+[l2 +1401ms] PASS canon-seed-sheet
+[l2] active-project after restore: e2e-calm-inbox-wall-8276-ms9ma9sm
+[l2] swept 1 orphan harness projects
+[l2] wrote D:\dev\projects\storylint-t002-close\e2e\output\l2-composition-last.md
+
+
+FAIL l2-composition: composition: sheet l2-sheet-1785543412464 missing after post-seed Draft write (sheets=)

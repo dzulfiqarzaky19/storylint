@@ -12,8 +12,10 @@
  *
  * What this checks that all-smoke does not:
  *   1. Draft body written on project P survives Canon + Lab switches on the same P.
- *   2. A Canon sheet seeded into P is still present after Lab and reload.
- *   3. Server active pointer stays on P across the multi-surface journey
+ *   2. A Canon sheet seeded into P survives a later Draft chapter write on the same P
+ *      (reverse direction: Draft must not clobber Canon sheets).
+ *   3. That sheet is still present after Lab and reload.
+ *   4. Server active pointer stays on P across the multi-surface journey
  *      (sibling-container inheritance is an L1 suite concern; sticky shared
  *      state across surfaces is the composition class).
  *
@@ -92,7 +94,7 @@ console.log(`[l2] active-project before: ${activeBefore}`)
 const stamp = Date.now()
 const tag = stamp.toString(36).slice(-5)
 const projectIdWant = `e2e-l2-${process.pid}-${stamp.toString(36)}`
-const chapterBody = `L2 composition draft ${tag} — Aria kept the seal and the corridor in one breath.`
+let chapterBody = `L2 composition draft ${tag} — Aria kept the seal and the corridor in one breath.`
 const sheetId = `l2-sheet-${stamp}`
 const sheetName = `L2 Mira-${tag}`
 
@@ -200,6 +202,31 @@ try {
   })
   await reclaimIsolatedProject(projectId)
   await assertActiveProject(projectId, { page })
+
+  // Reverse-direction write: Draft chapter save AFTER sheet seed must not wipe Canon.
+  // Without this step, a chapter PUT that blanks sheets only hits an empty list and
+  // sheet-survived stays green (ordering gap hawk found @ 74a8dc7).
+  // Distinct body forces a real chapter PUT (same-body fill can skip network save).
+  const postSeedBody = chapterBody + ' Aria kept the sheet name in mind.'
+  await gotoWorkspace(page, 'draft', { ensureCompanion: false })
+  await fillChapterAndSave(page, postSeedBody)
+  await assertActiveProject(projectId, { page })
+  const afterDraftRewrite = await fetchActiveProject()
+  if ((afterDraftRewrite.chapters?.[0]?.body) !== postSeedBody) {
+    fail('draft body mismatch after post-seed chapter rewrite')
+  }
+  // Journey subject body becomes the post-seed rewrite for later draft-survived.
+  chapterBody = postSeedBody
+  const sheetAfterDraft = (afterDraftRewrite.sheets || []).find((s) => s.id === sheetId)
+  if (!sheetAfterDraft) {
+    fail(
+      `composition: sheet ${sheetId} missing after post-seed Draft write (sheets=${(afterDraftRewrite.sheets || []).map((s) => s.id).join(',')})`,
+    )
+  }
+  if (sheetAfterDraft.name !== sheetName) {
+    fail(`composition: sheet name changed after Draft write want=${sheetName} got=${sheetAfterDraft.name}`)
+  }
+  step('draft-after-seed', { sheetId })
 
   await gotoWorkspace(page, 'canon', { ensureCompanion: false })
   const canonMain = page.getByRole('main')
