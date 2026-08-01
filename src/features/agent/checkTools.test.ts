@@ -85,7 +85,16 @@ test('MUTATION lock: post-run Check does not double Continuity (summary owns res
   assert.match(source, /Accept\/Edit\/Reject stay gated until something is pending/)
 })
 
-test('MUTATION lock: face-tab clip fix keeps selected label fully on-screen', () => {
+// NOTE (standing 8g): this title claims a MECHANISM is present, not a rendered
+// outcome. The test reads source as strings and never renders, so it CANNOT fail
+// on a clipped label.
+//
+// It previously read "keeps selected label fully on-screen" — a claim its
+// assertions cannot establish. That title nearly caused a real resting-clip
+// finding to be closed as a duplicate (T-010, filed; T-011, this retitle).
+//
+// The rendered-geometry check that CAN fail on a clip belongs to T-010.
+test('MUTATION lock: face-tab scroll-correction and discoverable overflow are present', () => {
   const panel = readFileSync(join(root, 'components/shell/AgentPanel.tsx'), 'utf8')
   const css = readFileSync(join(root, 'components/shell/AgentPanel.css'), 'utf8')
   // Active tab must scroll into the faces row, then correct partial overflow (no "hat" / half-Research).
