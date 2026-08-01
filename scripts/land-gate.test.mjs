@@ -173,6 +173,51 @@ test('LG-B2: tsc-not-recognized at exit 0 is NOT-MEASURED (infra, not exit-1 sec
   assert.ok(report.failures.has('infra:tsc-not-recognized'))
 })
 
+
+// --- standing rule 5/12: infra must not trip on unit-reporter quotes ---
+test('infra quote-class sweep: unit-reporter lines quoting every infra token stay measured', () => {
+  const quoted = [
+    '✔ LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch (0.1ms)',
+    "✔ classifier maps 'tsc' is not recognized as an internal or external command (0.1ms)",
+    '✔ tsc: not found is infra not product (0.1ms)',
+    "✔ 'vite' is not recognized as an internal or external command (0.1ms)",
+    '✔ vite: not found on path (0.1ms)',
+    "✔ Cannot find module 'x/node_modules/y' means prep failed (0.1ms)",
+    '✔ ERR_MODULE_NOT_FOUND is infra (0.1ms)',
+    '✔ Cannot find package foo is infra (0.1ms)',
+    '✔ ENOENT: no such file or directory is infra (0.1ms)',
+    "✔ Executable doesn't exist means playwright missing (0.1ms)",
+    '✔ browserType.launch failure is infra (0.1ms)',
+    '✔ Playwright Missing browser is infra (0.1ms)',
+    '✔ failed to spawn npm is infra (0.1ms)',
+    '✔ spawn /bin/npm ENOENT is infra (0.1ms)',
+    'ok 12 - LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch',
+  ]
+  const log = FULL_GREEN_LOG + '\n' + quoted.join('\n') + '\n'
+  const report = classifyTestGreen(log, 0)
+  assert.equal(report.measurement, 'measured', report.notMeasuredReasons.join(','))
+  assert.equal(report.notMeasuredReasons.filter((r) => r.startsWith('infra:')).length, 0)
+})
+
+test('infra real-error class still fires when not on a reporter line', () => {
+  const cases = [
+    ['infra:port-in-use', 'Error: listen EADDRINUSE: address already in use :::4173'],
+    ['infra:tsc-not-recognized', "'tsc' is not recognized as an internal or external command"],
+    ['infra:enoent', "ENOENT: no such file or directory, open 'x'"],
+    ['infra:playwright-browser-missing', "Executable doesn't exist at C:\\foo"],
+    ['infra:spawn-npm-failed', 'failed to spawn npm: ENOENT'],
+    ['infra:cannot-find-package', 'Error [ERR_MODULE_NOT_FOUND]: Cannot find package'],
+  ]
+  for (const [id, line] of cases) {
+    const report = classifyTestGreen(FULL_GREEN_LOG + '\n' + line + '\n', 0)
+    assert.equal(report.measurement, 'not-measured', id)
+    assert.ok(
+      report.notMeasuredReasons.includes(id),
+      id + ' missing in ' + report.notMeasuredReasons.join(','),
+    )
+  }
+})
+
 // --- granular product identities ---
 
 const UNIT_FAIL_LOG = `

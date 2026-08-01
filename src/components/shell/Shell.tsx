@@ -483,6 +483,8 @@ export function Shell() {
               }
               return result
             }}
+            onDismissPromotedCard={project.dismissPromotedLabCard}
+            onDismissAllPromoted={project.dismissAllPromotedLabCards}
             onOpenAgent={() => {
               if (!shell.isOpen('agent')) shell.toggle('agent')
             }}

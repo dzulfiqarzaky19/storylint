@@ -4,13 +4,17 @@ import { acceptProposal } from './proposals.ts'
 import {
   archiveLabCard,
   createLabCard,
+  dismissAllPromotedLabCards,
+  dismissPromotedLabCard,
   emptyLab,
   ensureLab,
   labBodies,
+  patchLabCard,
   pinLabCard,
   promoteLabCard,
   restoreLabCard,
 } from './lab.ts'
+import { parseProject } from '../server/validation.ts'
 import type { Project } from './types.ts'
 
 function seed(): Project {
@@ -187,4 +191,115 @@ test('lab bodies helper exposes card text for ignore checks', () => {
   const bodies = labBodies(project)
   assert.equal(bodies.some((body) => body.includes('False bible')), true)
   assert.equal(bodies.some((body) => body.includes('never become continuity')), true)
+})
+
+
+test('createLabCard defaults source to author; model when requested', () => {
+  const author = createLabCard(seed(), { kind: 'beat', title: 'Mine' })
+  assert.equal(author.lab.cards[0].source, 'author')
+  const model = createLabCard(seed(), { kind: 'beat', title: 'Sparked', source: 'model' })
+  assert.equal(model.lab.cards[0].source, 'model')
+})
+
+test('legacy load without source migrates to author — never invents model', () => {
+  const legacy = {
+    schemaVersion: 2,
+    title: 'Legacy',
+    chapters: [],
+    sheets: [],
+    proposals: [],
+    rejectedFingerprints: [],
+    marks: [],
+    researchNotes: [],
+    lab: {
+      boards: [{ id: 'lab-board-bench', title: 'Bench', cardIds: ['c1'] }],
+      cards: [{
+        id: 'c1',
+        boardId: 'lab-board-bench',
+        kind: 'beat',
+        title: 'Old card',
+        body: 'no source field',
+        status: 'active',
+        createdAt: '2020-01-01T00:00:00.000Z',
+        updatedAt: '2020-01-01T00:00:00.000Z',
+      }],
+    },
+  }
+  const parsed = parseProject(legacy)
+  assert.equal(parsed.lab.cards[0].source, 'author')
+})
+
+test('author edit of model card flips source to author (sheetIdentityDirty-style normalize)', () => {
+  let project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Model beat',
+    body: 'from spark',
+    source: 'model',
+  })
+  const id = project.lab.cards[0].id
+  assert.equal(project.lab.cards[0].source, 'model')
+  // Whitespace-only no-op does not flip
+  project = patchLabCard(project, id, { title: '  Model beat  ', body: 'from spark' })
+  assert.equal(project.lab.cards[0].source, 'model')
+  // Substantive edit flips
+  project = patchLabCard(project, id, { title: 'My beat now' })
+  assert.equal(project.lab.cards[0].source, 'author')
+  assert.equal(project.lab.cards[0].title, 'My beat now')
+})
+
+test('dismiss promoted is Lab receipt only — proposals and chapters stay', () => {
+  let project = createLabCard(seed(), {
+    kind: 'character-spark',
+    title: 'Riven',
+    body: 'Glass',
+    source: 'model',
+  })
+  const sparkId = project.lab.cards[0].id
+  const promoted = promoteLabCard(project, sparkId)
+  project = promoted.project
+  assert.equal(project.lab.cards[0].status, 'promoted')
+  const proposalCount = project.proposals.length
+  assert.ok(proposalCount >= 1)
+
+  project = createLabCard(project, { kind: 'beat', title: 'Siege', source: 'model' })
+  const beat = project.lab.cards.find((c) => c.title === 'Siege')
+  assert.ok(beat)
+  const beatId = beat.id
+  const chapterPromote = promoteLabCard(project, beatId, { chapterTitle: 'Siege night' })
+  project = chapterPromote.project
+  const chapterCount = project.chapters.length
+  assert.equal(chapterCount, 2)
+
+  project = dismissPromotedLabCard(project, sparkId)
+  assert.equal(project.lab.cards.find((c) => c.id === sparkId)?.status, 'archived')
+  assert.equal(project.proposals.length, proposalCount)
+  assert.equal(project.chapters.length, chapterCount)
+
+  // promoted beat still there
+  assert.equal(project.lab.cards.find((c) => c.id === beatId)?.status, 'promoted')
+  project = dismissAllPromotedLabCards(project)
+  assert.equal(project.lab.cards.find((c) => c.id === beatId)?.status, 'archived')
+  assert.equal(project.proposals.length, proposalCount)
+  assert.equal(project.chapters.length, chapterCount)
+  // chapter title still stored
+  assert.equal(project.chapters.find((c) => c.id === chapterPromote.chapterId)?.title, 'Siege night')
+})
+
+test('dismiss rejects non-promoted cards', () => {
+  const project = createLabCard(seed(), { kind: 'beat', title: 'Live' })
+  assert.throws(() => dismissPromotedLabCard(project, project.lab.cards[0].id), /Only promoted/i)
+})
+
+test('model beat promote still writes chapter when chapterTitle supplied (UI confirm collects it)', () => {
+  let project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'LLM invented title',
+    source: 'model',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, { chapterTitle: 'Author confirmed' })
+  project = result.project
+  const chapter = project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, 'Author confirmed')
+  assert.equal(chapter.body, '')
 })

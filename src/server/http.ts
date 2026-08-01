@@ -6,6 +6,8 @@ import { runAgent } from '../agent/run.ts'
 import { acceptProposal, rejectProposal } from '../domain/proposals.ts'
 import {
   archiveLabCard,
+  dismissAllPromotedLabCards,
+  dismissPromotedLabCard,
   restoreLabCard,
   createLabBoard,
   createLabCard,
@@ -15,6 +17,7 @@ import {
   pinLabCard,
   promoteLabCard,
   LAB_CARD_KINDS,
+  LAB_CARD_SOURCES,
 } from '../domain/lab.ts'
 import { SHEET_KINDS } from '../domain/types.ts'
 import { claimFingerprint } from '../domain/fingerprint.ts'
@@ -465,6 +468,7 @@ export function createServer(store: ProjectStore) {
                 kind: draft.kind,
                 title: draft.title,
                 body: draft.body,
+                source: 'model',
               })
             }
             return nextProject
@@ -563,11 +567,19 @@ export function createServer(store: ProjectStore) {
         const title = raw.title
         const cardBody = typeof raw.body === 'string' ? raw.body : ''
         const boardId = typeof raw.boardId === 'string' ? raw.boardId : undefined
+        let source: typeof LAB_CARD_SOURCES[number] | undefined
+        if (raw.source !== undefined) {
+          if (typeof raw.source !== 'string' || !LAB_CARD_SOURCES.includes(raw.source as typeof LAB_CARD_SOURCES[number])) {
+            throw new Error('lab card source is invalid')
+          }
+          source = raw.source as typeof LAB_CARD_SOURCES[number]
+        }
         return store.update((project) => createLabCard(ensureLab(project), {
           boardId,
           kind,
           title,
           body: cardBody,
+          source,
         }))
       },
     },
@@ -638,6 +650,18 @@ export function createServer(store: ProjectStore) {
         })
         return { project, as: meta?.as, proposalIds: meta?.proposalIds, chapterId: meta?.chapterId }
       },
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/cards\/([^/]+)\/dismiss$/,
+      handle: async ([cardId]) =>
+        store.update((project) => dismissPromotedLabCard(ensureLab(project), routeSegment(cardId))),
+    },
+    {
+      method: 'POST',
+      pattern: /^\/api\/lab\/promoted\/dismiss-all$/,
+      handle: async () =>
+        store.update((project) => dismissAllPromotedLabCards(ensureLab(project))),
     },
     {
       method: 'POST',
