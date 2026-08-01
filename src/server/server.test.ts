@@ -93,7 +93,7 @@ test('two ProjectStore instances on one path serialize load and save without EPE
   const seed = seedProject()
   await new ProjectStore(file).save(seed)
 
-  const writers = Array.from({ length: 40 }, (_, index) => new ProjectStore(file))
+  const writers = Array.from({ length: 40 }, () => new ProjectStore(file))
   const readers = Array.from({ length: 40 }, () => new ProjectStore(file))
   const errors: unknown[] = []
   await Promise.all([
