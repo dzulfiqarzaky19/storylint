@@ -1,8 +1,8 @@
 /**
- * Citation existence sweep — docs/decisions + docs/tickets vs git tree.
- * Existence only.
+ * MANUAL DIAGNOSTIC — citation existence sweep (docs/decisions + docs/tickets vs git tree).
+ * Existence only. Not a green-suite gate. Hand-run report generator.
  *
- *   node scripts/_cite-existence.mjs
+ *   node scripts/cite-existence.mjs
  */
 import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
@@ -182,7 +182,7 @@ function triage(path, cited) {
   if (/falcon-mut|_t00\d_/.test(path) || /falcon-mut|_t00\d_/.test(cited)) {
     return 'throwaway-or-worktree-probe'
   }
-  if (path.startsWith('.claude/')) return 'tooling-not-in-repo'
+  if (path.startsWith('.claude/') || path.startsWith('.agents/') || path.startsWith('.cursor/') || path.startsWith('.codex/') || path.startsWith('.jcode/')) return 'harness-path-in-tracked-doc'
   if (
     /e2e\/(density-audit|ia-final-qa|ia-step1-qa)\.mjs$/.test(path) ||
     /e2e\/(density-audit|ia-final-qa|ia-step1-qa)\.mjs$/.test(cited)
@@ -361,6 +361,10 @@ function main() {
     'A decision that *requires* a reader to open a gitignored screenshot is a process smell, but it is not the same disease as citing a tracked path that does not exist.',
   )
   md.push('')
+  md.push('## Follow-up (harness-path class)')
+  md.push('')
+  md.push('A TRACKED DOC MUST NOT CITE A LOCAL-ONLY HARNESS PATH. Distinct from other missing entries: those could exist; a harness path must not. Rule: docs/AGENTS_ROLES.md § AI harness stays local.')
+  md.push('')
   md.push('## Class')
   md.push('')
   md.push('Same disease as ticket-cited probes that live only in a worktree: a reader cannot open the evidence.')
@@ -371,7 +375,7 @@ function main() {
   md.push('| throwaway-or-worktree-probe | `_t00x_*`, `falcon-mut*` not on origin/dev |')
   md.push('| probe-script-not-shipped | audit drivers named in decisions, absent from tree |')
   md.push('| design-doc-missing | `docs/design/...` cited, not present |')
-  md.push('| tooling-not-in-repo | `.claude/...` paths |')
+  md.push('| harness-path-in-tracked-doc | tracked doc cites local-only AI harness (must not; never ship to fix) |')
   md.push('| GITIGNORED | local output by design (separate bucket) |')
   md.push('')
   md.push('## Tickets re-pass note')

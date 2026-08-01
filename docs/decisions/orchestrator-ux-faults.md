@@ -12,7 +12,7 @@
 **To:** orchestrator  
 **Project:** storylint  
 **Date:** 2026-07-31T16:12Z  
-**Skill:** `.claude/skills/ui-ux-pro-max` (structure/a11y only; paint = `docs/design/TOKENS.md`)  
+**Method:** structure/a11y review pass (paint = `docs/design/TOKENS.md`)  
 **Verdict:** **request changes**  
 **Machine payload:** `e2e/output/orchestrator-ux-faults.json`  
 **Full report:** `e2e/output/ux-report.md`
