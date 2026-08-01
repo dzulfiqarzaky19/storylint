@@ -11,14 +11,14 @@ Validate: `npm run tickets:check`
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
 | [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
 | [T-010](./T-010.md) | P2 | open | none | Companion face row has 1px of fit; Inbox badge re-clips Research at rest | unassigned |
-| [T-012](./T-012.md) | P2 | open | none | Canon shows two equal primary "New sheet" buttons in one view | unassigned |
-| [T-013](./T-013.md) | P2 | open | none | Canon offers "Propose new edge" with zero nodes to connect | unassigned |
 | [T-014](./T-014.md) | P3 | open | none | Lab composer stretches to full viewport width | unassigned |
 
 ## Closed / not open
 
 | ID | Note |
 |----|------|
+| ~~T-013~~ | Honest propose-edge body below 2 sheets **done**. Disclosure stays (ox); hint-only body; fieldsShown=0 lock. Land PENDING. |
+| ~~T-012~~ | One primary New sheet **done** (already-satisfied close). Map owns empty CTA; binder ghost empty. Product via b6-primary-per-job `dc059e6`. Land PENDING. |
 | ~~T-011~~ | Mutation-lock title overpromised **done**. Retitled to name the mechanism it verifies; siblings swept and found honest. Generalized as standing 8g. |
 | ~~T-007~~ | Single-root ProjectFileRoot **done**. Land `6008659`; falcon APPROVE @ b9f964f (MUT-1..5); koala PASS. No realpath. |
 | ~~T-009~~ | Standing rule 11a no-retry check **done**. Land `3a7a52e`; falcon APPROVED wiring @ 419406c (MUT-A/D/E). Optional source tripwire left open intentionally. |
