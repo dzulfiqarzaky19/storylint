@@ -1,4 +1,5 @@
 import { claimFingerprint } from './fingerprint.ts'
+import { normalizeIdentityText } from './identityText.ts'
 import {
   LAB_CARD_KINDS,
   LAB_CARD_SOURCES,
@@ -104,11 +105,15 @@ export function createLabCard(project: Project, input: CreateLabCardInput): Proj
 
 export type PatchLabCardInput = Partial<Pick<LabCard, 'title' | 'body' | 'kind' | 'touches'>>
 
-/** Normalize title/body the same way dirty-compare does for sheet identity. */
+/**
+ * Lab title/body identity for source-flip.
+ * Uses shared normalizeIdentityText — same trim rule as sheet name/summary/notes/portrait.
+ * Do not reintroduce a local trim here; coupling is by construction (hawk/rat).
+ */
 export function normalizeLabCardText(title: string, body: string): { title: string; body: string } {
   return {
-    title: title.trim(),
-    body: body.trim(),
+    title: normalizeIdentityText(title),
+    body: normalizeIdentityText(body),
   }
 }
 
