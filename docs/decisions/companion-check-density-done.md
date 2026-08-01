@@ -48,7 +48,7 @@ Session drive is gone. **Permanent failability for density** is unit source lock
 - post-run Check reintroduces `Last Continuity` / tool-card empty essay / shows tool cards again (`tools: false` lock)
 - Review/Craft help loses Continuity distinction
 
-Face-tab clip product fix remains in `AgentPanel.tsx` / `AgentPanel.css` (`0fb789d`). No permanent e2e clip assertion on branch (honest: was session-only). Land acceptance for clip is code review of that fix + unit density locks; optional P3 later if rat wants a named smoke.
+Face-tab clip product fix remains in `AgentPanel.tsx` / `AgentPanel.css` (`0fb789d`). Permanent clip lock: unit source match on scrollIntoView + tabRect/rootRect/scrollLeft adjust + CSS scrollbar-width:thin (not none/hidden). Mutation prove: delete overflow adjust → clip lock RED → restore GREEN.
 
 ## Product still on tip (no land block)
 

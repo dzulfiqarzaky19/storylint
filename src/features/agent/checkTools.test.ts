@@ -84,3 +84,18 @@ test('MUTATION lock: post-run Check does not double Continuity (summary owns res
   // Inbox empty hint may still mention Accept/Edit/Reject — that is a different face.
   assert.match(source, /Accept\/Edit\/Reject stay gated until something is pending/)
 })
+
+test('MUTATION lock: face-tab clip fix keeps selected label fully on-screen', () => {
+  const panel = readFileSync(join(root, 'components/shell/AgentPanel.tsx'), 'utf8')
+  const css = readFileSync(join(root, 'components/shell/AgentPanel.css'), 'utf8')
+  // Active tab must scroll into the faces row, then correct partial overflow (no "hat" / half-Research).
+  assert.match(panel, /scrollIntoView\(\{\s*block:\s*'nearest',\s*inline:\s*'nearest'\s*\}\)/)
+  assert.match(panel, /const tabRect = active\.getBoundingClientRect\(\)/)
+  assert.match(panel, /const rootRect = root\.getBoundingClientRect\(\)/)
+  assert.match(panel, /root\.scrollLeft \+= tabRect\.left - rootRect\.left/)
+  assert.match(panel, /root\.scrollLeft \+= tabRect\.right - rootRect\.right/)
+  // Faces row must not hide overflow (scrollbar-width: none + webkit display:none was the clip fault).
+  assert.match(css, /\.companion__faces\s*\{[^}]*scrollbar-width:\s*thin/s)
+  assert.doesNotMatch(css, /\.companion__faces\s*\{[^}]*scrollbar-width:\s*none/s)
+  assert.doesNotMatch(css, /\.companion__faces::-webkit-scrollbar\s*\{\s*display:\s*none/)
+})
