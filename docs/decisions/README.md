@@ -28,6 +28,7 @@ A reader should find the ruling that governs their question in the tables below 
 | [new-project-vs-first-boot.md](./new-project-vs-first-boot.md) | First boot may seed Chapter One; **New project stays empty** — two arrivals, one empty rulebook when empty. |
 | [seeded-default-first-impression.md](./seeded-default-first-impression.md) | Seeded-default is a third arrival; P1 empty title + Continuity gated on prose. |
 | [lab-lifecycle-ends.md](./lab-lifecycle-ends.md) | Lab transient; Promoted = dismissible receipts; archive + Restore; no hard delete v1. |
+| [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md) | **BINDING:** consent destination-shaped; LabCard `source`; chapter promote of model cards needs title confirm; sheet path keeps Accept. |
 | [canon-under-load-az.md](./canon-under-load-az.md) | Family not sparse; Network@scale known limit; binder scroll restore P0; no search from 68. |
 | [empty-canon-send-proposal-weight.md](./empty-canon-send-proposal-weight.md) | Empty Canon Send demoted until real sheet path exists. |
 | [draft-under-load-av.md](./draft-under-load-av.md) | Draft/Inbox under load: fold not bulk Accept; Continuity multi-run does not reopen wall. |
@@ -85,6 +86,7 @@ Reversed decisions are the most instructive. Keep the file; point here.
 
 Short list only — do not grow into a second backlog novel.
 
+1. **Lab promote provenance + chapter title confirm (build)** — ruled ([lab-promote-consent-provenance](./lab-promote-consent-provenance.md)); implementation follow-on.
 1. **Lab kinds three-vocabulary** — LabBench / Companion Spark / agent parse can drift.
 2. **Binder list scroll restore after detail Back** — AZ; T-003 measurement landed; product hold may remain ([canon-under-load-az](./canon-under-load-az.md)).
 3. **Lab Promoted dismiss** — Restore landed; dismiss half follow-on ([lab-lifecycle-ends](./lab-lifecycle-ends.md)).
@@ -95,6 +97,7 @@ Short list only — do not grow into a second backlog novel.
 
 ### Closed this session (do not re-open without new evidence)
 
+- ~~**Lab promote consent / provenance (product model)**~~ — **RULED**. [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md); build follow-on.
 - ~~**Refresh / tab-close dirty identity (product model)**~~ — **RULED P0**. [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md); build = T-004 buffalo.
 - ~~**B6-primary-per-job**~~ — **LANDED**. Rule: [one-primary-door-per-job.md](./one-primary-door-per-job.md).
 - ~~**AY Inbox fold + ox B lock**~~ — **ACCEPT** @ `78aee53`.
