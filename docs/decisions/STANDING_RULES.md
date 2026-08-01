@@ -22,6 +22,19 @@
 9. **Never combine a verification command with a mutating one.** Read, then act, as separate steps. A verify that also pushes or checks out is not evidence of the pre-state.
 10. **Never filter the output of a command that mutates a remote.** Pipes and greps hide the mutation line; run mutators plain so the full transcript is the record.
 11. **A fix can be correct while its stated cause is wrong.** Ship the fix with an open question rather than a confident false mechanism — the wrong cause stops the next person looking. (rat scar: slice-j — [milestone-density-pass](./milestone-density-pass.md))
+11b. **Prefer the boring mechanism until the code rules it out.** Reach for single-process, same-file, already-known causes before cross-agent, timing, or environmental ones. Ask "is this the loud defect we already understand, with its evidence lost?" before naming a new one.
+
+    **Cost of ignoring it — three wrong mechanisms in one session, all rat, all the same shape:**
+
+    | Claimed | Actual |
+    |---|---|
+    | Parser scores a green run as opaque failure | Token is gated on `status !== 0`; the run genuinely failed |
+    | A reviewer's build killed another agent's calm run | Four-minute gap; hypothesis built from an open-files list, which carries **no timestamps** |
+    | Cross-agent contention on `data/projects` | Single-process: unqueued `load()` racing `saveDirect`'s rename, plus per-request store instances |
+
+    Each was escalated before reading the code that would have settled it. Two reached eight agents as instructions to change behaviour. The correcting evidence in every case was cheap — forty lines of a script, a reflog, one code read.
+
+11c. **Correlation of files touched is not evidence of interference.** Check the clock — `git reflog`, file mtimes, artifact timestamps — before attributing one agent's failure to another's activity.
 11a. **A fix that eliminates the symptom by quietly discarding the thing being protected is not a fix.** Corollary: when a fix has a "just clean it up" branch, check whether that branch destroys what the ticket exists to preserve. (ox/rat: T-004 auto-drop draft on server move; badger tsc@0 fixture that two branches could both catch — [sheet-identity-durable-dirty](./sheet-identity-durable-dirty.md))
 
 ## Class over instance
