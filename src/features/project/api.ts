@@ -1,4 +1,4 @@
-import type { Chapter, Fact, LabCardKind, Project, Proposal, Sheet, SheetKind } from '../../domain/types.ts'
+import type { Chapter, Fact, LabCardKind, LabCardSource, Project, Proposal, Sheet, SheetKind } from '../../domain/types.ts'
 import type { ApplyCard, CowriteRequest, CowriteResult } from '../../cowrite/types.ts'
 import type { ReviewKind, ReviewResult } from '../../review/types.ts'
 import type { ResearchNote } from '../../domain/types.ts'
@@ -181,6 +181,7 @@ export function createLabCard(input: {
   kind: LabCardKind
   title: string
   body?: string
+  source?: LabCardSource
 }): Promise<Project> {
   return request('/api/lab/cards', { method: 'POST', body: JSON.stringify(input) })
 }
@@ -226,6 +227,18 @@ export function promoteLabCard(cardId: string, input: {
 } = {}): Promise<PromoteLabResponse> {
   return request(`/api/lab/cards/${encodeURIComponent(cardId)}/promote`, {
     method: 'POST', body: JSON.stringify(input),
+  })
+}
+
+export function dismissPromotedLabCard(cardId: string): Promise<Project> {
+  return request(`/api/lab/cards/${encodeURIComponent(cardId)}/dismiss`, {
+    method: 'POST', body: '{}',
+  })
+}
+
+export function dismissAllPromotedLabCards(): Promise<Project> {
+  return request('/api/lab/promoted/dismiss-all', {
+    method: 'POST', body: '{}',
   })
 }
 
