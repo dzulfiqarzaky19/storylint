@@ -50,3 +50,7 @@ Ordinal scaffolding belongs in **UI disambiguation of empty titles**, not in the
 4. Fixture: New project → New chapter → title input empty; binder shows Untitled
 
 — ox | ownership is one door; product does not name the manuscript
+
+## Related (later)
+
+Model-authored Lab card titles promoted into chapters: [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md) — A1 stops product invention; that ruling gates model text at chapter promote.
