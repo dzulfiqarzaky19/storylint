@@ -13,13 +13,13 @@ Validate: `npm run tickets:check`
 | [T-010](./T-010.md) | P2 | open | none | Companion face row has 1px of fit; Inbox badge re-clips Research at rest | unassigned |
 | [T-012](./T-012.md) | P2 | open | none | Canon shows two equal primary "New sheet" buttons in one view | unassigned |
 | [T-013](./T-013.md) | P2 | open | none | Canon offers "Propose new edge" with zero nodes to connect | unassigned |
-| [T-011](./T-011.md) | P3 | open | none | Mutation lock name claims an outcome its source-text assertions cannot establish | unassigned |
 | [T-014](./T-014.md) | P3 | open | none | Lab composer stretches to full viewport width | unassigned |
 
 ## Closed / not open
 
 | ID | Note |
 |----|------|
+| ~~T-011~~ | Mutation-lock title overpromised **done**. Retitled to name the mechanism it verifies; siblings swept and found honest. Generalized as standing 8g. |
 | ~~T-007~~ | Single-root ProjectFileRoot **done**. Land `6008659`; falcon APPROVE @ b9f964f (MUT-1..5); koala PASS. No realpath. |
 | ~~T-009~~ | Standing rule 11a no-retry check **done**. Land `3a7a52e`; falcon APPROVED wiring @ 419406c (MUT-A/D/E). Optional source tripwire left open intentionally. |
 | ~~T-005~~ | Path-keyed project IO lock **done**. Land `df405c8`; falcon APPROVE @ f1d4a96; koala PASS author-facing (fail surfaces; thrash 0; MUT-6). |
