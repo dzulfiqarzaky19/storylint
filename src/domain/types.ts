@@ -115,6 +115,10 @@ export type LabCardKind = (typeof LAB_CARD_KINDS)[number]
 export const LAB_CARD_STATUSES = ['active', 'pinned', 'promoted', 'archived'] as const
 export type LabCardStatus = (typeof LAB_CARD_STATUSES)[number]
 
+/** Who put the words on the card. Required provenance (lab-promote-consent-provenance). */
+export const LAB_CARD_SOURCES = ['author', 'model'] as const
+export type LabCardSource = (typeof LAB_CARD_SOURCES)[number]
+
 export type LabCard = {
   id: string
   boardId: string
@@ -122,6 +126,8 @@ export type LabCard = {
   title: string
   body: string
   status: LabCardStatus
+  /** author = manual/owned text; model = chat/Spark. Legacy load → author. */
+  source: LabCardSource
   touches?: { sheetId?: string; chapterId?: string }
   promoted?: {
     at: string

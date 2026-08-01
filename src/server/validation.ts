@@ -2,6 +2,7 @@ import {
   CLAIM_KINDS,
   CRAFT_TAGS,
   LAB_CARD_KINDS,
+  LAB_CARD_SOURCES,
   LAB_CARD_STATUSES,
   SHEET_KINDS,
   type Chapter,
@@ -205,6 +206,10 @@ function parseLabCard(value: unknown): LabCard {
     title: string(raw.title, 'labCard.title'),
     body: string(raw.body, 'labCard.body'),
     status: oneOf(raw.status, LAB_CARD_STATUSES, 'labCard.status'),
+    // Legacy cards predate provenance — assume author (unknown history, do not invent model).
+    source: raw.source === undefined
+      ? 'author'
+      : oneOf(raw.source, LAB_CARD_SOURCES, 'labCard.source'),
     createdAt: string(raw.createdAt, 'labCard.createdAt'),
     updatedAt: string(raw.updatedAt, 'labCard.updatedAt'),
   }
