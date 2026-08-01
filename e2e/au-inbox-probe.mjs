@@ -1,7 +1,11 @@
 /**
- * Inbox live-region probe after chat proposal pack.
- * STORYLINT_SKIP_BUILD=1 node e2e/au-inbox-probe.mjs
+ * AU MANUAL DIAGNOSTIC — Inbox live-region probe after chat proposal pack
+ *
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Short owned-stack probe.
+ * Run: STORYLINT_SKIP_BUILD=1 node e2e/au-inbox-probe.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'

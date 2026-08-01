@@ -1,3 +1,11 @@
+/**
+ * MANUAL DIAGNOSTIC — graph surface audit (read-only)
+ *
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Ad-hoc owned-stack audit.
+ * Run: node e2e/graph-audit.mjs
+ */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'

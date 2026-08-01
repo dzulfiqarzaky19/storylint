@@ -1,13 +1,11 @@
 /**
- * TASK AZ — Canon under load (read-only probe).
- * Owned stack + provenance. No product fixes.
+ * MANUAL DIAGNOSTIC — TASK AZ Canon under load (read-only probe)
  *
- * Measures @1440 and @390 with 60+ sheets + dense relationships:
- *  1. Network + Family graph legibility at volume
- *  2. Binder sheet list scroll / restore / findability
- *  3. Kind filters at scale (need-for-search signal only)
- *  4. Today's regressions: empty-primary demote when FULL, B6, dirty-leave
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Slow owned-stack volume probe.
+ * Run: node e2e/canon-under-load-az.mjs
  */
+
 import { createRequire } from 'node:module'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'

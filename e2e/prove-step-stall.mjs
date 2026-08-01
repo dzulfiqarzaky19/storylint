@@ -1,15 +1,13 @@
 /**
- * E1 deliverable — prove shipping step labels survive a stall.
+ * E1 MANUAL DIAGNOSTIC — prove shipping step labels survive a stall
  *
- * Bound to the real module, not a throwaway copy:
- *   1) Static: slice-k-smoke.mjs and slice-l-smoke.mjs must import makeStep
- *      from ./step-label.mjs (no local STEP_T0 / function step).
- *   2) Dynamic: a child imports the SAME makeStep helper, emits STALL-INJECT,
- *      then forces a Playwright timeout. Parent captures FULL output.
- *
- * Pass only if both checks hold and the stall label appears before non-zero exit.
- * Not part of the green suite — run by hand / when changing step labelling.
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * Static half belongs in unit tests / shared lock; dynamic stall needs owned stack.
+ * Token records how this file is invoked — not whether every check can fail.
+ * Run by hand when changing step labelling.
  */
+
 import { spawn } from 'node:child_process'
 import { writeFileSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
