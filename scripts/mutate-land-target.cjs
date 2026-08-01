@@ -1,5 +1,10 @@
 /**
- * Gate B for land-target.test.mjs.
+ * MANUAL DIAGNOSTIC — Gate B for land-target.test.mjs.
+ *
+ * Not in a runner by design: it mutates scripts/land.mjs on disk, so running it
+ * concurrently with another agent's land would corrupt a live tool. Run by hand
+ * when land-target.test.mjs changes:
+ *   node scripts/mutate-land-target.cjs
  *
  * A test file that has never failed is not evidence. Each mutant below breaks
  * ONE real property; the suite must reject each one. If a mutant survives, the
@@ -44,7 +49,11 @@ const mutants = [
     what: 'main accepted as a land target',
     anchor: "  if (!/^(dev|feature-[0-9]{2,}(-[A-Za-z0-9._-]+)?)$/.test(into)) {",
     replace: '  if (false) {',
-    gone: (s) => !s.includes('feature-[0-9]{2,}'),
+    gone: (s) =>
+      // The topic-shape validation (FEATURE_BRANCH) uses the same regex
+      // fragment, so a whole-file check would find it and wrongly report the
+      // mutation failed. What must disappear is the TARGET check specifically.
+      !s.includes('.test(into)'),
   },
   {
     id: 'MUT-4',
