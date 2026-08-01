@@ -29,6 +29,12 @@ function defaultSheetKind(kind: LabCardKind): SheetKind | undefined {
   return undefined
 }
 
+/** Quiet provenance chip — model only; author stays unmarked. */
+function SourceChip({ source }: { source: LabCard['source'] }) {
+  if (source !== 'model') return null
+  return <Badge tone="pending">Spark</Badge>
+}
+
 export type LabBenchProps = {
   lab: Lab
   onCreateCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
@@ -37,6 +43,8 @@ export type LabBenchProps = {
   onRestoreCard: (cardId: string) => Promise<void>
   onPinCard: (cardId: string, pinned?: boolean) => Promise<void>
   onPromoteCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<unknown>
+  onDismissPromotedCard: (cardId: string) => Promise<void>
+  onDismissAllPromoted: () => Promise<void>
   onOpenAgent?: () => void
   activeBoardId?: string | null
   onBoardChange?: (boardId: string) => void
@@ -50,6 +58,8 @@ export function LabBench({
   onRestoreCard,
   onPinCard,
   onPromoteCard,
+  onDismissPromotedCard,
+  onDismissAllPromoted,
   onOpenAgent,
   activeBoardId,
   onBoardChange,
@@ -68,6 +78,9 @@ export function LabBench({
   const [editTitle, setEditTitle] = useState('')
   const [editBody, setEditBody] = useState('')
   const [editKind, setEditKind] = useState<LabCardKind>('character-spark')
+  // Chapter promote confirm (model beats required; always available for beats).
+  const [confirmCardId, setConfirmCardId] = useState<string | null>(null)
+  const [confirmTitle, setConfirmTitle] = useState('')
 
   useEffect(() => {
     if (boardId) onBoardChange?.(boardId)
@@ -118,24 +131,87 @@ export function LabBench({
     }
   }
 
+  /** Sheet promote: one-click. Chapter (beat): confirm title when model-sourced (always for beats). */
   async function promote(card: LabCard) {
     if (busy || !canPromote(card.kind)) return
+    if (card.kind === 'beat') {
+      // Destination-shaped consent: title that will be stored, body stays empty.
+      setConfirmCardId(card.id)
+      setConfirmTitle(card.title)
+      setNotice(null)
+      return
+    }
     setBusy(true)
     setNotice(null)
     try {
       await onPromoteCard(card.id, {
         sheetKind: defaultSheetKind(card.kind),
-        chapterTitle: card.kind === 'beat' ? card.title : undefined,
       })
-      setNotice(card.kind === 'beat'
-        ? 'Sent to Draft as a chapter stub (empty body). Lab card marked promoted.'
-        : 'Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write Canon.')
+      setNotice('Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write Canon.')
     } catch (caught) {
       setNotice(caught instanceof Error ? caught.message : `${promoteActionLabel(card.kind)} failed`)
     } finally {
       setBusy(false)
     }
   }
+
+  async function confirmChapterCreate() {
+    if (!confirmCardId || busy) return
+    setBusy(true)
+    setNotice(null)
+    try {
+      await onPromoteCard(confirmCardId, { chapterTitle: confirmTitle })
+      setConfirmCardId(null)
+      setConfirmTitle('')
+      setNotice('Sent to Draft as a chapter stub (empty body). Lab card marked promoted.')
+    } catch (caught) {
+      setNotice(caught instanceof Error ? caught.message : 'Send to Draft failed')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function cancelChapterCreate() {
+    // Cancel creates nothing — card stays active.
+    setConfirmCardId(null)
+    setConfirmTitle('')
+  }
+
+  async function dismissOne(cardId: string) {
+    if (busy) return
+    setBusy(true)
+    setNotice(null)
+    try {
+      await onDismissPromotedCard(cardId)
+      setNotice('Dismissed Lab receipt. Canon and Draft are unchanged.')
+    } catch (caught) {
+      setNotice(caught instanceof Error ? caught.message : 'Could not dismiss')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function dismissAll() {
+    if (busy || promoted.length === 0) return
+    if (promoted.length >= 10) {
+      const ok = window.confirm(`Dismiss all ${promoted.length} Promoted receipts? Canon and Draft stay unchanged.`)
+      if (!ok) return
+    }
+    setBusy(true)
+    setNotice(null)
+    try {
+      await onDismissAllPromoted()
+      setNotice('Cleared Promoted receipts. Canon and Draft are unchanged.')
+    } catch (caught) {
+      setNotice(caught instanceof Error ? caught.message : 'Could not clear Promoted')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const confirmingCard = confirmCardId
+    ? cards.find((card) => card.id === confirmCardId) ?? null
+    : null
 
   return (
     <main id="workspace" className="lab" aria-label="Lab" tabIndex={-1}>
@@ -219,6 +295,29 @@ export function LabBench({
 
       {notice ? <p className="lab__notice" role="status">{notice}</p> : null}
 
+      {/* Inline chapter-title confirm — destination-shaped consent for Send to Draft. */}
+      {confirmingCard ? (
+        <section className="lab__confirm" aria-label="Confirm chapter title" role="dialog" aria-modal="false">
+          <h3 className="lab__section-label">Create chapter stub</h3>
+          <p className="lab__confirm-line">Body will be an empty stub. Title becomes stored Draft state.</p>
+          <p className="lab__confirm-source">
+            {confirmingCard.source === 'model' ? 'From Spark' : 'From your note'}
+          </p>
+          <Input
+            value={confirmTitle}
+            onChange={(event) => setConfirmTitle(event.target.value)}
+            aria-label="Chapter title"
+            placeholder="Chapter title (empty allowed)"
+          />
+          <div className="lab__card-actions">
+            <Button variant="primary" disabled={busy} onClick={() => void confirmChapterCreate()}>
+              {busy ? 'Creating…' : 'Create chapter'}
+            </Button>
+            <Button disabled={busy} onClick={cancelChapterCreate}>Cancel</Button>
+          </div>
+        </section>
+      ) : null}
+
       {/* P2: an empty bench already has the composer as its one obvious move.
           A second "nothing here" block pointing back at that composer is the wall. */}
       {live.length === 0 ? (
@@ -246,9 +345,11 @@ export function LabBench({
               key={card.id}
               className={`lab__card${card.status === 'pinned' ? ' lab__card--pinned' : ''}`}
               data-kind={card.kind}
+              data-source={card.source}
             >
               <header className="lab__card-header">
                 <Badge tone="pending">{KIND_LABEL[card.kind]}</Badge>
+                <SourceChip source={card.source} />
                 {card.status === 'pinned' ? <Badge tone="accent">Pinned</Badge> : null}
               </header>
               {editingId === card.id ? (
@@ -288,7 +389,7 @@ export function LabBench({
                       {card.status === 'pinned' ? 'Unpin' : 'Pin'}
                     </Button>
                     {canPromote(card.kind) ? (
-                      <Button variant="primary" disabled={busy} onClick={() => void promote(card)}>
+                      <Button variant="primary" disabled={busy || confirmCardId === card.id} onClick={() => void promote(card)}>
                         {promoteActionLabel(card.kind)}
                       </Button>
                     ) : null}
@@ -303,12 +404,20 @@ export function LabBench({
 
       {promoted.length > 0 ? (
         <section className="lab__promoted" aria-label="Cards sent to Draft or promoted toward Canon">
-          <h3 className="lab__section-label">Promoted</h3>
+          <div className="lab__promoted-head">
+            <h3 className="lab__section-label">Promoted</h3>
+            <Button disabled={busy} onClick={() => void dismissAll()}>
+              Dismiss all
+            </Button>
+          </div>
           <ul className="lab__promoted-list">
             {promoted.map((card) => (
               <li key={card.id}>
                 <span>{card.title}</span>
-                <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'sent to Draft' : 'Canon proposal'}</Badge>
+                <div className="lab__promoted-meta">
+                  <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'sent to Draft' : 'Canon proposal'}</Badge>
+                  <Button disabled={busy} onClick={() => void dismissOne(card.id)}>Dismiss</Button>
+                </div>
               </li>
             ))}
           </ul>

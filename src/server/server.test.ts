@@ -663,3 +663,48 @@ test('lab what-if promote is rejected without mutation', async () => {
     assert.equal((await store.load()).chapters.length, 1)
   })
 })
+
+test('lab source model via API and dismiss promoted leaves Canon/Draft', async () => {
+  await withServer(async (baseUrl) => {
+    const modelCard = await requestJson<Project>(`${baseUrl}/api/lab/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'character-spark', title: 'Model Riven', body: 'from chat', source: 'model' }),
+    })
+    assert.equal(modelCard.lab.cards[0].source, 'model')
+    const cardId = modelCard.lab.cards[0].id
+    const promoted = await requestJson<{ project: Project; as: string; proposalIds: string[] }>(
+      `${baseUrl}/api/lab/cards/${cardId}/promote`,
+      { method: 'POST', body: '{}' },
+    )
+    assert.equal(promoted.project.lab.cards[0].status, 'promoted')
+    const proposalCount = promoted.project.proposals.length
+    assert.ok(proposalCount >= 1)
+
+    const dismissed = await requestJson<Project>(`${baseUrl}/api/lab/cards/${cardId}/dismiss`, {
+      method: 'POST',
+      body: '{}',
+    })
+    assert.equal(dismissed.lab.cards.find((card) => card.id === cardId)?.status, 'archived')
+    assert.equal(dismissed.proposals.length, proposalCount)
+
+    const beat = await requestJson<Project>(`${baseUrl}/api/lab/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'beat', title: 'Night', source: 'model' }),
+    })
+    const beatId = beat.lab.cards.find((card) => card.title === 'Night')?.id
+    assert.ok(beatId)
+    const chap = await requestJson<{ project: Project; as: string; chapterId: string }>(
+      `${baseUrl}/api/lab/cards/${beatId}/promote`,
+      { method: 'POST', body: JSON.stringify({ chapterTitle: 'Confirmed night' }) },
+    )
+    assert.equal(chap.as, 'chapter-stub')
+    const beforeChapters = chap.project.chapters.length
+    const cleared = await requestJson<Project>(`${baseUrl}/api/lab/promoted/dismiss-all`, {
+      method: 'POST',
+      body: '{}',
+    })
+    assert.equal(cleared.lab.cards.find((card) => card.id === beatId)?.status, 'archived')
+    assert.equal(cleared.chapters.length, beforeChapters)
+    assert.equal(cleared.chapters.find((card) => card.id === chap.chapterId)?.title, 'Confirmed night')
+  })
+})
