@@ -1,8 +1,9 @@
 /**
- * E1 MANUAL DIAGNOSTIC — prove shipping step labels survive a stall.
+ * E1 MANUAL DIAGNOSTIC - prove shipping step labels survive a stall.
  *
- * NOT part of the green suite (npm test). Static half is gated via
- * scripts/e1-step-label.test.mjs → checkShippingMakeStepImports.
+ * NOT part of the green suite (npm test / test:green / ALL_FEATURE_SMOKES).
+ * Static half is gated via scripts/e1-step-label.test.mjs ->
+ * checkShippingMakeStepImports; the dynamic stall needs an owned stack.
  *
  * Bound to the real module, not a throwaway copy:
  *   1) Static: slice-k/l must import makeStep from ./step-label.mjs
@@ -12,7 +13,10 @@
  *
  * Pass only if both checks hold and the stall label appears before non-zero exit.
  * Run by hand / when changing step labelling.
- */
+ *
+ * The MANUAL DIAGNOSTIC token records how this file is INVOKED - not whether
+ * every check inside it can fail. See docs/tickets/UNWIRED-CHECKS.md. */
+
 import { spawn } from 'node:child_process'
 import { writeFileSync, mkdirSync, unlinkSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'

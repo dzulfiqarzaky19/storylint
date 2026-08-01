@@ -1,5 +1,19 @@
 /**
- * T-004 L1 — durable dirty sheet identity (ox binding).
+ * T-004 L1 MANUAL DIAGNOSTIC - durable dirty sheet identity (ox binding).
+ *
+ * MANUAL DIAGNOSTIC because it owns a full stack (builds + serves its own
+ * api/ui) and no runner names it. That is a deliberate cost decision, NOT a
+ * claim that it is unimportant: this is the L1 acceptance proof for the sprint
+ * P0, silent loss of authored work. Re-run by hand whenever sheet identity
+ * draft persistence changes:
+ *
+ *     node e2e/t004-durable-dirty.mjs     # 0 = pass, 1 = product, 2 = harness
+ *
+ * Last verified by tigress (hawk) @ 35be43a: 7/7 ok on two consecutive runs,
+ * plus two build-checked product mutants in
+ * src/features/project/sheetIdentityDraft.ts, both DIED:
+ *   - storeSheetIdentityDraft setItem -> no-op    => case 1 ok:false, exit 1
+ *   - removeSheetIdentityDraft removeItem -> no-op => save never settles, exit 2
  * Owned-stack. Not beforeunload.
  *
  * Harness rules (hawk REQUEST CHANGES @ c395a17):
