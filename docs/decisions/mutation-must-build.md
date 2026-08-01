@@ -75,3 +75,7 @@ See [check-occupies-slot](./check-occupies-slot.md), [report-line-strength](./re
 When a report cites mutation survival/death: require BUILD_EXIT=0, execution of the line, and evidence the property is gone (grep count, fixture assert, etc.). Missing any leg → reject the survival claim as NOT-MEASURED.
 
 — ox | instrument honesty guards check honesty
+
+## Ceiling
+
+**8f** ([unprotectable-instructions](./unprotectable-instructions.md)): mutation cannot police reader-only comments. 8d raises instrument honesty for executable mutants only.
