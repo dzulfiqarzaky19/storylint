@@ -11,8 +11,8 @@ Validate: `npm run tickets:check`
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
 | [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
 | [T-010](./T-010.md) | P2 | open | none | Companion face row has 1px of fit; Inbox badge re-clips Research at rest | unassigned |
-| [T-012](./T-012.md) | P2 | open | none | Canon shows two equal primary "New sheet" buttons in one view | unassigned |
-| [T-013](./T-013.md) | P2 | open | none | Canon offers "Propose new edge" with zero nodes to connect | unassigned |
+| [T-012](./T-012.md) | P2 | in_review | none | Canon shows two equal primary "New sheet" buttons in one view | dromedary |
+| [T-013](./T-013.md) | P2 | in_review | none | Canon offers "Propose new edge" with zero nodes to connect | dromedary |
 | [T-011](./T-011.md) | P3 | open | none | Mutation lock name claims an outcome its source-text assertions cannot establish | unassigned |
 | [T-014](./T-014.md) | P3 | open | none | Lab composer stretches to full viewport width | unassigned |
 
@@ -38,3 +38,6 @@ T-008 remains the open residual from the T-005 review (per-process lock scope). 
 single-root precondition on origin/dev @ `6008659` (falcon @ `b9f964f`, koala PASS). T-005 itself
 stays correct @ `df405c8`. Triage: a single-process EPERM on the atomic rename is a T-005
 regression; a multi-process one is T-008 firing. T-009 (rule 11a check) closed @ `3a7a52e`.
+
+T-012/T-013 in_review on `storylint/t012-t013-canon-gates` (dromedary). T-012 already-satisfied
+ticket-close; T-013 honest propose-edge body below 2 sheets (ox disclosure stays).
