@@ -12,8 +12,10 @@
  *
  * What this checks that all-smoke does not:
  *   1. Draft body written on project P survives Canon + Lab switches on the same P.
- *   2. A Canon sheet seeded into P is still present after Lab and reload.
- *   3. Server active pointer stays on P across the multi-surface journey
+ *   2. A Canon sheet seeded into P survives a later Draft chapter write on the same P
+ *      (reverse direction: Draft must not clobber Canon sheets).
+ *   3. That sheet is still present after Lab and reload.
+ *   4. Server active pointer stays on P across the multi-surface journey
  *      (sibling-container inheritance is an L1 suite concern; sticky shared
  *      state across surfaces is the composition class).
  *
@@ -190,6 +192,15 @@ try {
   if (!seeded) {
     notMeasured(`sheet ${sheetId} missing from active project after PUT (active sheets=${(afterSeed.sheets || []).length})`)
   }
+  // Forward checkpoint: Canon sheet seed must not clobber Draft body.
+  // Runs BEFORE any post-seed Draft rewrite so a later write cannot repair the damage
+  // (hawk REQUEST CHANGES @ d9a2e48 — reassigning chapterBody hid Canon→Draft clobber).
+  const bodyAfterSeed = afterSeed.chapters?.[0]?.body
+  if (!bodyAfterSeed || bodyAfterSeed !== chapterBody) {
+    fail(
+      `composition: draft body lost after Canon sheet seed — want ${JSON.stringify(chapterBody.slice(0, 48))}… got ${JSON.stringify(String(bodyAfterSeed ?? '').slice(0, 48))}…`,
+    )
+  }
   step('canon-seed-sheet', { sheetId, sheetName })
 
   // UI must remount project doc after API seed (same class as slice-k seed→goto).
@@ -200,6 +211,30 @@ try {
   })
   await reclaimIsolatedProject(projectId)
   await assertActiveProject(projectId, { page })
+
+  // Reverse-direction write: Draft chapter save AFTER sheet seed must not wipe Canon.
+  // Without this step, a chapter PUT that blanks sheets only hits an empty list and
+  // sheet-survived stays green (ordering gap hawk found @ 74a8dc7).
+  // Distinct body forces a real chapter PUT (same-body fill can skip network save).
+  // chapterBody stays fixed (forward subject); postSeedBody is the later journey truth.
+  const postSeedBody = chapterBody + ' Aria kept the sheet name in mind.'
+  await gotoWorkspace(page, 'draft', { ensureCompanion: false })
+  await fillChapterAndSave(page, postSeedBody)
+  await assertActiveProject(projectId, { page })
+  const afterDraftRewrite = await fetchActiveProject()
+  if ((afterDraftRewrite.chapters?.[0]?.body) !== postSeedBody) {
+    fail('draft body mismatch after post-seed chapter rewrite')
+  }
+  const sheetAfterDraft = (afterDraftRewrite.sheets || []).find((s) => s.id === sheetId)
+  if (!sheetAfterDraft) {
+    fail(
+      `composition: sheet ${sheetId} missing after post-seed Draft write (sheets=${(afterDraftRewrite.sheets || []).map((s) => s.id).join(',')})`,
+    )
+  }
+  if (sheetAfterDraft.name !== sheetName) {
+    fail(`composition: sheet name changed after Draft write want=${sheetName} got=${sheetAfterDraft.name}`)
+  }
+  step('draft-after-seed', { sheetId })
 
   await gotoWorkspace(page, 'canon', { ensureCompanion: false })
   const canonMain = page.getByRole('main')
@@ -235,13 +270,14 @@ try {
   await assertActiveProject(projectId, { page })
   step('reload-same-project')
 
-  // Prove Draft body still the one we wrote (not empty / not sibling residue).
+  // Prove Draft body is still the post-seed rewrite (not empty / not sibling residue).
+  // Forward Canon→Draft clobber is caught earlier at canon-seed-sheet (pre post-seed write).
   await gotoWorkspace(page, 'draft', { ensureCompanion: false })
   await draftMain.getByLabel('Chapter text').waitFor({ timeout: PRECONDITION_TIMEOUT_MS })
   const bodyAfter = await draftMain.getByLabel('Chapter text').inputValue()
-  if (bodyAfter !== chapterBody) {
+  if (bodyAfter !== postSeedBody) {
     fail(
-      `composition: draft body lost after Canon+Lab+reload — want ${JSON.stringify(chapterBody.slice(0, 48))}… got ${JSON.stringify(bodyAfter.slice(0, 48))}…`,
+      `composition: draft body lost after Canon+Lab+reload — want ${JSON.stringify(postSeedBody.slice(0, 48))}… got ${JSON.stringify(bodyAfter.slice(0, 48))}…`,
     )
   }
   step('draft-survived')

@@ -1,11 +1,11 @@
-T-002 L2 forward-direction mutation proof (Canon->Draft)
+T-002 L2 reverse-direction mutation proof (Draft->Canon)
 head=d9a2e48faf2c19a5cfd069eff1a5dae947d6b781 short=d9a2e48
 worktree_dirty=YES
-mutation: PUT /api/sheets/:id blanks all chapter bodies before upsertSheet
+mutation: PUT /api/chapters/:id wipes project.sheets before upsertChapter
 command: npm run test:l2
 exit=1
 load_bearing_red=YES
-expected: FAIL with composition: draft body lost after Canon sheet seed
+expected: FAIL with composition: sheet ... missing after post-seed Draft write
 restored: src/server/http.ts returned to pre-mutation text (no product change)
 
 --- transcript ---
@@ -37,14 +37,15 @@ legacy-exploratory  ux-drive-graph.mjs (not yet on helpers)
 legacy-exploratory  ux-drive.mjs (helpers ok)
 PASS: e2e helper convention holds
 [owned-stack] building D:\dev\projects\storylint-t002-close @ d9a2e48
-[owned-stack] api :53754 ui :53755
-[l2] owned=true ui=http://127.0.0.1:53755/ api=http://127.0.0.1:53754 head=d9a2e48 shell=54884172c616
+[owned-stack] api :60881 ui :60882
+[l2] owned=true ui=http://127.0.0.1:60882/ api=http://127.0.0.1:60881 head=d9a2e48 shell=54884172c616
 [l2] active-project before: e2e-calm-inbox-wall-8276-ms9ma9sm
-[l2 +518ms] PASS mint
-[l2 +1533ms] PASS draft-write
+[l2 +437ms] PASS mint
+[l2 +1271ms] PASS draft-write
+[l2 +1362ms] PASS canon-seed-sheet
 [l2] active-project after restore: e2e-calm-inbox-wall-8276-ms9ma9sm
 [l2] swept 1 orphan harness projects
 [l2] wrote D:\dev\projects\storylint-t002-close\e2e\output\l2-composition-last.md
 
 
-FAIL l2-composition: composition: draft body lost after Canon sheet seed — want "L2 composition draft mqucr — Aria kept the seal "… got ""…
+FAIL l2-composition: composition: sheet l2-sheet-1785543921903 missing after post-seed Draft write (sheets=)
