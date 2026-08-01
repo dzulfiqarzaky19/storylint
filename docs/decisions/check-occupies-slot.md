@@ -63,3 +63,7 @@ Same disease family (unverified claim greened). Distinct proof duties. Keep all 
 When a PR adds or cites a check as proof: ask for the production symbol. No symbol → reject the claim or the check.
 
 — ox | filled slot is active harm
+
+## Sibling one level up
+
+**8d** ([mutation-must-build](./mutation-must-build.md)) guards this rule: a survival used to claim 8c only counts when the mutant **built and executed**. Broken mutants are NOT-MEASURED, not proof the check occupies a slot or is empty.
