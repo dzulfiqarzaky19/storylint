@@ -1,10 +1,5 @@
 /**
- * Save chip paint — ox binding docs/decisions/save-chip-error-not-idle.md
- *
- * Standing 8c:
- *  1) Object = shipped saveChipLabel + Shell call site (not an isolated mapper).
- *  2) Wired via npm test glob under src (star-star slash star.test.ts).
- *  3) Cite only after running this file / npm test.
+ * Save chip paint.
  *
  * Load-bearing bar: chip text differs between idle and error.
  * Substring-only "Not saved appears" is too weak if idle also showed it.

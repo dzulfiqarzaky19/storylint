@@ -1,9 +1,9 @@
 /**
  * Companion Check face — tool copy and hierarchy.
  *
- * Research (docs/research/ui-ux): one primary job, progressive disclosure,
- * cut extraneous Continuity restatement. COMPANION.md: Continuity · Review ·
- * Craft — Continuity is the gate; Review/Craft are quiet coaching.
+ * UX rule: one primary job, progressive disclosure,
+ * cut extraneous Continuity restatement. Continuity, Review and Craft share the
+ * face; Continuity is the gate, Review and Craft are quiet coaching.
  *
  * Resting Check shows Continuity as the only primary control. Review and Craft
  * stay secondary with on-demand help (no always-on blurbs/legend cards).

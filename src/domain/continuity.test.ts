@@ -6,7 +6,7 @@ import { lintClaims } from './lint.ts'
 import { patchChapter } from './project.ts'
 import type { Claim, Project, Proposal } from './types.ts'
 
-const FIXTURE_URL = new URL('../../docs/fixtures/continuity-sample.md', import.meta.url)
+const FIXTURE_URL = new URL('../continuity/fixtures/continuity-sample.md', import.meta.url)
 
 function fixtureProject(): Project {
   return {

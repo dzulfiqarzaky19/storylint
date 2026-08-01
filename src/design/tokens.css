@@ -1,4 +1,4 @@
-/* Ported from docs/design/TOKENS.md — ONLY file allowed raw hex/px for colors.
+/* Design tokens. ONLY file allowed raw hex/px for colors.
    Kobo / paper doctrine: warm reader, not AI sky-blue IDE. */
 
 :root {

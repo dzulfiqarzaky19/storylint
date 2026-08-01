@@ -5,7 +5,7 @@ function span(chapter: Chapter, text: string): { start: number; end: number; tex
   return start < 0 ? null : { start, end: start + text.length, text }
 }
 
-/** Deterministic extractor for tests/dev, grounded in docs/fixtures/continuity-sample.md. */
+/** Deterministic extractor for tests/dev, grounded in fixtures/continuity-sample.md. */
 export function extractFixtureClaims(chapter: Chapter): Claim[] {
   const claims: Claim[] = []
   const eyes = span(chapter, 'blue eyes')
