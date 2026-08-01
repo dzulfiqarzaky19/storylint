@@ -9,6 +9,7 @@ import {
   labBodies,
   pinLabCard,
   promoteLabCard,
+  restoreLabCard,
 } from './lab.ts'
 import type { Project } from './types.ts'
 
@@ -58,6 +59,57 @@ test('create edit archive and pin lab cards', () => {
   assert.equal(project.lab.cards.length, 1)
 })
 
+test('archive is a state with Restore back to active — no hard delete', () => {
+  // Interleaved: archive two of five, restore one, others stay put.
+  // Uniform all-archived/all-active cases hide off-by-one bugs.
+  let project = seed()
+  const titles = ['A-keep', 'B-archive-restore', 'C-keep', 'D-archive-stay', 'E-keep']
+  for (const title of titles) {
+    project = createLabCard(project, {
+      kind: 'character-spark',
+      title,
+      body: title,
+    })
+  }
+  assert.equal(project.lab.cards.length, 5)
+  const byTitle = (title: string) => {
+    const card = project.lab.cards.find((candidate) => candidate.title === title)
+    assert.ok(card, `missing card ${title}`)
+    return card
+  }
+  const restoreId = byTitle('B-archive-restore').id
+  const stayArchivedId = byTitle('D-archive-stay').id
+  const keepIds = ['A-keep', 'C-keep', 'E-keep'].map((title) => byTitle(title).id)
+
+  project = archiveLabCard(project, restoreId)
+  project = archiveLabCard(project, stayArchivedId)
+
+  assert.equal(byTitle('B-archive-restore').status, 'archived')
+  assert.equal(byTitle('D-archive-stay').status, 'archived')
+  for (const id of keepIds) {
+    assert.equal(project.lab.cards.find((card) => card.id === id)?.status, 'active')
+  }
+
+  project = restoreLabCard(project, restoreId)
+
+  assert.equal(project.lab.cards.find((card) => card.id === restoreId)?.status, 'active')
+  assert.equal(project.lab.cards.find((card) => card.id === restoreId)?.title, 'B-archive-restore')
+  assert.equal(project.lab.cards.find((card) => card.id === stayArchivedId)?.status, 'archived')
+  for (const id of keepIds) {
+    assert.equal(project.lab.cards.find((card) => card.id === id)?.status, 'active')
+  }
+  assert.equal(project.lab.cards.length, 5)
+
+  // Restore is Lab-only: no chapters/sheets/proposals invented.
+  assert.equal(project.chapters.length, 1)
+  assert.equal(project.sheets.length, 0)
+  assert.equal(project.proposals.length, 0)
+})
+test('restore rejects non-archived cards', () => {
+  const project = createLabCard(seed(), { kind: 'lore-spark', title: 'Keep' })
+  assert.throws(() => restoreLabCard(project, project.lab.cards[0].id), /Only archived/i)
+})
+
 test('promote character-spark creates pending proposals only — no sheet facts', () => {
   let project = createLabCard(seed(), {
     kind: 'character-spark',
@@ -99,6 +151,9 @@ test('promote beat creates chapter stub without body prose from lab', () => {
 })
 
 test('promote beat with blank chapterTitle stores empty — never invents Untitled chapter', () => {
+  // Guards the API/whitespace path. UI createLabCard rejects empty title (400),
+  // so a user cannot walk this via the form today — still required for the promote
+  // contract when chapterTitle is explicit whitespace.
   let project = createLabCard(seed(), {
     kind: 'beat',
     title: 'Card working title',

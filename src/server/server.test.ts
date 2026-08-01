@@ -619,6 +619,35 @@ test('lab card create pin archive and promote stay pre-canon until Accept', asyn
   })
 })
 
+test('lab archive restore returns card to bench without Canon writes', async () => {
+  await withServer(async (baseUrl) => {
+    const created = await requestJson<Project>(`${baseUrl}/api/lab/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'character-spark', title: 'Restore me', body: 'bench' }),
+    })
+    const cardId = created.lab.cards[0].id
+    const sheetsBefore = created.sheets.length
+    const proposalsBefore = created.proposals.length
+    const chaptersBefore = created.chapters.length
+
+    const archived = await requestJson<Project>(`${baseUrl}/api/lab/cards/${cardId}/archive`, {
+      method: 'POST',
+      body: '{}',
+    })
+    assert.equal(archived.lab.cards.find((card) => card.id === cardId)?.status, 'archived')
+
+    const restored = await requestJson<Project>(`${baseUrl}/api/lab/cards/${cardId}/restore`, {
+      method: 'POST',
+      body: '{}',
+    })
+    assert.equal(restored.lab.cards.find((card) => card.id === cardId)?.status, 'active')
+    assert.equal(restored.lab.cards.find((card) => card.id === cardId)?.title, 'Restore me')
+    assert.equal(restored.sheets.length, sheetsBefore)
+    assert.equal(restored.proposals.length, proposalsBefore)
+    assert.equal(restored.chapters.length, chaptersBefore)
+  })
+})
+
 test('lab what-if promote is rejected without mutation', async () => {
   await withServer(async (baseUrl, store) => {
     const created = await requestJson<Project>(`${baseUrl}/api/lab/cards`, {

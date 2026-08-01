@@ -106,6 +106,7 @@ function isGateScript(base, source) {
   if (base === 'calm-budget.mjs') return true
   if (/^slice-.*-smoke\.mjs$/.test(base)) return true
   if (base.endsWith('-smoke.mjs')) return true
+  if (base === 'l2-composition.mjs') return true
   // New measurement-looking scripts that are not grandfathered exploratory tools.
   if (LEGACY_EXPLORATORY.has(base)) return false
   if (/measure[A-Z(]/.test(source) && /getBoundingClientRect/.test(source)) return true

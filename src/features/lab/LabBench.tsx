@@ -34,6 +34,7 @@ export type LabBenchProps = {
   onCreateCard: (input: { boardId?: string; kind: LabCardKind; title: string; body?: string }) => Promise<Project>
   onPatchCard: (cardId: string, patch: { title?: string; body?: string; kind?: LabCardKind }) => Promise<Project>
   onArchiveCard: (cardId: string) => Promise<void>
+  onRestoreCard: (cardId: string) => Promise<void>
   onPinCard: (cardId: string, pinned?: boolean) => Promise<void>
   onPromoteCard: (cardId: string, input?: { sheetKind?: SheetKind; chapterTitle?: string }) => Promise<unknown>
   onOpenAgent?: () => void
@@ -46,6 +47,7 @@ export function LabBench({
   onCreateCard,
   onPatchCard,
   onArchiveCard,
+  onRestoreCard,
   onPinCard,
   onPromoteCard,
   onOpenAgent,
@@ -82,6 +84,7 @@ export function LabBench({
 
   const live = cards.filter((card) => card.status === 'active' || card.status === 'pinned')
   const promoted = cards.filter((card) => card.status === 'promoted')
+  const archived = cards.filter((card) => card.status === 'archived')
   const visible = (kindFilter === 'all' ? live : live.filter((card) => card.kind === kindFilter))
     .slice()
     .sort((a, b) => Number(b.status === 'pinned') - Number(a.status === 'pinned'))
@@ -306,6 +309,21 @@ export function LabBench({
               <li key={card.id}>
                 <span>{card.title}</span>
                 <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'sent to Draft' : 'Canon proposal'}</Badge>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {archived.length > 0 ? (
+        <section className="lab__archived" aria-label="Archived lab cards">
+          <h3 className="lab__section-label">Archived</h3>
+          <ul className="lab__archived-list">
+            {archived.map((card) => (
+              <li key={card.id} className="lab__archived-row">
+                <span className="lab__archived-title">{card.title || (KIND_LABEL[card.kind] ?? card.kind)}</span>
+                <Badge>{KIND_LABEL[card.kind] ?? card.kind}</Badge>
+                <Button disabled={busy} onClick={() => void onRestoreCard(card.id)}>Restore</Button>
               </li>
             ))}
           </ul>
