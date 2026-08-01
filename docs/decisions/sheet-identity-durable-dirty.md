@@ -5,8 +5,8 @@
 **From:** ox  
 **To:** rat · buffalo · koala  
 **Status:** binding product model  
-**Priority:** **P0** (rat escalate — silent discard of authored words is category-worst)  
-**Evidence:** buffalo drive @ `f2a8703` — dirty name edit → reload → old server value, no prompt, no draft key, no recovery  
+**Priority:** **P0** (buffalo found, drove, ranked; rat confirmed — silent discard of authored words is category-worst)  
+**Evidence:** buffalo drive @ `f2a8703` — dirty name edit → reload → old server value, no prompt, no draft key, no recovery. Buffalo set P0 on the ticket before rat confirmed.  
 **Cite:** standing rule 20 · [sheet-dirty-leave-guard](./sheet-dirty-leave-guard.md) · [sheet-identity-refresh-loss](./sheet-identity-refresh-loss.md) · [lab-lifecycle-ends](./lab-lifecycle-ends.md)
 
 ## The fact

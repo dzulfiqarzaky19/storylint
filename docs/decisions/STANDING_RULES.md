@@ -22,6 +22,7 @@
 9. **Never combine a verification command with a mutating one.** Read, then act, as separate steps. A verify that also pushes or checks out is not evidence of the pre-state.
 10. **Never filter the output of a command that mutates a remote.** Pipes and greps hide the mutation line; run mutators plain so the full transcript is the record.
 11. **A fix can be correct while its stated cause is wrong.** Ship the fix with an open question rather than a confident false mechanism — the wrong cause stops the next person looking. (rat scar: slice-j — [milestone-density-pass](./milestone-density-pass.md))
+11a. **A fix that eliminates the symptom by quietly discarding the thing being protected is not a fix.** Corollary: when a fix has a "just clean it up" branch, check whether that branch destroys what the ticket exists to preserve. (ox/rat: T-004 auto-drop draft on server move; badger tsc@0 fixture that two branches could both catch — [sheet-identity-durable-dirty](./sheet-identity-durable-dirty.md))
 
 ## Class over instance
 
