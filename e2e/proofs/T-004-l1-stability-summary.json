@@ -1,0 +1,57 @@
+{
+  "passN": 5,
+  "total": 5,
+  "allPass": true,
+  "rows": [
+    {
+      "i": 1,
+      "exitCode": 0,
+      "ms": 7185,
+      "pass": true,
+      "head": "c395a17",
+      "failed": null,
+      "harness": null,
+      "tail": " \"conflictGone\": true }, \"ok\": true }, { \"id\": \"conflict-keep-mine\", \"afterKeepMine\": { \"dirty\": \"true\", \"name\": \"MineUnsaved\", \"conflict2\": true }, \"ok\": true }, { \"id\": \"mutation-wipe-draft-loses\", \"dirtyMut\": \"true\", \"afterMut\": { \"dirty\": \"false\", \"name\": \"Kael Dirty Refresh\" }, \"ok\": true } ], \"pass\": true, \"failed\": [], \"harnessError\": null } T-004 L1 PASS "
+    },
+    {
+      "i": 2,
+      "exitCode": 0,
+      "ms": 6290,
+      "pass": true,
+      "head": "c395a17",
+      "failed": null,
+      "harness": null,
+      "tail": " \"conflictGone\": true }, \"ok\": true }, { \"id\": \"conflict-keep-mine\", \"afterKeepMine\": { \"dirty\": \"true\", \"name\": \"MineUnsaved\", \"conflict2\": true }, \"ok\": true }, { \"id\": \"mutation-wipe-draft-loses\", \"dirtyMut\": \"true\", \"afterMut\": { \"dirty\": \"false\", \"name\": \"Kael Dirty Refresh\" }, \"ok\": true } ], \"pass\": true, \"failed\": [], \"harnessError\": null } T-004 L1 PASS "
+    },
+    {
+      "i": 3,
+      "exitCode": 0,
+      "ms": 6490,
+      "pass": true,
+      "head": "c395a17",
+      "failed": null,
+      "harness": null,
+      "tail": " \"conflictGone\": true }, \"ok\": true }, { \"id\": \"conflict-keep-mine\", \"afterKeepMine\": { \"dirty\": \"true\", \"name\": \"MineUnsaved\", \"conflict2\": true }, \"ok\": true }, { \"id\": \"mutation-wipe-draft-loses\", \"dirtyMut\": \"true\", \"afterMut\": { \"dirty\": \"false\", \"name\": \"Kael Dirty Refresh\" }, \"ok\": true } ], \"pass\": true, \"failed\": [], \"harnessError\": null } T-004 L1 PASS "
+    },
+    {
+      "i": 4,
+      "exitCode": 0,
+      "ms": 7145,
+      "pass": true,
+      "head": "c395a17",
+      "failed": null,
+      "harness": null,
+      "tail": " \"conflictGone\": true }, \"ok\": true }, { \"id\": \"conflict-keep-mine\", \"afterKeepMine\": { \"dirty\": \"true\", \"name\": \"MineUnsaved\", \"conflict2\": true }, \"ok\": true }, { \"id\": \"mutation-wipe-draft-loses\", \"dirtyMut\": \"true\", \"afterMut\": { \"dirty\": \"false\", \"name\": \"Kael Dirty Refresh\" }, \"ok\": true } ], \"pass\": true, \"failed\": [], \"harnessError\": null } T-004 L1 PASS "
+    },
+    {
+      "i": 5,
+      "exitCode": 0,
+      "ms": 7782,
+      "pass": true,
+      "head": "c395a17",
+      "failed": null,
+      "harness": null,
+      "tail": " \"conflictGone\": true }, \"ok\": true }, { \"id\": \"conflict-keep-mine\", \"afterKeepMine\": { \"dirty\": \"true\", \"name\": \"MineUnsaved\", \"conflict2\": true }, \"ok\": true }, { \"id\": \"mutation-wipe-draft-loses\", \"dirtyMut\": \"true\", \"afterMut\": { \"dirty\": \"false\", \"name\": \"Kael Dirty Refresh\" }, \"ok\": true } ], \"pass\": true, \"failed\": [], \"harnessError\": null } T-004 L1 PASS "
+    }
+  ]
+}

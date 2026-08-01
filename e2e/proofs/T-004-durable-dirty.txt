@@ -1,6 +1,6 @@
 {
-  "head": "0ce058c",
-  "when": "2026-08-01T00:21:08.146Z",
+  "head": "a0ec219",
+  "when": "2026-08-01T00:41:30.273Z",
   "results": [
     {
       "id": "dirty-reload-restore",
@@ -12,14 +12,14 @@
         "dirty": "true",
         "name": "Kael Dirty Refresh",
         "keys": [
-          "storylint:sheet-identity-draft:v1:e2e-t004-8872-ms9mkra6:sheet-kael"
+          "storylint:sheet-identity-draft:v1:e2e-t004-18152-ms9nbpe5:sheet-kael"
         ]
       },
       "afterReload": {
         "dirty": "true",
         "name": "Kael Dirty Refresh",
         "keys": [
-          "storylint:sheet-identity-draft:v1:e2e-t004-8872-ms9mkra6:sheet-kael"
+          "storylint:sheet-identity-draft:v1:e2e-t004-18152-ms9nbpe5:sheet-kael"
         ]
       },
       "ok": true
@@ -44,7 +44,8 @@
       "afterDiscard": {
         "dirty": "false",
         "name": "Kael Dirty Refresh",
-        "keys": []
+        "keys": [],
+        "discardVisible": true
       },
       "ok": true
     },
@@ -71,7 +72,8 @@
       "id": "conflict-keep-mine",
       "afterKeepMine": {
         "dirty": "true",
-        "name": "MineUnsaved"
+        "name": "MineUnsaved",
+        "conflict2": true
       },
       "ok": true
     },
@@ -86,5 +88,6 @@
     }
   ],
   "pass": true,
-  "failed": []
+  "failed": [],
+  "harnessError": null
 }
