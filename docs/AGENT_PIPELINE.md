@@ -65,6 +65,38 @@ Why both exist: a change can be perfectly reviewable and still not do what its t
 - **State plainly what you did not verify.** Explicit non-claims are the reason a PASS is worth anything. A verdict with no stated limits is a verdict with unknown limits.
 - **Report; do not fix.** A verifier who patches the thing loses the seat.
 
+## No fact-check lane (retired 2026-08-01)
+
+**Do not open a lane that audits docs against code and writes the result to a new doc.**
+It reads like verification and is the opposite: it produces a second artifact that can rot,
+and the copy gets trusted precisely because it looks like it was checked.
+
+Agents move fast and forget to update docs. That is not a discipline problem to be solved
+with more documents. It is a property of the system, and it means **every doc is stale by
+default and the code is the only thing that is not.** A fact-check pins `file:line` claims
+to one tree. The tree moves within hours. Nothing in git warns you, because the line numbers
+still resolve — they just point at different code now.
+
+Measured when the lane was retired: two fact-checks were **317 and 344 commits** behind
+`dev`, and **3 of 5** of their surviving `file:line` citations pointed at unrelated lines.
+Every one still resolved. Nothing errored. Nothing warned.
+
+**Instead:**
+
+| Instead of | Do this |
+|---|---|
+| Auditing a doc against code and filing a report | **Fix the doc in place**, in the same land as the code that made it wrong |
+| Citing a fact-check as evidence of behaviour | Re-derive from `git show origin/dev:<path>` at the current tip |
+| Writing "verified at `<sha>`" into prose | Write an **executable check**. A test fails when it goes stale; a sentence does not. |
+
+A claim about code belongs in something that runs. If it cannot be made executable, it
+belongs in the source as a comment beside the thing it describes, where the next edit has
+to look at it. See [STANDING_RULES](./decisions/STANDING_RULES.md) § Measurement rule 2a.
+
+This does not retire **code review**. Review reads the diff against the code and reports to
+a person who acts on it now. The retired thing is auditing *prose* against code and leaving
+the answer as more prose.
+
 ## Rules (locked)
 
 1. **Same loop as founder intent.** The git vehicle is **land + `--no-ff`**, not squash. Attribution = first-parent merge bubble:

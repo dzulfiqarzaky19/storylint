@@ -60,6 +60,8 @@ A pre-2026-08-01 citation of 26–39 in an old ticket or DM means the row above.
 
 1. **If a check cannot state what it examined and at what commit, its output is not evidence.** Owned stack + HEAD + served bundle (every origin the test talks to) — or refuse, never green. ([milestone-density-pass](./milestone-density-pass.md), [calm-budget-r3-ox](./calm-budget-r3-ox.md) FG7)
 2. **Never infer visibility from geometry.** Use `checkVisibility` + closed-`<details>` guard; assert both directions in the self-test. ([rule-visibility-not-geometry](./rule-visibility-not-geometry.md))
+2a. **Read the code, not a report about the code.** A doc asserting `file:line` facts is a photograph of one tree; the tree moves and the photograph does not. When a doc and the source disagree, the source wins and the doc is wrong by definition. Never cite a fact-check as evidence of current behaviour — re-derive it from `git show origin/dev:<path>`. Retired fact-check snapshots and why: [README § Supersession](./README.md). ([scar 2026-08-01: two fact-checks 317 and 344 commits stale; 3 of 5 citations pointed at unrelated code and still resolved, so nothing errored])
+
 3. **Absence is not a pass.** Outcomes are PASS / FAIL / **NOT-MEASURED**; NOT-MEASURED fails the gate. ([rule-visibility-not-geometry](./rule-visibility-not-geometry.md), r3 M3)
 4. **A selector that matches nothing is a failure**, not a quiet PASS. ([rule-visibility-not-geometry](./rule-visibility-not-geometry.md) M2)
 5. **Assert on behaviour and state, never on a label you do not own.** Prefer roles, `data-*`, structure over marketing copy / aria substrings. ([milestone-density-pass](./milestone-density-pass.md), [copy-audit-task-t](./copy-audit-task-t.md))
