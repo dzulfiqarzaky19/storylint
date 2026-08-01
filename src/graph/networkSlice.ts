@@ -97,7 +97,8 @@ export function defaultSystemSlice(
   }
   if (!candidate) return { mode: 'all' }
   // Costume narrow: selected kind hides nothing → stay All.
-  const visible = candidate.mode === 'all' ? total : counts[candidate.kind]
+  // candidate is always a kind slice here; costume if it hides nothing.
+  const visible = counts[candidate.kind]
   if (visible >= total) return { mode: 'all' }
   return candidate
 }
