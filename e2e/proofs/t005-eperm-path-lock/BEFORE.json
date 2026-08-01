@@ -1,0 +1,24 @@
+{
+  "when": "2026-08-01T00:29:19.000Z",
+  "afterFix": false,
+  "method": "MiniStore twin of saveDirect + raw openSync hold (pre path-keyed lock)",
+  "thrash": {
+    "total": 997,
+    "byCode": { "EPERM": 988, "ENOENT": 9 },
+    "note": "500 iterations × concurrent save/save2/load with shared .tmp name and unqueued writers"
+  },
+  "openHandleSameTmp": {
+    "total": 50,
+    "byCode": { "EPERM": 50 }
+  },
+  "openHandleUniqueTmp": {
+    "total": 50,
+    "byCode": { "EPERM": 50 },
+    "note": "dest held open with openSync('r') during rename — smoking gun for Windows rename-over-open"
+  },
+  "queuedSameInstance": {
+    "total": 0,
+    "note": "per-instance queue alone was clean; multi-instance and unqueued load were not"
+  },
+  "source": "D:/dev/projects/_octopus_flake_scratch/race/eperm_probe.json"
+}
