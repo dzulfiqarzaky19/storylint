@@ -2,8 +2,9 @@
 /**
  * Land-shaped test:green capture with CAUSE lines (horse / B2 silent-calm).
  *
- * Does NOT edit scripts/land.mjs (badger owns that file). Mirrors runCapture
- * spawn shape so the next silent death records pid/code/signal/exit-vs-close.
+ * Standalone fallback. scripts/land.mjs runCapture now embeds the same
+ * [cause] lines (pid/code/signal/exit-vs-close/elapsed). Keep this tool for
+ * land-shaped N loops without a full land.mjs run.
  *
  * Usage:
  *   node scripts/capture-test-green-cause.mjs

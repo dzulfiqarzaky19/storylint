@@ -199,6 +199,79 @@ test('infra quote-class sweep: unit-reporter lines quoting every infra token sta
   assert.equal(report.notMeasuredReasons.filter((r) => r.startsWith('infra:')).length, 0)
 })
 
+
+test('MUT-G5: same infra failure on both sides is NOT-MEASURED, never a pre-existing product red', () => {
+  // falcon MUT-G5: at 715bbf1, ✖-line EADDRINUSE became unit:product and
+  // identical both-sides passed no-worse as pre-existing. ebee1c7 option (b)
+  // keeps failing reporter lines in infraScanText → not-measured both sides.
+  // Assert BOTH measurement AND gateNoWorseDecision — measurement alone was
+  // insufficient to catch the launder at 715bbf1 if only reasons were checked.
+  const onReporter =
+    FULL_GREEN_LOG +
+    '\n✖ server boots — listen EADDRINUSE: address already in use :::4173 (5ms)\n' +
+    'ℹ fail 1\n'
+  const onDetail =
+    FULL_GREEN_LOG +
+    '\n✖ server boots (5ms)\n' +
+    '  Error: listen EADDRINUSE: address already in use :::4173\n' +
+    'ℹ fail 1\n'
+  for (const [name, log] of [
+    ['reporter-line', onReporter],
+    ['detail-line', onDetail],
+  ]) {
+    const report = classifyTestGreen(log, 1)
+    assert.equal(report.measurement, 'not-measured', name + ' ' + report.notMeasuredReasons.join(','))
+    assert.ok(
+      report.notMeasuredReasons.includes('infra:port-in-use'),
+      name + ' missing port-in-use: ' + report.notMeasuredReasons.join(','),
+    )
+    const decision = gateNoWorseDecision(report, report)
+    assert.equal(decision.ok, false, name + ' both-sides must hard-abort')
+    assert.equal(decision.code, 'baseline-not-measured', name)
+  }
+})
+
+test('MUT-G2 class: failing reporter lines carrying each infra token stay NOT-MEASURED', () => {
+  // falcon MUT-G2 a-d: ✖ / not ok with real infra tokens must not launder to
+  // comparable product reds when baseline is clean green.
+  const baseline = classifyTestGreen(FULL_GREEN_LOG, 0)
+  assert.equal(baseline.measurement, 'measured')
+  const cases = [
+    [
+      'G2a',
+      'infra:port-in-use',
+      FULL_GREEN_LOG +
+        '\n✖ server boots — listen EADDRINUSE: address already in use :::4173 (5ms)\nℹ fail 1\n',
+    ],
+    [
+      'G2b',
+      'infra:port-in-use',
+      FULL_GREEN_LOG +
+        '\nnot ok 4 - server boots — listen EADDRINUSE: address already in use\n',
+    ],
+    [
+      'G2c',
+      'infra:tsc-not-recognized',
+      FULL_GREEN_LOG +
+        "\n✖ build runs — 'tsc' is not recognized as an internal or external command (5ms)\nℹ fail 1\n",
+    ],
+    [
+      'G2d',
+      'infra:playwright-browser-missing',
+      FULL_GREEN_LOG +
+        "\n✖ smoke launches — Executable doesn't exist at C:\\ms-playwright (5ms)\nℹ fail 1\n",
+    ],
+  ]
+  for (const [name, infraId, log] of cases) {
+    const cand = classifyTestGreen(log, 1)
+    assert.equal(cand.measurement, 'not-measured', name + ' ' + cand.notMeasuredReasons.join(','))
+    assert.ok(cand.notMeasuredReasons.includes(infraId), name + ' missing ' + infraId)
+    const d = gateNoWorseDecision(baseline, cand)
+    assert.equal(d.ok, false, name)
+    assert.equal(d.code, 'candidate-not-measured', name)
+  }
+})
+
 test('MUT-G2: failing unit reporter line with EADDRINUSE stays infra evidence', () => {
   // Hole: isUnitReporterLine treated ✖ the same as ✔, so a failing name that quotes
   // a real bind error was stripped from infraScanText and a not-measured run looked measured.
