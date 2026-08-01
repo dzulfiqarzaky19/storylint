@@ -86,8 +86,9 @@ Citable green = `npm run test:green` only (not a lone smoke, not an unproven cal
 30. **Code review and E2E verify are different questions.** "Is the change sound?" (reads the diff) vs "did the ticket's intent land on the running product?" (drives the app, does not read the diff). Neither substitutes for the other. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
 31. **A failed E2E verify is a bug, not a review rejection.** It opens a ticket at ≥ prior priority and re-enters the sprint; it does not revert the land. ([AGENT_PIPELINE](../AGENT_PIPELINE.md))
 32. **The coordinator is not an approval gate before landing.** Review → land → verify. A coordinator inbox between "reviewed" and "landed" is what produced the 83-commit dev/main drift. ([AGENT_PIPELINE § Sprint model](../AGENT_PIPELINE.md))
-33. **`dev → main` at a named milestone, never at a commit count.** ([AGENT_PIPELINE](../AGENT_PIPELINE.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
+33. **`dev → main` at every 5 lands, with a named milestone on the merge subject.** The count is the trigger; the name is what the subject says. Both hold. Supersedes the earlier "never at a commit count" wording, which read as forbidding the founder's own cadence — corrected 2026-08-01 after rat cited it against horse. ([AGENT_PIPELINE](../AGENT_PIPELINE.md), [GIT_WORKFLOW](../GIT_WORKFLOW.md))
 34. **Authority claims need citable words.** "X asked for this" must come with what X actually said. A missing citation disproves the citation, **not** the claim — re-ask rather than concluding it was invented. (rat scar: koala pipeline land)
+35. **One land per feature, not per step.** A land is the unit the founder reads; it should be a thing they can name. A ticket lands with its own close. Review follow-ups fold into the branch before it lands, not after it. Batch only what shares a reason — independent risk, separate tickets, and hotfixes still land separately. (founder, 2026-08-01, after 128 lands in one day; [GIT_WORKFLOW § Land granularity](../GIT_WORKFLOW.md#land-granularity))
 
 ## Still open
 
