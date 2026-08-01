@@ -1,13 +1,14 @@
 /**
- * E1 deliverable — prove step label survives a stall.
+ * E1 deliverable — prove shipping step labels survive a stall.
  *
- * Throwaway: copies slice-k path through mint+seed+goto, then steps
- * "STALL-INJECT" and blocks a route forever so Playwright times out.
- * Parent captures FULL output (no filter). Pass only if the stall label
- * appears in the captured body before exit.
+ * Bound to the real module, not a throwaway copy:
+ *   1) Static: slice-k-smoke.mjs and slice-l-smoke.mjs must import makeStep
+ *      from ./step-label.mjs (no local STEP_T0 / function step).
+ *   2) Dynamic: a child imports the SAME makeStep helper, emits STALL-INJECT,
+ *      then forces a Playwright timeout. Parent captures FULL output.
  *
- * Not part of the green suite. Delete after proof lands in git history
- * (artifact kept under e2e/output/).
+ * Pass only if both checks hold and the stall label appears before non-zero exit.
+ * Not part of the green suite — run by hand / when changing step labelling.
  */
 import { spawn } from 'node:child_process'
 import { writeFileSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs'
@@ -16,13 +17,48 @@ import { fileURLToPath } from 'node:url'
 import { resolveMeasurementTarget } from './owned-stack.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const e2e = resolve(root, 'e2e')
 mkdirSync(resolve(root, 'e2e/proofs'), { recursive: true })
 
-const stallSmokePath = resolve(root, 'e2e/_stall_slice_k_throwaway.mjs')
-const artifactPath = resolve(root, 'e2e/proofs/E1-step-stall-proof.txt')
+const stallSmokePath = resolve(e2e, '_stall_slice_k_throwaway.mjs')
+const artifactPath = resolve(e2e, 'proofs/E1-step-stall-proof.txt')
+const stepLabelPath = resolve(e2e, 'step-label.mjs')
 
+function assertShippingImportsMakeStep() {
+  const shipping = ['slice-k-smoke.mjs', 'slice-l-smoke.mjs']
+  const importRe = /import\s*\{\s*makeStep\s*\}\s*from\s*['"]\.\/step-label\.mjs['"]/
+  const localStepRe = /\bconst\s+STEP_T0\b|\bfunction\s+step\s*\(\s*label\s*\)/
+  const problems = []
+  for (const name of shipping) {
+    const src = readFileSync(resolve(e2e, name), 'utf8')
+    if (!importRe.test(src)) {
+      problems.push(`${name}: missing import { makeStep } from './step-label.mjs'`)
+    }
+    if (localStepRe.test(src)) {
+      problems.push(`${name}: local STEP_T0 / function step reintroduced (must use makeStep)`)
+    }
+  }
+  const helper = readFileSync(stepLabelPath, 'utf8')
+  if (!/export\s+function\s+makeStep\s*\(/.test(helper)) {
+    problems.push('step-label.mjs: export function makeStep missing')
+  }
+  if (!/process\.stdout\.write/.test(helper)) {
+    problems.push('step-label.mjs: must sync-write via process.stdout.write')
+  }
+  if (problems.length) {
+    console.error('FAIL E1 static: shipping path not bound to step-label.mjs')
+    for (const p of problems) console.error('  -', p)
+    process.exit(1)
+  }
+  console.log('E1 static: slice-k + slice-l import makeStep from step-label.mjs')
+}
+
+assertShippingImportsMakeStep()
+
+// Child uses the SHIPPED helper — not an inlined copy of step().
 const stallSource = `/**
- * THROWAWAY — forced stall after a named step. Not a product smoke.
+ * THROWAWAY child — stall after a named step via shipping makeStep.
+ * Written by prove-step-stall.mjs; not a product smoke.
  */
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
@@ -35,16 +71,13 @@ import {
   setApiBase,
   PRECONDITION_TIMEOUT_MS,
 } from './helpers.mjs'
+import { makeStep } from './step-label.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
 const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
 
-const STEP_T0 = Date.now()
-function step(label) {
-  // Same contract as production slice-k/l: sync write so stall still leaves label.
-  process.stdout.write(\`[slice-k +\${Date.now() - STEP_T0}ms] \${label}\\n\`)
-}
+const step = makeStep('slice-k')
 
 if (process.env.STORYLINT_API) setApiBase(process.env.STORYLINT_API)
 requireApiOrigin()
@@ -65,21 +98,17 @@ try {
   await page.getByLabel('Active project').waitFor({ state: 'attached', timeout: PRECONDITION_TIMEOUT_MS })
   await reclaimIsolatedProject(projectId)
 
-  // Named step immediately before the hang — this is what must appear in FAIL output.
+  // Named step immediately before the hang — must appear in FAIL output.
   step('STALL-INJECT')
-  // Route that never fulfills: next navigation/fetch stalls until default timeout.
   await page.route('**/api/project', async () => {
     await new Promise(() => {}) // never settles
   })
-  // Trigger a wait that uses the stalled resource (Playwright locator timeout path).
   await page.reload({ waitUntil: 'domcontentloaded', timeout: 4000 }).catch(() => {})
-  // Force a hard wait that will timeout with the route still open.
   await page.getByRole('button', { name: 'Canon' }).click({ timeout: 4000 })
   await page.getByRole('main', { name: 'Relationship graph' }).waitFor({ timeout: 4000 })
   console.log('UNEXPECTED PASS — stall did not fire')
   process.exitCode = 2
 } catch (error) {
-  // Ensure error text is on the pipe before exit (full capture, no filter).
   process.stderr.write(String(error && error.stack ? error.stack : error) + '\\n')
   process.exitCode = 1
 } finally {
@@ -136,6 +165,7 @@ const header = [
   'E1 step-stall proof artifact',
   `date: ${new Date().toISOString()}`,
   `child_exit: ${code}`,
+  'bound_to: e2e/step-label.mjs makeStep (imported by slice-k/l + this child)',
   'expect: body contains "[slice-k +" and "STALL-INJECT" AND child_exit !== 0',
   '--- FULL OUTPUT (unfiltered) ---',
   '',
@@ -145,7 +175,6 @@ writeFileSync(artifactPath, header + body + '\n--- END ---\n')
 const hasLabel = /\[slice-k \+\d+ms\] STALL-INJECT/.test(body)
 const failed = code !== 0 && code !== null
 
-// cleanup throwaway smoke source (artifact retained)
 try {
   unlinkSync(stallSmokePath)
 } catch {
@@ -157,8 +186,8 @@ console.log('artifact:', artifactPath)
 console.log('has STALL-INJECT step label:', hasLabel)
 console.log('child failed (non-zero):', failed, 'code=', code)
 if (hasLabel && failed) {
-  console.log('PASS E1: stalled step named before timeout')
+  console.log('PASS E1: shipping makeStep label survived stall; k/l still import it')
   process.exit(0)
 }
-console.error('FAIL E1: need failing run WITH step label in output')
+console.error('FAIL E1: need failing run WITH step label from shipping makeStep')
 process.exit(1)
