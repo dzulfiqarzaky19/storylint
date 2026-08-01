@@ -70,6 +70,26 @@ A reader should find the ruling that governs their question in the tables below 
 
 Reversed decisions are the most instructive. Keep the file; point here.
 
+**Fact-check snapshots are not kept.** A fact-check pins `file:line` claims to one tree.
+The tree moves; the claims do not. Retired 2026-08-01 and recoverable from git history at
+`86f2e53`:
+
+| Retired record | Tree it verified | Behind dev when retired |
+|---|---|---|
+| `density-pass-settled-positions-factcheck.md` | `07bfabf` | 344 commits |
+| `doc-vs-code-corpus-factcheck.md` | `4a451cd` | 317 commits |
+| `density-pass-settled-positions-adversarial.md` | `3b61e40` | 364 commits |
+
+The adversarial pass was removed with them even though its argument was still sound: the
+artifact class is the hazard, not any one file. A correct snapshot today is a stale one in
+a month, and nothing in the repo marks the moment it turns.
+
+Three of five surviving `file:line` citations pointed at unrelated code by then. They still
+*resolved* — the line numbers existed — so nothing errored and nothing warned. That is the
+dangerous shape: a stale fact-check reads as authoritative while quietly describing code
+that no longer exists. **Verify against the tree, not against a report about the tree.**
+
+
 | Record | Status | Replaced by / stands with |
 |--------|--------|---------------------------|
 | Density-audit D5 “open sheet in center” | **RETRACTED** | [adjudication-d5-sheet-binder.md](./adjudication-d5-sheet-binder.md) · IA_MAP §2/§4.4 |
