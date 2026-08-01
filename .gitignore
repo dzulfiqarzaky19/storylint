@@ -22,6 +22,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# land / cause-capture transcripts (keep local; never commit)
+_land_run/
+
 # editor / OS
 .vscode/*
 !.vscode/extensions.json
