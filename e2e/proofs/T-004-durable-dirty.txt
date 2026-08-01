@@ -1,6 +1,6 @@
 {
-  "head": "a0ec219",
-  "when": "2026-08-01T00:41:30.273Z",
+  "head": "06b9df0",
+  "when": "2026-08-01T00:42:31.839Z",
   "results": [
     {
       "id": "dirty-reload-restore",
@@ -12,14 +12,14 @@
         "dirty": "true",
         "name": "Kael Dirty Refresh",
         "keys": [
-          "storylint:sheet-identity-draft:v1:e2e-t004-18152-ms9nbpe5:sheet-kael"
+          "storylint:sheet-identity-draft:v1:e2e-t004-27808-ms9nd0l6:sheet-kael"
         ]
       },
       "afterReload": {
         "dirty": "true",
         "name": "Kael Dirty Refresh",
         "keys": [
-          "storylint:sheet-identity-draft:v1:e2e-t004-18152-ms9nbpe5:sheet-kael"
+          "storylint:sheet-identity-draft:v1:e2e-t004-27808-ms9nd0l6:sheet-kael"
         ]
       },
       "ok": true
