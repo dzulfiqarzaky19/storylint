@@ -59,6 +59,8 @@ A decision that *requires* a reader to open a gitignored screenshot is a process
 
 A TRACKED DOC MUST NOT CITE A LOCAL-ONLY HARNESS PATH. Distinct from the other six: those could exist; a harness path must not. Fixed in this land: removed `.claude/skills/ui-ux-pro-max` from `orchestrator-ux-faults.md` and `ux-report.md` (plain structure/a11y description; paint still `docs/design/TOKENS.md`). Rule: `docs/AGENTS_ROLES.md` § AI harness stays local.
 
+This report quotes the banned path as evidence of the class it fixed. Describing a violation is not committing one. A mechanical re-run that hits the string here is looking at the sweep, not a dependency — leave it.
+
 ## Class
 
 Same disease as ticket-cited probes that live only in a worktree: a reader cannot open the evidence.

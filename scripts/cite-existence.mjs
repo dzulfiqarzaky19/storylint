@@ -365,6 +365,8 @@ function main() {
   md.push('')
   md.push('A TRACKED DOC MUST NOT CITE A LOCAL-ONLY HARNESS PATH. Distinct from other missing entries: those could exist; a harness path must not. Rule: docs/AGENTS_ROLES.md § AI harness stays local.')
   md.push('')
+  md.push('This report quotes the banned path as evidence of the class it fixed. Describing a violation is not committing one. A mechanical re-run that hits the string here is looking at the sweep, not a dependency — leave it.')
+  md.push('')
   md.push('## Class')
   md.push('')
   md.push('Same disease as ticket-cited probes that live only in a worktree: a reader cannot open the evidence.')
