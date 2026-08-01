@@ -211,11 +211,11 @@ export function AgentPanel({
     else if (continuityMode) {
       const counts = continuityCounts
       if (counts && counts.red + counts.yellow + counts.proposals === 0) {
-        bits.push(`Last Continuity (${continuityMode}): no issues found`)
+        bits.push(`Continuity: no issues (${continuityMode})`)
       } else if (counts) {
-        bits.push(`Last Continuity (${continuityMode}): ${counts.red} red · ${counts.yellow} yellow · ${counts.proposals} proposals`)
+        bits.push(`Continuity: ${counts.red} red · ${counts.yellow} yellow · ${counts.proposals} pending (${continuityMode})`)
       } else {
-        bits.push(`Last Continuity: ${continuityMode}`)
+        bits.push(`Continuity (${continuityMode})`)
       }
     }
     if (llmMode === 'fixture') bits.push('Chat fixture')
@@ -367,12 +367,9 @@ export function AgentPanel({
               >
                 <span className="agent__message-role">Continuity · {entry.mode}</span>
                 {empty ? (
-                  <>
-                    <strong>No issues found</strong>
-                    <p className="continuity-privacy">No marks or proposals for this chapter. Accept/Edit/Reject stay gated until something is pending.</p>
-                  </>
+                  <strong>No issues found</strong>
                 ) : (
-                  <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} proposals</strong>
+                  <strong>{entry.red} red · {entry.yellow} yellow · {entry.proposals} pending</strong>
                 )}
               </article>
             )
@@ -633,19 +630,19 @@ export function AgentPanel({
               ) : continuityMode && continuityCounts ? (
                 <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
                   {continuityCounts.red + continuityCounts.yellow + continuityCounts.proposals === 0
-                    ? `Last Continuity: no issues (${continuityMode})`
-                    : `Last Continuity: ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals`}
+                    ? `Continuity: no issues (${continuityMode})`
+                    : `Continuity: ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} pending`}
                 </p>
               ) : continuityMode ? (
                 <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
-                  Last Continuity finished ({continuityMode})
+                  Continuity finished ({continuityMode})
                 </p>
               ) : !continuityRunnable ? (
                 <p className="companion__check-summary" data-continuity-state="idle">
                   Write some prose, then run Continuity.
                 </p>
               ) : null}
-              {renderTranscript({ apply: false, status: false })}
+              {renderTranscript({ tools: false, apply: false, status: false, review: true })}
             </div>
             <div className="panel__footer companion__check-footer" ref={checkToolsRef}>
               <div className="companion__check-primary" data-check-tool="continuity" data-check-primary="true">

@@ -72,3 +72,15 @@ test('MUTATION lock: resting Check must not triple-state Continuity', () => {
   assert.doesNotMatch(source, /Continuity guards Canon\. Review and Craft coach/)
   assert.doesNotMatch(source, /Find contradictions against accepted Canon/)
 })
+
+test('MUTATION lock: post-run Check does not double Continuity (summary owns result)', () => {
+  const source = readFileSync(join(root, 'components/shell/AgentPanel.tsx'), 'utf8')
+  // Check face body must hide tool cards — companion__check-summary is the result owner.
+  assert.match(source, /renderTranscript\(\{\s*tools:\s*false,\s*apply:\s*false,\s*status:\s*false,\s*review:\s*true\s*\}\)/)
+  // Compact result copy (no "Last Continuity" essay form).
+  assert.doesNotMatch(source, /Last Continuity/)
+  // Tool card empty branch must not re-teach Accept/Edit/Reject.
+  assert.doesNotMatch(source, /No marks or proposals for this chapter/)
+  // Inbox empty hint may still mention Accept/Edit/Reject — that is a different face.
+  assert.match(source, /Accept\/Edit\/Reject stay gated until something is pending/)
+})
