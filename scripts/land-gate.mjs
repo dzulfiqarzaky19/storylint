@@ -197,7 +197,13 @@ export function classifyTestGreen(output, status = 0) {
     { id: 'infra:cannot-find-package', re: /ERR_MODULE_NOT_FOUND|Cannot find package/i },
     { id: 'infra:enoent', re: /ENOENT:\s*no such file or directory/i },
     { id: 'infra:playwright-browser-missing', re: /Executable doesn't exist|browserType\.launch|Playwright.*Missing browser/i },
-    { id: 'infra:port-in-use', re: /EADDRINUSE|address already in use/i },
+    {
+      id: 'infra:port-in-use',
+      // Real bind errors only. Bare "EADDRINUSE" also appears in unit test NAMES
+      // (e.g. "LG-B2: EADDRINUSE at exit 0..."), which must not poison a full green log
+      // (land false-positive at 71e5ba3 candidate FINGERPRINT eddd76a4).
+      re: /listen EADDRINUSE|EADDRINUSE:\s*address already in use|Error:\s*listen EADDRINUSE|code:\s*['"]EADDRINUSE['"]/i,
+    },
     { id: 'infra:spawn-npm-failed', re: /spawn .*ENOENT|failed to spawn npm/i },
   ]
 

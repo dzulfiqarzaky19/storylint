@@ -148,6 +148,20 @@ test('LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch', () => {
   assert.equal(decision.code, 'baseline-not-measured')
 })
 
+test('unit test NAME containing EADDRINUSE does not poison full green (land false-positive)', () => {
+  // Repro from land @ 71e5ba3: candidate FINGERPRINT eddd76a4 exit 0, but unit suite
+  // printed 'LG-B2: EADDRINUSE at exit 0...' and loose /EADDRINUSE/ aborted no-worse.
+  const log =
+    FULL_GREEN_LOG +
+    '\n✔ LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch (0.6282ms)\n' +
+    '✔ LG-B2: tsc-not-recognized at exit 0 is NOT-MEASURED (infra, not exit-1 second branch) (0.2ms)\n' +
+    'ℹ tests 33\nℹ pass 33\nℹ fail 0\n'
+  const report = classifyTestGreen(log, 0)
+  assert.equal(report.measurement, 'measured', [...report.notMeasuredReasons].join(','))
+  assert.ok(!report.failures.has('infra:port-in-use'))
+  assert.ok(!report.notMeasuredReasons.some((r) => r.includes('port-in-use')))
+})
+
 test('LG-B2: tsc-not-recognized at exit 0 is NOT-MEASURED (infra, not exit-1 second branch)', () => {
   // Must include a complete green body so the ONLY reason for not-measured is the infra
   // branch — otherwise green-exit-without-stage-evidence masks a disabled infra check
