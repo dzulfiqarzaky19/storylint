@@ -32,6 +32,10 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
 
    Full founder flow: topic branch → hawk reviews → not ok, author retries → ok, author lands to `dev` via `npm run land` → every 5 lands, horse merges `dev → main`.
 
+   **One land per feature, not per commit-sized step (founder-set 2026-08-01).** A land is the unit the
+   founder reads. It should be a thing they can recognize as a feature, a fix, or a closed ticket —
+   not one step of the work that produced it. See [Land granularity](#land-granularity).
+
    Check the count before deciding:
    ```
    git rev-list --count --first-parent origin/main..origin/dev
@@ -213,6 +217,57 @@ git diff --stat $(git merge-base origin/dev origin/main) origin/main
 If either shows unique non-merge commits or a tree delta, stop and tell the coordinator. That is a real fork, not a bubble.
 
 **Observed false alarm (2026-07-31):** AF stopped on `184bb3e` (pure merge bubble; tree identical to second parent / merge-base). Cost real agent time; do not repeat.
+
+## Land granularity
+
+**Rule (founder-set 2026-08-01): one land per feature.** Batch the steps that produce a feature onto
+one branch and land once. Do not land each step.
+
+### The scar (measured, 2026-08-01)
+
+`origin/dev` took **128 lands in one day**. The founder's read: "it's already 500 PRs only for today,
+I don't want it to be too many, make PR per feature instead."
+
+The count is what they experience, and their instinct was right even though the exact number differed.
+What produced 128:
+
+| Pattern | Example | Should have been |
+|---|---|---|
+| Ticket work split from its own close | `t005-path-lock`, `t005-done`, `t005-close` (3 lands) | 1 land: fix + ticket status together |
+| Review follow-ups landed separately | `falcon-caveat-land`, `falcon-followup-land`, `falcon-t008-land` | fold into the branch under review before it lands |
+| Corpus/doc entries one per idea | `ox-8d-property-gone`, `ox-8f-verdict-predicate`, `ox-gate-ok-vocab` | 1 land per session's corpus additions |
+| A gate split across its own parts | `gate-b-mutant-validity`, `gate-b-header-notes` | 1 land: the gate and its notes |
+
+**21 of the 128 were pure bookkeeping** — ticket closes, board syncs, drift sweeps — landed apart from
+the work they described. That is the cheapest half of the fix: a ticket's status change belongs in the
+same land as the change that earned it.
+
+### What counts as one feature
+
+One land = one thing the founder would name. Concretely:
+
+- A ticket and its close, together. `T-005 path lock` is one land, not fix → done → close.
+- A gate and everything that makes it real: mechanism, self-test, wiring, notes.
+- A review cycle's outcome. hawk's findings get folded into the branch **before** it lands, not landed
+  after it as repair. If review requires a change, amend the branch and re-land it once.
+- A sweep across many files for one reason, e.g. one `l1_proof` citation sweep.
+
+### What still justifies a separate land
+
+Do not batch to hit a number. These stay separate:
+
+- **Independent risk.** Two changes that could each break something different, where a revert should be
+  able to take one without the other.
+- **Different reviewers or different tickets.** Two tickets are two lands even if touched the same hour.
+- **A hotfix.** Never batch an urgent fix behind unrelated work.
+- **A land that is already green and pushed.** Never rewrite published history to make the count prettier
+  (History honesty over graph beauty, above).
+
+### Consequence for the `dev → main` cadence
+
+Every-5 is unchanged, but its meaning improves: 5 lands should now be **5 features**, not 5 steps. Horse's
+merge subject names the milestone, and with per-feature lands that name gets easier to write honestly —
+if a milestone summary is hard to state, the batch was probably fragments rather than features.
 
 ## Verification vs mutation
 
