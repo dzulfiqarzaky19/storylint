@@ -271,6 +271,8 @@ Isolation green is not composition green.
 Command: `npm run test:l2` → `e2e/guard-helpers.mjs` + `e2e/l2-composition.mjs`.
 Owned stack + provenance + fail-closed (same as test:green). Artifacts: `e2e/output/l2-composition-last.md`.
 Do not grow L2 by re-listing isolated smokes. Add checks only when they require a shared container.
+
+**Named claim only.** L2 load-bearing mutations prove two directions on the shared project: Canon sheet PUT cannot blank Draft bodies; Draft chapter PUT cannot wipe/rename Canon sheets. Lab is walked for container stickiness, not for a Lab-clobber mutation. Inbox/graph are out of scope. Do not quote `test:l2` as general multi-surface composition-safe.
 ## Feature smokes
 
 Listed in `constants.mjs` → `ALL_FEATURE_SMOKES`, run by `all-smoke.mjs` with per-smoke hard timeouts and a green/red summary.
