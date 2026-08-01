@@ -77,6 +77,22 @@ test('default system slice prefers last-used kind when present', () => {
   assert.deepEqual(defaultSystemSlice(c, null), { mode: 'kind', kind: 'character' })
 })
 
+test('last-used kind with zero nodes does not false-empty; falls through', () => {
+  // tigress MUT-N4: guard counts[lastUsedKind] > 0 must be load-bearing.
+  // Mixed corpus so fallthrough kind still hides something (not costume-All).
+  const c = counts({ character: 0, lore: 10, world: 20 })
+  assert.deepEqual(defaultSystemSlice(c, 'character'), { mode: 'kind', kind: 'world' })
+  const state = reconcileNetworkSlice({
+    selection: { mode: 'all' },
+    sliceSource: 'system',
+    lastUsedKind: 'character',
+  }, c)
+  assert.deepEqual(state.selection, { mode: 'kind', kind: 'world' })
+  const view = networkSliceView(state, c, LABELS)
+  assert.equal(view.narrowed, true)
+  assert.deepEqual(view.honesty, { visible: 20, total: 30, kindLabel: 'World' })
+})
+
 test('default system slice falls through when Characters empty', () => {
   const c = counts({ lore: 12, world: 18 })
   assert.deepEqual(defaultSystemSlice(c, null), { mode: 'kind', kind: 'world' })
@@ -174,6 +190,29 @@ test('N=0 stays All with no costume narrow', () => {
   assert.deepEqual(state.selection, { mode: 'all' })
   assert.equal(view.honesty, null)
   assert.equal(view.totalN, 0)
+})
+
+test('system default refuses costume narrow when one kind covers N', () => {
+  const c = counts({ character: 26 })
+  assert.deepEqual(defaultSystemSlice(c, null), { mode: 'all' })
+  const state = reconcileNetworkSlice(emptyNetworkSliceState(), c)
+  assert.deepEqual(state.selection, { mode: 'all' })
+  const view = networkSliceView(state, c, LABELS)
+  assert.equal(view.narrowed, false)
+  assert.equal(view.honesty, null)
+})
+
+test('honesty stays off when author kind already shows every node', () => {
+  const c = counts({ world: 30 })
+  let state = reconcileNetworkSlice(emptyNetworkSliceState(), c)
+  // System already All (costume refused). Author picks World explicitly.
+  state = chooseNetworkSlice(state, { mode: 'kind', kind: 'world' })
+  const view = networkSliceView(state, c, LABELS)
+  assert.deepEqual(state.selection, { mode: 'kind', kind: 'world' })
+  assert.equal(view.visibleCount, 30)
+  assert.equal(view.totalN, 30)
+  assert.equal(view.narrowed, false)
+  assert.equal(view.honesty, null)
 })
 
 test('countKinds tallies sheet kinds', () => {

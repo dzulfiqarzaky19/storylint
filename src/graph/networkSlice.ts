@@ -27,9 +27,9 @@ export type NetworkSliceView = {
   totalN: number
   /** Nodes visible under current selection. */
   visibleCount: number
-  /** True when selection is not All (honesty chrome required). */
+  /** True when the current selection hides at least one node (honesty chrome). */
   narrowed: boolean
-  /** Honesty line payload when narrowed; null when All. */
+  /** Honesty line only when visible < N; never "x of x". */
   honesty: { visible: number; total: number; kindLabel: string } | null
 }
 
@@ -71,25 +71,35 @@ export function totalFromCounts(counts: KindCounts): number {
 /**
  * Default slice when system auto-narrows (N ≥ T and no author choice).
  * Priority: last-used kind → Characters → next kind by count → All.
+ * If the chosen kind already covers every node, return All (no costume narrow).
  */
 export function defaultSystemSlice(
   counts: KindCounts,
   lastUsedKind: SheetKind | null,
 ): NetworkSliceSelection {
+  const total = totalFromCounts(counts)
+  let candidate: NetworkSliceSelection | null = null
+  // last-used only when it still has nodes — empty seed must not false-empty the map.
   if (lastUsedKind && counts[lastUsedKind] > 0) {
-    return { mode: 'kind', kind: lastUsedKind }
-  }
-  if (counts.character > 0) return { mode: 'kind', kind: 'character' }
-  let best: SheetKind | null = null
-  let bestCount = 0
-  for (const kind of SHEET_KINDS) {
-    if (counts[kind] > bestCount) {
-      best = kind
-      bestCount = counts[kind]
+    candidate = { mode: 'kind', kind: lastUsedKind }
+  } else if (counts.character > 0) {
+    candidate = { mode: 'kind', kind: 'character' }
+  } else {
+    let best: SheetKind | null = null
+    let bestCount = 0
+    for (const kind of SHEET_KINDS) {
+      if (counts[kind] > bestCount) {
+        best = kind
+        bestCount = counts[kind]
+      }
     }
+    if (best && bestCount > 0) candidate = { mode: 'kind', kind: best }
   }
-  if (best && bestCount > 0) return { mode: 'kind', kind: best }
-  return { mode: 'all' }
+  if (!candidate) return { mode: 'all' }
+  // Costume narrow: selected kind hides nothing → stay All.
+  const visible = candidate.mode === 'all' ? total : counts[candidate.kind]
+  if (visible >= total) return { mode: 'all' }
+  return candidate
 }
 
 export function kindsForSelection(selection: NetworkSliceSelection): ReadonlySet<SheetKind> {
@@ -163,7 +173,8 @@ export function networkSliceView(
   const totalN = totalFromCounts(counts)
   const kinds = kindsForSelection(state.selection)
   const visibleCount = visibleCountForSelection(counts, state.selection)
-  const narrowed = state.selection.mode !== 'all'
+  // Honesty tracks hidden nodes, not chip mode — "Showing N of N" is noise.
+  const narrowed = visibleCount < totalN
   return {
     selection: state.selection,
     sliceSource: state.sliceSource,
