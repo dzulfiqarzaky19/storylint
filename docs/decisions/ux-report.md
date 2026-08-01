@@ -12,10 +12,10 @@
 **Verdict:** request changes  
 **Drives:** `node e2e/ux-drive.mjs` · `node e2e/ux-drive-graph.mjs` (fresh this session)  
 **Progress:** `e2e/output/ux-progress.md` · `e2e/output/ux-graph-progress.md` · `e2e/output/ux-notes.json`  
-**Skill:** local `.claude/skills/ui-ux-pro-max` (structure/a11y only — **paint = docs/design/TOKENS.md**)
+**Method:** structure/a11y review pass (paint = `docs/design/TOKENS.md`)
 
-### Skill note
-`--design-system` suggested OLED slate + green CTA. **Ignore that paint.** Storylint doctrine is Kobo paper + brass/stone (`#C4A574` accent, charcoal primary). Skill still used for a11y, touch, density, nav, empty/loading, and graph readability checks.
+### Paint doctrine
+A generic design-system pack suggested OLED slate + green CTA. **Ignore that paint.** Storylint doctrine is Kobo paper + brass/stone (`#C4A574` accent, charcoal primary). Structure/a11y checks still cover touch, density, nav, empty/loading, and graph readability.
 
 ---
 
@@ -49,7 +49,7 @@
 
 ---
 
-## ui-ux-pro-max checklist (Storylint-scoped)
+## Structure/a11y checklist (Storylint-scoped)
 
 ### §1 Accessibility — mostly pass
 | Check | Result | Evidence |

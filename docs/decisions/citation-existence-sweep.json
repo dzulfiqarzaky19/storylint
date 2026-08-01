@@ -1,29 +1,18 @@
 {
-  "head": "afcd2e9",
-  "generated": "2026-08-01T01:56:12.109Z",
+  "head": "3a7a52e",
+  "generated": "2026-08-01T02:04:30.750Z",
   "method": "existence-only; path-rooted + bare *.md + md links; same-dir/docs resolution; e2e/output+data = GITIGNORED; bare source basenames excluded",
   "totals": {
-    "files_scanned": 64,
-    "resolves": 286,
-    "missing_citations": 9,
-    "unique_missing": 7,
+    "files_scanned": 67,
+    "resolves": 318,
+    "missing_citations": 7,
+    "unique_missing": 6,
     "gitignored_citations": 60,
     "unique_gitignored": 58,
     "glob": 4,
     "basename_rescue": 0
   },
   "unique_missing": [
-    {
-      "path": ".claude/skills/ui-ux-pro-max",
-      "cited_as": [
-        ".claude/skills/ui-ux-pro-max"
-      ],
-      "cited_in": [
-        "docs/decisions/orchestrator-ux-faults.md:15",
-        "docs/decisions/ux-report.md:15"
-      ],
-      "triage": "tooling-not-in-repo"
-    },
     {
       "path": "docs/design/D4-CANON-MAP-CHROME.md",
       "cited_as": [
@@ -103,7 +92,7 @@
         "data/projects"
       ],
       "cited_in": [
-        "docs/decisions/STANDING_RULES.md:35",
+        "docs/decisions/STANDING_RULES.md:37",
         "docs/decisions/milestone-density-pass.md:142"
       ],
       "triage": "unresolved-path"
@@ -358,19 +347,6 @@
       ]
     },
     {
-      "file": "docs/decisions/orchestrator-ux-faults.md",
-      "missing": [
-        {
-          "cited": ".claude/skills/ui-ux-pro-max",
-          "resolved_as": ".claude/skills/ui-ux-pro-max",
-          "lines": [
-            15
-          ],
-          "triage": "tooling-not-in-repo"
-        }
-      ]
-    },
-    {
       "file": "docs/decisions/sheet-identity-refresh-loss-t004-measure.md",
       "missing": [
         {
@@ -380,19 +356,6 @@
             39
           ],
           "triage": "throwaway-or-worktree-probe"
-        }
-      ]
-    },
-    {
-      "file": "docs/decisions/ux-report.md",
-      "missing": [
-        {
-          "cited": ".claude/skills/ui-ux-pro-max",
-          "resolved_as": ".claude/skills/ui-ux-pro-max",
-          "lines": [
-            15
-          ],
-          "triage": "tooling-not-in-repo"
         }
       ]
     },

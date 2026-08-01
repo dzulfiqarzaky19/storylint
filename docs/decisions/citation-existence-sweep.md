@@ -1,7 +1,7 @@
 # Citation existence sweep
 
-HEAD checked: `afcd2e9`
-Generated: 2026-08-01T01:56:12.109Z
+HEAD checked: `3a7a52e`
+Generated: 2026-08-01T02:04:30.750Z
 
 ## Method
 
@@ -17,10 +17,10 @@ Generated: 2026-08-01T01:56:12.109Z
 
 | metric | n |
 |--------|---|
-| files scanned | 64 |
-| citations RESOLVES | 286 |
-| citations MISSING | 9 |
-| unique MISSING paths | 7 |
+| files scanned | 67 |
+| citations RESOLVES | 318 |
+| citations MISSING | 7 |
+| unique MISSING paths | 6 |
 | citations GITIGNORED | 60 |
 | unique GITIGNORED | 58 |
 | basename rescue | 0 |
@@ -49,28 +49,15 @@ Generated: 2026-08-01T01:56:12.109Z
 | `e2e/_t003_arrival_probe.mjs` | `docs/tickets/T-003.md:72` |
 | `e2e/_t004_refresh_probe.mjs` | `docs/decisions/sheet-identity-refresh-loss-t004-measure.md:39` |
 
-### tooling-not-in-repo (1)
-
-| path | cited in |
-|------|----------|
-| `.claude/skills/ui-ux-pro-max` | `docs/decisions/orchestrator-ux-faults.md:15`<br>`docs/decisions/ux-report.md:15` |
-
 ## GITIGNORED (not broken tracked citations)
 
 Count: **58** unique paths (**60** citations). Roots: `e2e/output/`, `data/`.
 
 A decision that *requires* a reader to open a gitignored screenshot is a process smell, but it is not the same disease as citing a tracked path that does not exist.
 
+## Follow-up (harness-path class)
 
-## Fixes landed with this report
-
-| was MISSING | fix |
-|-------------|-----|
-| `tickets/README.md` via `../../tickets/...` | `pipeline-gate-vocabulary.md` → `../tickets/README.md` |
-| bare `calm-budget-run.md` | `docs/decisions/README.md` → `e2e/output/calm-budget-run.md` |
-| bare `ux-graph-progress.md` / `ux-notes.json` | `ux-report.md` → `e2e/output/...` prefixes |
-
-Remaining unique MISSING are **not** link typos: missing design doc, unshipped probe drivers, throwaway probes already labelled not-shipped, tooling path outside repo.
+A TRACKED DOC MUST NOT CITE A LOCAL-ONLY HARNESS PATH. Distinct from the other six: those could exist; a harness path must not. Fixed in this land: removed `.claude/skills/ui-ux-pro-max` from `orchestrator-ux-faults.md` and `ux-report.md` (plain structure/a11y description; paint still `docs/design/TOKENS.md`). Rule: `docs/AGENTS_ROLES.md` § AI harness stays local.
 
 ## Class
 
@@ -82,7 +69,7 @@ Existence is cheaper than execution.
 | throwaway-or-worktree-probe | `_t00x_*`, `falcon-mut*` not on origin/dev |
 | probe-script-not-shipped | audit drivers named in decisions, absent from tree |
 | design-doc-missing | `docs/design/...` cited, not present |
-| tooling-not-in-repo | `.claude/...` paths |
+| harness-path-in-tracked-doc | tracked doc cites local-only AI harness (must not; never ship to fix) |
 | GITIGNORED | local output by design (separate bucket) |
 
 ## Tickets re-pass note
