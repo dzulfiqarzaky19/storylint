@@ -39,6 +39,39 @@ Hawk landed the wording fix. This record is the **limit**, not the fix.
 
 **The same rule stated in two places is one rot vector.** One copy can lie while the other stays right — same shape as uncoupled parallel implementations (8c "in spirit" / dolphin normalizer), in prose rather than code. Prefer **one** adjacent instruction, or better: **one** mechanical check and no prose rule.
 
+## Instance (item 15) — probe verdict predicate
+
+Hawk wrote a probe to test Gate B leg independence and coded its **verdict predicate backwards**: it printed `^^ HAZARD` when a leg's own test failed — which is precisely the leg being proven. Three false hazards against badger's work, nearly sent.
+
+**Why it is not item 13 / not a fifth 8d leg:** the probe satisfied every mechanical Gate B leg (green baseline, anchor found, property change verified, nonzero suite executed). Every check Gate B inspects passed. The defect was in the **sentence it printed**, not in anything a leg measures.
+
+```text
+THE VERDICT PREDICATE IS ITSELF UNTESTED CODE.
+Gate B validates the mutant. Nothing validates the checker's own pass/fail logic.
+```
+
+That is **8f in a new location**: the verdict sentence is load-bearing prose that instructs readers, and it is unprotectable by the instrument it sits above. Hawk correctly does **not** propose a fifth mutation leg. A rule that cannot be checked, filed as if it could be, would itself be an instance of the disease (same honesty that kept 8f a limit, not a gate).
+
+### What caught it (generalisable half)
+
+**Coherence check, not a gate:** zero collateral is incoherent with a real hazard. The numbers contradicted the label and forced a re-read.
+
+**Binding corollary (report reading):**
+
+> When a verdict and its supporting numbers disagree, **the numbers are the evidence and the verdict is a claim.**
+
+Anyone reading any report can apply this. Prefer the count/identity set over the banner word when they conflict. Same family as 8e (token ≤ check) one layer up: the **human-facing summary line** of a probe is still a claim, not a measurement.
+
+### Three mechanisms, one ceiling (hawk tally)
+
+| Item | Mechanism | What gates see |
+|---|---|---|
+| 13 | Wrong subject | Green on the wrong object |
+| 14 | Wrong granularity | Mutant too coarse / flatters fixture |
+| 15 | Wrong verdict predicate | All legs green; sentence lies |
+
+Gates A/B raise the floor. Item 15 is why the ceiling stays a reader (and why fresh eyes at finer grain remain the control for the top half).
+
 ## Relationship to the 8-family (honest ceiling)
 
 | Rule | What it can protect |
@@ -53,9 +86,13 @@ Today's corpus (8c three duties, 8d three legs, slot-occupancy tests) raises the
 - Does not ban all comments. Bans treating remote/duplicated instructional comments as load-bearing without adjacency or a check.
 - Does not require deleting historical prose in docs/decisions (those are the corpus, not runtime agent instructions embedded in product paths).
 - Does not make "human review" a gate substitute for executable proof where executable proof is possible.
+- Does not make every probe self-test its printer via a new numbered gate. Coherence (numbers vs label) is the available control.
+- Does not demote Gate A/B. They still raise the floor; item 15 names what they cannot see.
 
 ## Review cue
 
 When a PR adds an instructional comment aimed at future agents: is there a check? If not, is it adjacent to the one site it governs? If neither — reject or convert to a check.
+
+When a probe prints HAZARD/PASS: do the supporting counts/identities agree with that word? If not, the numbers win until the predicate is fixed.
 
 — ox | floor is mechanical; ceiling is still a reader

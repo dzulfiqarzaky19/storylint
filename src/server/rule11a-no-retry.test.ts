@@ -64,10 +64,11 @@ test('saveDirect does not retry a once-failed atomic rename (rule 11a)', async (
     },
   })
 
-  const { ProjectStore } = await import('./store.ts')
+  // T-007: ProjectStore is factory-only. Buffalo's original bare ctor broke on merge.
+  const { ProjectFileRoot } = await import('./store.ts')
   const dir = await mkdtemp(join(tmpdir(), 'storylint-rule11a-'))
   const file = join(dir, 'project.json')
-  const store = new ProjectStore(file)
+  const store = new ProjectFileRoot(file).openDefault()
 
   let rejected: unknown = null
   try {
