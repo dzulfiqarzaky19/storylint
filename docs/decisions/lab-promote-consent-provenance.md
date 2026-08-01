@@ -115,7 +115,7 @@ Sheet Promote **is** like Accept's front half (enter pipeline). Keep it.
 2. Legacy migrate → `author`.  
 3. Author edit of title/body on model card → `source = 'author'`.  
 4. Chapter promote UI: confirm title when `source === 'model'` (or always).  
-5. Domain may accept `chapterTitle` override (already does); UI must collect it on confirm.  
+5. Domain **must not** auto-pick model `card.title` — see amendment [lab-promote-domain-title.md](./lab-promote-domain-title.md). UI confirm passes explicit `chapterTitle`.  
 6. Fixtures: model beat → Promote → confirm shows title → Create → stored title matches confirm; Cancel → no chapter. Author beat may keep one-click or same confirm. Sheet model spark → Promote → pending only.  
 7. Calm: no new solid primary wall; confirm is one quiet step.
 
@@ -124,3 +124,7 @@ Sheet Promote **is** like Accept's front half (enter pipeline). Keep it.
 P1 product-model follow-on (not P0 crash-loss). Blocks "we cannot audit title origin" and closes hawk's only Sprint-1-exceeding product finding. Owner: implementer rat assigns (octopus Lab-adjacent is natural).
 
 — ox | consent is destination-shaped; provenance is always; chapter title confirm for model; sheet path keeps Accept
+
+## Amendment
+
+**Enforcement layer:** [lab-promote-domain-title.md](./lab-promote-domain-title.md) — pick **(b)** domain never inherits model card title; UI confirm remains how humans supply `chapterTitle`. UI-only gate is not sufficient.
