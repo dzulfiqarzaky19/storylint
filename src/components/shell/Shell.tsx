@@ -224,6 +224,7 @@ export function Shell() {
   const binder = (onClose?: () => void) =>
     project.project ? (
       <Binder
+        projectId={project.activeProjectId}
         chapters={project.project.chapters}
         sheets={project.project.sheets}
         lab={project.project.lab}

@@ -10,6 +10,8 @@ import './shell.css'
 export type BinderProps = {
   chapters: Chapter[]
   sheets: Sheet[]
+  /** Scopes durable dirty sheet identity drafts. */
+  projectId?: string
   lab?: Lab | null
   activeChapterId: string
   activeBoardId?: string | null
@@ -48,6 +50,7 @@ export function Binder({
   activeBoardId,
   labMode = false,
   canonMode = false,
+  projectId = '',
   onSelectChapter,
   onSelectLabBoard,
   onOpenLab,
@@ -469,6 +472,7 @@ export function Binder({
             <SheetEditor
               ref={editorRef}
               sheet={editingSheet}
+              projectId={projectId}
               showBack={false}
               onSaveSheet={async (sheet) => {
                 await onSaveSheet(sheet)

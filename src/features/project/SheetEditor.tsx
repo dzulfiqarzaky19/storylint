@@ -13,10 +13,20 @@ import {
 import type { Fact, Sheet, SheetKind } from '../../domain/types.ts'
 import { Button, Input, Textarea } from '../../components/ui'
 import { isSheetIdentityDirty, normalizeSheetIdentity } from './sheetIdentityDirty.ts'
+import {
+  applyIdentityDraft,
+  decideRestore,
+  readSheetIdentityDraft,
+  removeSheetIdentityDraft,
+  storeSheetIdentityDraft,
+  type SheetIdentityDraftRecord,
+} from './sheetIdentityDraft.ts'
 import './project.css'
 
 export type SheetEditorProps = {
   sheet: Sheet | null
+  /** Active project id — scopes durable dirty crash copies (T-004). */
+  projectId?: string
   onSaveSheet: (sheet: Sheet) => Promise<void>
   onSaveFact: (sheetId: string, fact: Fact) => Promise<void>
   onDeleteFact: (sheetId: string, factId: string) => Promise<void>
@@ -46,6 +56,7 @@ const FIELD_HINTS: Record<SheetKind, readonly string[]> = {
 export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(function SheetEditor(
   {
     sheet,
+    projectId = '',
     onSaveSheet,
     onSaveFact,
     onDeleteFact,
@@ -61,22 +72,71 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
   const [leaveOpen, setLeaveOpen] = useState(false)
   const [leaveError, setLeaveError] = useState<string | null>(null)
   const [savingLeave, setSavingLeave] = useState(false)
+  /** Conflict chooser when server moved under durable dirty (ox T-004). */
+  const [conflict, setConflict] = useState<{
+    record: SheetIdentityDraftRecord
+    server: ReturnType<typeof normalizeSheetIdentity>
+  } | null>(null)
+  /** 7-day confirm before applying old durable dirty. */
+  const [staleConfirm, setStaleConfirm] = useState<SheetIdentityDraftRecord | null>(null)
   const pendingProceedRef = useRef<(() => void) | null>(null)
   const leaveDialogRef = useRef<HTMLDivElement | null>(null)
   const saveLeaveRef = useRef<HTMLButtonElement | null>(null)
   const restoreFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
-    setDraft(sheet ?? emptySheet())
-    setLoaded(normalizeSheetIdentity(sheet))
+    const baseSheet = sheet ?? emptySheet()
+    const serverIdentity = normalizeSheetIdentity(baseSheet)
+    const sheetKey = baseSheet.id || '__new__'
+    const stored = projectId ? readSheetIdentityDraft(projectId, sheetKey) : null
+    const decision = decideRestore(stored, baseSheet)
+
     setPortraitFailed(false)
     setFact({ id: '', key: '', value: '', statement: '' })
     setLeaveOpen(false)
     setLeaveError(null)
     pendingProceedRef.current = null
-  }, [sheet])
+    setConflict(null)
+    setStaleConfirm(null)
+
+    if (decision.kind === 'none') {
+      setDraft(baseSheet)
+      setLoaded(serverIdentity)
+      return
+    }
+    if (decision.kind === 'drop-equal-server') {
+      if (projectId) removeSheetIdentityDraft(projectId, sheetKey)
+      setDraft(baseSheet)
+      setLoaded(serverIdentity)
+      return
+    }
+    if (decision.kind === 'conflict') {
+      // Hold server in form until author chooses; draft stays in storage.
+      setDraft(baseSheet)
+      setLoaded(serverIdentity)
+      setConflict({ record: decision.record, server: decision.server })
+      return
+    }
+    // apply
+    if (decision.staleConfirm) {
+      setDraft(baseSheet)
+      setLoaded(serverIdentity)
+      setStaleConfirm(decision.record)
+      return
+    }
+    setDraft(applyIdentityDraft(baseSheet, decision.record.draft))
+    setLoaded(serverIdentity) // dirty vs server/base
+  }, [sheet, projectId])
 
   const dirty = useMemo(() => isSheetIdentityDirty(draft, loaded), [draft, loaded])
+
+  // Durable dirty: crash copy of form dirty (not Canon write).
+  useEffect(() => {
+    if (!projectId) return
+    if (conflict || staleConfirm) return // do not overwrite stored draft while chooser open
+    const sheetKey = draft.id || sheet?.id || '__new__'
+    storeSheetIdentityDraft(projectId, sheetKey, draft, loaded)
+  }, [projectId, draft, loaded, conflict, staleConfirm, sheet?.id])
   const canSave = Boolean(draft.name.trim())
   const displayName = draft.name.trim() || 'this sheet'
 
@@ -170,6 +230,7 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
     await onSaveSheet(next)
     setDraft(next)
     setLoaded(normalizeSheetIdentity(next))
+    if (projectId) removeSheetIdentityDraft(projectId, next.id || '__new__')
     return true
   }
 
@@ -193,8 +254,40 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
   }
 
   function onDiscardAndLeave() {
+    if (projectId) removeSheetIdentityDraft(projectId, draft.id || sheet?.id || '__new__')
     const proceed = pendingProceedRef.current
     if (proceed) finishLeave(proceed)
+  }
+
+  function onConflictKeepMine() {
+    if (!conflict) return
+    const baseSheet = sheet ?? emptySheet()
+    setDraft(applyIdentityDraft(baseSheet, conflict.record.draft))
+    setLoaded(normalizeSheetIdentity(baseSheet))
+    setConflict(null)
+  }
+
+  function onConflictKeepCanon() {
+    if (!conflict) return
+    if (projectId) removeSheetIdentityDraft(projectId, draft.id || sheet?.id || '__new__')
+    const baseSheet = sheet ?? emptySheet()
+    setDraft(baseSheet)
+    setLoaded(normalizeSheetIdentity(baseSheet))
+    setConflict(null)
+  }
+
+  function onStaleRestore() {
+    if (!staleConfirm) return
+    const baseSheet = sheet ?? emptySheet()
+    setDraft(applyIdentityDraft(baseSheet, staleConfirm.draft))
+    setLoaded(normalizeSheetIdentity(baseSheet))
+    setStaleConfirm(null)
+  }
+
+  function onStaleDiscard() {
+    if (!staleConfirm) return
+    if (projectId) removeSheetIdentityDraft(projectId, draft.id || sheet?.id || '__new__')
+    setStaleConfirm(null)
   }
 
   async function submitFact(event: FormEvent) {
@@ -375,6 +468,74 @@ export const SheetEditor = forwardRef<SheetEditorHandle, SheetEditorProps>(funct
             </div>
           </form>
         </section>
+      ) : null}
+
+      {conflict ? (
+        <div className="sheet-editor__leave-root">
+          <div className="sheet-editor__leave-backdrop" aria-hidden="true" />
+          <div
+            className="sheet-editor__leave-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sheet-conflict-title"
+            data-sheet-conflict="true"
+          >
+            <h3 className="sheet-editor__leave-title" id="sheet-conflict-title">
+              Canon changed while you had unsaved edits
+            </h3>
+            <p className="sheet-editor__leave-body">
+              Choose which identity to keep. Nothing is discarded until you pick.
+            </p>
+            <div className="sheet-editor__conflict-grid" data-sheet-conflict-grid="true">
+              <div data-conflict-side="canon">
+                <strong>Canon (server)</strong>
+                <div>Name: {conflict.server.name || '—'}</div>
+                <div>Summary: {conflict.server.summary || '—'}</div>
+              </div>
+              <div data-conflict-side="mine">
+                <strong>Your unsaved edits</strong>
+                <div>Name: {conflict.record.draft.name || '—'}</div>
+                <div>Summary: {conflict.record.draft.summary || '—'}</div>
+              </div>
+            </div>
+            <div className="sheet-editor__leave-actions">
+              <Button variant="primary" onClick={onConflictKeepMine} data-conflict-action="keep-mine">
+                Keep mine
+              </Button>
+              <Button onClick={onConflictKeepCanon} data-conflict-action="keep-canon">
+                Keep Canon
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {staleConfirm ? (
+        <div className="sheet-editor__leave-root">
+          <div className="sheet-editor__leave-backdrop" aria-hidden="true" />
+          <div
+            className="sheet-editor__leave-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sheet-stale-title"
+            data-sheet-stale-confirm="true"
+          >
+            <h3 className="sheet-editor__leave-title" id="sheet-stale-title">
+              Unsaved edits from {new Date(staleConfirm.savedAt).toLocaleString()}
+            </h3>
+            <p className="sheet-editor__leave-body">
+              Restore them into this sheet (still unsaved), or discard the crash copy?
+            </p>
+            <div className="sheet-editor__leave-actions">
+              <Button variant="primary" onClick={onStaleRestore} data-stale-action="restore">
+                Restore
+              </Button>
+              <Button variant="danger" onClick={onStaleDiscard} data-stale-action="discard">
+                Discard
+              </Button>
+            </div>
+          </div>
+        </div>
       ) : null}
 
       {leaveOpen ? (
