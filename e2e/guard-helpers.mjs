@@ -1,13 +1,21 @@
 /**
- * Enforce e2e convention: gate/measurement scripts must use shared helpers.
+ * Enforce e2e convention: measurement-shaped scripts must use shared helpers.
  *
  *   npm run test:e2e:guard
  *   node e2e/guard-helpers.mjs
  *
- * Hard rule for gates (calm-budget, feature smokes, anything new that measures UI):
+ * Hard rule for measurement-shaped scripts (calm-budget, feature smokes, UI measures):
  *   - must import ./helpers.mjs
  *   - must not ship self-contained face/mode fallbacks
  *   - must not optional-load helpers
+ *
+ * Per-file note tokens (ox 8e — report strength ≤ check strength):
+ *   convention-ok      helpers + forbidden-pattern check passed (NOT "in a runner")
+ *   legacy-exploratory grandfathered manual driver
+ *   diagnostic         file header declares MANUAL DIAGNOSTIC (not a gate)
+ * Never emit gate-ok — that word costumes convention as execution coverage.
+ *
+ * This guard does not know the runner graph and stays silent on membership.
  *
  * Exploratory/manual drivers may be grandfathered in LEGACY_EXPLORATORY until ported.
  * New measurement scripts are NOT added to that list.
@@ -102,7 +110,8 @@ function importsHelpers(source) {
     || /import\s*\(\s*['"][^'"]*helpers\.mjs['"]\s*\)/.test(source)
 }
 
-function isGateScript(base, source) {
+/** Measurement-shaped = candidate for helper convention rules. Not "in a runner". */
+function isMeasurementShaped(base, source) {
   if (base === 'calm-budget.mjs') return true
   if (/^slice-.*-smoke\.mjs$/.test(base)) return true
   if (base.endsWith('-smoke.mjs')) return true
@@ -112,6 +121,11 @@ function isGateScript(base, source) {
   if (/measure[A-Z(]/.test(source) && /getBoundingClientRect/.test(source)) return true
   if (/data-companion-context/.test(source) && /productFaceCount|foldOwner|calm/i.test(source)) return true
   return false
+}
+
+/** File-level MANUAL DIAGNOSTIC header (ox 8e / 8c duty 2). */
+function isManualDiagnostic(source) {
+  return /MANUAL\s+DIAGNOSTIC/i.test(source.slice(0, 2500))
 }
 
 const failures = []
@@ -124,7 +138,6 @@ for (const full of scripts) {
   if (EXEMPT.has(base)) continue
 
   const source = readFileSync(full, 'utf8')
-  const gate = isGateScript(base, source)
   const hasHelpers = importsHelpers(source)
 
   if (LEGACY_EXPLORATORY.has(base)) {
@@ -132,17 +145,23 @@ for (const full of scripts) {
     continue
   }
 
-  if (!gate) continue
+  // One classification per file. diagnostic ≠ convention-ok (8e non-overlap).
+  if (isManualDiagnostic(source)) {
+    notes.push(`diagnostic  ${name}`)
+    continue
+  }
+
+  if (!isMeasurementShaped(base, source)) continue
 
   if (!hasHelpers) {
-    failures.push(`${name}: gate/measurement script must import ./helpers.mjs`)
+    failures.push(`${name}: measurement-shaped script must import ./helpers.mjs`)
   }
   for (const rule of FORBIDDEN_IN_GATES) {
     if (rule.re.test(source)) {
       failures.push(`${name}: forbidden pattern ${rule.id}`)
     }
   }
-  notes.push(`gate-ok  ${name}`)
+  notes.push(`convention-ok  ${name}`)
 }
 
 console.log(`e2e helper guard: scanned ${scripts.length} scripts`)
@@ -150,9 +169,9 @@ for (const note of notes) console.log(note)
 if (failures.length) {
   console.error('\nFAIL: e2e helper convention violations:')
   for (const fail of failures) console.error(` - ${fail}`)
-  console.error('\nRule: UI gates measure only through e2e/helpers.mjs.')
+  console.error('\nRule: UI measurement scripts measure only through e2e/helpers.mjs.')
   console.error('Precondition before measure. No self-contained face/mode fallbacks.')
-  console.error('See e2e/README.md.')
+  console.error('See e2e/README.md. Tokens: convention-ok | legacy-exploratory | diagnostic (ox 8e).')
   process.exit(1)
 }
 // pass-on-absence class: calm must use Measurement API; volume wall checks must notFound on empty
@@ -171,9 +190,9 @@ if (calmPath) {
 if (failures.length) {
   console.error('\nFAIL: e2e helper convention violations:')
   for (const fail of failures) console.error(` - ${fail}`)
-  console.error('\nRule: UI gates measure only through e2e/helpers.mjs.')
+  console.error('\nRule: UI measurement scripts measure only through e2e/helpers.mjs.')
   console.error('Precondition before measure. No self-contained face/mode fallbacks.')
-  console.error('See e2e/README.md.')
+  console.error('See e2e/README.md. Tokens: convention-ok | legacy-exploratory | diagnostic (ox 8e).')
   process.exit(1)
 }
 console.log('PASS: e2e helper convention holds')

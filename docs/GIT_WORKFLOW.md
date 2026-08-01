@@ -28,6 +28,17 @@ storylint/<topic>  →  dev  →  main (merge from dev only)
    `git checkout main && git pull && git merge --no-ff dev -m "Merge dev: <milestone summary>" && git push`
    Merge at milestones (a completed, verified batch), not per-commit. Never commit work directly on `main`.
 
+   **Cadence (founder-set): every 5 PRs landed to `dev`, horse merges `dev → main`.** The count is the trigger; the milestone name is what the merge subject says. Both hold — do not wait for someone to declare a milestone, and do not merge per-commit.
+
+   Full founder flow: topic branch → hawk reviews → not ok, author retries → ok, author lands to `dev` via `npm run land` → every 5 lands, horse merges `dev → main`.
+
+   Check the count before deciding:
+   ```
+   git rev-list --count --first-parent origin/main..origin/dev
+   ```
+
+   **Scar:** this rule lived only in conversation. rat grepped the docs, found nothing, and told horse the rule was invented — reporting "not in the docs" as if it disproved "the founder set it". A missing citation disproves the citation, not the claim ([STANDING_RULES](./decisions/STANDING_RULES.md) 34). Drift reached 28 lands before the first merge, then 20 before this was caught. A rule that is not written down is one bad memory away from being overridden.
+
 ### Manual land sequence (fallback / understanding only)
 
 Use only if `npm run land` is unavailable. The script remains the instruction.
