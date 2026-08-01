@@ -1,15 +1,11 @@
 /**
- * Does the empty-Canon "New sheet" CTA inherit koala's dirty-leave guard?
+ * MANUAL DIAGNOSTIC — empty-Canon New sheet CTA dirty-leave guard
  *
- * The CTA is a leave path that did not exist when the guard was wired. If it bypasses the guard,
- * an author loses unsaved identity edits through a brand new door, which is the exact lost-work
- * bug the guard exists to prevent.
- *
- * Reachability note: while Canon has zero sheets the CTA is showing, and any sheet that exists
- * makes Canon non-empty and hides it. So the real reachable case is: CTA opens the create form,
- * the author types a name without saving, and then presses the CTA again (the map is still empty
- * because nothing has been saved). That is a dirty-leave through the new door.
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite this pass (owned-stack cost). Candidate GATE later with budget.
+ * Run: node e2e/canon-empty-guard.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'

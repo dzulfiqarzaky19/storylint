@@ -1,12 +1,11 @@
 /**
- * D4 evidence — Canon map chrome at 1440 and 390.
+ * MANUAL DIAGNOSTIC — D4 Canon map chrome shots @1440/@390
  *
- *   node e2e/density-d4-shots.mjs
- *
- * Requires API :4174 + UI :5173. Writes e2e/output/density-d4/.
- * Asserts the spec's soft geometry (map owns the fold), the collapsed default,
- * the short lede, touch minimums on narrow, and that view-pressed != kind-pressed styling.
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Shot evidence; npm run calm is the density gate.
+ * Run: node e2e/density-d4-shots.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
