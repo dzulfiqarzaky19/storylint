@@ -7,19 +7,21 @@
   flex-wrap: nowrap;
   align-items: center;
   gap: var(--space-1);
-  padding: 0 var(--space-3) var(--space-2);
+  padding: 0 var(--space-2) var(--space-2);
   overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.companion__faces::-webkit-scrollbar {
-  display: none;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: var(--space-2);
+  /* thin scrollbar so overflow is discoverable; labels must fully enter view on select */
+  scrollbar-width: thin;
 }
 
 .companion__faces [role='tab'],
 .companion__faces > .ui-button {
   flex: 0 0 auto;
   white-space: nowrap;
+  /* Five writing faces must keep full labels at rail width (no "hat" / half-Research). */
+  padding-inline: var(--space-2);
+  min-width: 0;
 }
 
 .companion__face-inbox {

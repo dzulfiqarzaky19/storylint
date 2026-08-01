@@ -272,7 +272,14 @@ export function AgentPanel({
       const active = tabs.find((tab) =>
         (tab.textContent || '').replace(/\s+/g, ' ').trim().startsWith(label),
       )
+      // Keep the active label fully on-screen (no "hat" / half-Research clips).
       active?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+      if (active && root.scrollWidth > root.clientWidth + 1) {
+        const tabRect = active.getBoundingClientRect()
+        const rootRect = root.getBoundingClientRect()
+        if (tabRect.left < rootRect.left + 1) root.scrollLeft += tabRect.left - rootRect.left - 4
+        else if (tabRect.right > rootRect.right - 1) root.scrollLeft += tabRect.right - rootRect.right + 4
+      }
     })
   }
 
