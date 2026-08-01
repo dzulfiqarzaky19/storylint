@@ -21,6 +21,7 @@ A reader should find the ruling that governs their question in the tables below 
 | [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md) | Visibility is never inferred from geometry; absence ≠ pass; dead selector = fail. |
 | [check-occupies-slot.md](./check-occupies-slot.md) | **BINDING 8c (3 duties):** fail-when-product-breaks; reached by a reporter (else diagnostic not gate); executed before citation. Unwired red = silent. |
 | [mutation-must-build.md](./mutation-must-build.md) | **BINDING:** mutation survival only counts if BUILD_EXIT=0 and mutated line executes; else NOT-MEASURED. |
+| [report-line-strength.md](./report-line-strength.md) | **BINDING 8e:** report token ≤ check strength; `gate-ok`→`convention-ok`; `diagnostic` for MANUAL DIAGNOSTIC; guard silent on runners. |
 | [one-primary-door-per-job.md](./one-primary-door-per-job.md) | One solid primary per job in the **whole viewport**; dual New sheet / dual first-chapter doors are not calm. |
 | [runnable-solid-precondition.md](./runnable-solid-precondition.md) | Solid must not advertise a job that cannot succeed; weight ≠ entitlement. |
 | [boolean-hides-multi-state.md](./boolean-hides-multi-state.md) | Do not collapse multi-state domains into booleans; fixture real states. |
@@ -102,6 +103,7 @@ Short list only — do not grow into a second backlog novel.
 
 ### Closed this session (do not re-open without new evidence)
 
+- ~~**gate-ok costume (convention as execution)**~~ — **RULED**. [report-line-strength.md](./report-line-strength.md); standing **8e**; token `convention-ok` / `diagnostic`.
 - ~~**Save chip blank on error (false idle)**~~ — **RULED**. [save-chip-error-not-idle.md](./save-chip-error-not-idle.md). Chip: **Not saved**. Idle stays blank.
 - ~~**8c extend (unwired / not-run)**~~ — **RULED** into [check-occupies-slot.md](./check-occupies-slot.md) three duties.
 - ~~**Mutation must build / execute (false survival)**~~ — **RULED**. [mutation-must-build.md](./mutation-must-build.md); standing **8d**.

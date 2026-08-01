@@ -51,7 +51,7 @@ import {
   setApiBase
 } from './helpers.mjs'
 
-// Nav rule: never waitUntil: 'domcontentloaded', timeout: 30_000 on owned stacks — companion/LLM sockets
+// Nav rule: never waitUntil: 'networkidle' on owned stacks — companion/LLM sockets
 // keep the network busy and burn Playwright's ~30s default (same trap as slice-j/k).
 import { resolveMeasurementTarget } from './owned-stack.mjs'
 

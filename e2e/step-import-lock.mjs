@@ -8,15 +8,24 @@
  * Used by:
  *   - e2e/prove-step-stall.mjs (manual diagnostic; static half before stall)
  *   - scripts/e1-step-label.test.mjs (gated green suite — redness is someone's problem)
+ *
+ * Reject direction is locked by negative fixtures in e1-step-label.test.mjs
+ * (temp dir with defective k/l sources). Absence-of-failure on real k/l is not enough.
  */
 import { readFileSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-/** Tolerates any specifier list that includes makeStep. */
+/**
+ * Tolerates any specifier list that includes makeStep.
+ * Anchored at line start (after indent) so `// import { makeStep } …` does not match
+ * (LG-B3 / commented-out shape that bit twice this sprint).
+ */
 export const MAKESTEP_IMPORT_RE =
-  /import\s*\{[^}]*\bmakeStep\b[^}]*\}\s*from\s*['"]\.\/step-label\.mjs['"]/
+  /^\s*import\s*\{[^}]*\bmakeStep\b[^}]*\}\s*from\s*['"]\.\/step-label\.mjs['"]/m
 
-const LOCAL_STEP_RE = /\bconst\s+STEP_T0\b|\bfunction\s+step\s*\(\s*label\s*\)/
+/** Local step reintroduction — single definition (import this; do not copy). */
+export const LOCAL_STEP_RE =
+  /\bconst\s+STEP_T0\b|\bfunction\s+step\s*\(\s*label\s*\)/
 
 /**
  * @param {string} e2eDir absolute path to e2e/
