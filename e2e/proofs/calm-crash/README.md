@@ -1,3 +1,11 @@
+--- proof-provenance ---
+head: be79d9065cc93763f2e652fad049dea8dc752f91
+worktree_dirty: true
+command: salvage report: copy untracked calm-crash specimen from storylint-calm-crash @ ea0500a; no product rerun
+exit: 0
+timestamp: 2026-08-01T12:00:00.000Z
+--- end-proof-provenance ---
+
 # calm-crash specimen (salvaged 2026-08-01)
 
 Untracked evidence from worktree `storylint-calm-crash` @ detached `ea0500a`,

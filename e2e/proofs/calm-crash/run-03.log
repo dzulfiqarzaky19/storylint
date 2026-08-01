@@ -1,3 +1,11 @@
+--- proof-provenance ---
+head: ea0500aa09b1df5d602ffc44fb616ee4b5afeecc
+worktree_dirty: false
+command: node e2e/calm-budget.mjs
+exit: 0
+timestamp: 2026-08-01T07:04:30.000Z
+--- end-proof-provenance ---
+
 helpers: required e2e/helpers.mjs
 [owned-stack] building D:\dev\projects\storylint-calm-crash @ ea0500a
 [owned-stack] api :54815 ui :54817

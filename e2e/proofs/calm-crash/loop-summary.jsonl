@@ -1,3 +1,11 @@
+--- proof-provenance ---
+head: ea0500aa09b1df5d602ffc44fb616ee4b5afeecc
+worktree_dirty: false
+command: node e2e/proofs/calm-crash/loop.mjs
+exit: 1
+timestamp: 2026-08-01T07:06:00.000Z
+--- end-proof-provenance ---
+
 {"i":1,"code":0,"ms":27749,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-01.log"}
 {"i":2,"code":0,"ms":21807,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-02.log"}
 {"i":3,"code":0,"ms":24416,"kind":"pass","hasHard":true,"hasFp":true,"hasVis":true,"hasB6":true,"hasRunEnd":true,"hasTimeout":false,"hasRefuse":false,"bytes":6315,"outPath":"e2e\\proofs\\calm-crash\\run-03.log"}
