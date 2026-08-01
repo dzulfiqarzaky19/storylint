@@ -18,7 +18,7 @@ import { ownMeasurementStack } from './owned-stack.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
-const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
+const { chromium, firefox } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).href)
 
 const stopHard = armHardTimeout('check-face-verify', 120_000)
 mkdirSync('e2e/output', { recursive: true })
@@ -28,7 +28,12 @@ setApiBase(stack.api)
 process.env.STORYLINT_UI = stack.ui
 process.env.STORYLINT_API = stack.api
 
-const browser = await chromium.launch({ channel: 'msedge', headless: true })
+const useFirefox = process.env.STORYLINT_BROWSER === 'firefox'
+const browser = await (useFirefox ? firefox : chromium).launch(
+  useFirefox
+    ? { headless: true, executablePath: process.env.FIREFOX_PATH || 'C:\\Program Files\\Mozilla Firefox\\firefox.exe' }
+    : { channel: 'msedge', headless: true },
+)
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 page.setDefaultTimeout(15_000)
 
