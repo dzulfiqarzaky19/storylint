@@ -28,7 +28,7 @@ mkdirSync(OUT, { recursive: true })
 // Load ProjectStore via strip-types runner
 const root = process.cwd()
 const storeUrl = pathToFileURL(join(root, 'src/server/store.ts')).href
-const { ProjectStore } = await import(storeUrl)
+const { ProjectFileRoot } = await import(storeUrl)
 
 const seed = {
   schemaVersion: 2,
@@ -53,15 +53,15 @@ function codes(arr) {
 
 const dir = await mkdtemp(join(tmpdir(), 't005-probe-'))
 const file = join(dir, 'proj.json')
-await new ProjectStore(file).save(seed)
+await new ProjectFileRoot(file).openDefault().save(seed)
 
 // Shape A: two-instance thrash (was 988 EPERM pre-fix with unqueued MiniStore)
 const thrashErrors = []
 const N = 500
 const jobs = []
 for (let i = 0; i < N; i++) {
-  const s1 = new ProjectStore(file)
-  const s2 = new ProjectStore(file)
+  const s1 = new ProjectFileRoot(file).openDefault()
+  const s2 = new ProjectFileRoot(file).openDefault()
   jobs.push(s1.save({ ...seed, title: `a-${i}` }).catch((e) => thrashErrors.push(e)))
   jobs.push(s2.save({ ...seed, title: `b-${i}` }).catch((e) => thrashErrors.push(e)))
   jobs.push(s1.load().catch((e) => thrashErrors.push(e)))
@@ -71,8 +71,8 @@ await Promise.all(jobs)
 
 // Shape B: many readers during many writers
 const mixErrors = []
-const writers = Array.from({ length: 80 }, () => new ProjectStore(file))
-const readers = Array.from({ length: 80 }, () => new ProjectStore(file))
+const writers = Array.from({ length: 80 }, () => new ProjectFileRoot(file).openDefault())
+const readers = Array.from({ length: 80 }, () => new ProjectFileRoot(file).openDefault())
 await Promise.all([
   ...writers.map((s, i) => s.save({ ...seed, title: `w-${i}` }).catch((e) => mixErrors.push(e))),
   ...readers.map((s) => s.load().catch((e) => mixErrors.push(e))),

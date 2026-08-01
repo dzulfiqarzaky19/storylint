@@ -9,7 +9,7 @@ Validate: `npm run tickets:check`
 | [T-002](./T-002.md) | P1 | integrated | agent-pipeline | Formalize L2 story/composition gate on origin/dev | horse |
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back (AZ hold) | buffalo |
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
-| [T-007](./T-007.md) | P2 | open | none | All ProjectStore paths must derive from one root (lock key is path-string identity) | unassigned |
+| [T-007](./T-007.md) | P2 | in_review | none | All ProjectStore paths must derive from one root (lock key is path-string identity) | octopus |
 | [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
 | [T-009](./T-009.md) | P2 | open | none | Standing rule 11a (no EPERM retry) has no check — a sleep-then-retry passes the whole suite | unassigned |
 
