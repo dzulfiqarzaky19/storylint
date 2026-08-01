@@ -37,6 +37,16 @@ export class ProjectStore {
     this.fallback = fallback
   }
 
+  /**
+   * Hold the lock for the path observed at call time and perform IO on that same path.
+   * switchFile can repoint `this.filePath` only after draining this path's chain, so an
+   * in-flight RMW finishes on the file it started against (see switchFile test).
+   */
+  private runLocked<T>(fn: (path: string) => Promise<T>): Promise<T> {
+    const path = this.filePath
+    return withPathLock(path, () => fn(path))
+  }
+
   async switchFile(filePath: string): Promise<void> {
     // Drain ops on the current path before repointing so in-flight RMW stays on the old file.
     await withPathLock(this.filePath, async () => {
@@ -45,9 +55,9 @@ export class ProjectStore {
   }
 
   async load(): Promise<Project> {
-    return withPathLock(this.filePath, async () => {
+    return this.runLocked(async (path) => {
       try {
-        return parseProject(JSON.parse(await readFile(this.filePath, 'utf8')))
+        return parseProject(JSON.parse(await readFile(path, 'utf8')))
       } catch (error) {
         if (
           this.fallback &&
@@ -57,7 +67,7 @@ export class ProjectStore {
           error.code === 'ENOENT'
         ) {
           const seeded = structuredClone(this.fallback)
-          await this.saveDirect(seeded)
+          await this.saveDirect(path, seeded)
           return structuredClone(this.fallback)
         }
         throw error
@@ -67,7 +77,7 @@ export class ProjectStore {
 
   async save(project: Project): Promise<void> {
     const valid = parseProject(project)
-    await withPathLock(this.filePath, () => this.saveDirect(valid))
+    await this.runLocked((path) => this.saveDirect(path, valid))
   }
 
   async update(mutate: (project: Project) => Project): Promise<Project> {
@@ -75,17 +85,17 @@ export class ProjectStore {
   }
 
   async updateAsync(mutate: (project: Project) => Promise<Project>): Promise<Project> {
-    return withPathLock(this.filePath, async () => {
-      const project = await this.loadDirect()
+    return this.runLocked(async (path) => {
+      const project = await this.loadDirect(path)
       const result = parseProject(await mutate(project))
-      await this.saveDirect(result)
+      await this.saveDirect(path, result)
       return result
     })
   }
 
-  private async loadDirect(): Promise<Project> {
+  private async loadDirect(path: string): Promise<Project> {
     try {
-      return parseProject(JSON.parse(await readFile(this.filePath, 'utf8')))
+      return parseProject(JSON.parse(await readFile(path, 'utf8')))
     } catch (error) {
       if (
         this.fallback &&
@@ -100,13 +110,13 @@ export class ProjectStore {
     }
   }
 
-  private async saveDirect(project: Project): Promise<void> {
-    const directory = dirname(this.filePath)
-    const temporary = `${this.filePath}.tmp`
+  private async saveDirect(path: string, project: Project): Promise<void> {
+    const directory = dirname(path)
+    const temporary = `${path}.tmp`
     await mkdir(directory, { recursive: true })
     try {
       await writeFile(temporary, `${JSON.stringify(project, null, 2)}\n`, 'utf8')
-      await rename(temporary, this.filePath)
+      await rename(temporary, path)
     } catch (error) {
       await unlink(temporary).catch(() => undefined)
       throw error
