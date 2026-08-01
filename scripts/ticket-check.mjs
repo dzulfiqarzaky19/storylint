@@ -10,12 +10,14 @@
  *   node scripts/ticket-check.mjs --help
  */
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
-const TICKETS_DIR = join(ROOT, 'docs', 'tickets');
+const TICKETS_DIR = process.env.TICKETS_DIR
+  ? resolve(process.cwd(), process.env.TICKETS_DIR)
+  : join(ROOT, 'docs', 'tickets');
 
 const PRIORITIES = ['P0', 'P1', 'P2', 'P3'];
 const STATUSES = [
@@ -163,7 +165,11 @@ function loadTickets() {
   if (!existsSync(TICKETS_DIR)) {
     throw new Error(`missing ${TICKETS_DIR}`);
   }
-  const files = readdirSync(TICKETS_DIR).filter((f) => /^T-\d+\.md$/i.test(f));
+  const files = readdirSync(TICKETS_DIR).filter(
+    (f) =>
+      /^T-\d+\.md$/i.test(f) ||
+      /^feature-\d{2,}-ticket-\d{2,}(-fix-\d{2,})?\.md$/i.test(f),
+  );
   const tickets = [];
   for (const f of files) {
     const text = readFileSync(join(TICKETS_DIR, f), 'utf8');
@@ -182,14 +188,21 @@ function validate(tickets) {
     for (const k of REQUIRED) {
       if (t[k] === undefined) errors.push(`${t.file}: missing field ${k}`);
     }
-    if (!/^T-\d{3,}$/i.test(String(t.id || ''))) {
-      errors.push(`${t.file}: invalid id ${t.id}`);
+    // Two id families:
+    //   T-###                          standalone ticket
+    //   feature-NN-ticket-MM[-fix-KK]  feature pipeline (FEATURE_PIPELINE.md)
+    const idStr = String(t.id || '');
+    const isLegacyId = /^T-\d{3,}$/i.test(idStr);
+    const isFeatureId = /^feature-\d{2,}-ticket-\d{2,}(-fix-\d{2,})?$/i.test(idStr);
+    if (!isLegacyId && !isFeatureId) {
+      errors.push(`${t.file}: invalid id ${t.id} (want T-### or feature-NN-ticket-MM)`);
     } else {
       const id = String(t.id).toUpperCase();
       if (byId.has(id)) errors.push(`duplicate id ${id}: ${byId.get(id)} and ${t.file}`);
       else byId.set(id, t.file);
       const expect = t.file.replace(/\.md$/i, '').toUpperCase();
       if (id !== expect) errors.push(`${t.file}: id ${t.id} does not match filename`);
+      // (id is upper-cased above; feature ids compare case-insensitively too)
     }
     if (!PRIORITIES.includes(t.priority)) {
       errors.push(`${t.file}: invalid priority ${t.priority}`);
@@ -199,6 +212,38 @@ function validate(tickets) {
     }
     if (t.l2_required !== 'yes' && t.l2_required !== 'no') {
       errors.push(`${t.file}: l2_required must be yes|no (got ${t.l2_required})`);
+    }
+
+    // Feature-pipeline consistency. A ticket that claims a feature must belong to
+    // it, and must land into it — a ticket pointing at dev would skip the
+    // feature's E2E gate, which is the whole reason the branch exists.
+    const idLower = String(t.id || '').toLowerCase();
+    const featureFromId = idLower.match(/^(feature-\d{2,})-ticket-/);
+    if (featureFromId) {
+      const feature = featureFromId[1];
+      if (t.feature && String(t.feature).toLowerCase() !== feature) {
+        errors.push(
+          `${t.file}: feature ${t.feature} disagrees with id ${t.id} (expected ${feature})`,
+        );
+      }
+      const branch = String(t.branch || '').trim();
+      if (branch && branch !== '—' && branch.toLowerCase() !== idLower) {
+        errors.push(
+          `${t.file}: branch ${branch} should be the ticket id ${t.id}`,
+        );
+      }
+      const into = String(t.lands_into || '').trim();
+      if (into && into.toLowerCase() !== feature) {
+        errors.push(
+          `${t.file}: lands_into ${into} must be ${feature} — a ticket landing anywhere ` +
+            'else skips the feature E2E gate',
+        );
+      }
+      if (String(t.lands_into || '').toLowerCase() === 'dev') {
+        errors.push(
+          `${t.file}: lands_into dev is invalid for a feature ticket (standing rule 36)`,
+        );
+      }
     }
   }
 

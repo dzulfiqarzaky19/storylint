@@ -1,8 +1,8 @@
 # Feature pipeline (founder-set, 2026-08-01)
 
-**This replaces the flat topic → dev sprint model.** Work is organized into **features**; a feature
-is split into **tickets**; tickets land into a **feature integration branch**; the feature reaches
-`dev` only after end-to-end verification of the whole feature.
+**Two lanes.** Feature work is split into tickets that land into a **feature integration branch**
+and reaches `dev` only after end-to-end verification of the whole feature. **Bugfixes take the
+short lane** — one ticket, straight to `dev`, no integration branch.
 
 Land mechanics (no-worse gate, `--no-ff` bubble, `npm run land`) are unchanged — see
 [GIT_WORKFLOW.md](./GIT_WORKFLOW.md). What changed is **where a ticket lands** and **what must be
@@ -10,7 +10,56 @@ true before a feature reaches `dev`**.
 
 ---
 
-## The shape
+## Two lanes
+
+Not everything is a feature. Pick the lane by asking **what has to be true before this reaches
+`dev`**.
+
+| | **Feature lane** | **Bugfix lane** |
+|---|---|---|
+| When | New capability, multi-ticket work, anything where tickets must be verified *together* | A defect in shipped behaviour. One ticket, one coder |
+| Ticket id | `feature-NN-ticket-MM` | `T-###` (existing scheme) |
+| Branch | `feature-NN-ticket-MM` off `origin/feature-NN` | `storylint/<topic>` off `origin/dev` |
+| Lands into | `feature-NN`, then `dev` after feature E2E | **straight to `dev`** |
+| Gate before `dev` | Reviewer, then E2E on the **whole feature** | Reviewer, then the fix's own verification |
+| Integration branch | Yes, rat creates it | **No** |
+
+**Why bugfixes skip the feature branch.** The feature branch exists for one reason: several tickets
+must be verified *as one thing*, because passing individually does not mean they work together. A
+single bugfix has nothing to compose with. Routing it through an integration branch adds two merges
+and a wait, and buys no evidence that the direct land does not already give.
+
+**The lanes converge.** Both still get: a coder who self-reviewed end to end, a separate reviewer,
+the no-worse land gate, and integration testing on `dev` afterwards. The bugfix lane removes the
+feature branch, not the verification.
+
+### Bugfix flow
+
+```
+T-###  →  coder codes it AND self-reviews end to end
+             failed? coder fixes it
+       →  reviewer checks the diff
+             failed? back to the coder
+             passed? lands to dev, reports to rat
+       →  rat closes the ticket in the same land (standing rule 35)
+```
+
+```
+git checkout -B storylint/<topic> origin/dev
+npm run land -- storylint/<topic> --summary "<what this fixes>"
+```
+
+**A bugfix that turns out to need several tickets is a feature.** If the fix grows to where the
+pieces must be verified together, stop and open a `feature-NN`. The lane is chosen by the work's
+shape, not by what it was called when it was filed.
+
+**E2E-verify a bugfix too.** Skipping the feature branch does not mean skipping verification that
+the fix landed on the running product — that is standing rule 30 and it applies in both lanes. What
+the bugfix lane drops is *composition* testing, because there is nothing to compose.
+
+---
+
+## The shape (feature lane)
 
 ```
 feature-01                      ← integration branch, rat creates it
@@ -188,7 +237,8 @@ Report on **state change**, not only at the end ([AGENT_PROTOCOL.md](./AGENT_PRO
 
 - **Coder hands up a change they know is broken** — the reviewer is not your test runner
 - **Reviewer sends a failure to rat instead of the coder** — adds a hop, loses context
-- **Landing a ticket straight to `dev`** — it bypasses the feature's E2E gate
+- **Landing a feature ticket straight to `dev`** — it bypasses the feature's E2E gate
+- **Routing a one-ticket bugfix through a feature branch** — two extra merges, no extra evidence
 - **Merging `feature-NN` → `dev` before every ticket has landed** — the E2E ran on a partial feature
 - **Treating an E2E failure as grounds to revert** — it is a fix ticket
 - **A fix ticket that skips review** — fix tickets are tickets
