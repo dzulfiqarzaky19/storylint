@@ -1,21 +1,11 @@
 /**
- * TASK AO — Canon under load. READ-ONLY audit, no fixes.
+ * MANUAL DIAGNOSTIC — TASK AO Canon under load (read-only audit)
  *
- * Every Canon judgement so far was made on empty or lightly-fixtured states, but Canon is the
- * surface that GROWS: it accumulates every character, place, organisation and piece of lore for a
- * whole novel. This builds a realistically loaded project (60+ sheets, dense kinship and
- * membership edges) and measures three things worst-first:
- *   1. is the network map still legible, or a hairball
- *   2. does the family view stay readable (ox's unexamined "family sparse under load" nit)
- *   3. does the binder list stay navigable at length, and does scroll restore still work
- *   4. is the kind filter still the right tool at scale, or is search needed
- *
- * Measures, does not judge pass/fail on aesthetics: it reports numbers and takes shots so a human
- * can rule. The only hard failures are things that are unambiguously broken (overflow, unreachable
- * controls, scroll restore losing position).
- *
- * Provenance: owned stack only. Visibility via checkVisibility, never geometry alone.
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Slow owned-stack volume audit.
+ * Run: node e2e/canon-load-audit.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'

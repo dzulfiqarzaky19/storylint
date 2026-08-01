@@ -1,8 +1,11 @@
 /**
- * Live focus-ring pass @ 1440 on owned stack (this commit).
- * Asserts keyboard focus-visible rings on shell chrome + binder + companion.
- * node e2e/focus-ring-pass.mjs
+ * MANUAL DIAGNOSTIC — live focus-ring pass @1440
+ *
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Owned-stack keyboard focus-visible sample.
+ * Run: node e2e/focus-ring-pass.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
