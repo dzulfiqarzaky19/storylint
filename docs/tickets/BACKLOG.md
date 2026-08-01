@@ -6,7 +6,7 @@ Validate: `npm run tickets:check`
 
 | ID | P | Status | Story | Title | Owner |
 |----|---|--------|-------|-------|-------|
-| [T-005](./T-005.md) | P1 | in_review | none | Project atomic rename EPERM can fail saves on Windows | octopus |
+| [T-005](./T-005.md) | P1 | landing | none | Project atomic rename EPERM can fail saves on Windows | octopus |
 | [T-002](./T-002.md) | P1 | integrated | agent-pipeline | Formalize L2 story/composition gate | horse |
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back | buffalo |
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 — instrument DONE both paths; passive watch for live hit | unassigned |
