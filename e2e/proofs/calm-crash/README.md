@@ -16,7 +16,8 @@ copied here before that folder is deleted. **Report-only.** No product fix in th
 | Path | Role |
 |------|------|
 | `loop-summary.jsonl` | 8 serial calm-budget runs, one JSON line each |
-| `run-01.log` … `run-08.log` | Full unfiltered calm stdout/stderr |
+| `run-01.log` | Representative **pass** (runs 1–7 were identical apart from timestamp and port) |
+| `run-08.log` | The **failure**. Full unfiltered calm stdout/stderr |
 | `loop.mjs` | Harness that produced the loop (renamed from `_calm_loop.mjs`) |
 | `interfere.mjs` | Separate deliberate interference harness (renamed from `_calm_interfere.mjs`) — **not** the producer of these 8 runs |
 
@@ -38,6 +39,12 @@ interfere run. (Forced interfere remains available as a weaker optional probe.)
 |-----|------|------|-------|
 | 1–7 | 0 | `pass` | 6315 |
 | 8 | 1 | `died-after-self-tests-no-identity` | 1377 |
+
+**Log retention.** `run-02` .. `run-07` were pruned on 2026-08-01: byte-identical to
+`run-01` apart from timestamp and ephemeral port, so they cost storage without adding
+evidence. All eight outcomes remain in `loop-summary.jsonl`, the machine-readable
+record; the pruned files are recoverable from git history at `c5e4633`. The two logs
+kept are the two that differ: one representative pass, and the failure.
 
 Classifier label `died-after-self-tests-no-identity` means: both self-tests printed ok,
 and neither `HARD fails:` nor `FINGERPRINT` appeared. It does **not** mean "no Error

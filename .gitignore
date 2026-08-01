@@ -78,3 +78,4 @@ AGENTS.md
 .github/prompts/
 __pycache__/
 *.py[cod]
+_cite_scan_report.json
