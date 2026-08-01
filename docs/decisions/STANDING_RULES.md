@@ -16,6 +16,7 @@
 8. **A test may only interact with entities it created in that run.** Depending on a pre-existing project, file, or option the smoke did not create measures the machine, not the product. Create both sides of a switch test inside the check. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md); ambient-gitignored-data mechanism **disproven**)
 8a. **A diagnostic proven only on the happy path is not proven.** Step labels, timers and failure logs exist for the failure path — fault-inject once and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (badger step timings, verified happy-path only; keep distinct from §3 — [standing-8a-vs-absence](./standing-8a-vs-absence.md))
 8b. **State what you did not verify.** A verdict with no stated limits has unknown limits. Explicit non-claims are what make a PASS worth reading.
+8c. **A check that cannot fail when the product breaks is worse than no check** — it occupies the slot where a real check would go. Name the exact production symbol the check exercises; if the answer is a copy, helper-in-isolation, sibling branch, or parallel impl "in spirit", it is not evidence. Remedy: import the shipped module and drive it, or delete the check and downgrade the claim. Two implementations agreeing is not a guarantee unless a test pins them. Sibling of 8a (path vs object). ([check-occupies-slot](./check-occupies-slot.md))
 
 ## Actions (same disease as unattributed measurement)
 
