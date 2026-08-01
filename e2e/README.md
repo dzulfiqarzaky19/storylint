@@ -284,7 +284,7 @@ After every smoke in `ALL_FEATURE_SMOKES`: server `activeProjectId` **must** be 
 
 ## Diagnostic capture
 
-Do **not** filter the output of a run you might need to diagnose (`findstr`/`grep` pipelines that drop Playwright timeout bodies). Capture whole, filter when reading. Step labels on k/l (`[slice-k +Nms] …`) are proven to survive a stall — see `e2e/prove-step-stall.mjs` and `e2e/proofs/E1-step-stall-proof.txt`.
+Do **not** filter the output of a run you might need to diagnose (`findstr`/`grep` pipelines that drop Playwright timeout bodies). Capture whole, filter when reading. Step labels on k/l come from shared `e2e/step-label.mjs` (`makeStep`). `e2e/prove-step-stall.mjs` fails if k/l stop importing that helper, and proves the helper still emits `[slice-k +Nms] STALL-INJECT` when the next Playwright wait times out (artifact: `e2e/proofs/E1-step-stall-proof.txt`).
 
 ## Nav waitUntil
 
