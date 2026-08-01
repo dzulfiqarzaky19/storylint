@@ -19,6 +19,7 @@ A reader should find the ruling that governs their question in the tables below 
 | [STANDING_RULES.md](./STANDING_RULES.md) | **The short rule set** extracted from this corpus (read first). |
 | [density-pass-settled-positions.md](./density-pass-settled-positions.md) | **Ox close-out:** settled product positions — do not relitigate without evidence (not the incident log). |
 | [rule-visibility-not-geometry.md](./rule-visibility-not-geometry.md) | Visibility is never inferred from geometry; absence ≠ pass; dead selector = fail. |
+| [check-occupies-slot.md](./check-occupies-slot.md) | **BINDING:** a green check on a copy/helper/sibling/parallel is worse than no check — occupies the slot; name the production symbol or delete. |
 | [one-primary-door-per-job.md](./one-primary-door-per-job.md) | One solid primary per job in the **whole viewport**; dual New sheet / dual first-chapter doors are not calm. |
 | [runnable-solid-precondition.md](./runnable-solid-precondition.md) | Solid must not advertise a job that cannot succeed; weight ≠ entitlement. |
 | [boolean-hides-multi-state.md](./boolean-hides-multi-state.md) | Do not collapse multi-state domains into booleans; fixture real states. |
@@ -98,6 +99,7 @@ Short list only — do not grow into a second backlog novel.
 
 ### Closed this session (do not re-open without new evidence)
 
+- ~~**Check occupies the slot (isolated-copy green)**~~ — **RULED**. [check-occupies-slot.md](./check-occupies-slot.md); standing **8c**.
 - ~~**Lab promote domain title inherit (UI-only gate)**~~ — **RULED (b)**. [lab-promote-domain-title.md](./lab-promote-domain-title.md).
 - ~~**Lab promote consent / provenance (product model)**~~ — **RULED**. [lab-promote-consent-provenance.md](./lab-promote-consent-provenance.md); build follow-on.
 - ~~**Refresh / tab-close dirty identity (product model)**~~ — **RULED P0**. [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md); build = T-004 buffalo.

@@ -25,3 +25,7 @@ Cross-link in STANDING_RULES is enough; collapsing loses the failure-path proof 
 **8b** (state what you did not verify) stays too — it’s the report-side twin, not a duplicate of either.
 
 — ox | short corpus ≠ merge distinct proof duties
+
+## Later sibling
+
+**8c** ([check-occupies-slot](./check-occupies-slot.md)) is the **object** axis of the same family: 8a = which **path**; 8c = which **object** (shipped symbol vs copy). Still do not collapse with §3.
