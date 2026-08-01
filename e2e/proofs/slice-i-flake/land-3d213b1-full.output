@@ -1,0 +1,950 @@
+storylint/land-gate-not-measured
+0faf638
+land: storylint topic → origin/dev
+land: topic=storylint/land-gate-not-measured
+land: summary=land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only
+land: max-attempts=3
+land: gate=NO-WORSE (fresh origin/dev baseline, identity compare, NOT-MEASURED aborts)
+
+========================================================================
+========================================================================
+
+========================================================================
+========================================================================
+
+$ git status --short --branch
+
+## storylint/land-gate-not-measured...origin/storylint/land-gate-not-measured
+land: worktree clean
+
+========================================================================
+========================================================================
+land: node_modules + tsc + vite present
+
+========================================================================
+land: fetch origin
+========================================================================
+
+$ git fetch origin
+
+land: origin/dev = c3ef445
+
+========================================================================
+========================================================================
+land: detaching at origin/dev (c3ef445) for baseline
+
+$ git checkout --detach origin/dev
+
+[stderr] HEAD is now at c3ef445 Merge storylint/ox-t004-durable-dirty into dev: ox T-004 durable dirty P0 binding; standing 11a no-discard-as-fix; conflict chooser
+
+$ git checkout -- e2e/output
+
+
+$ git clean -fd e2e/output
+
+
+========================================================================
+land: test:green — baseline-origin-dev
+========================================================================
+land: running test:green at HEAD=c3ef445 (baseline-origin-dev)
+
+$ npm.cmd run test:green
+
+
+> storylint@0.0.0 test:green
+> node e2e/guard-helpers.mjs && npm run build && npm test && node e2e/all-smoke.mjs && node e2e/calm-budget.mjs
+
+e2e helper guard: scanned 37 scripts
+legacy-exploratory  b5-face-touch.mjs (not yet on helpers)
+legacy-exploratory  binder-resting.mjs (not yet on helpers)
+gate-ok  binder-scroll-restore-smoke.mjs
+gate-ok  bl-phone-drawer-smoke.mjs
+gate-ok  calm-budget.mjs
+gate-ok  canon-load-audit.mjs
+gate-ok  canon-under-load-az.mjs
+legacy-exploratory  d6-companion-shots.mjs (not yet on helpers)
+legacy-exploratory  graph-audit.mjs (not yet on helpers)
+gate-ok  l2-composition.mjs
+legacy-exploratory  rail-budget.mjs (not yet on helpers)
+gate-ok  slice-e-smoke.mjs
+gate-ok  slice-f-smoke.mjs
+gate-ok  slice-g-smoke.mjs
+gate-ok  slice-h-smoke.mjs
+gate-ok  slice-i-smoke.mjs
+gate-ok  slice-j-smoke.mjs
+gate-ok  slice-k-smoke.mjs
+gate-ok  slice-l-smoke.mjs
+legacy-exploratory  ux-drive-graph.mjs (not yet on helpers)
+legacy-exploratory  ux-drive.mjs (helpers ok)
+PASS: e2e helper convention holds
+
+> storylint@0.0.0 build
+> tsc -b && vite build
+
+[36mvite v8.1.5 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...✓ 60 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.47 kB │ gzip:  0.30 kB
+dist/assets/index-UvYdM9TR.css   54.56 kB │ gzip:  8.73 kB
+dist/assets/index-D6SORlIA.js   295.29 kB │ gzip: 87.71 kB
+
+[32m✓ built in 130ms[39m
+
+> storylint@0.0.0 test
+> node --experimental-strip-types --test "src/**/*.test.ts"
+
+✔ fixture sheet request returns structured pending proposal pack without mutating project (4.6612ms)
+✔ fixture generic chat returns project-aware help without a proposal (0.4774ms)
+✔ fixture Lab brainstorm returns pre-canon cards without proposals (0.606ms)
+✔ fixture character spark lands one Lab card only (0.2872ms)
+✔ fixture sheet request still wins over lab-ish wording (0.3551ms)
+✔ configured live adapter is selected for sheet asks (0.3384ms)
+✔ live freeform chat uses completion without requiring sheet pack (0.2599ms)
+✔ live Lab brainstorm adapter can return labCards (0.2516ms)
+✔ chapterListLabel uses stored titles as-is (1.1251ms)
+✔ chapterListLabel numbers only among empty titles (interleaved) (0.3037ms)
+✔ chapterListLabel does not invent Chapter N (0.2734ms)
+✔ focus hides binder and agent at every width (4.714ms)
+✔ both rails show at wide when open (0.8745ms)
+✔ agent has no rail below bp.lg; binder keeps its rail down to bp.md (0.3303ms)
+✔ rail budget: only desk width opens both rails by default (0.2796ms)
+✔ rail budget: the companion is still reachable where it starts closed (0.2194ms)
+✔ a closed rail hides the region without opening a drawer (0.1744ms)
+✔ compact presents an opened region as a drawer, not a rail (0.1612ms)
+✔ only the requested region drawers open (0.1485ms)
+✔ manuscript is the only region left in focus mode (0.2436ms)
+✔ no key selects fixture extraction and yields the documented red mark and proposal (2.4201ms)
+✔ STORYLINT_FIXTURE_LLM forces fixture extraction even when a key exists (0.3683ms)
+✔ a no-key fixture run does not mutate the input project (1.2926ms)
+✔ successful rerun replaces stale pending proposals from that chapter (0.4861ms)
+✔ continuity rerun preserves pending sheet-assistance packs (0.3669ms)
+✔ local-model claim kind aliases normalize to the frozen domain enum (0.5483ms)
+✔ unknown claim kinds still fail at the trust boundary (0.687ms)
+✔ a live extractor is selected only when key exists and fixture mode is off (0.2801ms)
+✔ fixture continue returns an insert card and never changes manuscript or Canon (3.1672ms)
+✔ fixture rewrite targets the exact selected range (0.4163ms)
+✔ rewrite requires a non-empty selection (1.1213ms)
+✔ configured live co-write uses injected neutral adapter once (0.4631ms)
+✔ rails stay readable — never narrower than the binder/agent minimum (0.4263ms)
+✔ rails never shrink as the desk grows (0.3829ms)
+✔ insert applies only at the explicit cursor position (1.4958ms)
+✔ replace applies only to the explicit selection (0.3537ms)
+✔ invalid or stale ranges fail instead of writing elsewhere (0.7391ms)
+✔ tests are grounded in the continuity sample fixture (12.36ms)
+✔ hard conflict emits a red mark (0.951ms)
+✔ unknown high-confidence claim creates a proposal (0.325ms)
+✔ unknown low-confidence claim is dropped (1.2061ms)
+✔ accept writes the proposed fact and marks the proposal accepted (1.6777ms)
+✔ reject does not write a fact and records the fingerprint (0.8952ms)
+✔ re-lint does not duplicate a pending fingerprint (0.4336ms)
+✔ accepting a proposal pack writes all facts to one sheet atomically (0.4293ms)
+✔ accept replaces an existing fact with the same key instead of forking canon (0.3595ms)
+✔ editing chapter body clears stale anchored marks (0.5158ms)
+✔ new lab defaults to Bench board with zero cards (3.1232ms)
+✔ ensureLab fills missing lab without dropping project fields (0.3028ms)
+✔ create edit archive and pin lab cards (0.6303ms)
+✔ archive is a state with Restore back to active — no hard delete (0.5559ms)
+✔ restore rejects non-archived cards (0.6014ms)
+✔ promote character-spark creates pending proposals only — no sheet facts (1.305ms)
+✔ promote beat creates chapter stub without body prose from lab (0.3162ms)
+✔ promote beat with blank chapterTitle stores empty — never invents Untitled chapter (0.2967ms)
+✔ what-if cannot promote to sheet or chapter (0.3531ms)
+✔ lab bodies helper exposes card text for ignore checks (0.3834ms)
+✔ markdown export produces readable sanitized chapter and sheet files (2.4818ms)
+✔ markdown export omits pending proposals and diagnostics (0.3298ms)
+✔ empty chapter title slugs to untitled without inventing Chapter N (0.4194ms)
+✔ untouched sheet is clean (15.4449ms)
+✔ null loaded matches empty identity only (0.2923ms)
+✔ typed then reverted is clean (0.2536ms)
+✔ whitespace-only change on trimmed fields is clean (0.2181ms)
+✔ aliases reordered are clean; actually changed are dirty (0.3901ms)
+✔ alias whitespace and empty tokens normalize clean (0.4546ms)
+✔ kind changed is dirty (0.2541ms)
+✔ portrait changed is dirty (1.6279ms)
+✔ normalizeSheetIdentity trims and sorts aliases (2.0383ms)
+✔ classifies parent/partner/sibling keys and ignores non-kinship (2.1651ms)
+✔ normalizes child_of into parent direction and layers generations (14.1683ms)
+✔ partners share a generation and multiple parents are supported (0.5284ms)
+✔ disconnected families layout side by side without missing nodes (1.733ms)
+✔ parent cycles produce diagnostics and still place nodes (0.3913ms)
+✔ non-character nodes and non-kinship edges are excluded (0.2439ms)
+✔ projects every sheet and accepted relationship fact only (2.3138ms)
+✔ kind filtering keeps only edges whose endpoints remain visible (0.345ms)
+✔ dangling relationship facts produce diagnostics, not rendered edges (0.2933ms)
+✔ multiple relationship facts with the same key retain distinct identities (0.3581ms)
+✔ fixture research returns cited results without project mutation (3.4891ms)
+✔ research result becomes a pending lore proposal, never canon (0.5582ms)
+✔ configured live research uses injected neutral adapter and validates citations (2.275ms)
+✔ research rejects uncited model results (0.8107ms)
+✔ fixture review returns neutral findings and tag suggestions without changing project (4.3284ms)
+✔ fixture craft check is on-demand and does not emit continuity marks (0.4688ms)
+✔ configured live review uses injected neutral adapter (0.4946ms)
+✔ neutral adapter calls OpenAI-compatible chat completions (58.8787ms)
+✔ accepts model content with trailing prose after the JSON object (11.9853ms)
+✔ accepts HTTP body with a second JSON object trailer (12.313ms)
+✔ accepts nested braces inside string values (7.8345ms)
+✔ completeText returns freeform assistant content (7.0764ms)
+✔ store saves schemaVersion 2 atomically without leaving a temp file (11.1464ms)
+✔ switchFile serializes with concurrent updates so writes stay on the intended path (10.7386ms)
+✔ failed async update leaves the saved project unchanged (4.6578ms)
+✔ GET and PUT project persist schemaVersion 2 (54.8341ms)
+✔ PATCH chapter persists (15.5646ms)
+✔ sheet upsert and manual fact CRUD persist (26.6973ms)
+✔ proposal accept writes canon; reject never does (30.3316ms)
+✔ continuity fixture route persists marks and pending proposals (20.2189ms)
+✔ proposal edit updates pending content without writing canon (9.8768ms)
+✔ fixture chat creates proposal pack without writing canon (8.7543ms)
+✔ continuity after chat preserves one copy of each sheet-pack proposal (13.3599ms)
+✔ co-write generation returns an Apply card without changing manuscript or bible (8.7595ms)
+✔ manuscript changes only after explicit Apply insert/replace (12.3346ms)
+✔ Apply rejects stale manuscript cards without writing (6.931ms)
+✔ portrait and manual craft tags persist through existing project APIs (17.6974ms)
+✔ invalid craft tags fail without modifying project (5.2389ms)
+✔ review and craft-check routes return neutral findings without project writes (10.3024ms)
+✔ research query is read-only; pin persists note; propose persists pending lore only (30.1992ms)
+✔ uncited research notes cannot be pinned or proposed (5.0314ms)
+✔ research persistence rejects unsafe citations and colliding note IDs (18.0068ms)
+✔ stale chapter PUT and stale sheet metadata cannot overwrite newer content (50.3464ms)
+✔ graph edge create/edit stays pending until Accept and preserves fact identity (45.2288ms)
+✔ invalid graph endpoints fail without canon mutation (5.2115ms)
+✔ markdown ZIP export contains readable chapter and bible paths (9.2086ms)
+✔ local projects can be created listed and switched with Lab schema v2 (15.3874ms)
+✔ invalid project IDs and duplicate creation are rejected (14.0761ms)
+✔ invalid input returns 400 and does not modify the project (5.7435ms)
+✔ lab card create pin archive and promote stay pre-canon until Accept (43.6552ms)
+✔ lab archive restore returns card to bench without Canon writes (29.8056ms)
+✔ lab what-if promote is rejected without mutation (15.5751ms)
+ℹ tests 123
+ℹ suites 0
+ℹ pass 123
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1141.939
+[owned-stack] building D:\dev\projects\storylint-e2e-health @ c3ef445
+[owned-stack] api :62948 ui :62949
+[owned=true] ui=http://127.0.0.1:62949/ api=http://127.0.0.1:62948 head=c3ef445 shell=54884172c616
+[isolation] active-project before suite: e2e-t001-31952-ms9m48sh
+LLM path: fixture route stubs (default)
+
+===== e2e/slice-e-smoke.mjs =====
+PASS: generation is panel-only; Apply inserts; Dismiss discards; editor has no gen controls; Focus round-trip
+[isolation] e2e/slice-e-smoke.mjs ok active=e2e-32632-ms9m8l3p-zjlwo7 minted=e2e-32632-ms9m8l3p-zjlwo7
+
+===== e2e/slice-f-smoke.mjs =====
+PASS: portrait/icon persists; lore hints stay freeform; manual craft tags save/hide in Focus; reading profile and responsive paper render
+[isolation] e2e/slice-f-smoke.mjs ok active=e2e-20560-ms9m8n9n-ivwbgl minted=e2e-20560-ms9m8n9n-ivwbgl
+
+===== e2e/slice-g-smoke.mjs =====
+PASS: Review and craft check are on-demand neutral panel findings; tags require explicit add; no manuscript or continuity-mark writes
+[isolation] e2e/slice-g-smoke.mjs ok active=e2e-30184-ms9m8p8x-i5pg5a minted=e2e-30184-ms9m8p8x-i5pg5a
+
+===== e2e/slice-h-smoke.mjs =====
+PASS: dedicated cited research panel; Pin persists note; Propose creates pending lore; no auto-canon or chat dump
+[isolation] e2e/slice-h-smoke.mjs ok active=e2e-29480-ms9m8rhp-ywayuf minted=e2e-29480-ms9m8rhp-ywayuf
+
+===== e2e/slice-i-smoke.mjs =====
+[stderr] file:///D:/dev/projects/storylint-e2e-health/e2e/helpers.mjs:1296
+[stderr]     if (!reset.ok) throw new Error(`ensureDraftReady normalize failed: ${reset.status} ${await reset.text()}`)
+[stderr]                          ^
+[stderr] 
+[stderr] Error: ensureDraftReady normalize failed: 400 {"error":"EPERM: operation not permitted, rename 'D:\\dev\\projects\\storylint-e2e-health\\data\\projects\\e2e-14708-ms9m8su2-p94ibv.json.tmp' -> 'D:\\dev\\projects\\storylint-e2e-health\\data\\projects\\e2e-14708-ms9m8su2-p94ibv.json'"}
+[stderr]     at ensureDraftReady (file:///D:/dev/projects/storylint-e2e-health/e2e/helpers.mjs:1296:26)
+[stderr]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[stderr]     at async file:///D:/dev/projects/storylint-e2e-health/e2e/slice-i-smoke.mjs:58:3
+[stderr] 
+[stderr] Node.js v26.5.0
+
+===== e2e/slice-j-smoke.mjs =====
+PASS: create/switch owned projects preserves prose; Markdown ZIP downloads (1881ms)
+TIMING 1881ms :: goto=49ms base-api=86ms harbor-api=65ms reload-options=25ms select-harbor=53ms draft-open=189ms filled-saved=555ms select-base=24ms prose-cleared=2ms return-harbor=31ms prose-restored=4ms export=373ms
+[isolation] e2e/slice-j-smoke.mjs ok active=e2e-17108-ms9m8twh-3itpnc minted=e2e-17108-ms9m8tu3-zh06do,e2e-17108-ms9m8twh-3itpnc
+
+===== e2e/slice-k-smoke.mjs =====
+[slice-k +404ms] mint
+[slice-k +504ms] seed
+[slice-k +527ms] goto desktop
+[slice-k +742ms] propose+accept
+[slice-k +742ms] canon click
+[slice-k +809ms] propose editor
+[slice-k +968ms] companion inbox accept
+[slice-k +1106ms] family view
+[slice-k +1381ms] narrow page
+[slice-k +1872ms] PASS
+PASS: family tree view, node open sheet, network toggle, pending-until-Accept, desktop+narrow screenshots
+[isolation] e2e/slice-k-smoke.mjs ok active=e2e-slice-k-7500-ms9m8vg1 minted=e2e-slice-k-7500-ms9m8vg1
+
+===== e2e/slice-l-smoke.mjs =====
+[slice-l +386ms] mint
+[slice-l +481ms] goto
+[slice-l +738ms] open lab
+[slice-l +794ms] companion faces
+[slice-l +948ms] create card
+[slice-l +1160ms] promote
+[slice-l +1243ms] graph ignore lab
+[slice-l +1438ms] PASS
+PASS: Lab bench create/pin/promote pre-canon, Companion faces, Graph ignores Lab, screenshot
+[isolation] e2e/slice-l-smoke.mjs ok active=e2e-slice-l-20304-ms9m8xb9 minted=e2e-slice-l-20304-ms9m8xb9
+
+===== e2e/binder-scroll-restore-smoke.mjs =====
+{
+  "head": "c3ef445",
+  "cases": [
+    {
+      "label": "rail@1440",
+      "preOpen": 997,
+      "clicked": {
+        "ok": true,
+        "before": 997,
+        "afterClickScroll": 997
+      },
+      "opened": {
+        "detail": true,
+        "editor": true,
+        "scrollWhileOpen": 201
+      },
+      "after": {
+        "scrollTop": 997,
+        "editor": false,
+        "focusName": "Char 300"
+      },
+      "delta": 0,
+      "ok": true
+    },
+    {
+      "label": "drawer@390",
+      "preOpen": 1005,
+      "clicked": {
+        "ok": true,
+        "before": 1005,
+        "afterClickScroll": 1005
+      },
+      "opened": {
+        "detail": true,
+        "editor": true,
+        "scrollWhileOpen": 265
+      },
+      "after": {
+        "scrollTop": 1005,
+        "editor": false,
+        "focusName": "Char 300"
+      },
+      "delta": 0,
+      "ok": true
+    }
+  ]
+}
+PASS scroll restore
+[isolation] e2e/binder-scroll-restore-smoke.mjs ok active=e2e-scroll-restore-390-32712-ms9m906z minted=e2e-scroll-restore-1440-32712-ms9m8z56,e2e-scroll-restore-390-32712-ms9m906z
+
+===== e2e/bl-phone-drawer-smoke.mjs =====
+PASS companion-body-center-free {"bodyCenter":{"cx":169,"cy":504},"topClass":"ui-drawer__backdrop","topIsBackdrop":true,"topIsDrawer":false,"drawerW":156,"bodyW":282,"vpW":390}
+PASS companion-outside-dismisses {"via":"coords"}
+PASS body-focus-after-dismiss {}
+PASS escape-closes {}
+PASS binder-body-center-free {"bodyCenter":{"cx":169,"cy":504},"topClass":"ui-drawer__backdrop","topIsBackdrop":true,"topIsDrawer":false,"drawerW":156,"bodyW":282,"vpW":390}
+PASS binder-outside-dismisses {}
+PASS binder-select-closes {}
+PASS topbar-hide-reachable {}
+BL smoke PASS 8 checks @ c3ef445
+[isolation] e2e/bl-phone-drawer-smoke.mjs ok active=e2e-31144-ms9m9231-e0kcxn minted=e2e-31144-ms9m9231-e0kcxn
+[isolation] active-project after suite restored: e2e-t001-31952-ms9m48sh
+[isolation] swept 13 orphan harness project files
+
+===== SUITE SUMMARY =====
+provenance head=c3ef445 owned=true shell=54884172c616 ui=http://127.0.0.1:62949/
+[stderr] 
+PASS  e2e/slice-e-smoke.mjs  (2854ms)
+PASS  e2e/slice-f-smoke.mjs  (2517ms)
+PASS  e2e/slice-g-smoke.mjs  (2864ms)
+PASS  e2e/slice-h-smoke.mjs  (1735ms)
+FAIL  e2e/slice-i-smoke.mjs  (1203ms — e2e/slice-i-smoke.mjs exited 1)
+PASS  e2e/slice-j-smoke.mjs  (2569ms)
+PASS  e2e/slice-k-smoke.mjs  (2473ms)
+PASS  e2e/slice-l-smoke.mjs  (1952ms)
+PASS  e2e/binder-scroll-restore-smoke.mjs  (3616ms)
+PASS  e2e/bl-phone-drawer-smoke.mjs  (18622ms)
+land: full log also at D:\dev\projects\storylint-e2e-health\_land_run\baseline-origin-dev.log
+
+land: measurement=measured exit=1 failures=1
+land: parsed failure set (baseline-origin-dev)
+  - smoke:e2e/slice-i-smoke.mjs
+land: chain failedAt=calm reached=[guard,build,unit,smoke,calm]
+
+$ git checkout -- e2e/output
+
+
+$ git clean -fd e2e/output
+
+land: restoring topic storylint/land-gate-not-measured
+
+$ git checkout storylint/land-gate-not-measured
+
+[stderr] Previous HEAD position was c3ef445 Merge storylint/ox-t004-durable-dirty into dev: ox T-004 durable dirty P0 binding; standing 11a no-discard-as-fix; conflict chooser
+[stderr] Switched to branch 'storylint/land-gate-not-measured'
+Your branch is up to date with 'origin/storylint/land-gate-not-measured'.
+
+$ git checkout -- e2e/output
+
+
+$ git clean -fd e2e/output
+
+
+land: BASELINE origin/dev@c3ef445
+  - smoke:e2e/slice-i-smoke.mjs
+
+========================================================================
+========================================================================
+land: merging origin/dev into storylint/land-gate-not-measured (topic stays checked out)
+
+$ git merge origin/dev -m "Merge origin/dev into storylint/land-gate-not-measured"
+
+Already up to date.
+land: topic now contains origin/dev
+
+========================================================================
+========================================================================
+
+$ git checkout -- e2e/output
+
+
+$ git clean -fd e2e/output
+
+
+========================================================================
+land: test:green — candidate-topic-after-dev
+========================================================================
+land: running test:green at HEAD=0faf638 (candidate-topic-after-dev)
+
+$ npm.cmd run test:green
+
+
+> storylint@0.0.0 test:green
+> node e2e/guard-helpers.mjs && npm run build && npm test && node e2e/all-smoke.mjs && node e2e/calm-budget.mjs
+
+e2e helper guard: scanned 37 scripts
+legacy-exploratory  b5-face-touch.mjs (not yet on helpers)
+legacy-exploratory  binder-resting.mjs (not yet on helpers)
+gate-ok  binder-scroll-restore-smoke.mjs
+gate-ok  bl-phone-drawer-smoke.mjs
+gate-ok  calm-budget.mjs
+gate-ok  canon-load-audit.mjs
+gate-ok  canon-under-load-az.mjs
+legacy-exploratory  d6-companion-shots.mjs (not yet on helpers)
+legacy-exploratory  graph-audit.mjs (not yet on helpers)
+gate-ok  l2-composition.mjs
+legacy-exploratory  rail-budget.mjs (not yet on helpers)
+gate-ok  slice-e-smoke.mjs
+gate-ok  slice-f-smoke.mjs
+gate-ok  slice-g-smoke.mjs
+gate-ok  slice-h-smoke.mjs
+gate-ok  slice-i-smoke.mjs
+gate-ok  slice-j-smoke.mjs
+gate-ok  slice-k-smoke.mjs
+gate-ok  slice-l-smoke.mjs
+legacy-exploratory  ux-drive-graph.mjs (not yet on helpers)
+legacy-exploratory  ux-drive.mjs (helpers ok)
+PASS: e2e helper convention holds
+
+> storylint@0.0.0 build
+> tsc -b && vite build
+
+[36mvite v8.1.5 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...✓ 60 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.47 kB │ gzip:  0.30 kB
+dist/assets/index-UvYdM9TR.css   54.56 kB │ gzip:  8.73 kB
+dist/assets/index-D6SORlIA.js   295.29 kB │ gzip: 87.71 kB
+
+[32m✓ built in 121ms[39m
+
+> storylint@0.0.0 test
+> node --experimental-strip-types --test "src/**/*.test.ts" "scripts/**/*.test.mjs"
+
+✔ land.mjs imports the pure gate module (not a copy) (1.9531ms)
+✔ land.mjs calls gateNoWorseDecision on the decision path (1.1804ms)
+✔ land.mjs classifies test:green via classifyTestGreen (no opaque:exit emit) (0.9966ms)
+✔ land.mjs refuses unprepared worktrees via inspectWorktreePrep before green (0.737ms)
+✔ land.mjs does not re-define local parseFailures/compareFailures (single source) (1.0052ms)
+✔ runtime: land-gate module resolves and gateNoWorseDecision is the same binding land imports (4.4797ms)
+✔ behavioral: inspectWorktreePrep refuses temp cwd without node_modules (4.7686ms)
+✔ behavioral: land.mjs --help exits 0 (script loads and binds gate) (158.1205ms)
+✔ inspectWorktreePrep: missing node_modules is not ok (5.2214ms)
+✔ inspectWorktreePrep: node_modules without typescript is not ok (2.8136ms)
+✔ inspectWorktreePrep: current repo worktree is prepared (1.7041ms)
+✔ tsc-not-recognized is NOT-MEASURED, never opaque:exit-1 (3.6354ms)
+✔ identical void baseline+candidate must HARD ABORT, not no-worse pass (1.0382ms)
+✔ candidate-only void also hard aborts (1.9614ms)
+✔ LG-B1: empty log exit 0 is NOT-MEASURED (never measured green) (0.2633ms)
+✔ LG-B1: npm header only exit 0 is NOT-MEASURED (0.2809ms)
+✔ LG-B1: guard PASS only then kill exit 0 is NOT-MEASURED (0.2866ms)
+✔ LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch (0.4712ms)
+✔ unit test NAME containing EADDRINUSE does not poison full green (land false-positive) (0.377ms)
+✔ LG-B2: tsc-not-recognized at exit 0 is NOT-MEASURED (infra, not exit-1 second branch) (0.2968ms)
+✔ unit failures parse to unit:name identities (0.2488ms)
+✔ smoke failures parse to smoke:path (0.1634ms)
+✔ calm HARD fails parse; WARN does not (0.2278ms)
+✔ TypeScript product errors are build:TS identities (measured) (0.1841ms)
+✔ guard failure identity (0.2074ms)
+✔ no-worse: introduced product failure aborts (0.4968ms)
+✔ no-worse: same product failures is pass (pre-existing) (0.259ms)
+✔ no-worse: fully green both sides passes (0.35ms)
+✔ exit 1 empty log is NOT-MEASURED, not opaque:test-green-exit-1 (0.1641ms)
+✔ parseFailures back-compat returns a Set (0.1897ms)
+✔ compareFailures identity subtract (0.9507ms)
+✔ missing playwright browser is NOT-MEASURED infra (0.206ms)
+✔ buffalo incomplete-calm fixture is NOT-MEASURED stage-died:calm, never opaque (18.8984ms)
+✔ calm self-tests without FINGERPRINT/HARD fails is incomplete even at exit 0 (0.29ms)
+✔ fixture sheet request returns structured pending proposal pack without mutating project (3.9638ms)
+✔ fixture generic chat returns project-aware help without a proposal (0.3581ms)
+✔ fixture Lab brainstorm returns pre-canon cards without proposals (0.5897ms)
+✔ fixture character spark lands one Lab card only (0.2927ms)
+✔ fixture sheet request still wins over lab-ish wording (0.4304ms)
+✔ configured live adapter is selected for sheet asks (0.6993ms)
+✔ live freeform chat uses completion without requiring sheet pack (0.393ms)
+✔ live Lab brainstorm adapter can return labCards (0.7564ms)
+✔ chapterListLabel uses stored titles as-is (1.1182ms)
+✔ chapterListLabel numbers only among empty titles (interleaved) (0.2594ms)
+✔ chapterListLabel does not invent Chapter N (0.2372ms)
+✔ focus hides binder and agent at every width (3.6555ms)
+✔ both rails show at wide when open (0.3354ms)
+✔ agent has no rail below bp.lg; binder keeps its rail down to bp.md (0.2095ms)
+✔ rail budget: only desk width opens both rails by default (0.2564ms)
+✔ rail budget: the companion is still reachable where it starts closed (0.2679ms)
+✔ a closed rail hides the region without opening a drawer (0.223ms)
+✔ compact presents an opened region as a drawer, not a rail (0.2216ms)
+✔ only the requested region drawers open (0.1972ms)
+✔ manuscript is the only region left in focus mode (0.3142ms)
+✔ no key selects fixture extraction and yields the documented red mark and proposal (3.4325ms)
+✔ STORYLINT_FIXTURE_LLM forces fixture extraction even when a key exists (0.3855ms)
+✔ a no-key fixture run does not mutate the input project (1.2625ms)
+✔ successful rerun replaces stale pending proposals from that chapter (0.4865ms)
+✔ continuity rerun preserves pending sheet-assistance packs (0.3309ms)
+✔ local-model claim kind aliases normalize to the frozen domain enum (0.4952ms)
+✔ unknown claim kinds still fail at the trust boundary (0.547ms)
+✔ a live extractor is selected only when key exists and fixture mode is off (0.2335ms)
+✔ fixture continue returns an insert card and never changes manuscript or Canon (2.6293ms)
+✔ fixture rewrite targets the exact selected range (1.0553ms)
+✔ rewrite requires a non-empty selection (0.8108ms)
+✔ configured live co-write uses injected neutral adapter once (0.2794ms)
+✔ rails stay readable — never narrower than the binder/agent minimum (0.5358ms)
+✔ rails never shrink as the desk grows (0.4459ms)
+✔ insert applies only at the explicit cursor position (1.2931ms)
+✔ replace applies only to the explicit selection (0.4972ms)
+✔ invalid or stale ranges fail instead of writing elsewhere (0.5991ms)
+✔ tests are grounded in the continuity sample fixture (10.9382ms)
+✔ hard conflict emits a red mark (1.229ms)
+✔ unknown high-confidence claim creates a proposal (0.426ms)
+✔ unknown low-confidence claim is dropped (1.5698ms)
+✔ accept writes the proposed fact and marks the proposal accepted (1.0089ms)
+✔ reject does not write a fact and records the fingerprint (0.4956ms)
+✔ re-lint does not duplicate a pending fingerprint (0.3815ms)
+✔ accepting a proposal pack writes all facts to one sheet atomically (0.4394ms)
+✔ accept replaces an existing fact with the same key instead of forking canon (0.3765ms)
+✔ editing chapter body clears stale anchored marks (0.4873ms)
+✔ new lab defaults to Bench board with zero cards (2.7219ms)
+✔ ensureLab fills missing lab without dropping project fields (0.3704ms)
+✔ create edit archive and pin lab cards (0.5583ms)
+✔ archive is a state with Restore back to active — no hard delete (0.5987ms)
+✔ restore rejects non-archived cards (0.6883ms)
+✔ promote character-spark creates pending proposals only — no sheet facts (1.4391ms)
+✔ promote beat creates chapter stub without body prose from lab (0.3474ms)
+✔ promote beat with blank chapterTitle stores empty — never invents Untitled chapter (0.3368ms)
+✔ what-if cannot promote to sheet or chapter (0.3663ms)
+✔ lab bodies helper exposes card text for ignore checks (0.4442ms)
+✔ markdown export produces readable sanitized chapter and sheet files (2.34ms)
+✔ markdown export omits pending proposals and diagnostics (0.3436ms)
+✔ empty chapter title slugs to untitled without inventing Chapter N (0.3927ms)
+✔ untouched sheet is clean (17.6833ms)
+✔ null loaded matches empty identity only (0.6071ms)
+✔ typed then reverted is clean (4.1392ms)
+✔ whitespace-only change on trimmed fields is clean (0.3223ms)
+✔ aliases reordered are clean; actually changed are dirty (0.3475ms)
+✔ alias whitespace and empty tokens normalize clean (0.1971ms)
+✔ kind changed is dirty (0.2017ms)
+✔ portrait changed is dirty (2.1239ms)
+✔ normalizeSheetIdentity trims and sorts aliases (1.1787ms)
+✔ classifies parent/partner/sibling keys and ignores non-kinship (2.2496ms)
+✔ normalizes child_of into parent direction and layers generations (16.7183ms)
+✔ partners share a generation and multiple parents are supported (1.6801ms)
+✔ disconnected families layout side by side without missing nodes (0.7483ms)
+✔ parent cycles produce diagnostics and still place nodes (1.3597ms)
+✔ non-character nodes and non-kinship edges are excluded (0.3355ms)
+✔ projects every sheet and accepted relationship fact only (2.8299ms)
+✔ kind filtering keeps only edges whose endpoints remain visible (0.3779ms)
+✔ dangling relationship facts produce diagnostics, not rendered edges (0.2912ms)
+✔ multiple relationship facts with the same key retain distinct identities (0.3858ms)
+✔ fixture research returns cited results without project mutation (2.2967ms)
+✔ research result becomes a pending lore proposal, never canon (1.4704ms)
+✔ configured live research uses injected neutral adapter and validates citations (0.7016ms)
+✔ research rejects uncited model results (1.6718ms)
+✔ fixture review returns neutral findings and tag suggestions without changing project (3.2732ms)
+✔ fixture craft check is on-demand and does not emit continuity marks (0.2265ms)
+✔ configured live review uses injected neutral adapter (0.257ms)
+✔ neutral adapter calls OpenAI-compatible chat completions (39.5059ms)
+✔ accepts model content with trailing prose after the JSON object (10.3886ms)
+✔ accepts HTTP body with a second JSON object trailer (8.2903ms)
+✔ accepts nested braces inside string values (5.8162ms)
+✔ completeText returns freeform assistant content (5.989ms)
+✔ store saves schemaVersion 2 atomically without leaving a temp file (9.8049ms)
+✔ switchFile serializes with concurrent updates so writes stay on the intended path (7.7024ms)
+✔ failed async update leaves the saved project unchanged (4.3709ms)
+✔ GET and PUT project persist schemaVersion 2 (42.3093ms)
+✔ PATCH chapter persists (14.409ms)
+✔ sheet upsert and manual fact CRUD persist (28.7349ms)
+✔ proposal accept writes canon; reject never does (29.3562ms)
+✔ continuity fixture route persists marks and pending proposals (17.5671ms)
+✔ proposal edit updates pending content without writing canon (8.2706ms)
+✔ fixture chat creates proposal pack without writing canon (9.018ms)
+✔ continuity after chat preserves one copy of each sheet-pack proposal (11.5808ms)
+✔ co-write generation returns an Apply card without changing manuscript or bible (7.3177ms)
+✔ manuscript changes only after explicit Apply insert/replace (11.6527ms)
+✔ Apply rejects stale manuscript cards without writing (4.9083ms)
+✔ portrait and manual craft tags persist through existing project APIs (14.6641ms)
+✔ invalid craft tags fail without modifying project (5.5401ms)
+✔ review and craft-check routes return neutral findings without project writes (6.4644ms)
+✔ research query is read-only; pin persists note; propose persists pending lore only (12.4031ms)
+✔ uncited research notes cannot be pinned or proposed (4.362ms)
+✔ research persistence rejects unsafe citations and colliding note IDs (24.216ms)
+✔ stale chapter PUT and stale sheet metadata cannot overwrite newer content (60.926ms)
+✔ graph edge create/edit stays pending until Accept and preserves fact identity (46.3299ms)
+✔ invalid graph endpoints fail without canon mutation (6.2319ms)
+✔ markdown ZIP export contains readable chapter and bible paths (9.9355ms)
+✔ local projects can be created listed and switched with Lab schema v2 (12.8778ms)
+✔ invalid project IDs and duplicate creation are rejected (14.3695ms)
+✔ invalid input returns 400 and does not modify the project (5.4313ms)
+✔ lab card create pin archive and promote stay pre-canon until Accept (42.3525ms)
+✔ lab archive restore returns card to bench without Canon writes (31.3267ms)
+✔ lab what-if promote is rejected without mutation (14.3324ms)
+ℹ tests 157
+ℹ suites 0
+ℹ pass 157
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1091.3473
+[owned-stack] building D:\dev\projects\storylint-e2e-health @ 0faf638
+[owned-stack] api :64046 ui :64047
+[owned=true] ui=http://127.0.0.1:64047/ api=http://127.0.0.1:64046 head=0faf638 shell=54884172c616
+[isolation] active-project before suite: e2e-t001-31952-ms9m48sh
+LLM path: fixture route stubs (default)
+
+===== e2e/slice-e-smoke.mjs =====
+PASS: generation is panel-only; Apply inserts; Dismiss discards; editor has no gen controls; Focus round-trip
+[isolation] e2e/slice-e-smoke.mjs ok active=e2e-11204-ms9m9nnq-5oueq9 minted=e2e-11204-ms9m9nnq-5oueq9
+
+===== e2e/slice-f-smoke.mjs =====
+PASS: portrait/icon persists; lore hints stay freeform; manual craft tags save/hide in Focus; reading profile and responsive paper render
+[isolation] e2e/slice-f-smoke.mjs ok active=e2e-7448-ms9m9pwr-p38xgv minted=e2e-7448-ms9m9pwr-p38xgv
+
+===== e2e/slice-g-smoke.mjs =====
+PASS: Review and craft check are on-demand neutral panel findings; tags require explicit add; no manuscript or continuity-mark writes
+[isolation] e2e/slice-g-smoke.mjs ok active=e2e-23472-ms9m9rw8-yn03w4 minted=e2e-23472-ms9m9rw8-yn03w4
+
+===== e2e/slice-h-smoke.mjs =====
+PASS: dedicated cited research panel; Pin persists note; Propose creates pending lore; no auto-canon or chat dump
+[isolation] e2e/slice-h-smoke.mjs ok active=e2e-20648-ms9m9u3v-e9jnqn minted=e2e-20648-ms9m9u3v-e9jnqn
+
+===== e2e/slice-i-smoke.mjs =====
+PASS: graph nodes/portrait labels, kind filter, node sheet navigation, pending edge hidden until Accept, editor round-trip
+[isolation] e2e/slice-i-smoke.mjs ok active=e2e-10072-ms9m9vic-qvv8ly minted=e2e-10072-ms9m9vic-qvv8ly
+
+===== e2e/slice-j-smoke.mjs =====
+PASS: create/switch owned projects preserves prose; Markdown ZIP downloads (1875ms)
+TIMING 1875ms :: goto=59ms base-api=89ms harbor-api=80ms reload-options=31ms select-harbor=66ms draft-open=200ms filled-saved=558ms select-base=19ms prose-cleared=3ms return-harbor=31ms prose-restored=5ms export=321ms
+[isolation] e2e/slice-j-smoke.mjs ok active=e2e-4984-ms9m9x8v-39k3do minted=e2e-4984-ms9m9x6f-jcc868,e2e-4984-ms9m9x8v-39k3do
+
+===== e2e/slice-k-smoke.mjs =====
+[slice-k +650ms] mint
+[slice-k +787ms] seed
+[slice-k +816ms] goto desktop
+[slice-k +1113ms] propose+accept
+[slice-k +1114ms] canon click
+[slice-k +1174ms] propose editor
+[slice-k +1365ms] companion inbox accept
+[slice-k +1549ms] family view
+[slice-k +1921ms] narrow page
+[slice-k +2512ms] PASS
+PASS: family tree view, node open sheet, network toggle, pending-until-Accept, desktop+narrow screenshots
+[isolation] e2e/slice-k-smoke.mjs ok active=e2e-slice-k-3920-ms9m9yu8 minted=e2e-slice-k-3920-ms9m9yu8
+
+===== e2e/slice-l-smoke.mjs =====
+[slice-l +387ms] mint
+[slice-l +492ms] goto
+[slice-l +865ms] open lab
+[slice-l +942ms] companion faces
+[slice-l +1128ms] create card
+[slice-l +1352ms] promote
+[slice-l +1430ms] graph ignore lab
+[slice-l +1649ms] PASS
+PASS: Lab bench create/pin/promote pre-canon, Companion faces, Graph ignores Lab, screenshot
+[isolation] e2e/slice-l-smoke.mjs ok active=e2e-slice-l-16844-ms9ma1av minted=e2e-slice-l-16844-ms9ma1av
+
+===== e2e/binder-scroll-restore-smoke.mjs =====
+{
+  "head": "0faf638",
+  "cases": [
+    {
+      "label": "rail@1440",
+      "preOpen": 997,
+      "clicked": {
+        "ok": true,
+        "before": 997,
+        "afterClickScroll": 997
+      },
+      "opened": {
+        "detail": true,
+        "editor": true,
+        "scrollWhileOpen": 201
+      },
+      "after": {
+        "scrollTop": 997,
+        "editor": false,
+        "focusName": "Char 300"
+      },
+      "delta": 0,
+      "ok": true
+    },
+    {
+      "label": "drawer@390",
+      "preOpen": 1005,
+      "clicked": {
+        "ok": true,
+        "before": 1005,
+        "afterClickScroll": 1005
+      },
+      "opened": {
+        "detail": true,
+        "editor": true,
+        "scrollWhileOpen": 265
+      },
+      "after": {
+        "scrollTop": 1005,
+        "editor": false,
+        "focusName": "Char 300"
+      },
+      "delta": 0,
+      "ok": true
+    }
+  ]
+}
+PASS scroll restore
+[isolation] e2e/binder-scroll-restore-smoke.mjs ok active=e2e-scroll-restore-390-32644-ms9ma4i9 minted=e2e-scroll-restore-1440-32644-ms9ma3ek,e2e-scroll-restore-390-32644-ms9ma4i9
+
+===== e2e/bl-phone-drawer-smoke.mjs =====
+PASS companion-body-center-free {"bodyCenter":{"cx":169,"cy":504},"topClass":"ui-drawer__backdrop","topIsBackdrop":true,"topIsDrawer":false,"drawerW":156,"bodyW":282,"vpW":390}
+PASS companion-outside-dismisses {"via":"coords"}
+PASS body-focus-after-dismiss {}
+PASS escape-closes {}
+PASS binder-body-center-free {"bodyCenter":{"cx":169,"cy":504},"topClass":"ui-drawer__backdrop","topIsBackdrop":true,"topIsDrawer":false,"drawerW":156,"bodyW":282,"vpW":390}
+PASS binder-outside-dismisses {}
+PASS binder-select-closes {}
+PASS topbar-hide-reachable {}
+BL smoke PASS 8 checks @ 0faf638
+[isolation] e2e/bl-phone-drawer-smoke.mjs ok active=e2e-31588-ms9ma69n-78nrru minted=e2e-31588-ms9ma69n-78nrru
+[isolation] active-project after suite restored: e2e-t001-31952-ms9m48sh
+[isolation] swept 12 orphan harness project files
+
+===== SUITE SUMMARY =====
+provenance head=0faf638 owned=true shell=54884172c616 ui=http://127.0.0.1:64047/
+PASS  e2e/slice-e-smoke.mjs  (2941ms)
+PASS  e2e/slice-f-smoke.mjs  (2529ms)
+PASS  e2e/slice-g-smoke.mjs  (2843ms)
+PASS  e2e/slice-h-smoke.mjs  (1774ms)
+PASS  e2e/slice-i-smoke.mjs  (2100ms)
+PASS  e2e/slice-j-smoke.mjs  (2567ms)
+PASS  e2e/slice-k-smoke.mjs  (3189ms)
+PASS  e2e/slice-l-smoke.mjs  (2277ms)
+PASS  e2e/binder-scroll-restore-smoke.mjs  (3738ms)
+PASS  e2e/bl-phone-drawer-smoke.mjs  (18536ms)
+
+PASS: all 10 feature smokes
+helpers: required e2e/helpers.mjs
+[owned-stack] building D:\dev\projects\storylint-e2e-health @ 0faf638
+[owned-stack] api :49996 ui :49998
+[run-start] head=0faf638 ui=http://127.0.0.1:49998/ served=shell.css#54884172c616 status=200 bytes=24130 b5TouchRule=true
+[owned=true] api=http://127.0.0.1:49996 ui=http://127.0.0.1:49998/ head=0faf638b8c7ea1466b8bb65bf05fc60a3b89d580
+[visibility-self-test] ok (closed details hidden; summary + open content visible)
+[b6-primary-visibility-self-test] ok (closed details solid excluded; open included)
+[PASS] B1-work-hard (HARD) workPct=61.1 · rails binder=open/default agent=open/default atDesk=true · want ≥40 · Draft@1440
+[PASS] B1-work-warn (WARN) workPct=61.1 · rails binder=open/default agent=open/default atDesk=true · want ≥45 preferred (WARN if <45) · Draft@1440
+[PASS] B1-rail-warn (WARN) binder=19.4 agent=19.4 chrome=38.9 · rails binder=open/default agent=open/default atDesk=true · want rails≤24, chrome≤55 · Draft@1440
+[PASS] B1-rail-pathological (HARD) binderW=280 agentW=280 workW=880 · rails binder=open/default agent=open/default atDesk=true · want each rail ≤ work · Draft@1440
+[PASS] B1-fold (HARD) foldOwner=work (manuscript) · rails binder=open/default agent=open/default atDesk=true · want work · Draft@1440
+[PASS] B2-job-primary@1440 (HARD) topJobPrimaryCount=0 · want =0 · topbar@1440
+[PASS] B2-ecosystem@1440 (HARD) ecosystemVisible=3 [Draft,Lab,Canon] · want =3 · topbar@1440
+[PASS] B3-writing-count@1440 (HARD) productFaces=5 [Chat · Write · Check · Inbox · Research] more=false context=writing · want ≤5 · companion writing@1440
+[PASS] B3-default-face@1440 (HARD) face=chat context=writing · want chat · companion@1440
+[PASS] B3-chat-proposals-wall@1440 (HARD) chatProposalsWall=false · want false · companion chat@1440
+[PASS] B3-footer-primary-chat@1440 (HARD) footerPrimary=1 · want ≤1 · companion chat@1440
+[PASS] B3-footer-total-chat@1440 (WARN) footerTotal=1 · want ≤3 · companion chat@1440
+[PASS] B3-rest@1440 (HARD) checkRestHasStatus=true · want true · companion Check@1440
+[PASS] B3-footer-primary-check@1440 (HARD) footerPrimary=1 · want ≤1 · companion Check@1440
+[PASS] B3-lab-count@1440 (HARD) productFaces=3 [Chat · Spark · Inbox] context=lab · want ≤3 · companion lab@1440
+[PASS] B3-graph-count@1440 (HARD) productFaces=3 [Chat · Inspect · Inbox] context=graph · want ≤3 · companion graph@1440
+[PASS] B4-lab-empty-filter@1440 (HARD) cards=0 filterWhenEmpty=false · want false · Lab@1440
+[PASS] B4-lab-kind-strips@1440 (HARD) kindFullStrips=0 · want ≤1 · Lab@1440
+[PASS] B4-craft-desktop (HARD) chipVisibleCount=5 [char-dev,plot-progress,world-build,relationship,setup] foundStrip=true · want ≤5 · Draft craft@1440
+[PASS] B4-canon-propose@1440 (WARN) proposeExpanded=false · want collapsed · Canon@1440
+[PASS] B4-canon-view@1440 (WARN) viewW=2 filterW=2 · want view ≥ filter · Canon@1440
+[PASS] B5-overflow@1440 (HARD) overflowX=false · want false · shell@1440
+[PASS] B5-focus (HARD) focus=true binder=false work=true · want focus + work, no binder · Focus mode
+[PASS] B6-top-job (HARD) topJobPrimaryCount=0 · want =0 · topbar
+[PASS] B2-job-primary@390 (HARD) topJobPrimaryCount=0 · want =0 · topbar@390
+[PASS] B2-ecosystem@390 (HARD) ecosystemVisible=3 [Draft,Lab,Canon] · want =3 · topbar@390
+[PASS] B2-truncation (HARD) placeLabelClipped=0 · want =0 · topbar@390
+[PASS] B2-top-count-warn (WARN) topControlCount=7 · want ≤8 · topbar@390
+[PASS] B3-writing-count@390 (HARD) productFaces=5 [Chat · Write · Check · Inbox · Research] more=false context=writing · want ≤5 · companion writing@390
+[PASS] B3-default-face@390 (HARD) face=chat context=writing · want chat · companion@390
+[PASS] B3-chat-proposals-wall@390 (HARD) chatProposalsWall=false · want false · companion chat@390
+[PASS] B3-wrap (HARD) faceRows=1 labels=[Chat · Write · Check · Inbox · Research] · want =1 · companion@390
+[PASS] B3-overflow-shape (HARD) rows=1 hasMore=false · want one row; More ok · companion@390
+[PASS] B3-footer-primary-chat@390 (HARD) footerPrimary=1 · want ≤1 · companion chat@390
+[PASS] B3-footer-total-chat@390 (WARN) footerTotal=1 · want ≤3 · companion chat@390
+[PASS] B3-rest@390 (HARD) checkRestHasStatus=true · want true · companion Check@390
+[PASS] B3-footer-primary-check@390 (HARD) footerPrimary=1 · want ≤1 · companion Check@390
+[PASS] B3-lab-count@390 (HARD) productFaces=3 [Chat · Spark · Inbox] context=lab · want ≤3 · companion lab@390
+[PASS] B3-graph-count@390 (HARD) productFaces=3 [Chat · Inspect · Inbox] context=graph · want ≤3 · companion graph@390
+[PASS] B4-lab-empty-filter@390 (HARD) cards=0 filterWhenEmpty=false · want false · Lab@390
+[PASS] B4-lab-kind-strips@390 (HARD) kindFullStrips=0 · want ≤1 · Lab@390
+[PASS] B4-craft-phone (HARD) collapsed=true chips=0 detailsOpen=false · want true (disclosure collapsed; absence ≠ pass) · Draft craft@390
+[PASS] B4-canon-propose@390 (WARN) proposeExpanded=false · want collapsed · Canon@390
+[PASS] B4-canon-view@390 (WARN) viewW=2 filterW=2 · want view ≥ filter · Canon@390
+[PASS] B5-touch-chrome (HARD) touchFailChrome=0 · want =0 fails · chrome@390
+[PASS] B5-touch-fail (HARD) touchFailChrome=0 · want =0 · chrome@390
+[PASS] B5-overflow@390 (HARD) overflowX=false · want false · shell@390
+[PASS] B6-primary-per-job@draft-empty (HARD) maxPerJob=1 solids=1 · rails binder=open/default agent=open/default atDesk=true · want ≤1 solid primary per job · Draft empty@1440 dual-rail
+[PASS] B6-primary-per-job@canon-empty (HARD) maxPerJob=1 solids=2 graphEmpty=canon sendSolid=false · rails binder=open/default agent=open/default atDesk=true · want ≤1/job; no Send primary while sheets<2 · Canon true-empty@1440 dual-rail
+[PASS] B3-inbox-wall@volume (HARD) inboxWall=false cardVisible=4 pending=30 scrollH=852 clientH=852 internalScroll=false badge=Inbox30 · want inboxWall=false at volume 30; cardVisible>0 when pending>=8 · companion Inbox@1440 volume=30
+[run-end] head=0faf638 ui=http://127.0.0.1:49998/ served=shell.css#54884172c616 status=200 bytes=24130 b5TouchRule=true
+
+Wrote e2e/output/calm-budget-last.md (untracked run artifact)
+HARD fails: 0 · NOT-MEASURED: 0 · checks: 50
+FINGERPRINT eddd76a4
+land: full log also at D:\dev\projects\storylint-e2e-health\_land_run\candidate-topic-after-dev.log
+
+land: measurement=measured exit=0 failures=0
+land: parsed failure set (candidate-topic-after-dev)
+(none)
+
+$ git checkout -- e2e/output
+
+
+$ git clean -fd e2e/output
+
+
+========================================================================
+land: FAILURE SET COMPARE (by identity, not count)
+========================================================================
+
+BASELINE measurement=measured origin/dev @ c3ef445 (1)
+  - smoke:e2e/slice-i-smoke.mjs
+
+CANDIDATE measurement=measured topic-after-dev @ 0faf638 (0)
+(none)
+
+PRE-EXISTING (on dev and still here — do not block): 0
+  (none)
+
+FIXED (on dev, gone after merge — report only): 1
+  - smoke:e2e/slice-i-smoke.mjs
+
+INTRODUCED (not on dev — YOURS, hard abort): 0
+  (none)
+========================================================================
+
+land: both sides green — land normally.
+land: this land also clears failure(s) listed under FIXED.
+
+========================================================================
+========================================================================
+land: merge message:
+  Merge storylint/land-gate-not-measured into dev: land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only
+
+$ git checkout --detach origin/dev
+
+[stderr] HEAD is now at e7b67ae Merge storylint/t002-close into dev: tickets: T-002 mutation proof note after load-bearing red
+
+$ git merge --no-ff storylint/land-gate-not-measured -m "Merge storylint/land-gate-not-measured into dev: land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only"
+
+Merge made by the 'ort' strategy.
+ e2e/proofs/buffalo-land-opaque-on-green.output     | 573 +++++++++++++++++++++
+ e2e/proofs/land-gate-not-measured.md               |  45 ++
+ .../land-gate/buffalo-calm-incomplete.output       | 573 +++++++++++++++++++++
+ package.json                                       |   2 +-
+ scripts/land-gate-wiring.test.mjs                  | 147 ++++++
+ scripts/land-gate.mjs                              | 464 +++++++++++++++++
+ scripts/land-gate.test.mjs                         | 363 +++++++++++++
+ scripts/land.mjs                                   | 196 ++++---
+ 8 files changed, 2253 insertions(+), 110 deletions(-)
+ create mode 100644 e2e/proofs/buffalo-land-opaque-on-green.output
+ create mode 100644 e2e/proofs/land-gate-not-measured.md
+ create mode 100644 e2e/proofs/land-gate/buffalo-calm-incomplete.output
+ create mode 100644 scripts/land-gate-wiring.test.mjs
+ create mode 100644 scripts/land-gate.mjs
+ create mode 100644 scripts/land-gate.test.mjs
+land: local bubble 3d213b1 parents e7b67ae + 0faf638
+
+$ git log --oneline -1 --decorate HEAD
+
+3d213b1 (HEAD) Merge storylint/land-gate-not-measured into dev: land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only
+
+========================================================================
+========================================================================
+
+$ git push origin HEAD:dev
+
+[stderr] To https://github.com/dzulfiqarzaky19/storylint.git
+[stderr]    e7b67ae..3d213b1  HEAD -> dev
+
+========================================================================
+========================================================================
+
+$ git fetch origin
+
+
+$ git log --oneline -1 --decorate origin/dev
+
+3d213b1 (HEAD, origin/dev, storylint/t002-close) Merge storylint/land-gate-not-measured into dev: land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only
+
+$ git rev-parse origin/dev
+
+3d213b1308832aca010538db70a5aed2f1e6319b
+
+========================================================================
+========================================================================
+
+$ git checkout storylint/land-gate-not-measured
+
+[stderr] Previous HEAD position was 3d213b1 Merge storylint/land-gate-not-measured into dev: land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only
+[stderr] Switched to branch 'storylint/land-gate-not-measured'
+Your branch is up to date with 'origin/storylint/land-gate-not-measured'.
+
+$ git checkout -- e2e/output
+
+
+$ git clean -fd e2e/output
+
+
+$ git status --short --branch
+
+## storylint/land-gate-not-measured...origin/storylint/land-gate-not-measured
+
+========================================================================
+land: DONE
+========================================================================
+origin/dev=3d213b1
+origin/dev_full=3d213b1308832aca010538db70a5aed2f1e6319b
+subject=Merge storylint/land-gate-not-measured into dev: land-gate: NOT-MEASURED never ties; exit-0 voids abort; keep transcripts; port-in-use real bind only
+parents=e7b67ae + 0faf638
+topic=storylint/land-gate-not-measured
+pre-existing=(none)
+fixed=smoke:e2e/slice-i-smoke.mjs
+introduced=(none)
+Report the ORIGIN hash above. Local HEAD is not a ship.
+
+--- Command finished with exit code: 0 ---
