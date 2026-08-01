@@ -303,3 +303,86 @@ test('model beat promote still writes chapter when chapterTitle supplied (UI con
   assert.equal(chapter.title, 'Author confirmed')
   assert.equal(chapter.body, '')
 })
+// ── 25c domain title table (lab-promote-domain-title) ─────────────────
+// Load-bearing: model + omitted must NOT inherit card.title.
+// Author + omitted must still use card.title (one-click).
+
+test('25c model + omitted chapterTitle stores empty — never card.title', () => {
+  const project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'LLM invented title',
+    source: 'model',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id)
+  const chapter = result.project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, '')
+  assert.notEqual(chapter.title, 'LLM invented title')
+  assert.equal(chapter.body, '')
+})
+
+test('25c model + explicit chapterTitle stores that string (trimmed)', () => {
+  const project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'LLM invented title',
+    source: 'model',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, {
+    chapterTitle: '  Author typed  ',
+  })
+  const chapter = result.project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, 'Author typed')
+})
+
+test('25c model + explicit empty chapterTitle stores empty', () => {
+  const project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'LLM invented title',
+    source: 'model',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, { chapterTitle: '' })
+  const chapter = result.project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, '')
+})
+
+test('25c author + omitted chapterTitle stores card.title (one-click)', () => {
+  const project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Siege night',
+    source: 'author',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id)
+  const chapter = result.project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, 'Siege night')
+})
+
+test('25c author + explicit chapterTitle stores that string', () => {
+  const project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Working title',
+    source: 'author',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, {
+    chapterTitle: 'Final chapter name',
+  })
+  const chapter = result.project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, 'Final chapter name')
+})
+
+test('25c sheet-proposal promote unchanged — no title inheritance path', () => {
+  const project = createLabCard(seed(), {
+    kind: 'character-spark',
+    title: 'Riven',
+    body: 'Glass',
+    source: 'model',
+  })
+  const beforeChapters = project.chapters.length
+  const result = promoteLabCard(project, project.lab.cards[0].id)
+  assert.equal(result.as, 'sheet-proposal')
+  assert.ok((result.proposalIds?.length ?? 0) >= 1)
+  assert.equal(result.project.chapters.length, beforeChapters)
+})
