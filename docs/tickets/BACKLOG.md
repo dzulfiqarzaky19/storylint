@@ -16,7 +16,7 @@ Validate: `npm run tickets:check`
 | ID | Note |
 |----|------|
 | ~~T-014~~ | Lab composer form column **done**. Cap .lab__composer to manuscript.pageMaxWLg (40rem); canvas untouched. Land PENDING. |
-| ~~T-010~~ | Resting face row fits 2-digit/capped Inbox badge at 272px desk rail **done**. Density + 99+ + base max-width; geometry smoke mutation-proved. Land PENDING. |
+| ~~T-010~~ | Resting face row fits 2-digit/capped Inbox badge at 272px desk rail **done**. Density + 99+ + base max-width; geometry smoke mutation-proved. Land `ebe9d0b`. |
 | ~~T-013~~ | Honest propose-edge body below 2 sheets **done**. Disclosure stays (ox); hint-only body; fieldsShown=0 lock. Land `af5ff70`. |
 | ~~T-012~~ | One primary New sheet **done** (already-satisfied close). Map owns empty CTA; binder ghost empty. Product via b6-primary-per-job `dc059e6`. Land `af5ff70`. |
 | ~~T-011~~ | Mutation-lock title overpromised **done**. Retitled to name the mechanism it verifies; siblings swept and found honest. Generalized as standing 8g. |
