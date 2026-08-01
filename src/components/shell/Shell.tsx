@@ -7,6 +7,7 @@ import {
   type Theme,
 } from '../../design'
 import { useProject } from '../../features/project/useProject.ts'
+import { saveChipLabel } from '../../features/project/saveChipLabel.ts'
 import { ProjectSwitcher } from '../../features/project/ProjectSwitcher.tsx'
 import { useAgent } from '../../features/agent/useAgent.ts'
 import { LabBench } from '../../features/lab/LabBench.tsx'
@@ -403,7 +404,7 @@ export function Shell() {
                 : activeChapter?.title ?? 'No chapters'}
         </span>
         <span className="project-status" aria-live="polite">
-          {project.saveState === 'saving' ? 'Saving…' : project.saveState === 'saved' ? 'Saved' : ''}
+          {saveChipLabel(project.saveState)}
         </span>
         <div className="shell__topbar-spacer" />
         <div className="shell__topbar-actions">
