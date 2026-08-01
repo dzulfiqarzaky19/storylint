@@ -10,12 +10,12 @@ Validate: `npm run tickets:check`
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back (AZ hold) | buffalo |
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 self-test (no stack, exit 1) | unassigned |
 | [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
-| [T-014](./T-014.md) | P3 | open | none | Lab composer stretches to full viewport width | unassigned |
 
 ## Closed / not open
 
 | ID | Note |
 |----|------|
+| ~~T-014~~ | Lab composer form column **done**. Cap .lab__composer to manuscript.pageMaxWLg (40rem); canvas untouched. Land PENDING. |
 | ~~T-010~~ | Resting face row fits 2-digit/capped Inbox badge at 272px desk rail **done**. Density + 99+ + base max-width; geometry smoke mutation-proved. Land `ebe9d0b`. |
 | ~~T-013~~ | Honest propose-edge body below 2 sheets **done**. Disclosure stays (ox); hint-only body; fieldsShown=0 lock. Land `af5ff70`. |
 | ~~T-012~~ | One primary New sheet **done** (already-satisfied close). Map owns empty CTA; binder ghost empty. Product via b6-primary-per-job `dc059e6`. Land `af5ff70`. |
