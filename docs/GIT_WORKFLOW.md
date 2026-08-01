@@ -78,6 +78,30 @@ When a correct procedure is reliably performed incorrectly, more documentation w
 - Never put `main` or `master` tokens in branch names (push hooks refuse them)
 - One topic per branch. QA-only work that produces no commits needs no branch.
 
+### Feature pipeline names (2026-08-01)
+
+Feature work uses a second naming family — see [FEATURE_PIPELINE.md](./FEATURE_PIPELINE.md):
+
+| Branch | Cut from | Lands into |
+|---|---|---|
+| `feature-NN` (integration) | `origin/dev` | `dev`, after the feature's E2E passes |
+| `feature-NN-ticket-MM` (coder) | `origin/feature-NN` | `feature-NN`, by the reviewer |
+| `feature-NN-ticket-MM-fix-KK` | `origin/feature-NN` | `feature-NN`, same as any ticket |
+
+```
+npm run land -- feature-01-ticket-01 --summary "<what it does>" --into feature-01
+npm run land -- feature-01 --summary "<feature summary>"          # target defaults to dev
+```
+
+`--into` runs the **same** no-worse gate against the feature branch: fresh `test:green` baseline on
+`origin/feature-NN`, merge, `test:green` again, identity compare, `--no-ff` bubble, push, read back.
+Every ref derives from one variable, so the gate cannot measure one branch while the push writes
+another. `--into main` is refused: `main` receives merges from `dev` only.
+
+**Scar:** the pipeline doc was written telling coders to branch `feature-01-ticket-01`, and
+`land.mjs` refused that exact name — it only accepted `storylint/<kebab>`. Found by running the
+documented commands, not by re-reading them ([STANDING_RULES](./decisions/STANDING_RULES.md) 39).
+
 ## History rules (why "beautiful")
 
 - `--no-ff` merges into `dev` so each task reads as **one bubble per task**; `--no-ff` merges into `main` so each milestone reads as one bubble. "Beautiful history" means **one bubble per task**, not a linear topic branch. It never required a rebase onto a moving `dev`.

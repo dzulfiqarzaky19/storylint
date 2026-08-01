@@ -2,6 +2,15 @@
 
 Founder flow. Same loop the founder runs; git vehicle is **`npm run land` + `--no-ff`**, not squash-to-dev.
 
+> **Superseded for feature work (2026-08-01): see [FEATURE_PIPELINE.md](./FEATURE_PIPELINE.md).**
+> The founder replaced the flat topic → dev model with a feature pipeline: a feature is split into
+> tickets, tickets land into a **feature integration branch**, and the feature reaches `dev` only
+> after end-to-end verification of the whole feature. **FEATURE_PIPELINE.md is the flow.**
+>
+> This page remains the reference for what does not change: **L1/L2 verification levels**, the
+> no-worse land gate, ticket status transitions, and the `dev → main` cadence. Where the two
+> disagree about *routing*, FEATURE_PIPELINE.md wins.
+
 Cross-links: [GIT_WORKFLOW.md](./GIT_WORKFLOW.md) · [AGENT_PROTOCOL.md](./AGENT_PROTOCOL.md) · [E2E.md](./E2E.md) · [decisions/STANDING_RULES.md](./decisions/STANDING_RULES.md) · [tickets/README.md](./tickets/README.md) · [AUDIT_HANDOFF.md](./AUDIT_HANDOFF.md)
 
 ## Sprint model (founder-set)
