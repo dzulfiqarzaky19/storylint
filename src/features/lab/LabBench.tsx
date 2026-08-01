@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { LAB_CARD_KINDS, type Lab, type LabCard, type LabCardKind, type Project, type SheetKind } from '../../domain/types.ts'
 import { Badge, Button, EmptyState, Input, Textarea } from '../../components/ui'
+import { needsChapterPromoteConfirm } from './chapterPromoteConfirm.ts'
 import './lab.css'
 
 const KIND_LABEL: Record<LabCardKind, string> = {
@@ -131,11 +132,15 @@ export function LabBench({
     }
   }
 
-  /** Sheet promote: one-click. Chapter (beat): confirm title when model-sourced (always for beats). */
+  /**
+   * Sheet promote: one-click (Accept is the write gate).
+   * Chapter promote: confirm ONLY when kind === 'beat' AND source === 'model'
+   * (ox destination-shaped consent). Author beats one-click — title already owned.
+   */
   async function promote(card: LabCard) {
     if (busy || !canPromote(card.kind)) return
-    if (card.kind === 'beat') {
-      // Destination-shaped consent: title that will be stored, body stays empty.
+    if (needsChapterPromoteConfirm(card)) {
+      // Model beat → stored chapter title: author must confirm destination payload.
       setConfirmCardId(card.id)
       setConfirmTitle(card.title)
       setNotice(null)
@@ -146,8 +151,12 @@ export function LabBench({
     try {
       await onPromoteCard(card.id, {
         sheetKind: defaultSheetKind(card.kind),
+        // Author beat: title already owned — send card title straight through.
+        chapterTitle: card.kind === 'beat' ? card.title : undefined,
       })
-      setNotice('Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write Canon.')
+      setNotice(card.kind === 'beat'
+        ? 'Sent to Draft as a chapter stub (empty body). Lab card marked promoted.'
+        : 'Promote to Canon queued a sheet proposal. Accept in Companion Inbox to write Canon.')
     } catch (caught) {
       setNotice(caught instanceof Error ? caught.message : `${promoteActionLabel(card.kind)} failed`)
     } finally {
