@@ -85,7 +85,16 @@ test('MUTATION lock: post-run Check does not double Continuity (summary owns res
   assert.match(source, /Accept\/Edit\/Reject stay gated until something is pending/)
 })
 
-test('MUTATION lock: face-tab clip fix keeps selected label fully on-screen', () => {
+// NOTE (standing 8g): this title claims a MECHANISM is present, not a rendered
+// outcome. The test reads source as strings and never renders, so it CANNOT fail
+// on a clipped label.
+//
+// It previously read "keeps selected label fully on-screen" — a claim its
+// assertions cannot establish. That title nearly caused a real resting-clip
+// finding to be closed as a duplicate (T-010, filed; T-011, this retitle).
+//
+// The rendered-geometry check that CAN fail on a clip belongs to T-010.
+test('MUTATION lock: face-tab scroll-correction and discoverable overflow are present', () => {
   const panel = readFileSync(join(root, 'components/shell/AgentPanel.tsx'), 'utf8')
   const css = readFileSync(join(root, 'components/shell/AgentPanel.css'), 'utf8')
   // Active tab must scroll into the faces row, then correct partial overflow (no "hat" / half-Research).
@@ -98,4 +107,23 @@ test('MUTATION lock: face-tab clip fix keeps selected label fully on-screen', ()
   assert.match(css, /\.companion__faces\s*\{[^}]*scrollbar-width:\s*thin/s)
   assert.doesNotMatch(css, /\.companion__faces\s*\{[^}]*scrollbar-width:\s*none/s)
   assert.doesNotMatch(css, /\.companion__faces::-webkit-scrollbar\s*\{\s*display:\s*none/)
+})
+// T-010: durable fit rule must stay present. Geometry failability lives in
+// e2e/t010-face-row-fit-smoke.mjs (measured resting overflow). This only locks the rule text.
+test('MUTATION lock: face-row resting fit rule (badge cap + inbox max-width at base)', () => {
+  const panel = readFileSync(join(root, 'components/shell/AgentPanel.tsx'), 'utf8')
+  const css = readFileSync(join(root, 'components/shell/AgentPanel.css'), 'utf8')
+  // Uncapped pendingCount grows without bound; clamp display at 99+.
+  assert.match(panel, /pendingCount\s*>\s*99\s*\?\s*'99\+'\s*:\s*pendingCount/)
+  // Inbox max-width is a base rule (desk floor rail 272px), not narrow-only.
+  assert.match(css, /\.companion__face-inbox\s*\{[^}]*max-width:\s*4\.25rem/s)
+  // Dense chrome at base: smaller gap/padding so five labels fit without 1px coincidence.
+  assert.match(css, /\.companion__faces\s*\{[^}]*gap:\s*2px/s)
+  assert.match(css, /\.companion__faces \[role='tab'\][\s\S]*?padding-inline:\s*var\(--space-1\)/s)
+  // Guard must not live only inside the narrow media query.
+  const media = css.match(/@media\s*\(max-width:\s*767px\)\s*\{([\s\S]*?)\n\}/)
+  const mediaBody = media?.[1] ?? ''
+  const baseWithoutMedia = css.replace(/@media\s*\(max-width:\s*767px\)\s*\{[\s\S]*?\n\}/g, '')
+  assert.match(baseWithoutMedia, /\.companion__face-inbox\s*\{[^}]*max-width:\s*4\.25rem/s)
+  assert.doesNotMatch(mediaBody, /\.companion__face-inbox\s*\{[^}]*max-width:\s*4\.25rem/s)
 })

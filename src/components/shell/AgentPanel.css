@@ -2,15 +2,18 @@
    Tokens only. Owned with AgentPanel.tsx.
    P3: face row stays one line at 390. */
 
+/* Resting fit rule (T-010): five writing faces + 2-digit Inbox badge must fit the
+   agent rail at desk floor (272px @>=1366). Density is the defense, not 1px headroom.
+   Badge growth is capped in TSX (99+) and Inbox may ellipsize before Research. */
 .companion__faces {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: var(--space-1);
-  padding: 0 var(--space-2) var(--space-2);
+  gap: 2px;
+  padding: 0 var(--space-1) var(--space-2);
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scroll-padding-inline: var(--space-2);
+  scroll-padding-inline: var(--space-1);
   /* thin scrollbar so overflow is discoverable; labels must fully enter view on select */
   scrollbar-width: thin;
 }
@@ -19,14 +22,18 @@
 .companion__faces > .ui-button {
   flex: 0 0 auto;
   white-space: nowrap;
-  /* Five writing faces must keep full labels at rail width (no "hat" / half-Research). */
-  padding-inline: var(--space-2);
+  padding-inline: var(--space-1);
+  font-size: var(--font-size-sm, 0.8125rem);
   min-width: 0;
 }
 
+/* Inbox absorbs badge growth; Research keeps its full label at rest. */
 .companion__face-inbox {
   position: relative;
   min-width: 0;
+  max-width: 4.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .companion__inbox-count {
@@ -155,22 +162,20 @@
 @media (max-width: 767px) {
   .companion__faces {
     gap: 2px;
-    padding-inline: var(--space-2);
+    padding-inline: var(--space-1);
   }
 
   .companion__faces [role='tab'],
   .companion__faces > .ui-button {
     min-height: var(--size-touch-min);
     min-width: var(--size-touch-min);
-    padding-inline: var(--space-2);
+    padding-inline: var(--space-1);
     font-size: var(--font-size-sm, 0.8125rem);
   }
 
-  /* Keep Inbox badge visible; shrink label room if needed */
-  .companion__face-inbox {
-    max-width: 5.5rem;
-  }
+  /* Inbox max-width is base (desk floor 272px rail; phone drawer is scroll-OK). */
 }
+
 
 /* Check face — one primary Continuity; quiet secondary coaching (progressive disclosure). */
 .companion__check-footer {

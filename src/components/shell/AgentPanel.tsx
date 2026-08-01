@@ -479,7 +479,9 @@ export function AgentPanel({
             onClick={() => selectFace('inbox')}
           >
             Inbox
-            {pendingCount > 0 ? <span className="companion__inbox-count">{pendingCount}</span> : null}
+            {pendingCount > 0 ? (
+              <span className="companion__inbox-count">{pendingCount > 99 ? '99+' : pendingCount}</span>
+            ) : null}
           </Button>
         ) : null}
 

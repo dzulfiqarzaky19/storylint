@@ -249,10 +249,12 @@ const forced = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 await useProject(forced.request, emptyProjectId, 'Canon empty P0')
 const forcedGraph = await openCanon(forced)
 await forcedGraph.locator('.graph__editor-summary').click()
-await forcedGraph.locator('.graph__editor select').first().waitFor({ state: 'visible', timeout: 5000 })
+// T-013: hint-only body below 2 sheets
+await forcedGraph.locator('[data-edge-propose="need-sheets"]').waitFor({ state: 'visible', timeout: 5000 })
 const forcedState = await readCanon(forcedGraph)
 await forced.screenshot({ path: `${OUT}/empty-propose-open-1440.png` })
 check(forcedState.editorOpen === true, 'empty forced: propose did not open from its summary')
+check(forcedState.fieldsShown === 0, `empty forced: fields must stay omitted below 2 sheets, got ${forcedState.fieldsShown}`)
 check(forcedState.ctaShown, 'empty forced: create-first-sheet CTA disappeared when propose opened')
 await forced.close()
 

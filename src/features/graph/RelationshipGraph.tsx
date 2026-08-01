@@ -334,26 +334,29 @@ export function RelationshipGraph({
    */
   const noSheets = project.sheets.length === 0
   /**
-   * Edge propose needs two endpoints. On true-empty / single-sheet Canon the job cannot
-   * succeed — omit the solid Send (ox empty-canon-send-proposal-weight). Keep the
-   * disclosure (D4); never leave a disabled primary as costume on empty selects.
+   * Edge propose needs two distinct endpoints (server rejects self-edges).
+   * Below 2 sheets the job cannot succeed:
+   * - Keep the disclosure (ox empty-canon-send-proposal-weight non-goal).
+   * - Omit the solid Send (same memo).
+   * - Do not paint From/To/fields over empty selects — body is the hint alone (T-013 residual).
+   * Threshold is 2, not 1: domain requires distinct endpoints (http graph proposals).
    */
   const canProposeEdge = project.sheets.length >= 2
   const editorTitle = targetFactId ? 'Propose edge edit' : 'Propose new edge'
 
-  const editorFields = (
+  const editorFields = canProposeEdge ? (
     <>
       <label><span>From</span><select ref={fromFieldRef} value={from} onChange={(event) => setFrom(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>To</span><select value={to} onChange={(event) => setTo(event.target.value)}>{project.sheets.map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.name}</option>)}</select></label>
       <label><span>Relationship</span><Input value={key} onChange={(event) => setKey(event.target.value)} placeholder="father_of, member_of, rival…" /></label>
       <label><span>Statement</span><Input value={statement} onChange={(event) => setStatement(event.target.value)} placeholder="Aria is a member of the Ember Order" /></label>
-      {canProposeEdge ? (
-        <Button variant="primary" disabled={busy || from === to || !statement.trim()} onClick={() => void propose()}>{busy ? 'Proposing…' : 'Send proposal'}</Button>
-      ) : (
-        <p className="graph__editor-hint" role="status">Add at least two sheets before proposing a link.</p>
-      )}
+      <Button variant="primary" disabled={busy || from === to || !statement.trim()} onClick={() => void propose()}>{busy ? 'Proposing…' : 'Send proposal'}</Button>
       {notice ? <p role="status">{notice}</p> : null}
     </>
+  ) : (
+    <p className="graph__editor-hint" role="status" data-edge-propose="need-sheets">
+      Add at least two sheets before proposing a link.
+    </p>
   )
 
   return (

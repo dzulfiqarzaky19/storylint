@@ -77,7 +77,16 @@ function useMediaQuery(query: string): boolean {
     },
     [query],
   )
-  // server snapshot: assume wide so SSR/prerender emits the full IDE shell
+  // server snapshot: assume wide so SSR/prerender emits the full IDE shell.
+  //
+  // SAFE ONLY WHILE CLIENT-RENDERED. main.tsx uses createRoot, so React reads the
+  // CLIENT snapshot below and this branch is dead. The day anyone switches to
+  // hydrateRoot (SSR/SSG/prerender), a narrow client hydrates with atDesk=true,
+  // seeds rails.agent open, and FLASHES THE COMPANION RAIL OPEN before the first
+  // commit corrects it -- rails init runs once by design.
+  //
+  // If you are turning on SSR: seed rails from a real signal (cookie, header hint,
+  // or a post-hydration correction), not from this optimistic true.
   return useSyncExternalStore(
     subscribe,
     () => mql(query).matches,
