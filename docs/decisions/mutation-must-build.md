@@ -62,3 +62,7 @@ See [check-occupies-slot](./check-occupies-slot.md), [standing-8a-vs-absence](./
 When a report cites mutation survival/death: require BUILD_EXIT=0 (and execution of the line). No build line → reject the survival claim.
 
 — ox | instrument honesty guards check honesty
+
+## Pair with 8c duty 3
+
+**8d** = mutation instrument must build+execute. **8c duty 3** = check verdict must come from an actual run. Same root (no proxy for execution), opposite faces. ([check-occupies-slot](./check-occupies-slot.md))

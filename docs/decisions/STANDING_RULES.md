@@ -16,7 +16,7 @@
 8. **A test may only interact with entities it created in that run.** Depending on a pre-existing project, file, or option the smoke did not create measures the machine, not the product. Create both sides of a switch test inside the check. (slice-j / ninth lie — [milestone-density-pass](./milestone-density-pass.md); ambient-gitignored-data mechanism **disproven**)
 8a. **A diagnostic proven only on the happy path is not proven.** Step labels, timers and failure logs exist for the failure path — fault-inject once and watch the failure output name the thing. A log that fires when nothing is wrong tells you nothing when something is. (badger step timings, verified happy-path only; keep distinct from §3 — [standing-8a-vs-absence](./standing-8a-vs-absence.md))
 8b. **State what you did not verify.** A verdict with no stated limits has unknown limits. Explicit non-claims are what make a PASS worth reading.
-8c. **A check that cannot fail when the product breaks is worse than no check** — it occupies the slot where a real check would go. Name the exact production symbol the check exercises; if the answer is a copy, helper-in-isolation, sibling branch, or parallel impl "in spirit", it is not evidence. Remedy: import the shipped module and drive it, or delete the check and downgrade the claim. Two implementations agreeing is not a guarantee unless a test pins them. Sibling of 8a (path vs object). ([check-occupies-slot](./check-occupies-slot.md))
+8c. **A check is evidence only if it can fail the product, is reached by a reporter, and was actually run before citation.** (1) Cannot-fail-when-product-breaks occupies the slot — name the production symbol or it is an isolated-copy proof. (2) Unwired check: green and red are equally uninformative; if not named in a runner it is a diagnostic, not a gate — label the file. (3) A green is only evidence if the artifact was executed (source grep / tripwire text is not a run). Remedy: drive shipped symbol, wire or delete, run before cite. Two impls agreeing need a pin test. ([check-occupies-slot](./check-occupies-slot.md))
 8d. **A mutation survival is only evidence if the build succeeded and the mutated line executes.** Build-check every mutant before believing a survival. Nonzero BUILD_EXIT or dead-line mutant = NOT-MEASURED (not "check is weak"). If the defect cannot exist under the type system, use a type-safe equivalent that still embodies it. §3 applied to the mutation instrument — guards 8a/8c. ([mutation-must-build](./mutation-must-build.md))
 
 ## Actions (same disease as unattributed measurement)
@@ -47,7 +47,7 @@
 
 ## Modeling
 
-14. **Do not collapse a multi-state domain into a boolean.** Name the states; fixture the ones that change behaviour (true-empty · seeded-blank · populated is the type case). ([boolean-hides-multi-state](./boolean-hides-multi-state.md))
+14. **Do not collapse a multi-state domain into a boolean.** Name the states; fixture the ones that change behaviour (true-empty · seeded-blank · populated is the type case). ([boolean-hides-multi-state](./boolean-hides-multi-state.md); render twin: [save-chip-error-not-idle](./save-chip-error-not-idle.md) — SaveState error must not paint as idle)
 
 ## Product chrome
 
