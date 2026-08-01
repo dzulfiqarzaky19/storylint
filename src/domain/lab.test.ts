@@ -373,6 +373,19 @@ test('25c author + explicit chapterTitle stores that string', () => {
   assert.equal(chapter.title, 'Final chapter name')
 })
 
+test('25c author + explicit empty chapterTitle stores empty — not card.title', () => {
+  const project = createLabCard(seed(), {
+    kind: 'beat',
+    title: 'Working title',
+    source: 'author',
+  })
+  const result = promoteLabCard(project, project.lab.cards[0].id, { chapterTitle: '' })
+  const chapter = result.project.chapters.find((c) => c.id === result.chapterId)
+  assert.ok(chapter)
+  assert.equal(chapter.title, '')
+  assert.notEqual(chapter.title, 'Working title')
+})
+
 test('25c sheet-proposal promote unchanged — no title inheritance path', () => {
   const project = createLabCard(seed(), {
     kind: 'character-spark',
