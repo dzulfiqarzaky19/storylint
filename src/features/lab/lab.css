@@ -44,10 +44,15 @@
   gap: var(--space-2);
 }
 
+/* T-014: form column only — canvas stays full-bleed workbench (no paper).
+   Measure = manuscript.pageMaxWLg (40rem desk page). Left-aligned as before. */
 .lab__composer {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  max-width: var(--manuscript-page-max-w-lg);
+  width: 100%;
+  box-sizing: border-box;
   padding: var(--space-3);
   border: var(--border-width) dashed var(--color-border);
   border-radius: var(--radius-lg);
