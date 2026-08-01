@@ -149,9 +149,14 @@ test('LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch', () => {
 })
 
 test('LG-B2: tsc-not-recognized at exit 0 is NOT-MEASURED (infra, not exit-1 second branch)', () => {
-  const report = classifyTestGreen(TSC_NOT_RECOGNIZED, 0)
+  // Must include a complete green body so the ONLY reason for not-measured is the infra
+  // branch — otherwise green-exit-without-stage-evidence masks a disabled infra check
+  // (same hole hawk found on the exit-1 tsc fixture).
+  const log = FULL_GREEN_LOG + "\n'tsc' is not recognized as an internal or external command\n"
+  const report = classifyTestGreen(log, 0)
   assert.equal(report.measurement, 'not-measured')
   assert.ok(report.notMeasuredReasons.some((r) => r.includes('tsc-not-recognized')))
+  assert.ok(report.failures.has('infra:tsc-not-recognized'))
 })
 
 // --- granular product identities ---
