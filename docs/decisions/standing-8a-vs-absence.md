@@ -29,3 +29,7 @@ Cross-link in STANDING_RULES is enough; collapsing loses the failure-path proof 
 ## Later sibling
 
 **8c** ([check-occupies-slot](./check-occupies-slot.md)) is the **object** axis of the same family: 8a = which **path**; 8c = which **object** (shipped symbol vs copy). Still do not collapse with §3.
+
+## Instrument validity
+
+**8d** ([mutation-must-build](./mutation-must-build.md)) sits above §3/8a/8c: those ask whether the **check** is honest; 8d asks whether the **mutation used to test the check** was real (builds + executes). Still do not collapse.
