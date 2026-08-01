@@ -1,0 +1,251 @@
+{
+  "head": "3c18f9a",
+  "generated": "2026-08-01T03:20:21.755Z",
+  "method": "Extract l1_proof + shortest_repro from frontmatter; path existence via git ls-tree HEAD; extract node/npm commands from fields+body; execute (skip heavy suites); print match evidence (not ok lines + fail N with context). Understatement = fields deny probe while tree has it.",
+  "findings": [
+    {
+      "id": "T-001",
+      "status": "done",
+      "l1_proof": "owned-stack Lab smoke + domain status transitions (landed with lifecycle; restore d3570f4; dismiss 7fc4d17/5331466/9fac01d)",
+      "shortest_repro": "docs/decisions/lab-lifecycle-ends.md § Implementation sketch; fixture 10+ promoted → dismiss one → row gone, proposal untouched",
+      "field_paths_resolve": [
+        "docs/decisions/lab-lifecycle-ends.md"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": []
+    },
+    {
+      "id": "T-002",
+      "status": "integrated",
+      "l1_proof": "guard-helpers + owned-stack refuse path (same as test:green)",
+      "shortest_repro": "npm run test:l2 on integrated origin/dev; must not equal all-smoke under a new name — shared-project Draft→Canon→Lab journey",
+      "field_paths_resolve": [],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": [
+        {
+          "cmd": "npm run test:l2",
+          "status": 0,
+          "evidence_tail": [
+            "PASS l2-composition head=3c18f9a",
+            "PASS: e2e helper convention holds"
+          ],
+          "matched_not_ok": [],
+          "matched_fail_n": []
+        }
+      ]
+    },
+    {
+      "id": "T-003",
+      "status": "integrated",
+      "l1_proof": "owned-stack binder scroll check (rail@1440 + drawer@390); head required; mutation red proven",
+      "shortest_repro": "docs/decisions/canon-under-load-az.md; e2e binder scroll-restore sample @68 (product restore on tip @ bfdc4d8; honest probe a7b8037; measurement land 702cc59)",
+      "field_paths_resolve": [
+        "docs/decisions/canon-under-load-az.md"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": []
+    },
+    {
+      "id": "T-004",
+      "status": "done",
+      "l1_proof": "owned-stack dirty→reload→dirty restore; Save clears; Discard clears; server-moved→conflict chooser; 7d confirm",
+      "shortest_repro": "docs/decisions/sheet-identity-refresh-loss.md — dirty name → reload → name restored and dirty",
+      "field_paths_resolve": [
+        "docs/decisions/sheet-identity-refresh-loss.md"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": []
+    },
+    {
+      "id": "T-005",
+      "status": "done",
+      "l1_proof": "e2e/proofs/t005-eperm-path-lock/ (BEFORE 988 EPERM thrash → AFTER 0; load-unlock mutation 11 EPERM; MUT-6 swallow red); server.test multi-instance + rename-fail reject",
+      "shortest_repro": "calm-budget isolated loop run-8 @ ea0500a — ensureDraftReady create 400 EPERM rename under data/projects",
+      "field_paths_resolve": [
+        "e2e/proofs/t005-eperm-path-lock/probe.mjs"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": [
+        {
+          "cmd": "node --experimental-strip-types e2e/proofs/t005-eperm-path-lock/probe.mjs",
+          "status": 0,
+          "evidence_tail": [
+            "\"pass\": true",
+            "after.twoInstanceThrash.total: 0"
+          ],
+          "matched_not_ok": [],
+          "matched_fail_n": []
+        }
+      ]
+    },
+    {
+      "id": "T-006",
+      "status": "open",
+      "l1_proof": "node scripts/capture-test-green-cause.mjs --n 1; land baseline runCapture [cause] lines (land.mjs @ 17c72df+)",
+      "shortest_repro": "rare — once in a day of land baselines; specimen e2e/proofs/land-gate/buffalo-calm-incomplete.output cuts after [b6-primary-visibility-self-test] ok with no Error/FINGERPRINT/run-end/hard-timeout",
+      "field_paths_resolve": [
+        "scripts/capture-test-green-cause.mjs",
+        "e2e/proofs/land-gate/buffalo-calm-incomplete.output"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": [
+        {
+          "cmd": "node scripts/capture",
+          "status": 1,
+          "skip": null,
+          "forced_from_tree": false,
+          "matched_not_ok": [],
+          "matched_fail_n": [],
+          "evidence_tail": [
+            "Error: Cannot find module 'D:\\dev\\projects\\storylint\\storylint-dromedary-l1\\scripts\\capture'"
+          ],
+          "error": null
+        },
+        {
+          "cmd": "npm run calm",
+          "status": null,
+          "skip": null,
+          "forced_from_tree": false,
+          "matched_not_ok": [],
+          "matched_fail_n": [],
+          "evidence_tail": [],
+          "error": "spawnSync npm.cmd EINVAL"
+        }
+      ]
+    },
+    {
+      "id": "T-007",
+      "status": "done",
+      "l1_proof": "e2e/proofs/t007-single-root/probe.mjs; src/server/store-root.test.ts (source sites + OPEN_TOKEN forge + owns); server.test open/switchFile outside-root rejects",
+      "shortest_repro": "node --experimental-strip-types e2e/proofs/t007-single-root/probe.mjs — split-spelling errors >0; single-spelling control 0",
+      "field_paths_resolve": [
+        "e2e/proofs/t007-single-root/probe.mjs",
+        "src/server/store-root.test.ts"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": [
+        {
+          "cmd": "node --experimental-strip-types e2e/proofs/t007-single-root/probe.mjs",
+          "status": 0,
+          "evidence_tail": [
+            "PASS: two spellings of one file bypass the lock; one spelling does not. T-007 stands.",
+            "single-spelling errors: 0"
+          ],
+          "matched_not_ok": [],
+          "matched_fail_n": []
+        }
+      ]
+    },
+    {
+      "id": "T-008",
+      "status": "open",
+      "l1_proof": "e2e/proofs/t008-per-process-lock/probe.mjs — self-verifying, exits 1 if either premise stops holding",
+      "shortest_repro": "node --experimental-strip-types e2e/proofs/t008-per-process-lock/probe.mjs — 3 processes on one project file race; 1 process at the same write volume is clean (control)",
+      "field_paths_resolve": [
+        "e2e/proofs/t008-per-process-lock/probe.mjs"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": true,
+      "understatement_real": true,
+      "understatement_path": "e2e/proofs/t008-per-process-lock/probe.mjs",
+      "runs": [
+        {
+          "cmd": "node --experimental-strip-types e2e/proofs/t008-per-process-lock/probe.mjs",
+          "status": 0,
+          "skip": null,
+          "forced_from_tree": true,
+          "evidence_tail": [
+            "PASS: races across processes, clean within one. The lock boundary is per-process, as T-008 states.",
+            "single-process errors: 0  <- control, same volume, lock applies"
+          ],
+          "matched_not_ok": [],
+          "matched_fail_n": []
+        }
+      ],
+      "fix": "frontmatter+Repro updated to cite checked-in probe (falcon text); verified exit 0"
+    },
+    {
+      "id": "T-009",
+      "status": "done",
+      "l1_proof": "src/server/rule11a-no-retry.test.ts (falcon probe mechanism) + e2e/proofs/t009-rule11a-no-check/mutation-proof.json",
+      "shortest_repro": "insert a 50ms sleep-then-retry into saveDirect's catch → npm test 224/224 green",
+      "field_paths_resolve": [
+        "src/server/rule11a-no-retry.test.ts",
+        "e2e/proofs/t009-rule11a-no-check/mutation-proof.json"
+      ],
+      "field_paths_missing": [],
+      "understatement_phrase": false,
+      "understatement_real": false,
+      "understatement_path": null,
+      "runs": [
+        {
+          "cmd": "src/server/rule11a-no-retry.test.ts via npm test (named in l1_proof)",
+          "status": null,
+          "skip": "covered by suite; mutation-proof.json RESOLVES",
+          "evidence_tail": [
+            "e2e/proofs/t009-rule11a-no-check/mutation-proof.json RESOLVES",
+            "src/server/rule11a-no-retry.test.ts RESOLVES"
+          ],
+          "matched_not_ok": [],
+          "matched_fail_n": []
+        },
+        {
+          "cmd": "node --experimental-strip-types --experimental-test-module-mocks e2e/proofs/t009-rule11a-no-check/probe.mjs",
+          "status": 1,
+          "note": "probe on tree but NOT the field claim; API drift vs ProjectStore.open",
+          "evidence_tail": [
+            "Error: ProjectStore: use ProjectFileRoot.openDefault/openId or ProjectStore.open",
+            "NOTE: not cited in l1_proof/shortest_repro fields — probe exists but ticket points at unit test + mutation-proof.json"
+          ],
+          "matched_not_ok": [],
+          "matched_fail_n": []
+        }
+      ]
+    }
+  ],
+  "class_candidates": [
+    {
+      "id": "T-008",
+      "kind": "understatement-probe-exists",
+      "detail": "e2e/proofs/t008-per-process-lock/probe.mjs",
+      "fixed": true
+    }
+  ],
+  "verified_head": "3c18f9a",
+  "fixed": [
+    {
+      "id": "T-008",
+      "kind": "understatement-probe-exists",
+      "path": "e2e/proofs/t008-per-process-lock/probe.mjs"
+    }
+  ],
+  "bonus": [
+    {
+      "id": "T-009",
+      "kind": "bonus-stale-probe",
+      "path": "e2e/proofs/t009-rule11a-no-check/probe.mjs",
+      "evidence": "ProjectStore constructor requires openDefault/openId; probe still does new ProjectStore(...)"
+    }
+  ]
+}
