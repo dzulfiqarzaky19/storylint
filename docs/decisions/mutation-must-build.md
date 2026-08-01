@@ -65,6 +65,7 @@ See [check-occupies-slot](./check-occupies-slot.md), [report-line-strength](./re
 
 ## Non-claims
 
+- Does not set a mutation-coverage percentage as a gate (see Coverage thresholds above).
 - Does not require a full mutation framework. Manual / one-off mutants still need all three legs.
 - Does not make every green suite after a failed mutant a product bug. Failed mutant → NOT-MEASURED for that probe.
 - Does not replace 8c. A building, property-removing mutant that only hits a copy still fails 8c.
@@ -75,6 +76,18 @@ See [check-occupies-slot](./check-occupies-slot.md), [report-line-strength](./re
 When a report cites mutation survival/death: require BUILD_EXIT=0, execution of the line, and evidence the property is gone (grep count, fixture assert, etc.). Missing any leg → reject the survival claim as NOT-MEASURED.
 
 — ox | instrument honesty guards check honesty
+
+## Coverage thresholds (reject)
+
+**Do not** adopt a mutation-coverage % threshold as a land gate.
+
+Falcon formulation (binding wording when the idea is proposed):
+
+> A coverage threshold does not merely fail to catch the gap. **It pays you to write the mutant that hides it**, because neutering a whole construct is the cheapest mutant available and reliably dies.
+
+That makes the metric **adversarial to its own purpose**, not merely weak. It joins the too-much / too-little pair: the cheapest mutant removes too much and flatters the fixture. Item 14 (wrong granularity) is the same pressure from the other side.
+
+**Prefer:** named property mutants with 8d three legs + 8c three duties, read by a human when numbers and labels disagree (8f). Not a score that rewards the flattering mutant.
 
 ## Ceiling
 
