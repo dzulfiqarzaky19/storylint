@@ -1,6 +1,16 @@
 /**
- * TASK BA — Lab under load (report-only).
- * node e2e/ba-lab-under-load.mjs
+ * MANUAL DIAGNOSTIC — TASK BA, Lab under load (report-only).
+ *
+ * Run by hand:  node e2e/ba-lab-under-load.mjs
+ *
+ * NOT a gate and never was. It predates the e2e/helpers.mjs convention: it
+ * drives the UI directly and uses waitUntil networkidle, which is forbidden in
+ * gates because it trains re-run-until-green. Salvaged from an unlanded
+ * worktree for its REPORT (docs/a11y/ba-lab-under-load.md), not to be wired.
+ *
+ * If this is ever promoted to a gate it must first be ported to helpers and
+ * lose the networkidle waits. Labelling it diagnostic records what it is; it
+ * does not grant it an exemption it could hide behind.
  */
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
