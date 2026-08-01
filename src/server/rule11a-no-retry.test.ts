@@ -46,8 +46,11 @@ test('saveDirect does not retry a once-failed atomic rename (rule 11a)', async (
   // Must be a dedicated file so store.ts is not already cached with the real rename.
   const realFs = await import('node:fs/promises')
   let renameCalls = 0
+  // Node 26 runtime prefers `exports` and deprecates `namedExports`.
+  // @types/node still only types namedExports — use the typed key so tsc -b
+  // (test project) stays green. Same once-fail seam either way.
   mock.module('node:fs/promises', {
-    exports: {
+    namedExports: {
       ...realFs,
       rename: async (from: string, to: string) => {
         renameCalls += 1
