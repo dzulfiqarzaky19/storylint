@@ -39,10 +39,10 @@ This was not introduced by the a11y focus pass. It was a pre-existing lost-work 
 
 ## What this does **not** fix
 
-See [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md) — browser refresh / tab close / window close still drop dirty identity silently. This guard protects **navigation**, not **process lifetime**.
+Browser refresh / tab close / window close are **process lifetime**, not navigation. Binding fix: [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md) (T-004). Defect record: [sheet-identity-refresh-loss.md](./sheet-identity-refresh-loss.md).
 
 ## Follow-ons (separate)
 
 - Esc=Back on sheet detail (same `requestLeave` path)
 - Binder open/Back focus restore
-- Decision OPEN: refresh loss → draft persistence, not `beforeunload`
+- **T-004 durable dirty** — ruled; buffalo builds against [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md)
