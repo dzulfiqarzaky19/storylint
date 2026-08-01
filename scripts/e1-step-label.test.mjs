@@ -11,9 +11,10 @@
  *    with a skip-one-call mutation (if (false) step(...) still fails because
  *    the call never happens — unlike source greps).
  *
- * 2) STRUCTURAL module coupling:
- *    prove-step-stall imports the SAME makeStep; stall behaviour proven is
- *    the shipped helper. Tripwire also asserts k/l still import it.
+ * 2) STRUCTURAL module coupling (EXECUTES shared lock, not grep of prove text):
+ *    checkShippingMakeStepImports against real k/l sources. Multi-specifier
+ *    imports allowed. prove-step-stall is MANUAL DIAGNOSTIC; its static half
+ *    uses the same lock. Tripwire asserts prove text still binds shipping helper.
  *
  * 3) SOURCE TRIPWIRE only:
  *    Import present / no local STEP_T0 / phase strings appear as live lines.
@@ -33,11 +34,14 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { makeStep, assertStepPhases } from '../e2e/step-label.mjs'
 import { SLICE_K_PHASES, SLICE_L_PHASES } from '../e2e/step-phases.mjs'
+import {
+  MAKESTEP_IMPORT_RE,
+  checkShippingMakeStepImports,
+} from '../e2e/step-import-lock.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const e2e = resolve(root, 'e2e')
 
-const IMPORT_RE = /import\s*\{\s*makeStep(?:\s*,\s*assertStepPhases)?\s*\}\s*from\s*['"]\.\/step-label\.mjs['"]/
 const LOCAL_STEP_RE = /\bconst\s+STEP_T0\b|\bfunction\s+step\s*\(\s*label\s*\)/
 
 // --- RUNTIME (primary) ----------------------------------------------------
@@ -87,7 +91,24 @@ test('E1-runtime: slice-l smoke wires assertStepPhases against step-phases list'
   assert.ok(Object.isFrozen(SLICE_L_PHASES))
 })
 
-// --- STRUCTURAL + TRIPWIRE ------------------------------------------------
+// --- STRUCTURAL: EXECUTES shared lock against real k/l --------------------
+
+test('E1-static: checkShippingMakeStepImports passes on real k/l sources', () => {
+  const { ok, problems } = checkShippingMakeStepImports(e2e)
+  assert.equal(ok, true, problems.join('; '))
+})
+
+test('E1-static: multi-specifier import sample matches MAKESTEP_IMPORT_RE', () => {
+  // Fixture locks the multi-spec form that broke sole-specifier regex after c7361ac.
+  const sample = "import { makeStep, assertStepPhases } from './step-label.mjs'\n"
+  assert.match(sample, MAKESTEP_IMPORT_RE)
+  const sole = "import { makeStep } from './step-label.mjs'\n"
+  assert.match(sole, MAKESTEP_IMPORT_RE)
+  const missing = "import { assertStepPhases } from './step-label.mjs'\n"
+  assert.equal(MAKESTEP_IMPORT_RE.test(missing), false)
+})
+
+// --- TRIPWIRE -------------------------------------------------------------
 
 test('E1-tripwire: step-label.mjs exports makeStep with sync stdout write + calls', () => {
   const path = resolve(e2e, 'step-label.mjs')
@@ -101,24 +122,30 @@ test('E1-tripwire: step-label.mjs exports makeStep with sync stdout write + call
 
 test('E1-tripwire: slice-k-smoke imports makeStep (no local step copy)', () => {
   const src = readFileSync(resolve(e2e, 'slice-k-smoke.mjs'), 'utf8')
-  assert.match(src, IMPORT_RE)
+  assert.match(src, MAKESTEP_IMPORT_RE)
   assert.equal(LOCAL_STEP_RE.test(src), false, 'slice-k reintroduced local STEP_T0/function step')
   assert.match(src, /makeStep\(\s*['"]slice-k['"]\s*\)/)
 })
 
 test('E1-tripwire: slice-l-smoke imports makeStep (no local step copy)', () => {
   const src = readFileSync(resolve(e2e, 'slice-l-smoke.mjs'), 'utf8')
-  assert.match(src, IMPORT_RE)
+  assert.match(src, MAKESTEP_IMPORT_RE)
   assert.equal(LOCAL_STEP_RE.test(src), false, 'slice-l reintroduced local STEP_T0/function step')
   assert.match(src, /makeStep\(\s*['"]slice-l['"]\s*\)/)
 })
 
-test('E1-tripwire: prove-step-stall binds shipping helper (not throwaway-only)', () => {
+test('E1-tripwire: prove-step-stall is MANUAL DIAGNOSTIC bound to shipping helper', () => {
   const src = readFileSync(resolve(e2e, 'prove-step-stall.mjs'), 'utf8')
-  assert.match(src, /slice-k-smoke\.mjs/)
-  assert.match(src, /slice-l-smoke\.mjs/)
-  assert.match(src, /step-label\.mjs/)
+  assert.match(src, /MANUAL DIAGNOSTIC/)
+  assert.match(src, /checkShippingMakeStepImports/)
+  assert.match(src, /step-import-lock\.mjs/)
   assert.match(src, /import \{ makeStep \} from '\.\/step-label\.mjs'/)
+  // Must NOT hardcode sole-specifier regex (broke after multi-spec import).
+  assert.equal(
+    /import\\s\*\{\\s\*makeStep\\s\*\}\\s\*from/.test(src),
+    false,
+    'prove-step-stall still has sole-specifier makeStep regex',
+  )
   assert.equal(/Throwaway:\s*copies slice-k path/.test(src), false)
 })
 
