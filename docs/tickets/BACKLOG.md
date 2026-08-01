@@ -34,7 +34,12 @@ Validate: `npm run tickets:check`
 
 ## Notes
 
+T-006 and T-008 stay **separate**. Salvaged specimen `e2e/proofs/calm-crash/` (serial loop @
+`ea0500a`, run-08 full EPERM stack) is B1/T-005-class on a pre-path-lock tip — not a silent
+T-006 B2 hit and not a multi-process T-008 natural repro. Do not merge the tickets.
 T-008 remains the open residual from the T-005 review (per-process lock scope). T-007 closed the
 single-root precondition on origin/dev @ `6008659` (falcon @ `b9f964f`, koala PASS). T-005 itself
 stays correct @ `df405c8`. Triage: a single-process EPERM on the atomic rename is a T-005
 regression; a multi-process one is T-008 firing. T-009 (rule 11a check) closed @ `3a7a52e`.
+Founder decision on T-008: cross-process lock (stale-owner policy) **or** accept per-process
+boundary and make multi-process failure loud — not an EPERM retry.
