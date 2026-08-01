@@ -18,7 +18,8 @@ import {
   PRECONDITION_TIMEOUT_MS,
 } from './helpers.mjs'
 import { openProposeEditor } from './constants.mjs'
-import { makeStep } from './step-label.mjs'
+import { makeStep, assertStepPhases } from './step-label.mjs'
+import { SLICE_K_PHASES } from './step-phases.mjs'
 
 const require = createRequire('D:/npm-global/node_modules/playwright/package.json')
 const pwRoot = dirname(require.resolve('playwright/package.json'))
@@ -160,6 +161,7 @@ try {
   await reclaimIsolatedProject(projectId)
   await desktop.close()
   step('PASS')
+  assertStepPhases(step, SLICE_K_PHASES, 'slice-k')
   console.log('PASS: family tree view, node open sheet, network toggle, pending-until-Accept, desktop+narrow screenshots')
 } finally {
   await browser.close()
