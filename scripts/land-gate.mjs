@@ -29,6 +29,12 @@ export const TEST_GREEN_STAGES = ['guard', 'build', 'unit', 'smoke', 'calm']
  * Those must not poison infra scan (land false-positive class).
  * Failing reporter lines (✖ / not ok) are evidence and must stay in the scan —
  * a genuine bind failure reported on the summary line is still infra.
+ *
+ * G4 / falcon: suppressing ✔ / ok N is deliberate and bounded. A passing
+ * reporter line cannot carry a live toolchain failure (those print on plain
+ * stderr or indented detail lines under a ✖). Do not "tighten" this to also
+ * suppress failing lines — that reintroduces the EADDRINUSE name FP inverted
+ * into MUT-G5 (infra laundered to a pre-existing product red).
  */
 function isPassingUnitReporterLine(line) {
   const t = String(line ?? '').trim()
