@@ -2,10 +2,16 @@
  * T-004 L1 — durable dirty sheet identity (ox binding).
  * Owned-stack. Not beforeunload.
  *
+ * Harness rules (hawk REQUEST CHANGES @ c395a17):
+ * - No fixed-sleep “save done”; wait for dirty→false + draft keys gone.
+ * - Product absences are ok:false, not throw/exit 2.
+ * - Always write proof report (pass or fail). Exit 1 = product fail, 2 = harness/infra.
+ *
+ * Cases:
  * 1. dirty name → reload → name restored AND dirty
  * 2. Save → reload → no draft residual
  * 3. Discard → reload → server value; no draft
- * 4. server moved under draft → conflict chooser
+ * 4. server moved under draft → conflict chooser (+ keep canon / keep mine)
  * 5. MUTATION: wipe draft keys before reload → loss (proves check can fail)
  */
 import { createRequire } from 'node:module'
@@ -28,6 +34,7 @@ const { chromium } = await import(pathToFileURL(resolve(pwRoot, 'index.mjs')).hr
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const PROOF = resolve(ROOT, 'e2e/proofs/T-004-durable-dirty.txt')
 const DRAFT_PREFIX = 'storylint:sheet-identity-draft:v1:'
+const SAVE_MS = 15_000
 
 mkdirSync(resolve(ROOT, 'e2e/proofs'), { recursive: true })
 
@@ -47,20 +54,31 @@ async function putProject(project) {
 }
 
 async function openSheet(page, name) {
-  await gotoWorkspace(page, "canon")
+  await gotoWorkspace(page, 'canon')
   await ensureBinderOpen(page)
-  await page.waitForTimeout(200)
+  await page.waitForSelector('.binder__stack-list, .shell__rail--binder', { timeout: 10_000 })
   const clicked = await page.evaluate((sheetName) => {
-    const buttons = [...document.querySelectorAll(".binder__stack-list button, .shell__rail--binder button, button")]
-    const row = buttons.find((btn) => (btn.textContent || "").includes(sheetName))
+    const buttons = [
+      ...document.querySelectorAll(
+        '.binder__stack-list button, .shell__rail--binder button, button',
+      ),
+    ]
+    const row = buttons.find((btn) => (btn.textContent || '').includes(sheetName))
     if (!row) {
-      return { ok: false, names: buttons.slice(0, 30).map((btn) => (btn.textContent || "").trim().slice(0, 40)) }
+      return {
+        ok: false,
+        names: buttons.slice(0, 30).map((btn) => (btn.textContent || '').trim().slice(0, 40)),
+      }
     }
     row.click()
     return { ok: true }
   }, name)
-  if (!clicked.ok) throw new Error("openSheet no row for " + name + " sample=" + JSON.stringify(clicked.names))
-  await page.waitForSelector(".sheet-editor", { timeout: 10_000 })
+  if (!clicked.ok) {
+    throw new Error(`openSheet no row for ${name} sample=${JSON.stringify(clicked.names)}`)
+  }
+  await page.waitForSelector('.sheet-editor', { timeout: 10_000 })
+  // Wait for identity form to be interactive
+  await page.locator('.sheet-editor__form input').first().waitFor({ state: 'visible', timeout: 10_000 })
 }
 
 async function nameInput(page) {
@@ -79,11 +97,26 @@ async function readName(page) {
 
 async function typeName(page, value) {
   const el = await nameInput(page)
+  await el.waitFor({ state: 'visible', timeout: 10_000 })
   await el.click()
   await el.fill(value)
-  // blur to settle any debounce
-  await page.locator('.sheet-editor').click({ position: { x: 5, y: 5 } }).catch(() => {})
-  await page.waitForTimeout(80)
+  // Blur without clicking editor chrome (avoids leave/conflict backdrops).
+  await el.evaluate((node) => node.blur())
+  // Evidence: dirty flag flipped (or name already matches and dirty true).
+  await page.waitForFunction(
+    (want) => {
+      const editor = document.querySelector('.sheet-editor')
+      const dirty = editor?.getAttribute('data-sheet-dirty') === 'true'
+      const inputs = [...document.querySelectorAll('.sheet-editor__form input')]
+      const nameEl =
+        [...document.querySelectorAll('label')]
+          .find((l) => /^Name$/i.test((l.textContent || '').trim().split('\n')[0] || ''))
+          ?.querySelector('input') || inputs[1]
+      return dirty && nameEl && nameEl.value === want
+    },
+    value,
+    { timeout: 5_000 },
+  )
 }
 
 async function draftKeys(page) {
@@ -94,6 +127,17 @@ async function draftKeys(page) {
       if (k && k.startsWith(prefix)) out.push(k)
     }
     return out
+  }, DRAFT_PREFIX)
+}
+
+async function clearDraftKeys(page) {
+  await page.evaluate((prefix) => {
+    const kill = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (k && k.startsWith(prefix)) kill.push(k)
+    }
+    for (const k of kill) localStorage.removeItem(k)
   }, DRAFT_PREFIX)
 }
 
@@ -121,10 +165,71 @@ async function plantConflict(page, projectId, sheetId, baseName, draftName) {
   )
 }
 
+async function dismissBlockingRoots(page) {
+  // Never leave a modal covering Save. Prefer Cancel on leave; Keep Canon on conflict only when testing non-conflict paths.
+  const leaveCancel = page.locator('.sheet-editor__leave-dialog button').filter({ hasText: /^Cancel$/i })
+  if (await leaveCancel.count()) {
+    await leaveCancel.first().click().catch(() => {})
+  }
+}
+
 async function saveSheet(page) {
-  const btn = page.locator('.sheet-editor__form button[type="submit"]').first()
+  await dismissBlockingRoots(page)
+  const btn = page.getByRole('button', { name: /Save sheet/i }).first()
+  await btn.waitFor({ state: 'visible', timeout: SAVE_MS })
+  // Must be enabled (name non-empty + not mid leave-save).
+  await page.waitForFunction(
+    () => {
+      const buttons = [...document.querySelectorAll('button')]
+      const save = buttons.find((b) => /Save sheet/i.test(b.textContent || ''))
+      return Boolean(save && !save.disabled)
+    },
+    null,
+    { timeout: SAVE_MS },
+  )
+  // No leave/conflict root covering the form.
+  const blocked = await page.locator('.sheet-editor__leave-root').count()
+  if (blocked) {
+    const kind = {
+      conflict: await page.locator('[data-sheet-conflict="true"]').count(),
+      stale: await page.locator('[data-sheet-stale-confirm="true"]').count(),
+      leave: await page.locator('.sheet-editor__leave-dialog').count(),
+    }
+    throw new Error(`save blocked by leave-root ${JSON.stringify(kind)}`)
+  }
   await btn.click()
-  await page.waitForTimeout(250)
+  // Evidence save landed: dirty false AND draft keys cleared.
+  await page.waitForFunction(
+    (prefix) => {
+      const editor = document.querySelector('.sheet-editor')
+      if (!editor || editor.getAttribute('data-sheet-dirty') !== 'false') return false
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith(prefix)) return false
+      }
+      return true
+    },
+    DRAFT_PREFIX,
+    { timeout: SAVE_MS },
+  )
+}
+
+async function waitConflictVisible(page, timeout = 8_000) {
+  const el = page.locator('[data-sheet-conflict="true"]')
+  const start = Date.now()
+  while (Date.now() - start < timeout) {
+    if ((await el.count()) > 0 && (await el.first().isVisible().catch(() => false))) {
+      return true
+    }
+    await page.waitForTimeout(100)
+  }
+  return false
+}
+
+function writeReport(report) {
+  writeFileSync(PROOF, JSON.stringify(report, null, 2) + '\n')
+  console.log('PROOF', PROOF)
+  console.log(JSON.stringify(report, null, 2))
 }
 
 async function main() {
@@ -143,6 +248,7 @@ async function main() {
   const results = []
   const projectId = `e2e-t004-${process.pid}-${Date.now().toString(36)}`
   const sheetId = 'sheet-kael'
+  let harnessError = null
 
   try {
     await page.goto(stack.ui, { waitUntil: 'domcontentloaded', timeout: 30_000 })
@@ -170,7 +276,7 @@ async function main() {
       lab: { boards: [{ id: 'bench', title: 'Bench', cardIds: [] }], cards: [] },
     })
     await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
 
     // CASE 1
     await openSheet(page, 'Kael')
@@ -182,25 +288,36 @@ async function main() {
       keys: await draftKeys(page),
     }
     await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
-    // List still shows server name until Save
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
     await openSheet(page, 'Kael')
-    const afterReload = { dirty: await readDirty(page), name: await readName(page), keys: await draftKeys(page) }
+    const afterReload = {
+      dirty: await readDirty(page),
+      name: await readName(page),
+      keys: await draftKeys(page),
+    }
     const case1 = {
       id: 'dirty-reload-restore',
       before,
       afterType,
       afterReload,
-      ok: afterType.dirty === 'true' && afterReload.dirty === 'true' && afterReload.name === 'Kael Dirty Refresh',
+      ok:
+        afterType.dirty === 'true' &&
+        afterType.keys.length > 0 &&
+        afterReload.dirty === 'true' &&
+        afterReload.name === 'Kael Dirty Refresh',
     }
     results.push(case1)
     console.log('CASE1', JSON.stringify(case1))
 
     // CASE 2 Save clears
     await saveSheet(page)
-    const afterSave = { dirty: await readDirty(page), name: await readName(page), keys: await draftKeys(page) }
+    const afterSave = {
+      dirty: await readDirty(page),
+      name: await readName(page),
+      keys: await draftKeys(page),
+    }
     await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
     await openSheet(page, 'Kael Dirty Refresh')
     const afterSaveReload = {
       dirty: await readDirty(page),
@@ -213,6 +330,7 @@ async function main() {
       afterSaveReload,
       ok:
         afterSave.dirty === 'false' &&
+        afterSave.keys.length === 0 &&
         afterSaveReload.dirty === 'false' &&
         afterSaveReload.name === 'Kael Dirty Refresh' &&
         afterSaveReload.keys.length === 0,
@@ -223,32 +341,46 @@ async function main() {
     // CASE 3 Discard clears
     await typeName(page, 'Kael Discard Me')
     const dirtyBeforeDiscard = await readDirty(page)
-    // open leave via binder back
     await ensureBinderOpen(page)
     const back = page.locator('button').filter({ hasText: /^Back/i }).first()
     if (await back.count()) await back.click()
     else await page.keyboard.press('Escape')
-    await page.waitForTimeout(150)
-    const discard = page.getByRole('button', { name: 'Discard', exact: true })
-    if (await discard.count()) await discard.click()
-    else {
-      // try dialog Discard
-      await page.locator('.sheet-editor__leave-dialog button:has-text("Discard")').click()
-    }
-    await page.waitForTimeout(200)
+    const discard = page.locator('.sheet-editor__leave-dialog button').filter({ hasText: /^Discard$/i })
+    const discardVisible = await discard
+      .first()
+      .waitFor({ state: 'visible', timeout: 5_000 })
+      .then(() => true)
+      .catch(() => false)
+    if (discardVisible) await discard.first().click()
+    // Evidence: editor closed or dirty cleared and draft gone
+    await page
+      .waitForFunction(
+        (prefix) => {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i)
+            if (k && k.startsWith(prefix)) return false
+          }
+          return true
+        },
+        DRAFT_PREFIX,
+        { timeout: 5_000 },
+      )
+      .catch(() => {})
     await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
     await openSheet(page, 'Kael Dirty Refresh')
     const afterDiscard = {
       dirty: await readDirty(page),
       name: await readName(page),
       keys: await draftKeys(page),
+      discardVisible,
     }
     const case3 = {
       id: 'discard-clears-draft',
       dirtyBeforeDiscard,
       afterDiscard,
       ok:
+        discardVisible &&
         afterDiscard.name === 'Kael Dirty Refresh' &&
         afterDiscard.dirty === 'false' &&
         afterDiscard.keys.length === 0,
@@ -259,33 +391,35 @@ async function main() {
     // CASE 4 conflict
     await plantConflict(page, projectId, sheetId, 'OldBase', 'MineUnsaved')
     await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
     await openSheet(page, 'Kael Dirty Refresh')
-    const conflictEl = page.locator('[data-sheet-conflict="true"]')
-    await conflictEl.waitFor({ timeout: 8_000 }).catch(() => {})
+    const conflictVisible = await waitConflictVisible(page, 8_000)
+    const keepMineCount = await page.locator('[data-conflict-action="keep-mine"]').count()
+    const keepCanonCount = await page.locator('[data-conflict-action="keep-canon"]').count()
     const case4a = {
       id: 'conflict-chooser-appears',
-      visible: (await conflictEl.count()) > 0,
-      keepMine: (await page.locator('[data-conflict-action="keep-mine"]').count()) > 0,
-      keepCanon: (await page.locator('[data-conflict-action="keep-canon"]').count()) > 0,
+      visible: conflictVisible,
+      keepMine: keepMineCount > 0,
+      keepCanon: keepCanonCount > 0,
       name: await readName(page),
       dirty: await readDirty(page),
-      ok:
-        (await conflictEl.count()) > 0 &&
-        (await page.locator('[data-conflict-action="keep-mine"]').count()) > 0 &&
-        (await page.locator('[data-conflict-action="keep-canon"]').count()) > 0,
+      ok: conflictVisible && keepMineCount > 0 && keepCanonCount > 0,
     }
     results.push(case4a)
     console.log('CASE4a', JSON.stringify(case4a))
 
     if (case4a.ok) {
       await page.locator('[data-conflict-action="keep-canon"]').click()
-      await page.waitForTimeout(100)
+      await page.waitForFunction(
+        () => !document.querySelector('[data-sheet-conflict="true"]'),
+        null,
+        { timeout: 5_000 },
+      )
       const afterKeepCanon = {
         dirty: await readDirty(page),
         name: await readName(page),
         keys: await draftKeys(page),
-        conflictGone: (await conflictEl.count()) === 0,
+        conflictGone: (await page.locator('[data-sheet-conflict="true"]').count()) === 0,
       }
       const case4b = {
         id: 'conflict-keep-canon',
@@ -298,52 +432,65 @@ async function main() {
       }
       results.push(case4b)
       console.log('CASE4b', JSON.stringify(case4b))
+    } else {
+      results.push({
+        id: 'conflict-keep-canon',
+        ok: false,
+        skipped: 'chooser absent',
+      })
+      results.push({
+        id: 'conflict-keep-mine',
+        ok: false,
+        skipped: 'chooser absent',
+      })
     }
 
-    await plantConflict(page, projectId, sheetId, 'OldBase', 'MineUnsaved')
-    await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
-    await openSheet(page, 'Kael Dirty Refresh')
-    await page.locator('[data-sheet-conflict="true"]').waitFor({ timeout: 8_000 })
-    await page.locator('[data-conflict-action="keep-mine"]').click()
-    await page.waitForTimeout(100)
-    const afterKeepMine = { dirty: await readDirty(page), name: await readName(page) }
-    const case4c = {
-      id: 'conflict-keep-mine',
-      afterKeepMine,
-      ok: afterKeepMine.name === 'MineUnsaved' && afterKeepMine.dirty === 'true',
-    }
-    results.push(case4c)
-    console.log('CASE4c', JSON.stringify(case4c))
-
-    // reset to saved server name for mutation
-    await page.locator('[data-conflict-action="keep-canon"]').click().catch(() => {})
-    // if still dirty MineUnsaved, discard via leave or re-open clean
-    await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
-    // clear any leftover draft
-    await page.evaluate((prefix) => {
-      const kill = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
-        if (k && k.startsWith(prefix)) kill.push(k)
+    if (case4a.ok) {
+      await plantConflict(page, projectId, sheetId, 'OldBase', 'MineUnsaved')
+      await page.reload({ waitUntil: 'domcontentloaded' })
+      await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
+      await openSheet(page, 'Kael Dirty Refresh')
+      const conflict2 = await waitConflictVisible(page, 8_000)
+      if (conflict2) {
+        await page.locator('[data-conflict-action="keep-mine"]').click()
+        await page.waitForFunction(
+          () => {
+            const editor = document.querySelector('.sheet-editor')
+            const dirty = editor?.getAttribute('data-sheet-dirty') === 'true'
+            const inputs = [...document.querySelectorAll('.sheet-editor__form input')]
+            const nameEl = inputs[1]
+            return dirty && nameEl && nameEl.value === 'MineUnsaved'
+          },
+          null,
+          { timeout: 5_000 },
+        )
       }
-      for (const k of kill) localStorage.removeItem(k)
-    }, DRAFT_PREFIX)
+      const afterKeepMine = { dirty: await readDirty(page), name: await readName(page), conflict2 }
+      const case4c = {
+        id: 'conflict-keep-mine',
+        afterKeepMine,
+        ok: conflict2 && afterKeepMine.name === 'MineUnsaved' && afterKeepMine.dirty === 'true',
+      }
+      results.push(case4c)
+      console.log('CASE4c', JSON.stringify(case4c))
+    }
+
+    // CASE 5 mutation — wipe draft before reload must lose dirty name
+    await clearDraftKeys(page)
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
+    // Ensure clean server name open (discard any leftover dirty via reload without draft)
     await openSheet(page, 'Kael Dirty Refresh')
+    // If chooser somehow up, keep canon
+    if (await page.locator('[data-conflict-action="keep-canon"]').count()) {
+      await page.locator('[data-conflict-action="keep-canon"]').click()
+      await page.waitForTimeout(100)
+    }
     await typeName(page, 'Kael Should Be Lost')
     const dirtyMut = await readDirty(page)
-    // MUTATION: wipe durable draft before reload
-    await page.evaluate((prefix) => {
-      const kill = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
-        if (k && k.startsWith(prefix)) kill.push(k)
-      }
-      for (const k of kill) localStorage.removeItem(k)
-    }, DRAFT_PREFIX)
+    await clearDraftKeys(page)
     await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(300)
+    await page.waitForSelector('[aria-label="Workspace"]', { timeout: 15_000 })
     await openSheet(page, 'Kael Dirty Refresh')
     const afterMut = { dirty: await readDirty(page), name: await readName(page) }
     const case5 = {
@@ -354,6 +501,10 @@ async function main() {
     }
     results.push(case5)
     console.log('CASE5', JSON.stringify(case5))
+  } catch (error) {
+    harnessError = error instanceof Error ? error.message : String(error)
+    console.error('HARNESS_ERROR', harnessError)
+    results.push({ id: 'harness', ok: false, error: harnessError })
   } finally {
     await reclaimIsolatedProject(page, projectId).catch(() => {})
     await browser.close().catch(() => {})
@@ -365,20 +516,45 @@ async function main() {
     head,
     when: new Date().toISOString(),
     results,
-    pass: failed.length === 0,
+    pass: failed.length === 0 && !harnessError,
     failed: failed.map((f) => f.id),
+    harnessError,
   }
-  writeFileSync(PROOF, JSON.stringify(report, null, 2) + '\n')
-  console.log('PROOF', PROOF)
-  console.log(JSON.stringify(report, null, 2))
+  writeReport(report)
+
+  if (harnessError && failed.some((f) => f.id === 'harness')) {
+    // Infra/harness death — exit 2 only if no product cases were evaluated as fail.
+    // If product cases failed too, still exit 1 so FAIL is citable.
+    const productFailed = failed.filter((f) => f.id !== 'harness')
+    if (productFailed.length) {
+      console.error('T-004 L1 FAIL', report.failed)
+      process.exit(1)
+    }
+    console.error('T-004 L1 HARNESS FAIL', harnessError)
+    process.exit(2)
+  }
   if (!report.pass) {
     console.error('T-004 L1 FAIL', report.failed)
     process.exit(1)
   }
   console.log('T-004 L1 PASS')
+  process.exit(0)
 }
 
 main().catch(async (e) => {
+  // Last-resort: still try to leave a proof crumb.
+  try {
+    writeReport({
+      head: process.env.STORYLINT_HEAD || 'unknown',
+      when: new Date().toISOString(),
+      results: [],
+      pass: false,
+      failed: ['harness-unhandled'],
+      harnessError: e instanceof Error ? e.message : String(e),
+    })
+  } catch {
+    /* ignore */
+  }
   console.error(e)
   process.exit(2)
 })
