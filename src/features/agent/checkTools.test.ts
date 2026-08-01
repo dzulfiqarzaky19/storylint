@@ -108,8 +108,7 @@ test('MUTATION lock: face-tab scroll-correction and discoverable overflow are pr
   assert.doesNotMatch(css, /\.companion__faces\s*\{[^}]*scrollbar-width:\s*none/s)
   assert.doesNotMatch(css, /\.companion__faces::-webkit-scrollbar\s*\{\s*display:\s*none/)
 })
-// T-010: durable fit rule must stay present. Geometry failability lives in
-// e2e/t010-face-row-fit-smoke.mjs (measured resting overflow). This only locks the rule text.
+// Durable fit rule must stay present. This locks the rule text only.
 test('MUTATION lock: face-row resting fit rule (badge cap + inbox max-width at base)', () => {
   const panel = readFileSync(join(root, 'components/shell/AgentPanel.tsx'), 'utf8')
   const css = readFileSync(join(root, 'components/shell/AgentPanel.css'), 'utf8')

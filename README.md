@@ -4,7 +4,7 @@ Fiction IDE for serial and world-heavy novels: clean manuscript editor, project-
 
 Nothing enters the manuscript or canon without explicit **Apply** or **Accept**.
 
-**Look:** Kobo-style paper reading profiles (Day / Sepia / Mint / Night) + warm chrome — not cool AI-blue. Tokens: [docs/design/TOKENS.md](docs/design/TOKENS.md).
+**Look:** Kobo-style paper reading profiles (Day / Sepia / Mint / Night) and warm chrome, not cool AI-blue. Palette and sizing live in `src/design/tokens.css`.
 
 ## Run locally
 
@@ -17,18 +17,15 @@ npm install
 Two terminals:
 
 ```bash
-# Dogfood chat (live LLM) — needs .env with LLM_* and NO fixture flag:
-npm run dev:server                           # loads .env via --env-file-if-exists
-# Verifier / CI only:
-STORYLINT_FIXTURE_LLM=1 npm run dev:server   # canned replies — not real chat
-npm run dev                                  # UI http://localhost:5173/
+npm run dev:server   # API on http://127.0.0.1:4174, loads .env
+npm run dev          # UI on http://localhost:5173/
 ```
 
 No login.
 
 ## LLM configuration
 
-OpenAI-compatible adapter (9-router, LM Studio, Ollama, OpenRouter, etc.).
+OpenAI-compatible adapter (LM Studio, Ollama, OpenRouter, any compatible router).
 
 ```bash
 cp .env.example .env
@@ -36,7 +33,7 @@ cp .env.example .env
 ```
 
 ```env
-LLM_PROVIDER=9-router
+LLM_PROVIDER=openai-compatible
 LLM_MODEL=your-model-id
 LLM_BASE_URL=http://127.0.0.1:1234/v1
 LLM_API_KEY=your-router-token
@@ -44,22 +41,21 @@ LLM_MAX_TOKENS=20000
 STORYLINT_FIXTURE_LLM=0
 ```
 
-Live wire: `POST {LLM_BASE_URL}/chat/completions`.  
-**Real agent chat** needs `LLM_MODEL` + `LLM_BASE_URL` and `STORYLINT_FIXTURE_LLM` not `1`.  
-Empty model/base or fixture → canned Continuity/chat (panel shows fixture notice). Keys stay on the server — never `VITE_*` secrets.
+Live wire: `POST {LLM_BASE_URL}/chat/completions`.
 
-## Dogfood flow
+**Real agent chat** needs `LLM_MODEL` and `LLM_BASE_URL`, with `STORYLINT_FIXTURE_LLM` not set to `1`. An empty model or base URL, or fixture mode, falls back to canned Continuity and chat replies and the panel shows a fixture notice. Keys stay on the server, never in `VITE_*` variables.
 
-1. Start API + Vite; open Storylint.  
-2. Edit a chapter; wait for **Saved**; reload.  
-3. Sheets/facts in binder; Accept/Reject proposals only.  
-4. **Continuity** (fixture or live); marks use paper-safe mark tokens.  
-5. Agent **Send** = freeform project chat (live LLM). Sheet asks → proposal packs. Continue / Rewrite / Brainstorm → **Apply** cards only.   
+## Using the app
 
-6. **Review chapter** / **Craft check** → neutral panel findings; add suggested tags explicitly.
-7. **Research** mode → cited cards; Pin stores a note, Propose creates a pending lore proposal, Accept alone changes canon.
-8. **Paper color:** bookmark/seal on the manuscript (Day/Sepia/Mint/Night). Theme icon = chrome only.
-9. **Focus** = manuscript only. Under 1366 paper is full-bleed; from 1366 centered page + ribbon.
+1. Start the API and Vite, then open Storylint.
+2. Edit a chapter, wait for **Saved**, reload.
+3. Sheets and facts appear in the binder; canon changes go through Accept or Reject only.
+4. **Continuity** produces marks using paper-safe mark tokens.
+5. Agent **Send** is freeform project chat. Sheet requests return proposal packs. Continue, Rewrite and Brainstorm return Apply cards only.
+6. **Review chapter** and **Craft check** return neutral panel findings; suggested tags are added explicitly.
+7. **Research** mode returns cited cards. Pin stores a note, Propose creates a pending lore proposal, and only Accept changes canon.
+8. **Paper color** is the bookmark on the manuscript (Day / Sepia / Mint / Night). The theme icon changes chrome only.
+9. **Focus** shows the manuscript alone. Below 1366px the paper is full-bleed; from 1366px it is a centered page with a ribbon.
 
 ## Verify
 
@@ -69,33 +65,6 @@ npm run build
 npm run lint
 ```
 
-UI browser smoke: [docs/E2E.md](docs/E2E.md) (Playwright + system **msedge** on this machine).
-
-## Docs
-
-**Start here:** [docs/README.md](docs/README.md) — map of locks, process, decisions, and common wrong turns.
-
-| Doc | |
-|-----|--|
-| [docs/README.md](docs/README.md) | **Corpus map** (entry point) |
-| [docs/IA_MAP.md](docs/IA_MAP.md) | **Product structure lock** — ecosystems, depth, shell, gates |
-| [docs/design/CANON-VOCABULARY.md](docs/design/CANON-VOCABULARY.md) | **Words lock** — user-facing labels |
-| [docs/CALM_BUDGET.md](docs/CALM_BUDGET.md) | **Density bar** — HARD/WARN numbers |
-| [docs/PRD.md](docs/PRD.md) | Product spine / why |
-| [docs/BUILD.md](docs/BUILD.md) | Slices + next work |
-| [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md) | Branch / merge / push; origin hash is truth |
-| [docs/AGENT_PROTOCOL.md](docs/AGENT_PROTOCOL.md) | Swarm reporting cadence, handoffs |
-| [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) | Coder / reviewer / verifier + **AI harness local-only** |
-| [docs/decisions/](docs/decisions/README.md) | Decision history (adjudications, reviews) |
-| [docs/DOCTRINE_AUDIT.md](docs/DOCTRINE_AUDIT.md) | Contradiction / wrong-build hazard map |
-| [docs/CODE_VERIFY.md](docs/CODE_VERIFY.md) | Docs↔code verification matrix |
-| [docs/design/TOKENS.md](docs/design/TOKENS.md) | Palette + sizes (paint source of truth) |
-| [docs/03-ux.md](docs/03-ux.md) | Journeys + reading profiles (structure → IA_MAP) |
-| [docs/04-agents.md](docs/04-agents.md) | In-app agent panel (product) |
-| [docs/E2E.md](docs/E2E.md) | UI e2e |
-
-**AI harness is local-only.** Never commit/push `CLAUDE.md`, `.claude/`, or other assistant config. See [docs/AGENTS_ROLES.md](docs/AGENTS_ROLES.md) § "AI harness stays local". Checkout must not swap the agent brain.
-
 ## Privacy
 
-Live Continuity / agent calls send chapter + bible digest (and related context) to the configured endpoint. Fixture mode sends nothing.
+Live Continuity and agent calls send the chapter plus a bible digest to the configured endpoint. Fixture mode sends nothing.

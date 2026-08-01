@@ -1,7 +1,6 @@
 /**
- * Durable dirty — crash copy of form dirty sheet identity (T-004 / ox ruling).
+ * Durable dirty — crash copy of form dirty sheet identity.
  * Does NOT write Canon. Restore leaves the sheet dirty until Save or Discard.
- * @see docs/decisions/sheet-identity-durable-dirty.md
  */
 import type { Sheet } from '../../domain/types.ts'
 import {
