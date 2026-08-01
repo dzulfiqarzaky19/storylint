@@ -4,7 +4,7 @@ import type { Proposal } from '../../domain/types.ts'
 import { ProposalCard } from '../../features/continuity/ProposalCard.tsx'
 import { SheetPackCard } from '../../features/agent/SheetPackCard.tsx'
 import { ApplyCard } from '../../features/agent/ApplyCard.tsx'
-import { CHECK_TOOLS, type CheckToolId } from '../../features/agent/checkTools.ts'
+import { CHECK_PRIMARY, CHECK_SECONDARY, type CheckToolId } from '../../features/agent/checkTools.ts'
 import type { CowriteSkill } from '../../cowrite/types.ts'
 import type { CraftTag, Project } from '../../domain/types.ts'
 import { ResearchPanel } from '../../features/research/ResearchPanel.tsx'
@@ -609,10 +609,9 @@ export function AgentPanel({
           <div className="companion__check-body" aria-label="Check summary">
             <EmptyState
               title="Continuity starts with a chapter"
-              hint="Check is the only place Continuity lives. It reads your chapter against accepted Canon, then leaves findings as marks and Inbox proposals — it never changes Canon on its own."
+              hint="Check runs Continuity against accepted Canon. Findings become marks and Inbox proposals — never auto-canon."
               action={
                 onAddChapter ? (
-                  // One primary per job (ox): binder New chapter owns Draft empty create.
                   <Button variant="ghost" onClick={onAddChapter}>
                     Write first chapter
                   </Button>
@@ -625,107 +624,98 @@ export function AgentPanel({
             <div className="companion__check-body" aria-label="Check summary">
               {continuityRunning ? (
                 <p className="companion__check-summary" data-continuity-state="running" aria-live="polite">
-                  Continuity is working on this chapter…
+                  Continuity working…
                 </p>
               ) : continuityError ? (
                 <p className="companion__check-summary" data-continuity-state="failed" role="alert" aria-live="assertive">
-                  Continuity could not finish: {continuityError}. Last result is not current — run Continuity again when ready.
+                  Continuity failed: {continuityError}
+                </p>
+              ) : continuityMode && continuityCounts ? (
+                <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
+                  {continuityCounts.red + continuityCounts.yellow + continuityCounts.proposals === 0
+                    ? `Last Continuity: no issues (${continuityMode})`
+                    : `Last Continuity: ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals`}
                 </p>
               ) : continuityMode ? (
                 <p className="companion__check-summary" data-continuity-state="ready" aria-live="polite">
-                  {continuityCounts
-                    ? continuityCounts.red + continuityCounts.yellow + continuityCounts.proposals === 0
-                      ? `Last Continuity (${continuityMode}): no issues found.`
-                      : `Last Continuity (${continuityMode}): ${continuityCounts.red} red · ${continuityCounts.yellow} yellow · ${continuityCounts.proposals} proposals. Open Inbox to Accept/Edit/Reject.`
-                    : `Last Continuity finished in ${continuityMode} mode.`}
+                  Last Continuity finished ({continuityMode})
                 </p>
-              ) : (
-                <EmptyState
-                  title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before Continuity'}
-                  hint={continuityRunnable
-                    ? 'Check is the only Continuity entry. It scans chapter prose against accepted Canon. Findings land as marks and Inbox proposals — never auto-canon.'
-                    : 'Continuity checks this chapter against accepted Canon. It needs draft prose first — type in the paper, then run Continuity here.'}
-                />
-              )}
+              ) : !continuityRunnable ? (
+                <p className="companion__check-summary" data-continuity-state="idle">
+                  Write some prose, then run Continuity.
+                </p>
+              ) : null}
               {renderTranscript({ apply: false, status: false })}
             </div>
-                        <div className="panel__footer companion__check-footer">
-              <p className="companion__check-legend">
-                Continuity guards Canon. Review and Craft coach the scene only.
-              </p>
-              <div
-                className="companion__check-tools"
-                ref={checkToolsRef}
-                aria-label="Check tools"
-              >
-                {CHECK_TOOLS.map((tool) => {
+            <div className="panel__footer companion__check-footer" ref={checkToolsRef}>
+              <div className="companion__check-primary" data-check-tool="continuity" data-check-primary="true">
+                <div className="companion__check-primary-row">
+                  <Button
+                    className="companion__check-run"
+                    variant={continuityRunnable || continuityRunning ? 'primary' : 'ghost'}
+                    disabled={assistantBusy || !continuityRunnable}
+                    title={continuityRunnable ? 'Run Continuity on this chapter' : 'Write some prose before Continuity'}
+                    data-continuity-state={continuityState}
+                    data-continuity-runnable={continuityRunnable ? 'true' : 'false'}
+                    data-check-run="continuity"
+                    aria-busy={continuityRunning || undefined}
+                    onClick={() => { void onRunContinuity().catch(() => undefined) }}
+                  >
+                    {continuityRunning ? 'Working…' : CHECK_PRIMARY.actionLabel}
+                  </Button>
+                  <IconButton
+                    className="companion__check-info"
+                    label="About Continuity"
+                    aria-expanded={checkHelpOpen === 'continuity'}
+                    aria-controls="check-help-continuity"
+                    data-check-info="continuity"
+                    onClick={() => setCheckHelpOpen((current) => current === 'continuity' ? null : 'continuity')}
+                  >
+                    ?
+                  </IconButton>
+                </div>
+                {checkHelpOpen === 'continuity' ? (
+                  <div id="check-help-continuity" className="companion__check-help" role="note" data-check-help="continuity">
+                    <p><span className="companion__check-help-k">What</span> {CHECK_PRIMARY.what}</p>
+                    <p><span className="companion__check-help-k">When</span> {CHECK_PRIMARY.when}</p>
+                    <p><span className="companion__check-help-k">After</span> {CHECK_PRIMARY.outcome}</p>
+                  </div>
+                ) : null}
+              </div>
+              <div className="companion__check-secondary" aria-label="Scene coaching">
+                {CHECK_SECONDARY.map((tool) => {
                   const helpOpen = checkHelpOpen === tool.id
                   const helpId = `check-help-${tool.id}`
-                  const isContinuity = tool.id === 'continuity'
-                  const runDisabled = isContinuity
-                    ? assistantBusy || !continuityRunnable
-                    : assistantBusy
-                  const runBusy = isContinuity
-                    ? continuityRunning
-                    : opActive(tool.id === 'review' ? 'review' : 'craft')
-                  const runLabel = isContinuity
-                    ? (continuityRunning ? 'Working…' : tool.actionLabel)
-                    : opLabel(tool.id === 'review' ? 'review' : 'craft', tool.actionLabel)
-                  const runTitle = isContinuity
-                    ? (continuityRunnable
-                      ? 'Run Continuity on this chapter'
-                      : 'Write some prose before checking Continuity')
-                    : tool.blurb
+                  const busyKey = tool.id === 'review' ? 'review' : 'craft'
                   return (
-                    <div
-                      key={tool.id}
-                      className="companion__check-tool"
-                      data-check-tool={tool.id}
-                      data-check-primary={tool.primary ? 'true' : 'false'}
-                    >
-                      <div className="companion__check-tool-main">
-                        <div className="companion__check-tool-copy">
-                          <div className="companion__check-tool-title-row">
-                            <strong className="companion__check-tool-name">
-                              {tool.id === 'continuity' ? 'Continuity' : tool.actionLabel}
-                            </strong>
-                            <IconButton
-                              className="companion__check-info"
-                              label={`About ${tool.id === 'continuity' ? 'Continuity' : tool.actionLabel}`}
-                              aria-expanded={helpOpen}
-                              aria-controls={helpId}
-                              data-check-info={tool.id}
-                              onClick={() => setCheckHelpOpen((current) => current === tool.id ? null : tool.id)}
-                            >
-                              ?
-                            </IconButton>
-                          </div>
-                          <p className="companion__check-tool-blurb">{tool.blurb}</p>
-                        </div>
+                    <div key={tool.id} className="companion__check-secondary-item" data-check-tool={tool.id} data-check-primary="false">
+                      <div className="companion__check-secondary-row">
                         <Button
                           className="companion__check-run"
-                          variant={isContinuity && (continuityRunnable || continuityRunning) ? 'primary' : 'ghost'}
-                          disabled={runDisabled}
-                          title={runTitle}
-                          data-continuity-state={isContinuity ? continuityState : undefined}
-                          data-continuity-runnable={isContinuity ? (continuityRunnable ? 'true' : 'false') : undefined}
+                          variant="ghost"
+                          disabled={assistantBusy}
+                          title={tool.what}
                           data-check-run={tool.id}
-                          aria-busy={runBusy || undefined}
+                          aria-busy={opActive(busyKey) || undefined}
                           onClick={() => {
-                            if (isContinuity) void onRunContinuity().catch(() => undefined)
-                            else if (tool.id === 'review' || tool.id === 'craft') void onRunReview(tool.id).catch(() => undefined)
+                            if (tool.id === 'review' || tool.id === 'craft') void onRunReview(tool.id).catch(() => undefined)
                           }}
                         >
-                          {runLabel}
+                          {opLabel(busyKey, tool.actionLabel)}
                         </Button>
+                        <IconButton
+                          className="companion__check-info"
+                          label={`About ${tool.actionLabel}`}
+                          aria-expanded={helpOpen}
+                          aria-controls={helpId}
+                          data-check-info={tool.id}
+                          onClick={() => setCheckHelpOpen((current) => current === tool.id ? null : tool.id)}
+                        >
+                          ?
+                        </IconButton>
                       </div>
                       {helpOpen ? (
-                        <div
-                          id={helpId}
-                          className="companion__check-help"
-                          role="note"
-                          data-check-help={tool.id}
-                        >
+                        <div id={helpId} className="companion__check-help" role="note" data-check-help={tool.id}>
                           <p><span className="companion__check-help-k">What</span> {tool.what}</p>
                           <p><span className="companion__check-help-k">When</span> {tool.when}</p>
                           <p><span className="companion__check-help-k">After</span> {tool.outcome}</p>
@@ -738,7 +728,7 @@ export function AgentPanel({
             </div>
           </>
         )
-      ) : face === 'spark' && companionContext === 'lab' ? (
+) : face === 'spark' && companionContext === 'lab' ? (
         <>
           {renderTranscript({ tools: false, apply: false, review: false, status: false })}
           <div className="panel__footer">
