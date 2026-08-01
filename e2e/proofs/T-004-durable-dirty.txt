@@ -1,0 +1,93 @@
+{
+  "head": "06b9df0",
+  "when": "2026-08-01T00:42:31.839Z",
+  "results": [
+    {
+      "id": "dirty-reload-restore",
+      "before": {
+        "dirty": "false",
+        "name": "Kael"
+      },
+      "afterType": {
+        "dirty": "true",
+        "name": "Kael Dirty Refresh",
+        "keys": [
+          "storylint:sheet-identity-draft:v1:e2e-t004-27808-ms9nd0l6:sheet-kael"
+        ]
+      },
+      "afterReload": {
+        "dirty": "true",
+        "name": "Kael Dirty Refresh",
+        "keys": [
+          "storylint:sheet-identity-draft:v1:e2e-t004-27808-ms9nd0l6:sheet-kael"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "id": "save-clears-draft",
+      "afterSave": {
+        "dirty": "false",
+        "name": "Kael Dirty Refresh",
+        "keys": []
+      },
+      "afterSaveReload": {
+        "dirty": "false",
+        "name": "Kael Dirty Refresh",
+        "keys": []
+      },
+      "ok": true
+    },
+    {
+      "id": "discard-clears-draft",
+      "dirtyBeforeDiscard": "true",
+      "afterDiscard": {
+        "dirty": "false",
+        "name": "Kael Dirty Refresh",
+        "keys": [],
+        "discardVisible": true
+      },
+      "ok": true
+    },
+    {
+      "id": "conflict-chooser-appears",
+      "visible": true,
+      "keepMine": true,
+      "keepCanon": true,
+      "name": "Kael Dirty Refresh",
+      "dirty": "false",
+      "ok": true
+    },
+    {
+      "id": "conflict-keep-canon",
+      "afterKeepCanon": {
+        "dirty": "false",
+        "name": "Kael Dirty Refresh",
+        "keys": [],
+        "conflictGone": true
+      },
+      "ok": true
+    },
+    {
+      "id": "conflict-keep-mine",
+      "afterKeepMine": {
+        "dirty": "true",
+        "name": "MineUnsaved",
+        "conflict2": true
+      },
+      "ok": true
+    },
+    {
+      "id": "mutation-wipe-draft-loses",
+      "dirtyMut": "true",
+      "afterMut": {
+        "dirty": "false",
+        "name": "Kael Dirty Refresh"
+      },
+      "ok": true
+    }
+  ],
+  "pass": true,
+  "failed": [],
+  "harnessError": null
+}
