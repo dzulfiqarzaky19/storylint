@@ -1,3 +1,4 @@
+import { normalizeIdentityText } from '../../domain/identityText.ts'
 import type { Sheet, SheetKind } from '../../domain/types.ts'
 
 /** Identity fields the sheet form owns (facts save per-action and are out of scope). */
@@ -26,11 +27,11 @@ export function normalizeSheetIdentity(
 ): SheetIdentity {
   return {
     kind: sheet?.kind ?? 'character',
-    name: (sheet?.name ?? '').trim(),
+    name: normalizeIdentityText(sheet?.name ?? ''),
     aliases: normalizeAliases(sheet?.aliases ?? []),
-    summary: (sheet?.summary ?? '').trim(),
-    notes: (sheet?.notes ?? '').trim(),
-    portrait: (sheet?.portrait ?? '').trim(),
+    summary: normalizeIdentityText(sheet?.summary ?? ''),
+    notes: normalizeIdentityText(sheet?.notes ?? ''),
+    portrait: normalizeIdentityText(sheet?.portrait ?? ''),
   }
 }
 
