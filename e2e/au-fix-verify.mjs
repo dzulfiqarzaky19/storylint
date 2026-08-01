@@ -1,7 +1,11 @@
 /**
- * AU fix verification — DOM/ARIA sampling (not NVDA).
- * node e2e/au-fix-verify.mjs
+ * AU MANUAL DIAGNOSTIC — DOM/ARIA sampling after a11y fix (not NVDA)
+ *
+ * MANUAL DIAGNOSTIC — not part of the green suite (test:green / ALL_FEATURE_SMOKES).
+ * NOT part of the green suite. Owned-stack evidence sample. Human reads output.
+ * Run: node e2e/au-fix-verify.mjs
  */
+
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
