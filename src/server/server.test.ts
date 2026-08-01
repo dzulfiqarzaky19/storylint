@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { test } from 'node:test'
 import type { Fact, Project, Proposal, Sheet } from '../domain/types.ts'
 import { createServer } from './http.ts'
-import { ProjectStore } from './store.ts'
+import { ProjectFileRoot, ProjectStore } from './store.ts'
 
 function seedProject(): Project {
   return {
@@ -26,7 +26,7 @@ async function withServer(
 ): Promise<void> {
   const dir = await mkdtemp(join(tmpdir(), 'storylint-'))
   const file = join(dir, 'project.json')
-  const store = new ProjectStore(file, seedProject())
+  const store = new ProjectFileRoot(file).openDefault(seedProject())
   await store.save(seedProject())
   const server = createServer(store)
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
@@ -55,7 +55,7 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
 test('store saves schemaVersion 2 atomically without leaving a temp file', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'storylint-store-'))
   const file = join(dir, 'project.json')
-  const store = new ProjectStore(file, seedProject())
+  const store = new ProjectFileRoot(file).openDefault(seedProject())
   await store.save(seedProject())
 
   const saved = JSON.parse(await readFile(file, 'utf8')) as Project
@@ -65,11 +65,13 @@ test('store saves schemaVersion 2 atomically without leaving a temp file', async
 
 test('switchFile serializes with concurrent updates so writes stay on the intended path', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'storylint-switch-'))
+  // One root: default + projects/<id>.json (same derivation as http.ts)
   const first = join(dir, 'first.json')
-  const second = join(dir, 'second.json')
-  const store = new ProjectStore(first, seedProject())
+  const root = new ProjectFileRoot(first)
+  const store = root.openDefault(seedProject())
   await store.save(seedProject())
-  await new ProjectStore(second).save({ ...seedProject(), title: 'Second' })
+  await root.openId('second').save({ ...seedProject(), title: 'Second' })
+  const second = root.pathFor('second')
 
   let releaseUpdate: (() => void) | undefined
   const hold = new Promise<void>((resolve) => { releaseUpdate = resolve })
@@ -90,11 +92,12 @@ test('switchFile serializes with concurrent updates so writes stay on the intend
 test('two ProjectStore instances on one path serialize load and save without EPERM', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'storylint-path-lock-'))
   const file = join(dir, 'shared.json')
+  const root = new ProjectFileRoot(file)
   const seed = seedProject()
-  await new ProjectStore(file).save(seed)
+  await root.openDefault().save(seed)
 
-  const writers = Array.from({ length: 40 }, () => new ProjectStore(file))
-  const readers = Array.from({ length: 40 }, () => new ProjectStore(file))
+  const writers = Array.from({ length: 40 }, () => root.openDefault())
+  const readers = Array.from({ length: 40 }, () => root.openDefault())
   const errors: unknown[] = []
   await Promise.all([
     ...writers.map((store, index) =>
@@ -116,7 +119,7 @@ test('failed atomic rename rejects save and leaves prior project bytes', async (
   const dir = await mkdtemp(join(tmpdir(), 'storylint-rename-fail-'))
   const file = join(dir, 'project.json')
   const seed = seedProject()
-  const store = new ProjectStore(file)
+  const store = new ProjectFileRoot(file).openDefault()
   await store.save(seed)
   const before = await readFile(file, 'utf8')
   const handle = await open(file, 'r')
@@ -135,6 +138,43 @@ test('failed atomic rename rejects save and leaves prior project bytes', async (
   assert.equal(await readFile(file, 'utf8'), before)
   assert.deepEqual(await readdir(dir), ['project.json'])
   assert.equal((await store.load()).title, seed.title)
+})
+
+test('ProjectStore.open rejects paths outside ProjectFileRoot (T-007)', () => {
+  const dir = join(tmpdir(), 'storylint-t007-outside')
+  const root = new ProjectFileRoot(join(dir, 'project.json'))
+  assert.throws(
+    () => ProjectStore.open(root, join(dir, 'other.json')),
+    /must derive from ProjectFileRoot/,
+  )
+  assert.throws(
+    () => ProjectStore.open(root, join(dir, 'projects', 'not valid.json')),
+    /must derive from ProjectFileRoot/,
+  )
+  // Same physical tree via a different root object is a second root — not accepted as same.
+  const alien = new ProjectFileRoot(join(dir, 'alien-default.json'))
+  assert.throws(
+    () => ProjectStore.open(root, alien.defaultPath),
+    /must derive from ProjectFileRoot/,
+  )
+})
+
+test('switchFile rejects paths outside the store root (T-007)', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'storylint-t007-switch-'))
+  const root = new ProjectFileRoot(join(dir, 'project.json'))
+  const store = root.openDefault(seedProject())
+  await store.save(seedProject())
+  await assert.rejects(
+    store.switchFile(join(dir, 'outside.json')),
+    /must derive from the store's ProjectFileRoot/,
+  )
+})
+
+test('ProjectFileRoot pathFor is the only id→path derivation used by openId (T-007)', () => {
+  const root = new ProjectFileRoot(join(tmpdir(), 'storylint-t007-path', 'project.json'))
+  assert.equal(root.pathFor('default'), root.defaultPath)
+  assert.equal(root.openId('harbor').filePath, root.pathFor('harbor'))
+  assert.throws(() => root.pathFor('Bad_Id'), /Invalid project id/)
 })
 
 // Probabilistic regression net only — not the T-005 proof (brief list read often closes before rename).
@@ -194,7 +234,7 @@ test('GET /api/projects concurrent with chapter PUTs never returns EPERM', async
 
 test('failed async update leaves the saved project unchanged', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'storylint-failed-update-'))
-  const store = new ProjectStore(join(dir, 'project.json'), seedProject())
+  const store = new ProjectFileRoot(join(dir, 'project.json')).openDefault(seedProject())
   await store.save(seedProject())
   await assert.rejects(
     store.updateAsync(async () => { throw new Error('extract failed') }),
