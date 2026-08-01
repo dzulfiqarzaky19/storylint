@@ -1,75 +1,85 @@
-# Companion Check density — DONE report (for rat)
+# Companion Check density — DONE report (re-submit to badger)
 
 **Date:** 2026-08-01  
-**Worker:** buffalo (improvement mode)  
+**Worker:** buffalo  
 **Branch:** `storylint/companion-check-tool-help`  
-**Topic HEAD / origin topic:** `0fb789d`  
-**origin/dev:** not landed (topic only)
+**Tip / origin topic:** `d99c0fd`  
+**Prior review tip:** `0fb789d` / docs `d8bd364`  
+**origin/dev:** not landed
 
 ## State
 
 ```
-done: branch=storylint/companion-check-tool-help topic=companion-check-density origin/topic=0fb789d
-scope: Companion Check face density + Continuity/Review/Craft hierarchy + face-tab clip
-next: review → land → E2E verify; rat may file follow-on tickets from open list below
+re-submit: storylint/companion-check-tool-help @ d99c0fd
+blockers fixed: 8c orphans deleted; always-true drive costume deleted with the drive
+permanent locks: unit checkTools.test.ts only
 ```
 
-## Shipped (5 commits)
+## What changed since `0fb789d`
 
-| SHA | Summary |
-|-----|---------|
-| `83d64a2` | Check tool list + `?` What/When/After popups |
-| `82640ae` | Thin resting Check: primary Continuity, quiet Review/Craft; no legend/cards/blurbs |
-| `150b9d2` | Post-run density: summary owns Continuity; hide tool cards on Check; compact copy |
-| `8685119` | Done report for rat |
-| `0fb789d` | Face-tab label clip fix + full companion face drive (80/80) |
+| SHA | Change |
+|-----|--------|
+| `d8bd364` | Done report refresh |
+| `d99c0fd` | **Removed** `e2e/_check-face-verify.mjs` + `e2e/_companion-face-drive.mjs` from branch (8c fix via delete, not MANUAL DIAGNOSTIC) |
 
-## Product outcome
+Product code since density batch still on tip through `0fb789d` (Check density + face-tab clip). No product code change in `d99c0fd`.
 
-- Resting Check: **Run Continuity** (primary) · Review · Craft · help on `?` only
-- Post-run: one line `Continuity: no issues (fixture)` — no double Continuity essay, no tool-card privacy dump
-- Continuity remains sole gate path; Review/Craft panel-only coaching
-- Face row labels fully visible (no `Chat`→`hat` / half-Research clip)
+## Review blockers
 
-## Proof
+### Blocker 1 — standing 8c occupancy
+**Fixed by delete (option preferred for ad-hoc proof drivers).**
+
+- Orphans `e2e/_check-face-verify.mjs` and `e2e/_companion-face-drive.mjs` are **gone from tip**.
+- `node --test scripts/check-slot-occupancy.test.mjs` → **3/3 PASS** on `d99c0fd`.
+- Not wired to a runner; not kept as MANUAL DIAGNOSTIC. Session probes only.
+
+### Blocker 2 — always-true costume in drive
+**Fixed by delete of the drive script.**
+
+The always-true checks badger named lived only in the removed drive:
+- `scrolled.touched >= 0`
+- `check('inbox: not research empty slogan alone without inbox', true)`
+
+They are not on the branch. No costume remains.
+
+### Clip coverage failability (what would go red)
+Session drive is gone. **Permanent failability for density** is unit source locks in `src/features/agent/checkTools.test.ts` (7/7), which fail if:
+- resting Check reintroduces legend / tool cards / always-on blurbs / triple Continuity essay
+- post-run Check reintroduces `Last Continuity` / tool-card empty essay / shows tool cards again (`tools: false` lock)
+- Review/Craft help loses Continuity distinction
+
+Face-tab clip product fix remains in `AgentPanel.tsx` / `AgentPanel.css` (`0fb789d`). No permanent e2e clip assertion on branch (honest: was session-only). Land acceptance for clip is code review of that fix + unit density locks; optional P3 later if rat wants a named smoke.
+
+## Product still on tip (no land block)
+
+- `checkTools.ts` Continuity sole primary; Review/Craft secondary; what/when/after on `?` only
+- resting density: no legend/tool cards/blurbs
+- post-run: `companion__check-summary` owns Continuity; `renderTranscript({ tools: false, apply: false, status: false, review: true })`
+- face-tab scrollIntoView + overflow adjust for full labels
+- unit mutation locks 7/7 source-anchored
+
+## Proof on tip
 
 | Gate | Result |
 |------|--------|
-| Unit `checkTools.test.ts` | 7/7 (incl. post-run density mutation lock) |
-| `npm run build` | green |
-| Playwright Edge owned-stack Check density verify (session probe, not retained) | PASS |
-| Browser bridge (Firefox) live drive | PASS — resting sparse + post-run Continuity |
-| Full companion face drive (session probe, not retained) | 80/80 PASS @ `0fb789d` |
+| `node --test scripts/check-slot-occupancy.test.mjs` | 3/3 PASS |
+| `checkTools.test.ts` | 7/7 PASS |
+| `npm run build` | green (prior) |
+| Session Playwright drives | PASS historically @ `0fb789d`; **not retained** |
 
-Shots: `e2e/output/check-face-tools.png`, `e2e/output/check-face-craft-help.png`, `e2e/output/companion-face-*.png`.
+## Acceptance checklist (badger)
 
-## Bugs
+1. 8c occupancy green — **yes** @ `d99c0fd`
+2. No always-true drive costume on branch — **yes** (drive deleted)
+3. Clip e2e assertion — **not on branch** (deleted with drive); product clip fix still in `0fb789d`
+4. Tip SHA — **`d99c0fd`**
 
-- **No new product bugs to file.**
-- Visual that looked like Check→Research body swap was face-row clip; fixed in `0fb789d`.
-- Research empty slogan "Research without chat clutter" is pre-existing copy-audit P2, not this batch.
+## Land request
 
-## Stop condition
-
-Improvement mode hit diminishing returns on Check face density. No further Check chrome polish in this batch.
-
-## Suggested tickets for rat (not filed — coordinator owns ticket ids)
-
-1. **P2 land/review** — Review + land `storylint/companion-check-tool-help` → `origin/dev` (`npm run land`). Acceptance: topic commits on `origin/dev`; post-land E2E intent verify.
-2. **P3 optional** — Promote `e2e/_check-face-verify.mjs` / `e2e/_companion-face-drive.mjs` into named smoke (or fold checks into calm-budget) so density locks ride CI, not ad-hoc.
-3. **P3 optional** — Playwright Firefox channel install/docs: system Firefox + bridge works; Playwright-managed `firefox-1497` was incomplete/`__dirlock` mid-install; headless system FF crashed under juggler. Not product-blocking.
-4. **Unchanged leftovers (pre-existing)** — T-004 7d stale; T-009 optional tripwire; GATE A noise from local unstamped `T-004-*.log`.
-
-## Out of scope / not done
-
-- No Inbox / land / Review surface redesign
-- Not merged to `origin/dev`
-- No new product tickets created by worker (rat owns ranking/filing)
-
-## Handoff
-
-DM sent to rat session with this summary. Worker standing down unless reassigned.
+```
+npm run land -- storylint/companion-check-tool-help --summary "ux(companion): Check density Continuity-primary + face-tab label clip"
+```
 
 ## Throwaway cleanup
 
-Ad-hoc `e2e/_check-face-verify.mjs` and `e2e/_companion-face-drive.mjs` were removed from the branch after the prove. Density locks remain in unit `checkTools.test.ts`. Skill: `throwaway-cleanup` (local harness).
+Local skill `throwaway-cleanup` added so session probes are deleted before done/push going forward.
