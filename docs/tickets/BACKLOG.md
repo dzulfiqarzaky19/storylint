@@ -6,10 +6,10 @@ Validate: `npm run tickets:check`
 
 | ID | P | Status | Story | Title | Owner |
 |----|---|--------|-------|-------|-------|
+| [T-004](./T-004.md) | P0 | in_progress | none | Sheet dirty identity survives refresh | buffalo |
 | [T-001](./T-001.md) | P1 | open | lab-lifecycle | Lab archive Restore + Promoted dismiss | unassigned |
 | [T-002](./T-002.md) | P1 | open | agent-pipeline | Formalize L2 story/composition gate | unassigned |
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back | buffalo |
-| [T-004](./T-004.md) | P2 | in_progress | none | Sheet dirty identity survives refresh | buffalo |
 
 ## Closed / not open
 
