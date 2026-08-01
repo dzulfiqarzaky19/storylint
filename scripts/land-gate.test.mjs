@@ -199,6 +199,42 @@ test('infra quote-class sweep: unit-reporter lines quoting every infra token sta
   assert.equal(report.notMeasuredReasons.filter((r) => r.startsWith('infra:')).length, 0)
 })
 
+test('MUT-G2: failing unit reporter line with EADDRINUSE stays infra evidence', () => {
+  // Hole: isUnitReporterLine treated ✖ the same as ✔, so a failing name that quotes
+  // a real bind error was stripped from infraScanText and a not-measured run looked measured.
+  const log =
+    FULL_GREEN_LOG +
+    '\n✖ listen EADDRINUSE: address already in use :::4173 (1.2ms)\n' +
+    'ℹ tests 1\nℹ pass 0\nℹ fail 1\n'
+  const report = classifyTestGreen(log, 1)
+  assert.equal(report.measurement, 'not-measured', report.notMeasuredReasons.join(','))
+  assert.ok(report.notMeasuredReasons.includes('infra:port-in-use'))
+  assert.ok(report.failures.has('infra:port-in-use'))
+})
+
+test('MUT-G3: tap not-ok reporter line with EADDRINUSE stays infra evidence', () => {
+  const log =
+    FULL_GREEN_LOG +
+    '\nnot ok 3 - Error: listen EADDRINUSE: address already in use :::4173\n' +
+    '# tests 3\n# pass 2\n# fail 1\n'
+  const report = classifyTestGreen(log, 1)
+  assert.equal(report.measurement, 'not-measured', report.notMeasuredReasons.join(','))
+  assert.ok(report.notMeasuredReasons.includes('infra:port-in-use'))
+})
+
+test('MUT-G2b: failing reporter still suppresses only when PASS mark quotes token', () => {
+  // Control: ✔ quote remains measured (existing class). ✖ sibling must not ride along.
+  const log =
+    FULL_GREEN_LOG +
+    '\n✔ LG-B2: EADDRINUSE at exit 0 is NOT-MEASURED via infra branch (0.1ms)\n' +
+    '✖ other failure without infra token (0.2ms)\n' +
+    'ℹ tests 2\nℹ pass 1\nℹ fail 1\n'
+  const report = classifyTestGreen(log, 1)
+  assert.equal(report.measurement, 'measured', report.notMeasuredReasons.join(','))
+  assert.ok(!report.notMeasuredReasons.includes('infra:port-in-use'))
+  assert.ok(report.failures.has('unit:other failure without infra token'))
+})
+
 test('infra real-error class still fires when not on a reporter line', () => {
   const cases = [
     ['infra:port-in-use', 'Error: listen EADDRINUSE: address already in use :::4173'],
