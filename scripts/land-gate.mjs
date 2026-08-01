@@ -24,6 +24,20 @@ export const TEST_GREEN_STAGES = ['guard', 'build', 'unit', 'smoke', 'calm']
  * Detect worktree preparation failures BEFORE test:green.
  * Missing node_modules is infrastructure, not a product red.
  */
+/** node:test / tap reporter lines that quote tokens we must not treat as infra. */
+function isUnitReporterLine(line) {
+  const t = String(line ?? '').trim()
+  if (!t) return false
+  // node --test check marks
+  if (/^[✔✖]\s+/.test(t)) return true
+  // tap ok / not ok
+  if (/^(ok|not ok)\s+\d+\b/i.test(t)) return true
+  // summary lines
+  if (/^ℹ\s+(tests|pass|fail|cancelled|skipped|todo)\b/.test(t)) return true
+  if (/^#\s+(tests|pass|fail)\b/.test(t)) return true
+  return false
+}
+
 export function inspectWorktreePrep(cwd = process.cwd()) {
   const reasons = []
   const nodeModules = join(cwd, 'node_modules')
@@ -188,6 +202,14 @@ export function classifyTestGreen(output, status = 0) {
   }
 
   // --- infrastructure / NOT-MEASURED signals ---
+  // Scan only non-reporter lines. Unit test NAMES and ok/not-ok lines routinely
+  // quote the exact tokens we look for (land false-positive: "LG-B2: EADDRINUSE..."
+  // matched /EADDRINUSE/ and aborted a full-green candidate). Standing rule 5/12:
+  // matching text we do not own (our own test titles) is a class, not one bug.
+  const infraScanText = lines
+    .filter((line) => !isUnitReporterLine(line))
+    .join('\n')
+
   const infraPatterns = [
     { id: 'infra:tsc-not-recognized', re: /'tsc' is not recognized as an internal or external command/i },
     { id: 'infra:tsc-not-found', re: /\btsc: not found\b|tsc:\s+command not found/i },
@@ -208,7 +230,7 @@ export function classifyTestGreen(output, status = 0) {
   ]
 
   for (const { id, re } of infraPatterns) {
-    if (re.test(text)) infra.push(id)
+    if (re.test(infraScanText)) infra.push(id)
   }
 
   // --- product failure identities ---
