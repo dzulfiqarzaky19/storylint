@@ -101,3 +101,7 @@ When a PR adds or cites a check as proof:
 No on any → reject the claim or the check.
 
 — ox | filled slot, silent red, and proxy green are one disease
+
+## Reporter layer
+
+**8e** ([report-line-strength](./report-line-strength.md)) is the same disease in the **log token**: a convention check must not print an execution-shaped word. 8c duties stay about the check; 8e about what the report is allowed to claim.
