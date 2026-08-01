@@ -4,9 +4,10 @@ import type { Project } from '../domain/types.ts'
 import { parseProject } from './validation.ts'
 
 /**
- * One exclusive chain per resolved file path.
+ * One exclusive chain per resolved file path, within this process only.
  * Covers every read and write so Windows rename(tmp→dest) cannot race an open handle
  * (T-005: EPERM when load() or a second ProjectStore touched the file mid-save).
+ * Cross-process writers are out of scope for this lock.
  */
 const pathChains = new Map<string, Promise<void>>()
 

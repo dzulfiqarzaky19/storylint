@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, readFile, readdir } from 'node:fs/promises'
+import { mkdtemp, open, readFile, readdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
@@ -110,6 +110,34 @@ test('two ProjectStore instances on one path serialize load and save without EPE
   assert.deepEqual(await readdir(dir), ['shared.json'])
 })
 
+test('failed atomic rename rejects save and leaves prior project bytes', async () => {
+  // T-005 acceptance: rename-fail path is not silent success (falcon MUT-6).
+  // Hold an open handle on dest so Windows rename(tmp→dest) EPERMs; save must reject.
+  const dir = await mkdtemp(join(tmpdir(), 'storylint-rename-fail-'))
+  const file = join(dir, 'project.json')
+  const seed = seedProject()
+  const store = new ProjectStore(file)
+  await store.save(seed)
+  const before = await readFile(file, 'utf8')
+  const handle = await open(file, 'r')
+  try {
+    await assert.rejects(
+      store.save({ ...seed, title: 'must-not-land' }),
+      (error: unknown) => {
+        assert.ok(error && typeof error === 'object' && 'code' in error)
+        assert.equal((error as NodeJS.ErrnoException).code, 'EPERM')
+        return true
+      },
+    )
+  } finally {
+    await handle.close()
+  }
+  assert.equal(await readFile(file, 'utf8'), before)
+  assert.deepEqual(await readdir(dir), ['project.json'])
+  assert.equal((await store.load()).title, seed.title)
+})
+
+// Probabilistic regression net only — not the T-005 proof (brief list read often closes before rename).
 test('GET /api/projects concurrent with chapter PUTs never returns EPERM', async () => {
   await withServer(async (baseUrl) => {
     await requestJson<Project>(`${baseUrl}/api/projects`, {
