@@ -181,3 +181,37 @@ test('GATE A: collectProvenance rejects missing command/exit', () => {
   assert.throws(() => collectProvenance({ exit: 0, command: '' }), /command/)
   assert.throws(() => collectProvenance({ command: 'x', exit: NaN }), /exit/)
 })
+
+test('GATE A: collectProvenance rejects partial head/dirty override', () => {
+  assert.throws(
+    () => collectProvenance({ command: 'x', exit: 0, head: 'a'.repeat(40) }),
+    /both be supplied or both omitted/,
+  )
+  assert.throws(
+    () => collectProvenance({ command: 'x', exit: 0, worktree_dirty: false }),
+    /both be supplied or both omitted/,
+  )
+  // both supplied is allowed (self-report path)
+  const p = collectProvenance({
+    command: 'x',
+    exit: 0,
+    head: 'b'.repeat(40),
+    worktree_dirty: true,
+    timestamp: '2026-08-01T00:00:00.000Z',
+  })
+  assert.equal(p.head, 'b'.repeat(40))
+  assert.equal(p.worktree_dirty, true)
+})
+
+test('GATE A: listProofArtifactRels skips companion .mjs under proofs', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'gate-a-mjs-'))
+  try {
+    mkdirSync(join(dir, 'e2e/proofs'), { recursive: true })
+    writeFileSync(join(dir, 'e2e/proofs/probe.mjs'), 'export const x = 1\n', 'utf8')
+    writeFileSync(join(dir, 'e2e/proofs/note.md'), 'unstamped\n', 'utf8')
+    const rels = listProofArtifactRels({ root: dir })
+    assert.deepEqual(rels, ['e2e/proofs/note.md'])
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})

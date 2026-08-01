@@ -6,6 +6,17 @@
  *   head SHA, worktree_dirty, exact command, exit code, timestamp
  *
  * Use writeProofArtifact / formatProvenanceStamp. Do not hand-roll partial headers.
+ *
+ * Decision (what this gate is / is not):
+ *   Detects unstamped and malformed artifacts, and accidental non-existent SHAs
+ *   (git cat-file must resolve head to a commit/tag). Provenance is a self-report
+ *   with a well-formedness gate — it does NOT prove the producer told the truth
+ *   about head/dirty/exit, and it is not a defence against a dishonest author.
+ *   Value: catches mistakes (wrong or missing identity on a PASS claim), not lies.
+ *
+ * Scan scope: data artifacts only. Companion source under e2e/proofs (*.mjs / *.cjs
+ * / *.js) is skipped by listProofArtifactRels — probes are code, not proof claims.
+ * Dropping an unstamped .md/.txt/.json/.jsonl/.output/.log goes red; a .mjs does not.
  */
 import { execSync } from 'node:child_process'
 import {
@@ -78,10 +89,16 @@ export function collectProvenance(input) {
   if (!Number.isFinite(input.exit)) {
     throw new Error('collectProvenance: exit must be a number')
   }
-  const git =
-    input.head !== undefined && input.worktree_dirty !== undefined
-      ? { head: input.head, worktree_dirty: Boolean(input.worktree_dirty) }
-      : readGitProvenance(root)
+  const hasHead = input.head !== undefined
+  const hasDirty = input.worktree_dirty !== undefined
+  if (hasHead !== hasDirty) {
+    throw new Error(
+      'collectProvenance: head and worktree_dirty must both be supplied or both omitted (no mixed self-report / measured stamp)',
+    )
+  }
+  const git = hasHead
+    ? { head: input.head, worktree_dirty: Boolean(input.worktree_dirty) }
+    : readGitProvenance(root)
   return {
     head: git.head,
     worktree_dirty: git.worktree_dirty,
