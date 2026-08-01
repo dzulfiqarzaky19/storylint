@@ -182,18 +182,33 @@ test('E1-static-neg: makeStep imported from wrong module → lock rejects', () =
   )
 })
 
-test('E1-static-neg: local function step reintroduced → lock rejects', () => {
-  // Import present AND local step copy — both conditions; lock must flag local.
+// LOCAL_STEP_RE is an alternation. One fixture with BOTH markers is rejected by
+// either arm alone, so deleting one arm stays green (falcon @ 69b8245). One
+// marker per fixture pins which arm is load-bearing.
+test('E1-static-neg: const STEP_T0 reintroduced → lock rejects', () => {
   const { ok, problems } = lockAgainstFixture({
     k: `import { makeStep } from './step-label.mjs'
 const STEP_T0 = Date.now()
+const step = makeStep('slice-k')
+`,
+  })
+  assert.equal(ok, false, 'lock must reject const STEP_T0')
+  assert.ok(
+    problems.some((p) => p.includes('slice-k-smoke.mjs') && p.includes('local STEP_T0')),
+    `expected STEP_T0 problem, got: ${problems.join('; ')}`,
+  )
+})
+
+test('E1-static-neg: function step(label) reintroduced → lock rejects', () => {
+  const { ok, problems } = lockAgainstFixture({
+    k: `import { makeStep } from './step-label.mjs'
 function step(label) { console.log(label) }
 `,
   })
-  assert.equal(ok, false, 'lock must reject local STEP_T0 / function step')
+  assert.equal(ok, false, 'lock must reject function step(label)')
   assert.ok(
     problems.some((p) => p.includes('slice-k-smoke.mjs') && p.includes('local STEP_T0')),
-    `expected local-step problem, got: ${problems.join('; ')}`,
+    `expected function-step problem, got: ${problems.join('; ')}`,
   )
 })
 
