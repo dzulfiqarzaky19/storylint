@@ -63,6 +63,21 @@ git worktree add -B storylint/<topic> D:\dev\projects\storylint-<you>-<topic> or
 
 **Scar:** rat edited `AGENT_PIPELINE.md` in the shared tree; an agent checked out a feature branch there mid-edit; the change was gone at commit time with no error, only a confusing "nothing added to commit." Losing work is the mild failure. The dangerous one is committing to whichever branch happened to be checked out at that instant.
 
+### 4b. A reviewer must not operate inside the worktree of the agent under review
+
+Re-running a mutation yourself instead of trusting the author's artifact is **correct and expected** — it is how three decorative checks were caught in one session. Do it in **your own** worktree, against the author's commit:
+
+```
+git worktree add -B storylint/<you>-review D:\dev\projects\storylint-<you> <their-commit>
+cd D:\dev\projects\storylint-<you> && npm install
+```
+
+A reviewee's tree is usually mid-land. Builds, checkouts and left-behind mutations there race a live `test:green`, and an owned stack whose bundle changes underneath it dies without a stack trace.
+
+**Scar:** hawk mutated `src/` inside horse's `storylint-l2` during review and left it uncompilable, breaking an in-flight land. Self-reported and restored (`7169274`).
+
+**Non-scar, kept deliberately:** a calm-budget death in another agent's tree was *hypothesised* to be the same cause and it was **not** — the reviewer's last write preceded the run by four minutes. The hypothesis came from an open-files list, which carries **no timestamps**. Correlation of files touched is not evidence of interference; check the clock (`git reflog`, file mtimes, artifact timestamps) before attributing.
+
 ### 5. Report the ORIGIN hash, never local-only
 
 After merge: `git fetch origin && git log --oneline -1 origin/dev`.  
