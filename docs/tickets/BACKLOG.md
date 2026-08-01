@@ -9,6 +9,9 @@ Validate: `npm run tickets:check`
 | [T-002](./T-002.md) | P1 | integrated | agent-pipeline | Formalize L2 story/composition gate | horse |
 | [T-003](./T-003.md) | P1 | integrated | density-milestone | Binder list scroll restore after detail Back | buffalo |
 | [T-006](./T-006.md) | P2 | open | none | Silent calm death after b6 — instrument DONE both paths; passive watch for live hit | unassigned |
+| [T-007](./T-007.md) | P2 | open | none | All ProjectStore paths must derive from one root (lock key is path-string identity) | unassigned |
+| [T-008](./T-008.md) | P2 | open | none | Project path lock is per-process; concurrent processes on one file still EPERM | unassigned |
+| [T-009](./T-009.md) | P2 | open | none | Standing rule 11a (no EPERM retry) has no check — a sleep-then-retry passes the whole suite | unassigned |
 
 ## Closed / not open
 
@@ -22,4 +25,11 @@ Validate: `npm run tickets:check`
 
 ## Next free id
 
-`T-007`
+`T-010`
+
+## Notes
+
+T-007/T-008/T-009 filed by falcon out of the T-005 review, at rat's request. None is a defect in
+T-005 — that fix is correct and approved @ `f1d4a96`. All three are **preconditions the fix
+depends on that nothing enforces**. Triage: a single-process EPERM on the atomic rename is a
+T-005 regression; a multi-process one is T-008 firing.
