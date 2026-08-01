@@ -1,10 +1,13 @@
-<!-- author: koala (AE) · kind: open-defect · decided: 2026-08-01 · related gate: cc8f224 -->
+<!-- author: koala (AE) · kind: open-defect · decided: 2026-08-01 · related gate: cc8f224 · ruled: ox 2026-08-01 -->
 
-# OPEN — sheet identity lost on refresh / tab close
+# Sheet identity lost on refresh / tab close
 
 ## Status
 
-**OPEN.** Separate from the in-app dirty-leave guard (`cc8f224` / `20c5c3c`).
+**RULED — build open (P0).** Binding product model: [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md).  
+Ticket: [T-004](../tickets/T-004.md). Owner: buffalo.
+
+Separate from the in-app dirty-leave guard (`cc8f224` / `20c5c3c`), which remains required for navigation.
 
 ## Defect
 
@@ -24,37 +27,37 @@ It does **not** cover:
 
 Those paths still drop unsaved identity edits **silently**.
 
+Measured again @ `f2a8703` (buffalo): dirty name → reload → server value restored, `data-sheet-dirty=false`, no `beforeunload`, no draft keys in storage.
+
 ## Why not `beforeunload`
 
-Ruled out as the fix for this gate (rat):
+Ruled out as the **sole** fix (rat + ox):
 
 - Browsers ignore custom strings and show a generic prompt
 - Fires on paths we do not want to interrupt
 - Cannot be styled or product-reasoned about
-- Bolting it on would add an uncontrolled interruption to a hole we have not measured in production
+- Does not survive crash / force-kill
 
-Do **not** close this defect by adding coarse `beforeunload` without a deliberate product decision and measurement.
+Do **not** close this defect by adding coarse `beforeunload` alone.
 
 ## What the guard actually is
 
-The dirty-leave dialog protects against **navigation**, not against **loss**.
+The dirty-leave dialog protects against **navigation**, not against **process-lifetime loss**.
 
-That distinction matters: the next fix belongs in **state durability**, not in another interrupt.
+## Binding fix (see full ruling)
 
-## Intended durable fix (not built here)
+**Durable dirty** — local crash copy of the same form dirty state:
 
-Stop holding unsaved identity only in component state.
+- Restore **as dirty** (Save still required)
+- Conflict when server moved → **author chooses** (not auto-drop)
+- Per `projectId:sheetId`, localStorage, survives browser restart
+- No silent TTL; 7-day restore requires confirm
+- **Not** a second Canon write path (standing rule 20)
 
-**Draft persistence / restore:**
-
-- Persist identity draft (local or server-side draft slot) while editing
-- On reload, restore the draft into the form rather than prompting to prevent unload
-- Converts a data-loss bug into a state-restoration feature
-- Removes the need to interrupt the author on refresh
-
-Exact storage, conflict with multi-tab, and discard semantics are open design work. Record the direction so the next owner does not reach for `beforeunload` first.
+Full answers: [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md).
 
 ## Related
 
 - Fixed in-app guard: [sheet-dirty-leave-guard.md](./sheet-dirty-leave-guard.md)
-- Merge message on `cc8f224` states the same hole in plain language
+- Binding model: [sheet-identity-durable-dirty.md](./sheet-identity-durable-dirty.md)
+- Lab intermediate-state cousin: [lab-lifecycle-ends.md](./lab-lifecycle-ends.md)
