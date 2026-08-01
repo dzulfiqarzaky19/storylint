@@ -17,8 +17,8 @@ Validate: `npm run tickets:check`
 
 | ID | Note |
 |----|------|
-| ~~T-013~~ | Honest propose-edge body below 2 sheets **done**. Disclosure stays (ox); hint-only body; fieldsShown=0 lock. Land PENDING. |
-| ~~T-012~~ | One primary New sheet **done** (already-satisfied close). Map owns empty CTA; binder ghost empty. Product via b6-primary-per-job `dc059e6`. Land PENDING. |
+| ~~T-013~~ | Honest propose-edge body below 2 sheets **done**. Disclosure stays (ox); hint-only body; fieldsShown=0 lock. Land `af5ff70`. |
+| ~~T-012~~ | One primary New sheet **done** (already-satisfied close). Map owns empty CTA; binder ghost empty. Product via b6-primary-per-job `dc059e6`. Land `af5ff70`. |
 | ~~T-011~~ | Mutation-lock title overpromised **done**. Retitled to name the mechanism it verifies; siblings swept and found honest. Generalized as standing 8g. |
 | ~~T-007~~ | Single-root ProjectFileRoot **done**. Land `6008659`; falcon APPROVE @ b9f964f (MUT-1..5); koala PASS. No realpath. |
 | ~~T-009~~ | Standing rule 11a no-retry check **done**. Land `3a7a52e`; falcon APPROVED wiring @ 419406c (MUT-A/D/E). Optional source tripwire left open intentionally. |
