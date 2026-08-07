@@ -80,6 +80,12 @@ export type AgentPanelProps = {
   companionContext?: CompanionContext
   contextLabel?: string
   proposals: Proposal[]
+  /** Live lab bench cards (not accept-gated) — shown as a muted ledger line, never inside the Inbox count. */
+  benchCount?: number
+  /** Accepted sheet count — ledger line only. */
+  canonCount?: number
+  /** Opens the bench-from-selection quick add without leaving the manuscript. */
+  onOpenBench?: () => void
   continuityRunning: boolean
   continuityMode: 'fixture' | 'live' | null
   continuityCounts?: { red: number; yellow: number; proposals: number } | null
@@ -110,7 +116,7 @@ export type AgentPanelProps = {
 export function AgentPanel({
   transcript, project, onProject, beginMutation, trackMutation, chapterTitle, chapterBody = '',
   companionContext = 'writing', contextLabel,
-  proposals, continuityRunning, continuityMode, continuityCounts, continuityError = null,
+  proposals, benchCount = 0, canonCount = 0, onOpenBench, continuityRunning, continuityMode, continuityCounts, continuityError = null,
   onRunContinuity, onAcceptProposal, onEditProposal, onRejectProposal, sending, busyOp = null, researchRunning = false, onResearchRunningChange, llmMode, selection, onGenerateCowrite, onApplyCard, onDismissCard,
   onRunReview, onAddCraftTags, onSend, onSparkPreset, onAddChapter, onClose,
 }: AgentPanelProps) {
@@ -449,6 +455,9 @@ export function AgentPanel({
         <h2 className="panel__title">Companion</h2>
         {onClose ? <IconButton label="Close companion" onClick={onClose}>✕</IconButton> : null}
       </div>
+      <p className="companion__ledger">
+        Bench {benchCount} · Awaiting accept {pendingCount} · Canon {canonCount}
+      </p>
 
       <div
         className="companion__faces"
@@ -543,6 +552,9 @@ export function AgentPanel({
             <>
               <p className="companion__inbox-summary" data-inbox-pending={pendingCount}>
                 {pendingCount === 1 ? '1 pending' : `${pendingCount} pending`}
+                {benchCount > 0 ? (
+                  <span className="companion__bench-count">· {benchCount} on bench (not gated)</span>
+                ) : null}
               </p>
               {proposals.length > 0 ? renderProposals(proposals) : null}
               {applyCards.map((entry) =>
@@ -576,6 +588,9 @@ export function AgentPanel({
               <div className="agent__chips">
                 <Badge tone="accent">{chipLabel}</Badge>
                 {selection.text ? <Badge tone="pending">{selection.end - selection.start} ch selected</Badge> : null}
+                {selection.text && onOpenBench ? (
+                  <Button onClick={onOpenBench}>Bench this →</Button>
+                ) : null}
               </div>
               <Textarea
                 value={draft}

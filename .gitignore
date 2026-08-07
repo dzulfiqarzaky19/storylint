@@ -61,3 +61,11 @@ AGENTS.md
 .github/prompts/
 __pycache__/
 *.py[cod]
+
+# design-sync (generated: staged scripts, build output, machine state)
+.ds-sync/
+ds-bundle/
+types/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules

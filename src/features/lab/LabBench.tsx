@@ -327,6 +327,28 @@ export function LabBench({
         </section>
       ) : null}
 
+      {promoted.length > 0 ? (
+        <section className="lab__promoted" aria-label="Cards sent to Draft or promoted toward Canon">
+          <div className="lab__promoted-head">
+            <h3 className="lab__section-label">Promoted · {promoted.length}</h3>
+            <Button disabled={busy} onClick={() => void dismissAll()}>
+              Dismiss all
+            </Button>
+          </div>
+          <ul className="lab__promoted-list">
+            {promoted.map((card) => (
+              <li key={card.id}>
+                <span>{card.title}</span>
+                <div className="lab__promoted-meta">
+                  <Badge tone="warning">{card.promoted?.as === 'chapter-stub' ? 'sent to Draft' : 'Canon proposal'}</Badge>
+                  <Button disabled={busy} onClick={() => void dismissOne(card.id)}>Dismiss</Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       {/* P2: an empty bench already has the composer as its one obvious move.
           A second "nothing here" block pointing back at that composer is the wall. */}
       {live.length === 0 ? (
@@ -387,6 +409,7 @@ export function LabBench({
                 <>
                   <h3 className="lab__card-title">{card.title}</h3>
                   <p className="lab__card-body">{card.body || '—'}</p>
+                  <p className="lab__card-foot">Pre-canon · not checked</p>
                   <div className="lab__card-actions">
                     <Button disabled={busy} onClick={() => {
                       setEditingId(card.id)
@@ -398,8 +421,8 @@ export function LabBench({
                       {card.status === 'pinned' ? 'Unpin' : 'Pin'}
                     </Button>
                     {canPromote(card.kind) ? (
-                      <Button variant="primary" disabled={busy || confirmCardId === card.id} onClick={() => void promote(card)}>
-                        {promoteActionLabel(card.kind)}
+                      <Button disabled={busy || confirmCardId === card.id} onClick={() => void promote(card)}>
+                        {promoteActionLabel(card.kind)} →
                       </Button>
                     ) : null}
                     <Button disabled={busy} onClick={() => void onArchiveCard(card.id)}>Archive</Button>
@@ -409,28 +432,6 @@ export function LabBench({
             </article>
           ))}
         </div>
-      ) : null}
-
-      {promoted.length > 0 ? (
-        <section className="lab__promoted" aria-label="Cards sent to Draft or promoted toward Canon">
-          <div className="lab__promoted-head">
-            <h3 className="lab__section-label">Promoted</h3>
-            <Button disabled={busy} onClick={() => void dismissAll()}>
-              Dismiss all
-            </Button>
-          </div>
-          <ul className="lab__promoted-list">
-            {promoted.map((card) => (
-              <li key={card.id}>
-                <span>{card.title}</span>
-                <div className="lab__promoted-meta">
-                  <Badge tone="pending">{card.promoted?.as === 'chapter-stub' ? 'sent to Draft' : 'Canon proposal'}</Badge>
-                  <Button disabled={busy} onClick={() => void dismissOne(card.id)}>Dismiss</Button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
       ) : null}
 
       {archived.length > 0 ? (

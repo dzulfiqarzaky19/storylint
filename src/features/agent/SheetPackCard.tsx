@@ -16,8 +16,10 @@ export function SheetPackCard({
 }) {
   const first = proposals[0]
   const [editing, setEditing] = useState(false)
+  const [gateOpen, setGateOpen] = useState(false)
   const [drafts, setDrafts] = useState(() => proposals.map(({ id, value, statement }) => ({ id, value, statement })))
   useEffect(() => setDrafts(proposals.map(({ id, value, statement }) => ({ id, value, statement }))), [proposals])
+  useEffect(() => setGateOpen(false), [first?.id])
 
   async function saveEdits() {
     for (const draft of drafts) {
@@ -30,7 +32,7 @@ export function SheetPackCard({
     <article className="proposal-card">
       <div className="proposal-card__heading">
         <strong>{first.entityName}</strong>
-        <Badge tone="pending">{first.sheetKind} pack</Badge>
+        <Badge tone="warning">{first.sheetKind} pack</Badge>
       </div>
       {drafts.map((draft, index) => (
         editing ? (
@@ -42,13 +44,31 @@ export function SheetPackCard({
           <p key={draft.id}><strong>{proposals[index].key}</strong>: {draft.value}<small>{draft.statement}</small></p>
         )
       ))}
-      <div className="proposal-card__actions">
-        <Button variant="primary" disabled={editing} onClick={() => void onAccept(first.id).catch(() => undefined)}>Accept pack</Button>
-        {editing ? (
-          <Button disabled={drafts.some((draft) => !draft.value.trim() || !draft.statement.trim())} onClick={() => void saveEdits().catch(() => undefined)}>Save edits</Button>
-        ) : <Button onClick={() => setEditing(true)}>Edit pack</Button>}
-        <Button variant="danger" onClick={() => void onReject(first.id).catch(() => undefined)}>Reject pack</Button>
-      </div>
+      {gateOpen ? (
+        <div className="proposal-card__confirm">
+          <p className="proposal-card__confirm-line">
+            Accepting adds {proposals.length} {proposals.length === 1 ? 'fact' : 'facts'} to {first.entityName} and makes {proposals.length === 1 ? 'it' : 'them'} visible to Continuity.
+          </p>
+          <div className="proposal-card__actions">
+            <Button
+              variant="primary"
+              disabled={editing}
+              onClick={() => void onAccept(first.id).catch(() => undefined)}
+            >
+              Accept pack
+            </Button>
+            <Button onClick={() => setGateOpen(false)}>Back to Draft</Button>
+          </div>
+        </div>
+      ) : (
+        <div className="proposal-card__actions">
+          <Button onClick={() => setGateOpen(true)}>Promote to Canon →</Button>
+          {editing ? (
+            <Button disabled={drafts.some((draft) => !draft.value.trim() || !draft.statement.trim())} onClick={() => void saveEdits().catch(() => undefined)}>Save edits</Button>
+          ) : <Button onClick={() => setEditing(true)}>Edit pack</Button>}
+          <Button variant="danger" onClick={() => void onReject(first.id).catch(() => undefined)}>Reject pack</Button>
+        </div>
+      )}
     </article>
   )
 }

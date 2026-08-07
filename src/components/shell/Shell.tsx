@@ -9,8 +9,10 @@ import {
 import { useProject } from '../../features/project/useProject.ts'
 import { saveChipLabel } from '../../features/project/saveChipLabel.ts'
 import { ProjectSwitcher } from '../../features/project/ProjectSwitcher.tsx'
+import type { ProposalEdits } from '../../features/project/api.ts'
 import { useAgent } from '../../features/agent/useAgent.ts'
 import { LabBench } from '../../features/lab/LabBench.tsx'
+import { BenchQuickAdd } from '../../features/lab/BenchQuickAdd.tsx'
 import { Button, Drawer, EmptyState, IconButton } from '../ui'
 import { AgentIcon, BinderIcon, FocusIcon, ThemeIcon } from './icons'
 import { AgentPanel, type CompanionContext } from './AgentPanel'
@@ -41,6 +43,10 @@ export function Shell() {
   const [activeCanonSheetId, setActiveCanonSheetId] = useState<string | null>(null)
   const [researchRunning, setResearchRunning] = useState(false)
   const [selection, setSelection] = useState<EditorSelection>({ start: 0, end: 0, text: '' })
+  const [benchDrawerOpen, setBenchDrawerOpen] = useState(false)
+  /** Transient Binder row highlight after Accept — the receipt for where the write landed. */
+  const [recentAcceptSheetId, setRecentAcceptSheetId] = useState<string | null>(null)
+  const recentAcceptTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   /** Active Canon sheet leave guard from Binder (dirty identity). */
   const requestSheetLeaveRef = useRef<((proceed: () => void) => void) | null>(null)
   const binderToggleRef = useRef<HTMLButtonElement | null>(null)
@@ -155,6 +161,22 @@ export function Shell() {
     setResearchRunning(false)
   }
 
+  useEffect(() => {
+    return () => {
+      if (recentAcceptTimerRef.current) clearTimeout(recentAcceptTimerRef.current)
+    }
+  }, [])
+
+  async function acceptProposalWithReceipt(id: string, edits?: ProposalEdits) {
+    // New-entity proposals have no existing sheet row to flash yet — accept still commits normally.
+    const targetSheetId = project.project?.proposals.find((proposal) => proposal.id === id)?.targetSheetId
+    await project.acceptProposal(id, edits)
+    if (!targetSheetId) return
+    if (recentAcceptTimerRef.current) clearTimeout(recentAcceptTimerRef.current)
+    setRecentAcceptSheetId(targetSheetId)
+    recentAcceptTimerRef.current = setTimeout(() => setRecentAcceptSheetId(null), 2500)
+  }
+
   async function runContinuity() {
     if (!activeChapter) return
     // One assistant, one job: do not start Continuity while agent/Research is in flight.
@@ -231,6 +253,7 @@ export function Shell() {
         lab={project.project.lab}
         activeChapterId={activeChapter?.id ?? ''}
         activeBoardId={activeBoardId}
+        recentSheetId={recentAcceptSheetId}
         labMode={workspaceMode === 'lab'}
         canonMode={workspaceMode === 'graph'}
         onSelectChapter={(id) => {
@@ -307,12 +330,15 @@ export function Shell() {
             : undefined
       }
       proposals={(project.project?.proposals ?? []).filter((proposal) => proposal.status === 'pending')}
+      benchCount={lab?.cards.filter((card) => card.status === 'active' || card.status === 'pinned').length ?? 0}
+      canonCount={project.project?.sheets.length ?? 0}
+      onOpenBench={() => setBenchDrawerOpen(true)}
       continuityRunning={project.continuity.running}
       continuityMode={project.continuity.mode}
       continuityCounts={project.continuity.counts}
       continuityError={project.continuity.error}
       onRunContinuity={runContinuity}
-      onAcceptProposal={project.acceptProposal}
+      onAcceptProposal={acceptProposalWithReceipt}
       onEditProposal={project.editProposal}
       onRejectProposal={project.rejectProposal}
       sending={agentState.sending}
@@ -566,6 +592,14 @@ export function Shell() {
       </Drawer>
       <Drawer open={shell.drawerOpen('agent')} onClose={shell.closeDrawer} side="right" label="Companion">
         {agent(shell.closeDrawer)}
+      </Drawer>
+      <Drawer open={benchDrawerOpen} onClose={() => setBenchDrawerOpen(false)} side="right" label="Bench this">
+        <BenchQuickAdd
+          boardId={activeBoardId}
+          initialTitle={selection.text.slice(0, 80)}
+          onCreateCard={project.createLabCard}
+          onClose={() => setBenchDrawerOpen(false)}
+        />
       </Drawer>
     </div>
   )
