@@ -983,4 +983,23 @@
   margin-block-start: var(--space-2);
 }
 
+/* Accept receipt: transient spine on the sheet a proposal just wrote to. Cleared by Shell after ~2.5s. */
+.binder__sheet--recent {
+  box-shadow: inset 3px 0 0 0 var(--color-accent);
+  transition: box-shadow var(--motion-slow) var(--easing-standard);
+}
+
+/* Accept decisions deserve more than a rail: widen the agent column when its Inbox face is
+   active, at desk-class viewports and up. Placed last so it wins over the lg/xl/2xl blocks
+   above regardless of which one also matches at the current width. */
+@media (min-width: 1366px) {
+  .shell__body[data-agent='rail']:has(.shell__rail--agent .panel[data-companion-face='inbox']) {
+    grid-template-columns: minmax(0, 1fr) var(--size-agent-max);
+  }
+
+  .shell__body[data-binder='rail'][data-agent='rail']:has(.shell__rail--agent .panel[data-companion-face='inbox']) {
+    grid-template-columns: var(--size-binder) minmax(0, 1fr) var(--size-agent-max);
+  }
+}
+
 

@@ -15,6 +15,8 @@ export type BinderProps = {
   lab?: Lab | null
   activeChapterId: string
   activeBoardId?: string | null
+  /** Sheet id to flash with the accent spine — the accept receipt (transient, cleared by Shell). */
+  recentSheetId?: string | null
   labMode?: boolean
   /** When center is Canon, sheets lead and Draft chapters are secondary. */
   canonMode?: boolean
@@ -48,6 +50,7 @@ export function Binder({
   lab,
   activeChapterId,
   activeBoardId,
+  recentSheetId = null,
   labMode = false,
   canonMode = false,
   projectId = '',
@@ -361,6 +364,7 @@ export function Binder({
                 <ListRow
                   key={sheet.id}
                   ref={setSheetRowRef(sheet.id)}
+                  className={sheet.id === recentSheetId ? 'binder__sheet--recent' : undefined}
                   meta={String(sheet.facts.length)}
                   active={canonMode && editingSheetId === sheet.id}
                   onClick={() => openSheetFromList(sheet.id)}

@@ -1,0 +1,41 @@
+{
+  "projectId": "98a181e6-4981-44b3-8b6e-ec44fe18ff70",
+  "shape": "package",
+  "pkg": "storylint",
+  "globalName": "Storylint",
+  "srcDir": "src",
+  "tsconfig": "tsconfig.app.json",
+  "cssEntry": ".design-sync/globals.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "provider": { "component": "DsPreviewRoot" },
+  "overrides": {
+    "Drawer": { "cardMode": "single", "viewport": "760x420" },
+    "AgentPanel": { "cardMode": "column" },
+    "Badge": { "cardMode": "column" },
+    "Binder": { "cardMode": "column" },
+    "Manuscript": { "cardMode": "column" },
+    "Input": { "cardMode": "column" },
+    "ListRow": { "cardMode": "column" },
+    "Shell": { "cardMode": "single", "primaryStory": "AppShell" },
+    "Textarea": { "cardMode": "column" }
+  },
+  "componentSrcMap": {
+    "Button": "src/components/ui/Button.tsx",
+    "IconButton": "src/components/ui/IconButton.tsx",
+    "Input": "src/components/ui/Input.tsx",
+    "Textarea": "src/components/ui/Textarea.tsx",
+    "Badge": "src/components/ui/Badge.tsx",
+    "ListRow": "src/components/ui/ListRow.tsx",
+    "EmptyState": "src/components/ui/EmptyState.tsx",
+    "Drawer": "src/components/ui/Drawer.tsx",
+    "Binder": "src/components/shell/Binder.tsx",
+    "Manuscript": "src/components/shell/Manuscript.tsx",
+    "AgentPanel": "src/components/shell/AgentPanel.tsx",
+    "Shell": "src/components/shell/Shell.tsx",
+    "BinderIcon": "src/components/shell/icons.tsx",
+    "AgentIcon": "src/components/shell/icons.tsx",
+    "FocusIcon": "src/components/shell/icons.tsx",
+    "ThemeIcon": "src/components/shell/icons.tsx",
+    "DsPreviewRoot": null
+  }
+}

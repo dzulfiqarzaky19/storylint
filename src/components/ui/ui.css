@@ -34,7 +34,7 @@
 
 .ui-button--primary {
   background: var(--color-primary);
-  border-color: var(--color-accent-muted);
+  border-color: var(--color-accent);
   color: var(--color-on-primary);
 }
 
@@ -179,10 +179,14 @@
 }
 
 .ui-badge--warning {
+  background: var(--color-mark-yellow-bg);
+  border-color: var(--color-warning);
   color: var(--color-warning);
 }
 
 .ui-badge--pending {
+  background: var(--color-pending-subtle);
+  border-color: var(--color-text-subtle);
   color: var(--color-pending);
 }
 
