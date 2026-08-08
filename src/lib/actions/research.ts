@@ -15,31 +15,47 @@
 //     - cancelPending clears the pending state and writes nothing
 //       (HANDOFF §8: "`Cancel` writes nothing").
 //
-// CONTRACT-FIRST: stable signatures; trivial bodies call the query/mutation
-// layer, otherwise a typed NOT_IMPLEMENTED stub for a later phase.
+//   insertEntry (the wiki write) requires a WikiWriteConfirmation token, so the
+//   type checker rejects any attempt to create an entry from a non-confirmed
+//   path — the invariant is enforced at the action boundary, not just the UI.
 // =============================================================================
 
 import { confirmWikiWrite } from "./confirmation";
-import { markKeptInWiki, insertFact } from "../db/mutations";
+import {
+  markKeptInWiki,
+  upsertKeptCard,
+  deleteKeptCard,
+  insertEntry,
+  getProposition,
+  getMaxSortOrderForShelf,
+} from "../db/mutations";
 import type { Kind } from "../domain/types";
-
-function notImplemented(name: string): never {
-  throw new Error(`NOT_IMPLEMENTED: ${name}`);
-}
 
 export type ActionResult<T = void> =
   | { ok: true; data: T }
   | { ok: false; error: string };
 
+/** kind -> shelf (HANDOFF §6). Matches the seed's KIND_SHELF. */
+const KIND_SHELF: Record<Kind, string> = {
+  character: "people",
+  world: "places",
+  organization: "orders",
+  lore: "lore",
+};
+
 // ---- Thread progression (no wiki write) -----------------------------------
 
 /**
- * Reveal the next deferred ("more") turn in the thread, e.g. after a prompt
- * chip is clicked. Mirrors reducer action `ADVANCE_TURN`.
+ * Reveal the next deferred ("more") turn(s) in the thread after a prompt chip
+ * is clicked. The `more` turns are canned (HANDOFF §9.4); the UI passes the
+ * currently-hidden turn ids and this returns them as revealed. No persistence:
+ * revealed-ness is session state. Mirrors reducer action `ADVANCE_TURN`.
  */
-export async function advanceTurn(): Promise<ActionResult<{ revealedTurnIds: string[] }>> {
-  // STUB (Phase 5): mark the next hidden turn(s) revealed and return their ids.
-  return notImplemented("research.advanceTurn");
+export async function advanceTurn(
+  hiddenTurnIds: string[],
+): Promise<ActionResult<{ revealedTurnIds: string[] }>> {
+  // Reveal all remaining deferred turns (the prototype's single `more` batch).
+  return { ok: true, data: { revealedTurnIds: hiddenTurnIds } };
 }
 
 /**
@@ -50,10 +66,16 @@ export async function keepCard(
   propositionId: string,
   kept: boolean,
 ): Promise<ActionResult> {
-  void propositionId;
-  void kept;
-  // STUB (Phase 5): upsertKeptCard({ propositionId, keptAt }) or delete when kept=false.
-  return notImplemented("research.keepCard");
+  try {
+    if (kept) {
+      await upsertKeptCard({ propositionId, keptAt: Date.now() });
+    } else {
+      await deleteKeptCard(propositionId);
+    }
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return { ok: false, error: errMessage(err) };
+  }
 }
 
 /**
@@ -82,6 +104,10 @@ export async function cancelPending(): Promise<ActionResult> {
  * new entry ("Yes, write it in"). One of the two only paths that write to the
  * wiki, so it REQUIRES an explicit confirmation.
  *
+ * Steps (all under the minted token): create the entry, mark the source card
+ * as kept + in_wiki. The card is auto-kept so it appears on the board flipped
+ * to "In the wiki" (HANDOFF §8 / README behavior table).
+ *
  * @param input.confirmed must be the literal `true` — the confirmation gate.
  */
 export async function confirmCard(input: {
@@ -94,12 +120,45 @@ export async function confirmCard(input: {
   };
   confirmed: true;
 }): Promise<ActionResult<{ entryId: string }>> {
-  // Mint the token; omitting `confirmed: true` is a compile-time error.
+  // Mint the token; omitting `confirmed: true` is a compile-time error. This is
+  // the single gate that authorizes every wiki write below.
   const confirmation = confirmWikiWrite({ confirmed: input.confirmed });
-  void confirmation;
-  void markKeptInWiki; // Phase 5: mark the kept card in_wiki after creating the entry
-  void insertFact; // Phase 5: seed the new entry's initial fact(s), if any
-  // STUB (Phase 5): create the entry, optionally its facts/ties (all via
-  // `confirmation`), then markKeptInWiki(propositionId, confirmation).
-  return notImplemented("research.confirmCard");
+
+  try {
+    const prop = await getProposition(input.propositionId);
+    if (!prop) {
+      return { ok: false, error: `Unknown proposition: ${input.propositionId}` };
+    }
+
+    // Derive a stable entry id from the proposition so re-confirming is idempotent.
+    const entryId = `prop-${input.propositionId}`;
+    const shelf = KIND_SHELF[input.entry.kind];
+    const nextSort = (await getMaxSortOrderForShelf(shelf)) + 1;
+
+    await insertEntry(
+      {
+        id: entryId,
+        kind: input.entry.kind,
+        name: input.entry.name,
+        catalogueNo: "—",
+        note: prop.kind.toLowerCase(),
+        summary: input.entry.summary,
+        shelf,
+        sortOrder: nextSort,
+      },
+      confirmation,
+    );
+
+    // The card must exist on the board before we can flip it to in_wiki.
+    await upsertKeptCard({ propositionId: input.propositionId, keptAt: Date.now() });
+    await markKeptInWiki(input.propositionId, confirmation);
+
+    return { ok: true, data: { entryId } };
+  } catch (err) {
+    return { ok: false, error: errMessage(err) };
+  }
+}
+
+function errMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }

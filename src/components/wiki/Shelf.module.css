@@ -36,3 +36,8 @@
   gap: 10px;
   margin-top: 14px;
 }
+
+/* Active shelf drop zone: append + regroup (Direction B: background #eae7e7 = --hover). */
+.zoneActive {
+  background: var(--hover);
+}

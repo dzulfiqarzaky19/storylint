@@ -16,3 +16,25 @@
   font-size: 15px;
   color: var(--muted);
 }
+
+/* Persistence error banner — a failed Server Action is surfaced, never swallowed. */
+.errorBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px var(--gutter);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.errorDismiss {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  background: var(--on-accent);
+  color: var(--accent-deep);
+  cursor: pointer;
+}

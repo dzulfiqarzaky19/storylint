@@ -42,3 +42,28 @@
   line-height: 1.4;
   margin: 6px 0 12px;
 }
+
+/* Card actions (ref: primary dark fill / secondary 2px ink outline). */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.writeIn {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 13px;
+  background: var(--ink);
+  color: var(--on-ink);
+  cursor: pointer;
+}
+
+.leaveIt {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 13px;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}

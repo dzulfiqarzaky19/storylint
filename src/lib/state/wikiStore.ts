@@ -10,7 +10,14 @@
 // the Wiki screen against. Rendering/DnD wiring is out of scope here.
 // =============================================================================
 
-import type { EntryWithDetails, Shelf, WikiSnapshot } from "../domain/types";
+import type {
+  EntryWithDetails,
+  FactRow,
+  Kind,
+  ResolvedTie,
+  Shelf,
+  WikiSnapshot,
+} from "../domain/types";
 
 // ---- State ----------------------------------------------------------------
 
@@ -51,7 +58,14 @@ export interface WikiState {
 export type WikiAction =
   | { type: "SELECT_ENTRY"; entryId: string | null }
   | { type: "MOVE_ENTRY"; entryId: string; toShelf: Shelf; beforeId: string | null }
-  | { type: "LINK_ENTRY"; fromEntryId: string; toEntryId: string; rel: string }
+  | {
+      type: "LINK_ENTRY";
+      /** Server-generated tie id (reducer is pure; caller supplies it). */
+      tieId: string;
+      fromEntryId: string;
+      toEntryId: string;
+      rel: string;
+    }
   | { type: "MOVE_FACT"; factId: string; fromEntryId: string; toEntryId: string }
   | {
       type: "ADD_SUGGESTION_AS_FACT";
@@ -94,19 +108,13 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
       return moveEntryInState(state, action.entryId, action.toShelf, action.beforeId);
 
     case "LINK_ENTRY":
-      // STUB (Phase 4): append a ResolvedTie to byId[fromEntryId].ties.
-      return state;
+      return linkEntryInState(state, action);
 
     case "MOVE_FACT":
-      // STUB (Phase 4): remove fact from fromEntry.facts, append to toEntry.facts.
-      return state;
+      return moveFactInState(state, action.factId, action.fromEntryId, action.toEntryId);
 
     case "ADD_SUGGESTION_AS_FACT":
-      // STUB (Phase 4): append a fresh FactRow to byId[entryId].facts, drop the suggestion.
-      return {
-        ...state,
-        suggestions: state.suggestions.filter((s) => s.suggestionKey !== action.suggestionKey),
-      };
+      return addSuggestionAsFactInState(state, action);
 
     case "DISMISS_SUGGESTION":
       return {
@@ -148,6 +156,97 @@ function moveEntryInState(
     : state.byId;
 
   return { ...state, order, byId };
+}
+
+/** Append a directional tie to the source entry (pure). Target display fields
+ *  come from the destination entry already in state. */
+function linkEntryInState(
+  state: WikiState,
+  action: { tieId: string; fromEntryId: string; toEntryId: string; rel: string },
+): WikiState {
+  const from = state.byId[action.fromEntryId];
+  const to = state.byId[action.toEntryId];
+  if (!from || !to) return state;
+  // Idempotent: don't duplicate an identical tie.
+  if (from.ties.some((t) => t.toEntryId === action.toEntryId && t.rel === action.rel)) {
+    return state;
+  }
+  const tie: ResolvedTie = {
+    id: action.tieId,
+    fromEntryId: action.fromEntryId,
+    toEntryId: action.toEntryId,
+    rel: action.rel,
+    toName: to.name,
+    toKind: to.kind as Kind,
+    toCatalogueNo: to.catalogueNo,
+  };
+  return {
+    ...state,
+    byId: { ...state.byId, [from.id]: { ...from, ties: [...from.ties, tie] } },
+  };
+}
+
+/** Move a fact row from one entry to another (pure). */
+function moveFactInState(
+  state: WikiState,
+  factId: string,
+  fromEntryId: string,
+  toEntryId: string,
+): WikiState {
+  if (fromEntryId === toEntryId) return state;
+  const from = state.byId[fromEntryId];
+  const to = state.byId[toEntryId];
+  if (!from || !to) return state;
+  const fact = from.facts.find((f) => f.id === factId);
+  if (!fact) return state;
+  const moved: FactRow = {
+    ...fact,
+    entryId: toEntryId,
+    sortOrder: to.facts.length,
+  };
+  return {
+    ...state,
+    byId: {
+      ...state.byId,
+      [fromEntryId]: { ...from, facts: from.facts.filter((f) => f.id !== factId) },
+      [toEntryId]: { ...to, facts: [...to.facts, moved] },
+    },
+  };
+}
+
+/** Append a fresh fact to an entry and drop the consumed suggestion (pure). */
+function addSuggestionAsFactInState(
+  state: WikiState,
+  action: {
+    suggestionKey: string;
+    entryId: string;
+    factId: string;
+    key: string;
+    value: string;
+    sortOrder: number;
+  },
+): WikiState {
+  const entry = state.byId[action.entryId];
+  const suggestions = state.suggestions.filter(
+    (s) => s.suggestionKey !== action.suggestionKey,
+  );
+  if (!entry) return { ...state, suggestions };
+  const fact: FactRow = {
+    id: action.factId,
+    entryId: action.entryId,
+    key: action.key,
+    value: action.value,
+    fresh: true,
+    sortOrder: action.sortOrder,
+  };
+  return {
+    ...state,
+    suggestions,
+    byId: {
+      ...state.byId,
+      [action.entryId]: { ...entry, facts: [...entry.facts, fact] },
+    },
+  };
 }
 
 function assertNever(x: never): never {

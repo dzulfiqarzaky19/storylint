@@ -9,13 +9,21 @@ import styles from "./EntryBand.module.css";
 
 interface EntryBandProps {
   entry: EntryWithDetails;
-  byId: Record<string, EntryWithDetails>;
   onSelect: (id: string) => void;
+  /** Drop a tile onto the Ties block → create a tie from this entry. */
+  onDropOnTies: () => void;
+  /** Drop a suggestion card onto Details → add it as a fresh fact. */
+  onDropSuggestion: (suggestionKey: string) => void;
 }
 
 // Entry band: two columns, 40px gap, 34px top padding.
 // Main column flex:1, right column fixed 340px (HANDOFF §4 / README Screen 1).
-export default function EntryBand({ entry, onSelect }: EntryBandProps) {
+export default function EntryBand({
+  entry,
+  onSelect,
+  onDropOnTies,
+  onDropSuggestion,
+}: EntryBandProps) {
   const kindLabel = KIND_LABEL[entry.kind];
   const chapterCount = entry.appearances.length;
   const flaggedCount = entry.appearances.filter((a) => a.flag !== null).length;
@@ -40,12 +48,20 @@ export default function EntryBand({ entry, onSelect }: EntryBandProps) {
         <Timeline appearances={entry.appearances} />
 
         <div className={styles.detailsRow}>
-          <DetailsColumn facts={entry.facts} />
+          <DetailsColumn
+            entryId={entry.id}
+            facts={entry.facts}
+            onDropSuggestion={onDropSuggestion}
+          />
           <OpenQuestions questions={entry.openQuestions} />
         </div>
       </div>
 
-      <EntryAside entry={entry} onSelect={onSelect} />
+      <EntryAside
+        entry={entry}
+        onSelect={onSelect}
+        onDropOnTies={onDropOnTies}
+      />
     </section>
   );
 }

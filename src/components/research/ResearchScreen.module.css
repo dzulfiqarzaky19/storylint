@@ -1,0 +1,333 @@
+/* Research screen (#2b) — README Screen 2 geometry, verbatim.
+   Colors via globals.css custom properties only; radius 0; no shadows. */
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ---- 1. Question block (padding 30px 40px 0) --------------------------- */
+
+.questionBlock {
+  padding: 30px var(--gutter) 0;
+}
+
+.kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.question {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  max-width: 24ch;
+  margin: 10px 0 16px;
+  text-wrap: pretty;
+}
+
+.majorRule {
+  height: 2px;
+  background: var(--ink);
+}
+
+/* ---- 2. Thread (padding 22px 40px 0) ---------------------------------- */
+
+.thread {
+  padding: 22px var(--gutter) 0;
+}
+
+.turn {
+  padding: 20px 0;
+  border-top: var(--rule-row);
+}
+
+.turnRow {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.who {
+  width: 130px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.whoThem {
+  color: var(--accent);
+}
+
+.whoYou {
+  color: var(--faint);
+}
+
+.turnText {
+  flex: 1;
+  font-size: 20px;
+  line-height: 1.4;
+  max-width: 62ch;
+  letter-spacing: -0.01em;
+}
+
+/* The writer's own lines are weight 700 (README §Screen 2 / §8). */
+.turnTextYou {
+  font-weight: 700;
+}
+
+.cards {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* ---- 3. Proposition card (300px, column flex) ------------------------- */
+
+.card {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  border: var(--rule-major);
+  background: var(--tile);
+  padding: 16px;
+  cursor: grab;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.cardKicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  padding-bottom: 8px;
+  border-bottom: var(--rule-major);
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 12px 0 8px;
+}
+
+/* flex:1 so all cards in a row align their action rows. */
+.cardBody {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--card-body);
+  flex: 1;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+/* Keep button: 2px ink border; inverts to filled ink/#f3f2f2 once kept. */
+.keep {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border: var(--rule-major);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.keepActive {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+
+/* "Make it an entry" (reads "In the wiki" once written) — text only. */
+.propose {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.proposeInWiki {
+  color: var(--accent-deep);
+  cursor: default;
+}
+
+/* ---- 4. Confirmation strip (only when pending) ------------------------ */
+
+.confirmStrip {
+  margin: 24px var(--gutter) 0;
+  border: 2px solid var(--accent);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.confirmSentence {
+  flex: 1;
+  font-size: 15px;
+}
+
+.confirmYes {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 9px 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  cursor: pointer;
+}
+
+.confirmCancel {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 12px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* ---- 5. Composer + board (2px ink top rule, 40px gap) ----------------- */
+
+.footer {
+  margin: 30px var(--gutter) 0;
+  padding-top: 18px;
+  border-top: var(--rule-major);
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.composer {
+  flex: 1;
+}
+
+/* Placeholder rendered as 24px/700 faint text (no real input in the prototype). */
+.composerPlaceholder {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--faint);
+  letter-spacing: -0.01em;
+}
+
+.chips {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: var(--rule-major);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* Kept board (340px). transparent 2px border -> accent while a card hovers. */
+.boardWrap {
+  width: 340px;
+  flex: none;
+}
+
+.board {
+  padding: 12px;
+  border: 2px solid transparent;
+}
+
+.boardActive {
+  border-color: var(--accent);
+  background: var(--drop);
+}
+
+.boardHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: var(--rule-major);
+}
+
+.boardTitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.boardSpacer {
+  flex: 1;
+}
+
+.boardCount {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.boardEmpty {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted-2);
+  padding: 12px 0;
+}
+
+.keptItem {
+  padding: 11px 0;
+  border-bottom: var(--rule-row);
+}
+
+.keptKind {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.keptTitle {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 4px;
+}
+
+.keptState {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.keptStateBoard {
+  color: var(--muted-2);
+}
+
+.keptStateWiki {
+  color: var(--accent-deep);
+}
+
+.bottomSpacer {
+  height: 40px;
+}

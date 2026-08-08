@@ -1,17 +1,48 @@
+"use client";
+
 import type { ResolvedTie } from "@/lib/domain/types";
+import { useDrag } from "@/components/dnd/DragContext";
 import styles from "./TiesBlock.module.css";
 
 interface TiesBlockProps {
   ties: ResolvedTie[];
   onSelect: (id: string) => void;
+  /** Drop a tile from a shelf here → tie it to the selected entry. */
+  onDropOnTies: () => void;
 }
 
-// Ties block — clickable rows select that entry (README Interactions: "Click a
-// tie row → Selects that entry"). Drop target behavior is Phase 4; the 2px
-// transparent border is kept so the drop state has somewhere to land later.
-export default function TiesBlock({ ties, onSelect }: TiesBlockProps) {
+// Ties block — clickable rows select that entry. Native HTML5 drop TARGET: drag
+// a tile from a shelf onto this column to create a `linked` tie. Active drop gets
+// a 2px accent border + --drop background (README Interactions).
+export default function TiesBlock({ ties, onSelect, onDropOnTies }: TiesBlockProps) {
+  const drag = useDrag();
+  const dragging = drag.dragging;
+
+  const isDropActive =
+    dragging?.type === "entry" &&
+    drag.dropZone?.type === "ties" &&
+    drag.dropZone.id === "ties";
+
   return (
-    <div className={styles.block}>
+    <div
+      className={`${styles.block} ${isDropActive ? styles.dropActive : ""}`}
+      onDragOver={(e) => {
+        if (dragging?.type !== "entry") return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "link";
+        drag.setZone({ type: "ties", id: "ties" });
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          if (drag.dropZone?.type === "ties") drag.setZone(null);
+        }
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        if (dragging?.type === "entry") onDropOnTies();
+        drag.endDrag();
+      }}
+    >
       <div className={styles.heading}>
         <h2 className={styles.title}>Ties</h2>
         <span className={styles.count}>{ties.length}</span>

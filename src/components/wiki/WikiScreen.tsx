@@ -1,58 +1,234 @@
 "use client";
 
-import { useReducer } from "react";
-import type { WikiSnapshot, EntryWithDetails } from "@/lib/domain/types";
+// Wiki screen (HANDOFF §8). The reducer store (wikiStore) is the SESSION source
+// of truth so drag feedback is instant; each reducer action is fired ALONGSIDE
+// its matching Server Action (actions/wiki.ts), per-mutation, and a failed write
+// is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag
+// session state lives in DragContext so dragover can read the payload.
+
+import { useReducer, useCallback, startTransition } from "react";
+import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails } from "@/lib/domain/types";
+import { SHELF_TITLES } from "@/lib/domain/types";
+import {
+  initWikiState,
+  wikiReducer,
+  type WikiSuggestion,
+} from "@/lib/state/wikiStore";
+import { DragProvider, useDrag } from "@/components/dnd/DragContext";
+import {
+  moveEntry,
+  linkEntry,
+  moveFact,
+  addSuggestionAsFact,
+  dismissSuggestion,
+  type ActionResult,
+} from "@/lib/actions/wiki";
 import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./Shelf";
 import PosterBand from "./PosterBand";
-import { SHELF_TITLES, type Shelf as ShelfKey } from "@/lib/domain/types";
 import styles from "./WikiScreen.module.css";
 
-// Read-only selection state. No server write for selection (HANDOFF §8 / brief).
-interface WikiState {
-  selectedId: string;
-}
-
-type WikiAction = { type: "select"; id: string };
-
-function reducer(state: WikiState, action: WikiAction): WikiState {
-  switch (action.type) {
-    case "select":
-      return state.selectedId === action.id ? state : { selectedId: action.id };
-    default:
-      return state;
-  }
-}
-
 const SHELF_ORDER: ShelfKey[] = ["people", "places", "orders", "lore"];
+/** Relationship label for a tie created by dropping a tile onto the Ties block. */
+const LINKED_REL = "linked";
 
-export default function WikiScreen({ snapshot }: { snapshot: WikiSnapshot }) {
-  const entries = snapshot.entries;
-  // Default selection is the entry with the lowest persisted sortOrder (the
-  // gazetteer's first entry, Maren), independent of the query's shelf ordering.
-  const first = entries.reduce<EntryWithDetails | undefined>(
-    (lowest, e) => (!lowest || e.sortOrder < lowest.sortOrder ? e : lowest),
-    undefined,
+interface WikiScreenProps {
+  snapshot: WikiSnapshot;
+  suggestions: WikiSuggestion[];
+  contradictionEntryIds: string[];
+}
+
+export default function WikiScreen(props: WikiScreenProps) {
+  return (
+    <DragProvider>
+      <WikiScreenInner {...props} />
+    </DragProvider>
   );
-  const [state, dispatch] = useReducer(reducer, {
-    selectedId: first ? first.id : "",
-  });
+}
 
-  const selected: EntryWithDetails | undefined =
-    snapshot.byId[state.selectedId] ?? first;
+function WikiScreenInner({
+  snapshot,
+  suggestions,
+  contradictionEntryIds,
+}: WikiScreenProps) {
+  const [state, dispatch] = useReducer(
+    wikiReducer,
+    { snapshot, suggestions },
+    ({ snapshot, suggestions }) => {
+      const s = initWikiState(snapshot, suggestions);
+      // Default to the lowest global sortOrder entry (the gazetteer's first, Maren).
+      const first = snapshot.entries.reduce<EntryWithDetails | undefined>(
+        (lo, e) => (!lo || e.sortOrder < lo.sortOrder ? e : lo),
+        undefined,
+      );
+      return { ...s, selectedEntryId: first ? first.id : s.selectedEntryId };
+    },
+  );
+  const drag = useDrag();
 
-  const select = (id: string) => dispatch({ type: "select", id });
+  const contradictions = new Set(contradictionEntryIds);
+  const select = useCallback(
+    (id: string) => dispatch({ type: "SELECT_ENTRY", entryId: id }),
+    [],
+  );
 
-  // Derived: entries grouped per shelf, in persisted sort order.
+  // Surface a failed server action instead of letting the write vanish (§8).
+  const settle = useCallback((label: string, p: Promise<ActionResult<unknown>>) => {
+    startTransition(() => {
+      p.then((res) => {
+        if (!res.ok) dispatch({ type: "SET_ERROR", error: res.error });
+      }).catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        dispatch({ type: "SET_ERROR", error: `${label}: ${msg}` });
+      });
+    });
+  }, []);
+
+  // ---- Drop: tile onto tile (insert before) / onto shelf (append, regroup) --
+  const dropEntry = useCallback(
+    (toShelf: ShelfKey, beforeId: string | null) => {
+      const item = drag.dragging;
+      if (!item || item.type !== "entry") return;
+      const entry = state.byId[item.id];
+      if (!entry) return;
+      const fromShelf = entry.shelf as ShelfKey;
+      if (item.id === beforeId) return; // dropped on itself
+
+      dispatch({ type: "MOVE_ENTRY", entryId: item.id, toShelf, beforeId });
+
+      // Compute the resulting orders the same way the reducer does, so the
+      // server persists exactly what the UI now shows.
+      const withoutFrom = (shelf: ShelfKey) =>
+        state.order[shelf].filter((id) => id !== item.id);
+      const toOrder = withoutFrom(toShelf);
+      const at = beforeId ? toOrder.indexOf(beforeId) : -1;
+      if (at >= 0) toOrder.splice(at, 0, item.id);
+      else toOrder.push(item.id);
+      const fromOrder =
+        fromShelf === toShelf ? toOrder : withoutFrom(fromShelf);
+
+      settle(
+        "moveEntry",
+        moveEntry({
+          entryId: item.id,
+          toShelf,
+          toShelfOrder: toOrder,
+          fromShelf,
+          fromShelfOrder: fromOrder,
+        }),
+      );
+    },
+    [drag.dragging, state.byId, state.order, settle],
+  );
+
+  // ---- Drop: fact row onto a tile (move fact between entries) ----------------
+  const dropFactOnEntry = useCallback(
+    (toEntryId: string) => {
+      const item = drag.dragging;
+      if (!item || item.type !== "fact") return;
+      const fromEntryId = item.from;
+      if (fromEntryId === toEntryId) return;
+      const to = state.byId[toEntryId];
+      if (!to) return;
+      dispatch({ type: "MOVE_FACT", factId: item.id, fromEntryId, toEntryId });
+      settle(
+        "moveFact",
+        moveFact({ factId: item.id, toEntryId, sortOrder: to.facts.length }),
+      );
+    },
+    [drag.dragging, state.byId, settle],
+  );
+
+  // ---- Drop: tile onto Ties block (create a `linked` tie) --------------------
+  const selected = state.selectedEntryId
+    ? state.byId[state.selectedEntryId]
+    : undefined;
+
+  const dropOnTies = useCallback(() => {
+    const item = drag.dragging;
+    if (!item || item.type !== "entry" || !selected) return;
+    if (item.id === selected.id) return; // don't tie an entry to itself
+    const tieId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `tie-${selected.id}-${item.id}-${Date.now()}`;
+    dispatch({
+      type: "LINK_ENTRY",
+      tieId,
+      fromEntryId: selected.id,
+      toEntryId: item.id,
+      rel: LINKED_REL,
+    });
+    settle(
+      "linkEntry",
+      linkEntry({ fromEntryId: selected.id, toEntryId: item.id, rel: LINKED_REL }),
+    );
+  }, [drag.dragging, selected, settle]);
+
+  // ---- Drop: suggestion onto Details column (add as a fresh fact) ------------
+  const addSuggestionToDetails = useCallback(
+    (suggestionKey: string) => {
+      const item = drag.dragging;
+      if (!item || item.type !== "card") return;
+      const s = state.suggestions.find((x) => x.suggestionKey === suggestionKey);
+      if (!s) return;
+      writeSuggestion(s);
+    },
+    [drag.dragging, state.suggestions],
+  );
+
+  // Shared: write a suggestion as a fresh fact (drop OR "Write it in" button).
+  const writeSuggestion = useCallback(
+    (s: WikiSuggestion) => {
+      const entry = state.byId[s.entryId] ?? selected;
+      if (!entry) return;
+      const factId =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `fact-${s.suggestionKey}-${Date.now()}`;
+      const sortOrder = entry.facts.length;
+      dispatch({
+        type: "ADD_SUGGESTION_AS_FACT",
+        suggestionKey: s.suggestionKey,
+        entryId: entry.id,
+        factId,
+        key: s.key,
+        value: s.value,
+        sortOrder,
+      });
+      settle(
+        "addSuggestionAsFact",
+        addSuggestionAsFact({
+          suggestionKey: s.suggestionKey,
+          entryId: entry.id,
+          key: s.key,
+          value: s.value,
+          sortOrder,
+          confirmed: true,
+        }),
+      );
+    },
+    [state.byId, selected, settle],
+  );
+
+  const leaveSuggestion = useCallback(
+    (s: WikiSuggestion) => {
+      dispatch({ type: "DISMISS_SUGGESTION", suggestionKey: s.suggestionKey });
+      settle("dismissSuggestion", dismissSuggestion(s.suggestionKey));
+    },
+    [settle],
+  );
+
+  // Entries grouped per shelf, in the reducer's live order.
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
-  for (const key of SHELF_ORDER) byShelf.set(key, []);
-  for (const e of entries) {
-    const list = byShelf.get(e.shelf as ShelfKey);
-    if (list) list.push(e);
-  }
-  for (const list of byShelf.values()) {
-    list.sort((a, b) => a.sortOrder - b.sortOrder);
+  for (const key of SHELF_ORDER) {
+    byShelf.set(
+      key,
+      state.order[key]
+        .map((id) => state.byId[id])
+        .filter((e): e is EntryWithDetails => Boolean(e)),
+    );
   }
 
   if (!selected) {
@@ -65,26 +241,46 @@ export default function WikiScreen({ snapshot }: { snapshot: WikiSnapshot }) {
 
   return (
     <main className={styles.body}>
+      {state.error && (
+        <div className={styles.errorBar} role="alert">
+          Save failed: {state.error}
+          <button
+            type="button"
+            className={styles.errorDismiss}
+            onClick={() => dispatch({ type: "SET_ERROR", error: null })}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <EntryBand
         entry={selected}
-        byId={snapshot.byId}
         onSelect={select}
+        onDropOnTies={dropOnTies}
+        onDropSuggestion={addSuggestionToDetails}
       />
-      <WorldBand entryCount={entries.length} />
+      <WorldBand entryCount={Object.keys(state.byId).length} />
       <div className={styles.shelves}>
         {SHELF_ORDER.map((key) => (
           <Shelf
             key={key}
+            shelf={key}
             title={SHELF_TITLES[key]}
             entries={byShelf.get(key) ?? []}
             selectedId={selected.id}
+            contradictions={contradictions}
             onSelect={select}
+            onDropEntry={dropEntry}
+            onDropFactOnEntry={dropFactOnEntry}
           />
         ))}
       </div>
-      {/* Poster band renders only when suggestions exist. Suggestions come from
-          the check engine in a later phase, so this is empty for now. */}
-      <PosterBand suggestions={[]} />
+      <PosterBand
+        suggestions={state.suggestions}
+        onWriteIn={writeSuggestion}
+        onLeave={leaveSuggestion}
+      />
     </main>
   );
 }

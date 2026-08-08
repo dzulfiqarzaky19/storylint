@@ -1,31 +1,70 @@
-import type { EntryWithDetails } from "@/lib/domain/types";
+"use client";
+
+import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
+import { useDrag } from "@/components/dnd/DragContext";
 import EntryTile from "./EntryTile";
 import styles from "./Shelf.module.css";
 
 interface ShelfProps {
+  shelf: ShelfKey;
   title: string;
   entries: EntryWithDetails[];
   selectedId: string;
+  /** Entry ids the check engine flags with an unresolved contradiction. */
+  contradictions: Set<string>;
   onSelect: (id: string) => void;
+  /** Reorder within/across shelves; beforeId=null means append to this shelf. */
+  onDropEntry: (toShelf: ShelfKey, beforeId: string | null) => void;
+  onDropFactOnEntry: (toEntryId: string) => void;
 }
 
-// A tile carries a contradiction flag when the entry has a red-flagged
-// appearance. In Phase 4 this comes from the check engine's unresolved marks;
-// for read-only Phase 3 the seeded red timeline flag is the source of truth.
-function hasContradiction(entry: EntryWithDetails): boolean {
-  return entry.appearances.some((a) => a.flag === "red");
-}
-
-// One shelf group — heading row (title, count, flex rule line) then wrapping
-// tiles (README Screen 1 "Shelves").
+// One shelf group — heading row then wrapping tiles (README Screen 1 "Shelves").
+// The shelf itself is a drop zone: dropping a tile on the empty space APPENDS it
+// here and REGROUPS it (changes its kind/shelf). Zone fills --hover while active.
 export default function Shelf({
+  shelf,
   title,
   entries,
   selectedId,
+  contradictions,
   onSelect,
+  onDropEntry,
+  onDropFactOnEntry,
 }: ShelfProps) {
+  const drag = useDrag();
+  const dragging = drag.dragging;
+
+  const isZoneActive =
+    dragging?.type === "entry" &&
+    drag.dropZone?.type === "shelf" &&
+    drag.dropZone.id === shelf;
+
   return (
-    <section className={styles.shelf} aria-label={title}>
+    <section
+      className={`${styles.shelf} ${isZoneActive ? styles.zoneActive : ""}`}
+      aria-label={title}
+      onDragOver={(e) => {
+        if (dragging?.type !== "entry") return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        drag.setZone({ type: "shelf", id: shelf });
+      }}
+      onDragLeave={(e) => {
+        // Only clear when the pointer truly leaves the shelf, not a child tile.
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          if (drag.dropZone?.type === "shelf" && drag.dropZone.id === shelf) {
+            drag.setZone(null);
+          }
+        }
+      }}
+      onDrop={(e) => {
+        // A tile dropped on a tile is handled by the tile (insert-before); this
+        // fires only for the shelf's empty space → append + regroup.
+        e.preventDefault();
+        if (dragging?.type === "entry") onDropEntry(shelf, null);
+        drag.endDrag();
+      }}
+    >
       <div className={styles.heading}>
         <h2 className={styles.title}>{title}</h2>
         <span className={styles.count}>{entries.length}</span>
@@ -37,8 +76,10 @@ export default function Shelf({
             key={entry.id}
             entry={entry}
             selected={entry.id === selectedId}
-            hasContradiction={hasContradiction(entry)}
+            hasContradiction={contradictions.has(entry.id)}
             onSelect={onSelect}
+            onDropEntry={onDropEntry}
+            onDropFactOnEntry={onDropFactOnEntry}
           />
         ))}
       </div>

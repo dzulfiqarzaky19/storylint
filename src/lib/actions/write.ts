@@ -24,8 +24,8 @@
 
 import { saveChapterBody, upsertResolvedMark } from "../db/mutations";
 
-function notImplemented(name: string): never {
-  throw new Error(`NOT_IMPLEMENTED: ${name}`);
+function messageOf(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }
 
 export type ActionResult<T = void> =
@@ -55,10 +55,13 @@ export async function saveManuscript(input: {
   chapterNumber: number;
   body: unknown; // ProseMirror document JSON
 }): Promise<ActionResult> {
-  void input;
-  void saveChapterBody;
-  // STUB (Phase 7): await saveChapterBody({ number: chapterNumber, body }); return ok.
-  return notImplemented("write.saveManuscript");
+  try {
+    await saveChapterBody({ number: input.chapterNumber, body: input.body });
+    return { ok: true, data: undefined };
+  } catch (err) {
+    // Surface, don't swallow (§8): a failed save must reach the user.
+    return { ok: false, error: messageOf(err) };
+  }
 }
 
 // ---- Marks ----------------------------------------------------------------
@@ -84,21 +87,56 @@ export async function openMark(markKey: string): Promise<ActionResult> {
  *
  * Mirrors reducer action `RESOLVE_MARK`. Signature: resolveMark(markId, actionId).
  */
+/**
+ * Context the client supplies alongside the markKey. `resolveMark(markId,
+ * actionId)` keeps its documented primary shape; `context` carries the
+ * mark-derived data the server can't recover from a markKey alone (the quote to
+ * select, or the entry/fact a 'wiki' correction would touch). Optional so the
+ * signature stays backward compatible.
+ */
+export interface ResolveMarkContext {
+  quote?: string;
+  entryId?: string;
+  factKey?: string;
+}
+
 export async function resolveMark(
   markId: string,
   actionId: MarkActionId,
+  context: ResolveMarkContext = {},
 ): Promise<ActionResult<ResolveMarkOutcome>> {
-  void markId;
-  void upsertResolvedMark;
-  switch (actionId) {
-    case "leave":
-      // STUB (Phase 7): await upsertResolvedMark({ markKey: markId, resolution: 'leave', resolvedAt: Date.now() });
-      return notImplemented("write.resolveMark:leave");
-    case "text":
-      // STUB (Phase 7): return { ok: true, data: { kind: 'selectForEdit', quote } };
-      return notImplemented("write.resolveMark:text");
-    case "wiki":
-      // STUB (Phase 7): return { ok: true, data: { kind: 'needsConfirmation', entryId, factKey } };
-      return notImplemented("write.resolveMark:wiki");
+  try {
+    switch (actionId) {
+      case "leave":
+        // The ONLY DB write here: suppress this mark permanently by its stable
+        // key, so it stays resolved across reloads even after the paragraph moves.
+        await upsertResolvedMark({
+          markKey: markId,
+          resolution: "leave",
+          resolvedAt: Date.now(),
+        });
+        return { ok: true, data: { kind: "resolved", markKey: markId } };
+
+      case "text":
+        // No DB write: the editor selects the run so the author can rewrite it.
+        return {
+          ok: true,
+          data: { kind: "selectForEdit", quote: context.quote ?? "" },
+        };
+
+      case "wiki":
+        // No wiki write here (product rule 1). Hand off to the confirmed wiki
+        // path; the UI opens the confirmation flow keyed by entry + fact.
+        return {
+          ok: true,
+          data: {
+            kind: "needsConfirmation",
+            entryId: context.entryId ?? "",
+            factKey: context.factKey ?? "",
+          },
+        };
+    }
+  } catch (err) {
+    return { ok: false, error: messageOf(err) };
   }
 }

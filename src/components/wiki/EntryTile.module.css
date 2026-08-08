@@ -45,3 +45,15 @@
   border-left: 14px solid transparent;
   border-top: 14px solid var(--accent);
 }
+
+/* Drop target: another tile inserts BEFORE this one (ref: outline:3px solid #ec3013; offset 2px). */
+.dropTarget {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A dragged fact row will be moved onto this entry. */
+.factTarget {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}

@@ -9,8 +9,8 @@
 // These are minimal, clearly-named helpers. They do not enforce product rules;
 // the confirmation invariant (product rule 1) lives at the action layer.
 
-import { query, one } from "./pool";
-import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow } from "../domain/types";
+import { query, one, rows } from "./pool";
+import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
 
 // Helpers marked "WIKI WRITE" below require a WikiWriteConfirmation token (product
@@ -84,6 +84,69 @@ export async function updateEntryShelfOrder(input: {
     `UPDATE entries SET shelf = $2, sort_order = $3 WHERE id = $1`,
     [input.entryId, input.shelf, input.sortOrder],
   );
+}
+
+// ---- Entries (creation) ---------------------------------------------------
+
+/**
+ * WIKI WRITE (product rule 1). Create a new entry (Research "Yes, write it in").
+ * Requires a confirmation token, so it is only callable from the confirmed
+ * confirmCard path. Idempotent on id (re-confirming a card updates in place).
+ */
+export async function insertEntry(
+  input: {
+    id: string;
+    kind: string;
+    name: string;
+    catalogueNo: string;
+    note: string;
+    summary: string;
+    shelf: string;
+    sortOrder: number;
+  },
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  await query(
+    `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     ON CONFLICT (id) DO UPDATE SET
+       kind = EXCLUDED.kind,
+       name = EXCLUDED.name,
+       catalogue_no = EXCLUDED.catalogue_no,
+       note = EXCLUDED.note,
+       summary = EXCLUDED.summary,
+       shelf = EXCLUDED.shelf,
+       sort_order = EXCLUDED.sort_order`,
+    [
+      input.id,
+      input.kind,
+      input.name,
+      input.catalogueNo,
+      input.note,
+      input.summary,
+      input.shelf,
+      input.sortOrder,
+    ],
+  );
+}
+
+/**
+ * Persist the full order of one shelf after a drag. `orderedIds` is the shelf's
+ * entries top-to-bottom; each is set to `shelf` with sort_order = its index, so
+ * the DB row order matches exactly what the UI shows. One statement per row keeps
+ * it parameterized (no value interpolation). Small dataset (<= 15 entries total).
+ */
+export async function reorderShelf(input: {
+  shelf: string;
+  orderedIds: string[];
+}): Promise<void> {
+  for (let i = 0; i < input.orderedIds.length; i++) {
+    await query(`UPDATE entries SET shelf = $2, sort_order = $3 WHERE id = $1`, [
+      input.orderedIds[i],
+      input.shelf,
+      i,
+    ]);
+  }
 }
 
 // ---- Ties -----------------------------------------------------------------
@@ -172,6 +235,11 @@ export async function upsertKeptCard(input: {
   return res;
 }
 
+/** Remove a proposition from the Kept board ("un-keep"). Idempotent. */
+export async function deleteKeptCard(propositionId: string): Promise<void> {
+  await query(`DELETE FROM kept_cards WHERE proposition_id = $1`, [propositionId]);
+}
+
 /**
  * WIKI WRITE (product rule 1). Mark a kept card as written into the wiki (after
  * confirmCard). Requires a confirmation token.
@@ -196,4 +264,34 @@ export async function insertDismissedSuggestion(suggestionKey: string): Promise<
      ON CONFLICT (suggestion_key) DO NOTHING`,
     [suggestionKey],
   );
+}
+
+// ---- Reads used by mutation paths -----------------------------------------
+// These are SELECTs, but they live here (not queries.ts) because they exist
+// solely to support the write paths above (e.g. confirmCard needs the source
+// proposition and the next free sortOrder). Keeping them beside their callers
+// avoids concurrent edits to the shared read layer.
+
+/** Fetch a single proposition (source of a confirmed entry). */
+export async function getProposition(id: string): Promise<PropositionRow | null> {
+  return one<PropositionRow>(
+    `SELECT id,
+            turn_id  AS "turnId",
+            kind,
+            title,
+            body,
+            as_kind  AS "asKind",
+            sort_order AS "sortOrder"
+     FROM propositions WHERE id = $1`,
+    [id],
+  );
+}
+
+/** Highest sort_order currently on a shelf, or 0 if the shelf is empty. */
+export async function getMaxSortOrderForShelf(shelf: string): Promise<number> {
+  const res = await rows<{ maxSort: number | null }>(
+    `SELECT MAX(sort_order) AS "maxSort" FROM entries WHERE shelf = $1`,
+    [shelf],
+  );
+  return res[0]?.maxSort ?? 0;
 }

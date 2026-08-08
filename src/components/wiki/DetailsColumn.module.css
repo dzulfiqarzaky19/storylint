@@ -3,6 +3,7 @@
 .details {
   flex: 1;
   min-width: 0;
+  border: 2px solid transparent;
 }
 
 .heading {
@@ -49,4 +50,10 @@
   flex: 1;
   min-width: 0;
   font-size: 15px;
+}
+
+/* Suggestion card drop target (Direction B: border:2px solid #ec3013 over --drop tint). */
+.cardDrop {
+  border: 2px solid var(--accent);
+  background: var(--drop);
 }

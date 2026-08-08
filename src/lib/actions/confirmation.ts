@@ -34,5 +34,8 @@ export function confirmWikiWrite(input: { confirmed: true }): WikiWriteConfirmat
     // Unreachable via TypeScript; guards JS callers / erased types.
     throw new Error("confirmWikiWrite: explicit confirmation required (product rule 1).");
   }
-  return { [wikiWriteBrand]: true } as WikiWriteConfirmation;
+  // `wikiWriteBrand` is a TYPE-ONLY unique symbol (declare const): it has no
+  // runtime value, so it must NOT appear as a runtime computed key. The token's
+  // brand is a compile-time phantom; an empty object carries it structurally.
+  return {} as WikiWriteConfirmation;
 }

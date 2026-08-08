@@ -1,0 +1,349 @@
+/* Write screen (HANDOFF §6/§8) — "marginalia on a proof sheet" (Direction B).
+   Colours come only from globals.css custom properties. The two underline
+   styles are defined here and MUST NOT be merged (product rule 2). */
+
+/* ---- Layout ------------------------------------------------------------- */
+
+.screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-archivo), system-ui, sans-serif;
+}
+
+.masthead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  border-bottom: var(--rule-major, 2px solid var(--ink));
+}
+
+.mastheadLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.wordmark {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.mastheadSub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.nav {
+  display: flex;
+  gap: 26px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.navItem {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.navItemActive {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 2px;
+  text-decoration: none;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---- Manuscript column -------------------------------------------------- */
+
+.manuscriptScroll {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 36px 0 40px 56px;
+}
+
+.manuscript {
+  max-width: 660px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.title {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 8px 0 14px;
+  text-transform: uppercase;
+}
+
+.titleRule {
+  height: 2px;
+  background: var(--ink);
+  margin-bottom: 26px;
+}
+
+/* The Tiptap editor content. Paragraphs only, 18px / 1.7 (§6). */
+.editor :global(.ProseMirror) {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink);
+  outline: none;
+  white-space: pre-wrap;
+}
+
+.editor :global(.ProseMirror) p {
+  margin: 0 0 18px;
+}
+
+.saveState {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+  min-height: 1.4em;
+}
+
+.saveError {
+  color: var(--accent);
+}
+
+/* ---- Underlines (never merged) ------------------------------------------ */
+
+.underline {
+  cursor: pointer;
+  padding-bottom: 1px;
+}
+
+/* Direction B: contradiction = 3px solid accent. */
+:global(.write-underline-conflict) {
+  cursor: pointer;
+  padding-bottom: 1px;
+  border-bottom: 3px solid var(--accent);
+}
+
+/* Direction B: unrecorded = 3px dotted muted-2 (DM override of the ref's
+   #605d5d dotted; DM specified var(--muted-2) #7d7979). Kept a distinct rule
+   from the conflict one so the two signals can never collapse into one. */
+:global(.write-underline-unrecorded) {
+  cursor: pointer;
+  padding-bottom: 1px;
+  border-bottom: 3px dotted var(--muted-2);
+}
+
+/* ---- Inline note (widget under the paragraph) --------------------------- */
+
+.note {
+  margin: 18px 0 8px;
+  padding: 16px 18px;
+  background: var(--surface);
+  font-family: var(--font-archivo), system-ui, sans-serif;
+}
+
+.noteConflict {
+  border-top: 3px solid var(--accent);
+}
+
+.noteUnrecorded {
+  border-top: 3px dotted var(--muted-2);
+}
+
+.noteKind {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.noteKindConflict {
+  color: var(--accent-deep);
+}
+
+.noteKindUnrecorded {
+  color: var(--muted-2);
+}
+
+.noteText {
+  font-size: 15px;
+  line-height: 1.45;
+  margin-top: 8px;
+}
+
+.noteActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.action {
+  font-size: 13px;
+  padding: 9px 13px;
+  cursor: pointer;
+  background: none;
+  font-family: inherit;
+}
+
+.actionPrimary {
+  font-weight: 700;
+  background: var(--ink);
+  color: var(--on-ink);
+  border: 2px solid var(--ink);
+}
+
+.actionSecondary {
+  font-weight: 600;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+
+.action:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---- Rail --------------------------------------------------------------- */
+
+.rail {
+  width: 360px;
+  flex: none;
+  border-left: var(--rule-major, 2px solid var(--ink));
+  display: flex;
+  flex-direction: column;
+}
+
+.legend {
+  padding: 20px 24px 16px;
+  border-bottom: var(--rule-major, 2px solid var(--ink));
+}
+
+.legendTitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.legendRow {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.legendRow:last-child {
+  margin-bottom: 0;
+}
+
+.swatchConflict {
+  width: 20px;
+  flex: none;
+  border-bottom: 3px solid var(--accent);
+}
+
+.swatchUnrecorded {
+  width: 20px;
+  flex: none;
+  border-bottom: 3px dotted var(--muted-2);
+}
+
+.legendLabel {
+  font-size: 14px;
+}
+
+.railList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 24px 18px;
+}
+
+.railRow {
+  padding: 14px 0;
+  cursor: pointer;
+  border-bottom: var(--rule-row, 1px solid var(--rule));
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  display: block;
+}
+
+.railRowOpen {
+  background: var(--hover);
+}
+
+.railKind {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.railKindConflict {
+  color: var(--accent);
+}
+
+.railKindUnrecorded {
+  color: var(--muted-2);
+}
+
+.railQuote {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 6px;
+}
+
+.railReason {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.railEmpty {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted-2);
+  padding: 14px 0;
+}
+
+/* ---- Promise block (pinned bottom, accent) ------------------------------ */
+
+.promise {
+  flex: none;
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 18px 24px;
+}
+
+.promiseHead {
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.promiseSub {
+  font-size: 13px;
+  margin-top: 6px;
+  opacity: 0.9;
+}
