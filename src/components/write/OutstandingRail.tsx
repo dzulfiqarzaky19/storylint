@@ -13,6 +13,7 @@
  * kind label from `mark.kind` via `railLabel` (never per-mark hardcoding).
  */
 
+import { useId, useState } from 'react';
 import type { Mark } from '@/lib/check';
 import { railLabel } from '@/lib/check';
 import styles from './Manuscript.module.css';
@@ -29,8 +30,36 @@ export function OutstandingRail({
   onSelect,
 }: OutstandingRailProps) {
   const allClear = marks.length === 0;
+  // Collapsible only matters in the stacked (mobile/tablet) layout, where the
+  // rail sits below the manuscript. On desktop the toggle is hidden and the
+  // body is always shown (see .railToggle / .railBody in the CSS). Default
+  // closed so the phone opens on the manuscript, not a wall of suggestions.
+  const [open, setOpen] = useState(false);
+  const bodyId = useId();
   return (
-    <aside className={styles.rail} aria-label="Outstanding marks">
+    <aside
+      className={`${styles.rail} ${open ? styles.railExpanded : ''}`}
+      aria-label="Outstanding marks"
+    >
+      <button
+        type="button"
+        className={styles.railToggle}
+        aria-expanded={open}
+        aria-controls={bodyId}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className={styles.railToggleLabel}>
+          Two signals
+          {marks.length > 0 ? (
+            <span className={styles.railToggleCount}>{marks.length}</span>
+          ) : null}
+        </span>
+        <span className={styles.railToggleChevron} aria-hidden>
+          {open ? '\u2013' : '+'}
+        </span>
+      </button>
+
+      <div id={bodyId} className={styles.railBody}>
       <div className={styles.legend}>
         <div className={styles.legendTitle}>Two signals</div>
         <div className={styles.legendRow}>
@@ -82,6 +111,7 @@ export function OutstandingRail({
           Works with the AI off — the checking is your own wiki, read back at
           you.
         </div>
+      </div>
       </div>
     </aside>
   );

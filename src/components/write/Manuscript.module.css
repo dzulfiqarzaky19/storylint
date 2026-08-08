@@ -183,6 +183,18 @@
   flex-direction: column;
 }
 
+/* Collapsible toggle: hidden on desktop, shown in the stacked layout. */
+.railToggle {
+  display: none;
+}
+
+/* On desktop the rail is always open, so the body is always shown. The
+   stacked media queries below make .railBody a flex column that follows the
+   .railExpanded state instead. */
+.railBody {
+  display: contents;
+}
+
 .legend {
   padding: 20px 24px 16px;
   border-bottom: var(--rule-major, 2px solid var(--ink));
@@ -332,6 +344,68 @@
     border-top: var(--rule-major, 2px solid var(--ink));
   }
 
+  /* Stacked layout: the rail becomes a collapsible panel under the
+     manuscript. The toggle appears; the body only renders when expanded. */
+  .railToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    min-height: 44px;
+  }
+
+  .railToggleLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .railToggleCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 11px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .railToggleChevron {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--muted);
+  }
+
+  .railBody {
+    display: none;
+  }
+
+  .railExpanded .railBody {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .railExpanded .legend {
+    border-top: var(--rule-major, 2px solid var(--ink));
+  }
+
   .railList {
     /* Below the manuscript the rail no longer competes for vertical space;
        let it grow with its content rather than trapping rows in a scroller. */
@@ -349,6 +423,7 @@
   .editor :global(.ProseMirror) { font-size: 17px; }
 
   .rail { width: 100%; }
+  .railToggle { padding: 14px var(--gutter); }
   .legend { padding: 16px var(--gutter) 14px; }
   .railList { padding: 4px var(--gutter) 16px; max-height: none; }
   .promise { padding: 16px var(--gutter); }

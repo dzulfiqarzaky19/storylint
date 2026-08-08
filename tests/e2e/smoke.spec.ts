@@ -74,17 +74,34 @@ test("write: rail stacks below the manuscript at <=1200px", async ({ page }) => 
   });
   await expect(manuscript).toBeVisible();
 
-  // At 1440 the rail sits to the RIGHT of the manuscript (higher x, similar y band).
+  // At 1440 the rail sits to the RIGHT of the manuscript (higher x, similar y
+  // band) and is always open — no toggle, promise visible.
   await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(
+    page.getByRole("button", { name: /two signals/i }),
+  ).toBeHidden();
+  await expect(rail).toBeVisible();
   const wideRail = await rail.boundingBox();
   const wideMs = await manuscript.boundingBox();
   expect(wideRail && wideMs && wideRail.x).toBeGreaterThan(wideMs!.x);
 
-  // At 1100 the rail moves BELOW (greater y) — stacked, not shrunk.
+  // At 1100 the rail becomes a collapsible panel BELOW the manuscript. It
+  // starts collapsed (body hidden); the toggle opens it.
   await page.setViewportSize({ width: 1100, height: 900 });
+  const toggle = page.getByRole("button", { name: /two signals/i });
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(rail).toBeHidden();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(rail).toBeVisible();
+  // Opened, the rail body sits BELOW the manuscript (greater y) — stacked.
   const narrowRail = await rail.boundingBox();
   const narrowMs = await manuscript.boundingBox();
   expect(narrowRail && narrowMs && narrowRail.y).toBeGreaterThan(narrowMs!.y);
+  // Toggle closes it again.
+  await toggle.click();
+  await expect(rail).toBeHidden();
 });
 
 test("write: clicking a rail row opens the inline note and highlights the row (§7)", async ({
