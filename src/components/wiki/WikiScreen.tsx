@@ -27,6 +27,7 @@ import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./Shelf";
 import PosterBand from "./PosterBand";
+import WikiIndex from "./WikiIndex";
 import styles from "./WikiScreen.module.css";
 
 const SHELF_ORDER: ShelfKey[] = ["people", "places", "orders", "lore"];
@@ -233,14 +234,29 @@ function WikiScreenInner({
 
   if (!selected) {
     return (
-      <main className={styles.body}>
-        <p className={styles.empty}>No entries in the gazetteer yet.</p>
-      </main>
+      <div className={styles.layout}>
+        <WikiIndex
+          byShelf={byShelf}
+          selectedId=""
+          onSelect={select}
+          total={Object.keys(state.byId).length}
+        />
+        <main className={styles.body}>
+          <p className={styles.empty}>No entries in the gazetteer yet.</p>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className={styles.body}>
+    <div className={styles.layout}>
+      <WikiIndex
+        byShelf={byShelf}
+        selectedId={selected.id}
+        onSelect={select}
+        total={Object.keys(state.byId).length}
+      />
+      <main className={styles.body}>
       {state.error && (
         <div className={styles.errorBar} role="alert">
           Save failed: {state.error}
@@ -282,5 +298,6 @@ function WikiScreenInner({
         onLeave={leaveSuggestion}
       />
     </main>
+    </div>
   );
 }

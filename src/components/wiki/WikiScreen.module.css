@@ -1,4 +1,31 @@
-/* Wiki screen — one vertically scrolling body under the fixed header (HANDOFF §4). */
+/* Wiki screen — left index rail + scrolling body under the fixed header. */
+
+/* Layout: standing left index + main column. On desktop the app body is a flex
+   column that fills the viewport under the 50px header, so .layout fills the
+   remaining height and each column scrolls independently. On the stacked tier
+   (<=1200px) it becomes a normal block so the page scrolls as one. */
+.layout {
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+@media (min-width: 1201px) {
+  .layout {
+    height: calc(100dvh - 50px);
+  }
+  .layout .body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 1200px) {
+  .layout {
+    display: block;
+  }
+}
 
 .body {
   display: block;

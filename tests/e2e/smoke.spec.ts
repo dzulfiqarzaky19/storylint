@@ -12,6 +12,27 @@ test("wiki renders seeded entries with draggable tiles", async ({ page }) => {
   expect(await draggables.count()).toBeGreaterThan(3);
 });
 
+test("wiki: left index groups the world and click focuses an entry", async ({
+  page,
+}) => {
+  await page.goto("/wiki");
+  const index = page.locator('nav[aria-label="The world"]');
+  await expect(index).toBeVisible();
+  // Four collapsible groups, each an aria-expanded button.
+  for (const group of ["PEOPLE", "PLACES", "ORDERS", "LORE"]) {
+    await expect(
+      index.locator("button[aria-expanded]").filter({ hasText: group }),
+    ).toBeVisible();
+  }
+  // Clicking an index entry focuses it: the big entry heading changes.
+  await index.getByRole("button", { name: /Teodor Kest/ }).click();
+  await expect(page.getByRole("heading", { name: /Teodor Kest/i })).toBeVisible();
+  // Collapsing a group hides its items.
+  const people = index.locator("button[aria-expanded]").filter({ hasText: "PEOPLE" });
+  await people.click();
+  await expect(people).toHaveAttribute("aria-expanded", "false");
+});
+
 test("research: Keep inverts and 'Make it an entry' reveals the confirmation strip", async ({
   page,
 }) => {

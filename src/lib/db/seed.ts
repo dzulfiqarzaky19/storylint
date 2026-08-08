@@ -268,6 +268,22 @@ const APPEARANCES: Array<
     null,
   ],
   [
+    "a-maren-3",
+    "maren",
+    3,
+    "Counts forty-one names struck from her uncle’s ledger and says nothing.",
+    null,
+    null,
+  ],
+  [
+    "a-maren-6",
+    "maren",
+    6,
+    "Asks Idra about the empty chair, and is told to go and light her lamp.",
+    null,
+    null,
+  ],
+  [
     "a-maren-7",
     "maren",
     7,
@@ -336,11 +352,37 @@ const OPEN_QUESTIONS: Array<[string, string, string]> = [
   ],
 ];
 
-// Research (§6). Thread id is stable.
+// Research (§6). Two threads so the Research left sidebar has real content to
+// switch between; each thread carries its own turns + cards, and therefore its
+// own KEPT set on the right rail.
 const THREAD_ID = "salt-debt";
+const THREAD2_ID = "the-ferrier";
+
+interface SeedThread {
+  id: string;
+  title: string;
+  subtitle: string;
+  sortOrder: number;
+}
+
+const THREADS: SeedThread[] = [
+  {
+    id: THREAD_ID,
+    title: "Salt as debt",
+    subtitle: "names owed, and who collects",
+    sortOrder: 0,
+  },
+  {
+    id: THREAD2_ID,
+    title: "Naming the Ferrier",
+    subtitle: "the cost of an absence",
+    sortOrder: 1,
+  },
+];
 
 interface SeedTurn {
   id: string;
+  threadId: string;
   ordinal: number;
   side: "them" | "you";
   who: string;
@@ -350,6 +392,7 @@ interface SeedTurn {
 const TURNS: SeedTurn[] = [
   {
     id: "t1",
+    threadId: THREAD_ID,
     ordinal: 1,
     side: "them",
     who: "Collaborator",
@@ -358,6 +401,7 @@ const TURNS: SeedTurn[] = [
   },
   {
     id: "t2",
+    threadId: THREAD_ID,
     ordinal: 2,
     side: "you",
     who: "You",
@@ -365,6 +409,7 @@ const TURNS: SeedTurn[] = [
   },
   {
     id: "t3",
+    threadId: THREAD_ID,
     ordinal: 3,
     side: "them",
     who: "Collaborator",
@@ -374,6 +419,7 @@ const TURNS: SeedTurn[] = [
   // Revealed after a prompt chip is clicked (the deferred `more` turns).
   {
     id: "t4",
+    threadId: THREAD_ID,
     ordinal: 4,
     side: "you",
     who: "You",
@@ -381,11 +427,39 @@ const TURNS: SeedTurn[] = [
   },
   {
     id: "t5",
+    threadId: THREAD_ID,
     ordinal: 5,
     side: "them",
     who: "Collaborator",
     text:
       "Maren’s name was written before she was born, so it was paid in advance. Whatever that bought is the shape of Chapter 12.",
+  },
+  // ---- Thread 2: "Naming the Ferrier" ----
+  {
+    id: "u1",
+    threadId: THREAD2_ID,
+    ordinal: 1,
+    side: "them",
+    who: "Collaborator",
+    text:
+      "The Ferrier has no name and everyone accepts that. But you gave him grey eyes in Chapter 7 — Maren's eyes. Deliberate, or a slip you want to keep?",
+  },
+  {
+    id: "u2",
+    threadId: THREAD2_ID,
+    ordinal: 2,
+    side: "you",
+    who: "You",
+    text: "Deliberate. I want the reader to wonder before Maren does.",
+  },
+  {
+    id: "u3",
+    threadId: THREAD2_ID,
+    ordinal: 3,
+    side: "them",
+    who: "Collaborator",
+    text:
+      "Then the resemblance is the invoice. If he is what her paid-in-advance name bought, the drowned quarter is where that gets said out loud.",
   },
 ];
 
@@ -449,25 +523,134 @@ const CARDS: SeedCard[] = [
     body: "Written before she was born. By whom, and what did the payment buy?",
     asKind: "lore",
   },
+  // ---- Thread 2 cards ----
+  {
+    id: "d1",
+    turnId: "u1",
+    kind: "What if",
+    title: "The Ferrier is what her name bought",
+    body:
+      "Grey eyes are not a coincidence. He is the shape the advance payment took.",
+    asKind: "lore",
+  },
+  {
+    id: "d2",
+    turnId: "u1",
+    kind: "Beat",
+    title: "Maren sees her own eyes",
+    body: "The moment she notices is the moment she stops being able to un-know it.",
+    asKind: "beat",
+  },
+  {
+    id: "d3",
+    turnId: "u3",
+    kind: "Question",
+    title: "Who carried whom out?",
+    body:
+      "If the Ferrier carries the drowned, and he is her debt, what did she owe the water twelve years ago?",
+    asKind: "question",
+  },
 ];
 
-// Write — Chapter 7, "Low Water" (§6). Stored as ProseMirror JSON (paragraphs
+// Write — the full arc, Chapters 1-7. Stored as ProseMirror JSON (paragraphs
 // only, matching the StarterKit editor). Marks are derived by the check engine,
-// so the body is plain text of the four paragraphs.
-const CHAPTER7_PARAGRAPHS: string[] = [
-  "The Ferrier came in on the low water with the sun still an hour off the roofs. Maren had lit the Verge at four, as she had every night since she was nineteen and sworn.",
-  "She kept her mother’s brass ring in her coat and turned it twice, the way the tallow rule said, before she went down to the water.",
-  "He looked at her with the flat attention of a man counting what he is owed. Her own grey eyes did not move.",
-  "Neither of them said the name. That was the arrangement, and it had been the arrangement since before she was born.",
+// so each body is plain prose. Chapter 7 ("Low Water") is the proof chapter and
+// keeps the phrases the engine trips on: "brass ring" + "tallow rule" (never
+// recorded in the wiki -> poster suggestions) and "grey eyes" (conflicts with
+// the entry's "Eyes: Green"). Chapter 4 states the oath sworn "at nineteen",
+// which contradicts The Lantern Oath "sworn at twenty-one". These are the same
+// contradictions the wiki timeline flags, now readable in the manuscript itself.
+interface SeedChapter {
+  id: string;
+  number: number;
+  title: string;
+  paragraphs: string[];
+}
+
+const CHAPTERS: SeedChapter[] = [
+  {
+    id: "ch1",
+    number: 1,
+    title: "Three Days After",
+    paragraphs: [
+      "They buried her father on a falling tide, which the Sept said was unlucky and Halvard said was the only tide they had. Maren stood at the graveside in her mother's coat and did not cry, because crying was a thing you did with your hands and hers were busy holding the coat shut against the wind.",
+      "On the third night she climbed the eleven fathoms of the Verge alone and lit it, because someone had to and there was no one left who knew the trick of the tallow. The flame took on the second match. She watched it steady and thought: this is mine now, whether I swore for it or not.",
+      "Below her the harbour of Kirn lay dark except where the light found it. Nine hundred souls, and not one of them awake to see the Verge come back. She stayed on the stair until dawn, learning the sound the wind made against the glass.",
+    ],
+  },
+  {
+    id: "ch2",
+    number: 2,
+    title: "What the Wall Said",
+    paragraphs: [
+      "The salt came up on the harbour wall the morning after the storm, white letters on grey stone, legible for one turn of the water to anyone the Sept had taught to see them. Maren had been taught. She read the name before she could decide not to.",
+      "It was not a name she expected. She stood with the tide climbing her boots and read it twice more to be certain, then walked home the long way so no one would ask where she had been looking.",
+      "By noon the water had taken it back, the way it always did. She told no one whose name it was. That, she would later think, was the first debt she took on without being asked.",
+    ],
+  },
+  {
+    id: "ch3",
+    number: 3,
+    title: "The Ledger",
+    paragraphs: [
+      "Halvard kept the tide ledgers in a locked room off the harbourmaster's office, and in nineteen years he had never once let Maren past the door. She heard him in there the night after the wall, the scratch of a pen striking things out.",
+      "In the morning forty-one names were gone from the roll of the drowned, ruled through with a single line each, and no note beside them to say why. When she asked, he said the ledger was his to keep and she was not to read what she had no business reading.",
+      "Forty-one. She counted them twice. It was the number the Long Ebb had taken, twelve years back, when the water went out for nine days and came back wrong. She did not say so. She was learning what her uncle already knew, which was that some arithmetic is safer left unspoken.",
+    ],
+  },
+  {
+    id: "ch4",
+    number: 4,
+    title: "Out of Season",
+    paragraphs: [
+      "The Lantern Oath is sworn at twenty-one, at the turn of the year, in front of the light, and there is no provision in any of the Sept's books for swearing it early. Maren swore it at nineteen, out of season, on an ordinary autumn night with the tide half in.",
+      "Sister Idra argued against it in front of the whole Sept and lost, which was rare for her. She said the oath was a door you could only walk through once and Maren was too young to know what was on the other side. Maren said she had been keeping the light alone for two years and the door was already behind her.",
+      "They let her swear. Twenty-one members watched, never more and never fewer, from the twenty-two chairs of the chapter house. Afterward Idra would not look at her, and Maren understood that she had won something she could not give back.",
+    ],
+  },
+  {
+    id: "ch5",
+    number: 5,
+    title: "The Berth Refused",
+    paragraphs: [
+      "Halvard offered her a berth on a boat going out past the light to the drowned quarter, where the towers of Ashkeld stand at low water and are gone again by noon. He offered it the way he offered most things, as though it were already decided and she was only there to agree.",
+      "She refused. She had reasons she gave him and one she did not: that the last person to map the drowned streets too well had been Teodor Kest, and the Assembly had exiled him for the accuracy of it. She did not intend to learn what he had learned.",
+      "Halvard did not argue. He wrote something in a book that was not the tide ledger and told her the offer would not come again. She lit the Verge that night as she had every night, and did not watch the boat go out without her.",
+    ],
+  },
+  {
+    id: "ch6",
+    number: 6,
+    title: "The Empty Chair",
+    paragraphs: [
+      "There are twenty-one members of the Quiet Sept, never more and never fewer, and twenty-two chairs in the chapter house. Maren had sat in that house a dozen times before she let herself ask Idra why they kept a chair no one was allowed to fill.",
+      "Idra was old enough to remember when the chair had a name to it, and careful enough not to say the name aloud. She said only that the Sept kept one seat for a debt that had never been paid, and that a wise reader did not ask after debts that predated her.",
+      "Maren asked anyway. Idra told her to go and light her lamp. But that night, on the stair, Maren turned her mother's brass ring twice in her pocket and understood that the empty chair and the struck-out names and the name on the wall were the same arithmetic, and that she was somewhere inside the sum.",
+    ],
+  },
+  {
+    id: "ch7",
+    number: 7,
+    title: "Low Water",
+    paragraphs: [
+      "The Ferrier came in on the low water with the sun still an hour off the roofs. Maren had lit the Verge at four, as she had every night since she was nineteen and sworn.",
+      "She kept her mother\u2019s brass ring in her coat and turned it twice, the way the tallow rule said, before she went down to the water.",
+      "He looked at her with the flat attention of a man counting what he is owed. Her own grey eyes did not move.",
+      "Neither of them said the name. That was the arrangement, and it had been the arrangement since before she was born.",
+    ],
+  },
 ];
 
-const CHAPTER7_BODY = {
-  type: "doc",
-  content: CHAPTER7_PARAGRAPHS.map((text) => ({
-    type: "paragraph",
-    content: [{ type: "text", text }],
-  })),
-};
+/** ProseMirror doc from plain paragraphs (StarterKit shape). */
+function bodyOf(paragraphs: string[]) {
+  return {
+    type: "doc",
+    content: paragraphs.map((text) => ({
+      type: "paragraph",
+      content: [{ type: "text", text }],
+    })),
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Insert routine
@@ -478,7 +661,7 @@ async function seedWithin(client: PoolClient): Promise<void> {
   await client.query(`
     TRUNCATE TABLE
       entries, facts, ties, chapter_appearances, open_questions,
-      chapters, research_turns, propositions, kept_cards,
+      chapters, research_threads, research_turns, propositions, kept_cards,
       resolved_marks, dismissed_suggestions
     RESTART IDENTITY CASCADE
   `);
@@ -533,19 +716,31 @@ async function seedWithin(client: PoolClient): Promise<void> {
     );
   }
 
-  // Chapter 7 manuscript
-  await client.query(
-    `INSERT INTO chapters (id, number, title, body)
-     VALUES ($1, $2, $3, $4)`,
-    ["ch7", 7, "Low Water", JSON.stringify(CHAPTER7_BODY)],
-  );
+  // Chapters 1-7 (the full arc). Each body is real prose; the Write screen loads
+  // one by number and derives its marks live.
+  for (const c of CHAPTERS) {
+    await client.query(
+      `INSERT INTO chapters (id, number, title, body)
+       VALUES ($1, $2, $3, $4)`,
+      [c.id, c.number, c.title, JSON.stringify(bodyOf(c.paragraphs))],
+    );
+  }
+
+  // Research threads (the left sidebar list)
+  for (const th of THREADS) {
+    await client.query(
+      `INSERT INTO research_threads (id, title, subtitle, sort_order)
+       VALUES ($1, $2, $3, $4)`,
+      [th.id, th.title, th.subtitle, th.sortOrder],
+    );
+  }
 
   // Research turns
   for (const t of TURNS) {
     await client.query(
       `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text)
        VALUES ($1, $2, $3, $4, $5, $6)`,
-      [t.id, THREAD_ID, t.ordinal, t.side, t.who, t.text],
+      [t.id, t.threadId, t.ordinal, t.side, t.who, t.text],
     );
   }
 
@@ -573,6 +768,7 @@ async function main(): Promise<void> {
     UNION ALL SELECT 'chapter_appearances', count(*)::text FROM chapter_appearances
     UNION ALL SELECT 'open_questions', count(*)::text FROM open_questions
     UNION ALL SELECT 'chapters', count(*)::text FROM chapters
+    UNION ALL SELECT 'research_threads', count(*)::text FROM research_threads
     UNION ALL SELECT 'research_turns', count(*)::text FROM research_turns
     UNION ALL SELECT 'propositions', count(*)::text FROM propositions
     ORDER BY table_name

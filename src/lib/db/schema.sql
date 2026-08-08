@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS resolved_marks CASCADE;
 DROP TABLE IF EXISTS kept_cards CASCADE;
 DROP TABLE IF EXISTS propositions CASCADE;
 DROP TABLE IF EXISTS research_turns CASCADE;
+DROP TABLE IF EXISTS research_threads CASCADE;
 DROP TABLE IF EXISTS chapters CASCADE;
 DROP TABLE IF EXISTS open_questions CASCADE;
 DROP TABLE IF EXISTS chapter_appearances CASCADE;
@@ -69,6 +70,14 @@ CREATE TABLE chapters (
   number  integer NOT NULL,
   title   text NOT NULL,
   body    jsonb NOT NULL
+);
+
+-- research_threads: id, title, subtitle, sortOrder (Gemini-style thread list).
+CREATE TABLE research_threads (
+  id          text PRIMARY KEY,
+  title       text NOT NULL,
+  subtitle    text NOT NULL DEFAULT '',
+  sort_order  integer NOT NULL DEFAULT 0
 );
 
 -- research_turns: id, threadId, ordinal, side, who, text
