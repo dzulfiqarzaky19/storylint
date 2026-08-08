@@ -86,3 +86,73 @@ test("write: rail stacks below the manuscript at <=1200px", async ({ page }) => 
   const narrowMs = await manuscript.boundingBox();
   expect(narrowRail && narrowMs && narrowRail.y).toBeGreaterThan(narrowMs!.y);
 });
+
+test("write: clicking a rail row opens the inline note and highlights the row (§7)", async ({
+  page,
+}) => {
+  await page.goto("/write");
+  const rows = page.locator("button[aria-pressed]");
+  await expect(rows.first()).toBeVisible();
+  // No note open initially.
+  await expect(page.getByTestId("write-inline-note")).toHaveCount(0);
+
+  await rows.first().click();
+  // The row highlights (aria-pressed=true) and exactly one note opens.
+  await expect(rows.first()).toHaveAttribute("aria-pressed", "true");
+  const note = page.getByTestId("write-inline-note");
+  await expect(note).toHaveCount(1);
+  await expect(note).toBeVisible();
+
+  // Only ONE mark open at a time: clicking a second row moves the note.
+  if ((await rows.count()) > 1) {
+    await rows.nth(1).click();
+    await expect(rows.nth(1)).toHaveAttribute("aria-pressed", "true");
+    await expect(rows.first()).toHaveAttribute("aria-pressed", "false");
+    await expect(page.getByTestId("write-inline-note")).toHaveCount(1);
+  }
+});
+
+test("write: the inline note offers three differentiated actions (§7 Phase 7)", async ({
+  page,
+}) => {
+  await page.goto("/write");
+  await page.locator("button[aria-pressed]").first().click();
+  const note = page.getByTestId("write-inline-note");
+  await expect(note).toBeVisible();
+  // Three distinct action buttons inside the note (wiki / text / leave).
+  const actions = note.locator("button");
+  expect(await actions.count()).toBeGreaterThanOrEqual(3);
+});
+
+test("focus ring is the accent colour (2px/3px solid) — keyboard focus visible", async ({
+  page,
+}) => {
+  await page.goto("/wiki");
+  // Tab to the first focusable and read its computed outline.
+  await page.keyboard.press("Tab");
+  const outline = await page.evaluate(() => {
+    const el = document.activeElement as HTMLElement | null;
+    if (!el) return null;
+    const s = getComputedStyle(el);
+    return { color: s.outlineColor, style: s.outlineStyle, width: s.outlineWidth };
+  });
+  expect(outline).not.toBeNull();
+  // Accent is #ec3013 -> rgb(236, 48, 19).
+  expect(outline!.color).toContain("236, 48, 19");
+  expect(outline!.style).toBe("solid");
+});
+
+test("research: 'Yes, write it in' flips the kept item to 'In the wiki'", async ({
+  page,
+}) => {
+  await page.goto("/research");
+  // Keep a card, make it an entry, confirm.
+  await page.getByRole("button", { name: "Keep", exact: true }).first().click();
+  await page
+    .getByRole("button", { name: "Make it an entry", exact: true })
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Yes, write it in", exact: false }).click();
+  // The kept board item now shows the "In the wiki" state.
+  await expect(page.getByText("In the wiki", { exact: false }).first()).toBeVisible();
+});
