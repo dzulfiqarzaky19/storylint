@@ -329,11 +329,23 @@
 /* ---- Responsive: single breakpoint at 1200px (HANDOFF §8) --------------- */
 /* The Write rail stacks BELOW the manuscript column instead of shrinking. */
 @media (max-width: 1200px) {
+  /* Stacked layout. The header is a sticky 74px bar in normal flow, so a
+     100vh .screen overflowed the viewport and pushed the rail's toggle below
+     the fold (the open/close control was unreachable without scrolling to the
+     end of the chapter). On this tier we let the page scroll as one document
+     and pin the rail to the bottom of the viewport, so its toggle is always
+     visible. */
+  .screen {
+    height: auto;
+    min-height: 100dvh;
+  }
+
   .body {
     flex-direction: column;
   }
 
   .manuscriptScroll {
+    overflow-y: visible;
     padding: 28px 40px 32px;
   }
 
@@ -342,6 +354,14 @@
     flex: none;
     border-left: none;
     border-top: var(--rule-major, 2px solid var(--ink));
+    /* Pin the toggle bar to the bottom edge of the viewport. Collapsed this is
+       just the ~52px bar; expanded, the body renders above it (capped by
+       .railList max-height) so both the manuscript and the signals stay
+       reachable. */
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background: var(--ground);
   }
 
   /* Stacked layout: the rail becomes a collapsible panel under the

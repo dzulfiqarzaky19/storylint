@@ -215,3 +215,29 @@ for (const path of ["/wiki", "/research", "/write"]) {
     expect(bodyFont).toBeGreaterThanOrEqual(16);
   });
 }
+
+// Regression: on mobile the "Two signals" open/close toggle must be visible
+// without scrolling. The Header is a sticky 74px bar in normal flow, so a
+// 100vh .screen used to overflow the viewport and push the collapsed toggle
+// below the fold (y+height was 918 > 844) — the control looked missing. The
+// rail is now sticky to the viewport bottom; assert the collapsed toggle sits
+// fully within the 844px viewport.
+test("write @390: the 'Two signals' toggle is visible without scrolling", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/write");
+  const toggle = page.getByRole("button", { name: /two signals/i });
+  await expect(toggle).toBeVisible();
+  const box = await toggle.boundingBox();
+  expect(box).not.toBeNull();
+  // Bottom edge within the viewport (allow a 1px sub-pixel rounding margin).
+  expect(box!.y + box!.height).toBeLessThanOrEqual(844 + 1);
+  // And the body is collapsed by default (a suggestion row is not yet shown).
+  await expect(page.getByRole("button", { name: /nineteen and sworn/i })).toHaveCount(0);
+  // Opening it reveals the signals; the toggle stays on screen.
+  await toggle.click();
+  await expect(page.getByRole("button", { name: /nineteen and sworn/i })).toBeVisible();
+  const box2 = await toggle.boundingBox();
+  expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
+});
