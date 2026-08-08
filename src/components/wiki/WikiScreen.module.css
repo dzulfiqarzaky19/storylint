@@ -17,7 +17,7 @@
   color: var(--muted);
 }
 
-/* Persistence error banner — a failed Server Action is surfaced, never swallowed. */
+/* Persistence error banner â€” a failed Server Action is surfaced, never swallowed. */
 .errorBar {
   display: flex;
   align-items: center;

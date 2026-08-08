@@ -47,3 +47,10 @@
   border-left-color: var(--faint);
   color: var(--muted);
 }
+
+@media (max-width: 560px) {
+  .row { flex-wrap: wrap; }
+  .chapter { flex-basis: 44px; }
+  .text { flex: 1 1 100%; padding-right: 0; order: 3; }
+  .flag { flex: 1 1 100%; order: 4; border-left: none; padding-left: 0; }
+}

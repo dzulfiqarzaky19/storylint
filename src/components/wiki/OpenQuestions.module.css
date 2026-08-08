@@ -45,3 +45,7 @@
   line-height: 1.4;
   color: var(--muted-2);
 }
+
+@media (max-width: 560px) {
+  .column { flex: 1 1 auto; }
+}

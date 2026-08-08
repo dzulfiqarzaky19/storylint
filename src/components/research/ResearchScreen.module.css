@@ -331,3 +331,28 @@
 .bottomSpacer {
   height: 40px;
 }
+
+/* ---- Phone tier (<=560px) ------------------------------------------------ */
+@media (max-width: 560px) {
+  .question { font-size: 30px; max-width: none; }
+
+  .turnRow { flex-direction: column; gap: 4px; }
+  .who { width: auto; }
+  .turnText { font-size: 17px; max-width: none; }
+
+  .cards { flex-direction: column; }
+  .card { width: 100%; }
+
+  .confirmStrip { flex-wrap: wrap; gap: 10px 12px; margin: 20px var(--gutter) 0; }
+  .confirmSentence { flex: 1 1 100%; }
+
+  .footer { flex-direction: column; gap: 28px; }
+  .composerPlaceholder { font-size: 20px; }
+  .boardWrap { width: 100%; }
+
+  /* WCAG 2.5.5: 44px tap targets on phones. */
+  .keep,
+  .chip,
+  .confirmYes,
+  .confirmCancel { min-height: 44px; }
+}

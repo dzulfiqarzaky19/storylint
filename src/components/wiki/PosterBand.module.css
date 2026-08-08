@@ -67,3 +67,8 @@
   color: var(--ink);
   cursor: pointer;
 }
+
+@media (max-width: 560px) {
+  .headline { font-size: 22px; max-width: none; }
+  .card { width: 100%; }
+}

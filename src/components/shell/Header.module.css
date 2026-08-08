@@ -54,3 +54,17 @@
   color: var(--accent);
   border-bottom-color: var(--accent);
 }
+
+/* ---- Phone tier (<=560px): nav wraps, descriptor hidden, tight gutter ---- */
+@media (max-width: 560px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    align-items: baseline;
+  }
+  .descriptor { display: none; }
+  .nav { gap: 16px; }
+  /* WCAG 2.5.5: 44px tap targets on phones. */
+  .navItem,
+  .navActive { display: inline-flex; align-items: center; min-height: 44px; }
+}

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo } from "next/font/google";
 import Header from "@/components/shell/Header";
 import "./globals.css";
@@ -13,6 +13,11 @@ const archivo = Archivo({
 export const metadata: Metadata = {
   title: "Ashkeld",
   description: "A gazetteer in progress.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

@@ -156,3 +156,37 @@ test("research: 'Yes, write it in' flips the kept item to 'In the wiki'", async 
   // The kept board item now shows the "In the wiki" state.
   await expect(page.getByText("In the wiki", { exact: false }).first()).toBeVisible();
 });
+
+// ---------------------------------------------------------------------------
+// Mobile tier (390x844, Pixel-ish). Reflow must not overflow horizontally and
+// the primary nav must stay reachable. Desktop layout is untouched.
+// ---------------------------------------------------------------------------
+for (const path of ["/wiki", "/research", "/write"]) {
+  test(`mobile @390: ${path} has no horizontal overflow and keeps nav visible`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(path);
+    // globals.css sets html,body{overflow-x:hidden}, which clamps
+    // documentElement.scrollWidth to clientWidth — so measuring the document
+    // would mask a genuinely overflowing child. Instead measure the widest
+    // rendered element's right edge against the viewport (defeats the clamp).
+    const maxRight = await page.evaluate(() => {
+      let m = 0;
+      document.querySelectorAll("body *").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width > 0 && r.right > m) m = r.right;
+      });
+      return Math.ceil(m);
+    });
+    expect(maxRight).toBeLessThanOrEqual(390 + 1);
+    // The current screen's nav link stays reachable (Header lives in layout).
+    await expect(page.getByRole("link", { name: /wiki/i }).first()).toBeVisible();
+    // Readability floor: body copy must not shrink below 16px on phones.
+    const bodyFont = await page.evaluate(() => {
+      const el = document.querySelector("p");
+      return el ? parseFloat(getComputedStyle(el).fontSize) : 999;
+    });
+    expect(bodyFont).toBeGreaterThanOrEqual(16);
+  });
+}

@@ -22,3 +22,7 @@
   font-size: 13px;
   color: var(--muted);
 }
+
+@media (max-width: 560px) {
+  .row { flex-wrap: wrap; gap: 4px 12px; }
+}

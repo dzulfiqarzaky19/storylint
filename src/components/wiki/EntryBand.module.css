@@ -87,3 +87,10 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 560px) {
+  .band { padding: 24px var(--gutter) 0; }
+  .name { font-size: 44px; letter-spacing: -0.03em; }
+  .summary { font-size: 16px; max-width: none; }
+  .detailsRow { flex-direction: column; gap: 24px; }
+}

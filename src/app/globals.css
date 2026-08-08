@@ -92,3 +92,22 @@ svg {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ---------------------------------------------------------------------------
+   Phone tier (<=560px). The desktop layout is untouched; here we only shrink
+   the shared gutter (every screen reads var(--gutter)) and guard against
+   horizontal overflow from the wide fixed-width desktop columns. Per-screen
+   type scaling and column stacking live in each module's own @media block.
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 560px) {
+  :root {
+    --gutter: 18px;
+  }
+
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}

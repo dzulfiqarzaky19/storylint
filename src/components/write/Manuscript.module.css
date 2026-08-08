@@ -386,3 +386,33 @@
     max-height: 60vh;
   }
 }
+
+/* ---- Phone tier (<=560px) ------------------------------------------------ */
+@media (max-width: 560px) {
+  .masthead {
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    padding: 12px var(--gutter);
+  }
+  .mastheadSub { display: none; }
+  .nav { gap: 16px; }
+
+  .manuscriptScroll { padding: 22px var(--gutter) 28px; }
+  .manuscript { max-width: 100%; }
+  .title { font-size: 32px; }
+
+  .editor :global(.ProseMirror) { font-size: 17px; }
+
+  .rail { width: 100%; }
+  .legend { padding: 16px var(--gutter) 14px; }
+  .railList { padding: 4px var(--gutter) 16px; max-height: none; }
+  .promise { padding: 16px var(--gutter); }
+  .promiseHead { font-size: 17px; }
+
+  .navItem,
+  .navItemActive { display: inline-flex; align-items: center; min-height: 44px; }
+
+  .noteActions { gap: 8px; }
+  .action { flex: 1 1 auto; text-align: center; min-height: 44px; }
+  .railRow { padding: 16px 0; }
+}
