@@ -369,3 +369,67 @@ test("wiki: an inline detail edit persists across reload (manual authoring)", as
       .filter({ hasText: "Twenty-two" }),
   ).toBeVisible();
 });
+
+// Uniform left-index collapse on the stacked tier (<=1200px). Regression guard
+// for the tablet bug where the tall wiki index bled down OVER the entry body:
+// each screen's left index must fold behind a header toggle (closed by default)
+// and, once opened, must not overlap the content beside it.
+type Box = { x: number; y: number; width: number; height: number };
+function boxesOverlap(a: Box, b: Box): boolean {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
+const INDEX_CASES = [
+  { path: "/wiki", nav: 'nav[aria-label="The world"]', body: "main", item: /Maren Vell/ },
+  { path: "/research", nav: 'nav[aria-label="Research threads"]', body: "main", item: /Salt as debt/ },
+  {
+    path: "/write",
+    nav: 'nav[aria-label="Chapters"]',
+    body: '[class*="manuscriptScroll"]',
+    item: /Low Water/,
+  },
+];
+
+for (const c of INDEX_CASES) {
+  test(`${c.path} @tablet: left index folds behind a toggle and never overlaps the body`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 900, height: 1000 });
+    await page.goto(c.path);
+    const nav = page.locator(c.nav);
+    const toggle = nav.locator("button[aria-controls]").first();
+    const item = nav.getByRole("button", { name: c.item });
+
+    // Closed by default: toggle present, index item hidden.
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(item).toBeHidden();
+
+    // Open: item appears and the panel does not overlap the body column.
+    await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(item).toBeVisible();
+    const navBox = (await nav.boundingBox())!;
+    const bodyBox = (await page.locator(c.body).first().boundingBox())!;
+    expect(boxesOverlap(navBox, bodyBox), `${c.path} index overlaps body`).toBe(false);
+
+    // Close again.
+    await toggle.click();
+    await expect(item).toBeHidden();
+  });
+
+  test(`${c.path} @desktop: the left index is always shown (toggle inert)`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(c.path);
+    await expect(
+      page.locator(c.nav).getByRole("button", { name: c.item }),
+    ).toBeVisible();
+  });
+}

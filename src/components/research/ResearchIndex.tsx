@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, useState } from "react";
 import type { ResearchThreadRow } from "@/lib/domain/types";
 import styles from "./ResearchIndex.module.css";
 
@@ -16,8 +17,9 @@ export interface ResearchIndexProps {
  * The Research LEFT sidebar — a Gemini-style list of conversation threads. One
  * flat list (threads are not grouped), each row a title + subtitle; clicking one
  * loads that thread. Shares the Wiki index's visual language (300px standing
- * rail on desktop, collapsible panel on the stacked tier) so all three screens
- * read as one app.
+ * rail on desktop; on the stacked tier <=1200px the whole list folds behind a
+ * header toggle) so all three screens read as one app. The `open` state only
+ * affects the stacked tier — on desktop `.panel` is always shown.
  */
 export default function ResearchIndex({
   threads,
@@ -25,14 +27,29 @@ export default function ResearchIndex({
   onSelect,
   onCreate,
 }: ResearchIndexProps) {
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+
   return (
-    <nav className={styles.index} aria-label="Research threads">
-      <div className={styles.head}>
+    <nav
+      className={`${styles.index} ${open ? styles.indexOpen : ""}`}
+      aria-label="Research threads"
+    >
+      <button
+        type="button"
+        className={styles.railToggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((v) => !v)}
+      >
         <span className={styles.title}>Threads</span>
         <span className={styles.count}>{threads.length}</span>
-      </div>
+        <span className={styles.railToggleChevron} aria-hidden="true">
+          {open ? "\u2212" : "+"}
+        </span>
+      </button>
 
-      <ul className={styles.list}>
+      <ul id={panelId} className={styles.panel}>
         {threads.map((t) => (
           <li key={t.id}>
             <button

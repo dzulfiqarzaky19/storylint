@@ -14,12 +14,38 @@
   gap: 8px;
 }
 
-.head {
+/* Header row doubles as the mobile collapse toggle. On desktop it reads as a
+   static header: full-width, no pointer, chevron hidden (see below). */
+.railToggle {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  padding-bottom: 8px;
+  width: 100%;
+  padding: 0 0 8px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.railToggleChevron {
+  display: none;
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--muted);
+}
+
+/* The grouped index panel. Always shown on desktop; collapses behind the
+   header toggle on the stacked tier (see the media query). */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .title {
@@ -138,15 +164,39 @@
   text-decoration: underline;
 }
 
-/* Stacked tier: the index becomes a collapsible panel (toggle handled by the
-   screen's layout). Here we simply let it size to content and drop the border
-   /scroll so it flows above the body. */
+/* Stacked tier: the whole index folds behind the header toggle. Closed by
+   default (React state) so the page opens on the entry; tapping the header
+   reveals the grouped panel, which scrolls within a capped height so it can
+   never bleed over the body below. */
 @media (max-width: 1200px) {
   .index {
     width: 100%;
     border-right: none;
     border-bottom: var(--rule-major, 2px solid var(--ink));
     overflow-y: visible;
+    padding: 0;
+    gap: 0;
+  }
+
+  .railToggle {
+    padding: 16px var(--gutter, 24px);
+    cursor: pointer;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .railToggleChevron {
+    display: inline;
+  }
+
+  .panel {
+    display: none;
+  }
+
+  .indexOpen .panel {
+    display: block;
+    overflow-y: auto;
     max-height: 50vh;
+    padding: 0 var(--gutter, 24px) 20px;
   }
 }

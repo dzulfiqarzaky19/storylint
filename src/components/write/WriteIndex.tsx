@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, useState } from "react";
 import styles from "./WriteIndex.module.css";
 
 export interface WriteIndexChapter {
@@ -28,8 +29,9 @@ function numberWord(n: number): string {
 /**
  * The Write LEFT sidebar — the chapter list. One flat, ordered list; clicking a
  * chapter loads it. Shares the Wiki/Research index visual language (300px
- * standing rail on desktop, collapsible panel <=1200px) so all three screens
- * read as one app.
+ * standing rail on desktop; on the stacked tier <=1200px the whole list folds
+ * behind a header toggle) so all three screens read as one app. The `open`
+ * state only affects the stacked tier — on desktop `.panel` is always shown.
  */
 export default function WriteIndex({
   chapters,
@@ -37,14 +39,29 @@ export default function WriteIndex({
   onSelect,
   onCreate,
 }: WriteIndexProps) {
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+
   return (
-    <nav className={styles.index} aria-label="Chapters">
-      <div className={styles.head}>
+    <nav
+      className={`${styles.index} ${open ? styles.indexOpen : ""}`}
+      aria-label="Chapters"
+    >
+      <button
+        type="button"
+        className={styles.railToggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((v) => !v)}
+      >
         <span className={styles.title}>Chapters</span>
         <span className={styles.count}>{chapters.length}</span>
-      </div>
+        <span className={styles.railToggleChevron} aria-hidden="true">
+          {open ? "\u2212" : "+"}
+        </span>
+      </button>
 
-      <ul className={styles.list}>
+      <ul id={panelId} className={styles.panel}>
         {chapters.map((c) => (
           <li key={c.number}>
             <button
