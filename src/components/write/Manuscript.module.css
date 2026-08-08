@@ -347,3 +347,42 @@
   margin-top: 6px;
   opacity: 0.9;
 }
+
+/* ---- Focus states (keyboard) -------------------------------------------- */
+/* Interactive elements get a visible focus ring in the accent colour. */
+.railRow:focus-visible,
+.action:focus-visible,
+.navItem:focus-visible,
+.navItemActive:focus-visible,
+.underline:focus-visible,
+:global(.write-underline-conflict):focus-visible,
+:global(.write-underline-unrecorded):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- Responsive: single breakpoint at 1200px (HANDOFF §8) --------------- */
+/* The Write rail stacks BELOW the manuscript column instead of shrinking. */
+@media (max-width: 1200px) {
+  .body {
+    flex-direction: column;
+  }
+
+  .manuscriptScroll {
+    padding: 28px 40px 32px;
+  }
+
+  .rail {
+    width: 100%;
+    flex: none;
+    border-left: none;
+    border-top: var(--rule-major, 2px solid var(--ink));
+  }
+
+  .railList {
+    /* Below the manuscript the rail no longer competes for vertical space;
+       let it grow with its content rather than trapping rows in a scroller. */
+    flex: none;
+    max-height: 60vh;
+  }
+}
