@@ -8,7 +8,7 @@
 
 import { useReducer, useCallback, startTransition } from "react";
 import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
-import { SHELF_TITLES, KIND_FOR_SHELF } from "@/lib/domain/types";
+import { SHELF_TITLES, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
 import {
   initWikiState,
   wikiReducer,
@@ -272,7 +272,7 @@ function WikiScreenInner({
   const createEntryOnShelf = useCallback(
     (shelf: ShelfKey) => {
       const kind: Kind = KIND_FOR_SHELF[shelf];
-      const name = `New ${SHELF_TITLES[shelf].replace(/s$/, "").toLowerCase()}`;
+      const name = `New ${KIND_LABEL[kind].toLowerCase()}`;
       const entryId = newId();
       // Client-generated id is passed to the server so the reducer row and the
       // persisted row share one id — no reconciliation needed. sortOrder just

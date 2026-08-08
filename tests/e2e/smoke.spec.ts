@@ -316,3 +316,56 @@ test("wiki @390: the suggestions poster toggle is visible without scrolling and 
   const box2 = await toggle.boundingBox();
   expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
 });
+
+// ---- Left navigation + in-place authoring (uniform across all 3 screens) ----
+
+test("research: left thread index switches threads (URL-driven, own question)", async ({
+  page,
+}) => {
+  await page.goto("/research");
+  const index = page.locator('nav[aria-label="Research threads"]');
+  await expect(index).toBeVisible();
+  await expect(index.getByRole("button", { name: /Salt as debt/ })).toBeVisible();
+  const ferrier = index.getByRole("button", { name: /Naming the Ferrier/ });
+  await expect(ferrier).toBeVisible();
+  await expect(page.getByText(/salt-name is a debt/i)).toBeVisible();
+  await ferrier.click();
+  await expect(page).toHaveURL(/thread=the-ferrier/);
+  await expect(page.getByText(/salt-name is a debt/i)).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /Naming the Ferrier/i })).toBeVisible();
+});
+
+test("write: left chapter index lists all chapters and switches the manuscript", async ({
+  page,
+}) => {
+  await page.goto("/write");
+  const index = page.locator('nav[aria-label="Chapters"]');
+  await expect(index).toBeVisible();
+  await expect(index.getByRole("button", { name: /Low Water/ })).toBeVisible();
+  const three = index.getByRole("button", { name: /The Ledger/ });
+  await expect(three).toBeVisible();
+  await three.click();
+  await expect(page).toHaveURL(/chapter=3/);
+  await expect(page.getByRole("heading", { name: /The Ledger/i })).toBeVisible();
+});
+
+test("wiki: an inline detail edit persists across reload (manual authoring)", async ({
+  page,
+}) => {
+  await page.goto("/wiki");
+  const value = page
+    .locator("li[class*='DetailsColumn-module'] span[class*='value'] button")
+    .first();
+  await expect(value).toBeVisible();
+  await value.click();
+  const editor = page.locator("input[class*='InlineText-module']");
+  await expect(editor).toBeVisible();
+  await editor.fill("Twenty-two");
+  await editor.press("Enter");
+  await page.reload();
+  await expect(
+    page
+      .locator("li[class*='DetailsColumn-module'] span[class*='value'] button")
+      .filter({ hasText: "Twenty-two" }),
+  ).toBeVisible();
+});
