@@ -266,24 +266,6 @@ export function Manuscript({
 
   return (
     <div className={styles.screen}>
-      <header className={styles.masthead}>
-        <div className={styles.mastheadLeft}>
-          <span className={styles.wordmark}>ASHKELD</span>
-          <span className={styles.mastheadSub}>chapter seven, in proof</span>
-        </div>
-        <nav className={styles.nav}>
-          <a className={styles.navItem} href="/research">
-            Research
-          </a>
-          <a className={styles.navItem} href="/wiki">
-            Wiki
-          </a>
-          <a className={styles.navItemActive} href="/write" aria-current="page">
-            Write
-          </a>
-        </nav>
-      </header>
-
       <div className={styles.body}>
         <div className={styles.manuscriptScroll}>
           <div className={styles.manuscript}>
