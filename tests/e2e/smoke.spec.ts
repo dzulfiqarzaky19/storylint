@@ -155,6 +155,14 @@ test("research: 'Yes, write it in' flips the kept item to 'In the wiki'", async 
   await page.getByRole("button", { name: "Yes, write it in", exact: false }).click();
   // The kept board item now shows the "In the wiki" state.
   await expect(page.getByText("In the wiki", { exact: false }).first()).toBeVisible();
+
+  // Regression (data-integrity): a card written into the wiki is permanently
+  // kept. Its "Kept" toggle must be DISABLED so it cannot be un-kept — an
+  // un-keep would delete the kept_cards row that records the wiki write and
+  // desync the board from the persisted entry on reload.
+  const keptToggle = page.getByRole("button", { name: "Kept", exact: true }).first();
+  await expect(keptToggle).toBeVisible();
+  await expect(keptToggle).toBeDisabled();
 });
 
 // ---------------------------------------------------------------------------
