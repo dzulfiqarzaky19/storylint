@@ -1,0 +1,89 @@
+/* Entry band — README Screen 1 "Entry band" geometry. */
+
+.band {
+  display: flex;
+  gap: 40px;
+  padding: 34px var(--gutter) 0;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Kicker row: kind label + catalogue number, 14px gap. */
+.kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.kind {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.catalogueNo {
+  font-size: 14px;
+  color: var(--faint);
+}
+
+.name {
+  font-size: 76px;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  margin: 8px 0 14px;
+}
+
+.rule {
+  border-top: var(--rule-major);
+}
+
+.summary {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--body-ink);
+  max-width: 56ch;
+  margin-top: 16px;
+  text-wrap: pretty;
+}
+
+/* "The story so far" heading row. */
+.storyHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-bottom: 8px;
+  border-bottom: var(--rule-major);
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Two-column row: Details (flex:1) + Still open (300px), 36px gap. */
+.detailsRow {
+  display: flex;
+  gap: 36px;
+  margin-top: 30px;
+}
+
+@media (max-width: 1200px) {
+  .band {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,47 @@
+/* Still open — README Screen 1 "Still open" (300px fixed). */
+
+.column {
+  flex: 0 0 300px;
+}
+
+.heading {
+  padding-bottom: 8px;
+  border-bottom: var(--rule-major);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.list {
+  display: block;
+}
+
+/* Each row: padding 11px 0, 1px rule, 10px gap. */
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: var(--rule-row);
+}
+
+.dash {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.fallback {
+  padding: 11px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--muted-2);
+}

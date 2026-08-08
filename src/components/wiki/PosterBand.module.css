@@ -1,0 +1,44 @@
+/* Poster band — README Screen 1 "Poster band". Full-bleed accent block. */
+
+.band {
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 26px var(--gutter) 30px;
+  margin-top: 30px;
+}
+
+.headline {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  max-width: 30ch;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.card {
+  width: 320px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 14px;
+  cursor: grab;
+}
+
+.source {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.text {
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 6px 0 12px;
+}

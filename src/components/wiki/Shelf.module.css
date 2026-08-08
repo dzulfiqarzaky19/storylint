@@ -1,0 +1,38 @@
+/* Shelf group — README Screen 1 "Shelves". */
+
+.shelf {
+  padding: 18px var(--gutter) 30px;
+}
+
+/* Heading row: title, count, then a flex:1 1px rule line filling the row. */
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.count {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.line {
+  flex: 1;
+  height: 0;
+  border-top: var(--rule-row);
+}
+
+/* Tiles wrap in a 10px-gap flex row. */
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}

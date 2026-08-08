@@ -1,0 +1,199 @@
+// Parameterized write helpers (INSERT/UPDATE) for the mutation paths in
+// src/lib/actions/*. Companion to the read-only queries.ts (owned by calf);
+// kept in a separate file to avoid concurrent-edit collisions on the shared
+// query layer. Same rules as queries.ts:
+//
+//   * ALWAYS use $1/$2/... placeholders. NEVER interpolate values into SQL.
+//   * Column names are snake_case in the DB; result aliases map to camelCase.
+//
+// These are minimal, clearly-named helpers. They do not enforce product rules;
+// the confirmation invariant (product rule 1) lives at the action layer.
+
+import { query, one } from "./pool";
+import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow } from "../domain/types";
+import type { WikiWriteConfirmation } from "../actions/confirmation";
+
+// Helpers marked "WIKI WRITE" below require a WikiWriteConfirmation token (product
+// rule 1). The token parameter is intentionally unused at runtime — its presence
+// in the signature makes a non-confirmed call a compile-time type error, so these
+// helpers cannot be reached from any path that did not pass through the gate.
+
+// ---- Facts ----------------------------------------------------------------
+
+/**
+ * WIKI WRITE (product rule 1). Insert a new fact on an entry. Requires a
+ * WikiWriteConfirmation token, so it is only callable from a confirmed path
+ * (addSuggestionAsFact / confirmCard). Returns the created row (camelCase).
+ */
+export async function insertFact(
+  input: {
+    id: string;
+    entryId: string;
+    key: string;
+    value: string;
+    fresh: boolean;
+    sortOrder: number;
+  },
+  _confirmation: WikiWriteConfirmation,
+): Promise<FactRow> {
+  const res = await one<FactRow>(
+    `INSERT INTO facts (id, entry_id, key, value, fresh, sort_order)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id,
+               entry_id  AS "entryId",
+               key,
+               value,
+               fresh,
+               sort_order AS "sortOrder"`,
+    [input.id, input.entryId, input.key, input.value, input.fresh, input.sortOrder],
+  );
+  // one() returns null only on empty result; INSERT ... RETURNING always yields a row.
+  if (!res) throw new Error("insertFact: no row returned");
+  return res;
+}
+
+/** Move a fact to a different entry (drag a fact tile between entries). */
+export async function updateFactEntry(input: {
+  factId: string;
+  toEntryId: string;
+  sortOrder: number;
+}): Promise<void> {
+  await query(
+    `UPDATE facts SET entry_id = $2, sort_order = $3 WHERE id = $1`,
+    [input.factId, input.toEntryId, input.sortOrder],
+  );
+}
+
+/** Clear the "fresh" highlight on a fact once it has settled. */
+export async function clearFactFresh(factId: string): Promise<void> {
+  await query(`UPDATE facts SET fresh = FALSE WHERE id = $1`, [factId]);
+}
+
+// ---- Entries (shelf order) ------------------------------------------------
+
+/**
+ * Persist an entry's shelf placement and sort order (the persisted shelf order
+ * the spec demands: `shelf` + `sortOrder`). Called after a tile is dropped.
+ */
+export async function updateEntryShelfOrder(input: {
+  entryId: string;
+  shelf: string;
+  sortOrder: number;
+}): Promise<void> {
+  await query(
+    `UPDATE entries SET shelf = $2, sort_order = $3 WHERE id = $1`,
+    [input.entryId, input.shelf, input.sortOrder],
+  );
+}
+
+// ---- Ties -----------------------------------------------------------------
+
+/**
+ * WIKI WRITE (product rule 1). Insert a directional tie. The prototype seeds
+ * both directions; callers do so explicitly. Requires a confirmation token.
+ */
+export async function insertTie(
+  input: {
+    id: string;
+    fromEntryId: string;
+    toEntryId: string;
+    rel: string;
+  },
+  _confirmation: WikiWriteConfirmation,
+): Promise<TieRow> {
+  const res = await one<TieRow>(
+    `INSERT INTO ties (id, from_entry_id, to_entry_id, rel)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id,
+               from_entry_id AS "fromEntryId",
+               to_entry_id   AS "toEntryId",
+               rel`,
+    [input.id, input.fromEntryId, input.toEntryId, input.rel],
+  );
+  if (!res) throw new Error("insertTie: no row returned");
+  return res;
+}
+
+// ---- Chapters (manuscript) ------------------------------------------------
+
+/** Save a chapter's ProseMirror JSON body. */
+export async function saveChapterBody(input: {
+  number: number;
+  body: unknown;
+}): Promise<void> {
+  await query(
+    `UPDATE chapters SET body = $2 WHERE number = $1`,
+    [input.number, JSON.stringify(input.body)],
+  );
+}
+
+// ---- Resolved marks (Write) -----------------------------------------------
+
+/**
+ * Persist a mark resolution by its stable markKey (§7). Idempotent upsert so a
+ * dismissed mark never returns even after the paragraph moves.
+ */
+export async function upsertResolvedMark(input: {
+  markKey: string;
+  resolution: string;
+  resolvedAt: number;
+}): Promise<ResolvedMarkRow> {
+  const res = await one<ResolvedMarkRow>(
+    `INSERT INTO resolved_marks (mark_key, resolution, resolved_at)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (mark_key)
+       DO UPDATE SET resolution = EXCLUDED.resolution, resolved_at = EXCLUDED.resolved_at
+     RETURNING mark_key    AS "markKey",
+               resolution,
+               resolved_at AS "resolvedAt"`,
+    [input.markKey, input.resolution, input.resolvedAt],
+  );
+  if (!res) throw new Error("upsertResolvedMark: no row returned");
+  return res;
+}
+
+// ---- Kept cards (Research) ------------------------------------------------
+
+/** Keep a proposition card on the Kept board (idempotent by propositionId). */
+export async function upsertKeptCard(input: {
+  propositionId: string;
+  keptAt: number;
+}): Promise<KeptCardRow> {
+  const res = await one<KeptCardRow>(
+    `INSERT INTO kept_cards (proposition_id, kept_at, in_wiki)
+     VALUES ($1, $2, FALSE)
+     ON CONFLICT (proposition_id) DO UPDATE SET kept_at = EXCLUDED.kept_at
+     RETURNING proposition_id AS "propositionId",
+               kept_at        AS "keptAt",
+               in_wiki        AS "inWiki"`,
+    [input.propositionId, input.keptAt],
+  );
+  if (!res) throw new Error("upsertKeptCard: no row returned");
+  return res;
+}
+
+/**
+ * WIKI WRITE (product rule 1). Mark a kept card as written into the wiki (after
+ * confirmCard). Requires a confirmation token.
+ */
+export async function markKeptInWiki(
+  propositionId: string,
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  await query(
+    `UPDATE kept_cards SET in_wiki = TRUE WHERE proposition_id = $1`,
+    [propositionId],
+  );
+}
+
+// ---- Dismissed suggestions (Wiki poster "Leave it") -----------------------
+
+/** Record a dismissed suggestion by its stable key (idempotent). */
+export async function insertDismissedSuggestion(suggestionKey: string): Promise<void> {
+  await query(
+    `INSERT INTO dismissed_suggestions (suggestion_key)
+     VALUES ($1)
+     ON CONFLICT (suggestion_key) DO NOTHING`,
+    [suggestionKey],
+  );
+}

@@ -1,0 +1,52 @@
+/* Details column — README Screen 1 "Details". */
+
+.details {
+  flex: 1;
+  min-width: 0;
+}
+
+.heading {
+  padding-bottom: 8px;
+  border-bottom: var(--rule-major);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.list {
+  display: block;
+}
+
+/* Each fact row: flex, 12px gap, baseline, padding 10px 4px, 1px rule, grab. */
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 4px;
+  border-bottom: var(--rule-row);
+  cursor: grab;
+}
+
+.fresh {
+  background: var(--fresh);
+}
+
+/* Key cell 104px, 12px/700/0.04em uppercase muted-2. */
+.key {
+  flex: 0 0 104px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+}

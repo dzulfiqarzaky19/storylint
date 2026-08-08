@@ -1,0 +1,24 @@
+/* World band — README Screen 1 "World band". Separated above by a 2px rule
+   with 38px margin (HANDOFF §4). */
+
+.band {
+  border-top: var(--rule-major);
+  margin-top: 38px;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 20px var(--gutter) 0;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--muted);
+}

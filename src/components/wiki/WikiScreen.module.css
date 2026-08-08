@@ -1,0 +1,18 @@
+/* Wiki screen — one vertically scrolling body under the fixed header (HANDOFF §4). */
+
+.body {
+  display: block;
+  padding-bottom: 40px;
+}
+
+.shelves {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.empty {
+  padding: 34px var(--gutter);
+  font-size: 15px;
+  color: var(--muted);
+}

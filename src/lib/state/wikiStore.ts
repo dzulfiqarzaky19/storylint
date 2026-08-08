@@ -1,0 +1,155 @@
+// =============================================================================
+// Wiki store (HANDOFF §8) — useReducer state shape + action union + pure reducer.
+//
+// The reducer is the SESSION source of truth so drag feedback is instant. Each
+// reducer action is fired ALONGSIDE its matching Server Action (src/lib/actions/
+// wiki.ts); the mapping is documented per-action below. The reducer is PURE:
+// no I/O, no Date.now, no random — callers pass any needed ids/timestamps in.
+//
+// This is a contract scaffold: shapes + a reducer skeleton for Phase 4 to build
+// the Wiki screen against. Rendering/DnD wiring is out of scope here.
+// =============================================================================
+
+import type { EntryWithDetails, Shelf, WikiSnapshot } from "../domain/types";
+
+// ---- State ----------------------------------------------------------------
+
+/** A poster-band suggestion projected from the check engine's `missing` marks. */
+export interface WikiSuggestion {
+  suggestionKey: string;
+  entryId: string;
+  key: string;
+  value: string;
+  text: string;
+  source: string;
+}
+
+export interface WikiState {
+  /** All entries, keyed for O(1) lookup and mutation. */
+  byId: Record<string, EntryWithDetails>;
+  /** Ordered entry ids per shelf — the draggable arrangement. */
+  order: Record<Shelf, string[]>;
+  /** The focused entry shown in the entry band, or null. */
+  selectedEntryId: string | null;
+  /** Live poster-band suggestions (dismissed ones removed). */
+  suggestions: WikiSuggestion[];
+  /** In-flight/last error from a paired server action, surfaced not swallowed. */
+  error: string | null;
+}
+
+// ---- Actions --------------------------------------------------------------
+//
+// action type              →  matching Server Action (actions/wiki.ts)
+// SELECT_ENTRY             →  selectEntry
+// MOVE_ENTRY               →  moveEntry(toShelf, beforeId)
+// LINK_ENTRY               →  linkEntry
+// MOVE_FACT                →  moveFact(toEntryId)
+// ADD_SUGGESTION_AS_FACT   →  addSuggestionAsFact   (WIKI WRITE, confirmed)
+// DISMISS_SUGGESTION       →  dismissSuggestion
+// SET_ERROR                →  (none — surfaces a failed server action)
+
+export type WikiAction =
+  | { type: "SELECT_ENTRY"; entryId: string | null }
+  | { type: "MOVE_ENTRY"; entryId: string; toShelf: Shelf; beforeId: string | null }
+  | { type: "LINK_ENTRY"; fromEntryId: string; toEntryId: string; rel: string }
+  | { type: "MOVE_FACT"; factId: string; fromEntryId: string; toEntryId: string }
+  | {
+      type: "ADD_SUGGESTION_AS_FACT";
+      suggestionKey: string;
+      entryId: string;
+      /** Server-generated fact id (reducer is pure; caller supplies it). */
+      factId: string;
+      key: string;
+      value: string;
+      sortOrder: number;
+    }
+  | { type: "DISMISS_SUGGESTION"; suggestionKey: string }
+  | { type: "SET_ERROR"; error: string | null };
+
+// ---- Init -----------------------------------------------------------------
+
+/** Build initial state from a server-loaded snapshot. */
+export function initWikiState(snapshot: WikiSnapshot, suggestions: WikiSuggestion[] = []): WikiState {
+  const order: Record<Shelf, string[]> = { people: [], places: [], orders: [], lore: [] };
+  for (const entry of snapshot.entries) {
+    order[entry.shelf].push(entry.id);
+  }
+  return {
+    byId: { ...snapshot.byId },
+    order,
+    selectedEntryId: snapshot.entries[0]?.id ?? null,
+    suggestions,
+    error: null,
+  };
+}
+
+// ---- Reducer (pure) -------------------------------------------------------
+
+export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
+  switch (action.type) {
+    case "SELECT_ENTRY":
+      return { ...state, selectedEntryId: action.entryId };
+
+    case "MOVE_ENTRY":
+      return moveEntryInState(state, action.entryId, action.toShelf, action.beforeId);
+
+    case "LINK_ENTRY":
+      // STUB (Phase 4): append a ResolvedTie to byId[fromEntryId].ties.
+      return state;
+
+    case "MOVE_FACT":
+      // STUB (Phase 4): remove fact from fromEntry.facts, append to toEntry.facts.
+      return state;
+
+    case "ADD_SUGGESTION_AS_FACT":
+      // STUB (Phase 4): append a fresh FactRow to byId[entryId].facts, drop the suggestion.
+      return {
+        ...state,
+        suggestions: state.suggestions.filter((s) => s.suggestionKey !== action.suggestionKey),
+      };
+
+    case "DISMISS_SUGGESTION":
+      return {
+        ...state,
+        suggestions: state.suggestions.filter((s) => s.suggestionKey !== action.suggestionKey),
+      };
+
+    case "SET_ERROR":
+      return { ...state, error: action.error };
+
+    default:
+      return assertNever(action);
+  }
+}
+
+// ---- Helpers --------------------------------------------------------------
+
+/** Move an entry to a shelf, positioned before `beforeId` (or appended). Pure. */
+function moveEntryInState(
+  state: WikiState,
+  entryId: string,
+  toShelf: Shelf,
+  beforeId: string | null,
+): WikiState {
+  const order: Record<Shelf, string[]> = {
+    people: state.order.people.filter((id) => id !== entryId),
+    places: state.order.places.filter((id) => id !== entryId),
+    orders: state.order.orders.filter((id) => id !== entryId),
+    lore: state.order.lore.filter((id) => id !== entryId),
+  };
+  const dest = order[toShelf];
+  const at = beforeId ? dest.indexOf(beforeId) : -1;
+  if (at >= 0) dest.splice(at, 0, entryId);
+  else dest.push(entryId);
+
+  const existing = state.byId[entryId];
+  const byId = existing
+    ? { ...state.byId, [entryId]: { ...existing, shelf: toShelf } }
+    : state.byId;
+
+  return { ...state, order, byId };
+}
+
+function assertNever(x: never): never {
+  throw new Error(`wikiReducer: unhandled action ${JSON.stringify(x)}`);
+}

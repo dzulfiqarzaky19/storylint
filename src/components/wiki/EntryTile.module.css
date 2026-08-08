@@ -1,0 +1,47 @@
+/* Entry tile — README Screen 1 "Shelves" tile. */
+
+.tile {
+  position: relative;
+  width: 172px;
+  padding: 12px;
+  border: var(--rule-major);
+  background: var(--tile);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.selected {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Selected tile keeps the note readable on the ink fill. */
+.selected .note {
+  color: var(--on-ink);
+}
+
+/* Triangular corner flag, top-right, for an unresolved contradiction. */
+.cornerFlag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-top: 14px solid var(--accent);
+}

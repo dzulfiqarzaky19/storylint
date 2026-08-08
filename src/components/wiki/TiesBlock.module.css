@@ -1,0 +1,59 @@
+/* Ties block — README Screen 1 right column "Ties". */
+
+.block {
+  margin-top: 24px;
+  padding: 10px;
+  border: 2px solid transparent; /* becomes accent + --drop on valid drag (Phase 4) */
+}
+
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: var(--rule-major);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.count {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.list {
+  display: block;
+}
+
+/* Tie row: padding 10px 0, 1px rule, clickable, name left + rel right. */
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: var(--rule-row);
+  text-align: left;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.rel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.hint {
+  padding-top: 10px;
+  font-size: 12px;
+  color: var(--muted-2);
+}

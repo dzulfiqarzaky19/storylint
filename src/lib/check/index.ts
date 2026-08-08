@@ -147,18 +147,42 @@ export interface CheckResult {
 }
 
 // ---------------------------------------------------------------------------
-// Entry point — STUB (Phase 2 red). Returns empty; real logic lands next phase.
+// Entry point — orchestrates Pass A (contradiction) and Pass B (unrecorded).
 // ---------------------------------------------------------------------------
 
-export function checkManuscript(_input: CheckInput): CheckResult {
-  return { marks: [], suggestions: [] };
-}
+import { findContradictions } from './contradiction';
+import { findUnrecorded } from './unrecorded';
+import { buildLexicon } from './lexicon';
+import { projectSuggestion } from './suggestions';
+
+export { normalize } from './normalize';
 
 /**
- * Normalization used by both passes: number-words ↔ digits, casing, articles,
- * simple plurals. STUB for now — returns input unchanged so the normalize test
- * fails as an assertion (TDD red), not an import error.
+ * The single, pure entry point (HANDOFF §7). One run produces BOTH marks and
+ * suggestions: suggestions are the projection of `missing` marks, so seeding
+ * them separately would be a bug.
  */
-export function normalize(_value: string): string {
-  return _value;
+export function checkManuscript(input: CheckInput): CheckResult {
+  const { paragraphs, wiki, resolvedMarkKeys, dismissedSuggestionKeys } = input;
+
+  const resolved = new Set(resolvedMarkKeys ?? []);
+  const dismissed = new Set(dismissedSuggestionKeys ?? []);
+
+  const lexicon = buildLexicon(wiki);
+
+  const contradictions = findContradictions(paragraphs, wiki);
+  const unrecorded = findUnrecorded(paragraphs, wiki, lexicon);
+
+  const marks: Mark[] = [...contradictions, ...unrecorded].filter(
+    (m) => !resolved.has(m.markKey),
+  );
+
+  // Suggestions are the projection of the surviving `missing` marks.
+  const suggestions: Suggestion[] = marks
+    .filter((m) => m.kind === 'missing')
+    .map((m) => projectSuggestion(m))
+    .filter((s): s is Suggestion => s !== null)
+    .filter((s) => !dismissed.has(s.key));
+
+  return { marks, suggestions };
 }
