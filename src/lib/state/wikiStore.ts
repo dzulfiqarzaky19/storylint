@@ -78,7 +78,47 @@ export type WikiAction =
       sortOrder: number;
     }
   | { type: "DISMISS_SUGGESTION"; suggestionKey: string }
-  | { type: "SET_ERROR"; error: string | null };
+  | { type: "SET_ERROR"; error: string | null }
+  // ---- Manual authoring (Track A) — fired alongside actions/wiki.ts ----
+  // EDIT_ENTRY_FIELDS  → editEntry   (WIKI WRITE, inherently confirmed)
+  // EDIT_FACT          → editFact    (WIKI WRITE, inherently confirmed)
+  // CREATE_ENTRY       → createEntry (WIKI WRITE, inherently confirmed)
+  // CREATE_FACT        → createFact  (WIKI WRITE, inherently confirmed)
+  | {
+      type: "EDIT_ENTRY_FIELDS";
+      entryId: string;
+      name?: string;
+      note?: string;
+      summary?: string;
+      catalogueNo?: string;
+    }
+  | {
+      type: "EDIT_FACT";
+      entryId: string;
+      factId: string;
+      key?: string;
+      value?: string;
+    }
+  | {
+      type: "CREATE_ENTRY";
+      /** Server-generated entry id (reducer is pure; caller supplies it). */
+      entryId: string;
+      kind: Kind;
+      shelf: Shelf;
+      name: string;
+      note: string;
+      summary: string;
+      sortOrder: number;
+    }
+  | {
+      type: "CREATE_FACT";
+      entryId: string;
+      /** Server-generated fact id (reducer is pure; caller supplies it). */
+      factId: string;
+      key: string;
+      value: string;
+      sortOrder: number;
+    };
 
 // ---- Init -----------------------------------------------------------------
 
@@ -124,6 +164,18 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
 
     case "SET_ERROR":
       return { ...state, error: action.error };
+
+    case "EDIT_ENTRY_FIELDS":
+      return editEntryFieldsInState(state, action);
+
+    case "EDIT_FACT":
+      return editFactInState(state, action);
+
+    case "CREATE_ENTRY":
+      return createEntryInState(state, action);
+
+    case "CREATE_FACT":
+      return createFactInState(state, action);
 
     default:
       return assertNever(action);
@@ -246,6 +298,119 @@ function addSuggestionAsFactInState(
       ...state.byId,
       [action.entryId]: { ...entry, facts: [...entry.facts, fact] },
     },
+  };
+}
+
+// ---- Manual authoring helpers (Track A) -----------------------------------
+
+/** Patch a subset of an entry's scalar fields (pure). No-op if entry unknown. */
+function editEntryFieldsInState(
+  state: WikiState,
+  action: {
+    entryId: string;
+    name?: string;
+    note?: string;
+    summary?: string;
+    catalogueNo?: string;
+  },
+): WikiState {
+  const entry = state.byId[action.entryId];
+  if (!entry) return state;
+  const next: EntryWithDetails = { ...entry };
+  if (action.name !== undefined) next.name = action.name;
+  if (action.note !== undefined) next.note = action.note;
+  if (action.summary !== undefined) next.summary = action.summary;
+  if (action.catalogueNo !== undefined) next.catalogueNo = action.catalogueNo;
+  return { ...state, byId: { ...state.byId, [action.entryId]: next } };
+}
+
+/** Patch a subset of a fact's fields (pure). No-op if entry/fact unknown. */
+function editFactInState(
+  state: WikiState,
+  action: { entryId: string; factId: string; key?: string; value?: string },
+): WikiState {
+  const entry = state.byId[action.entryId];
+  if (!entry) return state;
+  let changed = false;
+  const facts = entry.facts.map((f) => {
+    if (f.id !== action.factId) return f;
+    changed = true;
+    return {
+      ...f,
+      key: action.key !== undefined ? action.key : f.key,
+      value: action.value !== undefined ? action.value : f.value,
+    };
+  });
+  if (!changed) return state;
+  return { ...state, byId: { ...state.byId, [action.entryId]: { ...entry, facts } } };
+}
+
+/** Insert a blank draft entry on its shelf, append to shelf order, select it. */
+function createEntryInState(
+  state: WikiState,
+  action: {
+    entryId: string;
+    kind: Kind;
+    shelf: Shelf;
+    name: string;
+    note: string;
+    summary: string;
+    sortOrder: number;
+  },
+): WikiState {
+  const entry: EntryWithDetails = {
+    id: action.entryId,
+    kind: action.kind,
+    name: action.name,
+    catalogueNo: "—",
+    note: action.note,
+    summary: action.summary,
+    shelf: action.shelf,
+    sortOrder: action.sortOrder,
+    facts: [],
+    ties: [],
+    appearances: [],
+    openQuestions: [],
+  };
+  const order: Record<Shelf, string[]> = {
+    people: [...state.order.people],
+    places: [...state.order.places],
+    orders: [...state.order.orders],
+    lore: [...state.order.lore],
+  };
+  order[action.shelf] = [...order[action.shelf], action.entryId];
+  return {
+    ...state,
+    byId: { ...state.byId, [action.entryId]: entry },
+    order,
+    selectedEntryId: action.entryId,
+  };
+}
+
+/** Append a new manual fact to an entry (pure). No-op if entry unknown. */
+function createFactInState(
+  state: WikiState,
+  action: {
+    entryId: string;
+    factId: string;
+    key: string;
+    value: string;
+    sortOrder: number;
+  },
+): WikiState {
+  const entry = state.byId[action.entryId];
+  if (!entry) return state;
+  const fact: FactRow = {
+    id: action.factId,
+    entryId: action.entryId,
+    key: action.key,
+    value: action.value,
+    fresh: true,
+    sortOrder: action.sortOrder,
+  };
+  return {
+    ...state,
+    byId: { ...state.byId, [action.entryId]: { ...entry, facts: [...entry.facts, fact] } },
   };
 }
 

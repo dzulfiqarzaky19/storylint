@@ -57,3 +57,26 @@
   border: 2px solid var(--accent);
   background: var(--drop);
 }
+
+/* "+ Add detail" — manual authoring (Track A). Quiet until hovered. */
+.addFact {
+  all: unset;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.addFact:hover {
+  color: var(--accent);
+  background: var(--fresh);
+}
+.addFact:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

@@ -28,7 +28,10 @@ import {
   insertEntry,
   getProposition,
   getMaxSortOrderForShelf,
+  insertResearchThread,
+  getNextResearchThreadSortOrder,
 } from "../db/mutations";
+import { randomUUID } from "node:crypto";
 import type { Kind } from "../domain/types";
 
 export type ActionResult<T = void> =
@@ -161,4 +164,28 @@ export async function confirmCard(input: {
 
 function errMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
+}
+
+// ---- Research threads (Track B) — NOT a wiki write ------------------------
+// Creating a thread opens an empty conversation column; it never writes an
+// entry, so it needs no confirmation token (product rule 1 is about wiki
+// writes). Returns the new thread id so the client can navigate to it.
+
+export async function createThread(input?: {
+  title?: string;
+  subtitle?: string;
+}): Promise<ActionResult<{ threadId: string }>> {
+  try {
+    const id = randomUUID();
+    const sortOrder = await getNextResearchThreadSortOrder();
+    const row = await insertResearchThread({
+      id,
+      title: input?.title?.trim() || "New thread",
+      subtitle: input?.subtitle?.trim() ?? "",
+      sortOrder,
+    });
+    return { ok: true, data: { threadId: row.id } };
+  } catch (err) {
+    return { ok: false, error: errMessage(err) };
+  }
 }

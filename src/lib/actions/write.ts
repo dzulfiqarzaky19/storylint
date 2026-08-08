@@ -22,7 +22,13 @@
 // layer, otherwise a typed NOT_IMPLEMENTED stub for a later phase.
 // =============================================================================
 
-import { saveChapterBody, upsertResolvedMark } from "../db/mutations";
+import {
+  saveChapterBody,
+  upsertResolvedMark,
+  insertChapter,
+  getNextChapterNumber,
+} from "../db/mutations";
+import { randomUUID } from "node:crypto";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -60,6 +66,37 @@ export async function saveManuscript(input: {
     return { ok: true, data: undefined };
   } catch (err) {
     // Surface, don't swallow (§8): a failed save must reach the user.
+    return { ok: false, error: messageOf(err) };
+  }
+}
+
+// ---- Chapters (new chapter) — no wiki write -------------------------------
+
+/** An empty ProseMirror doc (one empty paragraph) for a fresh chapter body. */
+const EMPTY_CHAPTER_BODY = {
+  type: "doc",
+  content: [{ type: "paragraph" }],
+} as const;
+
+/**
+ * Create a new, empty chapter appended after the last one. Not a wiki write, so
+ * no confirmation token is needed. Returns the new chapter number so the client
+ * can navigate to it (?chapter=<n>).
+ */
+export async function createChapter(input?: {
+  title?: string;
+}): Promise<ActionResult<{ number: number }>> {
+  try {
+    const number = await getNextChapterNumber();
+    const title = input?.title?.trim() || "Untitled";
+    await insertChapter({
+      id: randomUUID(),
+      number,
+      title,
+      body: EMPTY_CHAPTER_BODY,
+    });
+    return { ok: true, data: { number } };
+  } catch (err) {
     return { ok: false, error: messageOf(err) };
   }
 }

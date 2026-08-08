@@ -22,6 +22,14 @@ export const KIND_SHELF: Record<Kind, Shelf> = {
   lore: "lore",
 };
 
+/** Inverse of KIND_SHELF: the Kind a new manually-created entry gets on a shelf. */
+export const KIND_FOR_SHELF: Record<Shelf, Kind> = {
+  people: "character",
+  places: "world",
+  orders: "organization",
+  lore: "lore",
+};
+
 export const SHELF_TITLES: Record<Shelf, string> = {
   people: "People",
   places: "Places",
@@ -152,4 +160,15 @@ export interface ResearchProposition extends PropositionRow {
 
 export interface ResearchTurnWithCards extends ResearchTurnRow {
   cards: ResearchProposition[];
+}
+
+// ---- Research threads (Track B — multi-thread sidebar) --------------------
+// APPEND-ONLY: added for the Gemini-style Research thread list. Mirrors the
+// research_threads table (schema.sql). Do not fold into existing types.
+
+export interface ResearchThreadRow {
+  id: string;
+  title: string;
+  subtitle: string;
+  sortOrder: number;
 }

@@ -2,6 +2,7 @@
 
 import { useMemo, useReducer, useState, useTransition } from "react";
 import type { DragEvent } from "react";
+import { useRouter } from "next/navigation";
 import type { Kind, ResearchProposition } from "@/lib/domain/types";
 import {
   researchReducer,
@@ -14,7 +15,9 @@ import {
   proposeCard,
   cancelPending,
   confirmCard,
+  createThread,
 } from "@/lib/actions/research";
+import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
 import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
@@ -47,6 +50,7 @@ function toEntryKind(asKind: string): Kind {
 }
 
 export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapshot }) {
+  const router = useRouter();
   const [state, dispatch] = useReducer(
     researchReducer,
     {
@@ -155,6 +159,22 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     });
   };
 
+  // ---- Thread navigation (Track B) — URL-driven -----------------------------
+  const selectThread = (id: string) => {
+    if (id === snapshot.threadId) return;
+    router.push(`/research?thread=${encodeURIComponent(id)}`);
+  };
+  const addThread = () => {
+    startTransition(async () => {
+      const res = await createThread();
+      if (res.ok) {
+        router.push(`/research?thread=${encodeURIComponent(res.data.threadId)}`);
+      } else {
+        dispatch({ type: "SET_ERROR", error: res.error });
+      }
+    });
+  };
+
   // ---- Drag-to-board (drop equals Keep) -----------------------------------
 
   const onBoardDragOver = (ev: DragEvent<HTMLDivElement>) => {
@@ -178,6 +198,12 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
   return (
     <div className={styles.screen}>
       <div className={styles.layout}>
+        <ResearchIndex
+          threads={snapshot.threads}
+          selectedId={snapshot.threadId}
+          onSelect={selectThread}
+          onCreate={addThread}
+        />
         <main className={styles.body}>
           <QuestionBlock question={state.question} />
 

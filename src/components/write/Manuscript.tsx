@@ -26,6 +26,7 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Extension } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -37,7 +38,11 @@ import {
   initWriteState,
   type WriteState,
 } from '@/lib/state/writeStore';
-import { resolveMark as resolveMarkAction, saveManuscript } from '@/lib/actions/write';
+import {
+  resolveMark as resolveMarkAction,
+  saveManuscript,
+  createChapter,
+} from '@/lib/actions/write';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
   createMarkDecorationPlugin,
@@ -45,6 +50,7 @@ import {
 } from './markDecorations';
 import { InlineNote } from './InlineNote';
 import { OutstandingRail } from './OutstandingRail';
+import WriteIndex, { type WriteIndexChapter } from './WriteIndex';
 import styles from './Manuscript.module.css';
 
 const CHECK_DEBOUNCE_MS = 300;
@@ -61,6 +67,8 @@ export interface ManuscriptProps {
   wiki: CheckWiki;
   /** markKeys already resolved (from resolved_marks); suppressed by the engine. */
   resolvedMarkKeys: string[];
+  /** All chapters, for the LEFT index (Track C). Ordered by number. */
+  chapters: WriteIndexChapter[];
 }
 
 /** Maps a note action id to the store/server resolution id. */
@@ -89,7 +97,9 @@ export function Manuscript({
   initialMarks,
   wiki,
   resolvedMarkKeys,
+  chapters,
 }: ManuscriptProps) {
+  const router = useRouter();
   const [state, dispatch] = useReducer(
     writeReducer,
     { chapterNumber, body: initialBody, marks: initialMarks, resolvedMarkKeys },
@@ -264,9 +274,28 @@ export function Manuscript({
 
   // ---- Render -------------------------------------------------------------
 
+  const selectChapter = useCallback(
+    (n: number) => {
+      if (n === chapterNumber) return;
+      router.push(`/write?chapter=${n}`);
+    },
+    [router, chapterNumber],
+  );
+  const addChapter = useCallback(() => {
+    void createChapter().then((res) => {
+      if (res.ok) router.push(`/write?chapter=${res.data.number}`);
+    });
+  }, [router]);
+
   return (
     <div className={styles.screen}>
       <div className={styles.body}>
+        <WriteIndex
+          chapters={chapters}
+          selectedNumber={chapterNumber}
+          onSelect={selectChapter}
+          onCreate={addChapter}
+        />
         <div className={styles.manuscriptScroll}>
           <div className={styles.manuscript}>
             <div className={styles.eyebrow}>Chapter {numberWord(chapterNumber)}</div>

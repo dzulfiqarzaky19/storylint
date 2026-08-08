@@ -2,6 +2,7 @@
 
 import type { FactRow } from "@/lib/domain/types";
 import { useDrag } from "@/components/dnd/DragContext";
+import InlineText from "./InlineText";
 import styles from "./DetailsColumn.module.css";
 
 interface DetailsColumnProps {
@@ -9,16 +10,28 @@ interface DetailsColumnProps {
   facts: FactRow[];
   /** Drop a suggestion card here → add it as a fresh fact on this entry. */
   onDropSuggestion: (suggestionKey: string) => void;
+  /** Edit a fact's key/value in place (manual authoring, Track A). */
+  onEditFactField: (
+    entryId: string,
+    factId: string,
+    field: "key" | "value",
+    value: string,
+  ) => void;
+  /** Add a new blank fact to this entry. */
+  onAddFact: (entryId: string) => void;
 }
 
 // Details column (flex:1): fact rows with 104px key cell. A fresh fact gets the
 // --fresh background. Native HTML5 DnD: each fact row is a draggable SOURCE (move
 // it onto a tile to reassign the fact) and the whole column is a drop TARGET for
 // suggestion cards (add-as-fresh-fact). Card-drop active → --drop background.
+// Key and value are inline-editable (Track A); "+ Add detail" appends a fact.
 export default function DetailsColumn({
   entryId,
   facts,
   onDropSuggestion,
+  onEditFactField,
+  onAddFact,
 }: DetailsColumnProps) {
   const drag = useDrag();
   const dragging = drag.dragging;
@@ -66,11 +79,32 @@ export default function DetailsColumn({
             }}
             onDragEnd={() => drag.endDrag()}
           >
-            <span className={styles.key}>{f.key}</span>
-            <span className={styles.value}>{f.value}</span>
+            <span className={styles.key}>
+              <InlineText
+                value={f.key}
+                ariaLabel="detail label"
+                placeholder="Label"
+                onCommit={(v) => onEditFactField(entryId, f.id, "key", v)}
+              />
+            </span>
+            <span className={styles.value}>
+              <InlineText
+                value={f.value}
+                ariaLabel="detail value"
+                placeholder="Value"
+                onCommit={(v) => onEditFactField(entryId, f.id, "value", v)}
+              />
+            </span>
           </li>
         ))}
       </ul>
+      <button
+        type="button"
+        className={styles.addFact}
+        onClick={() => onAddFact(entryId)}
+      >
+        + Add detail
+      </button>
     </div>
   );
 }

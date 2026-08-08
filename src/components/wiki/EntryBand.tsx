@@ -1,9 +1,12 @@
+"use client";
+
 import type { EntryWithDetails } from "@/lib/domain/types";
 import { KIND_LABEL } from "@/lib/domain/types";
 import Timeline from "./Timeline";
 import DetailsColumn from "./DetailsColumn";
 import OpenQuestions from "./OpenQuestions";
 import EntryAside from "./EntryAside";
+import InlineText from "./InlineText";
 import { appearLine } from "@/lib/domain/derive";
 import styles from "./EntryBand.module.css";
 
@@ -14,6 +17,21 @@ interface EntryBandProps {
   onDropOnTies: () => void;
   /** Drop a suggestion card onto Details → add it as a fresh fact. */
   onDropSuggestion: (suggestionKey: string) => void;
+  /** Edit a scalar field on this entry in place (manual authoring, Track A). */
+  onEditEntryField: (
+    entryId: string,
+    field: "name" | "summary" | "note",
+    value: string,
+  ) => void;
+  /** Edit a fact's key/value in place. */
+  onEditFactField: (
+    entryId: string,
+    factId: string,
+    field: "key" | "value",
+    value: string,
+  ) => void;
+  /** Add a new blank fact to this entry. */
+  onAddFact: (entryId: string) => void;
 }
 
 // Entry band: two columns, 40px gap, 34px top padding.
@@ -23,6 +41,9 @@ export default function EntryBand({
   onSelect,
   onDropOnTies,
   onDropSuggestion,
+  onEditEntryField,
+  onEditFactField,
+  onAddFact,
 }: EntryBandProps) {
   const kindLabel = KIND_LABEL[entry.kind];
   const chapterCount = entry.appearances.length;
@@ -35,9 +56,23 @@ export default function EntryBand({
           <span className={styles.kind}>{kindLabel}</span>
           <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
         </p>
-        <h1 className={styles.name}>{entry.name}</h1>
+        <h1 className={styles.name}>
+          <InlineText
+            value={entry.name}
+            ariaLabel="entry name"
+            onCommit={(v) => onEditEntryField(entry.id, "name", v)}
+          />
+        </h1>
         <div className={styles.rule} />
-        <p className={styles.summary}>{entry.summary}</p>
+        <p className={styles.summary}>
+          <InlineText
+            value={entry.summary}
+            ariaLabel="entry summary"
+            multiline
+            placeholder="Add a summary"
+            onCommit={(v) => onEditEntryField(entry.id, "summary", v)}
+          />
+        </p>
 
         <div className={styles.storyHeading}>
           <h2 className={styles.sectionTitle}>The story so far</h2>
@@ -52,6 +87,8 @@ export default function EntryBand({
             entryId={entry.id}
             facts={entry.facts}
             onDropSuggestion={onDropSuggestion}
+            onEditFactField={onEditFactField}
+            onAddFact={onAddFact}
           />
           <OpenQuestions questions={entry.openQuestions} />
         </div>

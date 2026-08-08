@@ -190,6 +190,30 @@ export async function saveChapterBody(input: {
   );
 }
 
+/** Next chapter number (max+1, or 1 when empty). For appending a new chapter. */
+export async function getNextChapterNumber(): Promise<number> {
+  const res = await one<{ next: number }>(
+    `SELECT COALESCE(MAX(number), 0) + 1 AS next FROM chapters`,
+  );
+  return res?.next ?? 1;
+}
+
+/** Insert a new chapter with an initial body. Returns its number. */
+export async function insertChapter(input: {
+  id: string;
+  number: number;
+  title: string;
+  body: unknown;
+}): Promise<{ id: string; number: number; title: string }> {
+  const res = await one<{ id: string; number: number; title: string }>(
+    `INSERT INTO chapters (id, number, title, body)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, number, title`,
+    [input.id, input.number, input.title, JSON.stringify(input.body)],
+  );
+  return res!;
+}
+
 // ---- Resolved marks (Write) -----------------------------------------------
 
 /**
@@ -307,4 +331,87 @@ export async function getMaxSortOrderForShelf(shelf: string): Promise<number> {
     [shelf],
   );
   return res[0]?.maxSort ?? 0;
+}
+
+// ---- Research threads (Track B — multi-thread sidebar) --------------------
+// APPEND-ONLY: writes for "New thread". Creating a thread is NOT a wiki write
+// (product rule 1), so it needs no confirmation token — it only adds an empty
+// conversation column, never an entry. No existing helper above is modified.
+
+/** Next free sort_order for a new research thread (max + 1, or 0 if none). */
+export async function getNextResearchThreadSortOrder(): Promise<number> {
+  const res = await rows<{ maxSort: number | null }>(
+    `SELECT MAX(sort_order) AS "maxSort" FROM research_threads`,
+  );
+  return (res[0]?.maxSort ?? -1) + 1;
+}
+
+/**
+ * Insert a new research thread row (the "New thread" action). Parameterized;
+ * subtitle defaults to '' at the DB layer but we pass it explicitly. Returns
+ * the created row (camelCase) so the caller can navigate to it.
+ */
+export async function insertResearchThread(input: {
+  id: string;
+  title: string;
+  subtitle: string;
+  sortOrder: number;
+}): Promise<import("../domain/types").ResearchThreadRow> {
+  const res = await one<import("../domain/types").ResearchThreadRow>(
+    `INSERT INTO research_threads (id, title, subtitle, sort_order)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, title, subtitle, sort_order AS "sortOrder"`,
+    [input.id, input.title, input.subtitle, input.sortOrder],
+  );
+  if (!res) throw new Error("insertResearchThread: no row returned");
+  return res;
+}
+
+// ---- Manual authoring (Track A — edit in place) ---------------------------
+// WIKI WRITE (product rule 1). Editing an existing entry/fact changes the wiki,
+// so both helpers require a WikiWriteConfirmation token. A manual edit is
+// inherently confirmed (the user typed and saved it), so the action layer mints
+// the token via confirmWikiWrite({ confirmed: true }). Each builds a partial
+// UPDATE from only the provided fields, parameterized. No existing helper is
+// modified.
+
+/**
+ * WIKI WRITE (product rule 1). Patch a subset of an entry's scalar fields
+ * (name/note/summary/catalogueNo). Only the provided fields are written.
+ * No-op (returns without a query) if no updatable field was provided.
+ */
+export async function updateEntryFields(
+  input: {
+    id: string;
+    name?: string;
+    note?: string;
+    summary?: string;
+    catalogueNo?: string;
+  },
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  const sets: string[] = [];
+  const params: unknown[] = [input.id];
+  if (input.name !== undefined) sets.push(`name = $${params.push(input.name)}`);
+  if (input.note !== undefined) sets.push(`note = $${params.push(input.note)}`);
+  if (input.summary !== undefined) sets.push(`summary = $${params.push(input.summary)}`);
+  if (input.catalogueNo !== undefined) sets.push(`catalogue_no = $${params.push(input.catalogueNo)}`);
+  if (sets.length === 0) return;
+  await query(`UPDATE entries SET ${sets.join(", ")} WHERE id = $1`, params);
+}
+
+/**
+ * WIKI WRITE (product rule 1). Patch a subset of a fact's fields (key/value).
+ * Only the provided fields are written. No-op if neither was provided.
+ */
+export async function updateFact(
+  input: { id: string; key?: string; value?: string },
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  const sets: string[] = [];
+  const params: unknown[] = [input.id];
+  if (input.key !== undefined) sets.push(`key = $${params.push(input.key)}`);
+  if (input.value !== undefined) sets.push(`value = $${params.push(input.value)}`);
+  if (sets.length === 0) return;
+  await query(`UPDATE facts SET ${sets.join(", ")} WHERE id = $1`, params);
 }

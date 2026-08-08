@@ -193,6 +193,22 @@ export async function getChapter(number: number): Promise<ChapterRow | null> {
   );
 }
 
+// ---- Chapters (list) ------------------------------------------------------
+// Append-only section (Track C). Does NOT modify existing functions.
+
+/**
+ * List every chapter as {id, number, title}, ordered by number. Deliberately
+ * omits the (large) body so the Write left index stays light — the selected
+ * chapter's body is loaded separately via getChapter(number).
+ */
+export async function listChapters(): Promise<
+  { id: string; number: number; title: string }[]
+> {
+  return rows<{ id: string; number: number; title: string }>(
+    `SELECT id, number, title FROM chapters ORDER BY number`,
+  );
+}
+
 export async function getResolvedMarkKeys(): Promise<string[]> {
   const res = await rows<{ markKey: string }>(
     `SELECT mark_key AS "markKey" FROM resolved_marks`,
@@ -248,4 +264,24 @@ export async function getResearchThread(
   }
 
   return turns.map((t) => ({ ...t, cards: cardsByTurn.get(t.id) ?? [] }));
+}
+
+// ---- Research threads (Track B — multi-thread sidebar) --------------------
+// APPEND-ONLY: read for the Gemini-style thread list on the Research screen.
+// Ordered by sort_order (the seeded thread order). Read-only; no existing
+// query above is modified.
+
+/**
+ * List every research thread for the LEFT sidebar, in sort_order (then id as a
+ * stable tiebreaker so newly-created threads sharing a sort_order are ordered
+ * deterministically). Column aliases map snake_case -> camelCase.
+ */
+export async function listResearchThreads(): Promise<
+  import("../domain/types").ResearchThreadRow[]
+> {
+  return rows<import("../domain/types").ResearchThreadRow>(
+    `SELECT id, title, subtitle, sort_order AS "sortOrder"
+     FROM research_threads
+     ORDER BY sort_order, id`,
+  );
 }

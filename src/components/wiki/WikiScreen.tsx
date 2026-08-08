@@ -7,8 +7,8 @@
 // session state lives in DragContext so dragover can read the payload.
 
 import { useReducer, useCallback, startTransition } from "react";
-import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails } from "@/lib/domain/types";
-import { SHELF_TITLES } from "@/lib/domain/types";
+import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
+import { SHELF_TITLES, KIND_FOR_SHELF } from "@/lib/domain/types";
 import {
   initWikiState,
   wikiReducer,
@@ -21,6 +21,10 @@ import {
   moveFact,
   addSuggestionAsFact,
   dismissSuggestion,
+  editEntry,
+  editFact,
+  createEntry,
+  createFact,
   type ActionResult,
 } from "@/lib/actions/wiki";
 import EntryBand from "./EntryBand";
@@ -221,6 +225,75 @@ function WikiScreenInner({
     [settle],
   );
 
+  // ---- Manual authoring (Track A) — edit in place + create ------------------
+  const newId = () =>
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `id-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  const editEntryField = useCallback(
+    (entryId: string, field: "name" | "summary" | "note", value: string) => {
+      dispatch({ type: "EDIT_ENTRY_FIELDS", entryId, [field]: value });
+      settle("editEntry", editEntry({ entryId, [field]: value }));
+    },
+    [settle],
+  );
+
+  const editFactField = useCallback(
+    (entryId: string, factId: string, field: "key" | "value", value: string) => {
+      dispatch({ type: "EDIT_FACT", entryId, factId, [field]: value });
+      settle("editFact", editFact({ factId, [field]: value }));
+    },
+    [settle],
+  );
+
+  const addFact = useCallback(
+    (entryId: string) => {
+      const entry = state.byId[entryId];
+      if (!entry) return;
+      const factId = newId();
+      const sortOrder = entry.facts.length;
+      dispatch({
+        type: "CREATE_FACT",
+        entryId,
+        factId,
+        key: "Detail",
+        value: "",
+        sortOrder,
+      });
+      settle(
+        "createFact",
+        createFact({ entryId, key: "Detail", value: "", sortOrder }),
+      );
+    },
+    [state.byId, settle],
+  );
+
+  const createEntryOnShelf = useCallback(
+    (shelf: ShelfKey) => {
+      const kind: Kind = KIND_FOR_SHELF[shelf];
+      const name = `New ${SHELF_TITLES[shelf].replace(/s$/, "").toLowerCase()}`;
+      const entryId = newId();
+      // Client-generated id is passed to the server so the reducer row and the
+      // persisted row share one id — no reconciliation needed. sortOrder just
+      // appends to the shelf.
+      const sortOrder = state.order[shelf].length;
+      dispatch({
+        type: "CREATE_ENTRY",
+        entryId,
+        kind,
+        shelf,
+        name,
+        note: "",
+        summary: "",
+        sortOrder,
+      });
+      settle("createEntry", createEntry({ id: entryId, kind, shelf, name }));
+    },
+    [state.order, settle],
+  );
+
+
   // Entries grouped per shelf, in the reducer's live order.
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
   for (const key of SHELF_ORDER) {
@@ -240,6 +313,7 @@ function WikiScreenInner({
           selectedId=""
           onSelect={select}
           total={Object.keys(state.byId).length}
+          onCreate={createEntryOnShelf}
         />
         <main className={styles.body}>
           <p className={styles.empty}>No entries in the gazetteer yet.</p>
@@ -255,6 +329,7 @@ function WikiScreenInner({
         selectedId={selected.id}
         onSelect={select}
         total={Object.keys(state.byId).length}
+        onCreate={createEntryOnShelf}
       />
       <main className={styles.body}>
       {state.error && (
@@ -275,6 +350,9 @@ function WikiScreenInner({
         onSelect={select}
         onDropOnTies={dropOnTies}
         onDropSuggestion={addSuggestionToDetails}
+        onEditEntryField={editEntryField}
+        onEditFactField={editFactField}
+        onAddFact={addFact}
       />
       <WorldBand entryCount={Object.keys(state.byId).length} />
       <div className={styles.shelves}>

@@ -5,12 +5,16 @@
 // Every wiki-writing mutation helper requires this token as a parameter, so a
 // non-confirmed code path cannot even type-check a call that writes to the wiki.
 //
-// The ONLY two server actions permitted to mint a token (and therefore the only
-// two paths that reach the wiki) are:
+// The server actions permitted to mint a token (and therefore the only paths
+// that reach the wiki) are:
 //   * research.ts  -> confirmCard          ("Yes, write it in")
 //   * wiki.ts      -> addSuggestionAsFact  ("Write it in" on the poster band)
+//   * wiki.ts      -> linkEntry            (a tie between existing entries)
+//   * wiki.ts      -> editEntry / editFact / createEntry / createFact
+//        (manual authoring — inherently confirmed: the user typed it and saved).
 //
-// Do not export a way to fabricate this token without the `confirmed: true` gate.
+// Every one of these is an EXPLICIT user act. Do not export a way to fabricate
+// this token without the `confirmed: true` gate.
 
 declare const wikiWriteBrand: unique symbol;
 

@@ -1,0 +1,48 @@
+/* Inline authoring editor (Track A). The static button is visually transparent
+   so the text looks the same as before; a subtle affordance appears on hover so
+   the writer knows it is editable. The editor input inherits the type of the
+   text it replaces (font passed via className) and gets a light field frame. */
+
+.static {
+  all: unset;
+  cursor: text;
+  display: inline;
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+.static:hover {
+  background: var(--fresh, rgba(0, 0, 0, 0.04));
+  box-shadow: 0 0 0 3px var(--fresh, rgba(0, 0, 0, 0.04));
+}
+.static:focus-visible {
+  outline: 2px solid var(--accent, #3b5bdb);
+  outline-offset: 2px;
+}
+
+.placeholder {
+  color: var(--muted, #8a8577);
+  font-style: italic;
+}
+
+.editor {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 2px 6px;
+  border: 1px solid var(--line, #d9d3c7);
+  border-radius: 4px;
+  background: var(--paper, #fff);
+  resize: vertical;
+}
+.editor:focus {
+  outline: none;
+  border-color: var(--accent, #3b5bdb);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #3b5bdb) 18%, transparent);
+}

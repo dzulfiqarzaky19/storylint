@@ -21,7 +21,7 @@
 // =============================================================================
 
 import { randomUUID } from "node:crypto";
-import type { Shelf } from "../domain/types";
+import type { Kind, Shelf } from "../domain/types";
 import { confirmWikiWrite } from "./confirmation";
 import {
   insertFact,
@@ -29,6 +29,10 @@ import {
   updateFactEntry,
   reorderShelf,
   insertDismissedSuggestion,
+  insertEntry,
+  updateEntryFields,
+  updateFact,
+  getMaxSortOrderForShelf,
 } from "../db/mutations";
 
 // ---- Result envelope ------------------------------------------------------
@@ -187,5 +191,127 @@ export async function dismissSuggestion(
     return { ok: true, data: undefined };
   } catch (err) {
     return fail(err, "wiki.dismissSuggestion");
+  }
+}
+
+// ---- Manual authoring (Track A) — WIKI WRITE, inherently confirmed --------
+//
+// PRODUCT RULE 1 still holds: a manual edit/create is an EXPLICIT confirmation
+// by construction (the user typed it and pressed save / added it), so each of
+// these mints the branded token via confirmWikiWrite({ confirmed: true }) and
+// passes it to the gated DB helper. They cannot reach the wiki any other way —
+// the helpers refuse to type-check without the token.
+
+/**
+ * WIKI WRITE (product rule 1). Patch scalar fields on an existing entry
+ * (rename, edit note/summary/catalogue). Mirrors reducer `EDIT_ENTRY_FIELDS`.
+ */
+export async function editEntry(input: {
+  entryId: string;
+  name?: string;
+  note?: string;
+  summary?: string;
+  catalogueNo?: string;
+}): Promise<ActionResult> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    await updateEntryFields(
+      {
+        id: input.entryId,
+        name: input.name,
+        note: input.note,
+        summary: input.summary,
+        catalogueNo: input.catalogueNo,
+      },
+      confirmation,
+    );
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.editEntry");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Patch a fact's key/value in place. Mirrors
+ * reducer `EDIT_FACT`.
+ */
+export async function editFact(input: {
+  factId: string;
+  key?: string;
+  value?: string;
+}): Promise<ActionResult> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    await updateFact({ id: input.factId, key: input.key, value: input.value }, confirmation);
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.editFact");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Create a new entry on a shelf (the "+ New
+ * person/place/order/lore" action). Server assigns the id and the next
+ * sort_order on that shelf. Mirrors reducer `CREATE_ENTRY`. Returns the new
+ * id + sortOrder so the reducer inserts the same row.
+ */
+export async function createEntry(input: {
+  id?: string;
+  kind: Kind;
+  shelf: Shelf;
+  name: string;
+  note?: string;
+  summary?: string;
+}): Promise<ActionResult<{ entryId: string; sortOrder: number }>> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    const id = input.id ?? randomUUID();
+    const sortOrder = (await getMaxSortOrderForShelf(input.shelf)) + 1;
+    await insertEntry(
+      {
+        id,
+        kind: input.kind,
+        name: input.name,
+        catalogueNo: "—",
+        note: input.note ?? "",
+        summary: input.summary ?? "",
+        shelf: input.shelf,
+        sortOrder,
+      },
+      confirmation,
+    );
+    return { ok: true, data: { entryId: id, sortOrder } };
+  } catch (err) {
+    return fail(err, "wiki.createEntry");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Add a new fact to an entry manually. Mirrors
+ * reducer `CREATE_FACT`. Returns the new fact id + sortOrder.
+ */
+export async function createFact(input: {
+  entryId: string;
+  key: string;
+  value: string;
+  sortOrder: number;
+}): Promise<ActionResult<{ factId: string }>> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    const id = randomUUID();
+    const fact = await insertFact(
+      {
+        id,
+        entryId: input.entryId,
+        key: input.key,
+        value: input.value,
+        fresh: true,
+        sortOrder: input.sortOrder,
+      },
+      confirmation,
+    );
+    return { ok: true, data: { factId: fact.id } };
+  } catch (err) {
+    return fail(err, "wiki.createFact");
   }
 }
