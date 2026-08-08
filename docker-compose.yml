@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: ashkeld_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ashkeld
+      POSTGRES_PASSWORD: ashkeld
+      POSTGRES_DB: ashkeld
+    ports:
+      - "5434:5432"
+    volumes:
+      - ashkeld_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ashkeld -d ashkeld"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ashkeld_pgdata:
