@@ -55,6 +55,11 @@ export default function PropositionCard({
           type="button"
           className={`${styles.keep}${kept ? ` ${styles.keepActive}` : ""}`}
           aria-pressed={kept}
+          // A card already written into the wiki is permanently kept: un-keeping
+          // it would try to delete the row that records the wiki write (the
+          // mutation now refuses, but the affordance must not be offered either,
+          // or the button would appear to do nothing).
+          disabled={inWiki}
           onClick={() => onKeep(card.id, !kept)}
         >
           {kept ? "Kept" : "Keep"}

@@ -235,9 +235,22 @@ export async function upsertKeptCard(input: {
   return res;
 }
 
-/** Remove a proposition from the Kept board ("un-keep"). Idempotent. */
-export async function deleteKeptCard(propositionId: string): Promise<void> {
-  await query(`DELETE FROM kept_cards WHERE proposition_id = $1`, [propositionId]);
+/**
+ * Remove a proposition from the Kept board ("un-keep"). Idempotent.
+ *
+ * A card that has already been written into the wiki (`in_wiki = TRUE`) must NOT
+ * be removable this way: its row is the sole record that the wiki entry came
+ * from this card, and the wiki entry itself is not deleted here. Deleting the
+ * row would leave an orphaned wiki entry while the board reverts the card to
+ * "not kept / not in wiki" on reload — a permanent state/data desync. So the
+ * DELETE is scoped to non-in-wiki rows. Returns true if a row was removed.
+ */
+export async function deleteKeptCard(propositionId: string): Promise<boolean> {
+  const res = await query(
+    `DELETE FROM kept_cards WHERE proposition_id = $1 AND in_wiki = FALSE`,
+    [propositionId],
+  );
+  return (res.rowCount ?? 0) > 0;
 }
 
 /**

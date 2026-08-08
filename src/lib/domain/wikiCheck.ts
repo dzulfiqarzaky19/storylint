@@ -8,6 +8,7 @@
 // the Write screen uses — never seeded as static data.
 
 import { checkManuscript } from "@/lib/check";
+import { projectSuggestion } from "@/lib/check/suggestions";
 import type {
   WikiSnapshot as EngineSnapshot,
   WikiEntry as EngineEntry,
@@ -84,13 +85,15 @@ export function checkWiki(input: {
     dismissedSuggestionKeys,
   });
 
-  // Map a suggestion back to the entry its `missing` mark anchored to, by
-  // matching normalized value against the mark quote. The engine projects each
-  // surviving `missing` mark into one suggestion in order, so we align by the
-  // fact value the projection produced against the marks list.
+  // Map each surviving suggestion back to the entry its `missing` mark anchored
+  // to. `suggestions` is filtered by dismissals while `marks` is NOT, so a
+  // positional zip (suggestions[i] <-> missingMarks[i]) breaks after any
+  // dismissal and re-anchors a survivor to the wrong entry. Instead, match each
+  // suggestion to the mark whose OWN projection produces the same key, so the
+  // anchor is independent of how many earlier suggestions were dismissed.
   const missingMarks = marks.filter((m) => m.kind === "missing");
-  const wikiSuggestions: WikiSuggestion[] = suggestions.map((s, i) => {
-    const mark = missingMarks[i];
+  const wikiSuggestions: WikiSuggestion[] = suggestions.map((s) => {
+    const mark = missingMarks.find((m) => projectSuggestion(m)?.key === s.key);
     return {
       suggestionKey: s.key,
       entryId: mark ? entryForMark(mark.ruleId, mark.quote, snapshot) : "",
