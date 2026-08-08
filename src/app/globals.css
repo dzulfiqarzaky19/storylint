@@ -60,6 +60,19 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Header + screen share one column so a full-height (100vh) screen does not
+   overflow the viewport by the sticky header's height, which added a stray
+   document scrollbar and clipped the right rails on desktop. This applies only
+   above the stacking breakpoint: at <=1200px the screens switch to a
+   page-scroll model with a sticky-bottom rail, which wants normal block flow. */
+@media (min-width: 1201px) {
+  body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;

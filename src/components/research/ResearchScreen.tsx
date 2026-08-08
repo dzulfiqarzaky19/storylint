@@ -176,47 +176,54 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
   };
 
   return (
-    <main className={styles.body}>
-      <QuestionBlock question={state.question} />
+    <div className={styles.screen}>
+      <div className={styles.layout}>
+        <main className={styles.body}>
+          <QuestionBlock question={state.question} />
 
-      <section className={styles.thread}>
-        {visibleTurns.map((turn) => (
-          <Turn
-            key={turn.id}
-            turn={turn}
-            renderCard={(card) => (
-              <PropositionCard
-                key={card.id}
-                card={card}
-                kept={keptSet.has(card.id)}
-                inWiki={inWikiSet.has(card.id)}
-                onKeep={handleKeep}
-                onPropose={handlePropose}
-                onDragStart={setDraggingId}
-                onDragEnd={() => {
-                  setDraggingId(null);
-                  setBoardActive(false);
-                }}
+          <section className={styles.thread}>
+            {visibleTurns.map((turn) => (
+              <Turn
+                key={turn.id}
+                turn={turn}
+                renderCard={(card) => (
+                  <PropositionCard
+                    key={card.id}
+                    card={card}
+                    kept={keptSet.has(card.id)}
+                    inWiki={inWikiSet.has(card.id)}
+                    onKeep={handleKeep}
+                    onPropose={handlePropose}
+                    onDragStart={setDraggingId}
+                    onDragEnd={() => {
+                      setDraggingId(null);
+                      setBoardActive(false);
+                    }}
+                  />
+                )}
               />
-            )}
-          />
-        ))}
-      </section>
+            ))}
+          </section>
 
-      {pendingCard && (
-        <ConfirmationStrip
-          title={pendingCard.title}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
-      )}
+          {pendingCard && (
+            <ConfirmationStrip
+              title={pendingCard.title}
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+            />
+          )}
 
-      <section className={styles.footer}>
-        <Composer>
-          {CHIPS.map((label) => (
-            <PromptChip key={label} label={label} onClick={handleChip} />
-          ))}
-        </Composer>
+          <section className={styles.footer}>
+            <Composer>
+              {CHIPS.map((label) => (
+                <PromptChip key={label} label={label} onClick={handleChip} />
+              ))}
+            </Composer>
+          </section>
+
+          <div className={styles.bottomSpacer} />
+        </main>
+
         <KeptBoard
           items={keptItems}
           active={boardActive}
@@ -224,9 +231,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           onDragLeave={onBoardDragLeave}
           onDrop={onBoardDrop}
         />
-      </section>
-
-      <div className={styles.bottomSpacer} />
-    </main>
+      </div>
+    </div>
   );
 }

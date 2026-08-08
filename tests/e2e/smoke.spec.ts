@@ -241,3 +241,57 @@ test("write @390: the 'Two signals' toggle is visible without scrolling", async 
   const box2 = await toggle.boundingBox();
   expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
 });
+
+// Cross-screen uniformity: the Research KEPT board and the Wiki poster band use
+// the SAME collapsible sticky-bottom toggle as the Write rail on phones. Each
+// assertion pins the collapsed toggle to the viewport fold and proves the body
+// gates on aria-expanded. The plain accessible name "Kept" also matches the
+// per-card "Kept" buttons, so we select the toggle by its aria-controls hook.
+test("research @390: the KEPT toggle is visible without scrolling and gates the board", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/research");
+  const toggle = page
+    .locator("button[aria-controls]")
+    .filter({ hasText: /kept/i })
+    .first();
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  const box = await toggle.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.y + box!.height).toBeLessThanOrEqual(844 + 1);
+  // Collapsed: the empty-state / kept rows are not shown.
+  await expect(page.getByText(/nothing kept yet/i)).toHaveCount(0);
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  const box2 = await toggle.boundingBox();
+  expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
+});
+
+test("wiki @390: the suggestions poster toggle is visible without scrolling and gates the cards", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/wiki");
+  const toggle = page
+    .locator("button[aria-controls]")
+    .filter({ hasText: /mention|thing/i })
+    .first();
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  // Scroll to the end of the document; the sticky bar stays pinned to the fold.
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  const box = await toggle.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.y + box!.height).toBeLessThanOrEqual(844 + 1);
+  // Collapsed: the "Write it in" actions are not shown.
+  await expect(page.getByRole("button", { name: /write it in/i })).toHaveCount(0);
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(
+    page.getByRole("button", { name: /write it in/i }).first(),
+  ).toBeVisible();
+  const box2 = await toggle.boundingBox();
+  expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
+});

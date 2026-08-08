@@ -5,7 +5,8 @@
 /* ---- Layout ------------------------------------------------------------- */
 
 .screen {
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   background: var(--ground);
@@ -336,6 +337,11 @@
      and pin the rail to the bottom of the viewport, so its toggle is always
      visible. */
   .screen {
+    /* Mobile/tablet: body is normal block flow here (the flex column is
+       desktop-only), so the page scrolls as one document and the screen can be
+       auto height. min-height:100dvh keeps the sticky rail context so its
+       toggle pins to the viewport bottom. */
+    flex: none;
     height: auto;
     min-height: 100dvh;
   }

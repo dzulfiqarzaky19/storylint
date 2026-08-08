@@ -68,7 +68,80 @@
   cursor: pointer;
 }
 
+/* Toggle bar — hidden on desktop; the collapsible control on phones. */
+.toggle {
+  display: none;
+}
+
+/* On desktop the body is transparent to layout: headline + cards flow exactly
+   as they did before the collapsible wrapper existed. */
+.bandBody {
+  display: contents;
+}
+
 @media (max-width: 560px) {
-  .headline { font-size: 22px; max-width: none; }
-  .card { width: 100%; }
+  /* Mirror the Write rail / Research KEPT affordance: a collapsible bar pinned
+     to the bottom of the viewport. Collapsed shows only the toggle; expanding
+     reveals the cards above it, scrollable if tall. */
+  .band {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    margin-top: 30px;
+    padding: 0;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 16px var(--gutter);
+    background: var(--accent);
+    color: var(--on-accent);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .toggleLabel {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .toggleChevron {
+    flex: none;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* Collapsed: hide the body. Expanded: show it above the toggle bar. */
+  .bandBody {
+    display: none;
+  }
+
+  .bandOpen .bandBody {
+    display: block;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: var(--accent);
+    color: var(--on-accent);
+    padding: 20px var(--gutter) 24px;
+  }
+
+  /* The headline already lives in the toggle bar on this tier. */
+  .bandOpen .headline {
+    display: none;
+  }
+
+  .cards {
+    margin-top: 0;
+  }
+
+  .card {
+    width: 100%;
+  }
 }
