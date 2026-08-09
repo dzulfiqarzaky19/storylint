@@ -202,19 +202,28 @@ export async function replacePhraseMentions(input: {
   chapterNumber: number;
   phrases: ReadonlyMap<string, number>;
 }): Promise<void> {
+  // Batch the whole refresh into two statements (one DELETE + one set-based
+  // INSERT via UNNEST) so a chapter with N distinct phrases costs one round-trip
+  // instead of N. The (phrase, chapter_number) pairs are unique by construction
+  // — `phrases` is a Map, so each phrase appears once — but ON CONFLICT stays as
+  // defence: it makes a same-chapter re-run idempotent and keeps a stray
+  // duplicate from aborting the batch ("cannot affect row a second time"). Both
+  // statements share one transaction so the index is never half-refreshed.
+  const phrases = [...input.phrases.keys()];
+  const counts = [...input.phrases.values()];
   await withTransaction(async (client) => {
     await client.query(`DELETE FROM phrase_mentions WHERE chapter_number = $1`, [
       input.chapterNumber,
     ]);
-    for (const [phrase, count] of input.phrases) {
-      await client.query(
-        `INSERT INTO phrase_mentions (phrase, chapter_number, count)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (phrase, chapter_number)
-           DO UPDATE SET count = EXCLUDED.count`,
-        [phrase, input.chapterNumber, count],
-      );
-    }
+    if (phrases.length === 0) return; // empty map just clears the chapter's rows
+    await client.query(
+      `INSERT INTO phrase_mentions (phrase, chapter_number, count)
+       SELECT p, $2, c
+         FROM UNNEST($1::text[], $3::int[]) AS t(p, c)
+       ON CONFLICT (phrase, chapter_number)
+         DO UPDATE SET count = EXCLUDED.count`,
+      [phrases, input.chapterNumber, counts],
+    );
   });
 }
 
