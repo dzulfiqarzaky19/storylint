@@ -91,22 +91,29 @@ interface AnthropicResponse {
 }
 
 /**
- * Single-shot completion. Returns the concatenated text of the response.
- * Throws AiError on any failure.
+ * Marks an AiError as retryable: the gateway didn't give us a real answer, but a
+ * fresh attempt with the same input might. Non-retryable failures (bad config,
+ * 4xx auth, non-JSON) leave this false so we surface them immediately.
  */
-export async function complete(options: AiCompletionOptions): Promise<string> {
-  const config = getAiConfig();
-  if (!config) {
-    throw new AiError(
-      "AI is not configured. Set SAAROUTERS_API_KEY (or ANTHROPIC_API_KEY) in .env.local.",
-    );
-  }
+class RetryableAiError extends AiError {
+  readonly retryable = true as const;
+}
 
+/** True when this failure is worth one more identical attempt. */
+function isRetryable(err: unknown): boolean {
+  return err instanceof RetryableAiError;
+}
+
+/** One single request/response round-trip. Retry policy lives in `complete`. */
+async function completeOnce(
+  config: AiConfig,
+  options: AiCompletionOptions,
+): Promise<string> {
   const {
     system,
     messages,
     maxTokens = 1024,
-    temperature = 0.7,
+    temperature,
     timeoutMs = 30_000,
   } = options;
 
@@ -125,7 +132,10 @@ export async function complete(options: AiCompletionOptions): Promise<string> {
       body: JSON.stringify({
         model: config.model,
         max_tokens: maxTokens,
-        temperature,
+        // Some SaaRouters routes return an EMPTY completion when `temperature`
+        // is sent alongside a larger prompt, so only include it when explicitly
+        // requested. Callers that need determinism can still pass one.
+        ...(temperature !== undefined ? { temperature } : {}),
         ...(system ? { system } : {}),
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
       }),
@@ -134,7 +144,8 @@ export async function complete(options: AiCompletionOptions): Promise<string> {
   } catch (err) {
     clearTimeout(timer);
     if (err instanceof Error && err.name === "AbortError") {
-      throw new AiError(`AI request timed out after ${timeoutMs}ms`, err);
+      // A timeout is transient: worth one retry.
+      throw new RetryableAiError(`AI request timed out after ${timeoutMs}ms`, err);
     }
     throw new AiError("AI request failed to reach the gateway", err);
   }
@@ -142,9 +153,12 @@ export async function complete(options: AiCompletionOptions): Promise<string> {
 
   if (!res.ok) {
     const bodyText = await res.text().catch(() => "");
-    throw new AiError(
-      `AI gateway returned ${res.status} ${res.statusText}${bodyText ? `: ${bodyText.slice(0, 400)}` : ""}`,
-    );
+    const message = `AI gateway returned ${res.status} ${res.statusText}${bodyText ? `: ${bodyText.slice(0, 400)}` : ""}`;
+    // 5xx / 429 are transient; 4xx (auth, bad request) are not.
+    if (res.status >= 500 || res.status === 429) {
+      throw new RetryableAiError(message);
+    }
+    throw new AiError(message);
   }
 
   let data: AnthropicResponse;
@@ -165,9 +179,42 @@ export async function complete(options: AiCompletionOptions): Promise<string> {
     .trim();
 
   if (!text) {
-    throw new AiError("AI gateway returned an empty completion");
+    // An empty 200 (content: []) is the gateway artifact we most want to retry.
+    throw new RetryableAiError("AI gateway returned an empty completion");
   }
   return text;
+}
+
+/**
+ * Single-shot completion with one automatic retry on transient failures (empty
+ * 200, timeout, 5xx, 429). Returns the concatenated text of the response.
+ * Throws AiError on any non-transient failure or when the retry is also empty.
+ */
+export async function complete(options: AiCompletionOptions): Promise<string> {
+  const config = getAiConfig();
+  if (!config) {
+    throw new AiError(
+      "AI is not configured. Set SAAROUTERS_API_KEY (or ANTHROPIC_API_KEY) in .env.local.",
+    );
+  }
+
+  const maxAttempts = 2; // one initial try + one retry
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await completeOnce(config, options);
+    } catch (err) {
+      lastErr = err;
+      if (attempt < maxAttempts && isRetryable(err)) {
+        continue; // transient: try once more with the same input
+      }
+      throw err;
+    }
+  }
+  // Unreachable (loop either returns or throws), but satisfies the type checker.
+  throw lastErr instanceof Error
+    ? lastErr
+    : new AiError("AI request failed");
 }
 
 /**
