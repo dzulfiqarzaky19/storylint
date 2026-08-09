@@ -1,31 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { Client } from "pg";
-
-// Playwright does not load .env.local, but the app (and db:seed) read
-// DATABASE_URL from it. Mirror the app's tiny loader (src/lib/db/env.ts) so the
-// read-back client points at the SAME Postgres the server under test uses.
-function databaseUrl() {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
-  for (const file of [".env.local", ".env"]) {
-    try {
-      const text = readFileSync(resolve(process.cwd(), file), "utf8");
-      for (const raw of text.split(/\r?\n/)) {
-        const line = raw.trim();
-        if (!line || line.startsWith("#")) continue;
-        const eq = line.indexOf("=");
-        if (eq === -1) continue;
-        if (line.slice(0, eq).trim() !== "DATABASE_URL") continue;
-        let value = line.slice(eq + 1).trim();
-        if ((value.startsWith(String.fromCharCode(34)) && value.endsWith(String.fromCharCode(34))) || (value.startsWith(String.fromCharCode(39)) && value.endsWith(String.fromCharCode(39)))) value = value.slice(1, -1);
-        return value;
-      }
-    } catch {}
-  }
-  throw new Error("DATABASE_URL not found in env or .env.local for read-back");
-}
+import { queryOne } from "./_helpers/db";
+import { reseed } from "./_helpers/seed";
 
 // -----------------------------------------------------------------------------
 // WIKI-WRITE CONFIRMATION (integration, DB read-back).
@@ -48,30 +23,11 @@ function databaseUrl() {
 // app uses). Serial only (fullyParallel:false) so the DB isn't raced.
 // -----------------------------------------------------------------------------
 
-const DB_URL = databaseUrl();
-
-test.beforeAll(() => {
-  execFileSync("npm", ["run", "db:seed"], {
-    stdio: "ignore",
-    shell: process.platform === "win32",
-  });
-});
-
-/** One-shot DB read helper; opens, queries, closes. */
-async function queryOne<T = Record<string, unknown>>(
-  sql: string,
-  params: unknown[] = [],
-): Promise<T | null> {
-  if (!DB_URL) throw new Error("DATABASE_URL not set for the read-back client");
-  const client = new Client({ connectionString: DB_URL });
-  await client.connect();
-  try {
-    const res = await client.query(sql, params);
-    return (res.rows[0] as T) ?? null;
-  } finally {
-    await client.end();
-  }
-}
+// db:seed TRUNCATEs kept_cards + entries (runtime state), giving each run a
+// clean board. This spec WRITES a prop-* entry + flips in_wiki, so it also
+// reseeds in its OWN afterAll to leave the DB pristine for later-sorting specs.
+test.beforeAll(reseed);
+test.afterAll(reseed);
 
 test("wiki write: confirming a research card LANDS the fact in Postgres (product rule 1)", async ({
   page,

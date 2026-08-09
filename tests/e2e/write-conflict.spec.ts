@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
-import { execFileSync } from "node:child_process";
+import { reseed } from "./_helpers/seed";
+import { RAIL, railRows } from "./_helpers/rail";
 
 // -----------------------------------------------------------------------------
 // WRITE — CONFLICT PATH (integration). The seeded Chapter 7 emits TWO conflict
@@ -24,8 +25,6 @@ import { execFileSync } from "node:child_process";
 // trusted (Playwright) clicks flip real toggles.
 // -----------------------------------------------------------------------------
 
-const RAIL = 'aside[aria-label="Outstanding marks"]';
-
 /** Manuscript prose only (excludes the portalled inline-note text). */
 async function manuscriptText(page: Page): Promise<string> {
   return page.evaluate(() => {
@@ -43,11 +42,6 @@ async function manuscriptText(page: Page): Promise<string> {
     }
     return parts.join("\n").trim();
   });
-}
-
-/** Rail rows are the mark buttons inside the Outstanding-marks aside only. */
-function railRows(page: Page): Locator {
-  return page.locator(`${RAIL} button[aria-pressed]`);
 }
 
 /** The set of deduped mark keys currently underlined in the manuscript. */
@@ -72,14 +66,16 @@ async function openConflict(page: Page, quote: string): Promise<Locator> {
   return note;
 }
 
-// Reseed the canonical 4-mark Chapter 7 before every test. db:seed TRUNCATEs
-// resolved_marks + dismissed_suggestions (runtime state) so a persisted 'leave'
-// from a prior test cannot bleed into the next one.
+// EXCEPTION to the suite-wide "afterAll-only" reseed rule: this spec reseeds
+// per-TEST on purpose. The tests here are order-dependent because they PERSIST
+// resolutions — e.g. the "leave it" test drops a resolved_mark that would
+// otherwise starve the later "drop a row" / "empty the panel" tests of the
+// grey-eyes conflict. A per-test reseed makes each test start from the canonical
+// 4-mark Chapter 7, fully order-independent. Do NOT "optimize" this into a
+// beforeAll: it would silently reintroduce cross-test bleed. (Serial run,
+// workers=1, so the reseed can't race.)
 test.beforeEach(async ({ page }) => {
-  execFileSync("npm", ["run", "db:seed"], {
-    stdio: "ignore",
-    shell: process.platform === "win32",
-  });
+  reseed();
   await page.goto("/write");
   // The seeded Chapter 7 renders and the engine has produced its conflict marks.
   await expect(
@@ -87,17 +83,12 @@ test.beforeEach(async ({ page }) => {
   ).toHaveCount(1);
 });
 
-// Leave the DB pristine for later-running specs. Several tests here PERSIST a
-// resolution to resolved_marks; without this, files that sort after us
-// (write-lifecycle.spec.ts, write.spec.ts) inherit our suppressed Chapter 7
-// marks, so their editor renders zero underlines and they fail. Reseeding once
-// after this file restores the canonical 4-mark state for downstream specs.
-test.afterAll(() => {
-  execFileSync("npm", ["run", "db:seed"], {
-    stdio: "ignore",
-    shell: process.platform === "win32",
-  });
-});
+// Leave the DB pristine for later-running specs (files run alphabetically).
+// Several tests here PERSIST a resolution to resolved_marks; without this,
+// files that sort after us (write-lifecycle.spec.ts, write.spec.ts) inherit our
+// suppressed Chapter 7 marks, render zero underlines, and fail. One reseed after
+// this file restores the canonical 4-mark state for downstream specs.
+test.afterAll(reseed);
 
 // A conflict note reads in the gazetteer voice and offers exactly the three
 // contradiction actions in order: wiki / "Change the sentence" / leave.

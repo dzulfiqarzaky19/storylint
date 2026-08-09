@@ -9,6 +9,15 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 8_000 },
   fullyParallel: false,
+  // The whole suite shares ONE live Postgres (specs seed/reseed it), so it must
+  // run serially. Without this, Playwright defaults to one worker per CPU and
+  // parallel db:seed TRUNCATEs race each other. Do not raise without giving each
+  // worker its own database.
+  workers: 1,
+  // Seed the DB once before the suite; clean throwaway artifacts after it.
+  // (Per-file reseeding is avoided; state-mutating specs restore via afterAll.)
+  globalSetup: "./tests/e2e/global-setup.ts",
+  globalTeardown: "./tests/e2e/global-teardown.ts",
   reporter: [["list"]],
   use: {
     baseURL: process.env.SMOKE_BASE_URL ?? "http://localhost:3100",
