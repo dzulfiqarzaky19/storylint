@@ -3,19 +3,21 @@ import { execFileSync } from "node:child_process";
 
 // -----------------------------------------------------------------------------
 // WRITE — CONFLICT PATH (integration). The seeded Chapter 7 emits TWO conflict
-// marks ("nineteen and sworn", "Her own grey eyes"). write-lifecycle.spec.ts
-// dismisses whichever mark is first, and `leave` now PERSISTS to resolved_marks
-// (survives reload), so a spec that pins a SPECIFIC conflict cannot rely on the
-// shared DB being pristine. This file reseeds ONCE in beforeAll so it starts
-// from the canonical 4-mark state no matter what else has run.
+// marks ("nineteen and sworn", "Her own grey eyes") plus two unrecorded marks.
+// Several tests here PERSIST a resolution to resolved_marks (a 'leave' survives
+// reload), so a spec that pins a SPECIFIC conflict cannot rely on the shared DB
+// staying pristine across tests. We therefore reseed the canonical 4-mark state
+// before EVERY test (serial run, workers=1, so the reseed can't race), making
+// each test fully order-independent.
 //
 //   • the contradiction note is in the gazetteer voice and offers exactly the
 //     three conflict actions in order (wiki / change-the-sentence / leave);
 //   • PRODUCT RULE 1: "The wiki is out of date" NEVER writes the wiki — it
 //     surfaces the gazetteer notice, closes the note, and leaves the mark
 //     outstanding, with the manuscript prose untouched;
-//   • "It's deliberate, leave it" drops THAT contradiction specifically and no
-//     other.
+//   • "It's deliberate, leave it" drops THAT contradiction specifically;
+//   • the RIGHT PANEL (rail) drops a resolved conflict's row and, when every
+//     mark is cleared, falls back to its "Nothing outstanding" state.
 //
 // Gotchas (shared with write-lifecycle.spec.ts): the inline note is portalled
 // INTO .ProseMirror; rail rows are scoped to the Outstanding-marks aside; only
@@ -23,15 +25,6 @@ import { execFileSync } from "node:child_process";
 // -----------------------------------------------------------------------------
 
 const RAIL = 'aside[aria-label="Outstanding marks"]';
-
-// db:seed TRUNCATEs resolved_marks + dismissed_suggestions (runtime state), so
-// this restores the canonical 4-mark Chapter 7 without a full schema reset.
-test.beforeAll(() => {
-  execFileSync("npm", ["run", "db:seed"], {
-    stdio: "ignore",
-    shell: process.platform === "win32",
-  });
-});
 
 /** Manuscript prose only (excludes the portalled inline-note text). */
 async function manuscriptText(page: Page): Promise<string> {
@@ -79,12 +72,31 @@ async function openConflict(page: Page, quote: string): Promise<Locator> {
   return note;
 }
 
+// Reseed the canonical 4-mark Chapter 7 before every test. db:seed TRUNCATEs
+// resolved_marks + dismissed_suggestions (runtime state) so a persisted 'leave'
+// from a prior test cannot bleed into the next one.
 test.beforeEach(async ({ page }) => {
+  execFileSync("npm", ["run", "db:seed"], {
+    stdio: "ignore",
+    shell: process.platform === "win32",
+  });
   await page.goto("/write");
   // The seeded Chapter 7 renders and the engine has produced its conflict marks.
   await expect(
     railRows(page).filter({ hasText: "Her own grey eyes" }),
   ).toHaveCount(1);
+});
+
+// Leave the DB pristine for later-running specs. Several tests here PERSIST a
+// resolution to resolved_marks; without this, files that sort after us
+// (write-lifecycle.spec.ts, write.spec.ts) inherit our suppressed Chapter 7
+// marks, so their editor renders zero underlines and they fail. Reseeding once
+// after this file restores the canonical 4-mark state for downstream specs.
+test.afterAll(() => {
+  execFileSync("npm", ["run", "db:seed"], {
+    stdio: "ignore",
+    shell: process.platform === "win32",
+  });
 });
 
 // A conflict note reads in the gazetteer voice and offers exactly the three
@@ -139,9 +151,6 @@ test("write conflict: 'the wiki is out of date' never writes the wiki (product r
 
 // "It's deliberate, leave it" resolves THAT conflict specifically: the grey-eyes
 // row + underline clear, while the other conflict ("nineteen and sworn") stays.
-// NOTE: this test persists a resolution to resolved_marks; beforeAll reseeds the
-// file, so ordering within the file still leaves the other tests a clean start
-// on the next full run.
 test("write conflict: 'leave it' drops that specific contradiction and no other", async ({
   page,
 }) => {
@@ -167,4 +176,61 @@ test("write conflict: 'leave it' drops that specific contradiction and no other"
   await expect(
     page.locator(".ProseMirror [data-mark-key]", { hasText: target }),
   ).toHaveCount(0);
+});
+
+// RIGHT PANEL (rail) removal — resolving a conflict must drop its row from the
+// Outstanding-marks aside specifically (not just clear the underline). This
+// pins the rail as the source of truth the writer reads: the resolved conflict
+// leaves the panel, the count decrements by exactly one, and every remaining
+// row is a DIFFERENT mark. Complements the underline check above.
+test("write conflict: the right panel drops a resolved conflict row and keeps the rest", async ({
+  page,
+}) => {
+  const target = "Her own grey eyes";
+
+  const rowsBefore = await railRows(page).count();
+  const quotesBefore = await railRows(page).allInnerTexts();
+  expect(rowsBefore).toBeGreaterThanOrEqual(2);
+  expect(quotesBefore.some((t) => t.includes(target))).toBe(true);
+
+  // Resolve THIS conflict via "It's deliberate, leave it".
+  const note = await openConflict(page, target);
+  await note.locator("button:not([data-testid])").last().click();
+  await expect(page.getByTestId("write-inline-note")).toHaveCount(0);
+
+  // The rail (right panel) now has exactly one fewer row …
+  await expect(railRows(page)).toHaveCount(rowsBefore - 1);
+  // … the resolved conflict's row is gone from the panel …
+  await expect(railRows(page).filter({ hasText: target })).toHaveCount(0);
+  // … and no OTHER row was removed: the remaining set is the old set minus target.
+  const quotesAfter = await railRows(page).allInnerTexts();
+  const expectedRemaining = quotesBefore.filter((t) => !t.includes(target));
+  expect(quotesAfter.sort()).toEqual(expectedRemaining.sort());
+});
+
+// RIGHT PANEL empty-state — resolving EVERY outstanding mark clears the rail to
+// its "Nothing outstanding" state (no orphan rows left in the right panel).
+test("write conflict: clearing every mark empties the right panel to its all-clear state", async ({
+  page,
+}) => {
+  // Resolve marks one at a time until the rail is empty. Each 'leave' persists,
+  // so re-reading the live first row each loop avoids stale-handle churn.
+  for (let guard = 0; guard < 12; guard++) {
+    const remaining = await railRows(page).count();
+    if (remaining === 0) break;
+    await railRows(page).first().click();
+    const openNote = page.getByTestId("write-inline-note");
+    await expect(openNote).toBeVisible();
+    // Every mark offers a final "leave"/dismiss action as its last button.
+    await openNote.locator("button:not([data-testid])").last().click();
+    await expect(page.getByTestId("write-inline-note")).toHaveCount(0);
+    // The panel shrank by one on this iteration.
+    await expect(railRows(page)).toHaveCount(remaining - 1);
+  }
+
+  // The right panel is now empty and shows its all-clear copy.
+  await expect(railRows(page)).toHaveCount(0);
+  await expect(
+    page.locator(RAIL).getByText(/nothing outstanding/i),
+  ).toBeVisible();
 });
