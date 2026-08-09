@@ -69,16 +69,31 @@ export async function saveManuscript(input: {
   body: unknown; // ProseMirror document JSON
 }): Promise<ActionResult> {
   try {
+    // The writer's prose is the sacred write. saveChapterBody is the ONLY thing
+    // in this try whose failure returns ok:false — a body-save error MUST reach
+    // the user (§8), never a green ack over lost work.
     await saveChapterBody({ number: input.chapterNumber, body: input.body });
+
     // Tier 2: refresh this chapter's rows in the book-wide phrase index so
-    // cross-chapter recurrence ranking stays current (RANK data, never gates).
-    // Same transaction domain as the save path; a failure surfaces (no silent
-    // no-op) rather than leaving a stale index behind.
-    const phrases = extractCandidatePhrases(docToParagraphs(input.body));
-    await replacePhraseMentions({ chapterNumber: input.chapterNumber, phrases });
+    // cross-chapter recurrence ranking stays current. This is RANK data only:
+    // importanceOf reads it to rank an unrecorded mark high-vs-normal, but it
+    // NEVER gates WHAT is flagged (unrecorded.ts). So the index refresh is
+    // BEST-EFFORT and runs in its OWN try: if it fails, the body is already
+    // saved and the writer keeps their words. We do NOT put it in the same
+    // transaction as the body — that would convert a cosmetic stale-rank into
+    // DATA LOSS (a failed side-table write would block saving prose). Instead we
+    // log LOUDLY (error level, naming the chapter) so a systematic index failure
+    // screams in our server logs rather than hiding as silent staleness.
+    try {
+      const phrases = extractCandidatePhrases(docToParagraphs(input.body));
+      await replacePhraseMentions({ chapterNumber: input.chapterNumber, phrases });
+    } catch (indexErr) {
+      console.error(`saveManuscript: phrase-index refresh failed for chapter ${input.chapterNumber} (body saved; cross-chapter rank may be stale): ${messageOf(indexErr)}`);
+    }
+
     return { ok: true, data: undefined };
   } catch (err) {
-    // Surface, don't swallow (§8): a failed save must reach the user.
+    // Surface, don't swallow (§8): a failed BODY save must reach the user.
     return { ok: false, error: messageOf(err) };
   }
 }
