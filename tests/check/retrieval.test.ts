@@ -12,7 +12,7 @@
  * Pure test: no DB, no model. Mutation targets are called out per block.
  */
 import { describe, it, expect } from "vitest";
-import { selectGazetteer } from "@/lib/check/retrieval";
+import { selectGazetteer, findRetrievalMisses } from "@/lib/check/retrieval";
 import type { EntryWithDetails, WikiSnapshot } from "@/lib/domain/types";
 
 // ---- fixture builders -----------------------------------------------------
@@ -214,3 +214,30 @@ describe("selectGazetteer — order + shape", () => {
 
 // keep `ids` referenced for potential future assertions without a lint error
 void ids;
+
+describe("findRetrievalMisses — silent-false-negative guard (M5)", () => {
+  it("flags an echoed entryId that was NOT sent (retrieval under-selected)", () => {
+    // MUTATION: invert the `sent.has(id)` skip -> a sent id wrongly counts as a
+    // miss and this expectation (empty for the sent one) reds.
+    const misses = findRetrievalMisses(["sent", "unsent"], ["sent"]);
+    expect(misses).toEqual(["unsent"]);
+  });
+
+  it("returns nothing when every echoed id was sent", () => {
+    expect(findRetrievalMisses(["a", "b"], ["a", "b", "c"])).toEqual([]);
+  });
+
+  it("ignores blank / undefined echoed ids", () => {
+    expect(findRetrievalMisses([undefined, "", "  "], ["a"])).toEqual([]);
+  });
+
+  it("de-duplicates repeated misses and preserves first-seen order", () => {
+    // MUTATION: drop the `seen` de-dup -> "x" appears twice and this reds.
+    const misses = findRetrievalMisses(["x", "y", "x"], ["z"]);
+    expect(misses).toEqual(["x", "y"]);
+  });
+
+  it("trims whitespace before comparing so a padded sent id is not a miss", () => {
+    expect(findRetrievalMisses(["  sent  "], ["sent"])).toEqual([]);
+  });
+});

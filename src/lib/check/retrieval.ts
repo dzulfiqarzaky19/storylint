@@ -165,3 +165,29 @@ export function selectGazetteer(
 
   return { entries, capRaised };
 }
+
+/**
+ * M5 (silent-false-negative guard): given the entryIds the model ECHOED and the
+ * entryIds we actually SENT in the pruned gazetteer, return the echoed ids that
+ * were NOT sent. A non-empty result means retrieval under-selected: the model
+ * referenced an entity we did not ground it on, so any contradiction against that
+ * entity could be silently missed.
+ *
+ * Pure and side-effect-free (the dev-only logging lives at the call site). Blanks
+ * and already-sent ids are ignored; the result is de-duplicated and order-stable.
+ */
+export function findRetrievalMisses(
+  echoedEntryIds: readonly (string | undefined)[],
+  sentEntryIds: readonly string[],
+): string[] {
+  const sent = new Set(sentEntryIds);
+  const misses: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of echoedEntryIds) {
+    const id = (raw ?? "").trim();
+    if (!id || sent.has(id) || seen.has(id)) continue;
+    seen.add(id);
+    misses.push(id);
+  }
+  return misses;
+}

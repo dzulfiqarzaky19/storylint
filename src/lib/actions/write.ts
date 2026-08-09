@@ -36,7 +36,7 @@ import { docToParagraphs } from "../write/adapters";
 import { extractCandidatePhrases } from "../check/unrecorded";
 import type { Mark } from "../check";
 import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
-import { selectGazetteer } from "../check/retrieval";
+import { selectGazetteer, findRetrievalMisses } from "../check/retrieval";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -418,6 +418,24 @@ export async function aiCheckChapter(
       });
     } catch (err) {
       return { ok: false, error: messageOf(err) };
+    }
+
+    // SCALE (M5): retrieval can create SILENT false-negatives. If the model
+    // echoes an entryId that was NOT in the pruned gazetteer we sent, retrieval
+    // under-selected: it referenced an entity we did not ground on, so a
+    // contradiction against that entity could be missed. This is invisible in
+    // production, so in DEV ONLY we log it to tune maxEntries and the pin layers.
+    // Pure diagnostic: it changes NO marks and NO product behavior.
+    if (process.env.NODE_ENV !== "production") {
+      const misses = findRetrievalMisses(
+        (parsed.conflicts ?? []).map((c) => (c.entryId ?? "").replace(/^\[+|\]+$/g, "")),
+        selection.entries.map((e) => e.id),
+      );
+      if (misses.length > 0) {
+        console.warn(
+          `[retrieval-miss] model echoed ${misses.length} entryId(s) not in the sent gazetteer: ${misses.join(", ")}. Consider raising maxEntries or the pin layers.`,
+        );
+      }
     }
 
     // Build a preferred-index hint from the model's echoed paragraph numbers.
