@@ -26,8 +26,13 @@ import { databaseUrl, withDb } from "./_helpers/db";
 
 const CH_A = 9003; // stands in for "chapter 3" (the querying context)
 const CH_B = 9007; // stands in for "chapter 7" (the other chapter)
-const RECURRING = "her mother's brass ring"; // present in BOTH scratch chapters
-const LOCAL_ONLY = "the tallow rule"; // present in CH_A only
+// Sentinel phrases that CANNOT occur in any seeded chapter prose. db:seed
+// indexes the real manuscript into phrase_mentions, so a natural-sounding phrase
+// (e.g. "her mother's brass ring") collides with seeded rows and inflates the
+// DISTINCT-chapter count. These zz-scratch tokens appear nowhere but the rows we
+// seed below, so the count reflects exactly our scratch chapters.
+const RECURRING = "zzscratch-recurring-phrase-9003"; // present in BOTH scratch chapters
+const LOCAL_ONLY = "zzscratch-local-phrase-9003"; // present in CH_A only
 
 let getPhraseChapterCounts: (
   phrases: readonly string[],
