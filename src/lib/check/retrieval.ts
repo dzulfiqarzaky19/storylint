@@ -24,7 +24,7 @@
  *
  * ALIAS RECALL is deferred: there is no alias column in the DB yet (the check-layer
  * `aliases?` field is unpopulated). The matcher is structured so adding aliases is
- * one line, not a refactor. See _review_chick.md G1(a).
+ * one line, not a refactor.
  */
 import type { EntryWithDetails, WikiSnapshot } from "../domain/types";
 import { normalize } from "../check/normalize";
