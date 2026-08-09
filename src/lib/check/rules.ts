@@ -137,4 +137,45 @@ const constraintViolation: Rule = {
   },
 };
 
-export const rules: Rule[] = [attributeMismatch, constraintViolation];
+/**
+ * member-count — a cross-entry-free rule anchored on a group's recorded head
+ * count. A number-word immediately before "member(s)" asserts the size of that
+ * body (e.g. "twenty-three members of the Quiet Sept"). It is compared against
+ * the walked entry's `Members` fact. The recorded value may carry a qualifier
+ * ("Twenty-one, never more"), so we extract the leading number-word from it.
+ *
+ * This makes edits like changing "twenty-one" to "twenty-three" a real-time red
+ * contradiction, grounded on the wiki's own count — no AI required.
+ */
+const MEMBER_NUMBER_WORD =
+  'zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty(?:-(?:one|two|three|four|five|six|seven|eight|nine))?|thirty(?:-(?:one|two|three|four|five|six|seven|eight|nine))?|forty|fifty|sixty';
+
+/** Pull the first number-word out of a recorded value like "Twenty-one, never more". */
+function leadingNumberWord(value: string): string | null {
+  const m = value.match(new RegExp(`\\b(${MEMBER_NUMBER_WORD})\\b`, 'i'));
+  return m ? m[1]! : null;
+}
+
+const memberCount: Rule = {
+  id: 'member-count',
+  factKey: 'Members',
+  // A number-word directly before "member" / "members".
+  extract: new RegExp(`\\b(${MEMBER_NUMBER_WORD})\\s+members?\\b`, 'i'),
+  compare: (match, ctx) => {
+    const asserted = match[1]!;
+    const recorded = leadingNumberWord(ctx.recordedValue);
+    if (!recorded) return null;
+
+    // No conflict when the manuscript's count matches the recorded count.
+    if (normalize(asserted) === normalize(recorded)) return null;
+
+    return {
+      quote: match[0].trim(),
+      entryId: ctx.entry.id,
+      rail: `${ctx.entry.name} · Members: ${ctx.recordedValue.toLowerCase()}.`,
+      noteText: `Your wiki records ${ctx.entry.name} as ${ctx.recordedValue.toLowerCase()}. This sentence puts the count at ${asserted.toLowerCase()}.`,
+    };
+  },
+};
+
+export const rules: Rule[] = [attributeMismatch, constraintViolation, memberCount];

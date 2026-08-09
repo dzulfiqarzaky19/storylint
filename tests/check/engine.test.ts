@@ -170,6 +170,35 @@ describe('checkManuscript — negative case', () => {
   });
 });
 
+describe('checkManuscript — member-count rule (deterministic, no AI)', () => {
+  it('flags a member count that contradicts the recorded Sept fact', () => {
+    // Wiki records the Quiet Sept as "Twenty-one, never more".
+    const paragraphs = ['The Sept had twenty-three members that winter, never more.'];
+    const { marks } = checkManuscript({ paragraphs, wiki });
+
+    const mark = markByQuote(marks, 'twenty-three members');
+    expect(mark, 'a conflict mark for the wrong member count').toBeDefined();
+    expect(mark!.kind).toBe('conflict');
+    expect(mark!.ruleId).toBe('member-count');
+    expect(mark!.position.paragraphIndex).toBe(0);
+  });
+
+  it('does NOT flag a member count that matches the recorded fact', () => {
+    const paragraphs = ['The Sept had twenty-one members, never more.'];
+    const { marks } = checkManuscript({ paragraphs, wiki });
+
+    expect(marks.some((m) => m.ruleId === 'member-count')).toBe(false);
+  });
+
+  it('the seeded Chapter 7 still emits exactly four marks (rule adds none)', () => {
+    // Chapter 7 says "twenty-one members" which matches the fact, so the new
+    // rule must not perturb the canonical four-mark result.
+    const { marks } = checkManuscript({ paragraphs: chapter7Paragraphs, wiki });
+    expect(marks).toHaveLength(4);
+    expect(marks.some((m) => m.ruleId === 'member-count')).toBe(false);
+  });
+});
+
 describe('checkManuscript — regression: resolution survives edits', () => {
   it('a resolved markKey stays suppressed after an unrelated paragraph edit', () => {
     // First run: capture m1's key.
