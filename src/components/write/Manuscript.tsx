@@ -46,6 +46,7 @@ import {
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
   createMarkDecorationPlugin,
+  resolveMarkRange,
   type MarkDecorationData,
 } from './markDecorations';
 import { InlineNote } from './InlineNote';
@@ -353,33 +354,12 @@ function selectRunInEditor(
 ): void {
   if (!editor) return;
   const activeEditor = editor;
-  const { doc } = activeEditor.state;
-  const { paragraphIndex, occurrenceIndex } = mark.position;
+  const range = resolveMarkRange(activeEditor.state.doc, mark);
+  if (!range) return;
 
-  let blockIndex = -1;
-  let rangeFrom = -1;
-  let rangeTo = -1;
-  doc.forEach((node, offset) => {
-    blockIndex += 1;
-    if (blockIndex !== paragraphIndex || rangeFrom !== -1) return;
-    const text = node.textContent;
-    let searchFrom = 0;
-    let charIndex = -1;
-    for (let i = 0; i <= occurrenceIndex; i += 1) {
-      charIndex = text.indexOf(mark.quote, searchFrom);
-      if (charIndex === -1) break;
-      searchFrom = charIndex + mark.quote.length;
-    }
-    if (charIndex === -1) return;
-    rangeFrom = offset + 1 + charIndex;
-    rangeTo = rangeFrom + mark.quote.length;
-  });
-
-  if (rangeFrom !== -1) {
-    activeEditor
-      .chain()
-      .focus()
-      .setTextSelection({ from: rangeFrom, to: rangeTo })
-      .run();
-  }
+  activeEditor
+    .chain()
+    .focus()
+    .setTextSelection({ from: range.from, to: range.to })
+    .run();
 }

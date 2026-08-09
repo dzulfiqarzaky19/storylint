@@ -91,18 +91,14 @@ function buildTokenOwners(wiki: WikiSnapshot): Map<string, WikiEntry> {
 
 /** The character entity a possessive pronoun most plausibly refers to. */
 function resolvePronounEntity(
-  wiki: WikiSnapshot,
+  characters: { entry: WikiEntry; firstNameRe: RegExp }[],
   seenBefore: string,
 ): WikiEntry | undefined {
   // Prefer a character whose name appears earlier in the manuscript window.
-  const characters = wiki.entries.filter((e) => e.kind === 'character');
-  for (const entry of characters) {
-    const first = entry.name.split(/\s+/)[0] ?? entry.name;
-    if (new RegExp(`\\b${escapeRegExp(first)}\\b`, 'i').test(seenBefore)) {
-      return entry;
-    }
+  for (const { entry, firstNameRe } of characters) {
+    if (firstNameRe.test(seenBefore)) return entry;
   }
-  return characters[0];
+  return characters[0]?.entry;
 }
 
 function escapeRegExp(s: string): string {
@@ -120,6 +116,13 @@ export function findUnrecorded(
   lexicon: Lexicon = buildLexicon(wiki),
 ): Mark[] {
   const tokenOwners = buildTokenOwners(wiki);
+  // Precompute each character's first-name matcher once (was rebuilt per U1 match).
+  const characters = wiki.entries
+    .filter((e) => e.kind === 'character')
+    .map((entry) => {
+      const first = entry.name.split(/\s+/)[0] ?? entry.name;
+      return { entry, firstNameRe: new RegExp(`\\b${escapeRegExp(first)}\\b`, 'i') };
+    });
   const candidates: Candidate[] = [];
   const running: string[] = []; // manuscript seen so far (for pronoun resolution)
 
@@ -130,7 +133,7 @@ export function findUnrecorded(
       const pron = m[1]!.toLowerCase();
       if (!(pron in POSS_PRONOUNS)) continue;
       const before = running.join(' ') + ' ' + paragraph.slice(0, m.index ?? 0);
-      const entity = resolvePronounEntity(wiki, before);
+      const entity = resolvePronounEntity(characters, before);
       if (!entity) continue;
       candidates.push({ quote, paragraphIndex, entryId: entity.id });
     }

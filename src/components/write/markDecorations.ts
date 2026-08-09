@@ -43,8 +43,15 @@ export const markDecorationKey = new PluginKey<MarkDecorationData>(
   'write-mark-decorations',
 );
 
-/** Absolute {from,to} of a mark's quote within its paragraph, or null. */
-function resolveMarkRange(
+/**
+ * Absolute {from,to} of a mark's quote within its paragraph, or null.
+ *
+ * Shared by the decoration plugin here and the editor's "select the run"
+ * action in Manuscript.tsx — both need to turn a stable
+ * `{paragraphIndex, occurrenceIndex} + quote` anchor into live doc positions,
+ * so the logic lives in one place.
+ */
+export function resolveMarkRange(
   doc: PmNode,
   mark: Mark,
 ): { from: number; to: number } | null {

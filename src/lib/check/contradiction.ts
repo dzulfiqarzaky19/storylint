@@ -7,7 +7,7 @@
  * never from a hardcoded list of the spec's marks.
  */
 
-import type { Mark, MarkAction, WikiSnapshot } from './index';
+import type { Mark, MarkAction, WikiEntry, WikiFact, WikiSnapshot } from './index';
 import { rules, type Rule, type RuleContext } from './rules';
 import { normalizeQuote } from './normalize';
 import { sha1 } from './hash';
@@ -41,13 +41,24 @@ export function findContradictions(
   const marks: Mark[] = [];
   const seen = new Set<string>();
 
+  // Index (factKey -> [{entry, fact}]) once, so each rule only visits entries
+  // that actually record its factKey instead of re-scanning every entry's facts
+  // for every (sentence, rule) pair.
+  const byFactKey = new Map<string, { entry: WikiEntry; fact: WikiFact }[]>();
+  for (const entry of wiki.entries) {
+    for (const fact of entry.facts) {
+      const list = byFactKey.get(fact.key);
+      if (list) list.push({ entry, fact });
+      else byFactKey.set(fact.key, [{ entry, fact }]);
+    }
+  }
+
   paragraphs.forEach((paragraph, paragraphIndex) => {
     for (const sentence of splitSentences(paragraph)) {
       for (const rule of rules) {
-        for (const entry of wiki.entries) {
-          const fact = entry.facts.find((f) => f.key === rule.factKey);
-          if (!fact) continue;
-
+        const bearers = byFactKey.get(rule.factKey);
+        if (!bearers) continue;
+        for (const { entry, fact } of bearers) {
           const result = applyRule(rule, {
             sentence,
             entry,
