@@ -22,6 +22,11 @@ playwright-report
 
 # local-only, not pushed to dev2
 .claude/
+# Agent operating contract + swarm routing config: local-only per-clone setup,
+# same zone as .claude/. Kept out of git so a branch switch can't lose them and
+# an un-scoped `git add` can't sweep them into a commit.
+/AGENTS.md
+/.jcode/
 docs/
 /Fiction writing app redesign/
 *.log
