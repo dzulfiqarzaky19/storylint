@@ -66,9 +66,15 @@ CREATE TABLE open_questions (
 );
 
 -- chapters: id, number, title, body (ProseMirror JSON)
+-- `number` is UNIQUE: it is the natural key the app looks chapters up by
+-- (getChapter/saveChapterBody WHERE number=$1, getNextChapterNumber MAX(number)+1).
+-- UNIQUE both prevents duplicate chapter numbers (a correctness hole: getChapter's
+-- one<>() would silently take rows[0], and concurrent createChapter could mint the
+-- same MAX+1) AND auto-creates the supporting index that turns those hot-path
+-- lookups from seq-scans into index probes as the book grows.
 CREATE TABLE chapters (
   id      text PRIMARY KEY,
-  number  integer NOT NULL,
+  number  integer NOT NULL UNIQUE,
   title   text NOT NULL,
   body    jsonb NOT NULL
 );
