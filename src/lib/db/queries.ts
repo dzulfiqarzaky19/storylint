@@ -224,18 +224,33 @@ export async function getDismissedSuggestionKeys(): Promise<string[]> {
 }
 
 /**
- * Book-wide cross-chapter recurrence index (Tier 2). For each candidate phrase,
- * how many DISTINCT chapters it appears in. The engine ranks an unrecorded mark
- * 'high' when its phrase recurs across >= 2 chapters (rank, never gate). Keys
- * are the canonical phraseIndexKey form stored by extractCandidatePhrases
- * (lowercased + apostrophe-folded), so the engine's phraseIndexKey lookup
- * matches. Returns a Map for O(1) lookup in checkManuscript.
+ * Book-wide cross-chapter recurrence index (Tier 2), SCOPED to the phrases the
+ * caller actually needs. For each requested phrase, how many DISTINCT chapters
+ * it appears in BOOK-WIDE. The engine ranks an unrecorded mark 'high' when its
+ * phrase recurs across >= 2 chapters (rank, never gate). Keys are the canonical
+ * phraseIndexKey form stored by extractCandidatePhrases (lowercased +
+ * apostrophe-folded), so the engine's phraseIndexKey lookup matches. Returns a
+ * Map for O(1) lookup in checkManuscript.
+ *
+ * `phrases` narrows WHICH rows are fetched (the write page only ever looks up
+ * the phrases on the CURRENT chapter, so we no longer serialize the entire
+ * book-wide index to the client every load). It does NOT narrow the recurrence
+ * count: COUNT(DISTINCT chapter_number) is still evaluated over ALL of a
+ * phrase's rows, so a phrase in ch3 + ch7 still returns 2 even when the lookup
+ * is issued from ch3. Scoping the WHERE must never shrink the DISTINCT-chapter
+ * aggregate — that is the whole correctness contract of this function. An empty
+ * `phrases` array returns an empty Map (nothing to rank).
  */
-export async function getPhraseChapterCounts(): Promise<Map<string, number>> {
+export async function getPhraseChapterCounts(
+  phrases: readonly string[],
+): Promise<Map<string, number>> {
+  if (phrases.length === 0) return new Map();
   const res = await rows<{ phrase: string; chapters: number }>(
     `SELECT phrase, COUNT(DISTINCT chapter_number)::int AS chapters
        FROM phrase_mentions
+      WHERE phrase = ANY($1)
       GROUP BY phrase`,
+    [phrases as string[]],
   );
   return new Map(res.map((r) => [r.phrase, r.chapters]));
 }

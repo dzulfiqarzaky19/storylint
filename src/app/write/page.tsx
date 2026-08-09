@@ -22,7 +22,8 @@ import {
   listChapters,
   loadWikiSnapshot,
 } from '@/lib/db/queries';
-import { buildCheckInput, paragraphsToDoc, toCheckWiki } from '@/lib/write/adapters';
+import { buildCheckInput, docToParagraphs, paragraphsToDoc, toCheckWiki } from '@/lib/write/adapters';
+import { extractCandidatePhrases } from '@/lib/check/unrecorded';
 import { aiEnabled } from '@/lib/ai/saarouters';
 
 export const dynamic = 'force-dynamic';
@@ -46,15 +47,24 @@ export default async function WritePage({
   const chapterNumber =
     chapters.some((c) => c.number === requested) ? requested : lastNumber;
 
-  const [chapter, wiki, resolvedMarkKeys, chapterCounts] = await Promise.all([
+  const [chapter, wiki, resolvedMarkKeys] = await Promise.all([
     getChapter(chapterNumber),
     loadWikiSnapshot(),
     getResolvedMarkKeys(),
-    getPhraseChapterCounts(),
   ]);
 
   const body = chapter?.body ?? EMPTY_BODY;
   const title = chapter?.title ?? 'Low Water';
+
+  // Tier 2 recurrence ranking: fetch DISTINCT-chapter counts ONLY for the
+  // phrases actually on THIS chapter (extractCandidatePhrases keys are the same
+  // canonical phraseIndexKey form the engine looks up), instead of serializing
+  // the entire book-wide index to the client every load. The count itself stays
+  // book-wide (a phrase in ch3 + ch7 still reports 2). Depends on body, so it
+  // runs after the load above rather than inside that Promise.all.
+  const chapterCounts = await getPhraseChapterCounts([
+    ...extractCandidatePhrases(docToParagraphs(body)).keys(),
+  ]);
 
   // Run the engine at load over the real manuscript + wiki (not fixtures).
   const { marks } = checkManuscript(
