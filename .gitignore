@@ -1,5 +1,8 @@
 node_modules
-.next
+# Next.js build output: default `.next` plus isolated build dirs used by
+# parallel dev/e2e servers (.next-e2e, .next-verify) and stale snapshots
+# (.next.stale-*). None of these are ever pushed.
+.next*
 out
 build
 
@@ -23,3 +26,7 @@ docs/
 /Fiction writing app redesign/
 *.log
 tasks/
+
+# Scratch/probe files at repo root (agent throwaways: _dump.cjs, _engine.mts,
+# _srv2.log, verification output). Never source, never pushed.
+/_*
