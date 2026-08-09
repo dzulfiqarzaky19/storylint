@@ -9,6 +9,7 @@
 import { loadEnv } from "./env";
 import { getPool, closePool, withTransaction } from "./pool";
 import type { PoolClient } from "pg";
+import { extractCandidatePhrases } from "../check/unrecorded";
 
 // ---------------------------------------------------------------------------
 // Seed data (verbatim from HANDOFF §6)
@@ -724,6 +725,16 @@ async function seedWithin(client: PoolClient): Promise<void> {
        VALUES ($1, $2, $3, $4)`,
       [c.id, c.number, c.title, JSON.stringify(bodyOf(c.paragraphs))],
     );
+    // Tier 2: seed the book-wide phrase index the same way a chapter save would
+    // (extractCandidatePhrases over the plain paragraphs), so cross-chapter
+    // recurrence ranking is live from first load, not only after an edit.
+    for (const [phrase, count] of extractCandidatePhrases(c.paragraphs)) {
+      await client.query(
+        `INSERT INTO phrase_mentions (phrase, chapter_number, count)
+         VALUES ($1, $2, $3)`,
+        [phrase, c.number, count],
+      );
+    }
   }
 
   // Research threads (the left sidebar list)

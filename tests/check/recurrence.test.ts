@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { findUnrecorded } from '@/lib/check/unrecorded';
+import { findUnrecorded, phraseIndexKey } from '@/lib/check/unrecorded';
 import { importanceRank } from '@/lib/check';
 import type { Mark } from '@/lib/check';
 import { wiki } from './fixtures';
@@ -61,7 +61,9 @@ describe('cross-chapter recurrence (Tier 2)', () => {
   it('upgrades a single-mention phrase to high when it recurs across chapters', () => {
     // Same phrase, once in THIS chapter, but the book-wide index says it appears
     // in 3 chapters. Cross-chapter recurrence ranks it 'high'.
-    const counts = new Map<string, number>([[q.toLowerCase(), 3]]);
+    // The index is keyed by the canonical phraseIndexKey, exactly as the DB
+    // helper getPhraseChapterCounts returns it (curly apostrophe folded).
+    const counts = new Map<string, number>([[phraseIndexKey(q), 3]]);
     const m = findUnrecorded(singleMention, wiki, undefined, counts).find(
       (x) => x.quote === q,
     );
@@ -71,7 +73,7 @@ describe('cross-chapter recurrence (Tier 2)', () => {
   });
 
   it('still flags the phrase, and stays normal, when it appears in only one chapter', () => {
-    const counts = new Map<string, number>([[q.toLowerCase(), 1]]);
+    const counts = new Map<string, number>([[phraseIndexKey(q), 1]]);
     const m = findUnrecorded(singleMention, wiki, undefined, counts).find(
       (x) => x.quote === q,
     );
@@ -83,5 +85,20 @@ describe('cross-chapter recurrence (Tier 2)', () => {
     const m = findUnrecorded(singleMention, wiki).find((x) => x.quote === q);
     expect(m).toBeDefined();
     expect(m!.importance).toBe('normal');
+  });
+
+  it('matches the index across an apostrophe-variant mismatch (curly mark, straight key)', () => {
+    // Regression: the manuscript writes the ring with a CURLY apostrophe; the
+    // index was built (in another chapter) from a STRAIGHT one. They are the
+    // same phrase, so the cross-chapter count must still land and rank it high.
+    // Without phraseIndexKey folding both sides, this silently stayed 'normal'.
+    const curlyMark = ['Maren turned her mother\u2019s brass ring in her pocket.'];
+    const straightKey = phraseIndexKey("her mother's brass ring");
+    const counts = new Map<string, number>([[straightKey, 2]]);
+    const m = findUnrecorded(curlyMark, wiki, undefined, counts).find((x) =>
+      x.quote.includes('brass ring'),
+    );
+    expect(m).toBeDefined();
+    expect(m!.importance).toBe('high');
   });
 });

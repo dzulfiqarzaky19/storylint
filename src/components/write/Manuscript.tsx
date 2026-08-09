@@ -77,6 +77,13 @@ export interface ManuscriptProps {
   wiki: CheckWiki;
   /** markKeys already resolved (from resolved_marks); suppressed by the engine. */
   resolvedMarkKeys: string[];
+  /**
+   * Book-wide phrase -> chapter-count index (Tier 2), as serializable entries
+   * (a Map cannot cross the server/client boundary). Reconstructed into a Map
+   * for the live check so cross-chapter recurrence ranks marks on every
+   * keystroke, matching the server load pass. Omitted -> within-chapter only.
+   */
+  chapterCounts?: [string, number][];
   /** All chapters, for the LEFT index (Track C). Ordered by number. */
   chapters: WriteIndexChapter[];
   /** AI gateway configured at load; gates the inline note's ✦ Ask AI affordance. */
@@ -110,9 +117,15 @@ export function Manuscript({
   wiki,
   resolvedMarkKeys,
   chapters,
+  chapterCounts,
   aiEnabled = false,
 }: ManuscriptProps) {
   const router = useRouter();
+  // Rebuild the serializable entries into a Map once; used by every live check.
+  const chapterCountsMap = useMemo(
+    () => new Map(chapterCounts ?? []),
+    [chapterCounts],
+  );
   const [state, dispatch] = useReducer(
     writeReducer,
     { chapterNumber, body: initialBody, marks: initialMarks, resolvedMarkKeys },
@@ -210,10 +223,11 @@ export function Manuscript({
         paragraphs,
         wiki,
         resolvedMarkKeys: stateRef.current.resolvedMarkKeys,
+        chapterCounts: chapterCountsMap,
       });
       dispatch({ type: 'SET_MARKS', marks: mergeMarks(marks, aiMarksRef.current) });
     },
-    [wiki],
+    [wiki, chapterCountsMap],
   );
 
   // Core 2: AI cross-checks the manuscript against the wiki on save. Sends only

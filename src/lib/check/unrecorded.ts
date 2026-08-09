@@ -235,7 +235,7 @@ export function findUnrecorded(
     // Cross-chapter signal (Tier 2): how many chapters this phrase appears in
     // book-wide. The index keys phrases lowercased (see extractCandidatePhrases),
     // so match that. Undefined map → Tier 1 (within-chapter only).
-    const chapterCount = chapterCounts?.get(cand.quote.toLowerCase());
+    const chapterCount = chapterCounts?.get(phraseIndexKey(cand.quote));
     const importance: MarkImportance = importanceOf(recurrence, chapterCount);
     marks.push({
       markKey: key,
@@ -300,6 +300,22 @@ function noteFor(quote: string): string {
 }
 
 /**
+ * Canonical key for the book-wide phrase index. Folds the two things that
+ * otherwise split one phrase into two rows: letter case, and the curly vs
+ * straight apostrophe (U+2019 vs U+0027). Both the extractor that WRITES the
+ * index and the engine that READS it must key through here, or a phrase
+ * written with one apostrophe never matches the same phrase read with the
+ * other.
+ */
+export function phraseIndexKey(phrase: string): string {
+  return phrase
+    .toLowerCase()
+    .replace(/\u2019/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
  * Extract candidate phrases from a chapter's plain text, WITHOUT any wiki
  * lookup, for the book-wide `phrase_mentions` index (Tier 2 cross-chapter
  * recurrence). Uses the same U1 (qualified possessed object) and U2 (named
@@ -322,14 +338,14 @@ export function extractCandidatePhrases(paragraphs: string[]): Map<string, numbe
       if (!(pron in POSS_PRONOUNS)) continue;
       const objectTokens = qualifiedObject(m[3] ?? '');
       if (!objectTokens) continue;
-      phrases.add(`${m[1]} ${m[2]} ${objectTokens.join(' ')}`.toLowerCase());
+      phrases.add(phraseIndexKey(`${m[1]} ${m[2]} ${objectTokens.join(' ')}`));
     }
     // U2 — named designator ("the tallow rule"). Shape-only; the engine's
     // wiki-owner check anchors it, but the phrase itself is index-worthy.
     for (const m of paragraph.matchAll(U2)) {
       const designator = (m[3] ?? '').toLowerCase();
       if (!DESIGNATORS.has(designator)) continue;
-      phrases.add(m[0].trim().toLowerCase());
+      phrases.add(phraseIndexKey(m[0]));
     }
   }
 
@@ -338,7 +354,7 @@ export function extractCandidatePhrases(paragraphs: string[]): Map<string, numbe
   // mid-sentence are the SAME phrase for recurrence, so a capitalized repeat
   // still counts. (The live within-chapter count stays case-exact because it
   // anchors a specific underline; this index only needs the tally.)
-  const lowerParagraphs = paragraphs.map((p) => p.toLowerCase());
+  const lowerParagraphs = paragraphs.map((p) => phraseIndexKey(p));
   const counts = new Map<string, number>();
   for (const phrase of phrases) {
     counts.set(phrase, countOccurrences(lowerParagraphs, phrase));

@@ -1,7 +1,8 @@
 -- Ashkeld schema (Postgres). Deliberately portable:
 --   text primary keys, timestamps as bigint epoch millis, snake_case columns.
--- 11 tables from HANDOFF §5. Drop in dependency order, recreate with FKs + indexes.
+-- 12 tables from HANDOFF §5. Drop in dependency order, recreate with FKs + indexes.
 
+DROP TABLE IF EXISTS phrase_mentions CASCADE;
 DROP TABLE IF EXISTS dismissed_suggestions CASCADE;
 DROP TABLE IF EXISTS resolved_marks CASCADE;
 DROP TABLE IF EXISTS kept_cards CASCADE;
@@ -118,6 +119,19 @@ CREATE TABLE resolved_marks (
 -- dismissed_suggestions: suggestionKey PK
 CREATE TABLE dismissed_suggestions (
   suggestion_key  text PRIMARY KEY
+);
+
+-- phrase_mentions: a book-wide index of candidate phrases per chapter, used by
+-- the check engine to rank an unrecorded mark by CROSS-CHAPTER recurrence (a
+-- phrase the author leans on across several chapters is more likely important).
+-- Refreshed on every chapter save (see saveChapterBody). `count` is the number
+-- of times the phrase occurs in that one chapter; the engine sums / counts
+-- chapters across rows. RANKING data only, never gates a mark.
+CREATE TABLE phrase_mentions (
+  phrase          text NOT NULL,
+  chapter_number  integer NOT NULL,
+  count           integer NOT NULL DEFAULT 1,
+  PRIMARY KEY (phrase, chapter_number)
 );
 
 -- Indexes for the reads the screens need.

@@ -17,6 +17,7 @@ import { Manuscript } from '@/components/write/Manuscript';
 import { checkManuscript } from '@/lib/check';
 import {
   getChapter,
+  getPhraseChapterCounts,
   getResolvedMarkKeys,
   listChapters,
   loadWikiSnapshot,
@@ -45,10 +46,11 @@ export default async function WritePage({
   const chapterNumber =
     chapters.some((c) => c.number === requested) ? requested : lastNumber;
 
-  const [chapter, wiki, resolvedMarkKeys] = await Promise.all([
+  const [chapter, wiki, resolvedMarkKeys, chapterCounts] = await Promise.all([
     getChapter(chapterNumber),
     loadWikiSnapshot(),
     getResolvedMarkKeys(),
+    getPhraseChapterCounts(),
   ]);
 
   const body = chapter?.body ?? EMPTY_BODY;
@@ -56,7 +58,7 @@ export default async function WritePage({
 
   // Run the engine at load over the real manuscript + wiki (not fixtures).
   const { marks } = checkManuscript(
-    buildCheckInput({ body, db: wiki, resolvedMarkKeys }),
+    buildCheckInput({ body, db: wiki, resolvedMarkKeys, chapterCounts }),
   );
 
   return (
@@ -68,6 +70,7 @@ export default async function WritePage({
       initialMarks={marks}
       wiki={toCheckWiki(wiki)}
       resolvedMarkKeys={resolvedMarkKeys}
+      chapterCounts={[...chapterCounts]}
       chapters={chapters.map((c) => ({ number: c.number, title: c.title }))}
       aiEnabled={aiEnabled()}
     />

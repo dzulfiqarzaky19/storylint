@@ -24,6 +24,7 @@
 
 import {
   saveChapterBody,
+  replacePhraseMentions,
   upsertResolvedMark,
   insertChapter,
   getNextChapterNumber,
@@ -31,6 +32,8 @@ import {
 import { randomUUID } from "node:crypto";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
 import { loadWikiSnapshot } from "../db/queries";
+import { docToParagraphs } from "../write/adapters";
+import { extractCandidatePhrases } from "../check/unrecorded";
 import type { Mark } from "../check";
 import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
 
@@ -67,6 +70,12 @@ export async function saveManuscript(input: {
 }): Promise<ActionResult> {
   try {
     await saveChapterBody({ number: input.chapterNumber, body: input.body });
+    // Tier 2: refresh this chapter's rows in the book-wide phrase index so
+    // cross-chapter recurrence ranking stays current (RANK data, never gates).
+    // Same transaction domain as the save path; a failure surfaces (no silent
+    // no-op) rather than leaving a stale index behind.
+    const phrases = extractCandidatePhrases(docToParagraphs(input.body));
+    await replacePhraseMentions({ chapterNumber: input.chapterNumber, phrases });
     return { ok: true, data: undefined };
   } catch (err) {
     // Surface, don't swallow (§8): a failed save must reach the user.

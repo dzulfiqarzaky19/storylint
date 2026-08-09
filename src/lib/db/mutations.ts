@@ -9,7 +9,7 @@
 // These are minimal, clearly-named helpers. They do not enforce product rules;
 // the confirmation invariant (product rule 1) lives at the action layer.
 
-import { query, one, rows } from "./pool";
+import { query, one, rows, withTransaction } from "./pool";
 import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
 
@@ -188,6 +188,34 @@ export async function saveChapterBody(input: {
     `UPDATE chapters SET body = $2 WHERE number = $1`,
     [input.number, JSON.stringify(input.body)],
   );
+}
+
+/**
+ * Refresh the book-wide phrase index for ONE chapter (Tier 2 cross-chapter
+ * recurrence). Atomically deletes this chapter's existing rows and inserts the
+ * freshly-extracted phrase counts, so the index always reflects the current
+ * body (a phrase removed from the chapter disappears from the index). Ranking
+ * data only; never gates a mark. `phrases` maps a (lowercased) phrase to its
+ * occurrence count in this chapter; an empty map just clears the chapter's rows.
+ */
+export async function replacePhraseMentions(input: {
+  chapterNumber: number;
+  phrases: ReadonlyMap<string, number>;
+}): Promise<void> {
+  await withTransaction(async (client) => {
+    await client.query(`DELETE FROM phrase_mentions WHERE chapter_number = $1`, [
+      input.chapterNumber,
+    ]);
+    for (const [phrase, count] of input.phrases) {
+      await client.query(
+        `INSERT INTO phrase_mentions (phrase, chapter_number, count)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (phrase, chapter_number)
+           DO UPDATE SET count = EXCLUDED.count`,
+        [phrase, input.chapterNumber, count],
+      );
+    }
+  });
 }
 
 /** Next chapter number (max+1, or 1 when empty). For appending a new chapter. */

@@ -17,8 +17,12 @@ describe('extractCandidatePhrases', () => {
       'Maren turned her mother\u2019s brass ring twice.',
       'She obeyed the tallow rule before the water.',
     ]);
-    expect(m.get('her mother\u2019s brass ring')).toBe(1);
+    // Keys are canonical: the curly apostrophe (U+2019) in the input folds to a
+    // straight ' so a phrase written either way is ONE index entry.
+    expect(m.get("her mother's brass ring")).toBe(1);
     expect(m.get('the tallow rule')).toBe(1);
+    // The curly-apostrophe form is never a separate key.
+    expect(m.get('her mother\u2019s brass ring')).toBeUndefined();
   });
 
   it('counts a phrase repeated within the chapter', () => {
@@ -26,7 +30,17 @@ describe('extractCandidatePhrases', () => {
       'She kept her mother\u2019s brass ring close.',
       'Her mother\u2019s brass ring turned in her pocket.',
     ]);
-    expect(m.get('her mother\u2019s brass ring')).toBe(2);
+    expect(m.get("her mother's brass ring")).toBe(2);
+  });
+
+  it('folds curly and straight apostrophes to one key across paragraphs', () => {
+    const m = extractCandidatePhrases([
+      'She kept her mother\u2019s brass ring close.', // curly
+      "Her mother's brass ring turned in her pocket.", // straight
+    ]);
+    // Both variants are the SAME phrase, counted twice, under one key.
+    expect(m.get("her mother's brass ring")).toBe(2);
+    expect([...m.keys()].filter((k) => k.includes('brass ring')).length).toBe(1);
   });
 
   it('skips bare-noun possessed objects (no wiki needed to reject "coat")', () => {

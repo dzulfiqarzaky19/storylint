@@ -223,6 +223,23 @@ export async function getDismissedSuggestionKeys(): Promise<string[]> {
   return res.map((r) => r.suggestionKey);
 }
 
+/**
+ * Book-wide cross-chapter recurrence index (Tier 2). For each candidate phrase,
+ * how many DISTINCT chapters it appears in. The engine ranks an unrecorded mark
+ * 'high' when its phrase recurs across >= 2 chapters (rank, never gate). Keys
+ * are the canonical phraseIndexKey form stored by extractCandidatePhrases
+ * (lowercased + apostrophe-folded), so the engine's phraseIndexKey lookup
+ * matches. Returns a Map for O(1) lookup in checkManuscript.
+ */
+export async function getPhraseChapterCounts(): Promise<Map<string, number>> {
+  const res = await rows<{ phrase: string; chapters: number }>(
+    `SELECT phrase, COUNT(DISTINCT chapter_number)::int AS chapters
+       FROM phrase_mentions
+      GROUP BY phrase`,
+  );
+  return new Map(res.map((r) => [r.phrase, r.chapters]));
+}
+
 // ---- Research screen ------------------------------------------------------
 
 export async function getResearchThread(
