@@ -34,6 +34,12 @@ import StarterKit from '@tiptap/starter-kit';
 import { checkManuscript } from '@/lib/check';
 import type { Mark, MarkAction, WikiSnapshot as CheckWiki } from '@/lib/check';
 import {
+  mergeMarks,
+  hashParagraphs,
+  changedParagraphIndices,
+  reconcileAiMarks,
+} from '@/lib/check/ai';
+import {
   writeReducer,
   initWriteState,
   type WriteState,
@@ -43,6 +49,7 @@ import {
   saveManuscript,
   createChapter,
   explainMark,
+  aiCheckChapter,
 } from '@/lib/actions/write';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
@@ -136,6 +143,14 @@ export function Manuscript({
     Record<string, { explanation: string; rewrite: string; error?: string }>
   >({});
 
+  // AI check (Core 2): marks produced by the on-save AI pass, cached client-side
+  // so the fast deterministic pass can render alongside them. Reconciled per
+  // save using paragraph hashes so only changed paragraphs are re-sent.
+  const aiMarksRef = useRef<Mark[]>([]);
+  const aiHashesRef = useRef<string[]>([]);
+  const aiCheckSeqRef = useRef(0);
+  const [aiChecking, setAiChecking] = useState(false);
+
   // Forward-declared so the plugin's getData can reach the click handler.
   const onSelectMarkRef = useRef<(markKey: string) => void>(() => {});
 
@@ -185,6 +200,61 @@ export function Manuscript({
   const checkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Push deterministic marks, MERGED with the cached AI marks so both passes
+  // coexist. The deterministic pass is instant; AI marks arrive on save.
+  const pushDeterministicMarks = useCallback(
+    (body: unknown) => {
+      const paragraphs = docToParagraphs(body);
+      const { marks } = checkManuscript({
+        paragraphs,
+        wiki,
+        resolvedMarkKeys: stateRef.current.resolvedMarkKeys,
+      });
+      dispatch({ type: 'SET_MARKS', marks: mergeMarks(marks, aiMarksRef.current) });
+    },
+    [wiki],
+  );
+
+  // Core 2: AI cross-checks the manuscript against the wiki on save. Sends only
+  // the CHANGED paragraphs (cost control), reconciles with cached AI marks, and
+  // merges with the current deterministic marks. Never writes the wiki.
+  const runAiCheck = useCallback(
+    async (body: unknown) => {
+      if (!aiEnabled) return;
+      const paragraphs = docToParagraphs(body);
+      const changed = changedParagraphIndices(paragraphs, aiHashesRef.current);
+      if (changed.length === 0) return;
+
+      const seq = ++aiCheckSeqRef.current;
+      setAiChecking(true);
+      try {
+        const res = await aiCheckChapter({
+          paragraphs,
+          changedIndices: changed,
+          resolvedMarkKeys: stateRef.current.resolvedMarkKeys,
+        });
+        // Ignore a stale response if a newer check started meanwhile.
+        if (seq !== aiCheckSeqRef.current) return;
+        if (!res.ok) {
+          dispatch({ type: 'SET_ERROR', error: res.error });
+          return;
+        }
+        aiMarksRef.current = reconcileAiMarks(
+          aiMarksRef.current,
+          res.data.marks,
+          changed,
+          paragraphs.length,
+        );
+        aiHashesRef.current = hashParagraphs(paragraphs);
+        pushDeterministicMarks(body);
+        if (editor) editor.view.dispatch(editor.state.tr.setMeta('write-marks', true));
+      } finally {
+        if (seq === aiCheckSeqRef.current) setAiChecking(false);
+      }
+    },
+    [aiEnabled, editor, pushDeterministicMarks],
+  );
+
   useEffect(() => {
     if (!editor) return;
 
@@ -192,27 +262,25 @@ export function Manuscript({
       const body = editor.getJSON();
       dispatch({ type: 'EDIT_BODY', body });
 
-      // Live check (debounced ~300ms).
+      // Live deterministic check (debounced ~300ms), merged with cached AI marks.
       if (checkTimer.current) clearTimeout(checkTimer.current);
       checkTimer.current = setTimeout(() => {
-        const paragraphs = docToParagraphs(body);
-        const { marks } = checkManuscript({
-          paragraphs,
-          wiki,
-          resolvedMarkKeys: stateRef.current.resolvedMarkKeys,
-        });
-        dispatch({ type: 'SET_MARKS', marks });
-        // Nudge the plugin to redraw with the new marks.
+        pushDeterministicMarks(body);
         editor.view.dispatch(editor.state.tr.setMeta('write-marks', true));
       }, CHECK_DEBOUNCE_MS);
 
-      // Persist (debounced). A failed save surfaces (§8).
+      // Persist (debounced). A failed save surfaces (§8). On save success, run
+      // the AI check over the changed paragraphs.
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(async () => {
         dispatch({ type: 'SAVE_MANUSCRIPT' });
         const res = await saveManuscript({ chapterNumber, body });
-        if (res.ok) dispatch({ type: 'SAVE_SUCCEEDED' });
-        else dispatch({ type: 'SET_ERROR', error: res.error });
+        if (res.ok) {
+          dispatch({ type: 'SAVE_SUCCEEDED' });
+          void runAiCheck(body);
+        } else {
+          dispatch({ type: 'SET_ERROR', error: res.error });
+        }
       }, SAVE_DEBOUNCE_MS);
     };
 
@@ -222,7 +290,7 @@ export function Manuscript({
       if (checkTimer.current) clearTimeout(checkTimer.current);
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [editor, wiki, chapterNumber]);
+  }, [editor, wiki, chapterNumber, pushDeterministicMarks, runAiCheck]);
 
   // Redraw decorations whenever marks / open mark change (rail clicks, resolves).
   useEffect(() => {
@@ -365,7 +433,7 @@ export function Manuscript({
               </p>
             ) : (
               <p className={styles.saveState} role="status">
-                {state.dirty ? 'Saving…' : 'Saved'}
+                {state.dirty ? 'Saving…' : aiChecking ? 'Checking with AI…' : 'Saved'}
               </p>
             )}
           </div>

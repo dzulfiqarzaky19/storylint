@@ -31,6 +31,8 @@ import {
 import { randomUUID } from "node:crypto";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
 import { loadWikiSnapshot } from "../db/queries";
+import type { Mark } from "../check";
+import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -273,6 +275,123 @@ export async function explainMark(input: {
         rewrite: (advice.rewrite ?? "").trim(),
       },
     };
+  } catch (err) {
+    return { ok: false, error: messageOf(err) };
+  }
+}
+
+
+// ---- AI: whole-chapter consistency check (grounded, NOT a wiki write) ------
+//
+// This is the general, reasoning-based half of the write-page check. The
+// deterministic engine (checkManuscript) gives instant squiggles for the few
+// patterns it knows; this action asks the AI to cross-check ARBITRARY factual
+// claims in the manuscript against the writer's full gazetteer and return
+// contradictions + unrecorded facts. It is invoked on save, and only the
+// changed paragraphs are sent (cost control). It writes NOTHING: findings map
+// to the same Mark shape and route through resolveMark's confirmation path, so
+// PRODUCT RULE 1 holds — AI proposes, the writer confirms, nothing auto-enters
+// the wiki.
+
+interface AiCheckInput {
+  /** The FULL current manuscript paragraphs (for grounding + positions). */
+  paragraphs: string[];
+  /** Indices of paragraphs that changed since the last pass; omit/empty = all. */
+  changedIndices?: number[];
+  /** markKeys the writer already resolved; their marks are suppressed. */
+  resolvedMarkKeys?: string[];
+}
+
+export async function aiCheckChapter(
+  input: AiCheckInput,
+): Promise<ActionResult<{ marks: Mark[] }>> {
+  if (!aiEnabled()) {
+    return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
+  }
+
+  const paragraphs = input.paragraphs ?? [];
+  // Which paragraphs to actually send. Empty changedIndices => check all.
+  const indices =
+    input.changedIndices && input.changedIndices.length > 0
+      ? [...new Set(input.changedIndices)].filter(
+          (i) => i >= 0 && i < paragraphs.length,
+        )
+      : paragraphs.map((_, i) => i);
+
+  if (indices.length === 0) return { ok: true, data: { marks: [] } };
+
+  try {
+    const wiki = await loadWikiSnapshot();
+    const gazetteer = wiki.entries
+      .map((e) => {
+        const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
+        return `- [${e.id}] ${e.name} — ${e.kind}${e.summary ? `: ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
+      })
+      .join("\n");
+
+    // Send only the changed paragraphs, tagged with their real index so the
+    // model can echo it back and we can anchor positions correctly.
+    const numbered = indices
+      .map((i) => `[[P${i}]] ${paragraphs[i]}`)
+      .join("\n\n");
+
+    const system = [
+      "You are the consistency engine for a fiction writer. You are given the writer's GAZETTEER (their wiki of characters, places, lore and facts) and one or more MANUSCRIPT PARAGRAPHS.",
+      "Cross-check every factual claim in the paragraphs against the gazetteer.",
+      "Report TWO kinds of finding:",
+      "  conflicts: a claim that CONTRADICTS a recorded gazetteer fact (wrong count, wrong colour, wrong age, wrong relationship, impossible per a recorded rule, etc.).",
+      "  missing:   a concrete, checkable NEW fact about a KNOWN entity that the gazetteer does not record yet.",
+      "HARD RULES:",
+      "- Ground ONLY in the gazetteer. Never invent a contradicting fact. If the gazetteer does not constrain something, it is NOT a conflict.",
+      "- Every quote MUST be copied VERBATIM from the paragraph text (exact characters, including punctuation). Do not paraphrase.",
+      "- Prefer few, high-confidence findings over many weak ones. If unsure, omit it.",
+      "- entryId must be one of the bracketed ids from the gazetteer, or empty.",
+      "Return STRICT JSON only, no prose, shaped exactly:",
+      '{"conflicts":[{"quote":string,"entryId":string,"reason":string,"recorded":string,"paragraph":number}],"missing":[{"quote":string,"reason":string,"key":string,"value":string,"paragraph":number}]}',
+    ].join("\n");
+
+    const user = [
+      `GAZETTEER:\n${gazetteer || "(empty)"}`,
+      "",
+      `MANUSCRIPT PARAGRAPHS (each prefixed with its index [[Pn]]):\n${numbered}`,
+    ].join("\n");
+
+    let parsed: AiCheckResponse;
+    try {
+      // NOTE: no `temperature`. The SaaRouters proxy returns an EMPTY completion
+      // (200, stop=end_turn, 0 output tokens) when a `temperature` is sent with a
+      // larger prompt like this one. Omitting it makes the gateway reliably return
+      // JSON. Verified live 2026-08-09: with temperature 0.2 -> empty; without -> ok.
+      parsed = await completeJson<AiCheckResponse>({
+        system,
+        messages: [{ role: "user", content: user }],
+        maxTokens: 900,
+      });
+    } catch (err) {
+      return { ok: false, error: messageOf(err) };
+    }
+
+    // Build a preferred-index hint from the model's echoed paragraph numbers.
+    const preferredIndexByQuote: Record<string, number> = {};
+    for (const c of parsed.conflicts ?? []) {
+      const p = (c as { paragraph?: number }).paragraph;
+      if (typeof c.quote === "string" && typeof p === "number") {
+        preferredIndexByQuote[c.quote.trim()] = p;
+      }
+    }
+    for (const m of parsed.missing ?? []) {
+      const p = (m as { paragraph?: number }).paragraph;
+      if (typeof m.quote === "string" && typeof p === "number") {
+        preferredIndexByQuote[m.quote.trim()] = p;
+      }
+    }
+
+    const resolved = new Set(input.resolvedMarkKeys ?? []);
+    const marks = aiResultToMarks(parsed, paragraphs, {
+      preferredIndexByQuote,
+    }).filter((mk) => !resolved.has(mk.markKey));
+
+    return { ok: true, data: { marks } };
   } catch (err) {
     return { ok: false, error: messageOf(err) };
   }
