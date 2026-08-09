@@ -663,7 +663,7 @@ async function seedWithin(client: PoolClient): Promise<void> {
     TRUNCATE TABLE
       entries, facts, ties, chapter_appearances, open_questions,
       chapters, research_threads, research_turns, propositions, kept_cards,
-      resolved_marks, dismissed_suggestions
+      resolved_marks, dismissed_suggestions, phrase_mentions
     RESTART IDENTITY CASCADE
   `);
 
