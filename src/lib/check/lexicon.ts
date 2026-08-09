@@ -15,11 +15,6 @@ export interface Lexicon {
   has: (phrase: string) => boolean;
 }
 
-/** Normalize a whole phrase token-by-token (mirrors normalize but keeps it here for clarity). */
-function normalizePhrase(phrase: string): string {
-  return normalize(phrase);
-}
-
 export function buildLexicon(wiki: WikiSnapshot): Lexicon {
   // Set of normalized phrases known to the wiki (names, aliases, fact values).
   const phrases = new Set<string>();
@@ -28,7 +23,7 @@ export function buildLexicon(wiki: WikiSnapshot): Lexicon {
   const tokens = new Set<string>();
 
   const addPhrase = (raw: string) => {
-    const n = normalizePhrase(raw);
+    const n = normalize(raw);
     if (n) phrases.add(n);
   };
   const addTokens = (raw: string) => {
@@ -53,7 +48,7 @@ export function buildLexicon(wiki: WikiSnapshot): Lexicon {
   }
 
   const has = (phrase: string): boolean => {
-    const n = normalizePhrase(phrase);
+    const n = normalize(phrase);
     if (n === '') return true;
     if (phrases.has(n)) return true;
 
