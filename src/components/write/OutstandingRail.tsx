@@ -92,14 +92,14 @@ export function OutstandingRail({
         ) : (
           ordered.map((mark) => {
             const conflict = mark.kind === 'conflict';
-            const open = mark.markKey === openMarkKey;
+            const isOpen = mark.markKey === openMarkKey;
             const important = importanceRank(mark.importance) === 0;
             return (
               <button
                 key={mark.markKey}
                 type="button"
-                className={`${styles.railRow} ${open ? styles.railRowOpen : ''} ${important ? styles.railRowImportant : ''}`}
-                aria-pressed={open}
+                className={`${styles.railRow} ${isOpen ? styles.railRowOpen : ''} ${important ? styles.railRowImportant : ''}`}
+                aria-pressed={isOpen}
                 onClick={() => onSelect(mark.markKey)}
               >
                 <span
