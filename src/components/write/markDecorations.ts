@@ -83,6 +83,73 @@ export function resolveMarkRange(
   return found;
 }
 
+/**
+ * Pure sentence-bounds finder: given a paragraph's plain `text` and the
+ * [runStart, runEnd) character offsets of a flagged run inside it, return the
+ * [start, end) offsets of the sentence containing that run. Sentence edges are
+ * the nearest `. ! ?` terminators; the terminator is included, and leading
+ * whitespace from the previous sentence is trimmed. Exported for unit tests.
+ */
+export function sentenceBounds(
+  text: string,
+  runStart: number,
+  runEnd: number,
+): { start: number; end: number } {
+  const isEnd = (ch: string) => ch === '.' || ch === '!' || ch === '?';
+  let s = Math.max(0, Math.min(runStart, text.length));
+  while (s > 0 && !isEnd(text[s - 1]!)) s -= 1;
+  while (s < runStart && text[s] === ' ') s += 1;
+  let e = Math.max(0, Math.min(runEnd, text.length));
+  while (e < text.length && !isEnd(text[e]!)) e += 1;
+  if (e < text.length) e += 1; // include the terminator itself
+  return { start: s, end: e };
+}
+
+/**
+ * Absolute {from,to} of the SENTENCE that contains a mark's flagged run, plus the
+ * sentence's plain text. Used by the "Change the sentence" AI rewrite: replacing
+ * the whole sentence (rather than the sub-run) guarantees the spliced result is
+ * grammatical, since the model rewrites a self-contained unit.
+ *
+ * Sentence bounds are the nearest sentence terminators (. ! ?) around the run,
+ * within the run's paragraph. Falls back to the whole paragraph when no
+ * terminator is found. Returns null when the run itself cannot be located.
+ */
+export function resolveSentenceRange(
+  doc: PmNode,
+  mark: Mark,
+): { from: number; to: number; text: string } | null {
+  const run = resolveMarkRange(doc, mark);
+  if (!run) return null;
+
+  const { paragraphIndex } = mark.position;
+  let result: { from: number; to: number; text: string } | null = null;
+  let blockIndex = -1;
+  doc.forEach((node, offset) => {
+    blockIndex += 1;
+    if (blockIndex !== paragraphIndex || result) return;
+
+    const text = node.textContent;
+    const paraStart = offset + 1; // step inside the paragraph's opening token
+    const runStart = run.from - paraStart;
+    const runEnd = run.to - paraStart;
+    if (runStart < 0 || runEnd > text.length) {
+      // Anchor mismatch; fall back to the whole paragraph.
+      result = { from: paraStart, to: paraStart + text.length, text };
+      return;
+    }
+
+    const { start, end } = sentenceBounds(text, runStart, runEnd);
+    result = {
+      from: paraStart + start,
+      to: paraStart + end,
+      text: text.slice(start, end),
+    };
+  });
+
+  return result;
+}
+
 function buildDecorations(
   state: EditorState,
   data: MarkDecorationData,

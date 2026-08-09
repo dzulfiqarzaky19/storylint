@@ -205,6 +205,9 @@ export async function explainMark(input: {
   kind: "conflict" | "missing" | string;
   noteText: string;
   paragraph?: string;
+  /** The full sentence containing the flagged run. When provided, the rewrite
+   * replaces this whole sentence (grammatical splice) instead of the sub-run. */
+  sentence?: string;
 }): Promise<ActionResult<{ explanation: string; rewrite: string }>> {
   const quote = input.quote.trim();
   if (!quote) return { ok: false, error: "No text to explain." };
@@ -233,7 +236,16 @@ export async function explainMark(input: {
         ? "It CONTRADICTS an established fact in their gazetteer."
         : "It introduces a detail NOT yet recorded in their gazetteer.",
       "Ground ONLY in the gazetteer provided; never invent contradicting facts.",
-      "Explain the clash in 1-3 plain sentences, then offer ONE optional rewrite of the flagged run that would fit their world. If no rewrite is warranted, return an empty rewrite.",
+      "Explain the clash in 1-3 plain sentences.",
+      // The UI splices `rewrite` in for EXACTLY the flagged run, so it must be a
+      // drop-in replacement of only that run: no surrounding sentence, no quotes,
+      // no leading/trailing words that already sit outside the flagged text. If a
+      // clean in-place substitution is not possible, return an empty rewrite.
+      // With a sentence in hand the UI replaces the WHOLE sentence, so ask for a
+      // complete grammatical sentence; otherwise fall back to a sub-run rewrite.
+      input.sentence
+        ? `Then rewrite the ENTIRE sentence below so it no longer clashes, keeping the author\u2019s voice and every other fact intact, and return the full rewritten sentence as \`rewrite\`.\nSentence: "${input.sentence.trim()}"`
+        : "Then offer ONE optional rewrite that REPLACES ONLY the flagged run in place. It must read grammatically when substituted verbatim for the flagged run and repeat none of the words around it. If no clean in-place rewrite fits, return an empty rewrite.",
       "Return STRICT JSON only, no prose outside JSON, shaped exactly as:",
       '{"explanation": string, "rewrite": string}',
     ].join("\n");
@@ -254,7 +266,6 @@ export async function explainMark(input: {
         system,
         messages: [{ role: "user", content: user }],
         maxTokens: 500,
-        temperature: 0.5,
       });
     } catch {
       // Fallback: plain-text explanation, no rewrite.
@@ -263,7 +274,6 @@ export async function explainMark(input: {
           "You are a story-consistency collaborator. Explain in 1-3 sentences why the flagged run clashes with the writer's world.",
         messages: [{ role: "user", content: user }],
         maxTokens: 300,
-        temperature: 0.5,
       });
       advice = { explanation, rewrite: "" };
     }

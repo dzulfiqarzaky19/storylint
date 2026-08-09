@@ -55,6 +55,7 @@ import { docToParagraphs } from '@/lib/write/adapters';
 import {
   createMarkDecorationPlugin,
   resolveMarkRange,
+  resolveSentenceRange,
   type MarkDecorationData,
 } from './markDecorations';
 import { InlineNote } from './InlineNote';
@@ -312,15 +313,52 @@ export function Manuscript({
     [state.marks, state.openMarkKey],
   );
 
+  // Ask the AI to explain a flagged run (read-only; grounds on the wiki server
+  // side). Writes nothing; result lives only in session state keyed by markKey.
+  const handleExplain = useCallback(
+    async (mark: Mark) => {
+      setAiBusyKey(mark.markKey);
+      try {
+        // Give the model the surrounding paragraph for context, and the exact
+        // sentence so it can return a whole-sentence rewrite that splices cleanly.
+        const paragraphs = docToParagraphs(stateRef.current.body);
+        const paragraph = paragraphs[mark.position.paragraphIndex] ?? '';
+        const sentence = editor
+          ? resolveSentenceRange(editor.state.doc, mark)?.text
+          : undefined;
+        const res = await explainMark({
+          quote: mark.quote,
+          kind: mark.kind,
+          noteText: mark.noteText,
+          paragraph,
+          sentence,
+        });
+        setAiAdvice((prev) => ({
+          ...prev,
+          [mark.markKey]: res.ok
+            ? { explanation: res.data.explanation, rewrite: res.data.rewrite }
+            : { explanation: '', rewrite: '', error: res.error },
+        }));
+      } finally {
+        setAiBusyKey(null);
+      }
+    },
+    [editor],
+  );
+
   const handleAction = useCallback(
     async (mark: Mark, action: MarkAction) => {
       const resolution = resolutionIdOf(action);
       setBusy(true);
       try {
         if (resolution === 'text') {
-          // Select the run in the editor so the author can rewrite it.
+          // "Change the sentence": put the writer where the fix goes and, when AI
+          // is on, fetch a grounded rewrite so the button visibly DOES something.
+          // Keep the note open so the suggestion + "Use in editor" stay reachable.
           selectRunInEditor(editor, mark);
-          dispatch({ type: 'OPEN_MARK', markKey: null });
+          if (aiEnabled && !aiAdvice[mark.markKey]) {
+            void handleExplain(mark);
+          }
           return;
         }
 
@@ -349,43 +387,19 @@ export function Manuscript({
         setBusy(false);
       }
     },
-    [editor],
+    [editor, aiEnabled, aiAdvice, handleExplain],
   );
 
-  // Ask the AI to explain a flagged run (read-only; grounds on the wiki server
-  // side). Writes nothing; result lives only in session state keyed by markKey.
-  const handleExplain = useCallback(
-    async (mark: Mark) => {
-      setAiBusyKey(mark.markKey);
-      try {
-        // Give the model the surrounding paragraph for context.
-        const paragraphs = docToParagraphs(stateRef.current.body);
-        const paragraph = paragraphs[mark.position.paragraphIndex] ?? '';
-        const res = await explainMark({
-          quote: mark.quote,
-          kind: mark.kind,
-          noteText: mark.noteText,
-          paragraph,
-        });
-        setAiAdvice((prev) => ({
-          ...prev,
-          [mark.markKey]: res.ok
-            ? { explanation: res.data.explanation, rewrite: res.data.rewrite }
-            : { explanation: '', rewrite: '', error: res.error },
-        }));
-      } finally {
-        setAiBusyKey(null);
-      }
-    },
-    [],
-  );
-
-  // Replace the flagged run in the editor with the AI's suggested rewrite. This
-  // edits the MANUSCRIPT only (never the wiki), and only on the writer's click.
+  // Replace the flagged run's SENTENCE in the editor with the AI's suggested
+  // rewrite (the model rewrites the whole sentence, so the splice is grammatical).
+  // Falls back to the run range if the sentence can't be resolved. Edits the
+  // MANUSCRIPT only (never the wiki), and only on the writer's click.
   const applyRewrite = useCallback(
     (mark: Mark, rewrite: string) => {
       if (!editor || !rewrite) return;
-      const range = resolveMarkRange(editor.state.doc, mark);
+      const range =
+        resolveSentenceRange(editor.state.doc, mark) ??
+        resolveMarkRange(editor.state.doc, mark);
       if (!range) return;
       editor
         .chain()
@@ -496,5 +510,6 @@ function selectRunInEditor(
     .chain()
     .focus()
     .setTextSelection({ from: range.from, to: range.to })
+    .scrollIntoView()
     .run();
 }
