@@ -169,6 +169,7 @@ export function findUnrecorded(
   paragraphs: string[],
   wiki: WikiSnapshot,
   lexicon: Lexicon = buildLexicon(wiki),
+  chapterCounts?: ReadonlyMap<string, number>,
 ): Mark[] {
   const tokenOwners = buildTokenOwners(wiki);
   // Precompute each character's first-name matcher once (was rebuilt per U1 match).
@@ -231,7 +232,11 @@ export function findUnrecorded(
     // the whole chapter. A phrase the author leans on (>=2) ranks as important;
     // a single mention still surfaces, it just ranks 'normal'. RANK, never gate.
     const recurrence = countOccurrences(paragraphs, cand.quote);
-    const importance: MarkImportance = recurrence >= 2 ? 'high' : 'normal';
+    // Cross-chapter signal (Tier 2): how many chapters this phrase appears in
+    // book-wide. The index keys phrases lowercased (see extractCandidatePhrases),
+    // so match that. Undefined map → Tier 1 (within-chapter only).
+    const chapterCount = chapterCounts?.get(cand.quote.toLowerCase());
+    const importance: MarkImportance = importanceOf(recurrence, chapterCount);
     marks.push({
       markKey: key,
       kind: 'missing',
@@ -265,6 +270,21 @@ function countOccurrences(paragraphs: string[], quote: string): number {
     }
   }
   return total;
+}
+
+/**
+ * Decide a mark's importance from the two recurrence signals. RANK, never gate:
+ * a single-mention phrase still surfaces, it just ranks 'normal'.
+ *   - within-chapter recurrence >= 2  → the author leans on it here, or
+ *   - cross-chapter count      >= 2   → it recurs across the book (Tier 2)
+ * either makes it 'high'. `chapterCount` is how many chapters the phrase appears
+ * in book-wide (from the phrase_mentions index); undefined when the index is not
+ * loaded, which cleanly degrades to Tier 1 (within-chapter only).
+ */
+function importanceOf(recurrence: number, chapterCount?: number): MarkImportance {
+  if (recurrence >= 2) return 'high';
+  if ((chapterCount ?? 0) >= 2) return 'high';
+  return 'normal';
 }
 
 function railFor(quote: string, recurrence = 1): string {

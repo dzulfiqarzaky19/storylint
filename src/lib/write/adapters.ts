@@ -96,11 +96,13 @@ export function buildCheckInput(args: {
   db: DbWiki;
   resolvedMarkKeys?: string[];
   dismissedSuggestionKeys?: string[];
+  chapterCounts?: ReadonlyMap<string, number>;
 }): CheckInput {
   return {
     paragraphs: docToParagraphs(args.body),
     wiki: toCheckWiki(args.db),
     resolvedMarkKeys: args.resolvedMarkKeys,
     dismissedSuggestionKeys: args.dismissedSuggestionKeys,
+    chapterCounts: args.chapterCounts,
   };
 }

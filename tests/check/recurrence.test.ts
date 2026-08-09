@@ -53,3 +53,35 @@ describe('within-chapter recurrence', () => {
     expect(importanceRank(undefined)).toBe(importanceRank('normal'));
   });
 });
+
+describe('cross-chapter recurrence (Tier 2)', () => {
+  const q = 'her mother\u2019s brass ring';
+  const singleMention = [`Maren turned ${q} in her pocket.`];
+
+  it('upgrades a single-mention phrase to high when it recurs across chapters', () => {
+    // Same phrase, once in THIS chapter, but the book-wide index says it appears
+    // in 3 chapters. Cross-chapter recurrence ranks it 'high'.
+    const counts = new Map<string, number>([[q.toLowerCase(), 3]]);
+    const m = findUnrecorded(singleMention, wiki, undefined, counts).find(
+      (x) => x.quote === q,
+    );
+    expect(m).toBeDefined();
+    expect(m!.recurrence).toBe(1); // within-chapter count unchanged
+    expect(m!.importance).toBe('high'); // ranked up by the cross-chapter signal
+  });
+
+  it('still flags the phrase, and stays normal, when it appears in only one chapter', () => {
+    const counts = new Map<string, number>([[q.toLowerCase(), 1]]);
+    const m = findUnrecorded(singleMention, wiki, undefined, counts).find(
+      (x) => x.quote === q,
+    );
+    expect(m).toBeDefined(); // rank, never gate
+    expect(m!.importance).toBe('normal');
+  });
+
+  it('degrades to Tier 1 when no index is supplied (undefined map)', () => {
+    const m = findUnrecorded(singleMention, wiki).find((x) => x.quote === q);
+    expect(m).toBeDefined();
+    expect(m!.importance).toBe('normal');
+  });
+});

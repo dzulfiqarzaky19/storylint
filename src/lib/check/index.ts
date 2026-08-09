@@ -166,6 +166,13 @@ export interface CheckInput {
   resolvedMarkKeys?: string[];
   /** suggestion keys the user dismissed ("Leave it"); suppressed. */
   dismissedSuggestionKeys?: string[];
+  /**
+   * Book-wide index of candidate phrases → how many chapters each appears in
+   * (from phrase_mentions). Lets the engine RANK an unrecorded mark by
+   * cross-chapter recurrence (Tier 2). Keys are lowercased (see
+   * extractCandidatePhrases). Omitted → within-chapter ranking only (Tier 1).
+   */
+  chapterCounts?: ReadonlyMap<string, number>;
 }
 
 /** Output of the engine. */
@@ -191,7 +198,7 @@ export { normalize } from './normalize';
  * them separately would be a bug.
  */
 export function checkManuscript(input: CheckInput): CheckResult {
-  const { paragraphs, wiki, resolvedMarkKeys, dismissedSuggestionKeys } = input;
+  const { paragraphs, wiki, resolvedMarkKeys, dismissedSuggestionKeys, chapterCounts } = input;
 
   const resolved = new Set(resolvedMarkKeys ?? []);
   const dismissed = new Set(dismissedSuggestionKeys ?? []);
@@ -199,7 +206,7 @@ export function checkManuscript(input: CheckInput): CheckResult {
   const lexicon = buildLexicon(wiki);
 
   const contradictions = findContradictions(paragraphs, wiki);
-  const unrecorded = findUnrecorded(paragraphs, wiki, lexicon);
+  const unrecorded = findUnrecorded(paragraphs, wiki, lexicon, chapterCounts);
 
   const marks: Mark[] = [...contradictions, ...unrecorded].filter(
     (m) => !resolved.has(m.markKey),
