@@ -64,6 +64,7 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
+  position: relative;
   width: 100%;
   padding: 9px 8px;
   background: none;
@@ -103,6 +104,31 @@
 .itemName {
   font-size: 14px;
   font-weight: 700;
+}
+
+/* Per-chapter severity dot (Feature 1). Anchored top-right of the item; a
+   contradiction is red, an unrecorded-only chapter is yellow. Absent element =
+   clean chapter (or the active chapter, which shows its marks in the rail). */
+.dot {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.dotRed {
+  background: var(--danger, #c0392b);
+}
+
+.dotYellow {
+  background: var(--warning, #d6a419);
+}
+
+.itemActive .dot {
+  display: none;
 }
 
 .add {

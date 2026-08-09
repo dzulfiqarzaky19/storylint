@@ -209,6 +209,19 @@ export async function listChapters(): Promise<
   );
 }
 
+/**
+ * List every chapter WITH its body (ProseMirror JSON), ordered by number. Unlike
+ * listChapters (which omits the body to keep the left index light), this feeds
+ * the Feature-1 per-chapter severity pass, which must run the engine over every
+ * chapter's text on load. One round-trip for all chapters, not one per chapter.
+ * The body column is jsonb; the pg driver hands it back already parsed.
+ */
+export async function getAllChaptersWithBody(): Promise<ChapterRow[]> {
+  return rows<ChapterRow>(
+    `SELECT id, number, title, body FROM chapters ORDER BY number`,
+  );
+}
+
 export async function getResolvedMarkKeys(): Promise<string[]> {
   const res = await rows<{ markKey: string }>(
     `SELECT mark_key AS "markKey" FROM resolved_marks`,

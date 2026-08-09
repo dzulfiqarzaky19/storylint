@@ -2,10 +2,18 @@
 
 import { useId, useState } from "react";
 import styles from "./WriteIndex.module.css";
+import type { ChapterSeverity } from "@/lib/check/severity";
 
 export interface WriteIndexChapter {
   number: number;
   title: string;
+  /**
+   * Left-index dot severity for this chapter (Feature 1): 'red' for a
+   * contradiction, 'yellow' for unrecorded-only, null/undefined for a clean
+   * chapter (no dot). The ACTIVE chapter is passed null by the page — the writer
+   * already sees its marks in the right rail.
+   */
+  severity?: ChapterSeverity;
 }
 
 export interface WriteIndexProps {
@@ -78,6 +86,18 @@ export default function WriteIndex({
                 Chapter {numberWord(c.number)}
               </span>
               <span className={styles.itemName}>{c.title}</span>
+              {c.severity && c.number !== selectedNumber ? (
+                <span
+                  className={`${styles.dot} ${
+                    c.severity === "red" ? styles.dotRed : styles.dotYellow
+                  }`}
+                  aria-label={
+                    c.severity === "red"
+                      ? "Has a contradiction"
+                      : "Has an unrecorded detail"
+                  }
+                />
+              ) : null}
             </button>
           </li>
         ))}

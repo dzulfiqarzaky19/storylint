@@ -15,7 +15,9 @@
 
 import { Manuscript } from '@/components/write/Manuscript';
 import { checkManuscript } from '@/lib/check';
+import { chapterSeverity } from '@/lib/check/severity';
 import {
+  getAllChaptersWithBody,
   getChapter,
   getPhraseChapterCounts,
   getResolvedMarkKeys,
@@ -71,6 +73,25 @@ export default async function WritePage({
     buildCheckInput({ body, db: wiki, resolvedMarkKeys, chapterCounts }),
   );
 
+  // Feature 1 — left-index severity dots. Re-run the (pure, in-memory) engine
+  // over EVERY chapter's body, reusing the single wiki snapshot + book-wide
+  // resolvedMarkKeys already loaded above (no per-chapter DB round trips).
+  // chapterCounts is ranking-only and never gates mark existence, so it is
+  // omitted here. The ACTIVE chapter is forced to null: the writer already sees
+  // its marks in the right rail, so a dot on it would be redundant noise.
+  const allChapters = await getAllChaptersWithBody();
+  const severityByNumber = new Map<number, ReturnType<typeof chapterSeverity>>();
+  for (const c of allChapters) {
+    if (c.number === chapterNumber) {
+      severityByNumber.set(c.number, null);
+      continue;
+    }
+    const { marks: chapterMarks } = checkManuscript(
+      buildCheckInput({ body: c.body, db: wiki, resolvedMarkKeys }),
+    );
+    severityByNumber.set(c.number, chapterSeverity(chapterMarks));
+  }
+
   return (
     <Manuscript
       key={chapterNumber}
@@ -81,7 +102,11 @@ export default async function WritePage({
       wiki={toCheckWiki(wiki)}
       resolvedMarkKeys={resolvedMarkKeys}
       chapterCounts={[...chapterCounts]}
-      chapters={chapters.map((c) => ({ number: c.number, title: c.title }))}
+      chapters={chapters.map((c) => ({
+        number: c.number,
+        title: c.title,
+        severity: severityByNumber.get(c.number) ?? null,
+      }))}
       aiEnabled={aiEnabled()}
     />
   );
