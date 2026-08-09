@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { railRows } from "./_helpers/rail";
 
 // Exhaustive WRITE-screen click-through (per-screen e2e). Drives every
 // interactive control on /write at the canonical 1440x900 frame and asserts the
@@ -30,14 +31,8 @@ async function manuscriptText(page: Page): Promise<string> {
   });
 }
 
-function rail(page: Page) {
-  return page.locator('aside[aria-label="Outstanding marks"]');
-}
 function chapters(page: Page) {
   return page.locator('nav[aria-label="Chapters"]');
-}
-function railRows(page: Page) {
-  return page.locator("button[aria-pressed]");
 }
 
 test.beforeEach(async ({ page }) => {

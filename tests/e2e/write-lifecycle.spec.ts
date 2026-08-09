@@ -1,4 +1,5 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
+import { railRows, pressedRows } from "./_helpers/rail";
 
 // -----------------------------------------------------------------------------
 // WRITE mark LIFECYCLE (integration). Complements write.spec.ts (affordance
@@ -24,8 +25,6 @@ import { test, expect, type Page, type Locator } from "@playwright/test";
 //     clicks, which is what we use throughout.
 // -----------------------------------------------------------------------------
 
-const RAIL = 'aside[aria-label="Outstanding marks"]';
-
 /** Manuscript prose only (excludes the portalled inline-note text). */
 async function manuscriptText(page: Page): Promise<string> {
   return page.evaluate(() => {
@@ -43,11 +42,6 @@ async function manuscriptText(page: Page): Promise<string> {
     }
     return parts.join("\n").trim();
   });
-}
-
-/** Rail rows are the mark buttons inside the Outstanding-marks aside only. */
-function railRows(page: Page): Locator {
-  return page.locator(`${RAIL} button[aria-pressed]`);
 }
 
 /** Underline decorations carry a stable data-mark-key (== the mark's key). */
@@ -123,7 +117,7 @@ test("write lifecycle: clicking an underline opens the note (same trigger as the
   await expect(note).toBeVisible();
 
   // The rail row for that same key is now pressed (rail ⇄ underline are one).
-  const pressed = page.locator(`${RAIL} button[aria-pressed="true"]`);
+  const pressed = pressedRows(page);
   await expect(pressed).toHaveCount(1);
 });
 
@@ -144,8 +138,7 @@ test("write lifecycle: 'leave'/'not now' clears the row and the underline immedi
   await rows.first().click();
   const note = page.getByTestId("write-inline-note");
   await expect(note).toBeVisible();
-  const openKey = await page
-    .locator(`${RAIL} button[aria-pressed="true"]`)
+  const openKey = await pressedRows(page)
     .getAttribute("data-mark-key")
     .catch(() => null);
   // The rail button itself may not carry the key; derive it from the note's

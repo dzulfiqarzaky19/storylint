@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { railRows } from "./_helpers/rail";
 
 // Phase 8 smoke (HANDOFF §8). Not exhaustive — proves each screen mounts,
 // renders real seeded data, and the load-bearing interactions fire, at the
@@ -129,7 +130,7 @@ test("write: clicking a rail row opens the inline note and highlights the row (�
   page,
 }) => {
   await page.goto("/write");
-  const rows = page.locator("button[aria-pressed]");
+  const rows = railRows(page);
   await expect(rows.first()).toBeVisible();
   // No note open initially.
   await expect(page.getByTestId("write-inline-note")).toHaveCount(0);
@@ -154,7 +155,7 @@ test("write: the inline note offers three differentiated actions (§7 Phase 7)",
   page,
 }) => {
   await page.goto("/write");
-  await page.locator("button[aria-pressed]").first().click();
+  await railRows(page).first().click();
   const note = page.getByTestId("write-inline-note");
   await expect(note).toBeVisible();
   // Three distinct action buttons inside the note (wiki / text / leave).
