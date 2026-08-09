@@ -76,7 +76,14 @@ export function writeReducer(state: WriteState, action: WriteAction): WriteState
       return { ...state, body: action.body, dirty: true };
 
     case "SET_MARKS":
-      return { ...state, marks: action.marks };
+      // Defense in depth: never surface a locally-resolved ('leave'/'not now')
+      // mark, even if a check pass re-emits it before the server round-trips.
+      return {
+        ...state,
+        marks: action.marks.filter(
+          (m) => !state.resolvedMarkKeys.includes(m.markKey),
+        ),
+      };
 
     case "SAVE_MANUSCRIPT":
       // Optimistic no-op; SAVE_SUCCEEDED / SET_ERROR follow the server action.
@@ -99,6 +106,9 @@ export function writeReducer(state: WriteState, action: WriteAction): WriteState
         return {
           ...state,
           resolvedMarkKeys: [...new Set([...state.resolvedMarkKeys, action.markKey])],
+          // Remove the mark now so its underline clears immediately, rather than
+          // lingering until the next check pass (which felt like a no-op).
+          marks: state.marks.filter((m) => m.markKey !== action.markKey),
           openMarkKey: state.openMarkKey === action.markKey ? null : state.openMarkKey,
         };
       }
