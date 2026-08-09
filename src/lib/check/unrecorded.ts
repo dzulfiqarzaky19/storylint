@@ -66,6 +66,61 @@ const POSS_PRONOUNS: Record<string, 'female' | 'male' | 'any'> = {
   your: 'any',
 };
 
+// Words that must never be part of a possessed-object phrase. A conjunction or
+// preposition here means the regex has run past the object into the next clause
+// (e.g. "her mother's coat AND did not cry" → the object is "coat", not
+// "coat and"). We stop the object at the first such word.
+const OBJECT_STOP_WORDS = new Set([
+  'and',
+  'or',
+  'but',
+  'nor',
+  'so',
+  'yet',
+  'of',
+  'in',
+  'on',
+  'at',
+  'to',
+  'with',
+  'for',
+  'from',
+  'by',
+  'as',
+  'that',
+  'which',
+  'who',
+  'did',
+  'was',
+  'is',
+  'were',
+  'are',
+]);
+
+/**
+ * Decide whether the object of a possessive ("her mother's <object>") is a
+ * *named heirloom* worth flagging, and return its clean phrase. The importance
+ * signal, the same one the module header describes, is that a genuine artifact
+ * is QUALIFIED, a modifier plus a noun ("brass ring", "silver knife"), not a
+ * bare common noun ("coat", "hands"). A bare noun after the possessive is an
+ * incidental prop, so it is skipped rather than treated as gazetteer-worthy.
+ *
+ * Returns the trimmed object tokens (still excluding any trailing stop word), or
+ * null when the object is a bare noun / begins with a stop word.
+ */
+function qualifiedObject(rawObject: string): string[] | null {
+  const tokens = rawObject.trim().split(/\s+/).filter(Boolean);
+  const kept: string[] = [];
+  for (const tok of tokens) {
+    if (OBJECT_STOP_WORDS.has(normalize(tok))) break; // ran into the next clause
+    kept.push(tok);
+  }
+  // A named object needs a qualifier + noun (>= 2 content tokens). A single bare
+  // noun ("coat") is an incidental prop, not a gazetteer entity.
+  if (kept.length < 2) return null;
+  return kept;
+}
+
 interface Candidate {
   quote: string;
   paragraphIndex: number;
@@ -129,9 +184,15 @@ export function findUnrecorded(
   paragraphs.forEach((paragraph, paragraphIndex) => {
     // U1 — possessed heirloom.
     for (const m of paragraph.matchAll(U1)) {
-      const quote = m[0].trim();
       const pron = m[1]!.toLowerCase();
       if (!(pron in POSS_PRONOUNS)) continue;
+      // The object must be a qualified artifact (modifier + noun), and any
+      // trailing conjunction that the regex grabbed ("coat and") is stripped.
+      const objectTokens = qualifiedObject(m[3] ?? '');
+      if (!objectTokens) continue; // bare noun / ran into the next clause
+      // Rebuild the quote from the possessive prefix + cleaned object so the
+      // underline never spans a conjunction or the following clause.
+      const quote = `${m[1]} ${m[2]} ${objectTokens.join(' ')}`;
       const before = running.join(' ') + ' ' + paragraph.slice(0, m.index ?? 0);
       const entity = resolvePronounEntity(characters, before);
       if (!entity) continue;
