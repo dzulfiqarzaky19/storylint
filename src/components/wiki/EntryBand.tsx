@@ -32,6 +32,14 @@ interface EntryBandProps {
   ) => void;
   /** Add a new blank fact to this entry. */
   onAddFact: (entryId: string) => void;
+  /** AI "suggest details" panel (optional). */
+  ai?: {
+    suggestions: { key: string; value: string }[];
+    busy: boolean;
+    onSuggest: () => void;
+    onAdd: (key: string, value: string) => void;
+    onDismiss: (key: string) => void;
+  };
 }
 
 // Entry band: two columns, 40px gap, 34px top padding.
@@ -44,6 +52,7 @@ export default function EntryBand({
   onEditEntryField,
   onEditFactField,
   onAddFact,
+  ai,
 }: EntryBandProps) {
   const kindLabel = KIND_LABEL[entry.kind];
   const chapterCount = entry.appearances.length;
@@ -89,6 +98,7 @@ export default function EntryBand({
             onDropSuggestion={onDropSuggestion}
             onEditFactField={onEditFactField}
             onAddFact={onAddFact}
+            ai={ai}
           />
           <OpenQuestions questions={entry.openQuestions} />
         </div>

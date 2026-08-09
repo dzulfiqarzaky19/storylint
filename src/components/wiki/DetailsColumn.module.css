@@ -80,3 +80,64 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* AI suggest-details block (additive). Sits under the + Add detail button. */
+.aiBlock {
+  margin-top: 14px;
+}
+.aiSuggest {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border: 1px solid var(--accent, #ec3013);
+  background: transparent;
+  color: var(--accent, #ec3013);
+  cursor: pointer;
+}
+.aiSuggest:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.aiList {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.aiItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: var(--fresh, #fbf4dd);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.aiText {
+  font-size: 14px;
+  color: var(--ink);
+}
+.aiActions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.aiAdd {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border: none;
+  background: var(--accent, #ec3013);
+  color: #fff;
+  cursor: pointer;
+}
+.aiDismiss {
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+}

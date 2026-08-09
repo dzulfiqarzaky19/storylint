@@ -44,6 +44,10 @@ export type ResearchAction =
   | { type: "PROPOSE_CARD"; propositionId: string }
   | { type: "CONFIRM_CARD"; propositionId: string; entryId: string }
   | { type: "CANCEL_PENDING" }
+  // AI (session-only): append the writer's question and the AI's answer as two
+  // new turns, both immediately visible. Cards are proposition-shaped so they
+  // flow through the existing Keep / Make-it-an-entry paths. No wiki write.
+  | { type: "APPEND_TURN"; turns: ResearchTurnWithCards[] }
   | { type: "SET_ERROR"; error: string | null };
 
 // ---- Init -----------------------------------------------------------------
@@ -106,6 +110,28 @@ export function researchReducer(state: ResearchState, action: ResearchAction): R
 
     case "CANCEL_PENDING":
       return { ...state, pendingPropositionId: null };
+
+    case "APPEND_TURN": {
+      const newKept: string[] = [];
+      const newInWiki: string[] = [];
+      for (const turn of action.turns) {
+        for (const card of turn.cards) {
+          if (card.kept) newKept.push(card.id);
+          if (card.inWiki) newInWiki.push(card.id);
+        }
+      }
+      return {
+        ...state,
+        turns: [...state.turns, ...action.turns],
+        visibleTurnIds: dedupe([
+          ...state.visibleTurnIds,
+          ...action.turns.map((t) => t.id),
+        ]),
+        keptIds: dedupe([...state.keptIds, ...newKept]),
+        inWikiIds: dedupe([...state.inWikiIds, ...newInWiki]),
+        error: null,
+      };
+    }
 
     case "SET_ERROR":
       return { ...state, error: action.error };

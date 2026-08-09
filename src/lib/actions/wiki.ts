@@ -23,6 +23,8 @@
 import { randomUUID } from "node:crypto";
 import type { Kind, Shelf } from "../domain/types";
 import { confirmWikiWrite } from "./confirmation";
+import { completeJson, aiEnabled } from "../ai/saarouters";
+import { loadWikiSnapshot } from "../db/queries";
 import {
   insertFact,
   insertTie,
@@ -313,5 +315,77 @@ export async function createFact(input: {
     return { ok: true, data: { factId: fact.id } };
   } catch (err) {
     return fail(err, "wiki.createFact");
+  }
+}
+
+// ---- AI: suggest details for an entry (READ-ONLY; writes nothing) ----------
+//
+// Grounds on the whole gazetteer plus the focused entry and asks the model for
+// candidate facts (key/value). This writes NOTHING — it only returns proposals.
+// The writer turns any proposal into a real fact via createFact (the gate), so
+// product rule 1 holds: nothing enters the wiki without explicit confirmation.
+
+export interface SuggestedFact {
+  key: string;
+  value: string;
+}
+
+interface AiFactsResponse {
+  facts?: SuggestedFact[];
+}
+
+export async function suggestEntryFacts(input: {
+  entryId: string;
+}): Promise<ActionResult<{ facts: SuggestedFact[] }>> {
+  if (!aiEnabled()) {
+    return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
+  }
+  try {
+    const wiki = await loadWikiSnapshot();
+    const entry = wiki.byId[input.entryId];
+    if (!entry) return { ok: false, error: `Unknown entry: ${input.entryId}` };
+
+    const existing = entry.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
+    const world = wiki.entries
+      .filter((e) => e.id !== entry.id)
+      .slice(0, 40)
+      .map((e) => `- ${e.name} (${e.kind})${e.summary ? `: ${e.summary}` : ""}`)
+      .join("\n");
+
+    const system = [
+      "You help a fiction writer flesh out their own story wiki (gazetteer).",
+      "Given one entry and the surrounding world, propose 3-5 SHORT candidate details (facts) that are consistent with what already exists.",
+      "Never contradict existing facts. Prefer concrete, gazetteer-style details (e.g. Eyes: Grey, Allegiance: Quiet Sept).",
+      "Do NOT repeat details the entry already has.",
+      'Return STRICT JSON only: {"facts": [{"key": string, "value": string}]}. key <= 3 words, value <= 8 words.',
+    ].join("\n");
+
+    const user = [
+      `Entry: ${entry.name} (${entry.kind})`,
+      entry.summary ? `Summary: ${entry.summary}` : "",
+      existing ? `Existing details: ${existing}` : "Existing details: (none)",
+      "",
+      world ? `Elsewhere in the world:\n${world}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const res = await completeJson<AiFactsResponse>({
+      system,
+      messages: [{ role: "user", content: user }],
+      maxTokens: 500,
+      temperature: 0.6,
+    });
+
+    const existingKeys = new Set(entry.facts.map((f) => f.key.trim().toLowerCase()));
+    const facts = (res.facts ?? [])
+      .filter((f) => f && f.key && f.value)
+      .map((f) => ({ key: f.key.trim(), value: f.value.trim() }))
+      .filter((f) => !existingKeys.has(f.key.toLowerCase()))
+      .slice(0, 5);
+
+    return { ok: true, data: { facts } };
+  } catch (err) {
+    return fail(err, "wiki.suggestEntryFacts");
   }
 }

@@ -29,6 +29,8 @@ import {
   getNextChapterNumber,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
+import { complete, completeJson, aiEnabled } from "../ai/saarouters";
+import { loadWikiSnapshot } from "../db/queries";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -173,6 +175,104 @@ export async function resolveMark(
           },
         };
     }
+  } catch (err) {
+    return { ok: false, error: messageOf(err) };
+  }
+}
+
+// ---- AI: grounded mark explanation (read-only, NOT a wiki write) -----------
+//
+// When the engine flags a run, the writer can ask the AI to explain WHY it
+// clashes with their world and offer an optional rewrite. This is purely
+// advisory: it grounds on the wiki snapshot, writes NOTHING, and never touches
+// the manuscript. The engine remains the source of truth — with AI off the
+// note still shows the engine's own noteText + actions, unchanged.
+
+/** True when the AI gateway is configured (for UI gating on the write screen). */
+export async function isWriteAiEnabled(): Promise<boolean> {
+  return aiEnabled();
+}
+
+interface AiMarkAdvice {
+  explanation?: string;
+  rewrite?: string;
+}
+
+export async function explainMark(input: {
+  quote: string;
+  kind: "conflict" | "missing" | string;
+  noteText: string;
+  paragraph?: string;
+}): Promise<ActionResult<{ explanation: string; rewrite: string }>> {
+  const quote = input.quote.trim();
+  if (!quote) return { ok: false, error: "No text to explain." };
+  if (!aiEnabled()) {
+    return {
+      ok: false,
+      error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local.",
+    };
+  }
+
+  try {
+    // Ground on the wiki so the explanation stays inside the writer's world.
+    const wiki = await loadWikiSnapshot();
+    const gazetteer = wiki.entries
+      .map((e) => {
+        const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
+        return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
+      })
+      .join("\n");
+
+    const isConflict = input.kind === "conflict";
+    const system = [
+      "You are a story-consistency collaborator for a fiction writer.",
+      "The writer's consistency engine has flagged a run of their manuscript.",
+      isConflict
+        ? "It CONTRADICTS an established fact in their gazetteer."
+        : "It introduces a detail NOT yet recorded in their gazetteer.",
+      "Ground ONLY in the gazetteer provided; never invent contradicting facts.",
+      "Explain the clash in 1-3 plain sentences, then offer ONE optional rewrite of the flagged run that would fit their world. If no rewrite is warranted, return an empty rewrite.",
+      "Return STRICT JSON only, no prose outside JSON, shaped exactly as:",
+      '{"explanation": string, "rewrite": string}',
+    ].join("\n");
+
+    const user = [
+      gazetteer ? `Gazetteer (the writer's wiki):\n${gazetteer}` : "Gazetteer: (empty)",
+      "",
+      `Engine note: ${input.noteText}`,
+      input.paragraph ? `Paragraph: ${input.paragraph}` : "",
+      `Flagged run: "${quote}"`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    let advice: AiMarkAdvice;
+    try {
+      advice = await completeJson<AiMarkAdvice>({
+        system,
+        messages: [{ role: "user", content: user }],
+        maxTokens: 500,
+        temperature: 0.5,
+      });
+    } catch {
+      // Fallback: plain-text explanation, no rewrite.
+      const explanation = await complete({
+        system:
+          "You are a story-consistency collaborator. Explain in 1-3 sentences why the flagged run clashes with the writer's world.",
+        messages: [{ role: "user", content: user }],
+        maxTokens: 300,
+        temperature: 0.5,
+      });
+      advice = { explanation, rewrite: "" };
+    }
+
+    return {
+      ok: true,
+      data: {
+        explanation: (advice.explanation ?? "").trim() || "No explanation available.",
+        rewrite: (advice.rewrite ?? "").trim(),
+      },
+    };
   } catch (err) {
     return { ok: false, error: messageOf(err) };
   }

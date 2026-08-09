@@ -19,6 +19,14 @@ interface DetailsColumnProps {
   ) => void;
   /** Add a new blank fact to this entry. */
   onAddFact: (entryId: string) => void;
+  /** AI "suggest details" (optional). Writes nothing until the writer adds one. */
+  ai?: {
+    suggestions: { key: string; value: string }[];
+    busy: boolean;
+    onSuggest: () => void;
+    onAdd: (key: string, value: string) => void;
+    onDismiss: (key: string) => void;
+  };
 }
 
 // Details column (flex:1): fact rows with 104px key cell. A fresh fact gets the
@@ -32,6 +40,7 @@ export default function DetailsColumn({
   onDropSuggestion,
   onEditFactField,
   onAddFact,
+  ai,
 }: DetailsColumnProps) {
   const drag = useDrag();
   const dragging = drag.dragging;
@@ -105,6 +114,47 @@ export default function DetailsColumn({
       >
         + Add detail
       </button>
+
+      {ai && (
+        <div className={styles.aiBlock}>
+          <button
+            type="button"
+            className={styles.aiSuggest}
+            disabled={ai.busy}
+            onClick={ai.onSuggest}
+          >
+            {ai.busy ? "Thinking…" : "✦ Suggest details"}
+          </button>
+          {ai.suggestions.length > 0 && (
+            <ul className={styles.aiList}>
+              {ai.suggestions.map((s) => (
+                <li key={s.key} className={styles.aiItem}>
+                  <span className={styles.aiText}>
+                    <strong>{s.key}:</strong> {s.value}
+                  </span>
+                  <span className={styles.aiActions}>
+                    <button
+                      type="button"
+                      className={styles.aiAdd}
+                      onClick={() => ai.onAdd(s.key, s.value)}
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.aiDismiss}
+                      onClick={() => ai.onDismiss(s.key)}
+                      aria-label={`Dismiss ${s.key}`}
+                    >
+                      ✕
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 }

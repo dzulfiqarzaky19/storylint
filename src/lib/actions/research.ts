@@ -33,6 +33,9 @@ import {
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import type { Kind } from "../domain/types";
+import type { ResearchTurnWithCards } from "../domain/types";
+import { complete, completeJson, aiEnabled } from "../ai/saarouters";
+import { loadWikiSnapshot } from "../db/queries";
 
 export type ActionResult<T = void> =
   | { ok: true; data: T }
@@ -164,6 +167,136 @@ export async function confirmCard(input: {
 
 function errMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
+}
+
+// ---- AI: grounded research answer (session-only, NOT a wiki write) ---------
+//
+// The writer types a question / half-thought. We ground the model on the
+// current wiki snapshot and ask for a short conversational answer plus 2-3
+// proposition cards. The result is returned as reducer-shaped turns and lives
+// only in session state — it writes NOTHING to the wiki. A card only becomes a
+// wiki entry through the existing confirmCard gate (product rule 1 intact).
+
+const AI_ASK_KINDS: readonly string[] = ["character", "world", "organization", "lore", "beat", "question"];
+
+interface AiProposition {
+  kind?: string;
+  title?: string;
+  body?: string;
+  asKind?: string;
+}
+interface AiAnswer {
+  reply?: string;
+  cards?: AiProposition[];
+}
+
+/** True when the AI gateway is configured (for UI gating). */
+export async function isAiEnabled(): Promise<boolean> {
+  return aiEnabled();
+}
+
+export async function askResearchAi(input: {
+  question: string;
+  threadTitle?: string;
+}): Promise<ActionResult<{ turns: ResearchTurnWithCards[] }>> {
+  const question = input.question.trim();
+  if (!question) return { ok: false, error: "Type a question first." };
+  if (!aiEnabled()) {
+    return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
+  }
+
+  try {
+    // Ground on the wiki so answers stay inside the writer's own world.
+    const wiki = await loadWikiSnapshot();
+    const gazetteer = wiki.entries
+      .map((e) => {
+        const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
+        return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
+      })
+      .join("\n");
+
+    const system = [
+      "You are a story-consistency collaborator for a fiction writer.",
+      "You help them think through their own world. Ground every answer ONLY in the gazetteer provided; never invent contradicting facts.",
+      "Reply as a thoughtful writing partner in 2-4 sentences, then propose 2-3 concrete 'cards' the writer could keep.",
+      "Return STRICT JSON only, no prose outside JSON, shaped exactly as:",
+      '{"reply": string, "cards": [{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore"}]}',
+      "title: <=6 words. body: one or two sentences. asKind: the wiki kind this card would become if written in.",
+    ].join("\n");
+
+    const user = [
+      input.threadTitle ? `Thread: ${input.threadTitle}` : "",
+      gazetteer ? `Gazetteer (the writer's wiki):\n${gazetteer}` : "Gazetteer: (empty)",
+      "",
+      `Writer asks: ${question}`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    let answer: AiAnswer;
+    try {
+      answer = await completeJson<AiAnswer>({
+        system,
+        messages: [{ role: "user", content: user }],
+        maxTokens: 900,
+        temperature: 0.7,
+      });
+    } catch {
+      // Fallback: if strict JSON failed, take a plain reply with no cards.
+      const reply = await complete({
+        system: "You are a story-consistency collaborator. Answer in 2-4 sentences, grounded in the writer's world.",
+        messages: [{ role: "user", content: user }],
+        maxTokens: 400,
+        temperature: 0.7,
+      });
+      answer = { reply, cards: [] };
+    }
+
+    const reply = (answer.reply ?? "").trim() || "Here's a thought.";
+    const cards = (answer.cards ?? [])
+      .filter((c) => c && (c.title || c.body))
+      .slice(0, 3);
+
+    const stamp = Date.now();
+    const rid = randomUUID().slice(0, 8);
+
+    // Two turns: the writer's question ("you"), then the AI's answer ("them").
+    const youTurn: ResearchTurnWithCards = {
+      id: `ai-you-${stamp}-${rid}`,
+      threadId: "",
+      ordinal: stamp,
+      side: "you",
+      who: "You",
+      text: question,
+      cards: [],
+    };
+    const themTurn: ResearchTurnWithCards = {
+      id: `ai-them-${stamp}-${rid}`,
+      threadId: "",
+      ordinal: stamp + 1,
+      side: "them",
+      who: "Research",
+      text: reply,
+      cards: cards.map((c, i) => {
+        const asKind = AI_ASK_KINDS.includes(c.asKind ?? "") ? (c.asKind as string) : "lore";
+        return {
+          id: `ai-card-${stamp}-${rid}-${i}`,
+          turnId: `ai-them-${stamp}-${rid}`,
+          kind: AI_ASK_KINDS.includes(c.kind ?? "") ? (c.kind as string) : "lore",
+          title: (c.title ?? "Untitled").trim(),
+          body: (c.body ?? "").trim(),
+          asKind,
+          sortOrder: i,
+          kept: false,
+          inWiki: false,
+        };
+      }),
+    };
+
+    return { ok: true, data: { turns: [youTurn, themTurn] } };
+  } catch (err) {
+    return { ok: false, error: errMessage(err) };
+  }
 }
 
 // ---- Research threads (Track B) — NOT a wiki write ------------------------

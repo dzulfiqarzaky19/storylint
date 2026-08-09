@@ -42,6 +42,7 @@ import {
   resolveMark as resolveMarkAction,
   saveManuscript,
   createChapter,
+  explainMark,
 } from '@/lib/actions/write';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
@@ -70,6 +71,8 @@ export interface ManuscriptProps {
   resolvedMarkKeys: string[];
   /** All chapters, for the LEFT index (Track C). Ordered by number. */
   chapters: WriteIndexChapter[];
+  /** AI gateway configured at load; gates the inline note's ✦ Ask AI affordance. */
+  aiEnabled?: boolean;
 }
 
 /** Maps a note action id to the store/server resolution id. */
@@ -99,6 +102,7 @@ export function Manuscript({
   wiki,
   resolvedMarkKeys,
   chapters,
+  aiEnabled = false,
 }: ManuscriptProps) {
   const router = useRouter();
   const [state, dispatch] = useReducer(
@@ -124,6 +128,13 @@ export function Manuscript({
   const bump = useCallback(() => forceRender((n) => n + 1), []);
 
   const [busy, setBusy] = useState(false);
+
+  // AI advice per mark (session-only; read-only; keyed by markKey). Cleared
+  // implicitly by keying — a mark with no entry shows the ✦ Ask AI button.
+  const [aiBusyKey, setAiBusyKey] = useState<string | null>(null);
+  const [aiAdvice, setAiAdvice] = useState<
+    Record<string, { explanation: string; rewrite: string; error?: string }>
+  >({});
 
   // Forward-declared so the plugin's getData can reach the click handler.
   const onSelectMarkRef = useRef<(markKey: string) => void>(() => {});
@@ -273,7 +284,50 @@ export function Manuscript({
     [editor],
   );
 
-  // ---- Render -------------------------------------------------------------
+  // Ask the AI to explain a flagged run (read-only; grounds on the wiki server
+  // side). Writes nothing; result lives only in session state keyed by markKey.
+  const handleExplain = useCallback(
+    async (mark: Mark) => {
+      setAiBusyKey(mark.markKey);
+      try {
+        // Give the model the surrounding paragraph for context.
+        const paragraphs = docToParagraphs(stateRef.current.body);
+        const paragraph = paragraphs[mark.position.paragraphIndex] ?? '';
+        const res = await explainMark({
+          quote: mark.quote,
+          kind: mark.kind,
+          noteText: mark.noteText,
+          paragraph,
+        });
+        setAiAdvice((prev) => ({
+          ...prev,
+          [mark.markKey]: res.ok
+            ? { explanation: res.data.explanation, rewrite: res.data.rewrite }
+            : { explanation: '', rewrite: '', error: res.error },
+        }));
+      } finally {
+        setAiBusyKey(null);
+      }
+    },
+    [],
+  );
+
+  // Replace the flagged run in the editor with the AI's suggested rewrite. This
+  // edits the MANUSCRIPT only (never the wiki), and only on the writer's click.
+  const applyRewrite = useCallback(
+    (mark: Mark, rewrite: string) => {
+      if (!editor || !rewrite) return;
+      const range = resolveMarkRange(editor.state.doc, mark);
+      if (!range) return;
+      editor
+        .chain()
+        .focus()
+        .insertContentAt({ from: range.from, to: range.to }, rewrite)
+        .run();
+      dispatch({ type: 'OPEN_MARK', markKey: null });
+    },
+    [editor],
+  );
 
   const selectChapter = useCallback(
     (n: number) => {
@@ -327,7 +381,20 @@ export function Manuscript({
       {/* Portal the note into the plugin's widget host under the open paragraph. */}
       {openMark && noteHostRef.current
         ? createPortal(
-            <InlineNote mark={openMark} busy={busy} onAction={handleAction} />,
+            <InlineNote
+              mark={openMark}
+              busy={busy}
+              onAction={handleAction}
+              ai={{
+                enabled: aiEnabled,
+                busy: aiBusyKey === openMark.markKey,
+                explanation: aiAdvice[openMark.markKey]?.explanation,
+                rewrite: aiAdvice[openMark.markKey]?.rewrite,
+                error: aiAdvice[openMark.markKey]?.error,
+                onExplain: () => handleExplain(openMark),
+                onApplyRewrite: (rewrite) => applyRewrite(openMark, rewrite),
+              }}
+            />,
             noteHostRef.current,
           )
         : null}

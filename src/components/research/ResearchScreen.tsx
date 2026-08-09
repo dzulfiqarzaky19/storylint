@@ -16,6 +16,7 @@ import {
   cancelPending,
   confirmCard,
   createThread,
+  askResearchAi,
 } from "@/lib/actions/research";
 import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
@@ -64,15 +65,19 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
   const [boardActive, setBoardActive] = useState(false);
   // The card currently being dragged, so the board drop knows what to keep.
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  // AI ask box (session-only). `asking` disables the input while a call is out.
+  const [draft, setDraft] = useState("");
+  const [asking, setAsking] = useState(false);
 
-  // Lookup of every proposition by id (across all turns) for the Kept board.
+  // Lookup of every proposition by id (across all turns, incl. AI-appended)
+  // for the Kept board. Derived from reducer state so AI cards are findable.
   const cardById = useMemo(() => {
     const map = new Map<string, ResearchProposition>();
-    for (const turn of snapshot.turns) {
+    for (const turn of state.turns) {
       for (const card of turn.cards) map.set(card.id, card);
     }
     return map;
-  }, [snapshot.turns]);
+  }, [state.turns]);
 
   const keptSet = useMemo(() => new Set(state.keptIds), [state.keptIds]);
   const inWikiSet = useMemo(() => new Set(state.inWikiIds), [state.inWikiIds]);
@@ -81,7 +86,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     [state.visibleTurnIds],
   );
 
-  const visibleTurns = snapshot.turns.filter((t) => visibleSet.has(t.id));
+  const visibleTurns = state.turns.filter((t) => visibleSet.has(t.id));
 
   const keptItems: KeptEntry[] = state.keptIds
     .map((id) => cardById.get(id))
@@ -156,6 +161,34 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     runAction(async () => {
       const res = await advanceTurn(hidden);
       return res.ok ? { ok: true } : { ok: false, error: res.error };
+    });
+  };
+
+  // ---- AI ask (session-only; grounded on the wiki, no wiki write) ----------
+  const handleAsk = () => {
+    const question = draft.trim();
+    if (!question || asking) return;
+    setAsking(true);
+    startTransition(async () => {
+      try {
+        const res = await askResearchAi({
+          question,
+          threadTitle: snapshot.threads.find((t) => t.id === snapshot.threadId)?.title,
+        });
+        if (res.ok) {
+          dispatch({ type: "APPEND_TURN", turns: res.data.turns });
+          setDraft("");
+        } else {
+          dispatch({ type: "SET_ERROR", error: res.error });
+        }
+      } catch (err) {
+        dispatch({
+          type: "SET_ERROR",
+          error: err instanceof Error ? err.message : String(err),
+        });
+      } finally {
+        setAsking(false);
+      }
     });
   };
 
@@ -240,7 +273,14 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           )}
 
           <section className={styles.footer}>
-            <Composer>
+            <Composer
+              ai={{
+                value: draft,
+                onChange: setDraft,
+                onSubmit: handleAsk,
+                busy: asking,
+              }}
+            >
               {CHIPS.map((label) => (
                 <PromptChip key={label} label={label} onClick={handleChip} />
               ))}

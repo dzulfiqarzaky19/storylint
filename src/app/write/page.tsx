@@ -22,6 +22,7 @@ import {
   loadWikiSnapshot,
 } from '@/lib/db/queries';
 import { buildCheckInput, paragraphsToDoc, toCheckWiki } from '@/lib/write/adapters';
+import { aiEnabled } from '@/lib/ai/saarouters';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,6 +69,7 @@ export default async function WritePage({
       wiki={toCheckWiki(wiki)}
       resolvedMarkKeys={resolvedMarkKeys}
       chapters={chapters.map((c) => ({ number: c.number, title: c.title }))}
+      aiEnabled={aiEnabled()}
     />
   );
 }

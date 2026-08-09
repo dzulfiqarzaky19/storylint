@@ -6,7 +6,7 @@
 // is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag
 // session state lives in DragContext so dragover can read the payload.
 
-import { useReducer, useCallback, startTransition } from "react";
+import { useReducer, useCallback, useState, startTransition } from "react";
 import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
 import { SHELF_TITLES, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
 import {
@@ -25,6 +25,7 @@ import {
   editFact,
   createEntry,
   createFact,
+  suggestEntryFacts,
   type ActionResult,
 } from "@/lib/actions/wiki";
 import EntryBand from "./EntryBand";
@@ -269,6 +270,61 @@ function WikiScreenInner({
     [state.byId, settle],
   );
 
+  // ---- AI: suggest details for the focused entry (read-only until Add) ------
+  const [aiSuggestions, setAiSuggestions] = useState<
+    Record<string, { key: string; value: string }[]>
+  >({});
+  const [aiBusy, setAiBusy] = useState(false);
+
+  const suggestFacts = useCallback(
+    (entryId: string) => {
+      if (aiBusy) return;
+      setAiBusy(true);
+      startTransition(() => {
+        suggestEntryFacts({ entryId })
+          .then((res) => {
+            if (res.ok) {
+              setAiSuggestions((prev) => ({ ...prev, [entryId]: res.data.facts }));
+            } else {
+              dispatch({ type: "SET_ERROR", error: res.error });
+            }
+          })
+          .catch((err: unknown) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            dispatch({ type: "SET_ERROR", error: `suggestEntryFacts: ${msg}` });
+          })
+          .finally(() => setAiBusy(false));
+      });
+    },
+    [aiBusy],
+  );
+
+  // Add one AI suggestion as a real fact — routes through the SAME confirmation-
+  // gated createFact path as manual authoring (product rule 1 intact).
+  const addSuggestedFact = useCallback(
+    (entryId: string, key: string, value: string) => {
+      const entry = state.byId[entryId];
+      if (!entry) return;
+      const factId = newId();
+      const sortOrder = entry.facts.length;
+      dispatch({ type: "CREATE_FACT", entryId, factId, key, value, sortOrder });
+      settle("createFact", createFact({ entryId, key, value, sortOrder }));
+      // Remove the accepted suggestion from the panel.
+      setAiSuggestions((prev) => ({
+        ...prev,
+        [entryId]: (prev[entryId] ?? []).filter((s) => s.key !== key),
+      }));
+    },
+    [state.byId, settle],
+  );
+
+  const dismissSuggestedFact = useCallback((entryId: string, key: string) => {
+    setAiSuggestions((prev) => ({
+      ...prev,
+      [entryId]: (prev[entryId] ?? []).filter((s) => s.key !== key),
+    }));
+  }, []);
+
   const createEntryOnShelf = useCallback(
     (shelf: ShelfKey) => {
       const kind: Kind = KIND_FOR_SHELF[shelf];
@@ -353,6 +409,13 @@ function WikiScreenInner({
         onEditEntryField={editEntryField}
         onEditFactField={editFactField}
         onAddFact={addFact}
+        ai={{
+          suggestions: aiSuggestions[selected.id] ?? [],
+          busy: aiBusy,
+          onSuggest: () => suggestFacts(selected.id),
+          onAdd: (key, value) => addSuggestedFact(selected.id, key, value),
+          onDismiss: (key) => dismissSuggestedFact(selected.id, key),
+        }}
       />
       <WorldBand entryCount={Object.keys(state.byId).length} />
       <div className={styles.shelves}>
