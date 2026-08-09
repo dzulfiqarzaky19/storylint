@@ -5,10 +5,18 @@ import { test, expect, type Page, type Locator } from "@playwright/test";
 // index shows a per-chapter dot: RED for a contradiction, YELLOW for an
 // unrecorded-only chapter, and NONE for a clean chapter OR the ACTIVE chapter
 // (whose marks the writer already sees in the right rail). page.tsx re-runs the
-// pure engine per chapter and forces the active chapter to null — these are
-// integration-only glue lines that no unit test covers, so this spec asserts the
-// DOT ELEMENT actually renders in the real page and that the active chapter is
-// suppressed. Dropping the active-null force (page.tsx) turns these RED.
+// pure engine per chapter and forces the active chapter to null; WriteIndex then
+// independently suppresses the active row too. This spec BEHAVIOR-LOCKS the
+// rendered outcome: the dot ELEMENT actually appears in the real page, and the
+// active chapter shows no dot.
+//
+// NOTE: the active-chapter suppression is DOUBLE-GUARDED (page.tsx nulls the
+// active severity AND WriteIndex re-checks `number !== selectedNumber`), so no
+// single-line e2e mutant can redden this spec — dropping either guard leaves the
+// other masking it. Each guard is instead mutation-proven IN ISOLATION at unit
+// level in tests/check/dotGuards.test.ts (drop shouldShowChapterDot's active
+// term OR buildSeverityByNumber's active-null branch -> that unit goes RED).
+// This spec's job is the end-to-end render lock, not the per-guard mutant.
 //
 // Seed reality (from `npm run db:seed`, measured against the seeded wiki):
 //   • Chapter 7 "Low Water"   -> conflict (RED)
@@ -83,12 +91,15 @@ test("write index: a NON-active chapter with a contradiction shows a RED dot, an
   ).toHaveCount(0);
 
   // The ACTIVE chapter (Ch6) is suppressed: it carries an unrecorded mark but,
-  // being active, shows no dot of either colour. This is the active-null force.
+  // being active, shows no dot of either colour (behavior-locks the active
+  // suppression at the rendered level).
   await expect(active.locator(`[aria-label="${YELLOW_LABEL}"]`)).toHaveCount(0);
   await expect(active.locator(`[aria-label="${RED_LABEL}"]`)).toHaveCount(0);
 
   // Exactly one dot is visible across the whole index in this state: the Ch7 red
-  // one (Ch6's yellow is suppressed by being active; Ch1-5 are clean). This pins
-  // the active-null force — dropping it would surface Ch6's yellow dot too.
+  // one (Ch6's yellow is suppressed by being active; Ch1-5 are clean). This
+  // behavior-locks the rendered outcome. (The per-guard mutants live in
+  // tests/check/dotGuards.test.ts; the double-guard means neither can redden
+  // this end-to-end count on its own.)
   await expect(dots(page)).toHaveCount(1);
 });

@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import styles from "./WriteIndex.module.css";
 import type { ChapterSeverity } from "@/lib/check/severity";
+import { shouldShowChapterDot } from "@/lib/check/severity";
 
 export interface WriteIndexChapter {
   number: number;
@@ -86,7 +87,7 @@ export default function WriteIndex({
                 Chapter {numberWord(c.number)}
               </span>
               <span className={styles.itemName}>{c.title}</span>
-              {c.severity && c.number !== selectedNumber ? (
+              {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
                 <span
                   className={`${styles.dot} ${
                     c.severity === "red" ? styles.dotRed : styles.dotYellow

@@ -15,7 +15,7 @@
 
 import { Manuscript } from '@/components/write/Manuscript';
 import { checkManuscript } from '@/lib/check';
-import { chapterSeverity } from '@/lib/check/severity';
+import { chapterSeverity, buildSeverityByNumber } from '@/lib/check/severity';
 import {
   getAllChaptersWithBody,
   getChapter,
@@ -80,17 +80,16 @@ export default async function WritePage({
   // omitted here. The ACTIVE chapter is forced to null: the writer already sees
   // its marks in the right rail, so a dot on it would be redundant noise.
   const allChapters = await getAllChaptersWithBody();
-  const severityByNumber = new Map<number, ReturnType<typeof chapterSeverity>>();
-  for (const c of allChapters) {
-    if (c.number === chapterNumber) {
-      severityByNumber.set(c.number, null);
-      continue;
-    }
-    const { marks: chapterMarks } = checkManuscript(
-      buildCheckInput({ body: c.body, db: wiki, resolvedMarkKeys }),
-    );
-    severityByNumber.set(c.number, chapterSeverity(chapterMarks));
-  }
+  const severityByNumber = buildSeverityByNumber(
+    allChapters,
+    chapterNumber,
+    (chapterBody) =>
+      chapterSeverity(
+        checkManuscript(
+          buildCheckInput({ body: chapterBody, db: wiki, resolvedMarkKeys }),
+        ).marks,
+      ),
+  );
 
   return (
     <Manuscript

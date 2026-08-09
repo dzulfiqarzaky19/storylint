@@ -30,3 +30,42 @@ export function chapterSeverity(marks: Mark[]): ChapterSeverity {
   if (marks.some((m) => m.kind === 'missing')) return 'yellow';
   return null;
 }
+
+/**
+ * The ACTIVE-chapter suppression guard, extracted PURE so it can be locked in
+ * isolation. A dot renders iff the chapter has a severity AND it is not the
+ * active chapter. This is the SECOND of two independent guards: the page also
+ * nulls the active chapter's severity (see `buildSeverityByNumber`). Each guard
+ * is defensible belt-and-suspenders on its own; because they double-cover, only
+ * a unit test that drops ONE guard in isolation can prove that guard — an e2e
+ * cannot, since the other guard masks it. Dropping the `!== selectedNumber` term
+ * makes an active chapter with a severity return `true` (renders a dot).
+ */
+export function shouldShowChapterDot(
+  severity: ChapterSeverity | undefined,
+  chapterNumber: number,
+  selectedNumber: number,
+): boolean {
+  return severity != null && chapterNumber !== selectedNumber;
+}
+
+/**
+ * Build the per-chapter severity map the Write page passes to the index,
+ * extracted PURE (engine call injected as `computeFn`) so the ACTIVE-null force
+ * can be locked in isolation. The active chapter maps to `null` (the writer sees
+ * its marks in the right rail, so a dot would be redundant); every other chapter
+ * maps to `computeFn(body)`. This is the FIRST of the two independent guards
+ * (the render guard is `shouldShowChapterDot`). Removing the active-null branch
+ * makes the active chapter map to its real severity.
+ */
+export function buildSeverityByNumber<T extends { number: number; body: unknown }>(
+  chapters: readonly T[],
+  activeNumber: number,
+  computeFn: (body: unknown) => ChapterSeverity,
+): Map<number, ChapterSeverity> {
+  const byNumber = new Map<number, ChapterSeverity>();
+  for (const c of chapters) {
+    byNumber.set(c.number, c.number === activeNumber ? null : computeFn(c.body));
+  }
+  return byNumber;
+}
