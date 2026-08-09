@@ -30,7 +30,7 @@ import {
   getNextChapterNumber,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
-import { complete, completeJson, aiEnabled } from "../ai/saarouters";
+import { completeJson, aiEnabled } from "../ai/saarouters";
 import { loadWikiSnapshot } from "../db/queries";
 import { docToParagraphs } from "../write/adapters";
 import { extractCandidatePhrases } from "../check/unrecorded";
@@ -302,14 +302,13 @@ export async function explainMark(input: {
         maxTokens: 500,
       });
     } catch {
-      // Fallback: plain-text explanation, no rewrite.
-      const explanation = await complete({
-        system:
-          "You are a story-consistency collaborator. Explain in 1-3 sentences why the flagged run clashes with the writer's world.",
-        messages: [{ role: "user", content: user }],
-        maxTokens: 300,
-      });
-      advice = { explanation, rewrite: "" };
+      // SCALE (G5): the JSON call already failed and BILLED. A second full AI
+      // call here (same large grounded prompt) double-bills for a strictly worse
+      // result. Degrade for FREE to the engine's own note instead: the
+      // deterministic engine is the source of truth and its noteText already
+      // explains the clash. No rewrite is offered on the fallback (that needed
+      // the model).
+      advice = { explanation: input.noteText, rewrite: "" };
     }
 
     return {
