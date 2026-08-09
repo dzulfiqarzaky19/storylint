@@ -303,6 +303,13 @@
   background: var(--hover);
 }
 
+/* A phrase the manuscript leans on (recurs, or the AI judged it pivotal). A
+   thin leading accent marks it without competing with the open-row fill. */
+.railRowImportant {
+  box-shadow: inset 2px 0 0 0 var(--accent);
+  padding-left: 8px;
+}
+
 .railKind {
   font-size: 11px;
   font-weight: 800;

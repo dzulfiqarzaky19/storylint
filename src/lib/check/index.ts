@@ -112,6 +112,34 @@ export interface Mark {
   noteText: string;
   actions: MarkAction[];
   position: MarkPosition;
+  /**
+   * How strongly the manuscript leans on this phrase, used to RANK the rail (a
+   * higher-importance row sorts first). It is never a gate: a single-mention
+   * mark still surfaces, it just ranks lower. Optional so contradiction marks
+   * and older callers stay valid.
+   *
+   *   'high'   - the author leans on this (recurs within/across chapters, or the
+   *              AI judged it pivotal).
+   *   'normal' - a first, ordinary mention (default).
+   *   'low'    - background detail (reserved for future AI down-ranking).
+   */
+  importance?: MarkImportance;
+  /** Times this phrase occurs in the current chapter (>=1). Drives importance. */
+  recurrence?: number;
+}
+
+export type MarkImportance = 'high' | 'normal' | 'low';
+
+/** Sort weight so 'high' rows come first; unknown/undefined sorts as 'normal'. */
+export function importanceRank(importance?: MarkImportance): number {
+  switch (importance) {
+    case 'high':
+      return 0;
+    case 'low':
+      return 2;
+    default:
+      return 1; // 'normal' or undefined
+  }
 }
 
 /**

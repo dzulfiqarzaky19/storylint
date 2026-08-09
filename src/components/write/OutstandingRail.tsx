@@ -15,7 +15,7 @@
 
 import { useId, useState } from 'react';
 import type { Mark } from '@/lib/check';
-import { railLabel } from '@/lib/check';
+import { railLabel, importanceRank } from '@/lib/check';
 import styles from './Manuscript.module.css';
 
 export interface OutstandingRailProps {
@@ -30,6 +30,17 @@ export function OutstandingRail({
   onSelect,
 }: OutstandingRailProps) {
   const allClear = marks.length === 0;
+  // Rank by importance (a phrase the author leans on sorts first), preserving
+  // document order within a rank via a stable sort. Importance is a RANKING
+  // signal only, so every mark still appears; the high-signal ones lead.
+  const ordered = marks
+    .map((mark, i) => ({ mark, i }))
+    .sort(
+      (a, b) =>
+        importanceRank(a.mark.importance) - importanceRank(b.mark.importance) ||
+        a.i - b.i,
+    )
+    .map((x) => x.mark);
   // Collapsible only matters in the stacked (mobile/tablet) layout, where the
   // rail sits below the manuscript. On desktop the toggle is hidden and the
   // body is always shown (see .railToggle / .railBody in the CSS). Default
@@ -79,14 +90,15 @@ export function OutstandingRail({
             you write.
           </p>
         ) : (
-          marks.map((mark) => {
+          ordered.map((mark) => {
             const conflict = mark.kind === 'conflict';
             const open = mark.markKey === openMarkKey;
+            const important = importanceRank(mark.importance) === 0;
             return (
               <button
                 key={mark.markKey}
                 type="button"
-                className={`${styles.railRow} ${open ? styles.railRowOpen : ''}`}
+                className={`${styles.railRow} ${open ? styles.railRowOpen : ''} ${important ? styles.railRowImportant : ''}`}
                 aria-pressed={open}
                 onClick={() => onSelect(mark.markKey)}
               >

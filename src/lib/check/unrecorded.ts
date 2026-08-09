@@ -30,7 +30,7 @@
  * generated; nothing about the two marks is hardcoded.
  */
 
-import type { Mark, MarkAction, WikiEntry, WikiSnapshot } from './index';
+import type { Mark, MarkAction, MarkImportance, WikiEntry, WikiSnapshot } from './index';
 import type { Lexicon } from './lexicon';
 import { buildLexicon } from './lexicon';
 import { normalize, normalizeQuote } from './normalize';
@@ -227,25 +227,52 @@ export function findUnrecorded(
     seen.add(key);
 
     const paragraph = paragraphs[cand.paragraphIndex]!;
+    // Within-chapter recurrence: how many times this exact phrase appears across
+    // the whole chapter. A phrase the author leans on (>=2) ranks as important;
+    // a single mention still surfaces, it just ranks 'normal'. RANK, never gate.
+    const recurrence = countOccurrences(paragraphs, cand.quote);
+    const importance: MarkImportance = recurrence >= 2 ? 'high' : 'normal';
     marks.push({
       markKey: key,
       kind: 'missing',
       ruleId: 'unrecorded',
       quote: cand.quote,
-      rail: railFor(cand.quote),
+      rail: railFor(cand.quote, recurrence),
       noteText: noteFor(cand.quote),
       actions: MISSING_ACTIONS,
       position: {
         paragraphIndex: cand.paragraphIndex,
         occurrenceIndex: occurrenceIndexOf(paragraph, cand.quote),
       },
+      importance,
+      recurrence,
     });
   }
 
   return marks;
 }
 
-function railFor(quote: string): string {
+/** Total occurrences of `quote` across every paragraph of the chapter. */
+function countOccurrences(paragraphs: string[], quote: string): number {
+  let total = 0;
+  for (const paragraph of paragraphs) {
+    let from = 0;
+    while (true) {
+      const at = paragraph.indexOf(quote, from);
+      if (at === -1) break;
+      total += 1;
+      from = at + quote.length;
+    }
+  }
+  return total;
+}
+
+function railFor(quote: string, recurrence = 1): string {
+  // A recurring phrase reads as deliberate, so assert it; a single mention is
+  // gently offered. Copy stays under one line either way.
+  if (recurrence >= 2) {
+    return `“${quote}” appears ${recurrence} times but is not written down yet.`;
+  }
   return `“${quote}” is not written down in the wiki yet.`;
 }
 function noteFor(quote: string): string {
