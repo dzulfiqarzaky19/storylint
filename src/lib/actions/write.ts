@@ -233,6 +233,11 @@ export async function explainMark(input: {
   /** The full sentence containing the flagged run. When provided, the rewrite
    * replaces this whole sentence (grammatical splice) instead of the sub-run. */
   sentence?: string;
+  /** The wiki entry this mark is anchored to (Mark.entityId). When present it
+   * pins retrieval to that exact entry instead of re-deriving it from a substring
+   * scan of the local text, so the grounding is exact even for a low-frequency
+   * mention. Optional: absent (e.g. AI `missing` marks) falls back to the scan. */
+  entityId?: string;
 }): Promise<ActionResult<{ explanation: string; rewrite: string }>> {
   const quote = input.quote.trim();
   if (!quote) return { ok: false, error: "No text to explain." };
@@ -249,12 +254,16 @@ export async function explainMark(input: {
     // SCALE (G1/G4): send only the entities this flagged run actually leans on,
     // not the whole world, so prompt cost stays flat as the wiki grows. Text
     // scanned is the flagged run + its sentence + its paragraph (all local
-    // context we have). focusEntityIds is the seam for the Mark.entityId
-    // fast-follow (a hard anchor); unpopulated for now.
+    // context we have). When the caller knows the anchored entry (Mark.entityId),
+    // we PIN it via focusEntityIds so retrieval is exact even if the substring
+    // scan would miss a low-frequency mention; the text scan still expands context.
     const retrievalText = [input.paragraph, input.sentence, quote]
       .filter(Boolean)
       .join('\n');
-    const selection = selectGazetteer(wiki, { text: retrievalText });
+    const focusEntityIds = input.entityId?.trim()
+      ? [input.entityId.trim()]
+      : undefined;
+    const selection = selectGazetteer(wiki, { text: retrievalText, focusEntityIds });
     const gazetteer = selection.entries
       .map((e) => {
         const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");

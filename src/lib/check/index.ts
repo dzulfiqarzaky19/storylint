@@ -113,6 +113,14 @@ export interface Mark {
   actions: MarkAction[];
   position: MarkPosition;
   /**
+   * The wiki entry this mark is anchored to, when the engine knows it: the fact's
+   * owner for a contradiction, the referenced entity for an unrecorded detail, or
+   * the model-echoed entryId for an AI conflict. Empty for AI `missing` marks
+   * (nothing recorded to anchor to yet). Lets explainMark retrieve that exact
+   * entry (focusEntityIds) instead of re-deriving it from a substring scan.
+   */
+  entityId?: string;
+  /**
    * How strongly the manuscript leans on this phrase, used to RANK the rail (a
    * higher-importance row sorts first). It is never a gate: a single-mention
    * mark still surfaces, it just ranks lower. Optional so contradiction marks

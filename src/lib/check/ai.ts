@@ -147,6 +147,10 @@ export function aiResultToMarks(
       rail,
       noteText,
       actions,
+      // The stripped, real wiki entry id the model anchored this conflict to
+      // (empty for `missing`, where nothing is recorded yet). undefined rather
+      // than '' so explainMark's focusEntityIds seam stays clean.
+      entityId: entry || undefined,
       position: {
         paragraphIndex,
         occurrenceIndex: occurrenceIndexOf(paragraphs[paragraphIndex]!, quote),

@@ -73,6 +73,10 @@ export function findContradictions(
 
           marks.push({
             markKey: key,
+            // Surface the exact entry this mark is anchored to (the SAME id that
+            // fed markKey above), so explainMark can pin retrieval to it instead
+            // of re-deriving via substring scan. Empty -> undefined (no anchor).
+            entityId: result.entryId || undefined,
             kind: 'conflict',
             ruleId: rule.id,
             quote: result.quote,

@@ -245,6 +245,7 @@ export function findUnrecorded(
       rail: railFor(cand.quote, recurrence),
       noteText: noteFor(cand.quote),
       actions: MISSING_ACTIONS,
+      entityId: cand.entryId || undefined,
       position: {
         paragraphIndex: cand.paragraphIndex,
         occurrenceIndex: occurrenceIndexOf(paragraph, cand.quote),

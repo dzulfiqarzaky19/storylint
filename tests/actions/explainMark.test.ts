@@ -165,3 +165,45 @@ describe('explainMark — retrieval prunes the grounded gazetteer (scale G1)', (
     expect(user).not.toContain('Dragon of Vantram');
   });
 });
+
+describe('explainMark — Mark.entityId pins retrieval (exact anchor fast-follow)', () => {
+  it('pins the anchored entry through the REAL action even when the text never names it', async () => {
+    // The dragon is NOT mentioned in baseInput's paragraph/sentence/quote, so the
+    // substring scan alone PRUNES it (proved by the test above). Passing the
+    // mark's entityId must PIN it into the grounded gazetteer via focusEntityIds.
+    // This exercises the whole explainMark path (accept entityId -> focusEntityIds
+    // -> selectGazetteer), not just the helper — acceptance bar (iv).
+    completeJson.mockResolvedValueOnce({ explanation: 'x', rewrite: '' });
+    const res = await explainMark({ ...baseInput, entityId: 'dragon' });
+    expect(res.ok).toBe(true);
+    const user = lastJsonUser();
+    // MUTATION: drop `focusEntityIds` from the selectGazetteer call in write.ts
+    // -> the dragon is pruned again and this reds. That is the feature.
+    expect(user).toContain('Dragon of Vantram');
+    // The text-mentioned Iron Key is still grounded (pin ADDS, never replaces).
+    expect(user).toContain('Iron Key');
+  });
+
+  it('ignores a blank entityId (treated as no anchor, unchanged behavior)', async () => {
+    completeJson.mockResolvedValueOnce({ explanation: 'x', rewrite: '' });
+    const res = await explainMark({ ...baseInput, entityId: '   ' });
+    expect(res.ok).toBe(true);
+    const user = lastJsonUser();
+    // A blank anchor must not pin anything: the unmentioned dragon stays pruned.
+    expect(user).not.toContain('Dragon of Vantram');
+    expect(user).toContain('Iron Key');
+  });
+
+  it('degrades gracefully when entityId names an entry no longer in the wiki', async () => {
+    // A mark can outlive its entry (the writer deleted it). A stale anchor must
+    // NOT crash the note: focus.has never matches, no throw, retrieval falls back
+    // to the text scan. Acceptance bar (v).
+    completeJson.mockResolvedValueOnce({ explanation: 'x', rewrite: '' });
+    const res = await explainMark({ ...baseInput, entityId: 'ghost-deleted-entry' });
+    expect(res.ok).toBe(true);
+    const user = lastJsonUser();
+    // Still grounds on the mentioned Iron Key; the stale id simply adds nothing.
+    expect(user).toContain('Iron Key');
+    expect(user).not.toContain('Dragon of Vantram');
+  });
+});

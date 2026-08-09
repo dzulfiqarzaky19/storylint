@@ -346,6 +346,7 @@ export function Manuscript({
           noteText: mark.noteText,
           paragraph,
           sentence,
+          entityId: mark.entityId,
         });
         setAiAdvice((prev) => ({
           ...prev,
