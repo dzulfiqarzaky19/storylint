@@ -82,6 +82,10 @@ test("write AI: the ✦ Ask AI affordance is gated on configuration", async ({
 test("write AI: Ask AI returns a grounded explanation without touching the wiki", async ({
   page,
 }) => {
+  // The live SaaRouters roundtrip can legitimately exceed the default 30s
+  // per-test cap (advice waits up to AI_ROUNDTRIP_MS=45s). Triple the budget so
+  // a slow-but-valid gateway response is not misreported as a failure.
+  test.slow();
   const note = await openFirstNote(page);
   const explain = note.getByTestId("write-ai-explain");
 
@@ -121,6 +125,9 @@ test("write AI: Ask AI returns a grounded explanation without touching the wiki"
 test("write AI: an offered rewrite applies to the manuscript on explicit click (never the wiki)", async ({
   page,
 }) => {
+  // Live roundtrip; see note above. The default 30s cap undercuts the 45s
+  // advice wait, so extend the budget for this live-gateway test.
+  test.slow();
   const note = await openFirstNote(page);
   const explain = note.getByTestId("write-ai-explain");
 
