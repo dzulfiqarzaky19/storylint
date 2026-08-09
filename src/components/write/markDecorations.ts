@@ -201,10 +201,7 @@ export function createMarkDecorationPlugin(
   return new Plugin<MarkDecorationData>({
     key: markDecorationKey,
     state: {
-      init: (_config, state) => {
-        const data = getData();
-        return data;
-      },
+      init: () => getData(),
       apply: (_tr, _value) => getData(),
     },
     props: {
