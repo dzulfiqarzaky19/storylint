@@ -36,6 +36,7 @@ import { docToParagraphs } from "../write/adapters";
 import { extractCandidatePhrases } from "../check/unrecorded";
 import type { Mark } from "../check";
 import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
+import { selectGazetteer } from "../check/retrieval";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -245,7 +246,16 @@ export async function explainMark(input: {
   try {
     // Ground on the wiki so the explanation stays inside the writer's world.
     const wiki = await loadWikiSnapshot();
-    const gazetteer = wiki.entries
+    // SCALE (G1/G4): send only the entities this flagged run actually leans on,
+    // not the whole world, so prompt cost stays flat as the wiki grows. Text
+    // scanned is the flagged run + its sentence + its paragraph (all local
+    // context we have). focusEntityIds is the seam for the Mark.entityId
+    // fast-follow (a hard anchor); unpopulated for now.
+    const retrievalText = [input.paragraph, input.sentence, quote]
+      .filter(Boolean)
+      .join('\n');
+    const selection = selectGazetteer(wiki, { text: retrievalText });
+    const gazetteer = selection.entries
       .map((e) => {
         const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
         return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
@@ -356,7 +366,13 @@ export async function aiCheckChapter(
 
   try {
     const wiki = await loadWikiSnapshot();
-    const gazetteer = wiki.entries
+    // SCALE (G1/G4): retrieve only the entities the SENT paragraphs lean on so
+    // the prompt cost stays flat as the wiki grows, instead of inlining the whole
+    // world. We scan exactly the paragraphs we send (the changed set), not the
+    // full manuscript, so retrieval tracks what the model actually sees.
+    const sentText = indices.map((i) => paragraphs[i]).join("\n\n");
+    const selection = selectGazetteer(wiki, { text: sentText });
+    const gazetteer = selection.entries
       .map((e) => {
         const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
         return `- [${e.id}] ${e.name} — ${e.kind}${e.summary ? `: ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;

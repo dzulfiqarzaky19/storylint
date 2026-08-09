@@ -35,18 +35,37 @@ vi.mock('@/lib/ai/saarouters', () => ({
 }));
 
 // Wiki read: mocked to a tiny gazetteer so the action builds its prompt without a
-// database. The exact text is irrelevant to these tests (the model is mocked).
-const loadWikiSnapshot = vi.fn(async () => ({
-  entries: [
-    {
-      id: 'sept',
-      name: 'The Quiet Sept',
-      kind: 'faction',
-      summary: 'A hidden order.',
-      facts: [{ key: 'members', value: 'Twenty-one, never more' }],
-    },
-  ],
-}));
+// database. The exact text is irrelevant to these tests (the model is mocked), but
+// the shape MUST match the real WikiSnapshot contract: entries carry `ties` and the
+// snapshot carries `byId`, because the retrieval helper (selectGazetteer) walks both.
+// The return is typed structurally (not inferred from septEntry) so per-test
+// overrides can supply their own entity ids in `byId` without excess-property errors.
+interface MockEntry {
+  id: string;
+  name: string;
+  kind: string;
+  summary: string;
+  facts: Array<{ key: string; value: string }>;
+  ties: Array<{ toEntryId: string }>;
+}
+interface MockWiki {
+  entries: MockEntry[];
+  byId: Record<string, MockEntry>;
+}
+const septEntry: MockEntry = {
+  id: 'sept',
+  name: 'The Quiet Sept',
+  kind: 'faction',
+  summary: 'A hidden order.',
+  facts: [{ key: 'members', value: 'Twenty-one, never more' }],
+  ties: [],
+};
+const loadWikiSnapshot = vi.fn(
+  async (): Promise<MockWiki> => ({
+    entries: [septEntry],
+    byId: { sept: septEntry },
+  }),
+);
 vi.mock('@/lib/db/queries', () => ({
   loadWikiSnapshot: () => loadWikiSnapshot(),
 }));
@@ -217,6 +236,41 @@ describe('aiCheckChapter — mapping, grounding, suppression', () => {
     if (!res.ok) throw new Error('expected ok');
     expect(res.data.marks).toHaveLength(1);
     expect(res.data.marks[0]!.position.paragraphIndex).toBe(1);
+  });
+});
+
+describe('aiCheckChapter — retrieval prunes the gazetteer (scale G1)', () => {
+  it('sends only entities the paragraphs mention, not the whole wiki', async () => {
+    // The manuscript mentions an "iron key" but says nothing about a dragon. The
+    // AI prompt must include the mentioned entity and EXCLUDE the unrelated one,
+    // so prompt cost tracks what the prose leans on, not total world size.
+    const iron = {
+      id: 'ironkey',
+      name: 'Iron Key',
+      kind: 'object',
+      summary: 'A cold heirloom.',
+      facts: [] as Array<{ key: string; value: string }>,
+      ties: [] as Array<{ toEntryId: string }>,
+    };
+    const dragon = {
+      id: 'dragon',
+      name: 'Dragon of Vantram',
+      kind: 'creature',
+      summary: 'Sleeps under the mountain.',
+      facts: [] as Array<{ key: string; value: string }>,
+      ties: [] as Array<{ toEntryId: string }>,
+    };
+    loadWikiSnapshot.mockResolvedValueOnce({
+      entries: [iron, dragon],
+      byId: { ironkey: iron, dragon },
+    });
+    completeJson.mockResolvedValueOnce({ conflicts: [], missing: [] });
+
+    const res = await aiCheckChapter({ paragraphs });
+    expect(res.ok).toBe(true);
+    const user = lastPromptUser();
+    expect(user).toContain('Iron Key');
+    expect(user).not.toContain('Dragon of Vantram');
   });
 });
 
