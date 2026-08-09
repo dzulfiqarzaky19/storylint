@@ -7,7 +7,7 @@ import { Pool, type PoolClient, type QueryResult, type QueryResultRow } from "pg
 
 declare global {
   // Reuse the pool across HMR reloads in dev to avoid exhausting connections.
-  // eslint-disable-next-line no-var
+  // `var` is required to augment global scope in a `declare global` block.
   var __ashkeldPool: Pool | undefined;
 }
 
