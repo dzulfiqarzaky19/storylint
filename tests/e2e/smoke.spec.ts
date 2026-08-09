@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { railRows } from "./_helpers/rail";
+import { withDb } from "./_helpers/db";
 
 // Phase 8 smoke (HANDOFF §8). Not exhaustive — proves each screen mounts,
 // renders real seeded data, and the load-bearing interactions fire, at the
@@ -244,24 +245,43 @@ for (const path of ["/wiki", "/research", "/write"]) {
 // below the fold (y+height was 918 > 844) — the control looked missing. The
 // rail is now sticky to the viewport bottom; assert the collapsed toggle sits
 // fully within the 844px viewport.
-test("write @390: the 'Two signals' toggle is visible without scrolling", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/write");
-  const toggle = page.getByRole("button", { name: /two signals/i });
-  await expect(toggle).toBeVisible();
-  const box = await toggle.boundingBox();
-  expect(box).not.toBeNull();
-  // Bottom edge within the viewport (allow a 1px sub-pixel rounding margin).
-  expect(box!.y + box!.height).toBeLessThanOrEqual(844 + 1);
-  // And the body is collapsed by default (a suggestion row is not yet shown).
-  await expect(page.getByRole("button", { name: /nineteen and sworn/i })).toHaveCount(0);
-  // Opening it reveals the signals; the toggle stays on screen.
-  await toggle.click();
-  await expect(page.getByRole("button", { name: /nineteen and sworn/i })).toBeVisible();
-  const box2 = await toggle.boundingBox();
-  expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
+// This ONE test depends on a seeded mark ("nineteen and sworn", a Ch7 conflict
+// that write-conflict.spec also uses). Under the default run it is fine
+// (globalSetup fresh-seeds and smoke sorts before write-conflict), but under
+// E2E_SKIP_SEED=1 on a DB left dirty by a prior session a stale resolved_marks
+// row can suppress that mark. Give just this mark-dependent test a clean board
+// via a scoped beforeAll that clears resolved_marks, so smoke stays read-only
+// everywhere else (no file-wide beforeEach) while this test is self-sufficient.
+test.describe("mobile signals (mark-dependent, clears suppression)", () => {
+  // Clear ONLY the runtime suppression table so a stale resolved_marks row
+  // (e.g. from an aborted session under E2E_SKIP_SEED) cannot hide the
+  // "nineteen and sworn" conflict. A full reseed would also TRUNCATE
+  // kept_cards, robbing later same-file tests that rely on kept state, so we
+  // touch nothing but resolved_marks. No smoke test asserts a mark IS
+  // suppressed, so clearing this table is safe here.
+  test.beforeAll(async () => {
+    await withDb((c) => c.query("DELETE FROM resolved_marks"));
+  });
+
+  test("write @390: the 'Two signals' toggle is visible without scrolling", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/write");
+    const toggle = page.getByRole("button", { name: /two signals/i });
+    await expect(toggle).toBeVisible();
+    const box = await toggle.boundingBox();
+    expect(box).not.toBeNull();
+    // Bottom edge within the viewport (allow a 1px sub-pixel rounding margin).
+    expect(box!.y + box!.height).toBeLessThanOrEqual(844 + 1);
+    // And the body is collapsed by default (a suggestion row is not yet shown).
+    await expect(page.getByRole("button", { name: /nineteen and sworn/i })).toHaveCount(0);
+    // Opening it reveals the signals; the toggle stays on screen.
+    await toggle.click();
+    await expect(page.getByRole("button", { name: /nineteen and sworn/i })).toBeVisible();
+    const box2 = await toggle.boundingBox();
+    expect(box2!.y + box2!.height).toBeLessThanOrEqual(844 + 1);
+  });
 });
 
 // Cross-screen uniformity: the Research KEPT board and the Wiki poster band use
