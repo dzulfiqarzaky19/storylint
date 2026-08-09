@@ -278,3 +278,50 @@ function railFor(quote: string, recurrence = 1): string {
 function noteFor(quote: string): string {
   return `“${quote}” appears in the manuscript but nothing in the wiki records it. Add it to the gazetteer?`;
 }
+
+/**
+ * Extract candidate phrases from a chapter's plain text, WITHOUT any wiki
+ * lookup, for the book-wide `phrase_mentions` index (Tier 2 cross-chapter
+ * recurrence). Uses the same U1 (qualified possessed object) and U2 (named
+ * designator) SHAPES the live engine uses, so a phrase indexed here is the same
+ * phrase the engine would flag. Returns each phrase mapped to how many times it
+ * occurs in this chapter.
+ *
+ * Wiki-independent on purpose: the index records that a phrase RECURS across
+ * chapters even before it is anchored to a wiki entity, which is exactly the
+ * signal we want (a phrase the author leans on, recorded or not).
+ */
+export function extractCandidatePhrases(paragraphs: string[]): Map<string, number> {
+  // Canonical (lowercased) phrase set so "Her ring" and "her ring" are one key.
+  const phrases = new Set<string>();
+
+  for (const paragraph of paragraphs) {
+    // U1 — qualified possessed object ("her mother's brass ring").
+    for (const m of paragraph.matchAll(U1)) {
+      const pron = m[1]!.toLowerCase();
+      if (!(pron in POSS_PRONOUNS)) continue;
+      const objectTokens = qualifiedObject(m[3] ?? '');
+      if (!objectTokens) continue;
+      phrases.add(`${m[1]} ${m[2]} ${objectTokens.join(' ')}`.toLowerCase());
+    }
+    // U2 — named designator ("the tallow rule"). Shape-only; the engine's
+    // wiki-owner check anchors it, but the phrase itself is index-worthy.
+    for (const m of paragraph.matchAll(U2)) {
+      const designator = (m[3] ?? '').toLowerCase();
+      if (!DESIGNATORS.has(designator)) continue;
+      phrases.add(m[0].trim().toLowerCase());
+    }
+  }
+
+  // Count occurrences of each distinct phrase across the whole chapter. The
+  // index is case-insensitive: "Her ring" at a sentence start and "her ring"
+  // mid-sentence are the SAME phrase for recurrence, so a capitalized repeat
+  // still counts. (The live within-chapter count stays case-exact because it
+  // anchors a specific underline; this index only needs the tally.)
+  const lowerParagraphs = paragraphs.map((p) => p.toLowerCase());
+  const counts = new Map<string, number>();
+  for (const phrase of phrases) {
+    counts.set(phrase, countOccurrences(lowerParagraphs, phrase));
+  }
+  return counts;
+}
