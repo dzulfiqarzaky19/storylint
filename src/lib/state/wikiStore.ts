@@ -164,6 +164,16 @@ export type WikiAction =
       /** Every LIVE entry of this kind is soft-deleted (vanishes from byId +
        *  its shelf order); ties from surviving entries render as tombstones. */
       kind: Kind;
+    }
+  // ---- Trash: restore (F6-S6) — fired alongside actions/wiki.ts restoreEntry ----
+  // RESTORE_ENTRY  → restoreEntry (WIKI WRITE, confirmed: re-enters a tombstone)
+  | {
+      type: "RESTORE_ENTRY";
+      /** The now-live entry WITH its details (the server reloaded it after
+       *  clearing deleted_at). Re-added to byId + appended to its shelf order —
+       *  the pure inverse of SOFT_DELETE_ENTRY. Ties from OTHER entries that
+       *  pointed at it stop rendering as tombstones once it is back in byId. */
+      entry: EntryWithDetails;
     };
 
 // ---- Init -----------------------------------------------------------------
@@ -241,6 +251,9 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
 
     case "DELETE_CATEGORY":
       return deleteCategoryInState(state, action.kind);
+
+    case "RESTORE_ENTRY":
+      return restoreEntryInState(state, action.entry);
 
     default:
       return assertNever(action);
@@ -477,6 +490,31 @@ function softDeleteEntryInState(state: WikiState, entryId: string): WikiState {
     order,
     selectedEntryId: state.selectedEntryId === entryId ? null : state.selectedEntryId,
   };
+}
+
+/**
+ * Restore a soft-deleted entry into session state (pure) — the exact inverse of
+ * softDeleteEntryInState. Re-add the (server-reloaded, fully-detailed) entry to
+ * byId and append its id to its shelf order so it reappears on the shelf. Ties
+ * from OTHER entries that had rendered it as a "removed" tombstone resolve live
+ * again the moment it is back in byId (tie tombstoning is membership-derived).
+ *
+ * Idempotent: if the id is somehow already present in the shelf order (double
+ * dispatch), it is not appended twice. byId is overwritten with the fresh row
+ * either way.
+ */
+function restoreEntryInState(state: WikiState, entry: EntryWithDetails): WikiState {
+  const byId = { ...state.byId, [entry.id]: entry };
+  const order: Record<Shelf, string[]> = {
+    people: [...state.order.people],
+    places: [...state.order.places],
+    orders: [...state.order.orders],
+    lore: [...state.order.lore],
+  };
+  if (!order[entry.shelf].includes(entry.id)) {
+    order[entry.shelf] = [...order[entry.shelf], entry.id];
+  }
+  return { ...state, byId, order };
 }
 
 /**
