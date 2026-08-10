@@ -26,14 +26,13 @@ import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 
 import { streamComplete, aiEnabled } from "@/lib/ai/saarouters";
-import { loadWikiSnapshot, getResearchThreadScope } from "@/lib/db/queries";
+import { loadWikiSnapshot } from "@/lib/db/queries";
 import { insertResearchTurnPair } from "@/lib/db/mutations";
 import { deriveThreadTitle } from "@/lib/research/title";
-import { CARDS_SENTINEL, visibleProsePrefix } from "@/lib/research/streamParse";
+import { visibleProsePrefix } from "@/lib/research/streamParse";
 import { finalizeStreamedAnswer } from "@/lib/research/finalizeStream";
-import { filterGazetteerEntries } from "@/lib/research/filterGazetteerEntries";
-import { scopeDirective } from "@/lib/research/scopeDirective";
-import type { ResearchScope } from "@/lib/domain/types";
+import { buildGazetteer } from "@/lib/research/gazetteer";
+import { buildResearchPrompt } from "@/lib/research/buildResearchPrompt";
 
 // Never statically optimize: this route always runs on request and streams.
 export const dynamic = "force-dynamic";
@@ -42,40 +41,6 @@ interface StreamRequestBody {
   question?: string;
   threadId?: string;
   threadTitle?: string;
-}
-
-/** Build the Option-C prompt: prose first, then the sentinel, then cards JSON. */
-function buildPrompt(
-  question: string,
-  threadTitle: string | undefined,
-  gazetteer: string,
-  scope: ResearchScope,
-) {
-  const system = [
-    "You are a story-consistency collaborator for a fiction writer.",
-    "You help them think through their own world. Ground every answer ONLY in the gazetteer provided; never invent contradicting facts.",
-    scopeDirective(scope),
-    "Reply as a thoughtful writing partner in 2-4 sentences of PLAIN PROSE first.",
-    // Option C: prose, then the exact sentinel line, then a strict JSON array of
-    // cards. The route splits on the sentinel; the writer never sees it or the
-    // JSON. Emitting the sentinel verbatim is REQUIRED for cards to be captured.
-    `Then, on its own, output EXACTLY this delimiter line (copy it verbatim, including the invisible characters):${CARDS_SENTINEL}`,
-    "Immediately after the delimiter, output STRICT JSON only: an array of 2-3 cards shaped exactly as:",
-    '[{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore"}]',
-    "title: <=6 words. body: one or two sentences. asKind: the wiki kind this card would become if written in.",
-    "Output nothing after the JSON array.",
-  ].join("\n");
-
-  const user = [
-    threadTitle ? `Thread: ${threadTitle}` : "",
-    gazetteer ? `Gazetteer (the writer's wiki):\n${gazetteer}` : "Gazetteer: (empty)",
-    "",
-    `Writer asks: ${question}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  return { system, user };
 }
 
 function frame(obj: unknown): Uint8Array {
@@ -105,16 +70,12 @@ export async function POST(req: NextRequest) {
     return jsonError("AI is not configured. Add SAAROUTERS_API_KEY to .env.local.", 400);
   }
 
+  // F5: fully-free research chat — the AI always sees the ENTIRE wiki, no scope
+  // narrowing. buildGazetteer renders every entry; buildResearchPrompt frames
+  // free-context answering (no scope directive) and still emits CARDS_SENTINEL.
   const wiki = await loadWikiSnapshot();
-  const scope = await getResearchThreadScope(threadId);
-  const scopedEntries = filterGazetteerEntries(wiki.entries, scope);
-  const gazetteer = scopedEntries
-    .map((e) => {
-      const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
-      return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
-    })
-    .join("\n");
-  const { system, user } = buildPrompt(question, threadTitle, gazetteer, scope);
+  const gazetteer = buildGazetteer(wiki.entries);
+  const { system, user } = buildResearchPrompt(question, threadTitle, gazetteer);
 
   const stamp = Date.now();
   const rid = randomUUID().slice(0, 8);

@@ -29,14 +29,53 @@ async function* fakeStream() {
   yield "The sky is blue and clear today.";
 }
 
+// Capture the prompt the route actually assembles, so the F5 locked-line
+// assertions below check REAL route+prompt output (not the pure unit in
+// isolation). streamComplete still yields the fake prose so the stream path runs.
+// vi.hoisted: these are referenced inside the hoisted vi.mock factories below.
+const { streamArgs, WIKI_ENTRIES } = vi.hoisted(() => {
+  function entryFixture(id: string, kind: string, name: string) {
+    return {
+      id,
+      kind,
+      name,
+      catalogueNo: "",
+      note: "",
+      summary: "",
+      shelf: "people",
+      sortOrder: 0,
+      facts: [],
+      ties: [],
+      appearances: [],
+      openQuestions: [],
+    };
+  }
+  return {
+    streamArgs: [] as Array<{ system: string; messages: Array<{ content: string }> }>,
+    // One entry of every kind so the "all entries" locked line is observable at
+    // the route boundary.
+    WIKI_ENTRIES: [
+      entryFixture("c1", "character", "Alice"),
+      entryFixture("w1", "world", "Rivertown"),
+      entryFixture("o1", "organization", "The Guild"),
+      entryFixture("l1", "lore", "The Old War"),
+    ],
+  };
+});
+
 vi.mock("@/lib/ai/saarouters", () => ({
   aiEnabled: () => true,
-  streamComplete: vi.fn(() => fakeStream()),
+  streamComplete: vi.fn((args: { system: string; messages: Array<{ content: string }> }) => {
+    streamArgs.push(args);
+    return fakeStream();
+  }),
 }));
 
+// F5: the route no longer reads a per-thread scope (getResearchThreadScope was
+// deleted). Only loadWikiSnapshot is consumed; the gazetteer is built from the
+// FULL entry list via buildGazetteer.
 vi.mock("@/lib/db/queries", () => ({
-  loadWikiSnapshot: vi.fn(async () => ({ entries: [] })),
-  getResearchThreadScope: vi.fn(async () => "chat"),
+  loadWikiSnapshot: vi.fn(async () => ({ entries: WIKI_ENTRIES })),
 }));
 
 vi.mock("@/lib/db/mutations", () => ({
@@ -45,6 +84,7 @@ vi.mock("@/lib/db/mutations", () => ({
 
 import { NextRequest } from "next/server";
 import { POST } from "@/app/api/research/stream/route";
+import { CARDS_SENTINEL } from "@/lib/research/streamParse";
 
 /** Build a POST request to the stream route, wired to the given AbortSignal. */
 function streamRequest(signal: AbortSignal): NextRequest {
@@ -92,5 +132,50 @@ describe("research stream route — abort seam (persist-or-nothing)", () => {
     const done = frames.find((f) => f.type === "done");
     expect(done).toBeDefined();
     expect((done?.turns as unknown[]).length).toBe(2);
+  });
+});
+
+// F5 (fully-free research chat): the 3 locked behavior-bearing lines, asserted
+// against the REAL route+prompt output (the route composes buildGazetteer +
+// buildResearchPrompt). streamArgs captures exactly what the route hands to the
+// gateway.
+describe("research stream route — F5 free-context prompt (3 locked lines)", () => {
+  beforeEach(() => {
+    insertSpy.mockClear();
+    streamArgs.length = 0;
+  });
+
+  async function runAndCapture(): Promise<{ system: string; user: string }> {
+    const ac = new AbortController();
+    const res = await POST(streamRequest(ac.signal));
+    await readFrames(res); // drain so the stream (and its streamComplete call) runs
+    const call = streamArgs[0];
+    expect(call).toBeDefined();
+    return { system: call!.system, user: call!.messages[0]!.content };
+  }
+
+  // LOCKED LINE 1: gazetteer built from FULL entries (no scope narrowing) — every
+  // kind's entry name reaches the prompt.
+  it("puts EVERY wiki entry (all kinds) into the gazetteer the model sees", async () => {
+    const { user } = await runAndCapture();
+    expect(user).toContain("Alice"); // character
+    expect(user).toContain("Rivertown"); // world
+    expect(user).toContain("The Guild"); // organization
+    expect(user).toContain("The Old War"); // lore
+  });
+
+  // LOCKED LINE 2: NO scope-narrowing directive (POSITIVE + NEGATIVE).
+  it("frames the answer as free across the ENTIRE wiki with no scope restriction", async () => {
+    const { system } = await runAndCapture();
+    expect(system).not.toMatch(/Only answer within/i);
+    expect(system).not.toMatch(/scoped to/i);
+    expect(system).toMatch(/ENTIRE wiki/);
+    expect(system).toMatch(/answer freely/i);
+  });
+
+  // LOCKED LINE 3: the CARDS_SENTINEL delimiter still ships (card capture intact).
+  it("still instructs the model to emit the CARDS_SENTINEL delimiter", async () => {
+    const { system } = await runAndCapture();
+    expect(system).toContain(CARDS_SENTINEL);
   });
 });
