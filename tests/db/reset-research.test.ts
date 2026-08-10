@@ -24,6 +24,8 @@ interface FakeOpts {
   chapters?: number;
   /** If set, this protected table's count changes after the deletes run. */
   driftProtectedAfter?: "entries" | "chapters";
+  /** If set, the DELETE on this table throws, simulating a mid-wipe failure. */
+  failOnDeleteOf?: string;
 }
 
 function makeClient(opts: FakeOpts = {}) {
@@ -43,6 +45,11 @@ function makeClient(opts: FakeOpts = {}) {
       calls.push(text);
       const del = /^DELETE FROM (\w+)/.exec(text);
       if (del) {
+        // Simulate a DB-side DELETE failure (e.g. FK violation, lost conn)
+        // BEFORE mutating state, so the wipe throws mid-flight.
+        if (opts.failOnDeleteOf === del[1]!) {
+          throw new Error(`simulated DELETE failure on ${del[1]!}`);
+        }
         counts[del[1]!] = 0;
         deletesDone++;
         return { rows: [] };
@@ -175,6 +182,35 @@ describe("resetResearchWithin — transactional core (injected fake client)", ()
     await expect(resetResearchWithin(client)).rejects.toBeInstanceOf(
       ProtectedDataChangedError,
     );
+  });
+
+  it("PROPAGATES a mid-wipe DELETE failure (so withTransaction ROLLS BACK)", async () => {
+    // A DELETE fails partway through the FK-safe sequence. The core must let the
+    // error propagate unchanged so the caller's withTransaction issues ROLLBACK
+    // and the DB is restored -- it must NOT swallow it and appear to succeed.
+    const { client } = makeClient({ failOnDeleteOf: "research_turns" });
+    await expect(resetResearchWithin(client)).rejects.toThrow(
+      /simulated DELETE failure on research_turns/,
+    );
+  });
+
+  it("has ALREADY persisted the backup before a mid-wipe DELETE failure", async () => {
+    // Recovery guarantee: even when a later DELETE blows up, onBackup has already
+    // fired with the full dump, so a recovery file exists on disk pre-failure.
+    const { client } = makeClient({ failOnDeleteOf: "kept_cards" });
+    let captured: number | null = null;
+    await expect(
+      resetResearchWithin(client, (backup) => {
+        // Full row set captured before the very first DELETE even runs.
+        captured =
+          backup.kept_cards.length +
+          backup.propositions.length +
+          backup.research_turns.length +
+          backup.research_threads.length;
+      }),
+    ).rejects.toThrow(/simulated DELETE failure on kept_cards/);
+    // Backup was handed over with the full 14-row dump (3+5+4+2) BEFORE the throw.
+    expect(captured).toBe(3 + 5 + 4 + 2);
   });
 });
 
