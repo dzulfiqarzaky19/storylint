@@ -10,6 +10,8 @@ import type {
   ResolvedTie,
   EntryWithDetails,
   WikiSnapshot,
+  CategoryLabelOverrides,
+  Kind,
   ChapterRow,
   ResearchTurnRow,
   PropositionRow,
@@ -131,7 +133,7 @@ export async function getTiesForEntry(entryId: string): Promise<ResolvedTie[]> {
  * Single set of batched reads, composed in memory (small dataset: 15 entries).
  */
 export async function loadWikiSnapshot(): Promise<WikiSnapshot> {
-  const [entries, facts, appearances, openQuestions, ties] = await Promise.all([
+  const [entries, facts, appearances, openQuestions, ties, labelRows] = await Promise.all([
     getAllEntries(),
     rows<FactRow>(`SELECT ${FACT_COLS} FROM facts ORDER BY sort_order, id`),
     rows<ChapterAppearanceRow>(
@@ -153,6 +155,7 @@ export async function loadWikiSnapshot(): Promise<WikiSnapshot> {
        JOIN entries e ON e.id = t.to_entry_id
        ORDER BY t.id`,
     ),
+    rows<{ kind: Kind; label: string }>(`SELECT kind, label FROM category_labels`),
   ]);
 
   const byId: Record<string, EntryWithDetails> = {};
@@ -172,7 +175,9 @@ export async function loadWikiSnapshot(): Promise<WikiSnapshot> {
   for (const t of ties) byId[t.fromEntryId]?.ties.push(t);
 
   const composed = entries.map((e) => byId[e.id]!);
-  return { entries: composed, byId };
+  const overrides: CategoryLabelOverrides = {};
+  for (const r of labelRows) overrides[r.kind] = r.label;
+  return { entries: composed, byId, overrides };
 }
 
 /** A single entry with all its details (Wiki detail view). */

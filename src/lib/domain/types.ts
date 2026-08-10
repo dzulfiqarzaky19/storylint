@@ -150,12 +150,21 @@ export interface EntryWithDetails extends EntryRow {
 }
 
 /**
+ * Per-kind category-header display-name overrides (from the `category_labels`
+ * table, F6-S5). A kind absent from the map has no custom label and falls back
+ * to its shelf default. Partial on purpose: only renamed categories have a row.
+ */
+export type CategoryLabelOverrides = Partial<Record<Kind, string>>;
+
+/**
  * The read-only projection the check engine consumes (HANDOFF §7).
  * Pure data: entries with their facts, ties, appearances, open questions.
  */
 export interface WikiSnapshot {
   entries: EntryWithDetails[];
   byId: Record<string, EntryWithDetails>;
+  /** Per-kind category-header label overrides (F6-S5). Empty when none set. */
+  overrides: CategoryLabelOverrides;
 }
 
 // ---- Research view types --------------------------------------------------

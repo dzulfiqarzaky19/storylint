@@ -61,7 +61,7 @@ function entry(
 function wikiOf(entries: EntryWithDetails[]): WikiSnapshot {
   const byId: Record<string, EntryWithDetails> = {};
   for (const e of entries) byId[e.id] = e;
-  return { entries, byId };
+  return { entries, byId, overrides: {} };
 }
 
 const ids = (s: { entries: EntryWithDetails[] }) => s.entries.map((e) => e.id).sort();

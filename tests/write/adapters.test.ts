@@ -59,6 +59,7 @@ const maren = entry({
 const dbWiki: DbWiki = {
   entries: [maren],
   byId: { 'e-maren': maren },
+  overrides: {},
 };
 
 // A manuscript that contradicts the wiki (grey vs green eyes) → a conflict mark.

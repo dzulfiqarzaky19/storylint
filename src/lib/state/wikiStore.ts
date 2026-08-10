@@ -11,6 +11,7 @@
 // =============================================================================
 
 import type {
+  CategoryLabelOverrides,
   EntryWithDetails,
   FactRow,
   Kind,
@@ -18,6 +19,7 @@ import type {
   Shelf,
   WikiSnapshot,
 } from "../domain/types";
+import { applyCategoryRename, applyCategoryReset } from "../wiki/categoryLabels";
 
 // ---- State ----------------------------------------------------------------
 
@@ -40,6 +42,8 @@ export interface WikiState {
   selectedEntryId: string | null;
   /** Live poster-band suggestions (dismissed ones removed). */
   suggestions: WikiSuggestion[];
+  /** Per-kind category-header label overrides (F6-S5). Empty when none set. */
+  overrides: CategoryLabelOverrides;
   /** In-flight/last error from a paired server action, surfaced not swallowed. */
   error: string | null;
 }
@@ -147,6 +151,19 @@ export type WikiAction =
       toEntryId: string;
       /** User-set relationship label carried into the tie (e.g. "uncle"). */
       rel: string;
+    }
+  // ---- Categories (F6-S5b) — fired alongside actions renameCategory /
+  //      resetCategoryLabel / deleteCategory ----
+  // RENAME_CATEGORY  → renameCategory     (label table write; trims, blank=reset)
+  // RESET_CATEGORY   → resetCategoryLabel  (label table delete)
+  // DELETE_CATEGORY  → deleteCategory      (WIKI WRITE, confirmed: bulk soft-delete)
+  | { type: "RENAME_CATEGORY"; kind: Kind; label: string }
+  | { type: "RESET_CATEGORY"; kind: Kind }
+  | {
+      type: "DELETE_CATEGORY";
+      /** Every LIVE entry of this kind is soft-deleted (vanishes from byId +
+       *  its shelf order); ties from surviving entries render as tombstones. */
+      kind: Kind;
     };
 
 // ---- Init -----------------------------------------------------------------
@@ -162,6 +179,7 @@ export function initWikiState(snapshot: WikiSnapshot, suggestions: WikiSuggestio
     order,
     selectedEntryId: snapshot.entries[0]?.id ?? null,
     suggestions,
+    overrides: { ...snapshot.overrides },
     error: null,
   };
 }
@@ -214,6 +232,15 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
 
     case "CREATE_TIED":
       return createTiedInState(state, action);
+
+    case "RENAME_CATEGORY":
+      return { ...state, overrides: applyCategoryRename(state.overrides, action.kind, action.label) };
+
+    case "RESET_CATEGORY":
+      return { ...state, overrides: applyCategoryReset(state.overrides, action.kind) };
+
+    case "DELETE_CATEGORY":
+      return deleteCategoryInState(state, action.kind);
 
     default:
       return assertNever(action);
@@ -450,6 +477,22 @@ function softDeleteEntryInState(state: WikiState, entryId: string): WikiState {
     order,
     selectedEntryId: state.selectedEntryId === entryId ? null : state.selectedEntryId,
   };
+}
+
+/**
+ * Soft-delete EVERY live entry of a category `kind` in one transition (pure) —
+ * the session mirror of deleteCategory's bulk soft-delete. Fans the existing
+ * softDeleteEntryInState over exactly the byId entries whose `kind` matches, so
+ * each vanishes from byId + its shelf order and ties from surviving entries
+ * resolve as "removed" tombstones (identical to a single soft delete). Because
+ * session byId holds only LIVE entries, a re-dispatch on an already-emptied kind
+ * is a no-op: nothing of that kind remains to remove. No-op if the kind is empty.
+ */
+function deleteCategoryInState(state: WikiState, kind: Kind): WikiState {
+  const ids = Object.values(state.byId)
+    .filter((e) => e.kind === kind)
+    .map((e) => e.id);
+  return ids.reduce((acc, id) => softDeleteEntryInState(acc, id), state);
 }
 
 /**
