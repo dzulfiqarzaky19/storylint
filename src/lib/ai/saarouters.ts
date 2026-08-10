@@ -14,6 +14,8 @@
 
 import "server-only";
 
+import { parseSseEvents, textDeltaFrom, isStreamStop } from "./sseParse";
+
 export interface AiMessage {
   role: "user" | "assistant";
   content: string;
@@ -242,5 +244,101 @@ export async function completeJson<T = unknown>(
       }
     }
     throw new AiError(`AI did not return valid JSON: ${cleaned.slice(0, 200)}`, err);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Streaming variant (F2b). Yields incremental text deltas as the gateway
+// produces them, so the research chat can render the answer token-by-token.
+//
+// This is ADDITIVE: complete()/completeJson() (the blocking path) are untouched
+// and remain the fallback. streamComplete throws AiError on config/upstream
+// failure BEFORE the first yield; a failure mid-stream propagates as a thrown
+// error out of the generator so the caller's persist gate can decline to write a
+// partial turn. No retry policy here — a half-streamed answer can't be silently
+// re-attempted the way a blocking call can.
+// -----------------------------------------------------------------------------
+
+export interface StreamCompletionOptions extends AiCompletionOptions {
+  /** Abort the upstream fetch when this signal fires (client disconnect). */
+  signal?: AbortSignal;
+}
+
+/**
+ * Stream a completion as an async iterable of text chunks. Consumers concatenate
+ * the yielded strings to assemble the full answer; parsing (Option-C sentinel)
+ * runs on that full buffer at completion, never mid-stream.
+ */
+export async function* streamComplete(
+  options: StreamCompletionOptions,
+): AsyncGenerator<string, void, unknown> {
+  const config = getAiConfig();
+  if (!config) {
+    throw new AiError(
+      "AI is not configured. Set SAAROUTERS_API_KEY (or ANTHROPIC_API_KEY) in .env.local.",
+    );
+  }
+
+  const { system, messages, maxTokens = 1024, temperature, signal } = options;
+
+  let res: Response;
+  try {
+    res = await fetch(`${config.baseUrl}/v1/messages`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": config.apiKey,
+        "anthropic-version": config.anthropicVersion,
+        accept: "text/event-stream",
+      },
+      body: JSON.stringify({
+        model: config.model,
+        max_tokens: maxTokens,
+        stream: true,
+        ...(temperature !== undefined ? { temperature } : {}),
+        ...(system ? { system } : {}),
+        messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      }),
+      // The caller's AbortSignal (client disconnect) must tear down the upstream
+      // request so we never keep generating tokens nobody is reading.
+      signal,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new AiError("AI stream aborted", err);
+    }
+    throw new AiError("AI stream failed to reach the gateway", err);
+  }
+
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new AiError(
+      `AI gateway returned ${res.status} ${res.statusText}${bodyText ? `: ${bodyText.slice(0, 400)}` : ""}`,
+    );
+  }
+  if (!res.body) {
+    throw new AiError("AI gateway returned no stream body");
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffered = "";
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffered += decoder.decode(value, { stream: true });
+      const { events, rest } = parseSseEvents(buffered);
+      buffered = rest;
+      for (const evt of events) {
+        const text = textDeltaFrom(evt);
+        if (text) yield text;
+        if (isStreamStop(evt)) return;
+      }
+    }
+  } finally {
+    // Release the underlying connection whether we finished, threw, or the
+    // consumer stopped pulling (e.g. client disconnect).
+    await reader.cancel().catch(() => {});
   }
 }

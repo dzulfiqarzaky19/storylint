@@ -17,7 +17,7 @@ process.env.SAAROUTERS_API_KEY = 'test-key';
 process.env.SAAROUTERS_BASE_URL = 'https://gateway.test';
 process.env.SAAROUTERS_MODEL = 'SaaRouters';
 
-import { complete, completeJson, AiError } from '@/lib/ai/saarouters';
+import { complete, completeJson, streamComplete, AiError } from '@/lib/ai/saarouters';
 
 /** Build a Response-like object for the stubbed fetch. */
 function jsonResponse(body: unknown, init?: { ok?: boolean; status?: number }) {
@@ -136,3 +136,99 @@ describe('completeJson — retry carries through', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
+
+// ---------------------------------------------------------------------------
+// streamComplete (F2b) — the async-generator streaming transport.
+// ---------------------------------------------------------------------------
+
+const enc = new TextEncoder();
+
+/** A delta SSE frame carrying `text`. */
+function deltaFrame(text: string): string {
+  return `event: content_block_delta\ndata: ${JSON.stringify({
+    type: 'content_block_delta',
+    delta: { type: 'text_delta', text },
+  })}\n\n`;
+}
+const STOP_FRAME = 'event: message_stop\ndata: {"type":"message_stop"}\n\n';
+
+/** Build a streaming Response whose body.getReader() yields `chunks` in order. */
+function streamResponse(chunks: string[], init?: { ok?: boolean; status?: number }) {
+  const ok = init?.ok ?? true;
+  let i = 0;
+  const reader = {
+    read: async () =>
+      i < chunks.length
+        ? { done: false, value: enc.encode(chunks[i++]) }
+        : { done: true, value: undefined },
+    cancel: async () => {},
+  };
+  return {
+    ok,
+    status: init?.status ?? (ok ? 200 : 500),
+    statusText: ok ? 'OK' : 'ERR',
+    body: { getReader: () => reader },
+    text: async () => 'err-body',
+  } as unknown as Response;
+}
+
+/** Drain an async generator into an array. */
+async function collect(gen: AsyncGenerator<string>): Promise<string[]> {
+  const out: string[] = [];
+  for await (const c of gen) out.push(c);
+  return out;
+}
+
+describe('streamComplete — SSE streaming transport', () => {
+  it('yields each text delta in order and stops at message_stop', async () => {
+    fetchMock.mockResolvedValueOnce(
+      streamResponse([deltaFrame('Hello'), deltaFrame(' world'), STOP_FRAME]),
+    );
+
+    const chunks = await collect(streamComplete({ messages: [{ role: 'user', content: 'hi' }] }));
+
+    expect(chunks).toEqual(['Hello', ' world']);
+  });
+
+  it('reassembles a frame split across two network reads', async () => {
+    const whole = deltaFrame('spanned');
+    const cut = Math.floor(whole.length / 2);
+    fetchMock.mockResolvedValueOnce(
+      streamResponse([whole.slice(0, cut), whole.slice(cut), STOP_FRAME]),
+    );
+
+    const chunks = await collect(streamComplete({ messages: [{ role: 'user', content: 'hi' }] }));
+
+    expect(chunks).toEqual(['spanned']);
+  });
+
+  it('stops yielding after message_stop even if more deltas follow', async () => {
+    fetchMock.mockResolvedValueOnce(
+      streamResponse([deltaFrame('kept'), STOP_FRAME, deltaFrame('AFTER-STOP')]),
+    );
+
+    const chunks = await collect(streamComplete({ messages: [{ role: 'user', content: 'hi' }] }));
+
+    expect(chunks).toEqual(['kept']);
+  });
+
+  it('sends stream:true and accept text/event-stream on the request', async () => {
+    fetchMock.mockResolvedValueOnce(streamResponse([deltaFrame('x'), STOP_FRAME]));
+
+    await collect(streamComplete({ messages: [{ role: 'user', content: 'hi' }] }));
+
+    const init = fetchMock.mock.calls[0]![1] as RequestInit;
+    const body = JSON.parse(init.body as string);
+    expect(body.stream).toBe(true);
+    expect((init.headers as Record<string, string>).accept).toBe('text/event-stream');
+  });
+
+  it('throws AiError on a non-ok upstream status', async () => {
+    fetchMock.mockResolvedValueOnce(streamResponse([], { ok: false, status: 500 }));
+
+    await expect(
+      collect(streamComplete({ messages: [{ role: 'user', content: 'hi' }] })),
+    ).rejects.toBeInstanceOf(AiError);
+  });
+});
+
