@@ -1025,3 +1025,213 @@ export async function upsertEntryFacet(
   if (!res) throw new Error("upsertEntryFacet: no row returned");
   return res;
 }
+
+// ---- World delete-cascade (F7 S5) -----------------------------------------
+// Deleting a universe / series / book destroys its whole subtree. STRUCTURAL, so
+// no wiki-write token (product rule 1 gates wiki CONTENT — entries/facts/facets —
+// not the world skeleton). The delete is HIGH-RISK, so it is built to be
+// self-proving: every child row is deleted by an EXPLICIT statement (never left
+// to ON DELETE CASCADE), and the reported count is the SUM of those statements'
+// rowCounts. Because the count and the removal are the SAME statements in the
+// SAME transaction, `count === rows-actually-removed` holds BY CONSTRUCTION — no
+// separate SELECT COUNT that a concurrent write could make drift.
+//
+// Two invariants the ordering enforces (do NOT reorder the book-scoped deletes
+// ahead of the entry-scoped ones):
+//   * CANON survives book deletes. facts/ties with book_id IS NULL are universe
+//     canon (shown in every book); a book/series/universe delete removes only
+//     book_id-scoped rows for the target's books, never NULL-canon rows.
+//   * CROSS-UNIVERSE trap. A book in the target can hold a book-scoped facet
+//     (fact/tie/entry_facet) on an entry that belongs to ANOTHER universe. That
+//     facet row must die with the book (book_id-scoped), but the FOREIGN entry
+//     must survive. So facet rows are deleted by book_id; entries only by
+//     universe_id. Running the book-scoped deletes FIRST also means a row that is
+//     both book-scoped and on a target entry is deleted (and counted) exactly
+//     once.
+
+/** Per-table breakdown of a cascade delete, plus the summed total. */
+export interface CascadeCount {
+  ties: number;
+  facts: number;
+  entryFacets: number;
+  chapterAppearances: number;
+  chapters: number;
+  openQuestions: number;
+  entries: number;
+  researchThreads: number;
+  books: number;
+  series: number;
+  universes: number;
+  total: number;
+}
+
+function emptyCascade(): CascadeCount {
+  return {
+    ties: 0,
+    facts: 0,
+    entryFacets: 0,
+    chapterAppearances: 0,
+    chapters: 0,
+    openQuestions: 0,
+    entries: 0,
+    researchThreads: 0,
+    books: 0,
+    series: 0,
+    universes: 0,
+    total: 0,
+  };
+}
+
+/**
+ * Delete a universe and its ENTIRE subtree (series, books, chapters, entries,
+ * canon + book-scoped facts/ties/facets, appearances, open questions, research
+ * threads). Returns the per-table cascade count whose `total` is exactly the
+ * number of rows removed. One transaction: either the whole subtree goes or
+ * nothing does.
+ */
+export async function deleteUniverseCascade(universeId: string): Promise<CascadeCount> {
+  return withTransaction(async (client) => {
+    const c = emptyCascade();
+    // Book set of this universe (its series' books). Entry set of this universe.
+    const booksOfUniverse = `SELECT b.id FROM books b
+        JOIN series s ON s.id = b.series_id
+        WHERE s.universe_id = $1`;
+    const entriesOfUniverse = `SELECT id FROM entries WHERE universe_id = $1`;
+
+    // STEP 1 — book-scoped facet rows for this universe's books (may sit on a
+    // FOREIGN-universe canon entry; scoped by book_id so the entry is untouched).
+    c.ties += (await client.query(
+      `DELETE FROM ties WHERE book_id IN (${booksOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+    c.facts += (await client.query(
+      `DELETE FROM facts WHERE book_id IN (${booksOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+    c.entryFacets += (await client.query(
+      `DELETE FROM entry_facets WHERE book_id IN (${booksOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+
+    // STEP 2 — canon children of this universe's entries (book_id IS NULL rows,
+    // plus any not already removed in step 1). Entry-scoped.
+    c.ties += (await client.query(
+      `DELETE FROM ties
+        WHERE from_entry_id IN (${entriesOfUniverse})
+           OR to_entry_id IN (${entriesOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+    c.facts += (await client.query(
+      `DELETE FROM facts WHERE entry_id IN (${entriesOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+    c.entryFacets += (await client.query(
+      `DELETE FROM entry_facets WHERE entry_id IN (${entriesOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+    c.openQuestions += (await client.query(
+      `DELETE FROM open_questions WHERE entry_id IN (${entriesOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+
+    // STEP 3 — remaining book-owned rows (appearances/chapters), book-scoped.
+    c.chapterAppearances += (await client.query(
+      `DELETE FROM chapter_appearances WHERE book_id IN (${booksOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+    c.chapters += (await client.query(
+      `DELETE FROM chapters WHERE book_id IN (${booksOfUniverse})`, [universeId],
+    )).rowCount ?? 0;
+
+    // STEP 4 — entries (now childless; residual CASCADE fires on nothing).
+    c.entries += (await client.query(
+      `DELETE FROM entries WHERE universe_id = $1`, [universeId],
+    )).rowCount ?? 0;
+
+    // STEP 5 — research threads of this universe.
+    c.researchThreads += (await client.query(
+      `DELETE FROM research_threads WHERE universe_id = $1`, [universeId],
+    )).rowCount ?? 0;
+
+    // STEP 6 — the skeleton, leaf->root.
+    c.books += (await client.query(
+      `DELETE FROM books WHERE series_id IN (SELECT id FROM series WHERE universe_id = $1)`,
+      [universeId],
+    )).rowCount ?? 0;
+    c.series += (await client.query(
+      `DELETE FROM series WHERE universe_id = $1`, [universeId],
+    )).rowCount ?? 0;
+    c.universes += (await client.query(
+      `DELETE FROM universes WHERE id = $1`, [universeId],
+    )).rowCount ?? 0;
+
+    c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters
+      + c.openQuestions + c.entries + c.researchThreads + c.books + c.series + c.universes;
+    return c;
+  });
+}
+
+/**
+ * Delete a series and its books' subtree (books, chapters, book-scoped
+ * facts/ties/facets, appearances) WITHIN a universe. Entries/canon belong to the
+ * universe, not the series, so a series delete NEVER removes entries or
+ * NULL-canon rows — only the series' books and their book-scoped content.
+ */
+export async function deleteSeriesCascade(seriesId: string): Promise<CascadeCount> {
+  return withTransaction(async (client) => {
+    const c = emptyCascade();
+    const booksOfSeries = `SELECT id FROM books WHERE series_id = $1`;
+
+    c.ties += (await client.query(
+      `DELETE FROM ties WHERE book_id IN (${booksOfSeries})`, [seriesId],
+    )).rowCount ?? 0;
+    c.facts += (await client.query(
+      `DELETE FROM facts WHERE book_id IN (${booksOfSeries})`, [seriesId],
+    )).rowCount ?? 0;
+    c.entryFacets += (await client.query(
+      `DELETE FROM entry_facets WHERE book_id IN (${booksOfSeries})`, [seriesId],
+    )).rowCount ?? 0;
+    c.chapterAppearances += (await client.query(
+      `DELETE FROM chapter_appearances WHERE book_id IN (${booksOfSeries})`, [seriesId],
+    )).rowCount ?? 0;
+    c.chapters += (await client.query(
+      `DELETE FROM chapters WHERE book_id IN (${booksOfSeries})`, [seriesId],
+    )).rowCount ?? 0;
+    c.books += (await client.query(
+      `DELETE FROM books WHERE series_id = $1`, [seriesId],
+    )).rowCount ?? 0;
+    c.series += (await client.query(
+      `DELETE FROM series WHERE id = $1`, [seriesId],
+    )).rowCount ?? 0;
+
+    c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters
+      + c.books + c.series;
+    return c;
+  });
+}
+
+/**
+ * Delete a single book and its book-scoped content (chapters, appearances, and
+ * book-scoped facts/ties/facets book_id = target). NEVER touches NULL-canon rows
+ * (they belong to the universe and stay visible in sibling books), never touches
+ * a sibling book under the same series, never touches entries.
+ */
+export async function deleteBookCascade(bookId: string): Promise<CascadeCount> {
+  return withTransaction(async (client) => {
+    const c = emptyCascade();
+
+    c.ties += (await client.query(
+      `DELETE FROM ties WHERE book_id = $1`, [bookId],
+    )).rowCount ?? 0;
+    c.facts += (await client.query(
+      `DELETE FROM facts WHERE book_id = $1`, [bookId],
+    )).rowCount ?? 0;
+    c.entryFacets += (await client.query(
+      `DELETE FROM entry_facets WHERE book_id = $1`, [bookId],
+    )).rowCount ?? 0;
+    c.chapterAppearances += (await client.query(
+      `DELETE FROM chapter_appearances WHERE book_id = $1`, [bookId],
+    )).rowCount ?? 0;
+    c.chapters += (await client.query(
+      `DELETE FROM chapters WHERE book_id = $1`, [bookId],
+    )).rowCount ?? 0;
+    c.books += (await client.query(
+      `DELETE FROM books WHERE id = $1`, [bookId],
+    )).rowCount ?? 0;
+
+    c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters + c.books;
+    return c;
+  });
+}
