@@ -205,6 +205,74 @@ export async function insertTie(
   return res;
 }
 
+/**
+ * WIKI WRITE (product rule 1). HARD-delete a single tie by id. Untie is an
+ * INTENTIONAL removal of a relationship the writer drew, so it removes the row
+ * outright — no `deleted_at` tombstone (unlike a soft-deleted entry, whose ties
+ * survive to render as dangling "removed" badges). Requires a confirmation
+ * token, mirroring insertTie (defence in depth on every wiki write).
+ */
+export async function deleteTie(
+  tieId: string,
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  await query(`DELETE FROM ties WHERE id = $1`, [tieId]);
+}
+
+/**
+ * WIKI WRITE (product rule 1). Create a NEW entry AND a tie to it in ONE
+ * transaction (the "add a new person as <rel>-to-X" primitive). Both writes
+ * share a single client/txn, so they commit together or roll back together: if
+ * the tie insert fails (e.g. its target entry does not exist, violating the
+ * ties FK), the just-inserted person is rolled back with it and never orphaned.
+ * Requires a confirmation token.
+ */
+export async function createEntryWithTie(
+  input: {
+    entry: {
+      id: string;
+      kind: string;
+      name: string;
+      catalogueNo: string;
+      note: string;
+      summary: string;
+      shelf: string;
+      sortOrder: number;
+    };
+    tie: { id: string; fromEntryId: string; toEntryId: string; rel: string };
+  },
+  _confirmation: WikiWriteConfirmation,
+): Promise<TieRow> {
+  return withTransaction(async (client) => {
+    await client.query(
+      `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [
+        input.entry.id,
+        input.entry.kind,
+        input.entry.name,
+        input.entry.catalogueNo,
+        input.entry.note,
+        input.entry.summary,
+        input.entry.shelf,
+        input.entry.sortOrder,
+      ],
+    );
+    const res = await client.query<TieRow>(
+      `INSERT INTO ties (id, from_entry_id, to_entry_id, rel)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id,
+                 from_entry_id AS "fromEntryId",
+                 to_entry_id   AS "toEntryId",
+                 rel`,
+      [input.tie.id, input.tie.fromEntryId, input.tie.toEntryId, input.tie.rel],
+    );
+    const tie = res.rows[0];
+    if (!tie) throw new Error("createEntryWithTie: no tie row returned");
+    return tie;
+  });
+}
+
 // ---- Chapters (manuscript) ------------------------------------------------
 
 /** Save a chapter's ProseMirror JSON body. */

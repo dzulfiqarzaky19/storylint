@@ -28,6 +28,8 @@ import { loadWikiSnapshot } from "../db/queries";
 import {
   insertFact,
   insertTie,
+  deleteTie,
+  createEntryWithTie,
   updateFactEntry,
   reorderShelf,
   insertDismissedSuggestion,
@@ -115,6 +117,67 @@ export async function linkEntry(input: {
     return { ok: true, data: { tieId: tie.id } };
   } catch (err) {
     return fail(err, "wiki.linkEntry");
+  }
+}
+
+/**
+ * Remove a directional tie (the "untie" affordance on a Ties row). HARD-delete:
+ * untie is an intentional removal of a relationship the writer drew, so the row
+ * is gone (no `deleted_at` tombstone — that is reserved for a soft-deleted
+ * entry, whose ties survive as dangling badges). `deleteTie` demands a
+ * confirmation token, so mint it here (defence in depth). Idempotent: untying an
+ * already-removed tie is a harmless no-op DELETE.
+ */
+export async function untie(input: { tieId: string }): Promise<ActionResult> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    await deleteTie(input.tieId, confirmation);
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.untie");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Create a NEW person AND tie them to an existing
+ * entry in ONE step (the "add a new <name> as <rel>-to-X" affordance on the Ties
+ * block). Both writes share one transaction (createEntryWithTie), so a failure
+ * on either leaves neither behind. Returns the generated entry + tie ids so the
+ * reducer and DB agree. REQUIRES an explicit confirmation.
+ *
+ * @param input.confirmed must be the literal `true` — the confirmation gate.
+ */
+export async function createEntryTied(input: {
+  name: string;
+  kind: Kind;
+  shelf: Shelf;
+  toEntryId: string;
+  rel: string;
+  confirmed: true;
+}): Promise<ActionResult<{ entryId: string; tieId: string }>> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: input.confirmed });
+    const entryId = randomUUID();
+    const tieId = randomUUID();
+    await createEntryWithTie(
+      {
+        entry: {
+          id: entryId,
+          kind: input.kind,
+          name: input.name,
+          catalogueNo: "",
+          note: "",
+          summary: "",
+          shelf: input.shelf,
+          sortOrder: await getMaxSortOrderForShelf(input.shelf) + 1,
+        },
+        tie: { id: tieId, fromEntryId: input.toEntryId, toEntryId: entryId, rel: input.rel },
+      },
+      confirmation,
+    );
+    return { ok: true, data: { entryId, tieId } };
+  } catch (err) {
+    return fail(err, "wiki.createEntryTied");
   }
 }
 
