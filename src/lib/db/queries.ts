@@ -488,3 +488,171 @@ export async function listResearchThreads(): Promise<
      ORDER BY sort_order, id`,
   );
 }
+
+// ---- World tree (F7 S5 switcher) ------------------------------------------
+//
+// The top-bar picker needs the whole world SKELETON: every universe, its
+// series, and each series' books, NESTED. The nesting is the load-bearing part:
+// a series is grouped under its universe by `series.universe_id === universe.id`
+// and a book under its series by `book.series_id === series.id`. Dropping either
+// parent predicate flattens or mis-nests the tree (a book would surface under the
+// wrong series/universe in the picker), so both are mutation-locked in the S5
+// test. Ordered by sort_order then id for a stable, deterministic picker.
+
+export interface WorldBookNode {
+  id: string;
+  name: string;
+  sortOrder: number;
+}
+
+export interface WorldSeriesNode {
+  id: string;
+  name: string;
+  sortOrder: number;
+  books: WorldBookNode[];
+}
+
+export interface WorldUniverseNode {
+  id: string;
+  name: string;
+  series: WorldSeriesNode[];
+}
+
+export async function getWorldTree(): Promise<WorldUniverseNode[]> {
+  const universes = await rows<{ id: string; name: string }>(
+    `SELECT id, name FROM universes ORDER BY id`,
+  );
+  const series = await rows<{ id: string; name: string; universeId: string; sortOrder: number }>(
+    `SELECT id, name, universe_id AS "universeId", sort_order AS "sortOrder"
+       FROM series ORDER BY sort_order, id`,
+  );
+  const books = await rows<{ id: string; name: string; seriesId: string; sortOrder: number }>(
+    `SELECT id, name, series_id AS "seriesId", sort_order AS "sortOrder"
+       FROM books ORDER BY sort_order, id`,
+  );
+
+  // NEST — each book under its series (book.seriesId === series.id), each series
+  // under its universe (series.universeId === universe.id). These two equalities
+  // are the tree's structure; the S5 test mutates each to prove it.
+  return universes.map((u) => ({
+    id: u.id,
+    name: u.name,
+    series: series
+      .filter((se) => se.universeId === u.id)
+      .map((se) => ({
+        id: se.id,
+        name: se.name,
+        sortOrder: se.sortOrder,
+        books: books
+          .filter((b) => b.seriesId === se.id)
+          .map((b) => ({ id: b.id, name: b.name, sortOrder: b.sortOrder })),
+      })),
+  }));
+}
+
+// ---- Cascade preview (F7 S5 danger modal) ---------------------------------
+//
+// ADVISORY row-count the danger modal shows BEFORE a delete, so the writer sees
+// the blast radius. It mirrors the delete predicates in mutations.ts as pure
+// COUNTs (read-only, no mutation). The authoritative number is still the delete's
+// summed rowCounts; the S5 gate asserts advisory === authoritative === removed.
+// Book-scoped rows are counted by book_id (never NULL-canon), entries only by
+// universe_id, so the preview matches exactly what the transaction will remove.
+
+export interface CascadePreview {
+  ties: number;
+  facts: number;
+  entryFacets: number;
+  chapterAppearances: number;
+  chapters: number;
+  openQuestions: number;
+  entries: number;
+  researchThreads: number;
+  books: number;
+  series: number;
+  universes: number;
+  total: number;
+}
+
+async function countOne(sql: string, params: unknown[]): Promise<number> {
+  const r = await one<{ n: string }>(sql, params);
+  return r ? Number(r.n) : 0;
+}
+
+function sumPreview(c: Omit<CascadePreview, "total">): CascadePreview {
+  const total =
+    c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters +
+    c.openQuestions + c.entries + c.researchThreads + c.books + c.series + c.universes;
+  return { ...c, total };
+}
+
+/** Advisory count of everything deleteUniverseCascade would remove. */
+export async function previewUniverseCascade(universeId: string): Promise<CascadePreview> {
+  const booksOf = `SELECT b.id FROM books b JOIN series s ON s.id = b.series_id WHERE s.universe_id = $1`;
+  const entriesOf = `SELECT id FROM entries WHERE universe_id = $1`;
+  const [
+    tiesBook, factsBook, efBook, tiesEntry, factsEntry, efEntry, oq, appr, chap, ent, thr, bk, se, uni,
+  ] = await Promise.all([
+    countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id IN (${booksOf})`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id IN (${booksOf})`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE book_id IN (${booksOf})`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM ties WHERE (from_entry_id IN (${entriesOf}) OR to_entry_id IN (${entriesOf})) AND book_id IS NULL`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM facts WHERE entry_id IN (${entriesOf}) AND book_id IS NULL`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE entry_id IN (${entriesOf}) AND book_id IS NULL`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM open_questions WHERE entry_id IN (${entriesOf})`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapter_appearances WHERE book_id IN (${booksOf})`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapters WHERE book_id IN (${booksOf})`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM entries WHERE universe_id = $1`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM research_threads WHERE universe_id = $1`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM books WHERE series_id IN (SELECT id FROM series WHERE universe_id = $1)`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM series WHERE universe_id = $1`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM universes WHERE id = $1`, [universeId]),
+  ]);
+  return sumPreview({
+    ties: tiesBook + tiesEntry,
+    facts: factsBook + factsEntry,
+    entryFacets: efBook + efEntry,
+    chapterAppearances: appr,
+    chapters: chap,
+    openQuestions: oq,
+    entries: ent,
+    researchThreads: thr,
+    books: bk,
+    series: se,
+    universes: uni,
+  });
+}
+
+/** Advisory count of everything deleteSeriesCascade would remove. */
+export async function previewSeriesCascade(seriesId: string): Promise<CascadePreview> {
+  const booksOf = `SELECT id FROM books WHERE series_id = $1`;
+  const [ties, facts, ef, appr, chap, bk, se] = await Promise.all([
+    countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id IN (${booksOf})`, [seriesId]),
+    countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id IN (${booksOf})`, [seriesId]),
+    countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE book_id IN (${booksOf})`, [seriesId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapter_appearances WHERE book_id IN (${booksOf})`, [seriesId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapters WHERE book_id IN (${booksOf})`, [seriesId]),
+    countOne(`SELECT COUNT(*) AS n FROM books WHERE series_id = $1`, [seriesId]),
+    countOne(`SELECT COUNT(*) AS n FROM series WHERE id = $1`, [seriesId]),
+  ]);
+  return sumPreview({
+    ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
+    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, series: se, universes: 0,
+  });
+}
+
+/** Advisory count of everything deleteBookCascade would remove. */
+export async function previewBookCascade(bookId: string): Promise<CascadePreview> {
+  const [ties, facts, ef, appr, chap, bk] = await Promise.all([
+    countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id = $1`, [bookId]),
+    countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id = $1`, [bookId]),
+    countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE book_id = $1`, [bookId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapter_appearances WHERE book_id = $1`, [bookId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapters WHERE book_id = $1`, [bookId]),
+    countOne(`SELECT COUNT(*) AS n FROM books WHERE id = $1`, [bookId]),
+  ]);
+  return sumPreview({
+    ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
+    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, series: 0, universes: 0,
+  });
+}
