@@ -125,6 +125,28 @@ export type WikiAction =
        *  it vanishes from the index; ties from OTHER entries that still point at
        *  it now resolve as dangling "removed" tombstones. */
       entryId: string;
+    }
+  // ---- Ties (F6-S4b) — fired alongside actions/wiki.ts untie/createEntryTied ----
+  | {
+      type: "UNTIE";
+      /** The entry the tie hangs off (its `ties[]` loses exactly `tieId`). */
+      fromEntryId: string;
+      /** The tie to remove. Hard removal — untie is intentional, no tombstone. */
+      tieId: string;
+    }
+  | {
+      type: "CREATE_TIED";
+      /** Server-generated ids (reducer is pure; caller supplies them). */
+      entryId: string;
+      tieId: string;
+      /** The new person. */
+      kind: Kind;
+      shelf: Shelf;
+      name: string;
+      /** The existing entry the new person is tied FROM (owns the tie row). */
+      toEntryId: string;
+      /** User-set relationship label carried into the tie (e.g. "uncle"). */
+      rel: string;
     };
 
 // ---- Init -----------------------------------------------------------------
@@ -186,6 +208,12 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
 
     case "SOFT_DELETE_ENTRY":
       return softDeleteEntryInState(state, action.entryId);
+
+    case "UNTIE":
+      return untieInState(state, action.fromEntryId, action.tieId);
+
+    case "CREATE_TIED":
+      return createTiedInState(state, action);
 
     default:
       return assertNever(action);
@@ -422,6 +450,61 @@ function softDeleteEntryInState(state: WikiState, entryId: string): WikiState {
     order,
     selectedEntryId: state.selectedEntryId === entryId ? null : state.selectedEntryId,
   };
+}
+
+/**
+ * Remove exactly ONE tie from an entry's `ties[]` (pure). Untie is an
+ * intentional removal, so the tie is dropped outright — no tombstone (that is
+ * reserved for a soft-deleted TARGET, whose inbound ties survive as dangling
+ * badges). Removes only the addressed `tieId`, leaving every other tie on the
+ * entry intact. No-op if the entry is unknown or holds no such tie.
+ */
+function untieInState(state: WikiState, fromEntryId: string, tieId: string): WikiState {
+  const entry = state.byId[fromEntryId];
+  if (!entry) return state;
+  const ties = entry.ties.filter((t) => t.id !== tieId);
+  if (ties.length === entry.ties.length) return state; // no matching tie: no-op
+  return {
+    ...state,
+    byId: { ...state.byId, [fromEntryId]: { ...entry, ties } },
+  };
+}
+
+/**
+ * Add a NEW person AND tie them to an existing entry in one transition (pure) —
+ * the session mirror of createEntryWithTie. Composes the two existing pure
+ * helpers so the shelf/order/select behavior and the idempotent-append tie
+ * behavior stay identical to CREATE_ENTRY and LINK_ENTRY. The tie carries the
+ * user-set `rel`. No-op on the tie half if the anchor (`toEntryId`) is unknown,
+ * but the new entry is still created (matches createEntryInState always winning).
+ */
+function createTiedInState(
+  state: WikiState,
+  action: {
+    entryId: string;
+    tieId: string;
+    kind: Kind;
+    shelf: Shelf;
+    name: string;
+    toEntryId: string;
+    rel: string;
+  },
+): WikiState {
+  const withEntry = createEntryInState(state, {
+    entryId: action.entryId,
+    kind: action.kind,
+    shelf: action.shelf,
+    name: action.name,
+    note: "",
+    summary: "",
+    sortOrder: 0,
+  });
+  return linkEntryInState(withEntry, {
+    tieId: action.tieId,
+    fromEntryId: action.toEntryId,
+    toEntryId: action.entryId,
+    rel: action.rel,
+  });
 }
 
 /** Append a new manual fact to an entry (pure). No-op if entry unknown. */
