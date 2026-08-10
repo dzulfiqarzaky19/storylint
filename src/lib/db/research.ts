@@ -7,12 +7,8 @@
 // Lives in its own file (not queries.ts) to avoid concurrent edits on the
 // shared read layer. Read-only.
 
-import { getAllEntries, getResearchThread, listResearchThreads } from "./queries";
-import type { ResearchTurnWithCards, ResearchThreadRow, ResearchScope } from "../domain/types";
-import {
-  availableScopeOptions,
-  type ScopeOption,
-} from "../research/scopeOptions";
+import { getResearchThread, listResearchThreads } from "./queries";
+import type { ResearchTurnWithCards, ResearchThreadRow } from "../domain/types";
 
 /**
  * Turns with ordinal <= this are shown on first render; higher ordinals are the
@@ -28,13 +24,6 @@ export interface ResearchSnapshot {
   initialVisibleTurnIds: string[];
   /** Every thread, for the LEFT index (Track B). Ordered by sort_order. */
   threads: ResearchThreadRow[];
-  /** The active thread's current scope (drives the switcher's initial value). */
-  scope: ResearchScope;
-  /**
-   * Scope options offered when creating a thread (Chat first, then each wiki
-   * kind that has >=1 entry). Derived from the live wiki so empty kinds hide.
-   */
-  scopeOptions: ScopeOption[];
 }
 
 /**
@@ -49,10 +38,6 @@ export const EMPTY_RESEARCH_SNAPSHOT: ResearchSnapshot = {
   turns: [],
   initialVisibleTurnIds: [],
   threads: [],
-  // The inert state has no active thread; a broad Chat scope is the safe default.
-  scope: "chat",
-  // No entries loaded in the inert state, so only the always-present Chat scope.
-  scopeOptions: availableScopeOptions([]),
 };
 
 /**
@@ -91,7 +76,6 @@ export async function loadResearchSnapshot(
   const selected = selectResearchThread(threads, threadId);
   if (!selected) return EMPTY_RESEARCH_SNAPSHOT;
   const turns = await getResearchThread(selected.id);
-  const entries = await getAllEntries();
   const initialVisibleTurnIds = turns
     .filter((t) => t.ordinal <= INITIAL_VISIBLE_MAX_ORDINAL)
     .map((t) => t.id);
@@ -101,7 +85,5 @@ export async function loadResearchSnapshot(
     turns,
     initialVisibleTurnIds,
     threads,
-    scope: selected.scope,
-    scopeOptions: availableScopeOptions(entries),
   };
 }

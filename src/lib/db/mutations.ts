@@ -590,17 +590,3 @@ export async function updateThreadTitle(input: {
     input.title,
   ]);
 }
-
-/**
- * Change a thread's scope. Only the FUTURE context is affected — past turns are
- * left untouched — so switching scope never rewrites or blocks existing history.
- */
-export async function updateThreadScope(input: {
-  threadId: string;
-  scope: import("../domain/types").ResearchScope;
-}): Promise<void> {
-  await query(`UPDATE research_threads SET scope = $2 WHERE id = $1`, [
-    input.threadId,
-    input.scope,
-  ]);
-}

@@ -330,19 +330,3 @@ export async function listResearchThreads(): Promise<
      ORDER BY sort_order, id`,
   );
 }
-
-/**
- * The scope of a single research thread, for the stream route to decide which
- * wiki context to ground the AI in. Returns 'chat' (no context) when the thread
- * is missing, so a stale/absent id degrades to a broad conversation rather than
- * erroring (F4-P2-S4).
- */
-export async function getResearchThreadScope(
-  threadId: string,
-): Promise<import("../domain/types").ResearchScope> {
-  const row = await one<{ scope: import("../domain/types").ResearchScope }>(
-    `SELECT scope FROM research_threads WHERE id = $1`,
-    [threadId],
-  );
-  return row?.scope ?? "chat";
-}

@@ -31,7 +31,6 @@ import {
   getNextResearchThreadSortOrder,
   insertResearchTurnPair,
   deleteThread as deleteThreadRow,
-  updateThreadScope as updateThreadScopeRow,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import type { Kind, ResearchScope } from "../domain/types";
@@ -363,33 +362,6 @@ export async function deleteThread(input: {
   try {
     await deleteThreadRow(threadId);
     return { ok: true, data: { threadId } };
-  } catch (err) {
-    return { ok: false, error: errMessage(err) };
-  }
-}
-
-// Switch a thread's scope. Only FUTURE turns use the new scope; existing turns
-// are never rewritten, so this is always safe and never blocks. Validates the
-// scope against the allowed set before it reaches the DB CHECK constraint.
-const VALID_SCOPES: readonly ResearchScope[] = [
-  "chat",
-  "character",
-  "world",
-  "organization",
-  "lore",
-];
-export async function setThreadScope(input: {
-  threadId: string;
-  scope: ResearchScope;
-}): Promise<ActionResult<{ threadId: string; scope: ResearchScope }>> {
-  const threadId = (input.threadId ?? "").trim();
-  if (!threadId) return { ok: false, error: "No thread to update." };
-  if (!VALID_SCOPES.includes(input.scope)) {
-    return { ok: false, error: `Unknown scope: ${input.scope}` };
-  }
-  try {
-    await updateThreadScopeRow({ threadId, scope: input.scope });
-    return { ok: true, data: { threadId, scope: input.scope } };
   } catch (err) {
     return { ok: false, error: errMessage(err) };
   }
