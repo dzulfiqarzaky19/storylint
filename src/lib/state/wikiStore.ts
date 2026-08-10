@@ -182,7 +182,15 @@ export type WikiAction =
 export function initWikiState(snapshot: WikiSnapshot, suggestions: WikiSuggestion[] = []): WikiState {
   const order: Record<Shelf, string[]> = { people: [], places: [], orders: [], lore: [] };
   for (const entry of snapshot.entries) {
-    order[entry.shelf].push(entry.id);
+    const bucket = order[entry.shelf];
+    if (!bucket) {
+      // Corrupt/legacy data: an entry whose shelf is outside the valid set
+      // would crash the index build (order[bad].push -> 500). Skip it and warn
+      // rather than throw; valid entries are unaffected.
+      console.warn(`[initWikiState] entry ${entry.id} has unknown shelf ${entry.shelf}, skipped`);
+      continue;
+    }
+    bucket.push(entry.id);
   }
   return {
     byId: { ...snapshot.byId },
