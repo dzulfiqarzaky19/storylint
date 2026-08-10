@@ -10,20 +10,6 @@
 import { getResearchThread, listResearchThreads } from "./queries";
 import type { ResearchTurnWithCards, ResearchThreadRow } from "../domain/types";
 
-/** Stable thread id for the seeded conversation (matches seed.ts THREAD_ID). */
-export const RESEARCH_THREAD_ID = "salt-debt";
-
-/**
- * The question the writer is turning over for the seeded first thread. A thread
- * row carries a title/subtitle; for the original salt-debt thread we keep the
- * hand-written question copy. Other threads use their title as the question.
- */
-export const RESEARCH_QUESTION = "If a salt-name is a debt, who is collecting it?";
-
-const QUESTION_BY_THREAD: Record<string, string> = {
-  [RESEARCH_THREAD_ID]: RESEARCH_QUESTION,
-};
-
 /**
  * Turns with ordinal <= this are shown on first render; higher ordinals are the
  * deferred `more` turns, revealed when a prompt chip is clicked (HANDOFF §6/§9.4).
@@ -41,34 +27,60 @@ export interface ResearchSnapshot {
 }
 
 /**
- * List all threads for the left index. Falls back to a single synthetic entry
- * for the seeded thread when the table is empty (older DBs before Track B).
+ * The inert snapshot the Research screen renders when there are NO threads at
+ * all. Research now starts empty (no seed), so this is a real first-run state,
+ * not an error: the screen shows a "no threads yet" empty state and a create
+ * affordance rather than a fabricated conversation.
+ */
+export const EMPTY_RESEARCH_SNAPSHOT: ResearchSnapshot = {
+  question: "",
+  threadId: "",
+  turns: [],
+  initialVisibleTurnIds: [],
+  threads: [],
+};
+
+/**
+ * Pick which thread to load from the list: the one matching `threadId`, else
+ * the first by sort_order (a stale/unknown URL never dead-ends). Returns null
+ * when there are NO threads, so the loader returns an empty-state snapshot
+ * instead of indexing an empty array.
+ */
+export function selectResearchThread(
+  threads: ResearchThreadRow[],
+  threadId: string | undefined,
+): ResearchThreadRow | null {
+  if (threads.length === 0) return null;
+  return threads.find((t) => t.id === threadId) ?? threads[0]!;
+}
+
+/**
+ * List all threads for the left index, ordered by sort_order. Returns exactly
+ * what the DB holds — an EMPTY list when there are no threads (research now
+ * starts empty; there is no synthetic seed thread to fall back to).
  */
 export async function loadResearchThreads(): Promise<ResearchThreadRow[]> {
-  const threads = await listResearchThreads();
-  if (threads.length > 0) return threads;
-  return [
-    { id: RESEARCH_THREAD_ID, title: "Salt as debt", subtitle: "", sortOrder: 0 },
-  ];
+  return listResearchThreads();
 }
 
 /**
  * Load the full Research snapshot for one thread. `threadId` defaults to the
  * first thread by sort_order; an unknown id also falls back to the first so a
- * stale URL never renders an empty screen.
+ * stale URL never renders an empty screen. When there are NO threads at all,
+ * returns the empty-state snapshot (no crash).
  */
 export async function loadResearchSnapshot(
   threadId?: string,
 ): Promise<ResearchSnapshot> {
   const threads = await loadResearchThreads();
-  const selected =
-    threads.find((t) => t.id === threadId) ?? threads[0]!;
+  const selected = selectResearchThread(threads, threadId);
+  if (!selected) return EMPTY_RESEARCH_SNAPSHOT;
   const turns = await getResearchThread(selected.id);
   const initialVisibleTurnIds = turns
     .filter((t) => t.ordinal <= INITIAL_VISIBLE_MAX_ORDINAL)
     .map((t) => t.id);
   return {
-    question: QUESTION_BY_THREAD[selected.id] ?? selected.title,
+    question: selected.title,
     threadId: selected.id,
     turns,
     initialVisibleTurnIds,
