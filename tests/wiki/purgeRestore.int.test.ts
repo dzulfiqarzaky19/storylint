@@ -159,13 +159,26 @@ describe("purgeDeletedBefore (F6-S6a, real Postgres)", () => {
     void purged;
   });
 
-  it("NEVER purges a live entry, even with a huge cutoff", async () => {
-    const liveId = await freshEntry("S6 Never Purged");
-    // live (deleted_at IS NULL). A cutoff far in the future must not touch it.
-    await purgeDeletedBefore({ cutoffMs: Number.MAX_SAFE_INTEGER }, CONFIRM);
+  it("NEVER purges a live entry: a BOUNDED cutoff past our tombstone spares live rows", async () => {
+    // SELF-ISOLATION: never an unbounded cutoff against the shared DB. A
+    // MAX_SAFE_INTEGER cutoff is an unbounded purge (DELETE every soft-deleted
+    // row in the whole DB) and would race other specs' seed tombstones. Instead
+    // bound the cutoff just past OUR own tombstone A so it can only reach A, and
+    // prove a live sibling B is untouched by the deleted_at IS NOT NULL rail.
+    const deletedAt = 4321;
+    const deletedId = await freshEntry("S6 Bounded Tomb"); // A: soft-deleted
+    const liveId = await freshEntry("S6 Never Purged"); // B: live
+    await softDeleteEntry({ id: deletedId, deletedAt }, CONFIRM);
 
-    const row = await query(`SELECT id FROM entries WHERE id = $1`, [liveId]);
-    expect(row.rowCount).toBe(1); // lock: deleted_at IS NOT NULL rail protects live rows
+    // cutoff = A.deletedAt + 1 -> reaches A (deleted_at < cutoff), and B is live
+    // (deleted_at IS NULL) so the rail excludes it regardless of the cutoff.
+    await purgeDeletedBefore({ cutoffMs: deletedAt + 1 }, CONFIRM);
+
+    const gone = await query(`SELECT id FROM entries WHERE id = $1`, [deletedId]);
+    expect(gone.rowCount).toBe(0); // A (soft-deleted, < cutoff) is hard-purged
+
+    const live = await query(`SELECT id FROM entries WHERE id = $1`, [liveId]);
+    expect(live.rowCount).toBe(1); // lock: deleted_at IS NOT NULL rail protects live rows
     expect(await getEntry(liveId)).not.toBeNull();
   });
 });
