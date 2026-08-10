@@ -452,3 +452,121 @@ export async function updateFact(
   if (sets.length === 0) return;
   await query(`UPDATE facts SET ${sets.join(", ")} WHERE id = $1`, params);
 }
+
+// ---- Research turns (F2a — persist an AI ask atomically) ------------------
+// askResearchAi becomes a WRITING action: the writer's question ("you") and the
+// AI reply ("them") plus the reply's proposition cards persist ALL-OR-NOTHING in
+// ONE transaction. A them-turn with no you-turn (or orphan cards) is worse than
+// no write, so any failure rolls the whole pair back. Not a wiki write (product
+// rule 1) — these are conversation turns, not entries — so no confirmation token.
+
+/** One proposition card to persist under the AI ("them") turn. */
+export interface ResearchCardInput {
+  id: string;
+  kind: string;
+  title: string;
+  body: string;
+  asKind: string;
+}
+
+/** The you-turn + them-turn (+cards) to persist for one AI ask. */
+export interface ResearchTurnPairInput {
+  threadId: string;
+  youId: string;
+  themId: string;
+  who: { you: string; them: string };
+  question: string;
+  reply: string;
+  cards: ResearchCardInput[];
+}
+
+/** A persisted turn's identity + assigned ordinal, returned for the reducer. */
+export interface PersistedTurnRef {
+  id: string;
+  ordinal: number;
+}
+
+/**
+ * Persist a question/answer pair (+cards) for one thread in a SINGLE transaction.
+ *
+ * ORDINAL-IN-TXN (the hard correctness condition): the next ordinal is computed
+ * as MAX(ordinal)+1 for this thread INSIDE the same transaction as the inserts,
+ * so two concurrent asks can never read the same MAX and collide — the you-turn
+ * takes MAX+1 and the them-turn MAX+2 under one lock. Date.now() ordinals are
+ * wrong (collide in the same millisecond, non-deterministic ordering).
+ *
+ * ATOMICITY: you-turn, them-turn, and every card insert run on one client; any
+ * failure rolls back the whole pair (the caller then persists nothing and the
+ * in-memory reducer never appends a half-pair).
+ *
+ * Rejects an empty threadId so a turn can never be written with thread_id = ''
+ * (the bug this feature fixes). Returns the two turns' ids + assigned ordinals.
+ */
+export async function insertResearchTurnPair(
+  input: ResearchTurnPairInput,
+): Promise<{ you: PersistedTurnRef; them: PersistedTurnRef }> {
+  if (!input.threadId) {
+    throw new Error("insertResearchTurnPair: threadId is required (refusing to write an orphan turn)");
+  }
+  return withTransaction(async (client) => {
+    const maxRes = await client.query<{ maxOrdinal: number | null }>(
+      `SELECT MAX(ordinal) AS "maxOrdinal" FROM research_turns WHERE thread_id = $1`,
+      [input.threadId],
+    );
+    const base = (maxRes.rows[0]?.maxOrdinal ?? -1) + 1;
+    const youOrdinal = base;
+    const themOrdinal = base + 1;
+
+    await client.query(
+      `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text)
+       VALUES ($1, $2, $3, 'you', $4, $5)`,
+      [input.youId, input.threadId, youOrdinal, input.who.you, input.question],
+    );
+    await client.query(
+      `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text)
+       VALUES ($1, $2, $3, 'them', $4, $5)`,
+      [input.themId, input.threadId, themOrdinal, input.who.them, input.reply],
+    );
+
+    for (let i = 0; i < input.cards.length; i++) {
+      const c = input.cards[i]!;
+      await client.query(
+        `INSERT INTO propositions (id, turn_id, kind, title, body, as_kind, sort_order)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [c.id, input.themId, c.kind, c.title, c.body, c.asKind, i],
+      );
+    }
+
+    return {
+      you: { id: input.youId, ordinal: youOrdinal },
+      them: { id: input.themId, ordinal: themOrdinal },
+    };
+  });
+}
+
+/**
+ * Hard-delete a research thread and everything under it, in ONE transaction.
+ *
+ * research_turns.thread_id is BARE TEXT with NO foreign key (schema.sql), so a
+ * DELETE on research_threads does NOT cascade to its turns — the turns would be
+ * orphaned. We therefore delete the turns FIRST (which DOES cascade to their
+ * propositions, and propositions cascade to kept_cards), then the thread row.
+ * Both statements share one transaction so a thread is never left half-deleted.
+ */
+export async function deleteThread(threadId: string): Promise<void> {
+  await withTransaction(async (client) => {
+    await client.query(`DELETE FROM research_turns WHERE thread_id = $1`, [threadId]);
+    await client.query(`DELETE FROM research_threads WHERE id = $1`, [threadId]);
+  });
+}
+
+/** Update a research thread's title (F2a auto-title). Parameterized. */
+export async function updateThreadTitle(input: {
+  threadId: string;
+  title: string;
+}): Promise<void> {
+  await query(`UPDATE research_threads SET title = $2 WHERE id = $1`, [
+    input.threadId,
+    input.title,
+  ]);
+}
