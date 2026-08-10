@@ -20,6 +20,10 @@ next-env.d.ts
 test-results
 playwright-report
 
+# db:reset-research writes timestamped JSON dumps here before wiping the four
+# research tables. Local recovery artifacts, never source, never pushed.
+backups/
+
 # local-only, not pushed to dev2
 .claude/
 # Agent operating contract + swarm routing config: local-only per-clone setup,
