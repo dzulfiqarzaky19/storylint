@@ -143,6 +143,19 @@ describe("resetResearchWithin — transactional core (injected fake client)", ()
     expect(res.backup.research_threads).toHaveLength(2);
   });
 
+  it("fires onBackup BEFORE any DELETE runs (dump persists on disk pre-wipe)", async () => {
+    const { client, calls } = makeClient();
+    let deletesAtBackup = -1;
+    await resetResearchWithin(client, (backup) => {
+      // Record how many DELETEs had run at the moment the backup is handed over.
+      deletesAtBackup = calls.filter((c) => /^DELETE FROM/.test(c)).length;
+      // The backup handed to the sink must already be fully populated.
+      expect(backup.research_threads).toHaveLength(2);
+    });
+    // Backup callback ran with ZERO deletes done -> it precedes all destruction.
+    expect(deletesAtBackup).toBe(0);
+  });
+
   it("leaves protected counts unchanged on the happy path", async () => {
     const { client } = makeClient();
     const res = await resetResearchWithin(client);

@@ -129,19 +129,22 @@ async function protectedCounts(client: ResetClient): Promise<ProtectedCounts> {
 }
 
 /**
- * The transactional core, minus the disk write. Given a client (real or fake):
+ * The transactional core. Given a client (real or fake):
  *   1. dump all research rows (backup),
- *   2. record protected + research counts BEFORE,
- *   3. DELETE each research table in wipeOrder(),
- *   4. record protected + research counts AFTER,
- *   5. throw ProtectedDataChangedError if the guard fails (=> ROLLBACK),
- *   6. return the full result (counts + backup) for the caller to report.
+ *   2. hand the backup to onBackup (the caller persists it to disk HERE, before
+ *      any DELETE, so a recovery dump exists even if a later step fails),
+ *   3. record protected + research counts BEFORE,
+ *   4. DELETE each research table in wipeOrder(),
+ *   5. record protected + research counts AFTER,
+ *   6. throw ProtectedDataChangedError if the guard fails (=> ROLLBACK),
+ *   7. return the full result (counts + backup) for the caller to report.
  *
  * Throwing on a protected-count change is what makes the wipe safe: the caller
  * runs this inside withTransaction, so any throw rolls the whole thing back.
  */
 export async function resetResearchWithin(
   client: ResetClient,
+  onBackup?: (backup: ResearchBackup) => void | Promise<void>,
 ): Promise<ResetResult> {
   // 1. BACKUP-FIRST: capture every row before touching anything.
   const backup = {} as ResearchBackup;
@@ -150,26 +153,30 @@ export async function resetResearchWithin(
     backup[table] = res.rows;
   }
 
-  // 2. Counts BEFORE.
+  // 2. Persist the backup BEFORE any destructive step, so a dump survives even
+  // a mid-DELETE failure (belt + suspenders on top of the transaction).
+  if (onBackup) await onBackup(backup);
+
+  // 3. Counts BEFORE.
   const protectedBefore = await protectedCounts(client);
   const researchBefore = {} as Record<ResearchTable, number>;
   for (const table of wipeOrder()) {
     researchBefore[table] = await countOf(client, table);
   }
 
-  // 3. DELETE in FK-safe order (table-scoped, no TRUNCATE/CASCADE).
+  // 4. DELETE in FK-safe order (table-scoped, no TRUNCATE/CASCADE).
   for (const table of wipeOrder()) {
     await client.query(`DELETE FROM ${table}`);
   }
 
-  // 4. Counts AFTER.
+  // 5. Counts AFTER.
   const protectedAfter = await protectedCounts(client);
   const researchAfter = {} as Record<ResearchTable, number>;
   for (const table of wipeOrder()) {
     researchAfter[table] = await countOf(client, table);
   }
 
-  // 5. NEGATIVE-PROOF: protected data must be byte-identical, else ROLLBACK.
+  // 6. NEGATIVE-PROOF: protected data must be byte-identical, else ROLLBACK.
   if (!protectedCountsUnchanged(protectedBefore, protectedAfter)) {
     throw new ProtectedDataChangedError(protectedBefore, protectedAfter);
   }
@@ -204,12 +211,13 @@ async function main(): Promise<void> {
   const outPath = backupPath(stamp);
 
   const result = await withTransaction(async (client) => {
-    const res = await resetResearchWithin(client);
-    // Write the backup to disk INSIDE the txn, BEFORE we would ever commit, so
-    // the dump exists on disk even if a later step throws and rolls back.
-    mkdirSync(join(process.cwd(), "backups"), { recursive: true });
-    writeFileSync(outPath, JSON.stringify(res.backup, null, 2), "utf8");
-    return res;
+    // Persist the backup to disk the instant it is captured, BEFORE any DELETE
+    // runs, so the recovery dump exists on disk even if a later step throws and
+    // rolls the transaction back.
+    return resetResearchWithin(client, (backup) => {
+      mkdirSync(join(process.cwd(), "backups"), { recursive: true });
+      writeFileSync(outPath, JSON.stringify(backup, null, 2), "utf8");
+    });
   });
 
   console.log(`[db:reset-research] backup written: ${outPath}`);
