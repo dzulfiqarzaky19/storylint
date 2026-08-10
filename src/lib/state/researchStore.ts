@@ -31,7 +31,6 @@ export interface ResearchState {
 // ---- Actions --------------------------------------------------------------
 //
 // action type      →  matching Server Action (actions/research.ts)
-// ADVANCE_TURN     →  advanceTurn
 // KEEP_CARD        →  keepCard
 // PROPOSE_CARD     →  proposeCard        (reveals strip; no write)
 // CONFIRM_CARD     →  confirmCard        (WIKI WRITE, confirmed)
@@ -39,7 +38,6 @@ export interface ResearchState {
 // SET_ERROR        →  (none — surfaces a failed server action)
 
 export type ResearchAction =
-  | { type: "ADVANCE_TURN"; revealedTurnIds: string[] }
   | { type: "KEEP_CARD"; propositionId: string; kept: boolean }
   | { type: "PROPOSE_CARD"; propositionId: string }
   | { type: "CONFIRM_CARD"; propositionId: string; entryId: string }
@@ -96,12 +94,6 @@ export function initResearchState(input: {
 
 export function researchReducer(state: ResearchState, action: ResearchAction): ResearchState {
   switch (action.type) {
-    case "ADVANCE_TURN":
-      return {
-        ...state,
-        visibleTurnIds: dedupe([...state.visibleTurnIds, ...action.revealedTurnIds]),
-      };
-
     case "KEEP_CARD":
       return {
         ...state,

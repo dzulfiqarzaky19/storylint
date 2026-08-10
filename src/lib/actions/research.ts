@@ -8,7 +8,6 @@
 //   `confirmCard` is the ONLY action in this file that writes to the wiki, and
 //   it is gated on an explicit `confirmed: true` param via `confirmWikiWrite()`.
 //   The other write path in the whole app is `addSuggestionAsFact` in wiki.ts.
-//     - advanceTurn reveals canned `more` turns; no wiki write.
 //     - keepCard toggles the Kept board (kept_cards); NOT the wiki.
 //     - proposeCard sets a card "pending" and reveals the confirmation strip;
 //       it writes nothing until confirmCard.
@@ -51,21 +50,6 @@ const KIND_SHELF: Record<Kind, string> = {
   organization: "orders",
   lore: "lore",
 };
-
-// ---- Thread progression (no wiki write) -----------------------------------
-
-/**
- * Reveal the next deferred ("more") turn(s) in the thread after a prompt chip
- * is clicked. The `more` turns are canned (HANDOFF §9.4); the UI passes the
- * currently-hidden turn ids and this returns them as revealed. No persistence:
- * revealed-ness is session state. Mirrors reducer action `ADVANCE_TURN`.
- */
-export async function advanceTurn(
-  hiddenTurnIds: string[],
-): Promise<ActionResult<{ revealedTurnIds: string[] }>> {
-  // Reveal all remaining deferred turns (the prototype's single `more` batch).
-  return { ok: true, data: { revealedTurnIds: hiddenTurnIds } };
-}
 
 /**
  * Toggle a proposition card on the Kept board ("Keep" ⇄ "Kept"). Persists to
