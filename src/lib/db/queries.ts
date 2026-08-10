@@ -80,6 +80,38 @@ export async function getEntry(id: string): Promise<EntryRow | null> {
   );
 }
 
+/**
+ * The "recently deleted" list (F6-S6): every soft-deleted entry, newest deletion
+ * first. This is the OPPOSITE filter to getAllEntries/getEntry (which hide
+ * deleted rows) — the ONE read path that surfaces tombstoned entries, for the
+ * trash panel's restore + purge-countdown.
+ *
+ * BIGINT CAST (behavior lock): `deleted_at` is a Postgres `bigint`, which pg
+ * returns as a STRING. Every other read path filters `deleted_at IS NULL`, so
+ * EntryRow.deletedAt (typed `number | null`) was never populated with a real
+ * value before. This is the FIRST non-null path, so it CASTs to double precision
+ * — pg then returns a real JS `number`, matching the type and letting isPurgeable
+ * do arithmetic on it. Drop the cast and `deletedAt` is a string, silently
+ * breaking the purge-countdown math.
+ */
+export async function getDeletedEntries(): Promise<EntryRow[]> {
+  return rows<EntryRow>(
+    `SELECT
+       id,
+       kind,
+       name,
+       catalogue_no AS "catalogueNo",
+       note,
+       summary,
+       shelf,
+       sort_order AS "sortOrder",
+       deleted_at::double precision AS "deletedAt"
+     FROM entries
+     WHERE deleted_at IS NOT NULL
+     ORDER BY deleted_at DESC`,
+  );
+}
+
 export async function getFactsForEntry(entryId: string): Promise<FactRow[]> {
   return rows<FactRow>(
     `SELECT ${FACT_COLS} FROM facts WHERE entry_id = $1 ORDER BY sort_order, id`,

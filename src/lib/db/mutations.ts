@@ -159,6 +159,55 @@ export async function softDeleteEntry(
 }
 
 /**
+ * WIKI WRITE (product rule 1). Restore a soft-deleted entry: clear deleted_at so
+ * the row reappears in every live read. This RE-ENTERS content into the live
+ * wiki, so it is a wiki write and requires a confirmation token.
+ *
+ * Idempotent guard `AND deleted_at IS NOT NULL`: restoring an already-live entry
+ * is a no-op that touches zero rows. The `WHERE id = $1` restricts the write to
+ * the single addressed entry — no other tombstoned row is disturbed. Facts/ties
+ * were never removed (soft-delete leaves children in place), so they re-link the
+ * moment the entry is live again; restore needs no extra work on them.
+ *
+ * Returns the number of rows restored (1 on success, 0 when the id was missing
+ * or already live).
+ */
+export async function restoreEntry(
+  input: { id: string },
+  _confirmation: WikiWriteConfirmation,
+): Promise<number> {
+  const res = await query(
+    `UPDATE entries SET deleted_at = NULL WHERE id = $1 AND deleted_at IS NOT NULL`,
+    [input.id],
+  );
+  return res.rowCount ?? 0;
+}
+
+/**
+ * WIKI WRITE (product rule 1, DESTRUCTIVE). Hard-delete every entry that has been
+ * soft-deleted since before `cutoffMs` (epoch millis). This is a permanent,
+ * irreversible removal — the ON DELETE CASCADE on facts/ties/appearances/
+ * open_questions fires, so the entry AND all its children are gone. Requires a
+ * confirmation token.
+ *
+ * The `deleted_at IS NOT NULL` clause is a hard safety rail: a LIVE entry (null
+ * deleted_at) can NEVER be purged, no matter the cutoff. `cutoffMs` is owned by
+ * the action wrapper (now - RETENTION_MS), mirroring how the soft-delete wrapper
+ * owns `deletedAt = Date.now()`. Single statement -> atomic, no transaction
+ * needed. Returns the number of entries purged.
+ */
+export async function purgeDeletedBefore(
+  input: { cutoffMs: number },
+  _confirmation: WikiWriteConfirmation,
+): Promise<number> {
+  const res = await query(
+    `DELETE FROM entries WHERE deleted_at IS NOT NULL AND deleted_at < $1`,
+    [input.cutoffMs],
+  );
+  return res.rowCount ?? 0;
+}
+
+/**
  * Persist the full order of one shelf after a drag. `orderedIds` is the shelf's
  * entries top-to-bottom; each is set to `shelf` with sort_order = its index, so
  * the DB row order matches exactly what the UI shows. One statement per row keeps
