@@ -58,6 +58,14 @@
   padding: 22px var(--gutter) 0;
 }
 
+.guidance {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--ink-soft, #6b6b6b);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
 .turn {
   padding: 20px 0;
   border-top: var(--rule-row);

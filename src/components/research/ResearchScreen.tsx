@@ -12,7 +12,6 @@ import type { ResearchSnapshot } from "@/lib/db/research";
 import { readResearchStream } from "@/lib/research/readStream";
 import { decideStreamEnd } from "@/lib/research/decideStreamEnd";
 import {
-  advanceTurn,
   keepCard,
   proposeCard,
   cancelPending,
@@ -31,15 +30,25 @@ import KeptBoard from "./KeptBoard";
 import type { KeptEntry } from "./KeptBoard";
 import styles from "./ResearchScreen.module.css";
 
-// Prompt chips (HANDOFF §6). Verbatim, curly apostrophe on the last one.
+// Prompt chips. Each chip's label is sent verbatim as a REAL question to the
+// AI (same path as the ask box) — no pre-written seed turns. Curly apostrophe
+// on the last one.
 const CHIPS = [
   "Push on that",
-  "What does it cost her?",
   "Give me a scene",
   "I’m stuck — ask me something",
 ];
 
 const VALID_KINDS: readonly Kind[] = ["character", "world", "organization", "lore"];
+
+// Empty-state guidance shown when a thread has no turns yet (a brand-new thread,
+// or the whole screen when there are no threads at all). Replaces the old
+// pre-written seed conversation: research now starts empty and every turn is a
+// real AI exchange.
+const EMPTY_GUIDANCE =
+  "Ask me anything about your story. For grounded answers, pick a scope above " +
+  "(like People or Places) so I can pull from your wiki, or just start typing a " +
+  "question.";
 
 /**
  * Map a proposition's `asKind` to a wiki entry Kind. Non-entry kinds (`beat`,
@@ -154,32 +163,28 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     );
   };
 
-  const handleChip = () => {
-    const hidden = snapshot.turns
-      .filter((t) => !visibleSet.has(t.id))
-      .map((t) => t.id);
-    if (hidden.length === 0) return;
-    dispatch({ type: "ADVANCE_TURN", revealedTurnIds: hidden });
-    runAction(async () => {
-      const res = await advanceTurn(hidden);
-      return res.ok ? { ok: true } : { ok: false, error: res.error };
-    });
-  };
-
   // ---- AI ask (STREAMING; persists you+them turns on stream-complete) --------
   // POST to /api/research/stream: append two placeholder turns immediately, grow
   // the answer placeholder as `delta` frames arrive, then RECONCILE both turns to
   // the server-persisted ones on `done`. On error / abort the server persisted
   // NOTHING, so we roll the placeholders back. The reducer stays the sole owner
   // of turns; this only dispatches the streaming actions in order.
-  const handleAsk = () => {
-    const question = draft.trim();
+  //
+  // `askQuestion` is the single real-AI entry point. Both the ask box
+  // (`handleAsk`) and every prompt chip (`handleChip`) call it with the
+  // question text — a chip's label IS its question. There are no pre-written
+  // seed turns; a chip is just a shortcut for typing that text and asking.
+  const askQuestion = (question: string) => {
     if (!question || asking) return;
     setAsking(true);
 
     // Client-side placeholder ids. The server generates its OWN real ids and
     // returns the persisted turns in `done`; RECONCILE_TURN remaps these temp
     // ids to the persisted ids (and folds any card kept/inWiki flags).
+    // `askQuestion` runs only on a user action (ask box submit / prompt chip),
+    // never during render, so a one-off `Date.now()` temp id is intentional and
+    // stable for this call (same pattern as WikiScreen's handler id-gen).
+    // eslint-disable-next-line react-hooks/purity
     const stamp = Date.now();
     const tempYouId = `stream-you-${stamp}`;
     const tempThemId = `stream-them-${stamp}`;
@@ -281,6 +286,12 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     });
   };
 
+  // Ask box: send the trimmed draft as the question.
+  const handleAsk = () => askQuestion(draft.trim());
+
+  // Prompt chip: send the chip's label verbatim as a real question.
+  const handleChip = (label: string) => askQuestion(label);
+
   // ---- Thread navigation (Track B) — URL-driven -----------------------------
   const selectThread = (id: string) => {
     if (id === snapshot.threadId) return;
@@ -364,10 +375,16 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           onDelete={removeThread}
         />
         <main className={styles.body}>
-          <QuestionBlock question={state.question} />
+          {visibleTurns.length === 0 ? (
+            <section className={styles.thread}>
+              <p className={styles.guidance}>{EMPTY_GUIDANCE}</p>
+            </section>
+          ) : (
+            <>
+              <QuestionBlock question={state.question} />
 
-          <section className={styles.thread}>
-            {visibleTurns.map((turn) => (
+              <section className={styles.thread}>
+                {visibleTurns.map((turn) => (
               <Turn
                 key={turn.id}
                 turn={turn}
@@ -387,8 +404,10 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
                   />
                 )}
               />
-            ))}
-          </section>
+                ))}
+              </section>
+            </>
+          )}
 
           {pendingCard && (
             <ConfirmationStrip
@@ -408,7 +427,11 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
               }}
             >
               {CHIPS.map((label) => (
-                <PromptChip key={label} label={label} onClick={handleChip} />
+                <PromptChip
+                  key={label}
+                  label={label}
+                  onClick={() => handleChip(label)}
+                />
               ))}
             </Composer>
           </section>
