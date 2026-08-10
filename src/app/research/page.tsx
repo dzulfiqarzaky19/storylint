@@ -3,6 +3,7 @@
 // sort_order. No mutations here — writes happen via the server actions the
 // client invokes (research.ts). Product rule 1: the only wiki write is confirmCard.
 import { loadResearchSnapshot } from "@/lib/db/research";
+import { getAllEntries } from "@/lib/db/queries";
 import ResearchScreen from "@/components/research/ResearchScreen";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +15,15 @@ export default async function ResearchPage({
 }) {
   const { thread } = await searchParams;
   const snapshot = await loadResearchSnapshot(thread);
+  // Live wiki entries (getAllEntries is soft-delete-filtered, F6-S2) so the
+  // confirmation strip can recommend enriching an existing entry instead of
+  // spawning a duplicate. Mapped to the minimal shape the recommender needs.
+  const entries = (await getAllEntries()).map((e) => ({
+    id: e.id,
+    name: e.name,
+    kind: e.kind,
+    deletedAt: e.deletedAt,
+  }));
   // Key by thread id so switching threads remounts the reducer with fresh state.
-  return <ResearchScreen key={snapshot.threadId} snapshot={snapshot} />;
+  return <ResearchScreen key={snapshot.threadId} snapshot={snapshot} entries={entries} />;
 }

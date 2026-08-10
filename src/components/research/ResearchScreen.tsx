@@ -24,6 +24,7 @@ import QuestionBlock from "./QuestionBlock";
 import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
 import ConfirmationStrip from "./ConfirmationStrip";
+import { recommendEnrichTarget } from "@/lib/research/recommendEnrichTarget";
 import Composer from "./Composer";
 import PromptChip from "./PromptChip";
 import KeptBoard from "./KeptBoard";
@@ -60,7 +61,22 @@ function toEntryKind(asKind: string): Kind {
     : "lore";
 }
 
-export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapshot }) {
+/** Minimal live-entry shape the enrich recommender + picker consume (F6). */
+export interface EnrichEntry {
+  id: string;
+  name: string;
+  kind: string;
+  deletedAt: number | null;
+}
+
+export default function ResearchScreen({
+  snapshot,
+  entries = [],
+}: {
+  snapshot: ResearchSnapshot;
+  /** Live wiki entries (deleted-filtered) for enrich-vs-duplicate. */
+  entries?: EnrichEntry[];
+}) {
   const router = useRouter();
   const [state, dispatch] = useReducer(
     researchReducer,
@@ -112,6 +128,19 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     ? cardById.get(state.pendingPropositionId)
     : undefined;
 
+  // F6 enrich-vs-duplicate: recommend an existing LIVE entry to fold the pending
+  // card into, rather than spawning a duplicate. Pure + deleted-filtered.
+  const enrichRecommendation = useMemo(
+    () =>
+      pendingCard
+        ? recommendEnrichTarget(
+            { title: pendingCard.title, body: pendingCard.body },
+            entries,
+          )
+        : null,
+    [pendingCard, entries],
+  );
+
   // ---- Handlers (reducer fires immediately; server action alongside) ------
 
   const runAction = (fn: () => Promise<{ ok: boolean; error?: string }>) => {
@@ -143,10 +172,12 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     runAction(() => cancelPending());
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (enrichEntryId: string | undefined) => {
     if (!pendingCard) return;
     const card = pendingCard;
-    const entryId = `prop-${card.id}`;
+    // Enrich -> the existing entry's id; new -> the derived prop- id. This is the
+    // id the optimistic reducer flips to in_wiki, matching confirmCard's return.
+    const entryId = enrichEntryId ?? `prop-${card.id}`;
     // Optimistic: reflect the write locally (kept + inWiki, strip closes).
     dispatch({ type: "CONFIRM_CARD", propositionId: card.id, entryId });
     runAction(() =>
@@ -157,6 +188,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           kind: toEntryKind(card.asKind),
           summary: card.body,
         },
+        enrichEntryId,
         confirmed: true,
       }),
     );
@@ -411,6 +443,8 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           {pendingCard && (
             <ConfirmationStrip
               title={pendingCard.title}
+              recommendation={enrichRecommendation}
+              entries={entries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
               onConfirm={handleConfirm}
               onCancel={handleCancel}
             />

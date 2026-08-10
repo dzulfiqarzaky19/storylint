@@ -205,6 +205,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .confirmSentence {
@@ -230,6 +231,55 @@
   background: transparent;
   border: none;
   cursor: pointer;
+}
+
+/* ---- F6 enrich picker (drops below the strip's action row) ------------ */
+
+.entryPicker {
+  flex-basis: 100%;
+  margin-top: 4px;
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.entryPickerInput {
+  font-size: 13px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: inherit;
+}
+
+.entryPickerEmpty {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 6px 2px;
+}
+
+.entryPickerOption {
+  text-align: left;
+  font-size: 13px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.entryPickerOption:hover {
+  border-color: var(--accent);
+}
+
+.entryPickerKind {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-left: 6px;
 }
 
 /* ---- 5. Composer (2px ink top rule) ----------------------------------- */
