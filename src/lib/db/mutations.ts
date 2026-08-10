@@ -37,8 +37,17 @@ export async function insertFact(
   _confirmation: WikiWriteConfirmation,
 ): Promise<FactRow> {
   const res = await one<FactRow>(
+    // Idempotent on id (mirrors insertEntry): re-confirming a card with a stable
+    // fact id (e.g. the enrich path's `prop-fact-<propId>`) updates the fact in
+    // place instead of PK-violating or minting a duplicate. Random-uuid callers
+    // (addSuggestionAsFact) never collide, so their behavior is unchanged.
     `INSERT INTO facts (id, entry_id, key, value, fresh, sort_order)
      VALUES ($1, $2, $3, $4, $5, $6)
+     ON CONFLICT (id) DO UPDATE SET
+       key = EXCLUDED.key,
+       value = EXCLUDED.value,
+       fresh = EXCLUDED.fresh,
+       sort_order = EXCLUDED.sort_order
      RETURNING id,
                entry_id  AS "entryId",
                key,
@@ -385,6 +394,18 @@ export async function getMaxSortOrderForShelf(shelf: string): Promise<number> {
   const res = await rows<{ maxSort: number | null }>(
     `SELECT MAX(sort_order) AS "maxSort" FROM entries WHERE shelf = $1`,
     [shelf],
+  );
+  return res[0]?.maxSort ?? 0;
+}
+
+/**
+ * Highest sort_order among an entry's facts, or 0 if it has none. Used by the
+ * enrich path to append a new fact at the end of the target entry's fact list.
+ */
+export async function getMaxSortOrderForFacts(entryId: string): Promise<number> {
+  const res = await rows<{ maxSort: number | null }>(
+    `SELECT MAX(sort_order) AS "maxSort" FROM facts WHERE entry_id = $1`,
+    [entryId],
   );
   return res[0]?.maxSort ?? 0;
 }

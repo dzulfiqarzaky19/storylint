@@ -25,8 +25,10 @@ import {
   upsertKeptCard,
   deleteKeptCard,
   insertEntry,
+  insertFact,
   getProposition,
   getMaxSortOrderForShelf,
+  getMaxSortOrderForFacts,
   insertResearchThread,
   getNextResearchThreadSortOrder,
   insertResearchTurnPair,
@@ -36,7 +38,7 @@ import { randomUUID } from "node:crypto";
 import type { Kind, ResearchScope } from "../domain/types";
 import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
-import { loadWikiSnapshot } from "../db/queries";
+import { loadWikiSnapshot, getEntry } from "../db/queries";
 import { deriveThreadTitle } from "../research/title";
 
 export type ActionResult<T = void> =
@@ -111,6 +113,14 @@ export async function confirmCard(input: {
     kind: Kind;
     summary: string;
   };
+  /**
+   * F6 enrich-vs-duplicate: when set, the writer chose to fold this card into an
+   * EXISTING entry (from `recommendEnrichTarget`) rather than mint a new one. We
+   * add the card's summary as a fact on that entry instead of inserting a new
+   * `prop-` entry. A soft-deleted / missing target is rejected (getEntry filters
+   * `deleted_at IS NULL`), so a card can never enrich a tombstone.
+   */
+  enrichEntryId?: string;
   confirmed: true;
 }): Promise<ActionResult<{ entryId: string }>> {
   // Mint the token; omitting `confirmed: true` is a compile-time error. This is
@@ -121,6 +131,42 @@ export async function confirmCard(input: {
     const prop = await getProposition(input.propositionId);
     if (!prop) {
       return { ok: false, error: `Unknown proposition: ${input.propositionId}` };
+    }
+
+    // F6 ENRICH BRANCH — fold the card into an existing entry instead of minting
+    // a duplicate. The target must be LIVE: getEntry filters `deleted_at IS NULL`,
+    // so a null here means the entry is soft-deleted or gone — reject rather than
+    // silently resurrect a tombstone or write an orphan fact.
+    if (input.enrichEntryId) {
+      const target = await getEntry(input.enrichEntryId);
+      if (!target) {
+        return {
+          ok: false,
+          error: `Cannot enrich a removed entry: ${input.enrichEntryId}`,
+        };
+      }
+      // Stable fact id keyed by the proposition so re-confirming the same card
+      // updates the fact in place (insertFact is now idempotent) instead of
+      // stacking duplicates on the target entry.
+      const factId = `prop-fact-${input.propositionId}`;
+      const nextFactSort = (await getMaxSortOrderForFacts(input.enrichEntryId)) + 1;
+      await insertFact(
+        {
+          id: factId,
+          entryId: input.enrichEntryId,
+          key: input.entry.name,
+          value: input.entry.summary,
+          fresh: true,
+          sortOrder: nextFactSort,
+        },
+        confirmation,
+      );
+
+      // The card is still resolved: keep it on the board flipped to "In the wiki".
+      await upsertKeptCard({ propositionId: input.propositionId, keptAt: Date.now() });
+      await markKeptInWiki(input.propositionId, confirmation);
+
+      return { ok: true, data: { entryId: input.enrichEntryId } };
     }
 
     // Derive a stable entry id from the proposition so re-confirming is idempotent.
