@@ -1,8 +1,9 @@
 "use client";
 
 import { useId, useState } from "react";
-import type { EntryWithDetails, Shelf } from "@/lib/domain/types";
-import { SHELF_TITLES } from "@/lib/domain/types";
+import type { EntryWithDetails, Shelf, CategoryLabelOverrides } from "@/lib/domain/types";
+import { KIND_FOR_SHELF } from "@/lib/domain/types";
+import { resolveCategoryLabel } from "@/lib/wiki/categoryLabels";
 import styles from "./WikiIndex.module.css";
 
 const SHELF_ORDER: Shelf[] = ["people", "places", "orders", "lore"];
@@ -16,6 +17,8 @@ export interface WikiIndexProps {
   total: number;
   /** Start authoring a new entry on the given shelf. */
   onCreate?: (shelf: Shelf) => void;
+  /** Custom category-header labels (F6-S5); falls back to the shelf default. */
+  overrides: CategoryLabelOverrides;
 }
 
 /**
@@ -36,6 +39,7 @@ export default function WikiIndex({
   onSelect,
   total,
   onCreate,
+  overrides,
 }: WikiIndexProps) {
   // All groups open by default so the whole world is scannable at a glance.
   const [collapsed, setCollapsed] = useState<Record<Shelf, boolean>>({
@@ -83,7 +87,9 @@ export default function WikiIndex({
                 aria-expanded={!isCollapsed}
                 onClick={() => toggle(shelf)}
               >
-                <span className={styles.groupTitle}>{SHELF_TITLES[shelf]}</span>
+                <span className={styles.groupTitle}>
+                  {resolveCategoryLabel(KIND_FOR_SHELF[shelf], overrides)}
+                </span>
                 <span className={styles.groupCount}>{entries.length}</span>
                 <span className={styles.groupChevron} aria-hidden="true">
                   {isCollapsed ? "+" : "\u2212"}
@@ -118,7 +124,10 @@ export default function WikiIndex({
                         className={styles.add}
                         onClick={() => onCreate(shelf)}
                       >
-                        + New {SHELF_TITLES[shelf].replace(/s$/, "").toLowerCase()}
+                        + New{" "}
+                        {resolveCategoryLabel(KIND_FOR_SHELF[shelf], overrides)
+                          .replace(/s$/, "")
+                          .toLowerCase()}
                       </button>
                     </li>
                   ) : null}

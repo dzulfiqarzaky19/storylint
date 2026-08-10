@@ -8,7 +8,7 @@
 
 import { useReducer, useCallback, useState, startTransition } from "react";
 import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
-import { SHELF_TITLES, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
+import { KIND_SHELF, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
 import {
   initWikiState,
   wikiReducer,
@@ -29,13 +29,18 @@ import {
   softDeleteEntry,
   untie,
   createEntryTied,
+  renameCategory,
+  resetCategoryLabel,
+  deleteCategory,
   type ActionResult,
 } from "@/lib/actions/wiki";
+import { resolveCategoryLabel } from "@/lib/wiki/categoryLabels";
 import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./Shelf";
 import PosterBand from "./PosterBand";
 import WikiIndex from "./WikiIndex";
+import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./WikiScreen.module.css";
 
 const SHELF_ORDER: ShelfKey[] = ["people", "places", "orders", "lore"];
@@ -438,6 +443,39 @@ function WikiScreenInner({
     [settle],
   );
 
+  // ---- Category headers (F6-S5b): rename / reset / delete-whole-category ------
+  // Each optimistic reducer action fires ALONGSIDE its server action, per the
+  // §8 write-through pattern. Rename/reset touch only the label override (no
+  // confirmation). Deleting a whole category soft-deletes EVERY live entry of
+  // the kind, so it is gated behind the danger ConfirmModal below (the guard
+  // lives here in the caller, mirroring the entry-delete and untie gates).
+  const renameCategoryLabel = useCallback(
+    (kind: Kind, label: string) => {
+      dispatch({ type: "RENAME_CATEGORY", kind, label });
+      settle("renameCategory", renameCategory({ kind, label }));
+    },
+    [settle],
+  );
+
+  const resetCategory = useCallback(
+    (kind: Kind) => {
+      dispatch({ type: "RESET_CATEGORY", kind });
+      settle("resetCategoryLabel", resetCategoryLabel({ kind }));
+    },
+    [settle],
+  );
+
+  // The kind whose whole-category delete is awaiting confirmation (null = none).
+  const [confirmDeleteKind, setConfirmDeleteKind] = useState<Kind | null>(null);
+
+  const performDeleteCategory = useCallback(
+    (kind: Kind) => {
+      dispatch({ type: "DELETE_CATEGORY", kind });
+      settle("deleteCategory", deleteCategory({ kind, confirmed: true }));
+    },
+    [settle],
+  );
+
 
   // Entries grouped per shelf, in the reducer's live order.
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
@@ -473,6 +511,7 @@ function WikiScreenInner({
           onSelect={select}
           total={Object.keys(state.byId).length}
           onCreate={createEntryOnShelf}
+          overrides={state.overrides}
         />
         <main className={styles.body}>
           <p className={styles.empty}>No entries in the gazetteer yet.</p>
@@ -489,6 +528,7 @@ function WikiScreenInner({
         onSelect={select}
         total={Object.keys(state.byId).length}
         onCreate={createEntryOnShelf}
+        overrides={state.overrides}
       />
       <main className={styles.body}>
       {state.error && (
@@ -532,13 +572,17 @@ function WikiScreenInner({
           <Shelf
             key={key}
             shelf={key}
-            title={SHELF_TITLES[key]}
+            title={resolveCategoryLabel(KIND_FOR_SHELF[key], state.overrides)}
             entries={byShelf.get(key) ?? []}
             selectedId={selected.id}
             contradictions={contradictions}
             onSelect={select}
             onDropEntry={dropEntry}
             onDropFactOnEntry={dropFactOnEntry}
+            onRenameCategory={renameCategoryLabel}
+            onResetCategory={resetCategory}
+            onRequestDeleteCategory={setConfirmDeleteKind}
+            isRenamed={state.overrides[KIND_FOR_SHELF[key]] !== undefined}
           />
         ))}
       </div>
@@ -547,6 +591,26 @@ function WikiScreenInner({
         onWriteIn={writeSuggestion}
         onLeave={leaveSuggestion}
       />
+      {confirmDeleteKind ? (
+        <ConfirmModal
+          title={`Delete the ${resolveCategoryLabel(confirmDeleteKind, state.overrides)} category?`}
+          body={`This removes all ${
+            byShelf.get(KIND_SHELF[confirmDeleteKind])?.length ?? 0
+          } ${resolveCategoryLabel(
+            confirmDeleteKind,
+            state.overrides,
+          )} entries from the gazetteer. Ties pointing at them will be marked as removed.`}
+          confirmLabel="Delete category"
+          cancelLabel="Cancel"
+          danger
+          onConfirm={() => {
+            const kind = confirmDeleteKind;
+            setConfirmDeleteKind(null);
+            performDeleteCategory(kind);
+          }}
+          onCancel={() => setConfirmDeleteKind(null)}
+        />
+      ) : null}
     </main>
     </div>
   );
