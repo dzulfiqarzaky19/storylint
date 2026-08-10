@@ -177,3 +177,51 @@ describe("researchReducer — ROLLBACK_STREAMING_TURN", () => {
     expect(next.visibleTurnIds).toEqual(["keep1"]);
   });
 });
+
+// -----------------------------------------------------------------------------
+// Bugfix — silent vanish. On a stream that ends with NO terminal frame the
+// handler dispatches ROLLBACK_STREAMING_TURN followed by SET_ERROR (the retry
+// message from `decideStreamEnd`). This locks the reducer invariant that makes
+// that pair correct: ROLLBACK does NOT clear `error`, and SET_ERROR does NOT
+// resurrect turns — so the two dispatches co-exist as "no orphan placeholder
+// AND a visible error", and a retry's APPEND_STREAMING_TURN clears the error.
+// -----------------------------------------------------------------------------
+describe("researchReducer — silent-vanish recovery (rollback + error co-occur)", () => {
+  it("ROLLBACK then SET_ERROR leaves no orphan placeholder AND a visible error", () => {
+    const you = turn({ id: "you1", side: "you", who: "You", text: "Q?" });
+    const them = turn({ id: "them1", text: "" });
+    let s = researchReducer(baseState(), {
+      type: "APPEND_STREAMING_TURN",
+      turns: [you, them],
+    });
+
+    s = researchReducer(s, { type: "ROLLBACK_STREAMING_TURN", turnIds: ["you1", "them1"] });
+    // ROLLBACK must not touch error (still none yet)...
+    expect(s.error).toBeNull();
+
+    s = researchReducer(s, {
+      type: "SET_ERROR",
+      error: "The answer didn't finish streaming. Please try again.",
+    });
+
+    // ...and after SET_ERROR: the placeholders are gone AND the error is shown.
+    expect(s.turns).toHaveLength(0);
+    expect(s.visibleTurnIds).toHaveLength(0);
+    expect(s.error).toBe("The answer didn't finish streaming. Please try again.");
+  });
+
+  it("a retry's APPEND_STREAMING_TURN clears the stale error", () => {
+    let s = researchReducer(baseState(), {
+      type: "SET_ERROR",
+      error: "The answer didn't finish streaming. Please try again.",
+    });
+    expect(s.error).toBe("The answer didn't finish streaming. Please try again.");
+
+    const you = turn({ id: "you2", side: "you", who: "You", text: "Q again?" });
+    const them = turn({ id: "them2", text: "" });
+    s = researchReducer(s, { type: "APPEND_STREAMING_TURN", turns: [you, them] });
+
+    expect(s.error).toBeNull();
+    expect(s.turns.map((t) => t.id)).toEqual(["you2", "them2"]);
+  });
+});

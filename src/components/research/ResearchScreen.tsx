@@ -10,6 +10,7 @@ import {
 } from "@/lib/state/researchStore";
 import type { ResearchSnapshot } from "@/lib/db/research";
 import { readResearchStream } from "@/lib/research/readStream";
+import { decideStreamEnd } from "@/lib/research/decideStreamEnd";
 import {
   advanceTurn,
   keepCard,
@@ -208,6 +209,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
 
     startTransition(async () => {
       let reconciled = false;
+      let sawError = false;
       try {
         const res = await fetch("/api/research/stream", {
           method: "POST",
@@ -245,12 +247,25 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           },
           onError: (message) => {
             dispatch({ type: "SET_ERROR", error: message });
+            sawError = true;
           },
         });
 
         // No `done` frame => nothing was persisted; drop the placeholders.
         if (!reconciled) {
           dispatch({ type: "ROLLBACK_STREAMING_TURN", turnIds: [tempYouId, tempThemId] });
+          // A stream can close with NO terminal frame at all (slow/aborted
+          // gateway, dropped connection). Without this the user saw the turn
+          // vanish silently. `decideStreamEnd` surfaces a retry-oriented error
+          // and restores the draft ONLY for that case, and never clobbers an
+          // error the route already reported via `onError`.
+          const decision = decideStreamEnd({ reconciled, sawError, question });
+          if (decision.setError !== undefined) {
+            dispatch({ type: "SET_ERROR", error: decision.setError });
+          }
+          if (decision.restoreDraft !== undefined) {
+            setDraft(decision.restoreDraft);
+          }
         }
       } catch (err) {
         // Transport failure / abort: the server persisted nothing, so remove the

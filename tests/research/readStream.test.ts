@@ -89,4 +89,30 @@ describe("readResearchStream", () => {
     expect(h.onDelta.mock.calls.map((c) => c[0])).toEqual(["ok"]);
     expect(h.onError).not.toHaveBeenCalled();
   });
+
+  // Silent-vanish seam: a slow/aborted gateway can close the stream with NO
+  // terminal frame at all. The reader must resolve calling NEITHER onDone nor
+  // onError — that "neither" is exactly the state `decideStreamEnd` keys off in
+  // ResearchScreen (reconciled=false, sawError=false) to surface a retry.
+  it("calls NEITHER onDone nor onError when the stream ends with no terminal frame", async () => {
+    const h = handlers();
+    await readResearchStream(fakeReader([]), h);
+
+    expect(h.onDone).not.toHaveBeenCalled();
+    expect(h.onError).not.toHaveBeenCalled();
+  });
+
+  it("calls NEITHER terminal callback on a deltas-then-drop (no done/error)", async () => {
+    const h = handlers();
+    const deltas =
+      JSON.stringify({ type: "delta", text: "partial " }) +
+      "\n" +
+      JSON.stringify({ type: "delta", text: "answer" }) +
+      "\n"; // stream drops here — no done, no error
+    await readResearchStream(fakeReader([enc.encode(deltas)]), h);
+
+    expect(h.onDelta.mock.calls.map((c) => c[0])).toEqual(["partial ", "answer"]);
+    expect(h.onDone).not.toHaveBeenCalled();
+    expect(h.onError).not.toHaveBeenCalled();
+  });
 });
