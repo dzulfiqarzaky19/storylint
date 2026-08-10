@@ -95,3 +95,31 @@ function stripPartialSentinel(buffer: string): string {
   }
   return buffer;
 }
+
+/**
+ * The portion of the running buffer that is SAFE to show the writer mid-stream.
+ *
+ * The route forwards prose token-by-token but must never leak the sentinel or
+ * the trailing cards JSON. Given the buffer assembled so far, this returns:
+ *   - everything BEFORE the first sentinel, once the FULL sentinel has arrived
+ *     (the cards JSON after it is never visible); OR
+ *   - the buffer minus any trailing PARTIAL sentinel prefix, so a sentinel that
+ *     is still arriving one token at a time is held back until it either
+ *     completes (then we cut at it) or turns out to be ordinary prose.
+ *
+ * The route diffs this against the length it has already forwarded to derive the
+ * next chunk to emit. Monotonic: because a partial tail is only ever held back,
+ * the visible prefix never shrinks as more text arrives.
+ *
+ * NOTE: unlike the completion-time reply, this does NOT .trim() — trimming a
+ * growing buffer would retroactively drop interior whitespace already shown.
+ */
+export function visibleProsePrefix(buffer: string): string {
+  const idx = buffer.indexOf(CARDS_SENTINEL);
+  if (idx !== -1) {
+    // Full sentinel present: prose is everything before it; JSON stays hidden.
+    return buffer.slice(0, idx);
+  }
+  // No full sentinel yet: hold back any dangling partial-sentinel tail.
+  return stripPartialSentinel(buffer);
+}
