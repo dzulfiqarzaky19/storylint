@@ -48,6 +48,17 @@ export type ResearchAction =
   // new turns, both immediately visible. Cards are proposition-shaped so they
   // flow through the existing Keep / Make-it-an-entry paths. No wiki write.
   | { type: "APPEND_TURN"; turns: ResearchTurnWithCards[] }
+  // AI streaming (F2b, session-only): open a placeholder answer turn, grow it
+  // as text arrives, then reconcile it with the server-persisted turn on
+  // stream-complete. Persistence itself happens server-side; these actions only
+  // reflect it in session state. The reducer stays the sole owner of `turns`.
+  //
+  // APPEND_STREAMING_TURN   → the question turn + an empty answer placeholder
+  // STREAM_DELTA            → append a chunk of text to the placeholder answer
+  // RECONCILE_TURN          → swap the placeholder for the persisted answer turn
+  | { type: "APPEND_STREAMING_TURN"; turns: ResearchTurnWithCards[] }
+  | { type: "STREAM_DELTA"; turnId: string; text: string }
+  | { type: "RECONCILE_TURN"; tempTurnId: string; turn: ResearchTurnWithCards }
   | { type: "SET_ERROR"; error: string | null };
 
 // ---- Init -----------------------------------------------------------------
@@ -130,6 +141,53 @@ export function researchReducer(state: ResearchState, action: ResearchAction): R
         keptIds: dedupe([...state.keptIds, ...newKept]),
         inWikiIds: dedupe([...state.inWikiIds, ...newInWiki]),
         error: null,
+      };
+    }
+
+    case "APPEND_STREAMING_TURN": {
+      // Same shape as APPEND_TURN: append the question + an empty answer
+      // placeholder and reveal both. The placeholder's text grows via
+      // STREAM_DELTA; its cards arrive at RECONCILE_TURN. Clears any prior error.
+      return {
+        ...state,
+        turns: [...state.turns, ...action.turns],
+        visibleTurnIds: dedupe([
+          ...state.visibleTurnIds,
+          ...action.turns.map((t) => t.id),
+        ]),
+        error: null,
+      };
+    }
+
+    case "STREAM_DELTA":
+      // Append the incoming chunk to the matching turn's text; all other turns
+      // are untouched. Immutable update so React re-renders the growing answer.
+      return {
+        ...state,
+        turns: state.turns.map((t) =>
+          t.id === action.turnId ? { ...t, text: t.text + action.text } : t,
+        ),
+      };
+
+    case "RECONCILE_TURN": {
+      // Swap the placeholder answer turn for the server-persisted one (real id,
+      // ordinal, and cards). visibleTurnIds carries the placeholder id, so remap
+      // it to the persisted id; fold the persisted cards' kept/inWiki flags in.
+      const persisted = action.turn;
+      const newKept: string[] = [];
+      const newInWiki: string[] = [];
+      for (const card of persisted.cards) {
+        if (card.kept) newKept.push(card.id);
+        if (card.inWiki) newInWiki.push(card.id);
+      }
+      return {
+        ...state,
+        turns: state.turns.map((t) => (t.id === action.tempTurnId ? persisted : t)),
+        visibleTurnIds: dedupe(
+          state.visibleTurnIds.map((id) => (id === action.tempTurnId ? persisted.id : id)),
+        ),
+        keptIds: dedupe([...state.keptIds, ...newKept]),
+        inWikiIds: dedupe([...state.inWikiIds, ...newInWiki]),
       };
     }
 
