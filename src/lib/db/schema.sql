@@ -10,12 +10,38 @@ DROP TABLE IF EXISTS kept_cards CASCADE;
 DROP TABLE IF EXISTS propositions CASCADE;
 DROP TABLE IF EXISTS research_turns CASCADE;
 DROP TABLE IF EXISTS research_threads CASCADE;
+DROP TABLE IF EXISTS entry_facets CASCADE;
 DROP TABLE IF EXISTS chapters CASCADE;
 DROP TABLE IF EXISTS open_questions CASCADE;
 DROP TABLE IF EXISTS chapter_appearances CASCADE;
 DROP TABLE IF EXISTS ties CASCADE;
 DROP TABLE IF EXISTS facts CASCADE;
 DROP TABLE IF EXISTS entries CASCADE;
+DROP TABLE IF EXISTS books CASCADE;
+DROP TABLE IF EXISTS series CASCADE;
+DROP TABLE IF EXISTS universes CASCADE;
+
+-- F7 worlds hierarchy: Universe owns the wiki; Series groups Books; Book owns
+-- Chapters. Created FIRST so the scope FKs below can reference them. These are
+-- STRUCTURAL tables (not wiki content) — no confirmWikiWrite token gates them.
+CREATE TABLE universes (
+  id    text PRIMARY KEY,
+  name  text NOT NULL
+);
+
+CREATE TABLE series (
+  id           text PRIMARY KEY,
+  universe_id  text NOT NULL REFERENCES universes(id) ON DELETE CASCADE,
+  name         text NOT NULL,
+  sort_order   integer NOT NULL DEFAULT 0
+);
+
+CREATE TABLE books (
+  id          text PRIMARY KEY,
+  series_id   text NOT NULL REFERENCES series(id) ON DELETE CASCADE,
+  name        text NOT NULL,
+  sort_order  integer NOT NULL DEFAULT 0
+);
 
 -- entries: id, kind, name, catalogueNo, note, summary, shelf, sortOrder.
 -- deleted_at: soft-delete marker (epoch millis). NULL = live; non-NULL = "deleted"
@@ -30,7 +56,10 @@ CREATE TABLE entries (
   summary       text NOT NULL DEFAULT '',
   shelf         text NOT NULL,
   sort_order    integer NOT NULL DEFAULT 0,
-  deleted_at    bigint
+  deleted_at    bigint,
+  -- F7: the universe (canon) this entry belongs to. Nullable in the S1a EXPAND
+  -- shape (matches a just-migrated live DB pre-contract); S1b enforces NOT NULL.
+  universe_id   text REFERENCES universes(id)
 );
 
 -- facts: id, entryId, key, value, fresh, sortOrder
@@ -40,7 +69,10 @@ CREATE TABLE facts (
   key         text NOT NULL,
   value       text NOT NULL,
   fresh       boolean NOT NULL DEFAULT false,
-  sort_order  integer NOT NULL DEFAULT 0
+  sort_order  integer NOT NULL DEFAULT 0,
+  -- F7 list-divergence scope: NULL = universe canon (shown in every book);
+  -- non-NULL = book-only facet fact. STAYS nullable (never enforced).
+  book_id     text REFERENCES books(id)
 );
 
 -- ties: id, fromEntryId, toEntryId, rel (directional; seeded both ways)
@@ -48,7 +80,10 @@ CREATE TABLE ties (
   id             text PRIMARY KEY,
   from_entry_id  text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
   to_entry_id    text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
-  rel            text NOT NULL
+  rel            text NOT NULL,
+  -- F7 list-divergence scope: NULL = universe canon; non-NULL = book-only facet
+  -- tie. STAYS nullable (never enforced).
+  book_id        text REFERENCES books(id)
 );
 
 -- chapter_appearances: id, entryId, chapter, text, flag, flagText
@@ -59,7 +94,11 @@ CREATE TABLE chapter_appearances (
   text       text NOT NULL,
   flag       text CHECK (flag IN ('red', 'yellow')),
   flag_text  text,
-  sort_order integer NOT NULL DEFAULT 0
+  sort_order integer NOT NULL DEFAULT 0,
+  -- F7: the book whose Chapter `chapter` this appearance belongs to. Two books
+  -- can each have a "Chapter 1", so (entry_id, chapter) is ambiguous across books
+  -- and the book must be carried explicitly. Nullable in S1a; NOT NULL in S1b.
+  book_id    text REFERENCES books(id)
 );
 
 -- open_questions: id, entryId, text, sortOrder
@@ -77,11 +116,28 @@ CREATE TABLE open_questions (
 -- one<>() would silently take rows[0], and concurrent createChapter could mint the
 -- same MAX+1) AND auto-creates the supporting index that turns those hot-path
 -- lookups from seq-scans into index probes as the book grows.
+-- F7: `book_id` is nullable in the S1a EXPAND shape (matches a just-migrated live
+-- DB pre-contract). `number` keeps the OLD global UNIQUE here in S1a; S1b flips it
+-- to UNIQUE(book_id, number) so each book restarts at Chapter 1.
 CREATE TABLE chapters (
   id      text PRIMARY KEY,
   number  integer NOT NULL UNIQUE,
   title   text NOT NULL,
-  body    jsonb NOT NULL
+  body    jsonb NOT NULL,
+  book_id text REFERENCES books(id)
+);
+
+-- entry_facets: sparse per-book SCALAR override of an entry. A row exists only
+-- when a book diverges from canon on a scalar field; the merged book view is
+-- COALESCE(facet.field, entry.field). A NULL column = no override for that field
+-- in that book. PK(entry_id, book_id) = at most one facet row per entry per book.
+CREATE TABLE entry_facets (
+  entry_id  text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  book_id   text NOT NULL REFERENCES books(id) ON DELETE CASCADE,
+  name      text,
+  summary   text,
+  note      text,
+  PRIMARY KEY (entry_id, book_id)
 );
 
 -- research_threads: id, title, subtitle, sortOrder, scope (Gemini-style thread
@@ -93,7 +149,10 @@ CREATE TABLE research_threads (
   subtitle    text NOT NULL DEFAULT '',
   sort_order  integer NOT NULL DEFAULT 0,
   scope       text NOT NULL DEFAULT 'chat'
-    CHECK (scope IN ('chat', 'character', 'world', 'organization', 'lore'))
+    CHECK (scope IN ('chat', 'character', 'world', 'organization', 'lore')),
+  -- F7: a universe is a canon; research sees that universe's wiki. Nullable in
+  -- S1a; NOT NULL in S1b.
+  universe_id text REFERENCES universes(id)
 );
 
 -- research_turns: id, threadId, ordinal, side, who, text
@@ -168,3 +227,12 @@ CREATE INDEX idx_appearances_entry        ON chapter_appearances (entry_id, chap
 CREATE INDEX idx_open_questions_entry     ON open_questions (entry_id, sort_order);
 CREATE INDEX idx_research_turns_thread    ON research_turns (thread_id, ordinal);
 CREATE INDEX idx_propositions_turn        ON propositions (turn_id, sort_order);
+-- F7 scope indexes (mirror the ALTER-path indexes in f7a-worlds-expand.mts).
+CREATE INDEX idx_entries_universe          ON entries (universe_id);
+CREATE INDEX idx_chapters_book             ON chapters (book_id);
+CREATE INDEX idx_appearances_book_chapter  ON chapter_appearances (book_id, chapter);
+CREATE INDEX idx_research_threads_universe ON research_threads (universe_id);
+CREATE INDEX idx_facts_book                ON facts (book_id);
+CREATE INDEX idx_ties_book                 ON ties (book_id);
+CREATE INDEX idx_series_universe           ON series (universe_id);
+CREATE INDEX idx_books_series              ON books (series_id);

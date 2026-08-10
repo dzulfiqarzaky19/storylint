@@ -464,20 +464,35 @@ function bodyOf(paragraphs: string[]) {
 
 async function seedWithin(client: PoolClient): Promise<void> {
   // Idempotent: clear everything, then insert. CASCADE covers FK children.
+  // F7: universes/series/books/entry_facets are cleared too (CASCADE from the
+  // structural parents also clears any facet rows). Order does not matter under
+  // one TRUNCATE ... CASCADE.
   await client.query(`
     TRUNCATE TABLE
+      universes, series, books, entry_facets,
       entries, facts, ties, chapter_appearances, open_questions,
       chapters, research_threads, research_turns, propositions, kept_cards,
       resolved_marks, dismissed_suggestions, phrase_mentions
     RESTART IDENTITY CASCADE
   `);
 
+  // F7 worlds hierarchy: one Universe 1 / Series 1 / Book 1 so a fresh seed lands
+  // in exactly the state a live DB reaches after the f7a-worlds-expand migration
+  // (every scope-bearing row stamped U1/B1). Ids match f7a's exported U1/SE1/B1.
+  await client.query(`INSERT INTO universes (id, name) VALUES ('universe-1', 'Ashkeld')`);
+  await client.query(
+    `INSERT INTO series (id, universe_id, name, sort_order) VALUES ('series-1', 'universe-1', 'Ashkeld', 0)`,
+  );
+  await client.query(
+    `INSERT INTO books (id, series_id, name, sort_order) VALUES ('book-1', 'series-1', 'Ashkeld', 0)`,
+  );
+
   // Entries
   for (let i = 0; i < ENTRIES.length; i++) {
     const e = ENTRIES[i]!;
     await client.query(
-      `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order, universe_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'universe-1')`,
       [e.id, e.kind, e.name, e.no, e.note, e.summary, KIND_SHELF[e.kind], i],
     );
   }
@@ -506,8 +521,8 @@ async function seedWithin(client: PoolClient): Promise<void> {
   for (let i = 0; i < APPEARANCES.length; i++) {
     const [id, entryId, chapter, text, flag, flagText] = APPEARANCES[i]!;
     await client.query(
-      `INSERT INTO chapter_appearances (id, entry_id, chapter, text, flag, flag_text, sort_order)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      `INSERT INTO chapter_appearances (id, entry_id, chapter, text, flag, flag_text, sort_order, book_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'book-1')`,
       [id, entryId, chapter, text, flag, flagText, i],
     );
   }
@@ -526,8 +541,8 @@ async function seedWithin(client: PoolClient): Promise<void> {
   // one by number and derives its marks live.
   for (const c of CHAPTERS) {
     await client.query(
-      `INSERT INTO chapters (id, number, title, body)
-       VALUES ($1, $2, $3, $4)`,
+      `INSERT INTO chapters (id, number, title, body, book_id)
+       VALUES ($1, $2, $3, $4, 'book-1')`,
       [c.id, c.number, c.title, JSON.stringify(bodyOf(c.paragraphs))],
     );
     // Tier 2: seed the book-wide phrase index the same way a chapter save would
