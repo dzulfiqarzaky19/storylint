@@ -26,11 +26,14 @@ import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 
 import { streamComplete, aiEnabled } from "@/lib/ai/saarouters";
-import { loadWikiSnapshot } from "@/lib/db/queries";
+import { loadWikiSnapshot, getResearchThreadScope } from "@/lib/db/queries";
 import { insertResearchTurnPair } from "@/lib/db/mutations";
 import { deriveThreadTitle } from "@/lib/research/title";
 import { CARDS_SENTINEL, visibleProsePrefix } from "@/lib/research/streamParse";
 import { finalizeStreamedAnswer } from "@/lib/research/finalizeStream";
+import { filterGazetteerEntries } from "@/lib/research/filterGazetteerEntries";
+import { scopeDirective } from "@/lib/research/scopeDirective";
+import type { ResearchScope } from "@/lib/domain/types";
 
 // Never statically optimize: this route always runs on request and streams.
 export const dynamic = "force-dynamic";
@@ -42,10 +45,16 @@ interface StreamRequestBody {
 }
 
 /** Build the Option-C prompt: prose first, then the sentinel, then cards JSON. */
-function buildPrompt(question: string, threadTitle: string | undefined, gazetteer: string) {
+function buildPrompt(
+  question: string,
+  threadTitle: string | undefined,
+  gazetteer: string,
+  scope: ResearchScope,
+) {
   const system = [
     "You are a story-consistency collaborator for a fiction writer.",
     "You help them think through their own world. Ground every answer ONLY in the gazetteer provided; never invent contradicting facts.",
+    scopeDirective(scope),
     "Reply as a thoughtful writing partner in 2-4 sentences of PLAIN PROSE first.",
     // Option C: prose, then the exact sentinel line, then a strict JSON array of
     // cards. The route splits on the sentinel; the writer never sees it or the
@@ -97,13 +106,15 @@ export async function POST(req: NextRequest) {
   }
 
   const wiki = await loadWikiSnapshot();
-  const gazetteer = wiki.entries
+  const scope = await getResearchThreadScope(threadId);
+  const scopedEntries = filterGazetteerEntries(wiki.entries, scope);
+  const gazetteer = scopedEntries
     .map((e) => {
       const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
       return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
     })
     .join("\n");
-  const { system, user } = buildPrompt(question, threadTitle, gazetteer);
+  const { system, user } = buildPrompt(question, threadTitle, gazetteer, scope);
 
   const stamp = Date.now();
   const rid = randomUUID().slice(0, 8);

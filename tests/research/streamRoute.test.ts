@@ -36,6 +36,7 @@ vi.mock("@/lib/ai/saarouters", () => ({
 
 vi.mock("@/lib/db/queries", () => ({
   loadWikiSnapshot: vi.fn(async () => ({ entries: [] })),
+  getResearchThreadScope: vi.fn(async () => "chat"),
 }));
 
 vi.mock("@/lib/db/mutations", () => ({
