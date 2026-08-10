@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { EntryWithDetails } from "@/lib/domain/types";
 import { KIND_LABEL } from "@/lib/domain/types";
 import Timeline from "./Timeline";
@@ -7,6 +8,7 @@ import DetailsColumn from "./DetailsColumn";
 import OpenQuestions from "./OpenQuestions";
 import EntryAside from "./EntryAside";
 import InlineText from "./InlineText";
+import ConfirmModal from "../ui/ConfirmModal";
 import { appearLine } from "@/lib/domain/derive";
 import styles from "./EntryBand.module.css";
 
@@ -63,6 +65,9 @@ export default function EntryBand({
   const kindLabel = KIND_LABEL[entry.kind];
   const chapterCount = entry.appearances.length;
   const flaggedCount = entry.appearances.filter((a) => a.flag !== null).length;
+  // Guard the irreversible soft-delete behind a confirm dialog: the trigger only
+  // OPENS the modal; the actual delete fires from the modal's confirm button.
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     <section className={styles.band} aria-label="Entry">
@@ -73,7 +78,7 @@ export default function EntryBand({
           <button
             type="button"
             className={styles.deleteEntry}
-            onClick={() => onDelete(entry.id)}
+            onClick={() => setConfirmingDelete(true)}
             aria-label={`Delete ${entry.name}`}
           >
             Delete
@@ -124,6 +129,21 @@ export default function EntryBand({
         onSelect={onSelect}
         onDropOnTies={onDropOnTies}
       />
+
+      {confirmingDelete ? (
+        <ConfirmModal
+          title={`Delete ${entry.name}?`}
+          body="This removes the entry from the gazetteer. Ties pointing at it will be marked as removed."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          danger
+          onConfirm={() => {
+            setConfirmingDelete(false);
+            onDelete(entry.id);
+          }}
+          onCancel={() => setConfirmingDelete(false)}
+        />
+      ) : null}
     </section>
   );
 }
