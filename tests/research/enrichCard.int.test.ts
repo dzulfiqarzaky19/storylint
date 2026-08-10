@@ -6,6 +6,7 @@ import { insertEntry, insertFact, softDeleteEntry } from "@/lib/db/mutations";
 import { getFactsForEntry } from "@/lib/db/queries";
 import { confirmCard } from "@/lib/actions/research";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
+import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // F6-S3a — enrich-vs-duplicate (INTEGRATION, real Postgres). Two locks:
@@ -46,7 +47,7 @@ async function freshProposition(title: string, body: string): Promise<string> {
   const threadId = `test-f6s3-th-${tag}`;
   const turnId = `test-f6s3-tn-${tag}`;
   const propId = `test-f6s3-p-${tag}`;
-  await query(`INSERT INTO research_threads (id, title) VALUES ($1, $2)`, [threadId, "T"]);
+  await query(`INSERT INTO research_threads (id, title, universe_id) VALUES ($1, $2, $3)`, [threadId, "T", DEFAULT_UNIVERSE_ID]);
   await query(
     `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text) VALUES ($1, $2, 0, 'them', 'AI', '')`,
     [turnId, threadId],

@@ -10,6 +10,7 @@
 // the confirmation invariant (product rule 1) lives at the action layer.
 
 import { query, one, rows, withTransaction } from "./pool";
+import { DEFAULT_BOOK_ID, DEFAULT_UNIVERSE_ID } from "./scope";
 import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, Kind } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
 
@@ -112,12 +113,16 @@ export async function insertEntry(
     summary: string;
     shelf: string;
     sortOrder: number;
+    universeId?: string;
   },
   _confirmation: WikiWriteConfirmation,
 ): Promise<void> {
+  // F7: universe_id is NOT NULL as of the S1b contract, so every new entry must
+  // carry its universe (defaults to the active universe). ON CONFLICT leaves it
+  // unchanged so re-confirming a card never moves an entry between universes.
   await query(
-    `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order, universe_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      ON CONFLICT (id) DO UPDATE SET
        kind = EXCLUDED.kind,
        name = EXCLUDED.name,
@@ -135,6 +140,7 @@ export async function insertEntry(
       input.summary,
       input.shelf,
       input.sortOrder,
+      input.universeId ?? DEFAULT_UNIVERSE_ID,
     ],
   );
 }
@@ -287,6 +293,7 @@ export async function createEntryWithTie(
       summary: string;
       shelf: string;
       sortOrder: number;
+      universeId?: string;
     };
     tie: { id: string; fromEntryId: string; toEntryId: string; rel: string };
   },
@@ -294,8 +301,8 @@ export async function createEntryWithTie(
 ): Promise<TieRow> {
   return withTransaction(async (client) => {
     await client.query(
-      `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order, universe_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         input.entry.id,
         input.entry.kind,
@@ -305,6 +312,7 @@ export async function createEntryWithTie(
         input.entry.summary,
         input.entry.shelf,
         input.entry.sortOrder,
+        input.entry.universeId ?? DEFAULT_UNIVERSE_ID,
       ],
     );
     const res = await client.query<TieRow>(
@@ -328,10 +336,13 @@ export async function createEntryWithTie(
 export async function saveChapterBody(input: {
   number: number;
   body: unknown;
+  bookId?: string;
 }): Promise<void> {
+  // F7 book scope: `number` is unique only within a book, so the UPDATE must
+  // carry book_id or saving Chapter 1 could overwrite a sibling book's Chapter 1.
   await query(
-    `UPDATE chapters SET body = $2 WHERE number = $1`,
-    [input.number, JSON.stringify(input.body)],
+    `UPDATE chapters SET body = $2 WHERE number = $1 AND book_id = $3`,
+    [input.number, JSON.stringify(input.body), input.bookId ?? DEFAULT_BOOK_ID],
   );
 }
 
@@ -372,10 +383,16 @@ export async function replacePhraseMentions(input: {
   });
 }
 
-/** Next chapter number (max+1, or 1 when empty). For appending a new chapter. */
-export async function getNextChapterNumber(): Promise<number> {
+/** Next chapter number for a book (max+1 within that book, or 1 when empty). */
+export async function getNextChapterNumber(
+  bookId: string = DEFAULT_BOOK_ID,
+): Promise<number> {
+  // F7 book scope: numbering restarts per book, so MAX must be taken WITHIN the
+  // book. A global MAX+1 would skip numbers in one book whenever another book
+  // grew, and break the per-book UNIQUE(book_id, number) intent.
   const res = await one<{ next: number }>(
-    `SELECT COALESCE(MAX(number), 0) + 1 AS next FROM chapters`,
+    `SELECT COALESCE(MAX(number), 0) + 1 AS next FROM chapters WHERE book_id = $1`,
+    [bookId],
   );
   return res?.next ?? 1;
 }
@@ -386,12 +403,15 @@ export async function insertChapter(input: {
   number: number;
   title: string;
   body: unknown;
+  bookId?: string;
 }): Promise<{ id: string; number: number; title: string }> {
+  // F7: book_id is NOT NULL as of the S1b contract, so every new chapter must be
+  // stamped with its book (defaults to the active book).
   const res = await one<{ id: string; number: number; title: string }>(
-    `INSERT INTO chapters (id, number, title, body)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO chapters (id, number, title, body, book_id)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING id, number, title`,
-    [input.id, input.number, input.title, JSON.stringify(input.body)],
+    [input.id, input.number, input.title, JSON.stringify(input.body), input.bookId ?? DEFAULT_BOOK_ID],
   );
   return res!;
 }
@@ -619,12 +639,15 @@ export async function insertResearchThread(input: {
   subtitle: string;
   sortOrder: number;
   scope: import("../domain/types").ResearchScope;
+  universeId?: string;
 }): Promise<import("../domain/types").ResearchThreadRow> {
+  // F7: research_threads.universe_id is NOT NULL as of the S1b contract; a new
+  // thread is grounded in the active universe's canon by default.
   const res = await one<import("../domain/types").ResearchThreadRow>(
-    `INSERT INTO research_threads (id, title, subtitle, sort_order, scope)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id)
+     VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING id, title, subtitle, sort_order AS "sortOrder", scope`,
-    [input.id, input.title, input.subtitle, input.sortOrder, input.scope],
+    [input.id, input.title, input.subtitle, input.sortOrder, input.scope, input.universeId ?? DEFAULT_UNIVERSE_ID],
   );
   if (!res) throw new Error("insertResearchThread: no row returned");
   return res;

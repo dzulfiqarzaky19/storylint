@@ -2,6 +2,7 @@
 // string interpolation of values. Column aliases map snake_case -> camelCase so
 // row shapes match domain/types.ts.
 import { rows, one } from "./pool";
+import { DEFAULT_BOOK_ID, DEFAULT_UNIVERSE_ID } from "./scope";
 import type {
   EntryRow,
   FactRow,
@@ -121,11 +122,15 @@ export async function getFactsForEntry(entryId: string): Promise<FactRow[]> {
 
 export async function getAppearancesForEntry(
   entryId: string,
+  bookId: string = DEFAULT_BOOK_ID,
 ): Promise<ChapterAppearanceRow[]> {
+  // F7 book scope: a chapter number is only unique WITHIN a book, so an entry's
+  // appearances must be filtered to the active book or a "Chapter 1" appearance
+  // from a sibling book would leak into this book's wiki/timeline.
   return rows<ChapterAppearanceRow>(
     `SELECT ${APPEARANCE_COLS} FROM chapter_appearances
-     WHERE entry_id = $1 ORDER BY chapter, sort_order, id`,
-    [entryId],
+     WHERE entry_id = $1 AND book_id = $2 ORDER BY chapter, sort_order, id`,
+    [entryId, bookId],
   );
 }
 
@@ -164,15 +169,40 @@ export async function getTiesForEntry(entryId: string): Promise<ResolvedTie[]> {
  * Load the full wiki snapshot the check engine and Wiki screen consume.
  * Single set of batched reads, composed in memory (small dataset: 15 entries).
  */
-export async function loadWikiSnapshot(): Promise<WikiSnapshot> {
-  const [entries, facts, appearances, openQuestions, ties, labelRows] = await Promise.all([
-    getAllEntries(),
-    rows<FactRow>(`SELECT ${FACT_COLS} FROM facts ORDER BY sort_order, id`),
+export async function loadWikiSnapshot(
+  universeId: string = DEFAULT_UNIVERSE_ID,
+  bookId: string = DEFAULT_BOOK_ID,
+): Promise<WikiSnapshot> {
+  // F7 scope. Two distinct axes:
+  //  - entries belong to a UNIVERSE (canon) -> filtered by universe_id.
+  //  - chapter appearances belong to a BOOK (a chapter number restarts per book)
+  //    -> filtered by book_id, so a sibling book's "Chapter 1" appearance can't
+  //    leak into this book's timeline/wiki.
+  // facts/ties/open_questions are children of an entry; they are bounded to this
+  // universe's entries via `entry_id = ANY(entryIds)` (the entry set is already
+  // universe-filtered), so a sibling universe's canon never attaches.
+  const entries = await rows<EntryRow>(
+    `SELECT ${ENTRY_COLS} FROM entries
+     WHERE deleted_at IS NULL AND universe_id = $1
+     ORDER BY shelf, sort_order, name`,
+    [universeId],
+  );
+  const entryIds = entries.map((e) => e.id);
+
+  const [facts, appearances, openQuestions, ties, labelRows] = await Promise.all([
+    rows<FactRow>(
+      `SELECT ${FACT_COLS} FROM facts WHERE entry_id = ANY($1) ORDER BY sort_order, id`,
+      [entryIds],
+    ),
     rows<ChapterAppearanceRow>(
-      `SELECT ${APPEARANCE_COLS} FROM chapter_appearances ORDER BY chapter, sort_order, id`,
+      `SELECT ${APPEARANCE_COLS} FROM chapter_appearances
+        WHERE book_id = $1 ORDER BY chapter, sort_order, id`,
+      [bookId],
     ),
     rows<OpenQuestionRow>(
-      `SELECT ${OPEN_QUESTION_COLS} FROM open_questions ORDER BY sort_order, id`,
+      `SELECT ${OPEN_QUESTION_COLS} FROM open_questions
+        WHERE entry_id = ANY($1) ORDER BY sort_order, id`,
+      [entryIds],
     ),
     rows<ResolvedTie>(
       `SELECT
@@ -185,7 +215,9 @@ export async function loadWikiSnapshot(): Promise<WikiSnapshot> {
          e.catalogue_no  AS "toCatalogueNo"
        FROM ties t
        JOIN entries e ON e.id = t.to_entry_id
+       WHERE t.from_entry_id = ANY($1)
        ORDER BY t.id`,
+      [entryIds],
     ),
     rows<{ kind: Kind; label: string }>(`SELECT kind, label FROM category_labels`),
   ]);
@@ -229,10 +261,16 @@ export async function getEntryWithDetails(
 
 // ---- Write screen ---------------------------------------------------------
 
-export async function getChapter(number: number): Promise<ChapterRow | null> {
+export async function getChapter(
+  number: number,
+  bookId: string = DEFAULT_BOOK_ID,
+): Promise<ChapterRow | null> {
+  // F7 book scope: chapter `number` is unique only WITHIN a book, so the lookup
+  // must carry the book or getChapter(1) would ambiguously match every book's
+  // Chapter 1 and silently return one of them.
   return one<ChapterRow>(
-    `SELECT id, number, title, body FROM chapters WHERE number = $1`,
-    [number],
+    `SELECT id, number, title, body FROM chapters WHERE number = $1 AND book_id = $2`,
+    [number, bookId],
   );
 }
 
