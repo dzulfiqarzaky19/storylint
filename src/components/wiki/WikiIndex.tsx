@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import type { EntryWithDetails, Shelf, CategoryLabelOverrides } from "@/lib/domain/types";
 import { KIND_FOR_SHELF } from "@/lib/domain/types";
 import { resolveCategoryLabel } from "@/lib/wiki/categoryLabels";
@@ -19,6 +19,8 @@ export interface WikiIndexProps {
   onCreate?: (shelf: Shelf) => void;
   /** Custom category-header labels (F6-S5); falls back to the shelf default. */
   overrides: CategoryLabelOverrides;
+  /** Optional slot rendered at the BOTTOM of the sidebar panel (F6-S6b trash). */
+  footer?: ReactNode;
 }
 
 /**
@@ -40,6 +42,7 @@ export default function WikiIndex({
   total,
   onCreate,
   overrides,
+  footer,
 }: WikiIndexProps) {
   // All groups open by default so the whole world is scannable at a glance.
   const [collapsed, setCollapsed] = useState<Record<Shelf, boolean>>({
@@ -136,6 +139,7 @@ export default function WikiIndex({
             </section>
           );
         })}
+        {footer}
       </div>
     </nav>
   );

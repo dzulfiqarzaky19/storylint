@@ -6,8 +6,8 @@
 // is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag
 // session state lives in DragContext so dragover can read the payload.
 
-import { useReducer, useCallback, useState, startTransition } from "react";
-import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
+import { useReducer, useCallback, useEffect, useState, startTransition } from "react";
+import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, EntryRow, Kind } from "@/lib/domain/types";
 import { KIND_SHELF, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
 import {
   initWikiState,
@@ -32,14 +32,19 @@ import {
   renameCategory,
   resetCategoryLabel,
   deleteCategory,
+  getDeletedEntries,
+  restoreEntry,
+  purgeExpiredDeleted,
   type ActionResult,
 } from "@/lib/actions/wiki";
 import { resolveCategoryLabel } from "@/lib/wiki/categoryLabels";
+import { trashCountdown } from "@/lib/wiki/trashCountdown";
 import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./Shelf";
 import PosterBand from "./PosterBand";
 import WikiIndex from "./WikiIndex";
+import TrashPanel from "./TrashPanel";
 import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./WikiScreen.module.css";
 
@@ -476,6 +481,82 @@ function WikiScreenInner({
     [settle],
   );
 
+  // ---- Trash: recently-deleted panel (F6-S6b) --------------------------------
+  // The trash list is panel-LOCAL server state (soft-deleted entries live only
+  // in the DB, never in the reducer's live byId), so it is fetched here and
+  // re-fetched after every restore/purge. Restore ALSO dispatches RESTORE_ENTRY
+  // so the entry reappears on its shelf without a full reload; purge has no
+  // reducer (nothing live changes) and just refreshes the panel.
+  const [deleted, setDeleted] = useState<EntryRow[]>([]);
+  const [trashBusy, setTrashBusy] = useState(false);
+  const [confirmPurge, setConfirmPurge] = useState(false);
+  // Fixed at mount so the countdown labels don't reflow every render.
+  const [nowMs] = useState(() => Date.now());
+
+  const refreshTrash = useCallback(() => {
+    startTransition(() => {
+      getDeletedEntries()
+        .then((res) => {
+          if (res.ok) setDeleted(res.data.entries);
+          else dispatch({ type: "SET_ERROR", error: res.error });
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          dispatch({ type: "SET_ERROR", error: `getDeletedEntries: ${msg}` });
+        });
+    });
+  }, []);
+
+  // Load the trash once on mount, then re-fetch it whenever a delete happens by
+  // way of the restore/purge handlers below (they call refreshTrash on settle).
+  useEffect(() => {
+    refreshTrash();
+  }, [refreshTrash]);
+
+  const restoreDeleted = useCallback(
+    (id: string) => {
+      setTrashBusy(true);
+      startTransition(() => {
+        restoreEntry({ id })
+          .then((res) => {
+            if (res.ok) {
+              dispatch({ type: "RESTORE_ENTRY", entry: res.data.entry });
+              setDeleted((prev) => prev.filter((e) => e.id !== id));
+            } else {
+              dispatch({ type: "SET_ERROR", error: res.error });
+            }
+          })
+          .catch((err: unknown) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            dispatch({ type: "SET_ERROR", error: `restoreEntry: ${msg}` });
+          })
+          .finally(() => setTrashBusy(false));
+      });
+    },
+    [],
+  );
+
+  const performPurge = useCallback(() => {
+    setTrashBusy(true);
+    startTransition(() => {
+      purgeExpiredDeleted({ confirmed: true })
+        .then((res) => {
+          if (res.ok) refreshTrash();
+          else dispatch({ type: "SET_ERROR", error: res.error });
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          dispatch({ type: "SET_ERROR", error: `purgeExpiredDeleted: ${msg}` });
+        })
+        .finally(() => setTrashBusy(false));
+    });
+  }, [refreshTrash]);
+
+  // How many trashed entries the next purge would actually remove (retention
+  // elapsed) — drives the danger-modal copy's exact count.
+  const purgeableCount = deleted.filter(
+    (e) => e.deletedAt != null && trashCountdown(e.deletedAt, nowMs).purgeable,
+  ).length;
 
   // Entries grouped per shelf, in the reducer's live order.
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
@@ -512,6 +593,17 @@ function WikiScreenInner({
           total={Object.keys(state.byId).length}
           onCreate={createEntryOnShelf}
           overrides={state.overrides}
+          footer={
+            deleted.length > 0 ? (
+              <TrashPanel
+                entries={deleted}
+                nowMs={nowMs}
+                busy={trashBusy}
+                onRestore={restoreDeleted}
+                onRequestPurge={() => setConfirmPurge(true)}
+              />
+            ) : null
+          }
         />
         <main className={styles.body}>
           <p className={styles.empty}>No entries in the gazetteer yet.</p>
@@ -529,6 +621,17 @@ function WikiScreenInner({
         total={Object.keys(state.byId).length}
         onCreate={createEntryOnShelf}
         overrides={state.overrides}
+        footer={
+          deleted.length > 0 ? (
+            <TrashPanel
+              entries={deleted}
+              nowMs={nowMs}
+              busy={trashBusy}
+              onRestore={restoreDeleted}
+              onRequestPurge={() => setConfirmPurge(true)}
+            />
+          ) : null
+        }
       />
       <main className={styles.body}>
       {state.error && (
@@ -609,6 +712,22 @@ function WikiScreenInner({
             performDeleteCategory(kind);
           }}
           onCancel={() => setConfirmDeleteKind(null)}
+        />
+      ) : null}
+      {confirmPurge ? (
+        <ConfirmModal
+          title="Empty the trash?"
+          body={`This permanently deletes ${purgeableCount} ${
+            purgeableCount === 1 ? "entry" : "entries"
+          } that have been in the trash longer than 7 days, along with all their facts, ties, and appearances. This cannot be undone.`}
+          confirmLabel="Empty trash"
+          cancelLabel="Cancel"
+          danger
+          onConfirm={() => {
+            setConfirmPurge(false);
+            performPurge();
+          }}
+          onCancel={() => setConfirmPurge(false)}
         />
       ) : null}
     </main>
