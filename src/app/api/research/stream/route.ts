@@ -95,11 +95,15 @@ export async function POST(req: NextRequest) {
       let completed = false;
 
       try {
+        // NB: deliberately DO NOT pass `temperature` here. The SaaRouters
+        // gateway returns an empty 200 then ECONNRESET when a temperature is
+        // sent alongside a larger prompt, and F5 made this prompt big (the full
+        // wiki gazetteer). The blocking path omits temperature for the same
+        // reason (saarouters.ts) — the route wants gateway-default sampling.
         for await (const delta of streamComplete({
           system,
           messages: [{ role: "user", content: user }],
           maxTokens: 900,
-          temperature: 0.7,
           signal: req.signal,
         })) {
           buffer += delta;

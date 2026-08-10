@@ -51,7 +51,11 @@ const { streamArgs, WIKI_ENTRIES } = vi.hoisted(() => {
     };
   }
   return {
-    streamArgs: [] as Array<{ system: string; messages: Array<{ content: string }> }>,
+    streamArgs: [] as Array<{
+      system: string;
+      messages: Array<{ content: string }>;
+      temperature?: number;
+    }>,
     // One entry of every kind so the "all entries" locked line is observable at
     // the route boundary.
     WIKI_ENTRIES: [
@@ -65,10 +69,16 @@ const { streamArgs, WIKI_ENTRIES } = vi.hoisted(() => {
 
 vi.mock("@/lib/ai/saarouters", () => ({
   aiEnabled: () => true,
-  streamComplete: vi.fn((args: { system: string; messages: Array<{ content: string }> }) => {
-    streamArgs.push(args);
-    return fakeStream();
-  }),
+  streamComplete: vi.fn(
+    (args: {
+      system: string;
+      messages: Array<{ content: string }>;
+      temperature?: number;
+    }) => {
+      streamArgs.push(args);
+      return fakeStream();
+    },
+  ),
 }));
 
 // F5: the route no longer reads a per-thread scope (getResearchThreadScope was
@@ -177,5 +187,29 @@ describe("research stream route — F5 free-context prompt (3 locked lines)", ()
   it("still instructs the model to emit the CARDS_SENTINEL delimiter", async () => {
     const { system } = await runAndCapture();
     expect(system).toContain(CARDS_SENTINEL);
+  });
+});
+
+// F5-S4 (runtime regression fix): the streaming research route must NOT pass a
+// `temperature` to streamComplete. The SaaRouters gateway returns an empty 200
+// then ECONNRESET when temperature is sent alongside a large prompt, and F5
+// enlarged this prompt (full wiki), so passing temperature hangs the Ask/chip
+// path forever ("Thinking..." with zero bytes). The blocking path omits it for
+// the same reason. Mutation-provable lock: re-add `temperature: 0.7` at the
+// route call and this assertion goes RED.
+describe("research stream route — F5-S4 no temperature (gateway hang guard)", () => {
+  beforeEach(() => {
+    insertSpy.mockClear();
+    streamArgs.length = 0;
+  });
+
+  it("does NOT pass a temperature to streamComplete (gateway-default sampling)", async () => {
+    const ac = new AbortController();
+    const res = await POST(streamRequest(ac.signal));
+    await readFrames(res); // drain so streamComplete is actually invoked
+    const call = streamArgs[0];
+    expect(call).toBeDefined();
+    expect(call!.temperature).toBeUndefined();
+    expect("temperature" in call!).toBe(false);
   });
 });
