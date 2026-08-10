@@ -346,8 +346,8 @@ test("research: left thread index switches threads (URL-driven, own question)", 
   await page.goto("/research");
   const index = page.locator('nav[aria-label="Research threads"]');
   await expect(index).toBeVisible();
-  await expect(index.getByRole("button", { name: /Salt as debt/ })).toBeVisible();
-  const ferrier = index.getByRole("button", { name: /Naming the Ferrier/ });
+  await expect(index.getByRole("button", { name: /^Salt as debt/ })).toBeVisible();
+  const ferrier = index.getByRole("button", { name: /^Naming the Ferrier/ });
   await expect(ferrier).toBeVisible();
   await expect(page.getByText(/salt-name is a debt/i)).toBeVisible();
   await ferrier.click();
@@ -407,7 +407,9 @@ function boxesOverlap(a: Box, b: Box): boolean {
 
 const INDEX_CASES = [
   { path: "/wiki", nav: 'nav[aria-label="The world"]', body: "main", item: /Maren Vell/ },
-  { path: "/research", nav: 'nav[aria-label="Research threads"]', body: "main", item: /Salt as debt/ },
+  // `^`-anchored so the thread name matches only the SELECT button, not the new
+  // per-row `Delete thread "..."` trash control (strict-mode disambiguation).
+  { path: "/research", nav: 'nav[aria-label="Research threads"]', body: "main", item: /^Salt as debt/ },
   {
     path: "/write",
     nav: 'nav[aria-label="Chapters"]',
