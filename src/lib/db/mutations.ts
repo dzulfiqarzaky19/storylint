@@ -34,6 +34,10 @@ export async function insertFact(
     value: string;
     fresh: boolean;
     sortOrder: number;
+    // F7 (S4) list divergence: omitted / undefined => book_id NULL = universe
+    // canon (shows in every book), preserving the pre-S4 behavior of every
+    // existing caller byte-for-byte. A book id stamps this fact as book-only.
+    bookId?: string;
   },
   _confirmation: WikiWriteConfirmation,
 ): Promise<FactRow> {
@@ -42,20 +46,21 @@ export async function insertFact(
     // fact id (e.g. the enrich path's `prop-fact-<propId>`) updates the fact in
     // place instead of PK-violating or minting a duplicate. Random-uuid callers
     // (addSuggestionAsFact) never collide, so their behavior is unchanged.
-    `INSERT INTO facts (id, entry_id, key, value, fresh, sort_order)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO facts (id, entry_id, key, value, fresh, sort_order, book_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      ON CONFLICT (id) DO UPDATE SET
        key = EXCLUDED.key,
        value = EXCLUDED.value,
        fresh = EXCLUDED.fresh,
-       sort_order = EXCLUDED.sort_order
+       sort_order = EXCLUDED.sort_order,
+       book_id = EXCLUDED.book_id
      RETURNING id,
                entry_id  AS "entryId",
                key,
                value,
                fresh,
                sort_order AS "sortOrder"`,
-    [input.id, input.entryId, input.key, input.value, input.fresh, input.sortOrder],
+    [input.id, input.entryId, input.key, input.value, input.fresh, input.sortOrder, input.bookId ?? null],
   );
   // one() returns null only on empty result; INSERT ... RETURNING always yields a row.
   if (!res) throw new Error("insertFact: no row returned");
@@ -244,17 +249,21 @@ export async function insertTie(
     fromEntryId: string;
     toEntryId: string;
     rel: string;
+    // F7 (S4): omitted => book_id NULL = canon tie (shows in every book);
+    // a book id stamps it book-only. Existing callers pass no bookId, so their
+    // ties stay canon exactly as before.
+    bookId?: string;
   },
   _confirmation: WikiWriteConfirmation,
 ): Promise<TieRow> {
   const res = await one<TieRow>(
-    `INSERT INTO ties (id, from_entry_id, to_entry_id, rel)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO ties (id, from_entry_id, to_entry_id, rel, book_id)
+     VALUES ($1, $2, $3, $4, $5)
      RETURNING id,
                from_entry_id AS "fromEntryId",
                to_entry_id   AS "toEntryId",
                rel`,
-    [input.id, input.fromEntryId, input.toEntryId, input.rel],
+    [input.id, input.fromEntryId, input.toEntryId, input.rel, input.bookId ?? null],
   );
   if (!res) throw new Error("insertTie: no row returned");
   return res;
@@ -964,4 +973,55 @@ export async function createFreshUniverse(input: {
     // INSERT ... RETURNING always yields exactly one row.
     return { universe: uni.rows[0]!, series: ser.rows[0]!, book: bk.rows[0]! };
   });
+}
+
+// ---- Entry facets (F7 S4 scalar override) ---------------------------------
+// A facet is a per-book SCALAR override of an entry (name/summary/note). Unlike
+// the structural universe/series/book inserts above, a facet IS wiki CONTENT
+// (it changes what a reader sees for an entry), so per product rule 1 it REQUIRES
+// a WikiWriteConfirmation token — same gate as insertFact/insertEntry.
+
+export interface EntryFacetRow {
+  entryId: string;
+  bookId: string;
+  name: string | null;
+  summary: string | null;
+  note: string | null;
+}
+
+/**
+ * WIKI WRITE (product rule 1). Upsert a per-book scalar override for an entry.
+ * PK(entry_id, book_id) => at most one facet row per entry per book, so a repeat
+ * override on the same (entry, book) UPDATEs in place rather than duplicating.
+ * A NULL column means "no override for that field in this book" — the book view
+ * (COALESCE(facet.col, canon.col)) then falls through to universe canon for that
+ * field. Passing only { name } leaves summary/note NULL (canon still shows).
+ * Requires a confirmation token.
+ */
+export async function upsertEntryFacet(
+  input: {
+    entryId: string;
+    bookId: string;
+    name?: string | null;
+    summary?: string | null;
+    note?: string | null;
+  },
+  _confirmation: WikiWriteConfirmation,
+): Promise<EntryFacetRow> {
+  const res = await one<EntryFacetRow>(
+    `INSERT INTO entry_facets (entry_id, book_id, name, summary, note)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (entry_id, book_id) DO UPDATE SET
+       name = EXCLUDED.name,
+       summary = EXCLUDED.summary,
+       note = EXCLUDED.note
+     RETURNING entry_id AS "entryId",
+               book_id  AS "bookId",
+               name,
+               summary,
+               note`,
+    [input.entryId, input.bookId, input.name ?? null, input.summary ?? null, input.note ?? null],
+  );
+  if (!res) throw new Error("upsertEntryFacet: no row returned");
+  return res;
 }

@@ -181,18 +181,43 @@ export async function loadWikiSnapshot(
   // facts/ties/open_questions are children of an entry; they are bounded to this
   // universe's entries via `entry_id = ANY(entryIds)` (the entry set is already
   // universe-filtered), so a sibling universe's canon never attaches.
+  // F7 HYBRID FACET read (S4). SCALARS (name/summary/note) are REPLACE-per-book:
+  // COALESCE(entry_facets.col, entries.col) for the active book. A book that has
+  // no facet row (or a NULL facet col) falls through to universe canon. With ZERO
+  // facet rows this LEFT JOIN adds nothing and the snapshot is byte-identical to
+  // the canon-only read (the default-book invariant the gate locks).
   const entries = await rows<EntryRow>(
-    `SELECT ${ENTRY_COLS} FROM entries
-     WHERE deleted_at IS NULL AND universe_id = $1
-     ORDER BY shelf, sort_order, name`,
-    [universeId],
+    `SELECT
+       e.id,
+       e.kind,
+       COALESCE(ef.name, e.name)       AS name,
+       e.catalogue_no                  AS "catalogueNo",
+       COALESCE(ef.note, e.note)       AS note,
+       COALESCE(ef.summary, e.summary) AS summary,
+       e.shelf,
+       e.sort_order                    AS "sortOrder",
+       e.deleted_at                    AS "deletedAt"
+     FROM entries e
+     LEFT JOIN entry_facets ef ON ef.entry_id = e.id AND ef.book_id = $2
+     WHERE e.deleted_at IS NULL AND e.universe_id = $1
+     ORDER BY e.shelf, e.sort_order, name`,
+    [universeId, bookId],
   );
   const entryIds = entries.map((e) => e.id);
 
   const [facts, appearances, openQuestions, ties, labelRows] = await Promise.all([
+    // F7 list divergence (S4): facts are ADDITIVE, not override. book_id IS NULL
+    // = universe canon (shows in EVERY book); book_id = active book = book-only.
+    // The OR-predicate UNIONs both sets; ORDER BY (sort_order, id) INTERLEAVES a
+    // book-only fact at its own sort position (canon-first would silently reorder
+    // every existing list the moment one book-fact is added). id is the tiebreak,
+    // so the order is deterministic. Dropping the `book_id IS NULL` term drops
+    // canon; dropping `book_id = $2` drops book-only rows — both gate-locked.
     rows<FactRow>(
-      `SELECT ${FACT_COLS} FROM facts WHERE entry_id = ANY($1) ORDER BY sort_order, id`,
-      [entryIds],
+      `SELECT ${FACT_COLS} FROM facts
+        WHERE entry_id = ANY($1) AND (book_id IS NULL OR book_id = $2)
+        ORDER BY sort_order, id`,
+      [entryIds, bookId],
     ),
     rows<ChapterAppearanceRow>(
       `SELECT ${APPEARANCE_COLS} FROM chapter_appearances
@@ -204,20 +229,27 @@ export async function loadWikiSnapshot(
         WHERE entry_id = ANY($1) ORDER BY sort_order, id`,
       [entryIds],
     ),
+    // F7 (S4): ties are ADDITIVE like facts (book_id IS NULL OR = active book),
+    // AND the tie's displayed TARGET name is facet-merged for the active book —
+    // if this book renames the target entry, a tie pointing at it must read the
+    // book's name or the book contradicts itself. The JOIN to entries stays INNER
+    // (the target must exist); only the facet join (ef2) is LEFT. book_id scoping
+    // on ef2 keeps a book's target-rename out of sibling books.
     rows<ResolvedTie>(
       `SELECT
          t.id,
          t.from_entry_id AS "fromEntryId",
          t.to_entry_id   AS "toEntryId",
          t.rel,
-         e.name          AS "toName",
+         COALESCE(ef2.name, e.name) AS "toName",
          e.kind          AS "toKind",
          e.catalogue_no  AS "toCatalogueNo"
        FROM ties t
        JOIN entries e ON e.id = t.to_entry_id
-       WHERE t.from_entry_id = ANY($1)
+       LEFT JOIN entry_facets ef2 ON ef2.entry_id = t.to_entry_id AND ef2.book_id = $2
+       WHERE t.from_entry_id = ANY($1) AND (t.book_id IS NULL OR t.book_id = $2)
        ORDER BY t.id`,
-      [entryIds],
+      [entryIds, bookId],
     ),
     rows<{ kind: Kind; label: string }>(`SELECT kind, label FROM category_labels`),
   ]);
@@ -244,16 +276,61 @@ export async function loadWikiSnapshot(
   return { entries: composed, byId, overrides };
 }
 
-/** A single entry with all its details (Wiki detail view). */
+/**
+ * A single entry with all its details (Wiki detail view), MERGED for the active
+ * book (S4 hybrid facet layer). Scalars are COALESCE(facet, canon); facts/ties
+ * are the ADDITIVE UNION (canon book_id IS NULL + book-only book_id=$bookId),
+ * and a tie's target name is facet-merged for the book — the same merge
+ * loadWikiSnapshot applies, scoped to one entry. Defaults to book-1 so existing
+ * callers (wiki.ts) read canon exactly as before (zero facet rows => all
+ * COALESCE/OR terms are no-ops on canon-only data). The bare getFactsForEntry /
+ * getTiesForEntry stay canon-only by design (not widened this slice).
+ */
 export async function getEntryWithDetails(
   id: string,
+  bookId: string = DEFAULT_BOOK_ID,
 ): Promise<EntryWithDetails | null> {
-  const entry = await getEntry(id);
+  const entry = await one<EntryRow>(
+    `SELECT
+       e.id,
+       e.kind,
+       COALESCE(ef.name, e.name)       AS name,
+       e.catalogue_no                  AS "catalogueNo",
+       COALESCE(ef.note, e.note)       AS note,
+       COALESCE(ef.summary, e.summary) AS summary,
+       e.shelf,
+       e.sort_order                    AS "sortOrder",
+       e.deleted_at                    AS "deletedAt"
+     FROM entries e
+     LEFT JOIN entry_facets ef ON ef.entry_id = e.id AND ef.book_id = $2
+     WHERE e.id = $1 AND e.deleted_at IS NULL`,
+    [id, bookId],
+  );
   if (!entry) return null;
   const [facts, ties, appearances, openQuestions] = await Promise.all([
-    getFactsForEntry(id),
-    getTiesForEntry(id),
-    getAppearancesForEntry(id),
+    rows<FactRow>(
+      `SELECT ${FACT_COLS} FROM facts
+        WHERE entry_id = $1 AND (book_id IS NULL OR book_id = $2)
+        ORDER BY sort_order, id`,
+      [id, bookId],
+    ),
+    rows<ResolvedTie>(
+      `SELECT
+         t.id,
+         t.from_entry_id AS "fromEntryId",
+         t.to_entry_id   AS "toEntryId",
+         t.rel,
+         COALESCE(ef2.name, e.name) AS "toName",
+         e.kind          AS "toKind",
+         e.catalogue_no  AS "toCatalogueNo"
+       FROM ties t
+       JOIN entries e ON e.id = t.to_entry_id
+       LEFT JOIN entry_facets ef2 ON ef2.entry_id = t.to_entry_id AND ef2.book_id = $2
+       WHERE t.from_entry_id = $1 AND (t.book_id IS NULL OR t.book_id = $2)
+       ORDER BY t.id`,
+      [id, bookId],
+    ),
+    getAppearancesForEntry(id, bookId),
     getOpenQuestionsForEntry(id),
   ]);
   return { ...entry, facts, ties, appearances, openQuestions };
