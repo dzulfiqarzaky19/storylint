@@ -3,6 +3,11 @@
 
 export type Kind = "character" | "world" | "organization" | "lore";
 export type Shelf = "people" | "places" | "orders" | "lore";
+/**
+ * The wiki context a research thread is scoped to. 'chat' = broad, no wiki
+ * context; a Kind = the AI sees ALL entries of that kind (F4-P2).
+ */
+export type ResearchScope = "chat" | Kind;
 export type Flag = "red" | "yellow";
 export type TurnSide = "them" | "you";
 
