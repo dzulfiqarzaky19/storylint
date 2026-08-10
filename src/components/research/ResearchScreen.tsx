@@ -164,7 +164,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     });
   };
 
-  // ---- AI ask (session-only; grounded on the wiki, no wiki write) ----------
+  // ---- AI ask (persists you+them turns; grounded on the wiki, no wiki write) --
   const handleAsk = () => {
     const question = draft.trim();
     if (!question || asking) return;
@@ -173,6 +173,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
       try {
         const res = await askResearchAi({
           question,
+          threadId: snapshot.threadId,
           threadTitle: snapshot.threads.find((t) => t.id === snapshot.threadId)?.title,
         });
         if (res.ok) {

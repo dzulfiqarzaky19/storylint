@@ -30,12 +30,15 @@ import {
   getMaxSortOrderForShelf,
   insertResearchThread,
   getNextResearchThreadSortOrder,
+  insertResearchTurnPair,
+  deleteThread as deleteThreadRow,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import type { Kind } from "../domain/types";
 import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
 import { loadWikiSnapshot } from "../db/queries";
+import { deriveThreadTitle } from "../research/title";
 
 export type ActionResult<T = void> =
   | { ok: true; data: T }
@@ -197,10 +200,16 @@ export async function isAiEnabled(): Promise<boolean> {
 
 export async function askResearchAi(input: {
   question: string;
+  threadId: string;
   threadTitle?: string;
 }): Promise<ActionResult<{ turns: ResearchTurnWithCards[] }>> {
   const question = input.question.trim();
   if (!question) return { ok: false, error: "Type a question first." };
+  // GUARD: never write a turn against an unresolved thread. snapshot.threadId is
+  // the resolved real id; refuse rather than persist an orphan turn (thread_id is
+  // bare text with no FK to research_threads).
+  const threadId = (input.threadId ?? "").trim();
+  if (!threadId) return { ok: false, error: "No active thread to write to." };
   if (!aiEnabled()) {
     return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
   }
@@ -259,38 +268,70 @@ export async function askResearchAi(input: {
 
     const stamp = Date.now();
     const rid = randomUUID().slice(0, 8);
+    const youId = `ai-you-${stamp}-${rid}`;
+    const themId = `ai-them-${stamp}-${rid}`;
+
+    // Normalize the AI cards once, so the SAME shape is persisted and returned.
+    const normCards = cards.map((c, i) => {
+      const asKind = AI_ASK_KINDS.includes(c.asKind ?? "") ? (c.asKind as string) : "lore";
+      return {
+        id: `ai-card-${stamp}-${rid}-${i}`,
+        kind: AI_ASK_KINDS.includes(c.kind ?? "") ? (c.kind as string) : "lore",
+        title: (c.title ?? "Untitled").trim(),
+        body: (c.body ?? "").trim(),
+        asKind,
+      };
+    });
+
+    // PERSIST (F2a): you + them (+cards) write ALL-OR-NOTHING in one txn, with
+    // ordinal = MAX(ordinal)+1 computed INSIDE that txn, and the thread is
+    // auto-titled from the first question while it still holds the placeholder.
+    // On any failure the whole pair rolls back and the reducer appends nothing.
+    const persisted = await insertResearchTurnPair({
+      threadId,
+      youId,
+      themId,
+      who: { you: "You", them: "Collaborator" },
+      question,
+      reply,
+      cards: normCards.map((c) => ({
+        id: c.id,
+        kind: c.kind,
+        title: c.title,
+        body: c.body,
+        asKind: c.asKind,
+      })),
+      autoTitle: deriveThreadTitle(question),
+    });
 
     // Two turns: the writer's question ("you"), then the AI's answer ("them").
     const youTurn: ResearchTurnWithCards = {
-      id: `ai-you-${stamp}-${rid}`,
-      threadId: "",
-      ordinal: stamp,
+      id: youId,
+      threadId,
+      ordinal: persisted.you.ordinal,
       side: "you",
       who: "You",
       text: question,
       cards: [],
     };
     const themTurn: ResearchTurnWithCards = {
-      id: `ai-them-${stamp}-${rid}`,
-      threadId: "",
-      ordinal: stamp + 1,
+      id: themId,
+      threadId,
+      ordinal: persisted.them.ordinal,
       side: "them",
-      who: "Research",
+      who: "Collaborator",
       text: reply,
-      cards: cards.map((c, i) => {
-        const asKind = AI_ASK_KINDS.includes(c.asKind ?? "") ? (c.asKind as string) : "lore";
-        return {
-          id: `ai-card-${stamp}-${rid}-${i}`,
-          turnId: `ai-them-${stamp}-${rid}`,
-          kind: AI_ASK_KINDS.includes(c.kind ?? "") ? (c.kind as string) : "lore",
-          title: (c.title ?? "Untitled").trim(),
-          body: (c.body ?? "").trim(),
-          asKind,
-          sortOrder: i,
-          kept: false,
-          inWiki: false,
-        };
-      }),
+      cards: normCards.map((c, i) => ({
+        id: c.id,
+        turnId: themId,
+        kind: c.kind,
+        title: c.title,
+        body: c.body,
+        asKind: c.asKind,
+        sortOrder: i,
+        kept: false,
+        inWiki: false,
+      })),
     };
 
     return { ok: true, data: { turns: [youTurn, themTurn] } };
@@ -318,6 +359,23 @@ export async function createThread(input?: {
       sortOrder,
     });
     return { ok: true, data: { threadId: row.id } };
+  } catch (err) {
+    return { ok: false, error: errMessage(err) };
+  }
+}
+
+// Hard-delete a whole thread. `research_turns.thread_id` is bare text with no FK
+// (schema.sql:93), so deleting the thread row does NOT cascade to its turns —
+// the mutation removes turns FIRST, then the thread row, in one txn (props and
+// kept_cards cascade from turns). Not a wiki write; needs no confirmation token.
+export async function deleteThread(input: {
+  threadId: string;
+}): Promise<ActionResult<{ threadId: string }>> {
+  const threadId = (input.threadId ?? "").trim();
+  if (!threadId) return { ok: false, error: "No thread to delete." };
+  try {
+    await deleteThreadRow(threadId);
+    return { ok: true, data: { threadId } };
   } catch (err) {
     return { ok: false, error: errMessage(err) };
   }

@@ -478,6 +478,13 @@ export interface ResearchTurnPairInput {
   question: string;
   reply: string;
   cards: ResearchCardInput[];
+  /**
+   * When set, auto-title the thread IN THE SAME TXN: if the thread's current
+   * title is empty or the "New thread" placeholder, update it to this value.
+   * A non-placeholder title is left untouched (the writer's first question
+   * names the thread once, not on every ask).
+   */
+  autoTitle?: string;
 }
 
 /** A persisted turn's identity + assigned ordinal, returned for the reducer. */
@@ -534,6 +541,18 @@ export async function insertResearchTurnPair(
         `INSERT INTO propositions (id, turn_id, kind, title, body, as_kind, sort_order)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [c.id, input.themId, c.kind, c.title, c.body, c.asKind, i],
+      );
+    }
+
+    // Auto-title in the SAME txn: name the thread from the first question only
+    // while it still carries the empty/"New thread" placeholder, so title and
+    // turns commit together (or roll back together).
+    if (input.autoTitle !== undefined) {
+      await client.query(
+        `UPDATE research_threads
+            SET title = $2
+          WHERE id = $1 AND (title = '' OR title = 'New thread')`,
+        [input.threadId, input.autoTitle],
       );
     }
 

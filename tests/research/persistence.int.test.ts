@@ -229,3 +229,72 @@ describe("updateThreadTitle", () => {
     expect(back[0]!.title).toBe("who collects the salt debt");
   });
 });
+
+describe("insertResearchTurnPair auto-title (same-txn)", () => {
+  async function titleOf(threadId: string): Promise<string> {
+    const back = await rows<{ title: string }>(
+      `SELECT title FROM research_threads WHERE id = $1`,
+      [threadId],
+    );
+    return back[0]!.title;
+  }
+
+  it("names a 'New thread' placeholder from the first question", async () => {
+    const threadId = await freshThread("New thread");
+    await insertResearchTurnPair({
+      threadId,
+      youId: `you-${randomUUID()}`,
+      themId: `them-${randomUUID()}`,
+      who: { you: "You", them: "Collaborator" },
+      question: "who collects the salt debt?",
+      reply: "The house does.",
+      cards: [],
+      autoTitle: "who collects the salt debt",
+    });
+    expect(await titleOf(threadId)).toBe("who collects the salt debt");
+  });
+
+  it("names an EMPTY title from the first question", async () => {
+    const threadId = await freshThread("");
+    await insertResearchTurnPair({
+      threadId,
+      youId: `you-${randomUUID()}`,
+      themId: `them-${randomUUID()}`,
+      who: { you: "You", them: "Collaborator" },
+      question: "q",
+      reply: "r",
+      cards: [],
+      autoTitle: "derived title",
+    });
+    expect(await titleOf(threadId)).toBe("derived title");
+  });
+
+  it("does NOT overwrite an already-named thread", async () => {
+    const threadId = await freshThread("A named thread");
+    await insertResearchTurnPair({
+      threadId,
+      youId: `you-${randomUUID()}`,
+      themId: `them-${randomUUID()}`,
+      who: { you: "You", them: "Collaborator" },
+      question: "q",
+      reply: "r",
+      cards: [],
+      autoTitle: "should be ignored",
+    });
+    expect(await titleOf(threadId)).toBe("A named thread");
+  });
+
+  it("leaves the title untouched when autoTitle is omitted", async () => {
+    const threadId = await freshThread("New thread");
+    await insertResearchTurnPair({
+      threadId,
+      youId: `you-${randomUUID()}`,
+      themId: `them-${randomUUID()}`,
+      who: { you: "You", them: "Collaborator" },
+      question: "q",
+      reply: "r",
+      cards: [],
+    });
+    expect(await titleOf(threadId)).toBe("New thread");
+  });
+});
