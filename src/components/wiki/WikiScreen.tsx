@@ -718,8 +718,8 @@ function WikiScreenInner({
         <ConfirmModal
           title="Empty the trash?"
           body={`This permanently deletes ${purgeableCount} ${
-            purgeableCount === 1 ? "entry" : "entries"
-          } that have been in the trash longer than 7 days, along with all their facts, ties, and appearances. This cannot be undone.`}
+            purgeableCount === 1 ? "entry that has" : "entries that have"
+          } been in the trash longer than 7 days, along with all their facts, ties, and appearances. This cannot be undone.`}
           confirmLabel="Empty trash"
           cancelLabel="Cancel"
           danger
