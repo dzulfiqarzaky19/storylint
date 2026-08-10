@@ -38,6 +38,9 @@ import {
   updateFact,
   getMaxSortOrderForShelf,
   softDeleteEntry as softDeleteEntryRow,
+  renameCategory as renameCategoryRow,
+  resetCategoryLabel as resetCategoryLabelRow,
+  deleteCategory as deleteCategoryRow,
 } from "../db/mutations";
 
 // ---- Result envelope ------------------------------------------------------
@@ -368,6 +371,68 @@ export async function softDeleteEntry(input: {
     return { ok: true, data: undefined };
   } catch (err) {
     return fail(err, "wiki.softDeleteEntry");
+  }
+}
+
+// ---- Category management (F6-S5) ------------------------------------------
+
+/**
+ * Rename a category header (e.g. "People" -> "Cast"). Writes the label-override
+ * row for the kind. NOT a wiki-content write (category_labels holds no wiki
+ * knowledge), so product rule 1 does not apply and no confirmation token is
+ * required. The mutation trims and treats a blank label as a reset. Mirrors
+ * reducer `RENAME_CATEGORY`.
+ */
+export async function renameCategory(input: {
+  kind: Kind;
+  label: string;
+}): Promise<ActionResult> {
+  try {
+    await renameCategoryRow({ kind: input.kind, label: input.label });
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.renameCategory");
+  }
+}
+
+/**
+ * Reset a category header back to its shelf default by deleting the override
+ * row. Idempotent (deleting an absent row is a no-op). No confirmation token
+ * (not a wiki-content write). Mirrors reducer `RESET_CATEGORY`.
+ */
+export async function resetCategoryLabel(input: {
+  kind: Kind;
+}): Promise<ActionResult> {
+  try {
+    await resetCategoryLabelRow(input.kind);
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.resetCategoryLabel");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Delete a whole category: bulk soft-delete EVERY
+ * live entry of the kind (their rows survive, so inbound ties render as
+ * tombstones). Irreversible from the UI, so it REQUIRES an explicit confirmation
+ * and is gated behind a danger confirm dialog in the caller. Returns the number
+ * of entries soft-deleted. Mirrors reducer `DELETE_CATEGORY`.
+ *
+ * @param input.confirmed must be the literal `true` — the confirmation gate.
+ */
+export async function deleteCategory(input: {
+  kind: Kind;
+  confirmed: true;
+}): Promise<ActionResult<{ deleted: number }>> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: input.confirmed });
+    const deleted = await deleteCategoryRow(
+      { kind: input.kind, deletedAt: Date.now() },
+      confirmation,
+    );
+    return { ok: true, data: { deleted } };
+  } catch (err) {
+    return fail(err, "wiki.deleteCategory");
   }
 }
 
