@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { ResearchTurnWithCards } from "@/lib/domain/types";
+import { voiceLabel } from "@/lib/research/voice";
 import styles from "./ResearchScreen.module.css";
 
 export interface TurnProps {
@@ -18,8 +19,9 @@ export interface TurnProps {
 export default function Turn({ turn, renderCard }: TurnProps) {
   const isYou = turn.side === "you";
   // UI-only voice relabel (features-plan F2a e): `who` is free text; any legacy
-  // "Research" label shows as "Collaborator" without a data migration.
-  const whoLabel = turn.who === "Research" ? "Collaborator" : turn.who;
+  // "Research" label shows as "Collaborator" without a data migration. The rule
+  // is the pure `voiceLabel` helper (unit-tested + mutation-proven in isolation).
+  const whoLabel = voiceLabel(turn.who);
   return (
     <div className={styles.turn}>
       <div className={styles.turnRow}>
