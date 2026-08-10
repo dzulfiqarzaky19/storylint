@@ -11,6 +11,8 @@ export interface ResearchIndexProps {
   onSelect: (id: string) => void;
   /** Start a new empty thread. */
   onCreate?: () => void;
+  /** Delete a thread (the screen confirms + handles active-thread navigation). */
+  onDelete?: (id: string) => void;
 }
 
 /**
@@ -26,6 +28,7 @@ export default function ResearchIndex({
   selectedId,
   onSelect,
   onCreate,
+  onDelete,
 }: ResearchIndexProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
@@ -52,21 +55,42 @@ export default function ResearchIndex({
       <ul id={panelId} className={styles.panel}>
         {threads.map((t) => (
           <li key={t.id}>
-            <button
-              type="button"
+            <div
               className={
                 t.id === selectedId
-                  ? `${styles.item} ${styles.itemActive}`
-                  : styles.item
+                  ? `${styles.itemRow} ${styles.itemRowActive}`
+                  : styles.itemRow
               }
-              aria-current={t.id === selectedId ? "true" : undefined}
-              onClick={() => onSelect(t.id)}
             >
-              <span className={styles.itemName}>{t.title}</span>
-              {t.subtitle ? (
-                <span className={styles.itemNote}>{t.subtitle}</span>
+              <button
+                type="button"
+                className={
+                  t.id === selectedId
+                    ? `${styles.item} ${styles.itemActive}`
+                    : styles.item
+                }
+                aria-current={t.id === selectedId ? "true" : undefined}
+                onClick={() => onSelect(t.id)}
+              >
+                <span className={styles.itemName}>{t.title}</span>
+                {t.subtitle ? (
+                  <span className={styles.itemNote}>{t.subtitle}</span>
+                ) : null}
+              </button>
+              {onDelete ? (
+                <button
+                  type="button"
+                  className={styles.trash}
+                  aria-label={`Delete thread "${t.title}"`}
+                  title="Delete thread"
+                  onClick={() => {
+                    if (window.confirm("Delete this thread?")) onDelete(t.id);
+                  }}
+                >
+                  {"\uD83D\uDDD1"}
+                </button>
               ) : null}
-            </button>
+            </div>
           </li>
         ))}
         {onCreate ? (

@@ -16,6 +16,7 @@ import {
   cancelPending,
   confirmCard,
   createThread,
+  deleteThread,
   askResearchAi,
 } from "@/lib/actions/research";
 import ResearchIndex from "./ResearchIndex";
@@ -209,6 +210,42 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     });
   };
 
+  // Hard-delete a thread. When the ACTIVE thread is deleted we jump to the
+  // nearest remaining thread (prefer the next one, else the previous); if none
+  // remain we open a fresh empty thread. Deleting a non-active thread just
+  // refreshes the list in place. Confirmation happens in ResearchIndex.
+  const removeThread = (id: string) => {
+    const threads = snapshot.threads;
+    const idx = threads.findIndex((t) => t.id === id);
+    const remaining = threads.filter((t) => t.id !== id);
+    const wasActive = id === snapshot.threadId;
+    const nextActive =
+      idx >= 0 ? (remaining[idx] ?? remaining[idx - 1] ?? null) : null;
+    startTransition(async () => {
+      const res = await deleteThread({ threadId: id });
+      if (!res.ok) {
+        dispatch({ type: "SET_ERROR", error: res.error });
+        return;
+      }
+      if (!wasActive) {
+        router.refresh();
+        return;
+      }
+      if (nextActive) {
+        router.push(`/research?thread=${encodeURIComponent(nextActive.id)}`);
+      } else {
+        const created = await createThread();
+        if (created.ok) {
+          router.push(
+            `/research?thread=${encodeURIComponent(created.data.threadId)}`,
+          );
+        } else {
+          dispatch({ type: "SET_ERROR", error: created.error });
+        }
+      }
+    });
+  };
+
   // ---- Drag-to-board (drop equals Keep) -----------------------------------
 
   const onBoardDragOver = (ev: DragEvent<HTMLDivElement>) => {
@@ -237,6 +274,7 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           selectedId={snapshot.threadId}
           onSelect={selectThread}
           onCreate={addThread}
+          onDelete={removeThread}
         />
         <main className={styles.body}>
           <QuestionBlock question={state.question} />

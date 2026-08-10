@@ -79,6 +79,63 @@
   background: var(--surface, rgba(0, 0, 0, 0.03));
 }
 
+/* Row wrapper: the select button + a hover-revealed trash affordance sit side
+   by side. `position: relative` anchors the absolutely-placed trash. */
+.itemRow {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.itemRow .item {
+  padding-right: 30px;
+}
+
+/* Trash: hidden until the row is hovered or the button is focused, so the list
+   stays calm; always shown on the active row and on touch (no hover). */
+.trash {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.itemRow:hover .trash,
+.trash:focus-visible,
+.itemRowActive .trash {
+  opacity: 1;
+}
+
+.itemRowActive .trash {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.trash:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--accent-deep, var(--accent));
+}
+
+@media (hover: none) {
+  .trash {
+    opacity: 1;
+  }
+}
+
 .itemActive {
   background: var(--ink);
   border-left-color: var(--accent);

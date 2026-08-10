@@ -7,7 +7,7 @@ import styles from "./ResearchScreen.module.css";
 export default function QuestionBlock({ question }: { question: string }) {
   return (
     <section className={styles.questionBlock}>
-      <div className={styles.kicker}>You are turning over</div>
+      <div className={styles.kicker}>You</div>
       <h1 className={styles.question}>{question}</h1>
       <div className={styles.majorRule} />
     </section>

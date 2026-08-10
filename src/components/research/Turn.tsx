@@ -17,11 +17,14 @@ export interface TurnProps {
  */
 export default function Turn({ turn, renderCard }: TurnProps) {
   const isYou = turn.side === "you";
+  // UI-only voice relabel (features-plan F2a e): `who` is free text; any legacy
+  // "Research" label shows as "Collaborator" without a data migration.
+  const whoLabel = turn.who === "Research" ? "Collaborator" : turn.who;
   return (
     <div className={styles.turn}>
       <div className={styles.turnRow}>
         <div className={`${styles.who} ${isYou ? styles.whoYou : styles.whoThem}`}>
-          {turn.who}
+          {whoLabel}
         </div>
         <div className={`${styles.turnText}${isYou ? ` ${styles.turnTextYou}` : ""}`}>
           {turn.text}
