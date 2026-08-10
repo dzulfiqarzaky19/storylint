@@ -1,7 +1,8 @@
 -- Ashkeld schema (Postgres). Deliberately portable:
 --   text primary keys, timestamps as bigint epoch millis, snake_case columns.
--- 12 tables from HANDOFF §5. Drop in dependency order, recreate with FKs + indexes.
+-- 13 tables from HANDOFF §5 (+ category_labels, F6). Drop in dependency order, recreate with FKs + indexes.
 
+DROP TABLE IF EXISTS category_labels CASCADE;
 DROP TABLE IF EXISTS phrase_mentions CASCADE;
 DROP TABLE IF EXISTS dismissed_suggestions CASCADE;
 DROP TABLE IF EXISTS resolved_marks CASCADE;
@@ -16,7 +17,10 @@ DROP TABLE IF EXISTS ties CASCADE;
 DROP TABLE IF EXISTS facts CASCADE;
 DROP TABLE IF EXISTS entries CASCADE;
 
--- entries: id, kind, name, catalogueNo, note, summary, shelf, sortOrder
+-- entries: id, kind, name, catalogueNo, note, summary, shelf, sortOrder.
+-- deleted_at: soft-delete marker (epoch millis). NULL = live; non-NULL = "deleted"
+-- but the ROW stays so ON DELETE CASCADE on child tables never fires and every
+-- referencing fact/tie/appearance/question survives as a dangling tombstone.
 CREATE TABLE entries (
   id            text PRIMARY KEY,
   kind          text NOT NULL CHECK (kind IN ('character', 'world', 'organization', 'lore')),
@@ -25,7 +29,8 @@ CREATE TABLE entries (
   note          text NOT NULL DEFAULT '',
   summary       text NOT NULL DEFAULT '',
   shelf         text NOT NULL,
-  sort_order    integer NOT NULL DEFAULT 0
+  sort_order    integer NOT NULL DEFAULT 0,
+  deleted_at    bigint
 );
 
 -- facts: id, entryId, key, value, fresh, sortOrder
@@ -142,6 +147,15 @@ CREATE TABLE phrase_mentions (
   chapter_number  integer NOT NULL,
   count           integer NOT NULL DEFAULT 1,
   PRIMARY KEY (phrase, chapter_number)
+);
+
+-- category_labels: per-kind display-name override. kind is the fixed entry enum;
+-- label is what the shelf/category header renders (reads coalesce label ?? default).
+-- Independent table (no FK to entries): renaming a category never touches entries.
+CREATE TABLE category_labels (
+  kind   text PRIMARY KEY
+         CHECK (kind IN ('character', 'world', 'organization', 'lore')),
+  label  text NOT NULL
 );
 
 -- Indexes for the reads the screens need.

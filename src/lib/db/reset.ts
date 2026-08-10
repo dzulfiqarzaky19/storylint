@@ -13,7 +13,7 @@ export async function reset(): Promise<void> {
 async function main(): Promise<void> {
   loadEnv();
   await reset();
-  console.log("[db:reset] schema recreated (12 tables).");
+  console.log("[db:reset] schema recreated (13 tables).");
   await closePool();
 }
 
