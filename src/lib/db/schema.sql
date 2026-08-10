@@ -57,9 +57,9 @@ CREATE TABLE entries (
   shelf         text NOT NULL,
   sort_order    integer NOT NULL DEFAULT 0,
   deleted_at    bigint,
-  -- F7: the universe (canon) this entry belongs to. Nullable in the S1a EXPAND
-  -- shape (matches a just-migrated live DB pre-contract); S1b enforces NOT NULL.
-  universe_id   text REFERENCES universes(id)
+  -- F7: the universe (canon) this entry belongs to. NOT NULL as of the S1b
+  -- CONTRACT phase (f7a stamped every row, incl. soft-deleted, to universe-1).
+  universe_id   text NOT NULL REFERENCES universes(id)
 );
 
 -- facts: id, entryId, key, value, fresh, sortOrder
@@ -97,8 +97,8 @@ CREATE TABLE chapter_appearances (
   sort_order integer NOT NULL DEFAULT 0,
   -- F7: the book whose Chapter `chapter` this appearance belongs to. Two books
   -- can each have a "Chapter 1", so (entry_id, chapter) is ambiguous across books
-  -- and the book must be carried explicitly. Nullable in S1a; NOT NULL in S1b.
-  book_id    text REFERENCES books(id)
+  -- and the book must be carried explicitly. NOT NULL as of the S1b CONTRACT phase.
+  book_id    text NOT NULL REFERENCES books(id)
 );
 
 -- open_questions: id, entryId, text, sortOrder
@@ -110,21 +110,21 @@ CREATE TABLE open_questions (
 );
 
 -- chapters: id, number, title, body (ProseMirror JSON)
--- `number` is UNIQUE: it is the natural key the app looks chapters up by
--- (getChapter/saveChapterBody WHERE number=$1, getNextChapterNumber MAX(number)+1).
--- UNIQUE both prevents duplicate chapter numbers (a correctness hole: getChapter's
--- one<>() would silently take rows[0], and concurrent createChapter could mint the
--- same MAX+1) AND auto-creates the supporting index that turns those hot-path
--- lookups from seq-scans into index probes as the book grows.
--- F7: `book_id` is nullable in the S1a EXPAND shape (matches a just-migrated live
--- DB pre-contract). `number` keeps the OLD global UNIQUE here in S1a; S1b flips it
--- to UNIQUE(book_id, number) so each book restarts at Chapter 1.
+-- `number` is the natural key the app looks chapters up by within a book
+-- (getChapter/saveChapterBody WHERE number=$1 scoped to a book, getNextChapterNumber
+-- MAX(number)+1 WHERE book_id=$1).
+-- F7 CONTRACT (S1b): uniqueness is per-book UNIQUE(book_id, number) — each book
+-- restarts at Chapter 1 — NOT a global UNIQUE(number). `number` stays NOT NULL.
+-- book_id is NOT NULL as of S1b (f7a stamped every chapter to book-1). The
+-- table-level UNIQUE also creates the supporting index for the per-book hot-path
+-- lookups (getChapter/saveChapterBody) that grow with the book.
 CREATE TABLE chapters (
   id      text PRIMARY KEY,
-  number  integer NOT NULL UNIQUE,
+  number  integer NOT NULL,
   title   text NOT NULL,
   body    jsonb NOT NULL,
-  book_id text REFERENCES books(id)
+  book_id text NOT NULL REFERENCES books(id),
+  UNIQUE (book_id, number)
 );
 
 -- entry_facets: sparse per-book SCALAR override of an entry. A row exists only
@@ -150,9 +150,9 @@ CREATE TABLE research_threads (
   sort_order  integer NOT NULL DEFAULT 0,
   scope       text NOT NULL DEFAULT 'chat'
     CHECK (scope IN ('chat', 'character', 'world', 'organization', 'lore')),
-  -- F7: a universe is a canon; research sees that universe's wiki. Nullable in
-  -- S1a; NOT NULL in S1b.
-  universe_id text REFERENCES universes(id)
+  -- F7: a universe is a canon; research sees that universe's wiki. NOT NULL as of
+  -- the S1b CONTRACT phase (f7a stamped every existing thread to universe-1).
+  universe_id text NOT NULL REFERENCES universes(id)
 );
 
 -- research_turns: id, threadId, ordinal, side, who, text
