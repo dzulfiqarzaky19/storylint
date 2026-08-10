@@ -10,7 +10,7 @@
 // the confirmation invariant (product rule 1) lives at the action layer.
 
 import { query, one, rows, withTransaction } from "./pool";
-import { DEFAULT_BOOK_ID, DEFAULT_UNIVERSE_ID } from "./scope";
+import { DEFAULT_BOOK_ID, DEFAULT_SERIES_ID, DEFAULT_UNIVERSE_ID } from "./scope";
 import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, Kind } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
 
@@ -837,4 +837,131 @@ export async function updateThreadTitle(input: {
     input.threadId,
     input.title,
   ]);
+}
+
+// ---- F7 worlds hierarchy: structural creation (Universe/Series/Book) --------
+//
+// These INSERT the STRUCTURAL rows of the worlds hierarchy. They are NOT wiki
+// content, so per product rule 1 they take NO WikiWriteConfirmation token (same
+// as createChapter).
+//
+// CONTINUATION vs FRESH is pure ROUTING, not a canon copy — ratified by chick
+// (data-model gate) on schema evidence:
+//   * CONTINUATION = a new Series/Book under an EXISTING universe. The new book
+//     reuses that universe's canon BY CONSTRUCTION: canon entries carry the
+//     universe_id (loadWikiSnapshot filters on it) and canon facts/ties carry
+//     book_id = NULL, so they surface in every book of the universe. NO row is
+//     copied — a physical copy would DOUBLE canon (two `entries` rows for one
+//     character) and break the single-source assumption the merge relies on.
+//   * FRESH = a NEW universe (+ its first series and book). Its wiki is empty by
+//     construction because no entries carry the new universe_id yet.
+// So the fresh/continuation flag is simply WHICH universe_id the new structural
+// rows get: an existing one (continuation) or a newly-minted one (fresh).
+
+export interface UniverseRow {
+  id: string;
+  name: string;
+}
+export interface SeriesRow {
+  id: string;
+  universeId: string;
+  name: string;
+  sortOrder: number;
+}
+export interface BookRow {
+  id: string;
+  seriesId: string;
+  name: string;
+  sortOrder: number;
+}
+
+/** Insert a universe row (the canon root). Structural — no wiki token. */
+export async function insertUniverse(input: {
+  id: string;
+  name: string;
+}): Promise<UniverseRow> {
+  const res = await one<UniverseRow>(
+    `INSERT INTO universes (id, name) VALUES ($1, $2) RETURNING id, name`,
+    [input.id, input.name],
+  );
+  if (!res) throw new Error("insertUniverse: no row returned");
+  return res;
+}
+
+/**
+ * Insert a series under a universe (CONTINUATION routing: default = active
+ * universe, so the new series reuses that universe's canon by construction).
+ */
+export async function insertSeries(input: {
+  id: string;
+  name: string;
+  universeId?: string;
+  sortOrder?: number;
+}): Promise<SeriesRow> {
+  const res = await one<SeriesRow>(
+    `INSERT INTO series (id, universe_id, name, sort_order)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, universe_id AS "universeId", name, sort_order AS "sortOrder"`,
+    [input.id, input.universeId ?? DEFAULT_UNIVERSE_ID, input.name, input.sortOrder ?? 0],
+  );
+  if (!res) throw new Error("insertSeries: no row returned");
+  return res;
+}
+
+/**
+ * Insert a book under a series (CONTINUATION routing: default = active series).
+ * A new book starts EMPTY, so getNextChapterNumber(newBook) = 1 by construction
+ * (COALESCE(MAX(number),0)+1 over zero chapters).
+ */
+export async function insertBook(input: {
+  id: string;
+  name: string;
+  seriesId?: string;
+  sortOrder?: number;
+}): Promise<BookRow> {
+  const res = await one<BookRow>(
+    `INSERT INTO books (id, series_id, name, sort_order)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, series_id AS "seriesId", name, sort_order AS "sortOrder"`,
+    [input.id, input.seriesId ?? DEFAULT_SERIES_ID, input.name, input.sortOrder ?? 0],
+  );
+  if (!res) throw new Error("insertBook: no row returned");
+  return res;
+}
+
+/**
+ * FRESH world: create a NEW universe plus its first series and first book, in
+ * ONE transaction so a universe never lands without a home for chapters. The new
+ * universe's wiki is empty by construction (no entries carry its universe_id).
+ * This is the "fresh" branch; continuation instead calls insertSeries/insertBook
+ * against an existing universe_id.
+ */
+export async function createFreshUniverse(input: {
+  universeId: string;
+  seriesId: string;
+  bookId: string;
+  universeName: string;
+  seriesName?: string;
+  bookName?: string;
+}): Promise<{ universe: UniverseRow; series: SeriesRow; book: BookRow }> {
+  return withTransaction(async (client) => {
+    const uni = await client.query<UniverseRow>(
+      `INSERT INTO universes (id, name) VALUES ($1, $2) RETURNING id, name`,
+      [input.universeId, input.universeName],
+    );
+    const ser = await client.query<SeriesRow>(
+      `INSERT INTO series (id, universe_id, name, sort_order)
+       VALUES ($1, $2, $3, 0)
+       RETURNING id, universe_id AS "universeId", name, sort_order AS "sortOrder"`,
+      [input.seriesId, input.universeId, input.seriesName ?? input.universeName],
+    );
+    const bk = await client.query<BookRow>(
+      `INSERT INTO books (id, series_id, name, sort_order)
+       VALUES ($1, $2, $3, 0)
+       RETURNING id, series_id AS "seriesId", name, sort_order AS "sortOrder"`,
+      [input.bookId, input.seriesId, input.bookName ?? input.seriesName ?? input.universeName],
+    );
+    // INSERT ... RETURNING always yields exactly one row.
+    return { universe: uni.rows[0]!, series: ser.rows[0]!, book: bk.rows[0]! };
+  });
 }
