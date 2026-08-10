@@ -40,7 +40,10 @@ export function _tokenGateIsTscEnforced(): void {
 // SHARED-DB HYGIENE: throwaway ids (`test-f6s5-<uuid>`) hard-deleted in
 // afterEach. The category_labels table is 4 FIXED rows shared with the seed, so
 // the whole table is SNAPSHOTTED in beforeAll and RESTORED in afterAll — this
-// spec must never leave a renamed/removed label behind. closePool in afterAll.
+// spec must never leave a renamed/removed label behind. The deleteCategory tests
+// bulk soft-delete whole KINDS, which also hits real seed entries, so the set of
+// live non-throwaway ids is snapshotted in beforeAll and any it soft-deletes are
+// resurrected (deleted_at -> NULL) in afterEach. closePool in afterAll.
 // -----------------------------------------------------------------------------
 
 loadEnv();
@@ -48,6 +51,13 @@ loadEnv();
 const CONFIRM = confirmWikiWrite({ confirmed: true });
 const created: string[] = [];
 let labelSnapshot: { kind: string; label: string }[] = [];
+// The ids of every entry that is LIVE (deleted_at IS NULL) and NOT a throwaway
+// at the start of the run. The deleteCategory tests bulk soft-delete whole kinds
+// against the SHARED live DB, which catches these real SEED rows; afterEach must
+// resurrect exactly and only these, so live counts do not drift run-to-run. A
+// snapshot (rather than a blanket "un-delete everything") guarantees a genuine
+// pre-existing S2/S6 tombstone is never wrongly restored.
+let liveSeedIds: string[] = [];
 
 async function freshEntry(kind: Kind, shelf: Shelf, name: string): Promise<string> {
   const id = `test-f6s5-${randomUUID()}`;
@@ -67,6 +77,13 @@ beforeAll(async () => {
   labelSnapshot = (
     await query<{ kind: string; label: string }>(`SELECT kind, label FROM category_labels`)
   ).rows;
+  // Snapshot which real (non-throwaway) entries are LIVE now, so afterEach can
+  // resurrect exactly those the deleteCategory tests soft-delete.
+  liveSeedIds = (
+    await query<{ id: string }>(
+      `SELECT id FROM entries WHERE deleted_at IS NULL AND id NOT LIKE 'test-f6s5-%'`,
+    )
+  ).rows.map((r) => r.id);
 });
 
 afterEach(async () => {
@@ -76,6 +93,15 @@ afterEach(async () => {
     await query(`DELETE FROM ties WHERE from_entry_id = $1 OR to_entry_id = $1`, [id]);
     await query(`DELETE FROM facts WHERE entry_id = $1`, [id]);
     await query(`DELETE FROM entries WHERE id = $1`, [id]);
+  }
+  // Resurrect any real SEED entry the deleteCategory tests soft-deleted, so the
+  // shared DB's live count does not drift. Restricted to the ids that were LIVE
+  // at snapshot time — a genuine pre-existing tombstone is never resurrected.
+  if (liveSeedIds.length > 0) {
+    await query(
+      `UPDATE entries SET deleted_at = NULL WHERE deleted_at IS NOT NULL AND id = ANY($1)`,
+      [liveSeedIds],
+    );
   }
 });
 
