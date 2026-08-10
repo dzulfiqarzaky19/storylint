@@ -33,7 +33,7 @@ import {
   deleteThread as deleteThreadRow,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
-import type { Kind } from "../domain/types";
+import type { Kind, ResearchScope } from "../domain/types";
 import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
 import { loadWikiSnapshot } from "../db/queries";
@@ -332,6 +332,7 @@ export async function askResearchAi(input: {
 export async function createThread(input?: {
   title?: string;
   subtitle?: string;
+  scope?: ResearchScope;
 }): Promise<ActionResult<{ threadId: string }>> {
   try {
     const id = randomUUID();
@@ -341,6 +342,7 @@ export async function createThread(input?: {
       title: input?.title?.trim() || "New thread",
       subtitle: input?.subtitle?.trim() ?? "",
       sortOrder,
+      scope: input?.scope ?? "chat",
     });
     return { ok: true, data: { threadId: row.id } };
   } catch (err) {

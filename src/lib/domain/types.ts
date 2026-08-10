@@ -176,4 +176,5 @@ export interface ResearchThreadRow {
   title: string;
   subtitle: string;
   sortOrder: number;
+  scope: ResearchScope;
 }

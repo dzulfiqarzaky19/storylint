@@ -79,12 +79,16 @@ CREATE TABLE chapters (
   body    jsonb NOT NULL
 );
 
--- research_threads: id, title, subtitle, sortOrder (Gemini-style thread list).
+-- research_threads: id, title, subtitle, sortOrder, scope (Gemini-style thread
+-- list). `scope` decides the wiki context the AI sees: 'chat' = none (broad),
+-- a wiki kind = all entries of that kind (F4-P2).
 CREATE TABLE research_threads (
   id          text PRIMARY KEY,
   title       text NOT NULL,
   subtitle    text NOT NULL DEFAULT '',
-  sort_order  integer NOT NULL DEFAULT 0
+  sort_order  integer NOT NULL DEFAULT 0,
+  scope       text NOT NULL DEFAULT 'chat'
+    CHECK (scope IN ('chat', 'character', 'world', 'organization', 'lore'))
 );
 
 -- research_turns: id, threadId, ordinal, side, who, text

@@ -393,12 +393,13 @@ export async function insertResearchThread(input: {
   title: string;
   subtitle: string;
   sortOrder: number;
+  scope: import("../domain/types").ResearchScope;
 }): Promise<import("../domain/types").ResearchThreadRow> {
   const res = await one<import("../domain/types").ResearchThreadRow>(
-    `INSERT INTO research_threads (id, title, subtitle, sort_order)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id, title, subtitle, sort_order AS "sortOrder"`,
-    [input.id, input.title, input.subtitle, input.sortOrder],
+    `INSERT INTO research_threads (id, title, subtitle, sort_order, scope)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, title, subtitle, sort_order AS "sortOrder", scope`,
+    [input.id, input.title, input.subtitle, input.sortOrder, input.scope],
   );
   if (!res) throw new Error("insertResearchThread: no row returned");
   return res;

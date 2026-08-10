@@ -28,7 +28,7 @@ const created: string[] = [];
 
 async function freshThread(title = "New thread"): Promise<string> {
   const id = `test-f2a-${randomUUID()}`;
-  await insertResearchThread({ id, title, subtitle: "", sortOrder: 999 });
+  await insertResearchThread({ id, title, subtitle: "", sortOrder: 999, scope: "chat" });
   created.push(id);
   return id;
 }

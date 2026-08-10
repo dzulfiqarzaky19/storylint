@@ -325,7 +325,7 @@ export async function listResearchThreads(): Promise<
   import("../domain/types").ResearchThreadRow[]
 > {
   return rows<import("../domain/types").ResearchThreadRow>(
-    `SELECT id, title, subtitle, sort_order AS "sortOrder"
+    `SELECT id, title, subtitle, sort_order AS "sortOrder", scope
      FROM research_threads
      ORDER BY sort_order, id`,
   );
