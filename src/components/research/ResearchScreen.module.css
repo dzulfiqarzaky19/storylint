@@ -23,6 +23,41 @@
   overflow-y: auto;
 }
 
+/* ---- Scope switcher bar ------------------------------------------------ */
+/* A slim bar at the top of the thread body letting the writer switch the
+   active thread's wiki scope. Changing it only affects FUTURE answers; the
+   existing turns are untouched, so this never blocks. */
+.scopeBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px var(--gutter) 0;
+  flex-wrap: wrap;
+}
+
+.scopeBarLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.scopeBarSelect {
+  padding: 5px 10px;
+  font-size: 13px;
+  border: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.16));
+  border-radius: 6px;
+  background: var(--surface, #fff);
+  color: inherit;
+  cursor: pointer;
+}
+
+.scopeBarNote {
+  font-size: 12px;
+  color: var(--muted, rgba(0, 0, 0, 0.55));
+}
+
 /* ---- 1. Question block (padding 30px 40px 0) --------------------------- */
 
 .questionBlock {

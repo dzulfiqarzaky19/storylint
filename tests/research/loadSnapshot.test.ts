@@ -12,6 +12,7 @@ import type { ResearchThreadRow } from "@/lib/domain/types";
 vi.mock("@/lib/db/queries", () => ({
   listResearchThreads: vi.fn(),
   getResearchThread: vi.fn(),
+  getAllEntries: vi.fn(async () => []),
 }));
 import { listResearchThreads, getResearchThread } from "@/lib/db/queries";
 const listMock = vi.mocked(listResearchThreads);

@@ -1,4 +1,4 @@
-import type { EntryWithDetails, Kind, ResearchScope } from "@/lib/domain/types";
+import type { Kind, ResearchScope } from "@/lib/domain/types";
 
 /** A selectable scope for a research thread, shown in the create picker + switcher. */
 export interface ScopeOption {
@@ -24,7 +24,9 @@ const KIND_ORDER: Kind[] = ["character", "world", "organization", "lore"];
  * - Each wiki kind with at least one entry contributes one option; kinds with
  *   zero entries are HIDDEN (dynamic, F4-P2-S2).
  */
-export function availableScopeOptions(entries: EntryWithDetails[]): ScopeOption[] {
+export function availableScopeOptions(
+  entries: readonly { kind: Kind }[],
+): ScopeOption[] {
   const options: ScopeOption[] = [{ value: "chat", label: "Chat" }];
   for (const kind of KIND_ORDER) {
     const count = entries.filter((e) => e.kind === kind).length;
