@@ -14,10 +14,16 @@ import { withDb } from "./_helpers/db";
 // survives a fresh page load (not just optimistic client state).
 //
 // The NEGATIVE half — an abort / mid-stream failure must persist NO half-pair —
-// is deterministic and is locked at unit/route level (finalizeStream GATE1 unit
-// test + its mutant, and the reviewer's independent route-level abort repro), NOT
-// here: a non-deterministic browser abort would be flaky, and the atomic F2a txn
-// this route reuses is what actually guarantees it.
+// is deterministic and is locked at unit + route-seam level, NOT here (a
+// non-deterministic browser abort would be flaky, and the atomic F2a txn this
+// route reuses is what actually guarantees it). Covered by:
+//   - tests/research/finalizeStream.test.ts   (GATE1 completed-guard, GATE2
+//     empty-reply-guard — the pure persist decision)
+//   - tests/research/streamRoute.test.ts      (drives an ABORTED req.signal
+//     THROUGH the real route POST: the `completed && !req.signal.aborted` seam
+//     forces finalize(completed:false) => persist NEVER called, no 'done' frame;
+//     mutation-proven by deleting `&& !req.signal.aborted`)
+//   - the reviewer's independent route-level abort repro
 //
 // ---------------------------------------------------------------------------
 // PARKED (test.fixme) — the live gateway is too slow/unstable to assert against.
