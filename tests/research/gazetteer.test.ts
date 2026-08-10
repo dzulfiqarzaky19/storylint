@@ -18,6 +18,7 @@ function entry(
     summary: extra.summary ?? "",
     shelf: "people",
     sortOrder: 0,
+    deletedAt: null,
     facts: extra.facts ?? [],
     ties: [],
     appearances: [],

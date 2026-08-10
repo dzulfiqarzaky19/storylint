@@ -118,6 +118,13 @@ export type WikiAction =
       key: string;
       value: string;
       sortOrder: number;
+    }
+  | {
+      type: "SOFT_DELETE_ENTRY";
+      /** The entry being soft-deleted. Removed from byId + its shelf order so
+       *  it vanishes from the index; ties from OTHER entries that still point at
+       *  it now resolve as dangling "removed" tombstones. */
+      entryId: string;
     };
 
 // ---- Init -----------------------------------------------------------------
@@ -176,6 +183,9 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
 
     case "CREATE_FACT":
       return createFactInState(state, action);
+
+    case "SOFT_DELETE_ENTRY":
+      return softDeleteEntryInState(state, action.entryId);
 
     default:
       return assertNever(action);
@@ -367,6 +377,7 @@ function createEntryInState(
     summary: action.summary,
     shelf: action.shelf,
     sortOrder: action.sortOrder,
+    deletedAt: null,
     facts: [],
     ties: [],
     appearances: [],
@@ -384,6 +395,32 @@ function createEntryInState(
     byId: { ...state.byId, [action.entryId]: entry },
     order,
     selectedEntryId: action.entryId,
+  };
+}
+
+/**
+ * Remove an entry from the live session: drop it from byId and from its shelf
+ * order so it vanishes from the index, and deselect it if it was focused. The
+ * DB keeps the row (soft delete) so ties from OTHER entries that still point at
+ * it render as dangling "removed" tombstones. No-op if the entry is unknown.
+ */
+function softDeleteEntryInState(state: WikiState, entryId: string): WikiState {
+  const entry = state.byId[entryId];
+  if (!entry) return state;
+  const byId = { ...state.byId };
+  delete byId[entryId];
+  const order: Record<Shelf, string[]> = {
+    people: [...state.order.people],
+    places: [...state.order.places],
+    orders: [...state.order.orders],
+    lore: [...state.order.lore],
+  };
+  order[entry.shelf] = order[entry.shelf].filter((id) => id !== entryId);
+  return {
+    ...state,
+    byId,
+    order,
+    selectedEntryId: state.selectedEntryId === entryId ? null : state.selectedEntryId,
   };
 }
 

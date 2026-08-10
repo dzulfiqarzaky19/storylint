@@ -35,6 +35,7 @@ import {
   updateEntryFields,
   updateFact,
   getMaxSortOrderForShelf,
+  softDeleteEntry as softDeleteEntryRow,
 } from "../db/mutations";
 
 // ---- Result envelope ------------------------------------------------------
@@ -285,6 +286,25 @@ export async function createEntry(input: {
     return { ok: true, data: { entryId: id, sortOrder } };
   } catch (err) {
     return fail(err, "wiki.createEntry");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Soft-delete an entry: stamp `deleted_at` so it
+ * drops out of the gazetteer read filter but its row survives, letting any tie
+ * that still points at it render as a dangling "removed" tombstone. Idempotent
+ * server-side (the mutation's `AND deleted_at IS NULL` guard). Mirrors reducer
+ * `SOFT_DELETE_ENTRY`.
+ */
+export async function softDeleteEntry(input: {
+  id: string;
+}): Promise<ActionResult> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    await softDeleteEntryRow({ id: input.id, deletedAt: Date.now() }, confirmation);
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.softDeleteEntry");
   }
 }
 

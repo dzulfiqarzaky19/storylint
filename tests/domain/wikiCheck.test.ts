@@ -38,6 +38,7 @@ function entry(
     ties: [],
     appearances: [],
     openQuestions: [],
+    deletedAt: null,
   };
 }
 

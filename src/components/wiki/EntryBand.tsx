@@ -12,7 +12,11 @@ import styles from "./EntryBand.module.css";
 
 interface EntryBandProps {
   entry: EntryWithDetails;
+  /** Ids of every LIVE entry, passed through to the Ties tombstone resolver. */
+  liveEntryIds: Set<string>;
   onSelect: (id: string) => void;
+  /** Soft-delete this entry (removes it from the gazetteer; ties to it tombstone). */
+  onDelete: (id: string) => void;
   /** Drop a tile onto the Ties block → create a tie from this entry. */
   onDropOnTies: () => void;
   /** Drop a suggestion card onto Details → add it as a fresh fact. */
@@ -46,7 +50,9 @@ interface EntryBandProps {
 // Main column flex:1, right column fixed 340px (HANDOFF §4 / README Screen 1).
 export default function EntryBand({
   entry,
+  liveEntryIds,
   onSelect,
+  onDelete,
   onDropOnTies,
   onDropSuggestion,
   onEditEntryField,
@@ -64,6 +70,14 @@ export default function EntryBand({
         <p className={styles.kicker}>
           <span className={styles.kind}>{kindLabel}</span>
           <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
+          <button
+            type="button"
+            className={styles.deleteEntry}
+            onClick={() => onDelete(entry.id)}
+            aria-label={`Delete ${entry.name}`}
+          >
+            Delete
+          </button>
         </p>
         <h1 className={styles.name}>
           <InlineText
@@ -106,6 +120,7 @@ export default function EntryBand({
 
       <EntryAside
         entry={entry}
+        liveEntryIds={liveEntryIds}
         onSelect={onSelect}
         onDropOnTies={onDropOnTies}
       />

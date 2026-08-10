@@ -28,7 +28,8 @@ const ENTRY_COLS = `
   note,
   summary,
   shelf,
-  sort_order AS "sortOrder"
+  sort_order AS "sortOrder",
+  deleted_at AS "deletedAt"
 `;
 
 const FACT_COLS = `
@@ -60,14 +61,19 @@ const OPEN_QUESTION_COLS = `
 // ---- Entry reads ----------------------------------------------------------
 
 export async function getAllEntries(): Promise<EntryRow[]> {
+  // F6 read-filter (behavior lock): soft-deleted entries (deleted_at set) vanish
+  // from every live surface — shelves, the wiki snapshot, AND the AI gazetteer
+  // built from this snapshot, so a deleted entry can never leak into AI grounding.
   return rows<EntryRow>(
-    `SELECT ${ENTRY_COLS} FROM entries ORDER BY shelf, sort_order, name`,
+    `SELECT ${ENTRY_COLS} FROM entries WHERE deleted_at IS NULL ORDER BY shelf, sort_order, name`,
   );
 }
 
 export async function getEntry(id: string): Promise<EntryRow | null> {
+  // F6 read-filter (behavior lock): a soft-deleted entry is not fetchable by id
+  // from any live read path.
   return one<EntryRow>(
-    `SELECT ${ENTRY_COLS} FROM entries WHERE id = $1`,
+    `SELECT ${ENTRY_COLS} FROM entries WHERE id = $1 AND deleted_at IS NULL`,
     [id],
   );
 }

@@ -35,6 +35,7 @@ function entry(
     summary: "",
     shelf: "people",
     sortOrder: 0,
+    deletedAt: null,
     facts: (opts.facts ?? []).map(([key, value], i) => ({
       id: `${id}-f${i}`,
       entryId: id,

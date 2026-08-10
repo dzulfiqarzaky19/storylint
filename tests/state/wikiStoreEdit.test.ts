@@ -36,6 +36,7 @@ function entry(
     ties: [],
     appearances: [],
     openQuestions: [],
+    deletedAt: null,
     ...extra,
   };
 }
@@ -186,6 +187,44 @@ describe("wikiReducer — CREATE_FACT", () => {
       value: "v",
       sortOrder: 0,
     });
+    expect(s1).toBe(s0);
+  });
+});
+
+describe("wikiReducer — SOFT_DELETE_ENTRY", () => {
+  it("drops the entry from byId and from its shelf order", () => {
+    const s0 = stateWith([
+      entry("e1", "Maren", "character", "people"),
+      entry("e2", "Ivo", "character", "people"),
+    ]);
+    const s1 = wikiReducer(s0, { type: "SOFT_DELETE_ENTRY", entryId: "e1" });
+    expect(s1.byId["e1"]).toBeUndefined();
+    expect(s1.order.people).toEqual(["e2"]);
+    // The surviving sibling is untouched.
+    expect(s1.byId["e2"]).toBe(s0.byId["e2"]);
+  });
+
+  it("deselects the entry when it was the focused one", () => {
+    const s0 = stateWith([entry("e1", "Maren", "character", "people")]);
+    // initWikiState focuses the first entry, so e1 is selected here.
+    expect(s0.selectedEntryId).toBe("e1");
+    const s1 = wikiReducer(s0, { type: "SOFT_DELETE_ENTRY", entryId: "e1" });
+    expect(s1.selectedEntryId).toBeNull();
+  });
+
+  it("keeps the selection when a DIFFERENT entry is deleted", () => {
+    const s0 = stateWith([
+      entry("e1", "Maren", "character", "people"),
+      entry("e2", "Ivo", "character", "people"),
+    ]);
+    // e1 is focused; deleting e2 must not change the focus.
+    const s1 = wikiReducer(s0, { type: "SOFT_DELETE_ENTRY", entryId: "e2" });
+    expect(s1.selectedEntryId).toBe("e1");
+  });
+
+  it("is a no-op for an unknown entry", () => {
+    const s0 = stateWith([entry("e1", "Maren", "character", "people")]);
+    const s1 = wikiReducer(s0, { type: "SOFT_DELETE_ENTRY", entryId: "nope" });
     expect(s1).toBe(s0);
   });
 });

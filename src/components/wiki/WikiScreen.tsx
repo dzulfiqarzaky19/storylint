@@ -26,6 +26,7 @@ import {
   createEntry,
   createFact,
   suggestEntryFacts,
+  softDeleteEntry,
   type ActionResult,
 } from "@/lib/actions/wiki";
 import EntryBand from "./EntryBand";
@@ -349,6 +350,17 @@ function WikiScreenInner({
     [state.order, settle],
   );
 
+  // Soft-delete an entry: optimistically drop it from the session (index +
+  // selection), then persist the deleted_at stamp. Its ties from other entries
+  // become dangling "removed" tombstones on next render.
+  const deleteEntry = useCallback(
+    (entryId: string) => {
+      dispatch({ type: "SOFT_DELETE_ENTRY", entryId });
+      settle("softDeleteEntry", softDeleteEntry({ id: entryId }));
+    },
+    [settle],
+  );
+
 
   // Entries grouped per shelf, in the reducer's live order.
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
@@ -360,6 +372,11 @@ function WikiScreenInner({
         .filter((e): e is EntryWithDetails => Boolean(e)),
     );
   }
+
+  // The set of LIVE entry ids (soft-deleted entries were filtered out of the
+  // snapshot at load, so byId holds only live entries). A tie pointing at
+  // anything NOT in this set is dangling and renders as a "removed" tombstone.
+  const liveEntryIds = new Set(Object.keys(state.byId));
 
   if (!selected) {
     return (
@@ -403,7 +420,9 @@ function WikiScreenInner({
 
       <EntryBand
         entry={selected}
+        liveEntryIds={liveEntryIds}
         onSelect={select}
+        onDelete={deleteEntry}
         onDropOnTies={dropOnTies}
         onDropSuggestion={addSuggestionToDetails}
         onEditEntryField={editEntryField}

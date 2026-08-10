@@ -63,3 +63,29 @@
   border: 2px solid var(--accent);
   background: var(--drop);
 }
+
+/* Dangling tie: the target entry was removed (soft-deleted or purged). Renders
+   as a NON-clickable RED marker instead of a link — "removed, needs replacement". */
+.tombstone {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: var(--rule-row);
+}
+
+.tombstoneName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: line-through;
+}
+
+.tombstoneNote {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

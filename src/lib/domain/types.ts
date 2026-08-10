@@ -53,6 +53,8 @@ export interface EntryRow {
   summary: string;
   shelf: Shelf;
   sortOrder: number;
+  /** Soft-delete marker (epoch millis). null = live; non-null = deleted (F6). */
+  deletedAt: number | null;
 }
 
 export interface FactRow {

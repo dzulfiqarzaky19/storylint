@@ -131,6 +131,25 @@ export async function insertEntry(
 }
 
 /**
+ * WIKI WRITE (product rule 1). Soft-delete a single entry: stamp deleted_at so
+ * the row is hidden from every live read (getAllEntries/getEntry filter
+ * `deleted_at IS NULL`) WITHOUT removing the row — the ON DELETE CASCADE on
+ * facts/ties/appearances/open_questions therefore never fires and every
+ * referencing row survives to be rendered as a dangling "removed" tombstone.
+ * Idempotent: the `AND deleted_at IS NULL` guard makes re-deleting a no-op that
+ * preserves the original deletion timestamp. Requires a confirmation token.
+ */
+export async function softDeleteEntry(
+  input: { id: string; deletedAt: number },
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  await query(
+    `UPDATE entries SET deleted_at = $2 WHERE id = $1 AND deleted_at IS NULL`,
+    [input.id, input.deletedAt],
+  );
+}
+
+/**
  * Persist the full order of one shelf after a drag. `orderedIds` is the shelf's
  * entries top-to-bottom; each is set to `shelf` with sort_order = its index, so
  * the DB row order matches exactly what the UI shows. One statement per row keeps

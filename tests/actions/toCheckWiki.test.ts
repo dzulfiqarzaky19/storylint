@@ -47,6 +47,7 @@ function dbEntry(
     summary: over.summary ?? "",
     shelf: over.shelf ?? "people",
     sortOrder: over.sortOrder ?? 0,
+    deletedAt: over.deletedAt ?? null,
     facts: over.facts ?? [],
     ties: over.ties ?? [],
     appearances: over.appearances ?? [],
