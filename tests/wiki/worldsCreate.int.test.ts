@@ -49,6 +49,10 @@ const contBookId = `test-f7s3-bk-${randomUUID()}`;
 const freshUniId = `test-f7s3-uni-${randomUUID()}`;
 const freshSeriesId = `test-f7s3-ser-${randomUUID()}`;
 const freshBookId = `test-f7s3-bk-${randomUUID()}`;
+// A series routed under the FRESH (non-default) universe. This is what makes
+// insertSeries's universe routing MEASURABLE: routing under universe-1 alone
+// cannot distinguish `input.universeId ?? DEFAULT` from a hardcoded DEFAULT.
+const routedSeriesId = `test-f7s3-ser-${randomUUID()}`;
 
 beforeAll(async () => {
   if (!process.env.DATABASE_URL) {
@@ -59,7 +63,7 @@ beforeAll(async () => {
 afterAll(async () => {
   // FK order: books -> series -> universes. Delete continuation + fresh graphs.
   await query(`DELETE FROM books WHERE id = ANY($1)`, [[contBookId, freshBookId]]);
-  await query(`DELETE FROM series WHERE id = ANY($1)`, [[contSeriesId, freshSeriesId]]);
+  await query(`DELETE FROM series WHERE id = ANY($1)`, [[contSeriesId, freshSeriesId, routedSeriesId]]);
   await query(`DELETE FROM universes WHERE id = $1`, [freshUniId]);
   await closePool();
 });
@@ -117,5 +121,24 @@ describe("F7-S3 worlds-hierarchy creation flows (real Postgres)", () => {
     // New book under the fresh series -> chapter numbering starts at 1.
     const next = await getNextChapterNumber(freshBookId);
     expect(next).toBe(1);
+
+    // M-series-route lock: insertSeries must carry the ROUTED universe, not a
+    // hardcoded DEFAULT. Routing under a NON-default universe (the fresh one) is
+    // what makes this measurable — universe-1 alone can't distinguish
+    // `input.universeId ?? DEFAULT` from a hardcoded DEFAULT. Mutating
+    // insertSeries's universeId -> DEFAULT_UNIVERSE_ID makes both asserts RED.
+    const routedSer = await insertSeries({
+      id: routedSeriesId,
+      name: "Routed Under Fresh",
+      universeId: freshUniId,
+    });
+    expect(routedSer.universeId).toBe(freshUniId);
+    expect(routedSer.universeId).not.toBe(DEFAULT_UNIVERSE_ID);
+    const dbRoutedSer = await one<{ universe_id: string }>(
+      `SELECT universe_id FROM series WHERE id = $1`,
+      [routedSeriesId],
+    );
+    expect(dbRoutedSer?.universe_id).toBe(freshUniId);
+    expect(dbRoutedSer?.universe_id).not.toBe(DEFAULT_UNIVERSE_ID);
   });
 });
