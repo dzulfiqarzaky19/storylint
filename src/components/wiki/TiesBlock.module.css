@@ -30,15 +30,37 @@
   display: block;
 }
 
+/* Row wrapper: the clickable tie (or tombstone) plus its untie (×) affordance. */
+.rowItem {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
 /* Tie row: padding 10px 0, 1px rule, clickable, name left + rel right. */
 .row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  width: 100%;
+  flex: 1;
   padding: 10px 0;
   border-bottom: var(--rule-row);
   text-align: left;
+}
+
+/* Untie (×): removes the relationship (HARD delete, behind a danger confirm). */
+.untie {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 0 6px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--muted-2);
+  cursor: pointer;
+}
+
+.untie:hover {
+  color: var(--accent);
 }
 
 .name {
@@ -70,7 +92,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  width: 100%;
+  flex: 1;
   padding: 10px 0;
   border-bottom: var(--rule-row);
 }
@@ -88,4 +110,76 @@
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* "+ Add tie" trigger — opens the inline picker below the tie list. */
+.addTie {
+  margin-top: 10px;
+  padding: 4px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Inline add-tie authoring panel (rel input + entry picker + cancel). */
+.addPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  border: var(--rule-row);
+  background: var(--paper-2, #faf8f4);
+}
+
+.relInput,
+.pickerInput {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: var(--rule-row);
+  background: #fff;
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.pickerOption,
+.createOption {
+  padding: 6px 8px;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pickerOption:hover,
+.createOption:hover {
+  background: var(--drop);
+}
+
+.pickerKind {
+  font-size: 11px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.createOption {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.addCancel {
+  align-self: flex-start;
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--muted-2);
+  cursor: pointer;
 }

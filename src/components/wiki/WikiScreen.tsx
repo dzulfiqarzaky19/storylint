@@ -27,6 +27,8 @@ import {
   createFact,
   suggestEntryFacts,
   softDeleteEntry,
+  untie,
+  createEntryTied,
   type ActionResult,
 } from "@/lib/actions/wiki";
 import EntryBand from "./EntryBand";
@@ -173,6 +175,78 @@ function WikiScreenInner({
     );
   }, [drag.dragging, selected, settle]);
 
+  // ---- Ties block authoring: untie / tie-existing / create-new-and-tie -------
+  // Each dispatches the reducer action ALONGSIDE its confirmation-gated server
+  // action (untie is a HARD delete, gated behind the TiesBlock danger confirm;
+  // the guard lives in TiesBlock, this just performs the removal).
+  const untieFromSelected = useCallback(
+    (tieId: string) => {
+      if (!selected) return;
+      dispatch({ type: "UNTIE", fromEntryId: selected.id, tieId });
+      settle("untie", untie({ tieId }));
+    },
+    [selected, settle],
+  );
+
+  // Tie the focused entry to an EXISTING entry, with the writer's rel label.
+  const tieExistingToSelected = useCallback(
+    (toEntryId: string, rel: string) => {
+      if (!selected || toEntryId === selected.id) return;
+      const tieId = newId();
+      const label = rel.trim() || LINKED_REL;
+      dispatch({
+        type: "LINK_ENTRY",
+        tieId,
+        fromEntryId: selected.id,
+        toEntryId,
+        rel: label,
+      });
+      settle(
+        "linkEntry",
+        linkEntry({ fromEntryId: selected.id, toEntryId, rel: label }),
+      );
+    },
+    [selected, settle],
+  );
+
+  // Create a NEW entry (on the focused entry's shelf/kind) and tie it in, both
+  // in one confirmation-gated transaction (createEntryTied). The reducer mirrors
+  // it optimistically with the same ids so the DB and session agree.
+  const createTiedToSelected = useCallback(
+    (name: string, rel: string) => {
+      if (!selected) return;
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      const shelf = selected.shelf as ShelfKey;
+      const kind: Kind = KIND_FOR_SHELF[shelf];
+      const entryId = newId();
+      const tieId = newId();
+      const label = rel.trim() || LINKED_REL;
+      dispatch({
+        type: "CREATE_TIED",
+        entryId,
+        tieId,
+        kind,
+        shelf,
+        name: trimmed,
+        toEntryId: selected.id,
+        rel: label,
+      });
+      settle(
+        "createEntryTied",
+        createEntryTied({
+          name: trimmed,
+          kind,
+          shelf,
+          toEntryId: selected.id,
+          rel: label,
+          confirmed: true,
+        }),
+      );
+    },
+    [selected, settle],
+  );
+
   // ---- Drop: suggestion onto Details column (add as a fresh fact) ------------
   const addSuggestionToDetails = useCallback(
     (suggestionKey: string) => {
@@ -228,10 +302,13 @@ function WikiScreenInner({
   );
 
   // ---- Manual authoring (Track A) — edit in place + create ------------------
-  const newId = () =>
-    typeof crypto !== "undefined" && "randomUUID" in crypto
+  // Hoisted function (not a const arrow) so the tie-authoring callbacks declared
+  // ABOVE the manual-authoring section can call it without a TDZ error.
+  function newId() {
+    return typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
       : `id-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
 
   const editEntryField = useCallback(
     (entryId: string, field: "name" | "summary" | "note", value: string) => {
@@ -378,6 +455,15 @@ function WikiScreenInner({
   // anything NOT in this set is dangling and renders as a "removed" tombstone.
   const liveEntryIds = new Set(Object.keys(state.byId));
 
+  // Every OTHER live entry is a candidate to tie the focused entry to. Computed
+  // from the same live byId map so a just-created/soft-deleted entry appears or
+  // disappears from the add-tie picker immediately.
+  const tieCandidates = selected
+    ? Object.values(state.byId)
+        .filter((e) => e.id !== selected.id)
+        .map((e) => ({ id: e.id, name: e.name, kind: e.kind as string }))
+    : [];
+
   if (!selected) {
     return (
       <div className={styles.layout}>
@@ -421,9 +507,13 @@ function WikiScreenInner({
       <EntryBand
         entry={selected}
         liveEntryIds={liveEntryIds}
+        tieCandidates={tieCandidates}
         onSelect={select}
         onDelete={deleteEntry}
         onDropOnTies={dropOnTies}
+        onUntie={untieFromSelected}
+        onTieExisting={tieExistingToSelected}
+        onCreateTied={createTiedToSelected}
         onDropSuggestion={addSuggestionToDetails}
         onEditEntryField={editEntryField}
         onEditFactField={editFactField}

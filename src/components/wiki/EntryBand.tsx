@@ -7,6 +7,7 @@ import Timeline from "./Timeline";
 import DetailsColumn from "./DetailsColumn";
 import OpenQuestions from "./OpenQuestions";
 import EntryAside from "./EntryAside";
+import type { TieCandidate } from "./TiesBlock";
 import InlineText from "./InlineText";
 import ConfirmModal from "../ui/ConfirmModal";
 import { appearLine } from "@/lib/domain/derive";
@@ -21,6 +22,14 @@ interface EntryBandProps {
   onDelete: (id: string) => void;
   /** Drop a tile onto the Ties block → create a tie from this entry. */
   onDropOnTies: () => void;
+  /** Every OTHER live entry — the add-tie search pool for the Ties block. */
+  tieCandidates: TieCandidate[];
+  /** Untie (hard-delete) a tie on this entry (gated behind a danger confirm). */
+  onUntie: (tieId: string) => void;
+  /** Tie this entry to an existing entry with a writer-set relationship. */
+  onTieExisting: (toEntryId: string, rel: string) => void;
+  /** Create a new entry and tie it to this entry, with a writer-set rel. */
+  onCreateTied: (name: string, rel: string) => void;
   /** Drop a suggestion card onto Details → add it as a fresh fact. */
   onDropSuggestion: (suggestionKey: string) => void;
   /** Edit a scalar field on this entry in place (manual authoring, Track A). */
@@ -56,6 +65,10 @@ export default function EntryBand({
   onSelect,
   onDelete,
   onDropOnTies,
+  tieCandidates,
+  onUntie,
+  onTieExisting,
+  onCreateTied,
   onDropSuggestion,
   onEditEntryField,
   onEditFactField,
@@ -126,8 +139,12 @@ export default function EntryBand({
       <EntryAside
         entry={entry}
         liveEntryIds={liveEntryIds}
+        tieCandidates={tieCandidates}
         onSelect={onSelect}
         onDropOnTies={onDropOnTies}
+        onUntie={onUntie}
+        onTieExisting={onTieExisting}
+        onCreateTied={onCreateTied}
       />
 
       {confirmingDelete ? (
