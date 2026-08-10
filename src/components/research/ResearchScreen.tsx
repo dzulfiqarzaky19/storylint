@@ -3,12 +3,13 @@
 import { useMemo, useReducer, useState, useTransition } from "react";
 import type { DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Kind, ResearchProposition } from "@/lib/domain/types";
+import type { Kind, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
 import {
   researchReducer,
   initResearchState,
 } from "@/lib/state/researchStore";
 import type { ResearchSnapshot } from "@/lib/db/research";
+import { readResearchStream } from "@/lib/research/readStream";
 import {
   advanceTurn,
   keepCard,
@@ -17,7 +18,6 @@ import {
   confirmCard,
   createThread,
   deleteThread,
-  askResearchAi,
 } from "@/lib/actions/research";
 import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
@@ -165,25 +165,97 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     });
   };
 
-  // ---- AI ask (persists you+them turns; grounded on the wiki, no wiki write) --
+  // ---- AI ask (STREAMING; persists you+them turns on stream-complete) --------
+  // POST to /api/research/stream: append two placeholder turns immediately, grow
+  // the answer placeholder as `delta` frames arrive, then RECONCILE both turns to
+  // the server-persisted ones on `done`. On error / abort the server persisted
+  // NOTHING, so we roll the placeholders back. The reducer stays the sole owner
+  // of turns; this only dispatches the streaming actions in order.
   const handleAsk = () => {
     const question = draft.trim();
     if (!question || asking) return;
     setAsking(true);
+
+    // Client-side placeholder ids. The server generates its OWN real ids and
+    // returns the persisted turns in `done`; RECONCILE_TURN remaps these temp
+    // ids to the persisted ids (and folds any card kept/inWiki flags).
+    const stamp = Date.now();
+    const tempYouId = `stream-you-${stamp}`;
+    const tempThemId = `stream-them-${stamp}`;
+    const threadId = snapshot.threadId;
+
+    const youPlaceholder: ResearchTurnWithCards = {
+      id: tempYouId,
+      threadId,
+      ordinal: -1,
+      side: "you",
+      who: "You",
+      text: question,
+      cards: [],
+    };
+    const themPlaceholder: ResearchTurnWithCards = {
+      id: tempThemId,
+      threadId,
+      ordinal: -1,
+      side: "them",
+      who: "Collaborator",
+      text: "",
+      cards: [],
+    };
+
+    dispatch({ type: "APPEND_STREAMING_TURN", turns: [youPlaceholder, themPlaceholder] });
+    setDraft("");
+
     startTransition(async () => {
+      let reconciled = false;
       try {
-        const res = await askResearchAi({
-          question,
-          threadId: snapshot.threadId,
-          threadTitle: snapshot.threads.find((t) => t.id === snapshot.threadId)?.title,
+        const res = await fetch("/api/research/stream", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            question,
+            threadId,
+            threadTitle: snapshot.threads.find((t) => t.id === threadId)?.title,
+          }),
         });
-        if (res.ok) {
-          dispatch({ type: "APPEND_TURN", turns: res.data.turns });
-          setDraft("");
-        } else {
-          dispatch({ type: "SET_ERROR", error: res.error });
+
+        if (!res.ok || !res.body) {
+          let message = "The AI stream failed to start.";
+          try {
+            const body = (await res.json()) as { error?: string };
+            if (body.error) message = body.error;
+          } catch {
+            /* non-JSON error body */
+          }
+          throw new Error(message);
+        }
+
+        await readResearchStream(res.body.getReader(), {
+          onDelta: (text) => {
+            dispatch({ type: "STREAM_DELTA", turnId: tempThemId, text });
+          },
+          onDone: (turns) => {
+            // Reconcile in order: [youPersisted, themPersisted].
+            const [youTurn, themTurn] = turns;
+            if (youTurn) dispatch({ type: "RECONCILE_TURN", tempTurnId: tempYouId, turn: youTurn });
+            if (themTurn) {
+              dispatch({ type: "RECONCILE_TURN", tempTurnId: tempThemId, turn: themTurn });
+            }
+            reconciled = true;
+          },
+          onError: (message) => {
+            dispatch({ type: "SET_ERROR", error: message });
+          },
+        });
+
+        // No `done` frame => nothing was persisted; drop the placeholders.
+        if (!reconciled) {
+          dispatch({ type: "ROLLBACK_STREAMING_TURN", turnIds: [tempYouId, tempThemId] });
         }
       } catch (err) {
+        // Transport failure / abort: the server persisted nothing, so remove the
+        // placeholders and surface the error.
+        dispatch({ type: "ROLLBACK_STREAMING_TURN", turnIds: [tempYouId, tempThemId] });
         dispatch({
           type: "SET_ERROR",
           error: err instanceof Error ? err.message : String(err),

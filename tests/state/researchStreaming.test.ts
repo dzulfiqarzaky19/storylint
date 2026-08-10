@@ -142,3 +142,38 @@ describe("researchReducer — RECONCILE_TURN", () => {
     expect(next.keptIds).not.toContain("plainCard");
   });
 });
+
+describe("researchReducer — ROLLBACK_STREAMING_TURN", () => {
+  it("removes the named placeholder turns from turns and visibleTurnIds", () => {
+    const you = turn({ id: "you1", side: "you", who: "You", text: "Q?" });
+    const them = turn({ id: "them1", text: "half-streamed" });
+    const start = researchReducer(baseState(), {
+      type: "APPEND_STREAMING_TURN",
+      turns: [you, them],
+    });
+
+    const next = researchReducer(start, {
+      type: "ROLLBACK_STREAMING_TURN",
+      turnIds: ["you1", "them1"],
+    });
+
+    expect(next.turns).toHaveLength(0);
+    expect(next.visibleTurnIds).toHaveLength(0);
+  });
+
+  it("leaves turns NOT named in turnIds untouched", () => {
+    const keep = turn({ id: "keep1", text: "persisted earlier" });
+    const you = turn({ id: "you1", side: "you", who: "You", text: "Q?" });
+    const them = turn({ id: "them1", text: "half" });
+    let s = researchReducer(baseState(), { type: "APPEND_STREAMING_TURN", turns: [keep] });
+    s = researchReducer(s, { type: "APPEND_STREAMING_TURN", turns: [you, them] });
+
+    const next = researchReducer(s, {
+      type: "ROLLBACK_STREAMING_TURN",
+      turnIds: ["you1", "them1"],
+    });
+
+    expect(next.turns.map((t) => t.id)).toEqual(["keep1"]);
+    expect(next.visibleTurnIds).toEqual(["keep1"]);
+  });
+});

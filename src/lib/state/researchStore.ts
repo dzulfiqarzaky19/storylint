@@ -56,9 +56,13 @@ export type ResearchAction =
   // APPEND_STREAMING_TURN   → the question turn + an empty answer placeholder
   // STREAM_DELTA            → append a chunk of text to the placeholder answer
   // RECONCILE_TURN          → swap the placeholder for the persisted answer turn
+  // ROLLBACK_STREAMING_TURN → drop the placeholders when the stream failed or was
+  //                           aborted (server persisted nothing, so neither turn
+  //                           may linger in session state)
   | { type: "APPEND_STREAMING_TURN"; turns: ResearchTurnWithCards[] }
   | { type: "STREAM_DELTA"; turnId: string; text: string }
   | { type: "RECONCILE_TURN"; tempTurnId: string; turn: ResearchTurnWithCards }
+  | { type: "ROLLBACK_STREAMING_TURN"; turnIds: string[] }
   | { type: "SET_ERROR"; error: string | null };
 
 // ---- Init -----------------------------------------------------------------
@@ -188,6 +192,19 @@ export function researchReducer(state: ResearchState, action: ResearchAction): R
         ),
         keptIds: dedupe([...state.keptIds, ...newKept]),
         inWikiIds: dedupe([...state.inWikiIds, ...newInWiki]),
+      };
+    }
+
+    case "ROLLBACK_STREAMING_TURN": {
+      // The stream failed / was aborted: the server persisted nothing, so the
+      // placeholder turn(s) must not linger. Remove them from turns and from the
+      // visible set. Cards never reached the boards (RECONCILE_TURN never ran),
+      // so keptIds / inWikiIds need no cleanup.
+      const drop = new Set(action.turnIds);
+      return {
+        ...state,
+        turns: state.turns.filter((t) => !drop.has(t.id)),
+        visibleTurnIds: state.visibleTurnIds.filter((id) => !drop.has(id)),
       };
     }
 
