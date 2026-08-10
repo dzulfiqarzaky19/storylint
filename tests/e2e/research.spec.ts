@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { execFileSync } from "node:child_process";
 
 // Exhaustive RESEARCH-screen click-through (per-screen e2e). Drives every
 // interactive control on /research at 1440x900 and asserts the flow. Product
@@ -194,3 +195,99 @@ test("research kept board: the Kept aside is present (toggle drives the phone ti
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
+// ===========================================================================
+// F2a — persistent research chat: voice relabel + delete-thread UX.
+//
+// The delete tests MUTATE the shared DB (they remove thread rows), so this
+// block RESEEDS in its own afterAll (db:seed, NOT the no-op `seed`) to leave
+// the DB exactly as the global setup produced it — otherwise a later spec that
+// depends on the two seeded threads would fail purely on ordering.
+// ===========================================================================
+function threadItems(page: Page) {
+  // The thread-select buttons carry the .item class; scope to them so the
+  // per-row trash button (also a <button> in the nav) is never miscounted.
+  return threadsNav(page).locator('button[class*="item"]');
+}
+
+async function openRail(page: Page) {
+  const toggle = threadsNav(page).locator("button[aria-expanded]").first();
+  if ((await toggle.getAttribute("aria-expanded")) !== "true") await toggle.click();
+}
+
+test.describe("F2a persistent research chat", () => {
+  test.afterAll(() => {
+    // Restore the seeded thread set this spec's deletes consumed.
+    execFileSync("npm", ["run", "db:seed"], { stdio: "ignore", shell: true });
+  });
+
+  test("relabel: the question kicker reads 'You' (not 'You are turning over')", async ({
+    page,
+  }) => {
+    await expect(page.getByText("You are turning over", { exact: true })).toHaveCount(0);
+    await expect(page.locator("section").getByText("You", { exact: true }).first()).toBeVisible();
+  });
+
+  test("relabel: the collaborator voice never renders as 'Research'", async ({
+    page,
+  }) => {
+    // The seeded + persisted them-turns speak as "Collaborator"; the legacy
+    // "Research" speaker label must not appear anywhere in the thread body.
+    await expect(page.getByText("Research", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Collaborator", { exact: true }).first()).toBeVisible();
+  });
+
+  test("delete: trash removes a thread and jumps focus off the deleted row", async ({
+    page,
+  }) => {
+    await openRail(page);
+    // Create a throwaway thread so we never delete seed content the other specs
+    // read. It becomes the active row (createThread pushes ?thread=<id>).
+    const create = threadsNav(page).getByRole("button", { name: /\+ New thread/i });
+    if ((await create.count()) === 0) test.skip(true, "create disabled in this build");
+    const before = await threadItems(page).count();
+    await create.click();
+    await expect.poll(async () => threadItems(page).count()).toBe(before + 1);
+    await openRail(page);
+
+    // The freshly-created thread is the active row.
+    const active = threadsNav(page).locator('button[aria-current="true"]').first();
+    const activeName = (await active.locator("span").first().textContent())?.trim();
+    expect(activeName).toBeTruthy();
+
+    // Accept the "Delete this thread?" confirm, then click that row's trash.
+    page.once("dialog", (d) => {
+      expect(d.message()).toBe("Delete this thread?");
+      void d.accept();
+    });
+    const trash = active.locator("..").getByRole("button", { name: /^Delete thread/ });
+    await trash.click();
+
+    // The row count drops back and focus is no longer on a deleted row: some
+    // other thread is now active (the nearest-remaining jump).
+    await expect.poll(async () => threadItems(page).count()).toBe(before);
+    await expect(threadsNav(page).locator('button[aria-current="true"]')).toHaveCount(1);
+  });
+
+  test("delete: a rejected confirm keeps the thread", async ({ page }) => {
+    await openRail(page);
+    const create = threadsNav(page).getByRole("button", { name: /\+ New thread/i });
+    if ((await create.count()) === 0) test.skip(true, "create disabled in this build");
+    const before = await threadItems(page).count();
+    await create.click();
+    await expect.poll(async () => threadItems(page).count()).toBe(before + 1);
+    await openRail(page);
+
+    // Dismiss the confirm: the count must be unchanged.
+    page.once("dialog", (d) => void d.dismiss());
+    const active = threadsNav(page).locator('button[aria-current="true"]').first();
+    await active.locator("..").getByRole("button", { name: /^Delete thread/ }).click();
+    await page.waitForTimeout(150);
+    await expect(threadItems(page)).toHaveCount(before + 1);
+
+    // Clean up the throwaway we created (accept this time) to keep the count sane.
+    page.once("dialog", (d) => void d.accept());
+    await active.locator("..").getByRole("button", { name: /^Delete thread/ }).click();
+    await expect.poll(async () => threadItems(page).count()).toBe(before);
+  });
+});
