@@ -1,8 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import type { ResearchThreadRow, ResearchScope } from "@/lib/domain/types";
-import type { ScopeOption } from "@/lib/research/scopeOptions";
+import type { ResearchThreadRow } from "@/lib/domain/types";
 import styles from "./ResearchIndex.module.css";
 
 export interface ResearchIndexProps {
@@ -10,10 +9,8 @@ export interface ResearchIndexProps {
   selectedId: string;
   /** Navigate to a thread (URL-driven; the screen pushes ?thread=<id>). */
   onSelect: (id: string) => void;
-  /** Scope options for the create picker (Chat first, then non-empty kinds). */
-  scopeOptions: ScopeOption[];
-  /** Start a new thread with the chosen scope. */
-  onCreate?: (scope: ResearchScope) => void;
+  /** Start a new (always free-context) thread. */
+  onCreate?: () => void;
   /** Delete a thread (the screen confirms + handles active-thread navigation). */
   onDelete?: (id: string) => void;
 }
@@ -30,17 +27,11 @@ export default function ResearchIndex({
   threads,
   selectedId,
   onSelect,
-  scopeOptions,
   onCreate,
   onDelete,
 }: ResearchIndexProps) {
   const [open, setOpen] = useState(false);
-  // The scope selected in the create picker. Defaults to the first option
-  // (always Chat), so pressing "+ New thread" without touching the picker
-  // creates a broad Chat thread — the safe, non-narrowing default.
-  const [createScope, setCreateScope] = useState<ResearchScope>("chat");
   const panelId = useId();
-  const scopeSelectId = useId();
 
   return (
     <nav
@@ -104,25 +95,10 @@ export default function ResearchIndex({
         ))}
         {onCreate ? (
           <li className={styles.createRow}>
-            <label className={styles.scopeLabel} htmlFor={scopeSelectId}>
-              Scope
-            </label>
-            <select
-              id={scopeSelectId}
-              className={styles.scopeSelect}
-              value={createScope}
-              onChange={(e) => setCreateScope(e.target.value as ResearchScope)}
-            >
-              {scopeOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
             <button
               type="button"
               className={styles.add}
-              onClick={() => onCreate(createScope)}
+              onClick={() => onCreate()}
             >
               + New thread
             </button>

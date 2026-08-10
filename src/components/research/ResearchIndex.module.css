@@ -177,8 +177,8 @@
   text-decoration: underline;
 }
 
-/* Create row: a scope picker + the "new thread" button, so a new thread is
-   born with an explicit scope (Chat by default). */
+/* Create row: the "+ New thread" button. New threads are always free-context
+   (the AI draws on the entire wiki), so there is no scope to pick. */
 .createRow {
   display: flex;
   align-items: center;
@@ -186,23 +186,6 @@
   padding: 6px 8px 0;
   margin-top: 2px;
   border-top: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.12));
-}
-
-.scopeLabel {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted, rgba(0, 0, 0, 0.6));
-}
-
-.scopeSelect {
-  flex: 0 0 auto;
-  padding: 5px 8px;
-  font-size: 13px;
-  border: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.16));
-  border-radius: 6px;
-  background: var(--surface, #fff);
-  color: inherit;
-  cursor: pointer;
 }
 
 .createRow .add {

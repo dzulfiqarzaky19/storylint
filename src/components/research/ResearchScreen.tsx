@@ -3,7 +3,7 @@
 import { useMemo, useReducer, useState, useTransition } from "react";
 import type { DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Kind, ResearchProposition, ResearchScope, ResearchTurnWithCards } from "@/lib/domain/types";
+import type { Kind, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
 import {
   researchReducer,
   initResearchState,
@@ -18,7 +18,6 @@ import {
   confirmCard,
   createThread,
   deleteThread,
-  setThreadScope,
 } from "@/lib/actions/research";
 import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
@@ -45,11 +44,10 @@ const VALID_KINDS: readonly Kind[] = ["character", "world", "organization", "lor
 // Empty-state guidance shown when a thread has no turns yet (a brand-new thread,
 // or the whole screen when there are no threads at all). Replaces the old
 // pre-written seed conversation: research now starts empty and every turn is a
-// real AI exchange.
+// real AI exchange. The AI always draws on the ENTIRE wiki — no scope to pick.
 const EMPTY_GUIDANCE =
-  "Ask me anything about your story. For grounded answers, pick a scope above " +
-  "(like People or Places) so I can pull from your wiki, or just start typing a " +
-  "question.";
+  "Ask me anything about your story. I draw on your entire wiki to answer, " +
+  "so just start typing a question.";
 
 /**
  * Map a proposition's `asKind` to a wiki entry Kind. Non-entry kinds (`beat`,
@@ -298,27 +296,11 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
     if (id === snapshot.threadId) return;
     router.push(`/research?thread=${encodeURIComponent(id)}`);
   };
-  const addThread = (scope: ResearchScope) => {
+  const addThread = () => {
     startTransition(async () => {
-      const res = await createThread({ scope });
+      const res = await createThread();
       if (res.ok) {
         router.push(`/research?thread=${encodeURIComponent(res.data.threadId)}`);
-      } else {
-        dispatch({ type: "SET_ERROR", error: res.error });
-      }
-    });
-  };
-
-  // Switch the ACTIVE thread's scope. Only future turns use the new scope; the
-  // existing turns stay visible and untouched, so this never blocks or rewrites
-  // history. Refresh so the server re-derives the scoped gazetteer for the next
-  // ask.
-  const changeScope = (scope: ResearchScope) => {
-    if (!snapshot.threadId || scope === snapshot.scope) return;
-    startTransition(async () => {
-      const res = await setThreadScope({ threadId: snapshot.threadId, scope });
-      if (res.ok) {
-        router.refresh();
       } else {
         dispatch({ type: "SET_ERROR", error: res.error });
       }
@@ -388,33 +370,10 @@ export default function ResearchScreen({ snapshot }: { snapshot: ResearchSnapsho
           threads={snapshot.threads}
           selectedId={snapshot.threadId}
           onSelect={selectThread}
-          scopeOptions={snapshot.scopeOptions}
           onCreate={addThread}
           onDelete={removeThread}
         />
         <main className={styles.body}>
-          {snapshot.threadId ? (
-            <div className={styles.scopeBar}>
-              <label className={styles.scopeBarLabel} htmlFor="research-scope">
-                Scope
-              </label>
-              <select
-                id="research-scope"
-                className={styles.scopeBarSelect}
-                value={snapshot.scope}
-                onChange={(e) => changeScope(e.target.value as ResearchScope)}
-              >
-                {snapshot.scopeOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-              <span className={styles.scopeBarNote}>
-                Switching only changes future answers; your turns stay.
-              </span>
-            </div>
-          ) : null}
           {visibleTurns.length === 0 ? (
             <section className={styles.thread}>
               <p className={styles.guidance}>{EMPTY_GUIDANCE}</p>
