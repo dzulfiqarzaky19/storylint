@@ -355,7 +355,7 @@ export async function createEntry(input: {
 }): Promise<ActionResult<{ entryId: string; sortOrder: number }>> {
   try {
     const confirmation = confirmWikiWrite({ confirmed: true });
-    const id = randomUUID();
+    const id = input.id ?? randomUUID();
     const sortOrder = (await getMaxSortOrderForShelf(input.shelf)) + 1;
     await insertEntry(
       {
