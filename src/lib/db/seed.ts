@@ -478,7 +478,7 @@ function bodyOf(paragraphs: string[]) {
 // Insert routine
 // ---------------------------------------------------------------------------
 
-async function seedWithin(client: PoolClient): Promise<void> {
+export async function seedWithin(client: PoolClient): Promise<void> {
   // Idempotent: clear everything, then insert. CASCADE covers FK children.
   // F7: universes/series/books/entry_facets are cleared too (CASCADE from the
   // structural parents also clears any facet rows). Order does not matter under
@@ -486,6 +486,7 @@ async function seedWithin(client: PoolClient): Promise<void> {
   await client.query(`
     TRUNCATE TABLE
       universes, series, books, entry_facets,
+      worlds, world_entities,
       categories,
       entries, facts, ties, chapter_appearances, open_questions,
       chapters, research_threads, research_turns, propositions, kept_cards,
@@ -524,6 +525,35 @@ async function seedWithin(client: PoolClient): Promise<void> {
       [e.id, e.kind, e.name, e.no, e.note, e.summary, KIND_SHELF[e.kind], i],
     );
   }
+
+  // W-1 world layer backfill. Runs AFTER the entries loop (B2 links every entry,
+  // so entries must exist first) and inside THIS seed transaction (a separate
+  // connection could not see the uncommitted entries above). The two INSERTs are
+  // KEPT BYTE-IDENTICAL to w1-worlds-expand.mts B1/B2 so a reseed and a migrate()
+  // land in the SAME world shape — if these drift, the review gate must catch it.
+  // Built-ins stay world_id NULL (global), already handled above. schema.sql/
+  // db:reset created the worlds + world_entities tables; this only backfills rows.
+  //
+  // B1 — one world per universe, id = 'world-'||universe_id. ON CONFLICT DO
+  // NOTHING makes a re-run a no-op. title = the universe's own name.
+  await client.query(
+    `INSERT INTO worlds (id, universe_id, title, sort_order)
+       SELECT 'world-' || u.id, u.id, u.name, 0
+         FROM universes u
+     ON CONFLICT (id) DO NOTHING`,
+  );
+
+  // B2 — link EVERY entry (live + tombstoned) to its OWN universe's world. The
+  // per-row JOIN on e.universe_id is the load-bearing predicate: each membership
+  // row's world_id is derived from THAT entry's universe, so a mis-homing mutation
+  // is observable per-entry, not just in an aggregate count. ON CONFLICT DO
+  // NOTHING => idempotent re-run.
+  await client.query(
+    `INSERT INTO world_entities (world_id, entity_id)
+       SELECT 'world-' || e.universe_id, e.id
+         FROM entries e
+     ON CONFLICT (world_id, entity_id) DO NOTHING`,
+  );
 
   // Facts
   for (let i = 0; i < FACTS.length; i++) {
