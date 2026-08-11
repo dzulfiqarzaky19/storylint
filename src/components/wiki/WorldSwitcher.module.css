@@ -87,13 +87,15 @@
 }
 
 /* Destructive world actions (delete book / universe). Red border + label so the
-   danger reads at a glance; fills red on hover to preview the intent. */
-.danger {
+   danger reads at a glance; fills red on hover to preview the intent. Scoped
+   under .actions so it matches the `.actions button` base specificity and wins
+   on source order (no !important needed). */
+.actions button.danger {
   border-color: var(--danger);
   color: var(--danger);
 }
 
-.danger:hover:not(:disabled) {
+.actions button.danger:hover:not(:disabled) {
   background: var(--danger);
   border-color: var(--danger);
   color: var(--on-accent);
