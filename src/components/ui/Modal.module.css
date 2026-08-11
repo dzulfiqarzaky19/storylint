@@ -1,0 +1,44 @@
+/* Base Modal primitive (TCK-001). Fully resets the native <dialog> default
+   chrome so the dialog reads as an Ashkeld surface, and styles ::backdrop as
+   the app scrim. Square corners, tokened border, centered panel. Consumers
+   (ConfirmModal, WorldSwitcher) render their content into the slot. */
+
+.dialog {
+  /* Reset the browser default <dialog> box: no auto-centering margins, no
+     default padding/border, no intrinsic width cap. We own all of it. */
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  /* Center the panel ourselves; the dialog element fills the viewport and acts
+     as the click-catching backdrop layer above the (inert) page. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Native top-layer backdrop = the app scrim (dims the inert page behind). */
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+/* When closed, <dialog> without [open] is display:none; keep that. showModal()
+   toggles [open], so no explicit open/closed rule is needed here. */
+
+.panel {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--surface);
+  border: var(--rule-major);
+  /* Radius 0 is enforced globally (HANDOFF §3); box-shadow lift only. */
+  box-shadow: 0 12px 40px var(--scrim);
+}
