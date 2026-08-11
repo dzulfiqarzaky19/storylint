@@ -5,6 +5,12 @@ export default defineConfig({
   test: {
     include: ['tests/**/*.test.ts'],
     environment: 'node',
+    // Integration tests share ONE live Postgres. With file parallelism on (the
+    // vitest default), concurrent test files seed/delete the same tables and
+    // race any whole-table-count assertion. Serialize file execution so the
+    // shared-DB suite is deterministic. (Per-file fixture-scoped counts are the
+    // belt; this is the suspenders — coordinator ruling A.)
+    fileParallelism: false,
   },
   resolve: {
     alias: {
