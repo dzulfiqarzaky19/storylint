@@ -1,0 +1,59 @@
+.newShelf {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.addButton {
+  appearance: none;
+  border: 1px dashed var(--border, #cbb89a);
+  background: transparent;
+  color: var(--muted, #6b5d45);
+  font: inherit;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  border-color: var(--accent, #8a6d3b);
+  color: var(--accent, #8a6d3b);
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.input {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border, #cbb89a);
+  border-radius: 6px;
+  min-width: 12rem;
+}
+
+.select {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border, #cbb89a);
+  border-radius: 6px;
+}
+
+.commit,
+.cancel {
+  appearance: none;
+  font: inherit;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border, #cbb89a);
+  background: transparent;
+}
+
+.commit {
+  border-color: var(--accent, #8a6d3b);
+  color: var(--accent, #8a6d3b);
+}

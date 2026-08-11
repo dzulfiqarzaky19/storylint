@@ -32,18 +32,20 @@ import {
   renameCategory,
   resetCategoryLabel,
   deleteCategory,
+  createCategory,
   getDeletedEntries,
   restoreEntry,
   purgeExpiredDeleted,
   type ActionResult,
 } from "@/lib/actions/wiki";
-import { resolveCategoryLabel } from "@/lib/wiki/categoryLabels";
+import { resolveCategoryLabel, categoryLabelById } from "@/lib/wiki/categoryLabels";
 import { trashCountdown } from "@/lib/wiki/trashCountdown";
 import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./Shelf";
 import PosterBand from "./PosterBand";
 import WikiIndex from "./WikiIndex";
+import NewCategoryShelf from "./NewCategoryShelf";
 import TrashPanel from "./TrashPanel";
 import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./WikiScreen.module.css";
@@ -448,14 +450,15 @@ function WikiScreenInner({
     [settle],
   );
 
-  // ---- Category headers (F6-S5b): rename / reset / delete-whole-category ------
+  // ---- Category headers (F6-S5b; F9-B S3): rename / reset / delete / create ---
   // Each optimistic reducer action fires ALONGSIDE its server action, per the
-  // §8 write-through pattern. Rename/reset touch only the label override (no
-  // confirmation). Deleting a whole category soft-deletes EVERY live entry of
-  // the kind, so it is gated behind the danger ConfirmModal below (the guard
-  // lives here in the caller, mirroring the entry-delete and untie gates).
+  // §8 write-through pattern. Rename/reset touch only the label (no confirm).
+  // Deleting a whole category soft-deletes EVERY live entry of the category, so
+  // it is gated behind the danger ConfirmModal below. F9-B S3: `kind` is a
+  // CATEGORY ID (string) — built-ins keep their legacy Kind-string ids, user
+  // categories are UUIDs — so rename/reset/delete work on ANY category.
   const renameCategoryLabel = useCallback(
-    (kind: Kind, label: string) => {
+    (kind: string, label: string) => {
       dispatch({ type: "RENAME_CATEGORY", kind, label });
       settle("renameCategory", renameCategory({ kind, label }));
     },
@@ -463,22 +466,45 @@ function WikiScreenInner({
   );
 
   const resetCategory = useCallback(
-    (kind: Kind) => {
+    (kind: string) => {
       dispatch({ type: "RESET_CATEGORY", kind });
       settle("resetCategoryLabel", resetCategoryLabel({ kind }));
     },
     [settle],
   );
 
-  // The kind whose whole-category delete is awaiting confirmation (null = none).
-  const [confirmDeleteKind, setConfirmDeleteKind] = useState<Kind | null>(null);
+  // The category id whose whole-category delete awaits confirmation (null = none).
+  const [confirmDeleteKind, setConfirmDeleteKind] = useState<string | null>(null);
 
   const performDeleteCategory = useCallback(
-    (kind: Kind) => {
+    (kind: string) => {
       dispatch({ type: "DELETE_CATEGORY", kind });
       settle("deleteCategory", deleteCategory({ kind, confirmed: true }));
     },
     [settle],
+  );
+
+  // F9-B S3: create a brand-new user category on a shelf. The server assigns the
+  // id + sort_order and returns the row; the reducer appends it (CREATE_CATEGORY),
+  // so it appears as its own group immediately. A blank label is ignored here
+  // (the server also rejects it) so the prompt-cancel path is a harmless no-op.
+  const createCategoryOnShelf = useCallback(
+    (label: string, shelf: ShelfKey) => {
+      const trimmed = label.trim();
+      if (trimmed === "") return;
+      startTransition(() => {
+        createCategory({ label: trimmed, shelf })
+          .then((res) => {
+            if (res.ok) dispatch({ type: "CREATE_CATEGORY", category: res.data });
+            else dispatch({ type: "SET_ERROR", error: res.error });
+          })
+          .catch((err: unknown) => {
+            const msg = err instanceof Error ? err.message : String(err);
+            dispatch({ type: "SET_ERROR", error: `createCategory: ${msg}` });
+          });
+      });
+    },
+    [],
   );
 
   // ---- Trash: recently-deleted panel (F6-S6b) --------------------------------
@@ -558,7 +584,8 @@ function WikiScreenInner({
     (e) => e.deletedAt != null && trashCountdown(e.deletedAt, nowMs).purgeable,
   ).length;
 
-  // Entries grouped per shelf, in the reducer's live order.
+  // Entries grouped per shelf, in the reducer's live order (WikiIndex still
+  // groups by the fixed 4 shelves).
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
   for (const key of SHELF_ORDER) {
     byShelf.set(
@@ -569,10 +596,32 @@ function WikiScreenInner({
     );
   }
 
+  // F9-B S3: entries grouped by CATEGORY id (entry.kind), preserving each
+  // shelf's live order. Built-ins keep their Kind-string id; user categories
+  // are UUIDs. Every category in state.categories renders its own group (in the
+  // reducer's already-sorted category order), so a category with zero live
+  // entries still shows an (empty) shelf header that can be renamed/deleted.
+  const byCategory = new Map<string, EntryWithDetails[]>();
+  for (const cat of state.categories) byCategory.set(cat.id, []);
+  for (const key of SHELF_ORDER) {
+    for (const entry of byShelf.get(key) ?? []) {
+      const bucket = byCategory.get(entry.kind);
+      if (bucket) bucket.push(entry);
+      else byCategory.set(entry.kind, [entry]);
+    }
+  }
+
   // The set of LIVE entry ids (soft-deleted entries were filtered out of the
   // snapshot at load, so byId holds only live entries). A tie pointing at
   // anything NOT in this set is dangling and renders as a "removed" tombstone.
   const liveEntryIds = new Set(Object.keys(state.byId));
+
+  // Resolved header label for the category pending whole-category delete (F9-B
+  // S3): from the live category list, so a user category (no built-in default)
+  // shows its own label in the danger confirm rather than a raw UUID.
+  const confirmDeleteLabel = confirmDeleteKind
+    ? categoryLabelById(state.categories, confirmDeleteKind)
+    : "";
 
   // Every OTHER live entry is a candidate to tie the focused entry to. Computed
   // from the same live byId map so a just-created/soft-deleted entry appears or
@@ -671,12 +720,13 @@ function WikiScreenInner({
       />
       <WorldBand entryCount={Object.keys(state.byId).length} />
       <div className={styles.shelves}>
-        {SHELF_ORDER.map((key) => (
+        {state.categories.map((cat) => (
           <Shelf
-            key={key}
-            shelf={key}
-            title={resolveCategoryLabel(KIND_FOR_SHELF[key], state.overrides)}
-            entries={byShelf.get(key) ?? []}
+            key={cat.id}
+            shelf={cat.shelf as ShelfKey}
+            categoryId={cat.id}
+            title={categoryLabelById(state.categories, cat.id)}
+            entries={byCategory.get(cat.id) ?? []}
             selectedId={selected.id}
             contradictions={contradictions}
             onSelect={select}
@@ -685,9 +735,13 @@ function WikiScreenInner({
             onRenameCategory={renameCategoryLabel}
             onResetCategory={resetCategory}
             onRequestDeleteCategory={setConfirmDeleteKind}
-            isRenamed={state.overrides[KIND_FOR_SHELF[key]] !== undefined}
+            isRenamed={
+              cat.id in KIND_SHELF &&
+              state.overrides[cat.id as Kind] !== undefined
+            }
           />
         ))}
+        <NewCategoryShelf onCreate={createCategoryOnShelf} />
       </div>
       <PosterBand
         suggestions={state.suggestions}
@@ -696,13 +750,10 @@ function WikiScreenInner({
       />
       {confirmDeleteKind ? (
         <ConfirmModal
-          title={`Delete the ${resolveCategoryLabel(confirmDeleteKind, state.overrides)} category?`}
+          title={`Delete the ${confirmDeleteLabel} category?`}
           body={`This removes all ${
-            byShelf.get(KIND_SHELF[confirmDeleteKind])?.length ?? 0
-          } ${resolveCategoryLabel(
-            confirmDeleteKind,
-            state.overrides,
-          )} entries from the gazetteer. Ties pointing at them will be marked as removed.`}
+            byCategory.get(confirmDeleteKind)?.length ?? 0
+          } ${confirmDeleteLabel} entries from the gazetteer. Ties pointing at them will be marked as removed.`}
           confirmLabel="Delete category"
           cancelLabel="Cancel"
           danger

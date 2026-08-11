@@ -226,3 +226,84 @@ describe("DELETE_CATEGORY also removes the category row", () => {
     expect(next.categories.map((c) => c.id)).toContain("world");
   });
 });
+
+// ---- F9-B S3: USER categories (non-built-in ids) rename/reset semantics -----
+// Built-ins carry a shelf default in KIND_SHELF/SHELF_TITLES and an overrides
+// entry; a USER category (UUID) has NEITHER. So renameCategoryInState must:
+//  * NOT write state.overrides for a user id (the map is keyed by the Kind union)
+//  * on a NON-BLANK rename set the user row's label to the trimmed value
+//  * on a BLANK rename REJECT it (keep the row label; never SHELF_TITLES[undefined])
+// Mutation-locked lines in renameCategoryInState:
+//  * `const isBuiltin = kind in KIND_SHELF` — force it to true/false and either
+//    a user rename leaks into overrides (isBuiltin=true) or a built-in blank
+//    rename stops resetting (isBuiltin=false); both go RED below.
+//  * blank-branch `if (isBuiltin) return { ...c, label: SHELF_TITLES[...] }; return c;`
+//    — drop the `return c` guard and a blank user rename resets to a wrong/
+//    undefined default, so "user blank rename keeps its label" goes RED.
+describe("RENAME_CATEGORY on a USER category (non-built-in id)", () => {
+  it("sets the user row's label and does NOT touch overrides", () => {
+    const s = stateOf(
+      [],
+      {},
+      [cat("u1", "Factions", 10, "lore")],
+    );
+    const next = wikiReducer(s, { type: "RENAME_CATEGORY", kind: "u1", label: "  Guilds  " });
+    expect(next.categories.find((c) => c.id === "u1")?.label).toBe("Guilds");
+    // A user id must never appear in the built-in-keyed overrides map.
+    expect((next.overrides as Record<string, string>).u1).toBeUndefined();
+  });
+
+  it("a BLANK rename is rejected: the user row keeps its current label", () => {
+    const s = stateOf(
+      [],
+      {},
+      [cat("u1", "Factions", 10, "lore")],
+    );
+    const next = wikiReducer(s, { type: "RENAME_CATEGORY", kind: "u1", label: "   " });
+    // No shelf default exists for a user category, so the label is UNCHANGED
+    // (never reset to SHELF_TITLES[undefined]).
+    expect(next.categories.find((c) => c.id === "u1")?.label).toBe("Factions");
+    expect((next.overrides as Record<string, string>).u1).toBeUndefined();
+  });
+
+  it("a built-in BLANK rename still resets its row to the shelf default", () => {
+    // Contrast case that locks the isBuiltin branch: same blank input, built-in
+    // id -> DOES reset (proves the guard is `if (isBuiltin)`, not unconditional).
+    const s = stateOf(
+      [entry("a", "Ana", "character")],
+      { character: "Cast" },
+      [cat("character", "Cast", 0, "people", true)],
+    );
+    const next = wikiReducer(s, { type: "RENAME_CATEGORY", kind: "character", label: "  " });
+    expect(next.categories.find((c) => c.id === "character")?.label).toBe(SHELF_TITLES.people);
+    expect(next.overrides.character).toBeUndefined();
+  });
+});
+
+describe("RESET_CATEGORY on a USER category is a no-op", () => {
+  it("leaves state unchanged (no overrides entry to remove)", () => {
+    const s = stateOf([], {}, [cat("u1", "Factions", 10, "lore")]);
+    const next = wikiReducer(s, { type: "RESET_CATEGORY", kind: "u1" });
+    expect(next).toBe(s); // identity: the guard returns the same state object
+  });
+
+  it("still resets a built-in override (contrast lock for the KIND_SHELF guard)", () => {
+    const s = stateOf([entry("a", "Ana", "character")], { character: "Cast" });
+    const next = wikiReducer(s, { type: "RESET_CATEGORY", kind: "character" });
+    expect(next.overrides.character).toBeUndefined();
+  });
+
+  it("also restores a built-in row LABEL to its shelf default (F9-B S3)", () => {
+    // The grid header reads the category-row label, so reset must clear the
+    // custom row label, not just the overrides entry.
+    const s = stateOf(
+      [entry("a", "Ana", "character")],
+      { character: "Cast" },
+      [cat("character", "Cast", 0, "people", true)],
+    );
+    const next = wikiReducer(s, { type: "RESET_CATEGORY", kind: "character" });
+    expect(next.categories.find((c) => c.id === "character")?.label).toBe(
+      SHELF_TITLES.people,
+    );
+  });
+});

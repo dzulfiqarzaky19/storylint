@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import type { EntryWithDetails, Shelf as ShelfKey, Kind } from "@/lib/domain/types";
-import { KIND_FOR_SHELF } from "@/lib/domain/types";
+import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
 import { useDrag } from "@/components/dnd/DragContext";
 import EntryTile from "./EntryTile";
 import styles from "./Shelf.module.css";
 
 interface ShelfProps {
   shelf: ShelfKey;
+  /** F9-B S3: the id of the category this group renders (built-in Kind string
+   *  or a user UUID). Header rename/reset/delete act on THIS id, not the shelf. */
+  categoryId: string;
   title: string;
   entries: EntryWithDetails[];
   selectedId: string;
@@ -18,12 +20,12 @@ interface ShelfProps {
   /** Reorder within/across shelves; beforeId=null means append to this shelf. */
   onDropEntry: (toShelf: ShelfKey, beforeId: string | null) => void;
   onDropFactOnEntry: (toEntryId: string) => void;
-  /** Rename this category's header to a custom label (F6-S5). */
-  onRenameCategory: (kind: Kind, label: string) => void;
-  /** Clear the custom label, restoring the shelf default (F6-S5). */
-  onResetCategory: (kind: Kind) => void;
+  /** Rename this category's header to a custom label (F6-S5; F9-B S3: any id). */
+  onRenameCategory: (categoryId: string, label: string) => void;
+  /** Clear the custom label, restoring the shelf default (F6-S5; built-ins only). */
+  onResetCategory: (categoryId: string) => void;
   /** Ask to delete the whole category (opens the danger confirm in the caller). */
-  onRequestDeleteCategory: (kind: Kind) => void;
+  onRequestDeleteCategory: (categoryId: string) => void;
   /** True when a custom label is set, so the "Reset" affordance is offered. */
   isRenamed: boolean;
 }
@@ -33,6 +35,7 @@ interface ShelfProps {
 // here and REGROUPS it (changes its kind/shelf). Zone fills --hover while active.
 export default function Shelf({
   shelf,
+  categoryId,
   title,
   entries,
   selectedId,
@@ -47,7 +50,6 @@ export default function Shelf({
 }: ShelfProps) {
   const drag = useDrag();
   const dragging = drag.dragging;
-  const kind = KIND_FOR_SHELF[shelf];
 
   // Inline rename + a small header menu (reset / delete). `editing` holds the
   // draft label; `menuOpen` toggles the reset/delete affordances. Both are
@@ -60,8 +62,8 @@ export default function Shelf({
     const draft = editing;
     setEditing(null);
     // A blank draft is a reset (matches the reducer/backend trim ruling).
-    if (draft.trim() === "") onResetCategory(kind);
-    else if (draft.trim() !== title) onRenameCategory(kind, draft);
+    if (draft.trim() === "") onResetCategory(categoryId);
+    else if (draft.trim() !== title) onRenameCategory(categoryId, draft);
   };
 
   const isZoneActive =
@@ -149,7 +151,7 @@ export default function Shelf({
                   className={styles.menuItem}
                   onClick={() => {
                     setMenuOpen(false);
-                    onResetCategory(kind);
+                    onResetCategory(categoryId);
                   }}
                 >
                   Reset to default
@@ -161,7 +163,7 @@ export default function Shelf({
                 className={`${styles.menuItem} ${styles.menuItemDanger}`}
                 onClick={() => {
                   setMenuOpen(false);
-                  onRequestDeleteCategory(kind);
+                  onRequestDeleteCategory(categoryId);
                 }}
               >
                 Delete category

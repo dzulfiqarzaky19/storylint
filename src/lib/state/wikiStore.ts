@@ -172,13 +172,13 @@ export type WikiAction =
       /** The server-created category row (reducer is pure; caller supplies it). */
       category: CategoryRow;
     }
-  | { type: "RENAME_CATEGORY"; kind: Kind; label: string }
-  | { type: "RESET_CATEGORY"; kind: Kind }
+  | { type: "RENAME_CATEGORY"; kind: string; label: string }
+  | { type: "RESET_CATEGORY"; kind: string }
   | {
       type: "DELETE_CATEGORY";
       /** Every LIVE entry of this kind is soft-deleted (vanishes from byId +
        *  its shelf order); ties from surviving entries render as tombstones. */
-      kind: Kind;
+      kind: string;
     }
   // ---- Trash: restore (F6-S6) — fired alongside actions/wiki.ts restoreEntry ----
   // RESTORE_ENTRY  → restoreEntry (WIKI WRITE, confirmed: re-enters a tombstone)
@@ -274,7 +274,22 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
       return renameCategoryInState(state, action.kind, action.label);
 
     case "RESET_CATEGORY":
-      return { ...state, overrides: applyCategoryReset(state.overrides, action.kind) };
+      // Only built-ins carry an overrides entry (the map is keyed by the legacy
+      // Kind union); a user category has none, so reset is a no-op for it. F9-B
+      // S3: the header now reads the category-row LABEL (not overrides), so a
+      // reset must ALSO restore that row label to the shelf default, else the
+      // cleared override leaves a stale custom label showing in the group header.
+      return action.kind in KIND_SHELF
+        ? {
+            ...state,
+            overrides: applyCategoryReset(state.overrides, action.kind as Kind),
+            categories: state.categories.map((c) =>
+              c.id === action.kind
+                ? { ...c, label: SHELF_TITLES[KIND_SHELF[action.kind as Kind]] }
+                : c,
+            ),
+          }
+        : state;
 
     case "DELETE_CATEGORY":
       return deleteCategoryInState(state, action.kind);
@@ -553,7 +568,7 @@ function restoreEntryInState(state: WikiState, entry: EntryWithDetails): WikiSta
  * session byId holds only LIVE entries, a re-dispatch on an already-emptied kind
  * is a no-op: nothing of that kind remains to remove. No-op if the kind is empty.
  */
-function deleteCategoryInState(state: WikiState, kind: Kind): WikiState {
+function deleteCategoryInState(state: WikiState, kind: string): WikiState {
   const ids = Object.values(state.byId)
     .filter((e) => e.kind === kind)
     .map((e) => e.id);
@@ -581,20 +596,30 @@ function createCategoryInState(state: WikiState, category: CategoryRow): WikiSta
 }
 
 /**
- * F9-B (S2) — session mirror of renameCategory generalized onto the category
- * list. Updates BOTH surfaces: the legacy overrides map (via applyCategoryRename:
- * trims, blank = reset) AND the matching category row's label. A blank/whitespace
- * rename resets the row to its built-in shelf default (so the list agrees with
- * the overrides reset); a non-blank rename sets the trimmed label. A category id
- * absent from the list leaves the list untouched. Pure and non-mutating.
+ * F9-B (S2/S3) — session mirror of renameCategory generalized onto the category
+ * list. Updates BOTH surfaces: the legacy overrides map (built-ins only) AND the
+ * matching category row's label. A non-blank rename sets the trimmed label. A
+ * blank/whitespace rename RESETS a BUILT-IN to its shelf default; for a USER
+ * category (no shelf default) a blank rename is REJECTED (row label kept). A
+ * category id absent from the list leaves the list untouched. Pure, non-mutating.
  */
-function renameCategoryInState(state: WikiState, kind: Kind, label: string): WikiState {
-  const overrides = applyCategoryRename(state.overrides, kind, label);
+function renameCategoryInState(state: WikiState, kind: string, label: string): WikiState {
+  // Overrides map is keyed by the legacy built-in Kind union, so only a built-in
+  // id (one of the 4 Kind strings) touches it; a user category never does.
+  const isBuiltin = kind in KIND_SHELF;
+  const overrides = isBuiltin
+    ? applyCategoryRename(state.overrides, kind as Kind, label)
+    : state.overrides;
   const trimmed = label.trim();
-  const nextLabel = trimmed === "" ? SHELF_TITLES[KIND_SHELF[kind]] : trimmed;
-  const categories = state.categories.map((c) =>
-    c.id === kind ? { ...c, label: nextLabel } : c,
-  );
+  // Blank rename RESETS a BUILT-IN to its shelf default; a USER category has NO
+  // shelf default, so a blank rename is REJECTED (keep the row label, never write
+  // SHELF_TITLES[undefined]) — F9-B S3 requirement 2.
+  const categories = state.categories.map((c) => {
+    if (c.id !== kind) return c;
+    if (trimmed !== "") return { ...c, label: trimmed };
+    if (isBuiltin) return { ...c, label: SHELF_TITLES[KIND_SHELF[kind as Kind]] };
+    return c;
+  });
   return { ...state, overrides, categories };
 }
 
