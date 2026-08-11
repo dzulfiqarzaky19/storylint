@@ -665,12 +665,16 @@ export async function resetCategoryLabel(kind: string): Promise<void> {
 
 /**
  * "Delete" a category: SOFT-delete every LIVE entry of that category in one pass,
- * so their ties/references render the existing S2 "removed" tombstones. The
- * category ROW stays (F9-B keeps it as a soft-FK target; the category just goes
- * empty). Reuses the S2 soft-delete semantics: stamp `deleted_at` WITHOUT
- * removing rows, guarded by `deleted_at IS NULL` so re-running preserves the
- * original timestamps (idempotent). REQUIRES a confirmation token — it is a bulk,
- * high-consequence soft-delete. Returns the number of entries deleted.
+ * so their ties/references render the existing S2 "removed" tombstones, AND
+ * soft-delete the category ROW itself (TCK-008) so an EMPTY user category still
+ * disappears and a populated one leaves no empty shelf. The ROW soft-delete is
+ * GUARDED to is_builtin = false: the 4 seeded built-in categories are never
+ * deletable, so their entries tombstone but the shelf persists. Reuses the S2
+ * soft-delete semantics: stamp `deleted_at` WITHOUT removing rows, guarded by
+ * `deleted_at IS NULL` so re-running preserves the original timestamps
+ * (idempotent) for BOTH the entries and the category row. REQUIRES a
+ * confirmation token — it is a bulk, high-consequence soft-delete. Returns the
+ * number of ENTRIES soft-deleted (the row side effect is not counted).
  */
 export async function deleteCategory(
   input: { kind: string; deletedAt: number },
@@ -678,6 +682,18 @@ export async function deleteCategory(
 ): Promise<number> {
   const res = await query(
     `UPDATE entries SET deleted_at = $2 WHERE kind = $1 AND deleted_at IS NULL`,
+    [input.kind, input.deletedAt],
+  );
+  // TCK-008: ALSO soft-delete the category ROW itself, so an EMPTY user category
+  // (0 entries -> the entries UPDATE above matches nothing) still disappears, and
+  // a populated one does not leave an empty shelf behind. id = input.kind holds
+  // because a category id EQUALS the kind its entries carry (schema.sql:48-50).
+  // GUARDS: is_builtin = false protects the 4 seeded categories (never deletable
+  // — their shelf must persist); deleted_at IS NULL keeps the stamp idempotent so
+  // a re-run preserves the first deletion timestamp.
+  await query(
+    `UPDATE categories SET deleted_at = $2
+      WHERE id = $1 AND is_builtin = false AND deleted_at IS NULL`,
     [input.kind, input.deletedAt],
   );
   return res.rowCount ?? 0;

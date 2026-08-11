@@ -117,6 +117,10 @@ afterEach(async () => {
   for (const row of labelSnapshot) {
     await query(`UPDATE categories SET label = $2 WHERE id = $1`, [row.id, row.label]);
   }
+  // TCK-008: deleteCategory now soft-deletes the categories ROW (is_builtin=false only).
+  // Defensively resurrect any soft-deleted BUILT-IN row so a dev-time regression cannot
+  // leave the shared DB with a tombstoned built-in that hides its shelf from other runs.
+  await query(`UPDATE categories SET deleted_at = NULL WHERE is_builtin = true AND deleted_at IS NOT NULL`);
   // Resurrect any real SEED entry the deleteCategory tests soft-deleted, so the
   // shared DB's live count does not drift. Restricted to the ids that were LIVE
   // at snapshot time — a genuine pre-existing tombstone is never resurrected.
@@ -246,5 +250,100 @@ describe("deleteCategory bulk soft-delete (F9-B, real Postgres)", () => {
     // Clean the tie/fact we made (afterEach handles the entries + their refs).
     await query(`DELETE FROM ties WHERE id = $1`, [tieId]);
     await query(`DELETE FROM facts WHERE id = $1`, [factId]);
+  });
+});
+
+// -----------------------------------------------------------------------------
+// TCK-008: deleteCategory must ALSO soft-delete the categories ROW (guarded to
+// is_builtin = false), not just the category's entries. Before this fix the
+// mutation only stamped `entries.deleted_at`, so deleting an EMPTY user category
+// matched 0 rows and was a total no-op (the reported "can't delete a category"),
+// and even a populated user category left an empty shelf behind. These tests
+// prove: (a) empty user category ROW vanishes from getCategories; (b) populated
+// user category ROW vanishes AND its entries are soft-deleted; (c) a BUILT-IN
+// category ROW SURVIVES (is_builtin guard); (d) the row soft-delete is idempotent
+// (first stamp preserved). All user rows are throwaway `test-f9bcat-<uuid>`
+// (afterEach hard-deletes them); the built-in case relies on the is_builtin
+// afterEach safety net + liveSeedIds entry resurrection.
+// -----------------------------------------------------------------------------
+
+/** Is a category id present in the LIVE (deleted_at IS NULL) getCategories read? */
+async function categoryIsLive(id: string): Promise<boolean> {
+  return (await getCategories()).some((c) => c.id === id);
+}
+
+/** Read a category row's raw deleted_at directly (getCategories hides deleted). */
+async function rowDeletedAt(id: string): Promise<string | null> {
+  const res = await query<{ deleted_at: string | null }>(
+    `SELECT deleted_at FROM categories WHERE id = $1`,
+    [id],
+  );
+  return res.rows[0]?.deleted_at ?? null;
+}
+
+/** Create a fresh throwaway USER category (tracked for hard-delete in afterEach). */
+async function freshUserCategory(label: string, shelf: Shelf): Promise<string> {
+  const id = `test-f9bcat-${randomUUID()}`;
+  createdCategories.push(id);
+  const nextSort = await getMaxCategorySortOrder();
+  await createCategory({ id, label, shelf, sortOrder: nextSort });
+  return id;
+}
+
+describe("deleteCategory ROW soft-delete (TCK-008, real Postgres)", () => {
+  it("soft-deletes an EMPTY user category ROW so it vanishes from getCategories", async () => {
+    const catId = await freshUserCategory("Guilds", "orders");
+    expect(await categoryIsLive(catId)).toBe(true); // precondition: live
+
+    // Empty-category case: 0 entries to soft-delete, so the OLD code was a no-op
+    // and the row stayed live. The fix must remove the ROW.
+    await deleteCategory({ kind: catId, deletedAt: Date.now() }, CONFIRM);
+
+    expect(await categoryIsLive(catId)).toBe(false); // lock: row gone from live read
+    expect(await rowDeletedAt(catId)).not.toBeNull(); // lock: soft-deleted, not hard
+  });
+
+  it("soft-deletes a POPULATED user category ROW and its entries together", async () => {
+    const catId = await freshUserCategory("Doomed", "lore");
+    // A user-category entry carries kind === the category id (schema.sql:48-50).
+    const entryId = `test-f9b-${randomUUID()}`;
+    await insertEntry(
+      {
+        id: entryId,
+        kind: catId as Kind,
+        name: "Cursed",
+        catalogueNo: "TEST",
+        note: "",
+        summary: "",
+        shelf: "lore",
+        sortOrder: 999,
+      },
+      CONFIRM,
+    );
+    created.push(entryId);
+
+    await deleteCategory({ kind: catId, deletedAt: Date.now() }, CONFIRM);
+
+    expect(await categoryIsLive(catId)).toBe(false); // row gone
+    const liveEntryIds = new Set((await getAllEntries()).map((e) => e.id));
+    expect(liveEntryIds.has(entryId)).toBe(false); // entry soft-deleted too (cascade kept)
+  });
+
+  it("NEVER soft-deletes a BUILT-IN category ROW (is_builtin guard)", async () => {
+    // Deleting a built-in kind soft-deletes its seed entries (afterEach resurrects
+    // them via liveSeedIds) but the ROW must SURVIVE so its shelf stays.
+    expect(await categoryIsLive("lore")).toBe(true); // built-in precondition
+
+    await deleteCategory({ kind: "lore", deletedAt: Date.now() }, CONFIRM);
+
+    expect(await categoryIsLive("lore")).toBe(true); // lock: built-in row SURVIVES
+    expect(await rowDeletedAt("lore")).toBeNull(); // lock: row never stamped
+  });
+
+  it("row soft-delete is idempotent: a re-run does not overwrite the first stamp", async () => {
+    const catId = await freshUserCategory("Once", "places");
+    await deleteCategory({ kind: catId, deletedAt: 1000 }, CONFIRM);
+    await deleteCategory({ kind: catId, deletedAt: 2000 }, CONFIRM);
+    expect(await rowDeletedAt(catId)).toBe("1000"); // lock: first stamp preserved
   });
 });
