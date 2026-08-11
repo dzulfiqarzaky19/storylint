@@ -44,7 +44,9 @@ import { DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID, DEFAULT_SERIES_ID } from "@/lib/d
 //
 // DEFAULT-BOOK INVARIANT: with ZERO facet rows and all canon facts book_id=NULL,
 // loadWikiSnapshot(U1, book-1) is BYTE-IDENTICAL to the pre-S4 canon-only read.
-// Baseline: 16 composed entries in U1 (19 total - 3 soft-deleted). We snapshot
+// Baseline: 15 composed entries in U1 (seed.ts declares exactly 15 real entry
+// rows: 5 character + 3 world + 3 organization + 4 lore; zero are soft-deleted).
+// We snapshot
 // BEFORE seeding, assert the baseline, and after adding B2 facets re-assert the
 // B1 view of Gandalf is untouched (Grey) — the override never leaks to B1.
 //
@@ -69,6 +71,18 @@ const tieId = `test-f7s4-tie-${randomUUID()}`;
 const CANON_NAME = "Grey the Wizard";
 const FACET_NAME = "White the Wizard";
 
+// The canon baseline. RULING (a) STALE TEST, not a missing seed row: seed.ts
+// declares EXACTLY 15 real entry-row literals under universe-1 — 5 character
+// (seed.ts L57,66,75,84,93) + 3 world (L102,111,120) + 3 organization
+// (L129,138,146) + 4 lore (L155,164,173,182) — none soft-deleted. It is a
+// deliberate, complete set; there is NO half-defined 16th row or gap. The prior
+// hardcoded 16 was calibrated against a DB that carried 1 UI-created stray
+// ('New person'/'New place', now hard-deleted): 15 seed + 1 stray = 16. A clean
+// seed reads 15, so the constant, not the seed, was wrong. Single source of
+// truth so both invariant checks stay pinned to the seed. (NB: seed.ts L22
+// `kind: Kind;` is the TS interface decl, NOT a row — do not count it.)
+const SEED_CANON_COUNT = 15;
+
 beforeAll(async () => {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL not set; integration test needs a live DB (.env.local).");
@@ -92,13 +106,13 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     // canon read. We assert this two ways, BOTH immune to parallel test rows that
     // other int files transiently seed under U1 (a bare snapshot.entries.length
     // is NOT — it counts those too, so it flakes in the shared-DB full run):
-    //  (a) the canon baseline itself: exactly 16 REAL (non-test) U1 entries.
+    //  (a) the canon baseline itself: exactly SEED_CANON_COUNT REAL (non-test) U1 entries.
     const canon = await one<{ c: number }>(
       `SELECT COUNT(*)::int c FROM entries
         WHERE deleted_at IS NULL AND universe_id = $1 AND id NOT LIKE 'test-%'`,
       [DEFAULT_UNIVERSE_ID],
     );
-    expect(canon?.c).toBe(16);
+    expect(canon?.c).toBe(SEED_CANON_COUNT);
     //  (b) our test entries do NOT exist yet in the merged read (clean slate).
     const snap = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID);
     expect(snap.byId[gandalfId]).toBeUndefined();
@@ -222,14 +236,14 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     expect(b1.byId[gandalfId]?.summary).toBe("A wizard of the Grey order.");
     // B1 still has exactly the two canon facts (no book-only fact leaked in).
     expect((b1.byId[gandalfId]?.facts ?? []).map((f) => f.key)).toEqual(["canon-A", "canon-C"]);
-    // And the canon baseline is still exactly 16 REAL (non-test) U1 entries: our
-    // seed ADDED test entries, it did not duplicate or move any canon row.
+    // And the canon baseline is still exactly SEED_CANON_COUNT REAL (non-test) U1 entries:
+    // our seed ADDED test entries, it did not duplicate or move any canon row.
     const canon = await one<{ c: number }>(
       `SELECT COUNT(*)::int c FROM entries
         WHERE deleted_at IS NULL AND universe_id = $1 AND id NOT LIKE 'test-%'`,
       [DEFAULT_UNIVERSE_ID],
     );
-    expect(canon?.c).toBe(16);
+    expect(canon?.c).toBe(SEED_CANON_COUNT);
     // Our 2 test entries ARE present in the merged read (seed took effect).
     expect(b1.byId[gandalfId]).toBeDefined();
     expect(b1.byId[frodoId]).toBeDefined();
