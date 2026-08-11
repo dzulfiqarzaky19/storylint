@@ -33,9 +33,19 @@ import { visibleProsePrefix } from "@/lib/research/streamParse";
 import { finalizeStreamedAnswer } from "@/lib/research/finalizeStream";
 import { buildGazetteer } from "@/lib/research/gazetteer";
 import { buildResearchPrompt } from "@/lib/research/buildResearchPrompt";
+import { loadWebSearchConfig } from "@/lib/websearch/search/config";
+import { retrieve, buildSearchImpl } from "@/lib/websearch/retrieve";
+import { enforceCitations } from "@/lib/websearch/ground/enforceCitations";
+import {
+  renderWebContext,
+  collectAllowedUrls,
+} from "@/lib/research/webSearchAdapter";
 
 // Never statically optimize: this route always runs on request and streams.
 export const dynamic = "force-dynamic";
+// The web-search engine (safeFetch: node:net BlockList, undici Agent, linkedom)
+// requires the Node.js runtime — it cannot run on the Edge runtime.
+export const runtime = "nodejs";
 
 interface StreamRequestBody {
   question?: string;
@@ -77,6 +87,29 @@ export async function POST(req: NextRequest) {
   const gazetteer = buildGazetteer(wiki.entries);
   const { system, user } = buildResearchPrompt(question, threadTitle, gazetteer);
 
+  // F10: real web search. Retrieve + read full-body pages for this question, then
+  // append them as grounded prompt context and hold the answer's citations to
+  // exactly the URLs we read. Fail-soft: any engine error yields no web context
+  // (empty read set) and the answer falls back to wiki-only grounding — the chat
+  // never breaks because search is down or unconfigured.
+  let webUser = user;
+  let allowedUrls: string[] = [];
+  try {
+    const cfg = loadWebSearchConfig(process.env);
+    const retrieval = await retrieve(question, {
+      searchImpl: buildSearchImpl(cfg),
+      maxRead: cfg.maxResults,
+      signal: req.signal,
+    });
+    const context = renderWebContext(retrieval);
+    allowedUrls = collectAllowedUrls(retrieval);
+    if (context) webUser = `${user}\n\n${context}`;
+  } catch {
+    // Fail-soft: keep wiki-only prompt, no allowed citations.
+    webUser = user;
+    allowedUrls = [];
+  }
+
   const stamp = Date.now();
   const rid = randomUUID().slice(0, 8);
   const youId = `ai-you-${stamp}-${rid}`;
@@ -102,7 +135,7 @@ export async function POST(req: NextRequest) {
         // reason (saarouters.ts) — the route wants gateway-default sampling.
         for await (const delta of streamComplete({
           system,
-          messages: [{ role: "user", content: user }],
+          messages: [{ role: "user", content: webUser }],
           maxTokens: 900,
           signal: req.signal,
         })) {
@@ -140,7 +173,9 @@ export async function POST(req: NextRequest) {
               themId: args.themId,
               who: { you: "You", them: "Collaborator" },
               question: args.question,
-              reply: args.reply,
+              // F10 grounding gate: strip any citation to a URL we did NOT read,
+              // so a stored answer never links a fabricated source.
+              reply: enforceCitations(args.reply, allowedUrls),
               cards: args.cards,
               autoTitle: deriveThreadTitle(args.question),
             }),
