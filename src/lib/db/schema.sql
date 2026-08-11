@@ -4,6 +4,7 @@
 -- Drop in dependency order, recreate with FKs + indexes.
 
 DROP TABLE IF EXISTS phrase_mentions CASCADE;
+DROP TABLE IF EXISTS world_entities CASCADE;
 DROP TABLE IF EXISTS dismissed_suggestions CASCADE;
 DROP TABLE IF EXISTS resolved_marks CASCADE;
 DROP TABLE IF EXISTS kept_cards CASCADE;
@@ -20,6 +21,7 @@ DROP TABLE IF EXISTS entries CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS books CASCADE;
 DROP TABLE IF EXISTS series CASCADE;
+DROP TABLE IF EXISTS worlds CASCADE;
 DROP TABLE IF EXISTS universes CASCADE;
 
 -- F7 worlds hierarchy: Universe owns the wiki; Series groups Books; Book owns
@@ -44,6 +46,19 @@ CREATE TABLE books (
   sort_order  integer NOT NULL DEFAULT 0
 );
 
+-- W-1 (world-model epic): worlds — a world groups SHARED entities (via the
+-- world_entities junction below) and owns user categories (categories.world_id).
+-- Sibling to series under a universe; one world per universe today (1:1), but a
+-- universe may grow more. STRUCTURAL (not wiki content) so no confirmWikiWrite
+-- token gates it. Created BEFORE categories so categories.world_id FK resolves.
+CREATE TABLE worlds (
+  id           text PRIMARY KEY,
+  universe_id  text NOT NULL REFERENCES universes(id) ON DELETE CASCADE,
+  title        text NOT NULL,
+  description  text NOT NULL DEFAULT '',
+  sort_order   integer NOT NULL DEFAULT 0
+);
+
 -- categories (F9-B): user-extensible entry categories. REPLACES category_labels.
 -- The 4 built-ins are seeded with ids EQUAL to the historic entries.kind enum
 -- strings ('character'/'world'/'organization'/'lore'), so entries.kind already
@@ -58,7 +73,12 @@ CREATE TABLE categories (
   shelf       text NOT NULL,
   sort_order  integer NOT NULL DEFAULT 0,
   is_builtin  boolean NOT NULL DEFAULT false,
-  deleted_at  bigint
+  deleted_at  bigint,
+  -- W-1: owning world for VISIBILITY/ownership. NULL = GLOBAL (the 4 built-ins
+  -- stay NULL so a shared entity kind always resolves in any world); user cats are
+  -- per-world. ON DELETE CASCADE: a user category dies with its world. id stays
+  -- globally-unique PK; is_builtin + soft-delete (TCK-008) untouched.
+  world_id    text REFERENCES worlds(id) ON DELETE CASCADE
 );
 
 -- Seed the 4 built-in categories. ids MUST equal the historic kind enum strings
@@ -90,6 +110,17 @@ CREATE TABLE entries (
   -- F7: the universe (canon) this entry belongs to. NOT NULL as of the S1b
   -- CONTRACT phase (f7a stamped every row, incl. soft-deleted, to universe-1).
   universe_id   text NOT NULL REFERENCES universes(id)
+);
+
+-- W-1 (world-model epic): world_entities — M2M membership junction (ITEM grain).
+-- An entity is SHARED across a universe worlds via this junction (the entry stays
+-- home to its universe_id; membership is additive). Composite PK dedupes a
+-- (world, entity) pair; both FKs CASCADE so deleting a world or an entry row
+-- cleans its membership edges. Created AFTER entries so the entity_id FK resolves.
+CREATE TABLE world_entities (
+  world_id   text NOT NULL REFERENCES worlds(id) ON DELETE CASCADE,
+  entity_id  text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  PRIMARY KEY (world_id, entity_id)
 );
 
 -- facts: id, entryId, key, value, fresh, sortOrder
@@ -259,3 +290,7 @@ CREATE INDEX idx_series_universe           ON series (universe_id);
 CREATE INDEX idx_books_series              ON books (series_id);
 -- F9-B: category header ordering (shelf grouping + sort_order).
 CREATE INDEX idx_categories_sort           ON categories (sort_order, id);
+-- W-1 (world-model epic): world-by-universe (tree read) + membership reverse
+-- lookup (which worlds is this entity in — W-3/W-4 read path).
+CREATE INDEX idx_worlds_universe           ON worlds (universe_id);
+CREATE INDEX idx_world_entities_entity     ON world_entities (entity_id);
