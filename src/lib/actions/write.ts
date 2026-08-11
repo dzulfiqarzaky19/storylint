@@ -396,16 +396,20 @@ export async function aiCheckChapter(
     const system = [
       "You are the consistency engine for a fiction writer. You are given the writer's GAZETTEER (their wiki of characters, places, lore and facts) and one or more MANUSCRIPT PARAGRAPHS.",
       "Cross-check every factual claim in the paragraphs against the gazetteer.",
-      "Report TWO kinds of finding:",
+      "Report THREE kinds of finding:",
       "  conflicts: a claim that CONTRADICTS a recorded gazetteer fact (wrong count, wrong colour, wrong age, wrong relationship, impossible per a recorded rule, etc.).",
-      "  missing:   a concrete, checkable NEW fact about a KNOWN entity that the gazetteer does not record yet.",
+      "  missing:   a concrete, checkable NEW fact about a KNOWN entity (one already in the gazetteer) that the gazetteer does not record yet.",
+      "  newEntity: the prose introduces a GENUINELY NEW subject that has NO entry in the gazetteer at all — a named character, place/world, organization, or standalone piece of lore worth its own entry. Propose it for the writer to confirm; you are NOT creating it.",
       "HARD RULES:",
       "- Ground ONLY in the gazetteer. Never invent a contradicting fact. If the gazetteer does not constrain something, it is NOT a conflict.",
       "- Every quote MUST be copied VERBATIM from the paragraph text (exact characters, including punctuation). Do not paraphrase.",
       "- Prefer few, high-confidence findings over many weak ones. If unsure, omit it.",
       "- entryId must be one of the bracketed ids from the gazetteer, or empty.",
+      "- newEntity is ONLY for a subject with NO existing entry. If the subject already appears in the gazetteer, it is `missing` (a new fact about it), never `newEntity`. Never propose a newEntity that duplicates a gazetteer entry.",
+      "- newEntity.kind MUST be exactly one of: character | world | organization | lore. If unsure, use lore.",
+      "- newEntity.name is the proposed short display name for the entry (e.g. \"Saint Osk\").",
       "Return STRICT JSON only, no prose, shaped exactly:",
-      '{"conflicts":[{"quote":string,"entryId":string,"reason":string,"recorded":string,"paragraph":number}],"missing":[{"quote":string,"reason":string,"key":string,"value":string,"paragraph":number}]}',
+      '{"conflicts":[{"quote":string,"entryId":string,"reason":string,"recorded":string,"paragraph":number}],"missing":[{"quote":string,"reason":string,"key":string,"value":string,"paragraph":number}],"newEntity":[{"quote":string,"name":string,"kind":string,"reason":string,"paragraph":number}]}',
     ].join("\n");
 
     const user = [
@@ -459,6 +463,13 @@ export async function aiCheckChapter(
       const p = (m as { paragraph?: number }).paragraph;
       if (typeof m.quote === "string" && typeof p === "number") {
         preferredIndexByQuote[m.quote.trim()] = p;
+      }
+    }
+
+    for (const n of parsed.newEntity ?? []) {
+      const p = (n as { paragraph?: number }).paragraph;
+      if (typeof n.quote === "string" && typeof p === "number") {
+        preferredIndexByQuote[n.quote.trim()] = p;
       }
     }
 

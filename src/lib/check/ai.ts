@@ -26,6 +26,28 @@ import { occurrenceIndexOf } from './text';
 /** ruleId namespaces for AI-sourced marks (kept distinct from deterministic rule ids). */
 export const AI_CONFLICT_RULE_ID = 'ai-conflict';
 export const AI_MISSING_RULE_ID = 'ai-unrecorded';
+/**
+ * newEntity findings (TCK-016) ride the SAME writer-confirm path as `missing`
+ * but carry a DISTINCT ruleId so they de-dupe separately in the markKey and can
+ * be told apart from a plain "unrecorded fact" finding.
+ */
+export const AI_NEW_ENTITY_RULE_ID = 'ai-new-entity';
+
+/**
+ * The wiki kinds a proposed new entity may claim — shared with TCK-015's research
+ * classification allowlist. An out-of-list kind from the model is clamped to the
+ * safe default rather than surfaced verbatim.
+ */
+const NEW_ENTITY_KINDS = ['character', 'world', 'organization', 'lore'] as const;
+type NewEntityKind = (typeof NEW_ENTITY_KINDS)[number];
+const NEW_ENTITY_KIND_FALLBACK: NewEntityKind = 'lore';
+
+function clampEntityKind(kind: string | undefined): NewEntityKind {
+  const k = (kind ?? '').trim().toLowerCase();
+  return (NEW_ENTITY_KINDS as readonly string[]).includes(k)
+    ? (k as NewEntityKind)
+    : NEW_ENTITY_KIND_FALLBACK;
+}
 
 // Same affordances as the deterministic engine so the UI + resolveMark path are
 // identical for AI and non-AI marks.
@@ -65,10 +87,23 @@ export interface AiMissingFinding {
   value?: string;
 }
 
+/** One new-entity finding as returned by the model (TCK-016). */
+export interface AiNewEntityFinding {
+  /** Verbatim manuscript run that introduces a subject not in the wiki. */
+  quote: string;
+  /** Proposed display name for the new entry (e.g. "Saint Osk"). */
+  name?: string;
+  /** Proposed wiki kind (character | world | organization | lore); clamped if out-of-list. */
+  kind?: string;
+  /** Short reason / what it is (rail + note). */
+  reason?: string;
+}
+
 /** The strict JSON shape aiCheckChapter asks the model for. */
 export interface AiCheckResponse {
   conflicts?: AiConflictFinding[];
   missing?: AiMissingFinding[];
+  newEntity?: AiNewEntityFinding[];
 }
 
 function markKey(ruleId: string, quote: string, entryId: string): string {
@@ -184,6 +219,28 @@ export function aiResultToMarks(
       '', // unrecorded → no entry to anchor to yet
       reason,
       reason,
+      AI_MISSING_ACTIONS,
+    );
+  }
+
+  for (const n of response.newEntity ?? []) {
+    const kind = clampEntityKind(n.kind);
+    const name = (n.name ?? '').trim();
+    const why = (n.reason ?? '').trim();
+    // Rail names the proposed entry + its kind so the writer sees WHAT is being
+    // proposed before confirming (RULE 1). Note adds the model's reason.
+    const subject = name ? `${name} (${kind})` : `a new ${kind}`;
+    const rail = `New ${kind} to record: ${name || 'this subject'}`;
+    const note = why
+      ? `Proposes a new wiki entry — ${subject}. ${why}`
+      : `Proposes a new wiki entry — ${subject}.`;
+    push(
+      AI_NEW_ENTITY_RULE_ID,
+      'missing', // rides the writer-confirm path; NOT a conflict (RULE 2)
+      n.quote,
+      '', // nothing recorded yet → no entry to anchor to
+      rail,
+      note,
       AI_MISSING_ACTIONS,
     );
   }

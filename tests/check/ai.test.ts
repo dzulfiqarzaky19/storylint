@@ -17,6 +17,7 @@ import {
   reconcileAiMarks,
   AI_CONFLICT_RULE_ID,
   AI_MISSING_RULE_ID,
+  AI_NEW_ENTITY_RULE_ID,
   type AiCheckResponse,
 } from '@/lib/check/ai';
 import type { Mark } from '@/lib/check';
@@ -108,6 +109,92 @@ describe('aiResultToMarks — mapping + grounding', () => {
     const b = aiResultToMarks(bare, paragraphs);
     expect(a).toHaveLength(1);
     expect(a[0]!.markKey).toBe(b[0]!.markKey);
+  });
+});
+
+// TCK-016 (newEntity): the write check can now propose a GENUINELY NEW entity the
+// prose introduces (e.g. "Saint Osk" when Osk isn't in the wiki), routed through
+// the SAME writer-confirm path as `missing` (RULE 1: propose->confirm, nothing
+// auto-enters) but with a DISTINCT ruleId so it de-dupes separately and carries
+// the proposed name + kind. RULE 2: it is NOT a conflict.
+describe('aiResultToMarks — newEntity (TCK-016)', () => {
+  const prose = [
+    'Saint Osk the One-Eyed walked the salt road at dawn.',
+    'She wore her grandmother’s iron key on a cord.',
+  ];
+
+  it('maps a verbatim newEntity to a missing-kind Mark with the DISTINCT ai-new-entity ruleId', () => {
+    const res: AiCheckResponse = {
+      newEntity: [
+        {
+          quote: 'Saint Osk the One-Eyed',
+          name: 'Saint Osk',
+          kind: 'character',
+          reason: 'A new person not in the wiki yet.',
+        },
+      ],
+    };
+    const marks = aiResultToMarks(res, prose);
+    expect(marks).toHaveLength(1);
+    // Rides the missing/confirm path (RULE 1) but is tagged distinctly.
+    expect(marks[0]!.kind).toBe('missing');
+    expect(marks[0]!.ruleId).toBe(AI_NEW_ENTITY_RULE_ID);
+    expect(marks[0]!.ruleId).not.toBe(AI_MISSING_RULE_ID);
+    expect(marks[0]!.quote).toBe('Saint Osk the One-Eyed');
+    expect(marks[0]!.position.paragraphIndex).toBe(0);
+    // Same writer-confirm affordances as a plain missing finding.
+    expect(marks[0]!.actions.map((a) => a.id)).toEqual(['add', 'edit', 'leave']);
+    // The proposed name + kind are surfaced in the rail/note copy.
+    expect(`${marks[0]!.rail} ${marks[0]!.noteText}`).toContain('Saint Osk');
+    expect(`${marks[0]!.rail} ${marks[0]!.noteText}`).toMatch(/character/i);
+  });
+
+  it('de-dupes SEPARATELY from a plain missing finding on the same quote (distinct ruleId)', () => {
+    // Same quote, one as missing, one as newEntity → two marks (different keys),
+    // because the ruleId is part of the markKey. A shared ruleId would collapse them.
+    const res: AiCheckResponse = {
+      missing: [{ quote: 'Saint Osk the One-Eyed', reason: 'x' }],
+      newEntity: [{ quote: 'Saint Osk the One-Eyed', name: 'Saint Osk', kind: 'character', reason: 'y' }],
+    };
+    const marks = aiResultToMarks(res, prose);
+    expect(marks).toHaveLength(2);
+    const ruleIds = marks.map((m) => m.ruleId).sort();
+    expect(ruleIds).toEqual([AI_MISSING_RULE_ID, AI_NEW_ENTITY_RULE_ID].sort());
+  });
+
+  it('clamps an INVALID kind to lore (no throw), mirroring the 015 allowlist', () => {
+    const res: AiCheckResponse = {
+      newEntity: [
+        { quote: 'the salt road', name: 'The Salt Road', kind: 'planet' as unknown as 'world', reason: 'z' },
+      ],
+    };
+    const marks = aiResultToMarks(res, prose);
+    expect(marks).toHaveLength(1);
+    // Invalid kind must not surface as-is; it falls back to the safe default.
+    expect(`${marks[0]!.rail} ${marks[0]!.noteText}`).not.toMatch(/planet/i);
+    expect(`${marks[0]!.rail} ${marks[0]!.noteText}`).toMatch(/lore/i);
+  });
+
+  it('DROPS a hallucinated newEntity quote not verbatim in the manuscript (grounding guard)', () => {
+    const res: AiCheckResponse = {
+      newEntity: [{ quote: 'the crystal throne of Fyre', name: 'Fyre', kind: 'world', reason: 'invented' }],
+    };
+    expect(aiResultToMarks(res, prose)).toHaveLength(0);
+  });
+
+  it('REGRESSION: conflict + missing findings are UNCHANGED when newEntity is also present', () => {
+    const res: AiCheckResponse = {
+      conflicts: [{ quote: 'the salt road', entryId: 'road', reason: 'c' }],
+      missing: [{ quote: 'her grandmother’s iron key', reason: 'm' }],
+      newEntity: [{ quote: 'Saint Osk the One-Eyed', name: 'Saint Osk', kind: 'character', reason: 'n' }],
+    };
+    const marks = aiResultToMarks(res, prose);
+    const conflict = marks.find((m) => m.kind === 'conflict');
+    const plainMissing = marks.find((m) => m.ruleId === AI_MISSING_RULE_ID);
+    expect(conflict?.ruleId).toBe(AI_CONFLICT_RULE_ID);
+    expect(conflict?.actions.map((a) => a.id)).toEqual(['wiki', 'text', 'leave']);
+    expect(plainMissing?.kind).toBe('missing');
+    expect(plainMissing?.actions.map((a) => a.id)).toEqual(['add', 'edit', 'leave']);
   });
 });
 
