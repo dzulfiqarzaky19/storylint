@@ -44,7 +44,7 @@ function entry(id: string, name: string, kind: Kind): EntryWithDetails {
 function stateOf(entries: EntryWithDetails[]): WikiState {
   const byId: Record<string, EntryWithDetails> = {};
   for (const e of entries) byId[e.id] = e;
-  const snapshot: WikiSnapshot = { entries, byId, overrides: {} };
+  const snapshot: WikiSnapshot = { entries, byId, overrides: {}, categories: [] };
   return initWikiState(snapshot);
 }
 

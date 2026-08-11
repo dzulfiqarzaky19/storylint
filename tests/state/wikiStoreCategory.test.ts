@@ -24,8 +24,9 @@ import type {
   EntryWithDetails,
   Kind,
   Shelf,
+  CategoryRow,
 } from "@/lib/domain/types";
-import { KIND_SHELF } from "@/lib/domain/types";
+import { KIND_SHELF, SHELF_TITLES } from "@/lib/domain/types";
 
 function entry(id: string, name: string, kind: Kind): EntryWithDetails {
   return {
@@ -45,11 +46,25 @@ function entry(id: string, name: string, kind: Kind): EntryWithDetails {
   };
 }
 
-function stateOf(entries: EntryWithDetails[], overrides = {}): WikiState {
+function stateOf(
+  entries: EntryWithDetails[],
+  overrides = {},
+  categories: CategoryRow[] = [],
+): WikiState {
   const byId: Record<string, EntryWithDetails> = {};
   for (const e of entries) byId[e.id] = e;
-  const snapshot: WikiSnapshot = { entries, byId, overrides };
+  const snapshot: WikiSnapshot = { entries, byId, overrides, categories };
   return initWikiState(snapshot);
+}
+
+function cat(
+  id: string,
+  label: string,
+  sortOrder: number,
+  shelf: Shelf = "people",
+  isBuiltin = false,
+): CategoryRow {
+  return { id, label, shelf, sortOrder, isBuiltin, deletedAt: null };
 }
 
 describe("RENAME_CATEGORY / RESET_CATEGORY", () => {
@@ -123,5 +138,91 @@ describe("DELETE_CATEGORY (bulk soft-delete over live entries of the kind)", () 
     const next = wikiReducer(s, { type: "DELETE_CATEGORY", kind: "character" });
     expect(next.byId.w1).toBeDefined();
     expect(next.order.places).toContain("w1");
+  });
+});
+
+// ---- F9-B S2: the full category list flows into the store -------------------
+// Mutation-locked lines:
+//  * initWikiState `categories: [...snapshot.categories]` — drop it and the list
+//    is empty, so "init copies the list" goes RED.
+//  * createCategoryInState idempotency guard `some(c.id === category.id)` — drop
+//    it and a duplicate id appends, so the "no dup" length assertion goes RED.
+//  * createCategoryInState `.sort((a,b) => a.sortOrder - b.sortOrder)` — drop it
+//    and the appended row stays last, so the "kept sorted" order assertion RED.
+//  * renameCategoryInState `c.id === kind ? { ...c, label } : c` — the label the
+//    matching row carries; break the match and the row keeps its old label RED.
+//  * renameCategoryInState blank branch `trimmed === "" ? shelfDefault` — a blank
+//    rename resets the row label to the shelf default; break it and RED.
+//  * deleteCategoryInState `.filter((c) => c.id !== kind)` — drop it and the
+//    deleted category's row survives in the list, so the "row gone" test RED.
+
+describe("initWikiState copies the full category list", () => {
+  it("carries snapshot.categories onto state (built-ins + user)", () => {
+    const cats = [cat("character", "People", 0, "people", true), cat("u1", "Factions", 10)];
+    const s = stateOf([entry("a", "Ana", "character")], {}, cats);
+    expect(s.categories.map((c) => c.id)).toEqual(["character", "u1"]);
+    expect(s.categories.find((c) => c.id === "u1")?.label).toBe("Factions");
+  });
+});
+
+describe("CREATE_CATEGORY", () => {
+  it("appends a new category to the list", () => {
+    const s = stateOf([], {}, [cat("character", "People", 0, "people", true)]);
+    const next = wikiReducer(s, { type: "CREATE_CATEGORY", category: cat("u1", "Factions", 10) });
+    expect(next.categories.map((c) => c.id)).toContain("u1");
+    expect(next.categories.find((c) => c.id === "u1")?.label).toBe("Factions");
+  });
+
+  it("is idempotent: re-adding the same id does NOT duplicate", () => {
+    const s = stateOf([], {}, [cat("u1", "Factions", 10)]);
+    const next = wikiReducer(s, { type: "CREATE_CATEGORY", category: cat("u1", "Factions", 10) });
+    expect(next.categories.filter((c) => c.id === "u1")).toHaveLength(1);
+  });
+
+  it("keeps the list sorted by sortOrder after append", () => {
+    const s = stateOf([], {}, [cat("a", "A", 0), cat("c", "C", 20)]);
+    const next = wikiReducer(s, { type: "CREATE_CATEGORY", category: cat("b", "B", 10) });
+    expect(next.categories.map((c) => c.id)).toEqual(["a", "b", "c"]);
+  });
+});
+
+describe("RENAME_CATEGORY also updates the category list", () => {
+  it("sets the matching row's label to the trimmed value", () => {
+    const s = stateOf(
+      [entry("a", "Ana", "character")],
+      {},
+      [cat("character", "People", 0, "people", true), cat("world", "Places", 1, "places", true)],
+    );
+    const next = wikiReducer(s, { type: "RENAME_CATEGORY", kind: "character", label: "  Cast  " });
+    expect(next.categories.find((c) => c.id === "character")?.label).toBe("Cast");
+    // other rows untouched
+    expect(next.categories.find((c) => c.id === "world")?.label).toBe("Places");
+    // overrides still wired (back-compat)
+    expect(next.overrides.character).toBe("Cast");
+  });
+
+  it("a blank rename resets the row label to the shelf default", () => {
+    const s = stateOf(
+      [entry("a", "Ana", "character")],
+      { character: "Cast" },
+      [cat("character", "Cast", 0, "people", true)],
+    );
+    const next = wikiReducer(s, { type: "RENAME_CATEGORY", kind: "character", label: "   " });
+    expect(next.categories.find((c) => c.id === "character")?.label).toBe(SHELF_TITLES.people);
+    expect(next.overrides.character).toBeUndefined();
+  });
+});
+
+describe("DELETE_CATEGORY also removes the category row", () => {
+  it("drops the deleted category's row from the list", () => {
+    const s = stateOf(
+      [entry("c1", "Ana", "character")],
+      {},
+      [cat("character", "People", 0, "people", true), cat("world", "Places", 1, "places", true)],
+    );
+    const next = wikiReducer(s, { type: "DELETE_CATEGORY", kind: "character" });
+    expect(next.categories.map((c) => c.id)).not.toContain("character");
+    // sibling category row survives
+    expect(next.categories.map((c) => c.id)).toContain("world");
   });
 });

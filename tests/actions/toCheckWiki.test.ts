@@ -79,6 +79,7 @@ const DB_WIKI: DbWiki = {
   entries: [MAREN, VERGE],
   byId: { maren: MAREN, vergelight: VERGE },
   overrides: {},
+  categories: [],
 };
 
 function doc(paragraphs: string[]): unknown {
@@ -112,6 +113,7 @@ describe("toCheckWiki projection keeps every load-bearing lexicon field", () => 
       entries: [MAREN, { ...VERGE, note: "" }],
       byId: { maren: MAREN, vergelight: { ...VERGE, note: "" } },
       overrides: {},
+      categories: [],
     };
     expect(missingQuotes(["He would not break the tallow rule."], noNoteDb)).not.toContain(
       "the tallow rule",
@@ -144,6 +146,7 @@ describe("toCheckWiki projection keeps every load-bearing lexicon field", () => 
       entries: [{ ...MAREN, facts: [] }, VERGE],
       byId: { maren: { ...MAREN, facts: [] }, vergelight: VERGE },
       overrides: {},
+      categories: [],
     };
     expect(
       missingQuotes(["She checked the brass ledger at dawn."], noFactDb),

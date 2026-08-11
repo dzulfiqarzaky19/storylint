@@ -12,8 +12,14 @@ import {
   resolveCategoryLabel,
   applyCategoryRename,
   applyCategoryReset,
+  categoryLabelById,
 } from "@/lib/wiki/categoryLabels";
 import { SHELF_TITLES, KIND_SHELF } from "@/lib/domain/types";
+import type { CategoryRow } from "@/lib/domain/types";
+
+function cat(id: string, label: string, sortOrder = 0): CategoryRow {
+  return { id, label, shelf: "people", sortOrder, isBuiltin: false, deletedAt: null };
+}
 
 describe("resolveCategoryLabel", () => {
   it("returns the custom override when one is set", () => {
@@ -92,5 +98,42 @@ describe("applyCategoryReset", () => {
     const reset = applyCategoryReset(renamed, "character");
     // Coherence lock: reducer reset + S5a resolver agree on the default.
     expect(resolveCategoryLabel("character", reset)).toBe(SHELF_TITLES.people);
+  });
+});
+
+// F9-B S2 — the PURE list-based resolver over the full category list.
+// Mutation-locked lines in categoryLabelById:
+//  * `find((c) => c.id === id)` + `return row.label` — the present-row branch;
+//    break the match and a present row falls through to the fallback -> RED.
+//  * `id in KIND_SHELF` + `SHELF_TITLES[KIND_SHELF[id]]` — the built-in fallback;
+//    drop it and an absent built-in id returns the raw id, not "People" -> RED.
+//  * final `return id` — the user-category fallback when absent from the list.
+describe("categoryLabelById", () => {
+  it("returns the matching row's label when the id is present", () => {
+    const cats = [cat("u1", "Factions"), cat("u2", "Magic Systems")];
+    expect(categoryLabelById(cats, "u1")).toBe("Factions"); // lock: present-row wins
+    expect(categoryLabelById(cats, "u2")).toBe("Magic Systems");
+  });
+
+  it("prefers the stored row label over the built-in default for a built-in id", () => {
+    const cats = [cat("character", "Cast")];
+    expect(categoryLabelById(cats, "character")).toBe("Cast");
+  });
+
+  it("falls back to the shelf default for a built-in id absent from the list", () => {
+    expect(categoryLabelById([], "character")).toBe(SHELF_TITLES.people);
+    expect(categoryLabelById([], "world")).toBe(SHELF_TITLES.places);
+    expect(categoryLabelById([], "organization")).toBe(SHELF_TITLES.orders);
+    expect(categoryLabelById([], "lore")).toBe(SHELF_TITLES.lore);
+  });
+
+  it("uses the built-in default via KIND_SHELF for every built-in id", () => {
+    for (const id of ["character", "world", "organization", "lore"] as const) {
+      expect(categoryLabelById([], id)).toBe(SHELF_TITLES[KIND_SHELF[id]]);
+    }
+  });
+
+  it("returns the raw id for a user category absent from the list (no built-in default)", () => {
+    expect(categoryLabelById([], "u-unknown")).toBe("u-unknown");
   });
 });

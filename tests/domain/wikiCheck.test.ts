@@ -60,6 +60,7 @@ const snapshot: WikiSnapshot = {
   entries: [maren, vergeLight],
   byId: { maren, vergelight: vergeLight },
   overrides: {},
+  categories: [],
 };
 
 // Paragraph text that surfaces BOTH seeded missing phrases (order: brass ring

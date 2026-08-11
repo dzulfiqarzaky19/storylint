@@ -12,6 +12,7 @@
 
 import type {
   CategoryLabelOverrides,
+  CategoryRow,
   EntryWithDetails,
   FactRow,
   Kind,
@@ -19,6 +20,7 @@ import type {
   Shelf,
   WikiSnapshot,
 } from "../domain/types";
+import { KIND_SHELF, SHELF_TITLES } from "../domain/types";
 import { applyCategoryRename, applyCategoryReset } from "../wiki/categoryLabels";
 
 // ---- State ----------------------------------------------------------------
@@ -44,6 +46,13 @@ export interface WikiState {
   suggestions: WikiSuggestion[];
   /** Per-kind category-header label overrides (F6-S5). Empty when none set. */
   overrides: CategoryLabelOverrides;
+  /**
+   * F9-B (S2): the FULL live category list (built-ins + user categories), kept
+   * sorted by sortOrder. Additive to `overrides` (the legacy renamed-built-in
+   * shape). CREATE_CATEGORY appends here; RENAME/DELETE_CATEGORY keep it in sync
+   * with the matching row so user categories can later render (S3 UI).
+   */
+  categories: CategoryRow[];
   /** In-flight/last error from a paired server action, surfaced not swallowed. */
   error: string | null;
 }
@@ -157,6 +166,12 @@ export type WikiAction =
   // RENAME_CATEGORY  → renameCategory     (label table write; trims, blank=reset)
   // RESET_CATEGORY   → resetCategoryLabel  (label table delete)
   // DELETE_CATEGORY  → deleteCategory      (WIKI WRITE, confirmed: bulk soft-delete)
+  // CREATE_CATEGORY  → createCategory      (F9-B S1: new category row)
+  | {
+      type: "CREATE_CATEGORY";
+      /** The server-created category row (reducer is pure; caller supplies it). */
+      category: CategoryRow;
+    }
   | { type: "RENAME_CATEGORY"; kind: Kind; label: string }
   | { type: "RESET_CATEGORY"; kind: Kind }
   | {
@@ -198,6 +213,7 @@ export function initWikiState(snapshot: WikiSnapshot, suggestions: WikiSuggestio
     selectedEntryId: snapshot.entries[0]?.id ?? null,
     suggestions,
     overrides: { ...snapshot.overrides },
+    categories: [...snapshot.categories],
     error: null,
   };
 }
@@ -251,8 +267,11 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
     case "CREATE_TIED":
       return createTiedInState(state, action);
 
+    case "CREATE_CATEGORY":
+      return createCategoryInState(state, action.category);
+
     case "RENAME_CATEGORY":
-      return { ...state, overrides: applyCategoryRename(state.overrides, action.kind, action.label) };
+      return renameCategoryInState(state, action.kind, action.label);
 
     case "RESET_CATEGORY":
       return { ...state, overrides: applyCategoryReset(state.overrides, action.kind) };
@@ -538,7 +557,45 @@ function deleteCategoryInState(state: WikiState, kind: Kind): WikiState {
   const ids = Object.values(state.byId)
     .filter((e) => e.kind === kind)
     .map((e) => e.id);
-  return ids.reduce((acc, id) => softDeleteEntryInState(acc, id), state);
+  const afterEntries = ids.reduce((acc, id) => softDeleteEntryInState(acc, id), state);
+  // F9-B (S2): also drop the category row from the live list so a deleted
+  // category vanishes from the store's category list (S3 UI reads this list),
+  // mirroring the DB soft-delete. Matched by id === kind (built-in ids equal
+  // the Kind string). No-op for the list if the category id is absent.
+  const categories = afterEntries.categories.filter((c) => c.id !== kind);
+  return { ...afterEntries, categories };
+}
+
+/**
+ * F9-B (S2) — session mirror of createCategory. Append the server-created row to
+ * the live category list, kept sorted by sortOrder. IDEMPOTENT: a re-dispatch of
+ * the same id (double dispatch) does NOT append a duplicate — the existing list
+ * is returned unchanged. Pure and non-mutating (new array).
+ */
+function createCategoryInState(state: WikiState, category: CategoryRow): WikiState {
+  if (state.categories.some((c) => c.id === category.id)) return state;
+  const categories = [...state.categories, category].sort(
+    (a, b) => a.sortOrder - b.sortOrder,
+  );
+  return { ...state, categories };
+}
+
+/**
+ * F9-B (S2) — session mirror of renameCategory generalized onto the category
+ * list. Updates BOTH surfaces: the legacy overrides map (via applyCategoryRename:
+ * trims, blank = reset) AND the matching category row's label. A blank/whitespace
+ * rename resets the row to its built-in shelf default (so the list agrees with
+ * the overrides reset); a non-blank rename sets the trimmed label. A category id
+ * absent from the list leaves the list untouched. Pure and non-mutating.
+ */
+function renameCategoryInState(state: WikiState, kind: Kind, label: string): WikiState {
+  const overrides = applyCategoryRename(state.overrides, kind, label);
+  const trimmed = label.trim();
+  const nextLabel = trimmed === "" ? SHELF_TITLES[KIND_SHELF[kind]] : trimmed;
+  const categories = state.categories.map((c) =>
+    c.id === kind ? { ...c, label: nextLabel } : c,
+  );
+  return { ...state, overrides, categories };
 }
 
 /**

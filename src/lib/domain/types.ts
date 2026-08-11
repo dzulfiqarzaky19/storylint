@@ -205,6 +205,14 @@ export interface WikiSnapshot {
   byId: Record<string, EntryWithDetails>;
   /** Per-kind category-header label overrides (F6-S5). Empty when none set. */
   overrides: CategoryLabelOverrides;
+  /**
+   * F9-B (S2): the FULL live category list (deleted_at IS NULL), sorted by
+   * sortOrder — the 4 built-ins plus any user-created categories. Additive to
+   * `overrides` (which stays for back-compat): overrides is the legacy renamed-
+   * built-in shape; categories is the single source the store now carries so
+   * user categories can later render (S3 UI).
+   */
+  categories: CategoryRow[];
 }
 
 // ---- Research view types --------------------------------------------------

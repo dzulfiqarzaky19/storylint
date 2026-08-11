@@ -235,7 +235,7 @@ export async function loadWikiSnapshot(
   );
   const entryIds = entries.map((e) => e.id);
 
-  const [facts, appearances, openQuestions, ties, labelRows] = await Promise.all([
+  const [facts, appearances, openQuestions, ties, labelRows, categories] = await Promise.all([
     // F7 list divergence (S4): facts are ADDITIVE, not override. book_id IS NULL
     // = universe canon (shows in EVERY book); book_id = active book = book-only.
     // The OR-predicate UNIONs both sets; ORDER BY (sort_order, id) INTERLEAVES a
@@ -288,6 +288,11 @@ export async function loadWikiSnapshot(
       // the reducer/UI already consume. Only live categories participate.
       `SELECT id, label FROM categories WHERE deleted_at IS NULL`,
     ),
+    // F9-B (S2): the FULL live category list (built-ins + user categories),
+    // sorted by sortOrder, threaded onto snapshot.categories so the store carries
+    // every category (not just renamed built-ins). getCategories already filters
+    // deleted_at IS NULL and ORDERs BY sort_order, id.
+    getCategories(),
   ]);
 
   const byId: Record<string, EntryWithDetails> = {};
@@ -318,7 +323,7 @@ export async function loadWikiSnapshot(
     const shelfDefault = SHELF_TITLES[KIND_SHELF[kind]];
     if (r.label !== shelfDefault) overrides[kind] = r.label;
   }
-  return { entries: composed, byId, overrides };
+  return { entries: composed, byId, overrides, categories };
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { Kind, CategoryLabelOverrides } from "@/lib/domain/types";
+import type { Kind, CategoryLabelOverrides, CategoryRow } from "@/lib/domain/types";
 import { KIND_SHELF, SHELF_TITLES } from "@/lib/domain/types";
 
 export type { CategoryLabelOverrides };
@@ -54,4 +54,25 @@ export function applyCategoryReset(
   const next = { ...overrides };
   delete next[kind];
   return next;
+}
+
+/**
+ * F9-B (S2) — PURE list-based header resolver over the full category list.
+ *
+ * Decide the header text for a category `id` from the live `categories` list
+ * (the store's single source, built-ins + user categories): the matching row's
+ * `label` when the id is present, otherwise fall back to the built-in shelf
+ * default (SHELF_TITLES via KIND_SHELF) when `id` is one of the 4 built-in ids,
+ * else the raw id (a user category absent from the list has no built-in default,
+ * so its id is the safe fallback).
+ *
+ * Independent of the map-based resolveCategoryLabel (kept for the current UI):
+ * this reads the row list, that reads the overrides map. Pure and non-mutating;
+ * no DB access.
+ */
+export function categoryLabelById(categories: CategoryRow[], id: string): string {
+  const row = categories.find((c) => c.id === id);
+  if (row) return row.label;
+  if (id in KIND_SHELF) return SHELF_TITLES[KIND_SHELF[id as Kind]];
+  return id;
 }
