@@ -644,16 +644,30 @@ function WikiScreenInner({
         .map((e) => ({ id: e.id, name: e.name, kind: e.kind as string }))
     : [];
 
+  // TCK-005: sidebar category-header helpers, matching the main shelf's
+  // per-category rename/label rules so both columns resolve labels and the
+  // Reset affordance identically (built-in override vs user category).
+  const sidebarLabelFor = (id: string) =>
+    categoryLabelById(state.categories, id);
+  const sidebarIsRenamed = (id: string) =>
+    id in KIND_SHELF && state.overrides[id as Kind] !== undefined;
+
   if (!selected) {
     return (
       <div className={styles.layout}>
         <WikiIndex
-          byShelf={byShelf}
+          categories={state.categories}
+          byCategory={byCategory}
           selectedId=""
           onSelect={select}
           total={Object.keys(state.byId).length}
-          onCreate={createEntryOnShelf}
-          overrides={state.overrides}
+          onCreateEntry={createEntryOnShelf}
+          onCreateCategory={createCategoryOnShelf}
+          onRenameCategory={renameCategoryLabel}
+          onResetCategory={resetCategory}
+          onRequestDeleteCategory={setConfirmDeleteKind}
+          isRenamed={sidebarIsRenamed}
+          labelFor={sidebarLabelFor}
           footer={
             deleted.length > 0 ? (
               <TrashPanel
@@ -676,12 +690,18 @@ function WikiScreenInner({
   return (
     <div className={styles.layout}>
       <WikiIndex
-        byShelf={byShelf}
+        categories={state.categories}
+        byCategory={byCategory}
         selectedId={selected.id}
         onSelect={select}
         total={Object.keys(state.byId).length}
-        onCreate={createEntryOnShelf}
-        overrides={state.overrides}
+        onCreateEntry={createEntryOnShelf}
+        onCreateCategory={createCategoryOnShelf}
+        onRenameCategory={renameCategoryLabel}
+        onResetCategory={resetCategory}
+        onRequestDeleteCategory={setConfirmDeleteKind}
+        isRenamed={sidebarIsRenamed}
+        labelFor={sidebarLabelFor}
         footer={
           deleted.length > 0 ? (
             <TrashPanel

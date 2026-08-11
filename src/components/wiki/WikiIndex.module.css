@@ -64,18 +64,17 @@
   flex-direction: column;
 }
 
+/* TCK-005: the group header is now a ROW of controls (a <div>, not a single
+   button): the clickable title (rename), count, a collapse chevron button, an
+   optional Reset, and a trash icon for user categories. Mirrors the main
+   Shelf header-control shape (TCK-007). */
 .groupHead {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
   padding: 8px 0;
-  background: none;
-  border: none;
   border-top: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.12));
-  cursor: pointer;
-  text-align: left;
-  color: inherit;
 }
 
 .groupTitle {
@@ -83,6 +82,31 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+
+.groupTitle:hover {
+  text-decoration: underline;
+}
+
+/* Inline rename draft input, replacing the title while editing. */
+.groupTitleInput {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: inherit;
+  padding: 2px 4px;
+  border: 1px solid var(--border, #cbb89a);
+  border-radius: 0;
+  min-width: 8rem;
+  color: inherit;
+  background: var(--surface, #fff);
 }
 
 .groupCount {
@@ -96,6 +120,41 @@
   font-weight: 700;
   line-height: 1;
   color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+/* Reset-to-default for a renamed built-in (small text button). */
+.groupReset {
+  font-size: 11px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--accent-deep, var(--accent));
+}
+
+.groupReset:hover {
+  text-decoration: underline;
+}
+
+/* Trash icon deletes the whole category (user categories only; hidden for
+   built-ins). Opens the danger confirm in the caller. */
+.groupDelete {
+  font-size: 13px;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.groupDelete:hover {
+  color: var(--danger, #b3261e);
 }
 
 .list {

@@ -9,3 +9,14 @@
 export function isEmptyCategory(entryCount: number): boolean {
   return entryCount === 0;
 }
+
+/** TCK-005 — build the sidebar's initial per-category collapse map from the
+ *  live category ids. Every group starts EXPANDED (value `false`) so the whole
+ *  world is scannable at a glance, matching the previous hardcoded-4 default.
+ *  Pure and keyed by category id (built-in Kind strings or user UUIDs), so a
+ *  newly-created category is expanded when it first appears. */
+export function initialCollapse(categoryIds: string[]): Record<string, boolean> {
+  const map: Record<string, boolean> = {};
+  for (const id of categoryIds) map[id] = false;
+  return map;
+}
