@@ -40,9 +40,6 @@ test("wiki category double-insert: a DOUBLE-fired create commit still yields exa
   const newShelf = page.locator('section[aria-label="New category"]');
   await expect(newShelf).toBeVisible();
   await newShelf.getByRole("textbox", { name: "New category name" }).fill(unique);
-  await newShelf
-    .getByRole("combobox", { name: "New category shelf" })
-    .selectOption("lore");
 
   // Fire the form submit TWICE synchronously (one user gesture, two handler
   // invocations) — the React-18 double-invoke this ticket is about.

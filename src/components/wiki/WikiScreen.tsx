@@ -38,7 +38,7 @@ import {
   purgeExpiredDeleted,
   type ActionResult,
 } from "@/lib/actions/wiki";
-import { resolveCategoryLabel, categoryLabelById } from "@/lib/wiki/categoryLabels";
+import { resolveCategoryLabel, categoryLabelById, defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
 import { trashCountdown } from "@/lib/wiki/trashCountdown";
 import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
@@ -492,9 +492,15 @@ function WikiScreenInner({
   // own group immediately. A blank label is ignored here (the server also
   // rejects it) so the cancel path is a harmless no-op.
   const createCategoryOnShelf = useCallback(
-    (id: string, label: string, shelf: ShelfKey) => {
+    (id: string, label: string) => {
       const trimmed = label.trim();
       if (trimmed === "") return;
+      // TCK-009: the affordance no longer prompts for a shelf (categories are
+      // SIBLINGS, not nested under a shelf), but `categories.shelf` is NOT-NULL
+      // and still drives the internal SHELF_ORDER sort bucket — a
+      // dead-but-load-bearing internal, no longer a user concept. Default it via
+      // the pure defaultCategoryShelf() seam ("lore" catch-all; see its doc).
+      const shelf = defaultCategoryShelf();
       // `id` is minted once per form-open by NewCategoryShelf and reused across
       // a double-invoked commit, so the create is idempotent (server INSERT ...
       // ON CONFLICT (id) DO NOTHING) and one click writes exactly one row.

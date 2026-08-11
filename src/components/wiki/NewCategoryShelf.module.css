@@ -35,13 +35,6 @@
   min-width: 12rem;
 }
 
-.select {
-  font: inherit;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid var(--border, #cbb89a);
-  border-radius: 0;
-}
-
 .commit,
 .cancel {
   appearance: none;

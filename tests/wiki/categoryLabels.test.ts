@@ -14,9 +14,10 @@ import {
   applyCategoryReset,
   categoryLabelById,
   categorySingular,
+  defaultCategoryShelf,
 } from "@/lib/wiki/categoryLabels";
 import { SHELF_TITLES, KIND_SHELF } from "@/lib/domain/types";
-import type { CategoryRow } from "@/lib/domain/types";
+import type { CategoryRow, Shelf } from "@/lib/domain/types";
 
 function cat(id: string, label: string, sortOrder = 0): CategoryRow {
   return { id, label, shelf: "people", sortOrder, isBuiltin: false, deletedAt: null };
@@ -157,5 +158,24 @@ describe("categorySingular", () => {
 
   it("strips only ONE trailing s (does not over-singularize)", () => {
     expect(categorySingular("Compass")).toBe("compas");
+  });
+});
+
+// TCK-009 — the default shelf a brand-new user category lands under now that
+// the "+ New category" affordance no longer prompts for a shelf. Categories are
+// all SIBLINGS; `shelf` is a dead-but-load-bearing internal sort bucket.
+// Mutation-locked line in defaultCategoryShelf:
+//  * `return "lore"` — change the returned bucket (e.g. to "people") and the
+//    "defaults to the lore catch-all bucket" assertion goes RED, proving the
+//    default is the value under test and not any of the other three shelves.
+describe("defaultCategoryShelf", () => {
+  it("defaults a new user category to the lore catch-all bucket", () => {
+    expect(defaultCategoryShelf()).toBe("lore");
+  });
+
+  it("returns a valid Shelf key (not a person/place/order masquerade)", () => {
+    const shelf: Shelf = defaultCategoryShelf();
+    expect(["people", "places", "orders", "lore"]).toContain(shelf);
+    expect(shelf).not.toBe("people");
   });
 });

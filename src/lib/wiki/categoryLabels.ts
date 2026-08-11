@@ -1,4 +1,4 @@
-import type { Kind, CategoryLabelOverrides, CategoryRow } from "@/lib/domain/types";
+import type { Kind, CategoryLabelOverrides, CategoryRow, Shelf } from "@/lib/domain/types";
 import { KIND_SHELF, SHELF_TITLES } from "@/lib/domain/types";
 
 export type { CategoryLabelOverrides };
@@ -90,4 +90,20 @@ export function categoryLabelById(categories: CategoryRow[], id: string): string
  */
 export function categorySingular(label: string): string {
   return label.replace(/s$/, "").toLowerCase();
+}
+
+/**
+ * TCK-009 — the shelf a brand-new user category is filed under, now that the
+ * "+ New category" affordance no longer prompts for one. Categories are all
+ * SIBLINGS (World > Categories > Items); `shelf` is a dead-but-load-bearing
+ * internal sort bucket (NOT-NULL `categories.shelf`, drives SHELF_ORDER
+ * grouping) that is no longer a user concept. "lore" is the deliberate default:
+ * of the four built-in shelves it is the catch-all / narrative miscellany
+ * bucket (people/places/orders are concrete entity types), so a user category
+ * with no natural shelf sorts into the general bucket rather than masquerading
+ * as a person/place/order. Pure and parameterless — the ONE place the default
+ * is decided, so the component and any future caller agree.
+ */
+export function defaultCategoryShelf(): Shelf {
+  return "lore";
 }
