@@ -1137,6 +1137,12 @@ export interface CascadeCount {
   books: number;
   series: number;
   universes: number;
+  // W-2: world-scoped counts. worldEntities = junction membership UNLINKED (the
+  // entity ROW survives, reclaimable); categories = user categories owned by the
+  // world (built-ins have world_id NULL, never counted here); worlds = the row.
+  worldEntities: number;
+  categories: number;
+  worlds: number;
   total: number;
 }
 
@@ -1153,6 +1159,9 @@ function emptyCascade(): CascadeCount {
     books: 0,
     series: 0,
     universes: 0,
+    worldEntities: 0,
+    categories: 0,
+    worlds: 0,
     total: 0,
   };
 }
@@ -1307,6 +1316,46 @@ export async function deleteBookCascade(bookId: string): Promise<CascadeCount> {
     )).rowCount ?? 0;
 
     c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters + c.books;
+    return c;
+  });
+}
+
+/**
+ * W-2 - Delete a WORLD and its world-owned data, WITHOUT destroying entities or
+ * universe-canon. A world groups SHARED entities via the world_entities junction
+ * and owns user categories (categories.world_id); it does NOT own books (books
+ * hang off series under the universe, which a universe MAY share across worlds).
+ *
+ * THE INVARIANT (orphan=LEAVE): the entity ROWS survive, reclaimable. We DELETE
+ * the junction membership only (unlink), never the entries. Deleting the world
+ * also drops its user categories; the 4 built-ins (world_id IS NULL) are GLOBAL
+ * and SURVIVE so a shared entity kind still resolves in any world.
+ *
+ * Explicit COUNTED deletes in one transaction (never an implicit FK cascade, so
+ * total is exact and count === rows-removed holds by construction), leaf->root:
+ * junction -> user categories -> the world row.
+ */
+export async function deleteWorldCascade(worldId: string): Promise<CascadeCount> {
+  return withTransaction(async (client) => {
+    const c = emptyCascade();
+
+    // UNLINK membership only. The entity rows (and universe-canon) survive.
+    c.worldEntities += (await client.query(
+      `DELETE FROM world_entities WHERE world_id = $1`, [worldId],
+    )).rowCount ?? 0;
+
+    // User categories owned by this world. Built-ins (world_id IS NULL) are
+    // global and are NOT matched by world_id = $1, so they survive.
+    c.categories += (await client.query(
+      `DELETE FROM categories WHERE world_id = $1`, [worldId],
+    )).rowCount ?? 0;
+
+    // The world row itself.
+    c.worlds += (await client.query(
+      `DELETE FROM worlds WHERE id = $1`, [worldId],
+    )).rowCount ?? 0;
+
+    c.total = c.worldEntities + c.categories + c.worlds;
     return c;
   });
 }
