@@ -52,6 +52,7 @@ import {
   aiCheckChapter,
 } from '@/lib/actions/write';
 import { docToParagraphs } from '@/lib/write/adapters';
+import { DEFAULT_BOOK_ID } from '@/lib/db/scope';
 import {
   createMarkDecorationPlugin,
   resolveMarkRange,
@@ -452,6 +453,13 @@ export function Manuscript({
           <div className={styles.manuscript}>
             <div className={styles.eyebrow}>Chapter {numberWord(chapterNumber)}</div>
             <h1 className={styles.title}>{chapterTitle}</h1>
+            <a
+              className={styles.exportLink}
+              href={`/api/export/${DEFAULT_BOOK_ID}`}
+              data-testid="export-book"
+            >
+              Export book (Markdown)
+            </a>
             <div className={styles.titleRule} />
             <div className={styles.editor}>
               <EditorContent editor={editor} />

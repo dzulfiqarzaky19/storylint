@@ -14,7 +14,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { chapterToMarkdown, novelToMarkdown } from '@/lib/export/exportMarkdown';
+import { chapterToMarkdown, novelToMarkdown, slugifyTitle } from '@/lib/export/exportMarkdown';
 import type { ChapterRow } from '@/lib/domain/types';
 
 // --- helpers: build a ProseMirror body of simple paragraphs ---
@@ -103,5 +103,21 @@ describe('novelToMarkdown — whole book', () => {
     expect(novelToMarkdown(book, chapters)).toBe(
       '# Nightfall\n\n## 1. Empty\n\n---\n\n## 2. Full\n\nText.',
     );
+  });
+});
+
+describe('slugifyTitle — download filename slug', () => {
+  it('lowercases, trims, and replaces runs of non-alphanumerics with a single hyphen', () => {
+    expect(slugifyTitle('  The Silver Bough!  ')).toBe('the-silver-bough');
+  });
+
+  it('strips leading and trailing hyphens', () => {
+    expect(slugifyTitle('...Dawn...')).toBe('dawn');
+  });
+
+  it('falls back to "book" for an empty or all-punctuation title', () => {
+    expect(slugifyTitle('')).toBe('book');
+    expect(slugifyTitle('   ')).toBe('book');
+    expect(slugifyTitle('!!!')).toBe('book');
   });
 });

@@ -656,3 +656,26 @@ export async function previewBookCascade(bookId: string): Promise<CascadePreview
     openQuestions: 0, entries: 0, researchThreads: 0, books: bk, series: 0, universes: 0,
   });
 }
+
+// ---- F8 markdown export (Track F8) ---------------------------------------
+
+/**
+ * One book's chapters WITH body (ProseMirror JSON), ordered by number, SCOPED to
+ * a single book (R3 "whole novel" = one book). Distinct from
+ * getAllChaptersWithBody() (which is un-scoped and feeds the Write severity pass)
+ * so that gate-locked caller is untouched.
+ */
+export async function getChaptersForBook(bookId: string): Promise<ChapterRow[]> {
+  return rows<ChapterRow>(
+    `SELECT id, number, title, body FROM chapters WHERE book_id = $1 ORDER BY number`,
+    [bookId],
+  );
+}
+
+/** The book's title (books.name), or null when the id matches no book. */
+export async function getBook(bookId: string): Promise<{ title: string } | null> {
+  return one<{ title: string }>(
+    `SELECT name AS title FROM books WHERE id = $1`,
+    [bookId],
+  );
+}

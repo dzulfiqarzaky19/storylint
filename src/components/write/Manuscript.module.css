@@ -511,3 +511,20 @@
   .action { flex: 1 1 auto; text-align: center; min-height: 44px; }
   .railRow { padding: 16px 0; }
 }
+
+/* F8 - Export-book (Markdown) affordance in the manuscript header. */
+.exportLink {
+  display: inline-block;
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  cursor: pointer;
+}
+.exportLink:hover {
+  opacity: 0.75;
+}

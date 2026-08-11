@@ -24,6 +24,19 @@ export interface ExportBook {
   title: string;
 }
 
+/**
+ * A filesystem-safe download slug for a book title: lowercased, non-alphanumeric
+ * runs collapsed to a single hyphen, edge hyphens trimmed. Empty or
+ * all-punctuation titles fall back to "book" so the filename is never blank.
+ */
+export function slugifyTitle(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug || 'book';
+}
+
 /** `# {number}. {title}` then the serialized body (omitted when body is empty). */
 export function chapterToMarkdown(ch: ChapterRow): string {
   const heading = `# ${ch.number}. ${ch.title}`;
