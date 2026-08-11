@@ -327,6 +327,149 @@ export async function loadWikiSnapshot(
 }
 
 /**
+ * W-3 (world-model epic): the WORLD-SCOPED, progressive "as of book N" read.
+ * Independent of loadWikiSnapshot (which stays byte-behavior-identical for its 6
+ * callers). Two differences from the universe read:
+ *
+ *  1. MEMBERSHIP is the world_entities junction, not entries.universe_id: an entry
+ *     belongs to a world via a `we.world_id = $1` link (a shared entity carries one
+ *     link row per world, so it appears in EACH world's snapshot independently).
+ *  2. The book axis is a WINDOW, not a single book. `win` = every book in this
+ *     world's series whose sort_order <= the chosen book's sort_order (the "as of
+ *     book N" set). Later-book rows (sort_order > chosen) are EXCLUDED so a future
+ *     book's spoiler never leaks into an earlier-N read. A foreign/unknown
+ *     asOfBookId yields an EMPTY window (fail-closed): the world then shows
+ *     canon-only facts/ties (book_id IS NULL) and zero book-scoped rows, never
+ *     another world's books.
+ *
+ * The 5 exact-book predicates become windowed: entry_facets / chapter_appearances
+ * / the tie target-facet are WINDOW-ONLY (their book_id is NOT NULL by design);
+ * facts / ties are canon(book_id IS NULL) UNION window. open_questions stay
+ * unscoped (entry children). The composition (byId map, overrides) is identical.
+ */
+export async function loadWorldSnapshot(
+  worldId: string,
+  asOfBookId: string = DEFAULT_BOOK_ID,
+): Promise<WikiSnapshot> {
+  // The as-of-N window, shared by every book-scoped read below. Reads `$2`
+  // (asOfBookId) and is bounded to THIS world's series (worlds->universe->series
+  // ->books), so a sibling world's book can never enter the window. An unknown
+  // asOfBookId makes the subquery NULL => `<= NULL` is never true => empty window.
+  const WIN_CTE = `WITH win AS (
+      SELECT b.id
+        FROM books b
+        JOIN series s ON s.id = b.series_id
+        JOIN worlds w ON w.universe_id = s.universe_id
+       WHERE w.id = $1
+         AND b.sort_order <= (
+           SELECT b2.sort_order
+             FROM books b2
+             JOIN series s2 ON s2.id = b2.series_id
+             JOIN worlds w2 ON w2.universe_id = s2.universe_id
+            WHERE w2.id = $1 AND b2.id = $2
+         )
+    )`;
+
+  // Membership via the junction. The scalar facet overlay (ef) is WINDOWED: a
+  // book's name/summary/note override applies once its book is within the as-of-N
+  // window (IN win), not only on an exact book match.
+  const entries = await rows<EntryRow>(
+    `${WIN_CTE}
+     SELECT
+       e.id,
+       e.kind,
+       COALESCE(ef.name, e.name)       AS name,
+       e.catalogue_no                  AS "catalogueNo",
+       COALESCE(ef.note, e.note)       AS note,
+       COALESCE(ef.summary, e.summary) AS summary,
+       e.shelf,
+       e.sort_order                    AS "sortOrder",
+       e.deleted_at                    AS "deletedAt"
+     FROM entries e
+     JOIN world_entities we ON we.entity_id = e.id AND we.world_id = $1
+     LEFT JOIN entry_facets ef ON ef.entry_id = e.id AND ef.book_id IN (SELECT id FROM win)
+     WHERE e.deleted_at IS NULL
+     ORDER BY e.shelf, e.sort_order, name`,
+    [worldId, asOfBookId],
+  );
+  const entryIds = entries.map((e) => e.id);
+
+  const [facts, appearances, openQuestions, ties, labelRows, categories] = await Promise.all([
+    // facts: canon (book_id IS NULL, every book) UNION window (book_id IN win).
+    rows<FactRow>(
+      `${WIN_CTE}
+       SELECT ${FACT_COLS} FROM facts
+        WHERE entry_id = ANY($3) AND (book_id IS NULL OR book_id IN (SELECT id FROM win))
+        ORDER BY sort_order, id`,
+      [worldId, asOfBookId, entryIds],
+    ),
+    // chapter_appearances: WINDOW-ONLY (book_id NOT NULL). No canon term — an
+    // appearance is always book-bound, so it shows only when its book is <= N.
+    rows<ChapterAppearanceRow>(
+      `${WIN_CTE}
+       SELECT ${APPEARANCE_COLS} FROM chapter_appearances
+        WHERE entry_id = ANY($3) AND book_id IN (SELECT id FROM win)
+        ORDER BY chapter, sort_order, id`,
+      [worldId, asOfBookId, entryIds],
+    ),
+    rows<OpenQuestionRow>(
+      `SELECT ${OPEN_QUESTION_COLS} FROM open_questions
+        WHERE entry_id = ANY($1) ORDER BY sort_order, id`,
+      [entryIds],
+    ),
+    // ties: additive canon UNION window (like facts); the tie's displayed TARGET
+    // name is facet-merged WINDOW-ONLY (ef2.book_id IN win).
+    rows<ResolvedTie>(
+      `${WIN_CTE}
+       SELECT
+         t.id,
+         t.from_entry_id AS "fromEntryId",
+         t.to_entry_id   AS "toEntryId",
+         t.rel,
+         COALESCE(ef2.name, e.name) AS "toName",
+         e.kind          AS "toKind",
+         e.catalogue_no  AS "toCatalogueNo"
+       FROM ties t
+       JOIN entries e ON e.id = t.to_entry_id
+       LEFT JOIN entry_facets ef2 ON ef2.entry_id = t.to_entry_id AND ef2.book_id IN (SELECT id FROM win)
+       WHERE t.from_entry_id = ANY($3) AND (t.book_id IS NULL OR t.book_id IN (SELECT id FROM win))
+       ORDER BY t.id`,
+      [worldId, asOfBookId, entryIds],
+    ),
+    rows<{ id: string; label: string }>(
+      `SELECT id, label FROM categories WHERE deleted_at IS NULL`,
+    ),
+    getCategories(),
+  ]);
+
+  const byId: Record<string, EntryWithDetails> = {};
+  for (const entry of entries) {
+    byId[entry.id] = {
+      ...entry,
+      facts: [],
+      ties: [],
+      appearances: [],
+      openQuestions: [],
+    };
+  }
+
+  for (const f of facts) byId[f.entryId]?.facts.push(f);
+  for (const a of appearances) byId[a.entryId]?.appearances.push(a);
+  for (const q of openQuestions) byId[q.entryId]?.openQuestions.push(q);
+  for (const t of ties) byId[t.fromEntryId]?.ties.push(t);
+
+  const composed = entries.map((e) => byId[e.id]!);
+  const overrides: CategoryLabelOverrides = {};
+  for (const r of labelRows) {
+    if (!(r.id in KIND_SHELF)) continue;
+    const kind = r.id as Kind;
+    const shelfDefault = SHELF_TITLES[KIND_SHELF[kind]];
+    if (r.label !== shelfDefault) overrides[kind] = r.label;
+  }
+  return { entries: composed, byId, overrides, categories };
+}
+
+/**
  * A single entry with all its details (Wiki detail view), MERGED for the active
  * book (S4 hybrid facet layer). Scalars are COALESCE(facet, canon); facts/ties
  * are the ADDITIVE UNION (canon book_id IS NULL + book-only book_id=$bookId),

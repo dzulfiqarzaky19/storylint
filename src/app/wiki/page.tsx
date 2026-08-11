@@ -4,10 +4,10 @@
 // contradiction, and hand everything to the interactive client screen.
 //
 // F7 S5: the ACTIVE universe/series/book come from the URL (?u=&se=&b=), so a
-// scope is shareable and the server re-renders loadWikiSnapshot for it. Absent
+// scope is shareable and the server re-renders loadWorldSnapshot for it. Absent
 // params the scope defaults to U1/Se1/B1 (Ashkeld), so the page reads identically
 // to before F7. The world tree feeds the top-bar switcher.
-import { loadWikiSnapshot, getChapter, getDismissedSuggestionKeys, getResolvedMarkKeys, getWorldTree } from "@/lib/db/queries";
+import { loadWorldSnapshot, getChapter, getDismissedSuggestionKeys, getResolvedMarkKeys, getWorldTree } from "@/lib/db/queries";
 import { DEFAULT_UNIVERSE_ID, DEFAULT_SERIES_ID, DEFAULT_BOOK_ID } from "@/lib/db/scope";
 import { checkWiki, paragraphsFromBody } from "@/lib/domain/wikiCheck";
 import WikiScreen from "@/components/wiki/WikiScreen";
@@ -41,7 +41,7 @@ export default async function WikiPage({
 
   const [snapshot, chapter, dismissedSuggestionKeys, resolvedMarkKeys] =
     await Promise.all([
-      loadWikiSnapshot(activeUniverseId, activeBookId),
+      loadWorldSnapshot(`world-${activeUniverseId}`, activeBookId),
       getChapter(7),
       getDismissedSuggestionKeys(),
       getResolvedMarkKeys(),
