@@ -8,7 +8,7 @@
 // the freshly created scope. Delete opens a DANGER ConfirmModal that shows the
 // REAL cascade row-count (advisory preview) before the writer confirms.
 
-import { useCallback, useState, startTransition } from "react";
+import { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import {
@@ -35,6 +35,12 @@ type DeleteTarget =
   | { level: "series"; id: string; name: string }
   | { level: "book"; id: string; name: string };
 
+/** An open naming dialog: its heading and the callback that runs on submit. */
+type NamePromptState = {
+  title: string;
+  onSubmit: (name: string) => void;
+};
+
 /** Build /wiki?u=&se=&b= for a scope. Omitted axes fall back on the server default. */
 function scopeHref(u: string, se: string, b: string): string {
   const params = new URLSearchParams({ u, se, b });
@@ -52,6 +58,7 @@ export default function WorldSwitcher({
   const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [pendingCount, setPendingCount] = useState<number | null>(null);
+  const [namePrompt, setNamePrompt] = useState<NamePromptState | null>(null);
 
   const universe = tree.find((u) => u.id === activeUniverseId) ?? tree[0];
   const series =
@@ -107,34 +114,40 @@ export default function WorldSwitcher({
   );
 
   const onNewUniverse = useCallback(() => {
-    const name = window.prompt("Name the new universe (fresh world):")?.trim();
-    if (!name) return;
-    void runCreate(
-      () => createUniverse({ universeName: name }),
-      // A fresh universe becomes the active scope; re-render from the server so
-      // the picker shows it (and its empty wiki).
-      () => router.refresh(),
-    );
+    setNamePrompt({
+      title: "Name the new universe",
+      onSubmit: (name) =>
+        void runCreate(
+          () => createUniverse({ universeName: name }),
+          // A fresh universe becomes the active scope; re-render from the server
+          // so the picker shows it (and its empty wiki).
+          () => router.refresh(),
+        ),
+    });
   }, [runCreate, router]);
 
   const onNewSeries = useCallback(() => {
     if (!universe) return;
-    const name = window.prompt(`Name the new series (continues "${universe.name}"):`)?.trim();
-    if (!name) return;
-    void runCreate(
-      () => createSeries({ name, universeId: universe.id }),
-      () => router.refresh(),
-    );
+    setNamePrompt({
+      title: `Name the new series in "${universe.name}"`,
+      onSubmit: (name) =>
+        void runCreate(
+          () => createSeries({ name, universeId: universe.id }),
+          () => router.refresh(),
+        ),
+    });
   }, [runCreate, router, universe]);
 
   const onNewBook = useCallback(() => {
     if (!series) return;
-    const name = window.prompt(`Name the new book (continues "${series.name}"):`)?.trim();
-    if (!name) return;
-    void runCreate(
-      () => createBook({ name, seriesId: series.id }),
-      () => router.refresh(),
-    );
+    setNamePrompt({
+      title: `Name the new book in "${series.name}"`,
+      onSubmit: (name) =>
+        void runCreate(
+          () => createBook({ name, seriesId: series.id }),
+          () => router.refresh(),
+        ),
+    });
   }, [runCreate, router, series]);
 
   // ---- Delete cascade (danger) --------------------------------------------
@@ -271,6 +284,84 @@ export default function WorldSwitcher({
           }}
         />
       ) : null}
+
+      {namePrompt ? (
+        <NamePrompt
+          title={namePrompt.title}
+          onSubmit={(name) => {
+            const target = namePrompt;
+            setNamePrompt(null);
+            target.onSubmit(name);
+          }}
+          onCancel={() => setNamePrompt(null)}
+        />
+      ) : null}
     </section>
+  );
+}
+
+/**
+ * On-system inline naming dialog. Replaces the raw window.prompt so creating a
+ * universe/series/book reads as part of the app: an Ashkeld-tokened panel over
+ * the scrim, focus moved to the field on open, Enter submits, Escape and the
+ * backdrop cancel. The confirm button is disabled until the trimmed name is
+ * non-empty, so an empty name can never be submitted (was the prompt's `if
+ * (!name) return` guard).
+ */
+function NamePrompt({
+  title,
+  onSubmit,
+  onCancel,
+}: {
+  title: string;
+  onSubmit: (name: string) => void;
+  onCancel: () => void;
+}) {
+  const [value, setValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const trimmed = value.trim();
+
+  useEffect(() => {
+    inputRef.current?.focus();
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onCancel();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onCancel]);
+
+  const submit = () => {
+    if (trimmed) onSubmit(trimmed);
+  };
+
+  return (
+    <div className={styles.promptBackdrop} onClick={onCancel}>
+      <form
+        className={styles.promptPanel}
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <h2 className={styles.promptTitle}>{title}</h2>
+        <input
+          ref={inputRef}
+          className={styles.promptInput}
+          type="text"
+          aria-label={title}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <div className={styles.promptActions}>
+          <button type="button" className={styles.promptCancel} onClick={onCancel}>
+            Cancel
+          </button>
+          <button type="submit" className={styles.promptConfirm} disabled={!trimmed}>
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
