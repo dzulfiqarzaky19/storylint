@@ -1,24 +1,6 @@
-/* Reusable confirm dialog (ConfirmModal). Centered panel over a dimmed scrim. */
-
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: var(--scrim);
-}
-
-.panel {
-  width: 100%;
-  max-width: 420px;
-  padding: 24px;
-  background: var(--surface);
-  border: var(--rule-major);
-  box-shadow: 0 12px 40px var(--scrim);
-}
+/* Reusable confirm dialog (ConfirmModal). The scrim + centered panel are now
+   owned by the base <Modal> primitive (Modal.module.css); this module only
+   styles the slot content: heading, body copy, and the two action buttons. */
 
 .title {
   font-size: 20px;
@@ -35,7 +17,10 @@
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  /* Confirm is first in the DOM (so Modal focuses it on open); row-reverse puts
+     it back on the RIGHT and Cancel on the LEFT, preserving the visual order. */
+  flex-direction: row-reverse;
+  justify-content: flex-start;
   gap: 12px;
   margin-top: 24px;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Modal from "./Modal";
 import styles from "./ConfirmModal.module.css";
 
 export interface ConfirmModalProps {
@@ -23,15 +23,21 @@ export interface ConfirmModalProps {
   onCancel: () => void;
 }
 
+/** Stable id linking the dialog to its heading for aria-labelledby. */
+const TITLE_ID = "confirm-modal-title";
+
 /**
- * Reusable confirmation dialog for irreversible actions. Purely presentational:
- * it owns no decision logic, it just renders the question and wires each button
- * to exactly one of the two callbacks the caller passes. The caller decides what
+ * Reusable confirmation dialog for irreversible actions. A THIN wrapper over the
+ * base <Modal> primitive: Modal owns the <dialog>, the focus trap + restore,
+ * Escape, and backdrop-click; ConfirmModal just fills the slot with the question
+ * and two buttons and maps every dismissal (Escape / backdrop / Cancel) to
+ * onCancel. Purely presentational: it owns no decision. The caller decides what
  * confirming means (soft-delete an entry, hard-delete a category, ...).
  *
- * Accessibility: a modal `role="dialog"` labelled by its title, focus moved to
- * the confirm button on open, Escape cancels. Buttons carry stable accessible
- * names so tests and assistive tech can target them without mystery selectors.
+ * Focus: Modal moves focus to the FIRST focusable in the slot on open, so the
+ * confirm button is rendered first in the DOM (and visually re-ordered to the
+ * right by CSS) — this preserves the previous "focus lands on confirm" behavior
+ * while keeping the Cancel-left / Confirm-right layout.
  */
 export default function ConfirmModal({
   title,
@@ -42,51 +48,26 @@ export default function ConfirmModal({
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
-  const confirmRef = useRef<HTMLButtonElement>(null);
-
-  // Move focus into the dialog on open so keyboard + screen-reader users land on
-  // the primary action, and Escape always cancels (never confirms).
-  useEffect(() => {
-    confirmRef.current?.focus();
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onCancel();
-    }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onCancel]);
-
   return (
-    <div
-      className={styles.backdrop}
-      // A click on the backdrop (outside the panel) cancels, matching Escape.
-      onClick={onCancel}
-    >
-      <div
-        className={styles.panel}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="confirm-modal-title"
-        // Stop backdrop-cancel from firing when the click lands inside the panel.
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 id="confirm-modal-title" className={styles.title}>
-          {title}
-        </h2>
-        {body ? <p className={styles.body}>{body}</p> : null}
-        <div className={styles.actions}>
-          <button type="button" className={styles.cancel} onClick={onCancel}>
-            {cancelLabel}
-          </button>
-          <button
-            ref={confirmRef}
-            type="button"
-            className={danger ? styles.confirmDanger : styles.confirm}
-            onClick={onConfirm}
-          >
-            {confirmLabel}
-          </button>
-        </div>
+    <Modal open onClose={onCancel} labelledBy={TITLE_ID}>
+      <h2 id={TITLE_ID} className={styles.title}>
+        {title}
+      </h2>
+      {body ? <p className={styles.body}>{body}</p> : null}
+      <div className={styles.actions}>
+        {/* Confirm is FIRST in the DOM so Modal focuses it on open; CSS reverses
+            the visual order so Cancel still reads on the left. */}
+        <button
+          type="button"
+          className={danger ? styles.confirmDanger : styles.confirm}
+          onClick={onConfirm}
+        >
+          {confirmLabel}
+        </button>
+        <button type="button" className={styles.cancel} onClick={onCancel}>
+          {cancelLabel}
+        </button>
       </div>
-    </div>
+    </Modal>
   );
 }
