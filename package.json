@@ -23,11 +23,14 @@
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
+    "defuddle": "^0.19.2",
     "drizzle-orm": "^0.45.2",
+    "linkedom": "^0.18.13",
     "next": "^16.3.0",
     "pg": "^8.22.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "undici": "^8.10.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
