@@ -3,7 +3,6 @@ import { describe, it, expect } from "vitest";
 import {
   safeFetch,
   assertSafeUrl,
-  UnsafeUrlError,
   type HostResolver,
   type FetchLike,
   type FetchLikeResponse,
@@ -52,13 +51,24 @@ function htmlResponse(
 const PUBLIC = ["93.184.216.34"];
 
 describe("assertSafeUrl", () => {
-  it("rejects non-http(s) schemes", async () => {
+  it("rejects non-http(s) schemes for the SCHEME reason, even when DNS would pass", async () => {
+    // NON-VACUOUS: give the host a PUBLIC record so DNS + the private-IP gate
+    // would BOTH pass — only the scheme allowlist can reject here. And assert the
+    // SPECIFIC scheme-rejection message, so a DNS-fail / private-IP error (both
+    // also UnsafeUrlError) cannot satisfy this test. If the scheme gate is
+    // removed, ftp:// falls through to a GREEN fetch/DNS path => this goes RED.
+    await expect(
+      assertSafeUrl("ftp://example.com/x", resolverFor({ "example.com": PUBLIC })),
+    ).rejects.toThrow(/Scheme not allowed/i);
+    // file:/// has no resolvable host; still must reject for the SCHEME reason,
+    // never a DNS/parse reason.
     await expect(
       assertSafeUrl("file:///etc/passwd", resolverFor({})),
-    ).rejects.toBeInstanceOf(UnsafeUrlError);
+    ).rejects.toThrow(/Scheme not allowed/i);
+    // A bare non-http scheme (no host) also rejects on scheme.
     await expect(
-      assertSafeUrl("ftp://example.com", resolverFor({})),
-    ).rejects.toBeInstanceOf(UnsafeUrlError);
+      assertSafeUrl("javascript:alert(1)", resolverFor({})),
+    ).rejects.toThrow(/Scheme not allowed/i);
   });
 
   it("rejects a host whose DNS resolves to a private IP", async () => {
