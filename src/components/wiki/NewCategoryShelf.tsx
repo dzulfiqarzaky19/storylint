@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Shelf as ShelfKey } from "@/lib/domain/types";
 import { SHELF_TITLES } from "@/lib/domain/types";
 import styles from "./NewCategoryShelf.module.css";
@@ -12,8 +12,12 @@ import styles from "./NewCategoryShelf.module.css";
 const SHELVES: ShelfKey[] = ["people", "places", "orders", "lore"];
 
 interface NewCategoryShelfProps {
-  /** Create a category with `label` filed under `shelf` (blank label is a no-op). */
-  onCreate: (label: string, shelf: ShelfKey) => void;
+  /**
+   * Create a category with `label` filed under `shelf`, keyed by the client
+   * `id` this component mints once per form-open (blank label is a no-op). The
+   * stable id makes a double-invoked commit idempotent server-side.
+   */
+  onCreate: (id: string, label: string, shelf: ShelfKey) => void;
 }
 
 // F9-B S3: the "+ New category" affordance rendered after the last category
@@ -23,6 +27,11 @@ export default function NewCategoryShelf({ onCreate }: NewCategoryShelfProps) {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [shelf, setShelf] = useState<ShelfKey>("people");
+  // TCK-010: mint the category id ONCE when the form opens and reuse it for
+  // every commit of that open. A single click can invoke commit() twice; a
+  // stable id collapses that to one row (server INSERT ON CONFLICT DO NOTHING),
+  // while a genuinely new category (a fresh open) gets a fresh id below.
+  const idRef = useRef<string>("");
 
   const commit = () => {
     const trimmed = label.trim();
@@ -32,7 +41,7 @@ export default function NewCategoryShelf({ onCreate }: NewCategoryShelfProps) {
       setLabel("");
       return;
     }
-    onCreate(trimmed, shelf);
+    onCreate(idRef.current, trimmed, shelf);
     setLabel("");
     setShelf("people");
     setOpen(false);
@@ -44,7 +53,10 @@ export default function NewCategoryShelf({ onCreate }: NewCategoryShelfProps) {
         <button
           type="button"
           className={styles.addButton}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            idRef.current = crypto.randomUUID();
+            setOpen(true);
+          }}
         >
           {"+ New category"}
         </button>

@@ -355,7 +355,7 @@ export async function createEntry(input: {
 }): Promise<ActionResult<{ entryId: string; sortOrder: number }>> {
   try {
     const confirmation = confirmWikiWrite({ confirmed: true });
-    const id = input.id ?? randomUUID();
+    const id = randomUUID();
     const sortOrder = (await getMaxSortOrderForShelf(input.shelf)) + 1;
     await insertEntry(
       {
@@ -411,19 +411,23 @@ export async function getCategories(): Promise<ActionResult<CategoryRow[]>> {
 }
 
 /**
- * Create a new user category on a shelf. Generates a UUID id (built-ins keep the
- * legacy enum-string ids; user categories are UUIDs), appends it after every
+ * Create a new user category on a shelf. Uses the caller-supplied `id` when
+ * given (the client generates it ONCE so a React-18 double-fired transition is
+ * idempotent — the DB INSERT has ON CONFLICT (id) DO NOTHING), else generates a
+ * fresh UUID. Built-ins keep the legacy enum-string ids; user categories are
+ * UUIDs. Appends it after every
  * existing category (max sort_order + 1), and stores the trimmed label. NOT a
  * wiki-content write (an empty category holds no wiki knowledge), so no
  * confirmation token. A blank label is rejected by the mutation. Returns the
  * created row.
  */
 export async function createCategory(input: {
+  id?: string;
   label: string;
   shelf: Shelf;
 }): Promise<ActionResult<CategoryRow>> {
   try {
-    const id = randomUUID();
+    const id = input.id ?? randomUUID();
     const sortOrder = await getMaxCategorySortOrder();
     const category = await createCategoryRow({
       id,

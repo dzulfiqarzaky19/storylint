@@ -484,16 +484,22 @@ function WikiScreenInner({
     [settle],
   );
 
-  // F9-B S3: create a brand-new user category on a shelf. The server assigns the
-  // id + sort_order and returns the row; the reducer appends it (CREATE_CATEGORY),
-  // so it appears as its own group immediately. A blank label is ignored here
-  // (the server also rejects it) so the prompt-cancel path is a harmless no-op.
+  // F9-B S3: create a brand-new user category on a shelf. The child
+  // NewCategoryShelf mints a client id ONCE per form-open (TCK-010) and passes
+  // it in, so a double-invoked commit reuses the same id; the server INSERT has
+  // ON CONFLICT (id) DO NOTHING, collapsing a double-fire to exactly one row.
+  // The reducer appends the returned row (CREATE_CATEGORY) so it appears as its
+  // own group immediately. A blank label is ignored here (the server also
+  // rejects it) so the cancel path is a harmless no-op.
   const createCategoryOnShelf = useCallback(
-    (label: string, shelf: ShelfKey) => {
+    (id: string, label: string, shelf: ShelfKey) => {
       const trimmed = label.trim();
       if (trimmed === "") return;
+      // `id` is minted once per form-open by NewCategoryShelf and reused across
+      // a double-invoked commit, so the create is idempotent (server INSERT ...
+      // ON CONFLICT (id) DO NOTHING) and one click writes exactly one row.
       startTransition(() => {
-        createCategory({ label: trimmed, shelf })
+        createCategory({ id, label: trimmed, shelf })
           .then((res) => {
             if (res.ok) dispatch({ type: "CREATE_CATEGORY", category: res.data });
             else dispatch({ type: "SET_ERROR", error: res.error });
