@@ -105,6 +105,11 @@ describe('tiptapDocToMarkdown — node branches', () => {
     const weird = { type: 'mysteryWrapper', content: [para(text('inner'))] };
     expect(tiptapDocToMarkdown(doc(weird))).toBe('inner');
   });
+
+  it('recurses a stray top-level listItem into its child text (no dedicated case)', () => {
+    const li = { type: 'listItem', content: [para(text('loose'))] };
+    expect(tiptapDocToMarkdown(doc(li))).toBe('loose');
+  });
 });
 
 describe('tiptapDocToMarkdown — mark branches', () => {

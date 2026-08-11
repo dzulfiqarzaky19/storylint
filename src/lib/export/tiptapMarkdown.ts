@@ -99,8 +99,6 @@ function serializeBlock(node: PmNode): string {
       return (node.content ?? [])
         .map((item, i) => prefixLines(serializeBlocks(item.content), `${i + 1}. `))
         .join('\n');
-    case 'listItem':
-      return serializeBlocks(node.content);
     case 'blockquote':
       return prefixLines(serializeBlocks(node.content), '> ');
     case 'codeBlock':
@@ -108,7 +106,10 @@ function serializeBlock(node: PmNode): string {
     case 'horizontalRule':
       return '---';
     default:
-      // Unknown block: recurse into its children so nothing is silently lost.
+      // Unknown block (and a stray top-level listItem): recurse into its
+      // children so nothing is silently lost. A listItem inside a list is
+      // handled inline by the bulletList/orderedList cases above, which read
+      // `item.content` directly, so no dedicated listItem case is needed here.
       return serializeBlocks(node.content);
   }
 }
