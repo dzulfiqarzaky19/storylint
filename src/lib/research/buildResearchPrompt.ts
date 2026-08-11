@@ -1,4 +1,46 @@
 import { CARDS_SENTINEL } from "@/lib/research/streamParse";
+import type { TurnSide } from "@/lib/domain/types";
+
+/**
+ * A single prior conversation turn as the model should see it. Structural subset
+ * of ResearchTurnRow (side + text) — the only fields that carry meaning into the
+ * prompt. `who` is a display label; ordinal/id are DB bookkeeping.
+ */
+export interface PriorTurn {
+  side: TurnSide;
+  text: string;
+}
+
+/**
+ * How many of the MOST RECENT prior turns to feed back to the model as
+ * conversation memory. Bounds the prompt so long threads stay cheap; recent
+ * turns matter most for continuity. Chosen at 15 (writer's request).
+ */
+export const HISTORY_TURN_CAP = 15;
+
+/**
+ * Pure seam (research-memory fix): render prior thread turns into a transcript
+ * block the model can read, so the Collaborator REMEMBERS earlier turns instead
+ * of replying statelessly ("I don't have our earlier conversation").
+ *
+ * - Keeps only the LAST `maxTurns` turns (recency window) so long threads don't
+ *   blow the context; order is preserved oldest→newest within that window.
+ * - `you` = the writer, `them` = the Collaborator (the model's own past voice).
+ * - Empty input (no prior turns) returns "" so the caller's prompt stays
+ *   byte-identical to the historyless path — this is what preserves the F5/F10
+ *   locks. Blank-text turns are dropped (never emit an empty speaker line).
+ */
+export function renderHistory(
+  turns: readonly PriorTurn[],
+  maxTurns = HISTORY_TURN_CAP,
+): string {
+  if (turns.length === 0 || maxTurns <= 0) return "";
+  const recent = turns.slice(-maxTurns);
+  const lines = recent
+    .filter((t) => t.text.trim().length > 0)
+    .map((t) => `${t.side === "you" ? "Writer" : "Collaborator"}: ${t.text.trim()}`);
+  return lines.length === 0 ? "" : lines.join("\n");
+}
 
 /**
  * Build the Option-C research prompt: prose first, then the sentinel, then a
@@ -10,6 +52,11 @@ import { CARDS_SENTINEL } from "@/lib/research/streamParse";
  * (minus the `scope` param and the `scopeDirective(scope)` line) so the
  * free-framing decision is a pure, testable unit (F5-S1).
  *
+ * MEMORY: `history` (prior thread turns) is OPTIONAL and ADDITIVE — when empty or
+ * absent the prompt is byte-identical to the historyless path (F5/F10 locks
+ * hold). When present, a "Conversation so far" block is inserted BEFORE the
+ * current question so the model has continuity within the thread.
+ *
  * The `CARDS_SENTINEL` delimiter line MUST be emitted verbatim: the route splits
  * on it to capture suggested cards. Dropping it silently breaks card capture.
  */
@@ -18,6 +65,7 @@ export function buildResearchPrompt(
   threadTitle: string | undefined,
   gazetteer: string,
   hasWeb = false,
+  history: readonly PriorTurn[] = [],
 ): { system: string; user: string } {
   // F10 GAP1: when the caller has appended real WEB SOURCES to the user message,
   // the model must be told they are a legitimate grounding source to cite by URL
@@ -47,9 +95,18 @@ export function buildResearchPrompt(
     "Output nothing after the JSON array.",
   ].join("\n");
 
+  // MEMORY: a compacted chat transcript of the recent thread turns, LLM-chat
+  // style (speaker-prefixed lines) but flattened into the user message so the
+  // model reads it as "what we've already said". Empty when there is no prior
+  // history — the block collapses out via filter(Boolean) and the prompt stays
+  // byte-identical to the historyless path (F5/F10 locks hold).
+  const historyBlock = renderHistory(history);
   const user = [
     threadTitle ? `Thread: ${threadTitle}` : "",
     gazetteer ? `Gazetteer (the writer's wiki):\n${gazetteer}` : "Gazetteer: (empty)",
+    historyBlock
+      ? `Conversation so far (most recent, oldest first — this is what you and the writer have already said; continue it, don't restart):\n${historyBlock}`
+      : "",
     "",
     `Writer asks: ${question}`,
   ]

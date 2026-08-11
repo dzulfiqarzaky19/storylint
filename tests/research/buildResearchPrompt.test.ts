@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { buildResearchPrompt } from "@/lib/research/buildResearchPrompt";
+import {
+  buildResearchPrompt,
+  renderHistory,
+  HISTORY_TURN_CAP,
+} from "@/lib/research/buildResearchPrompt";
 import { CARDS_SENTINEL } from "@/lib/research/streamParse";
 
 describe("buildResearchPrompt (F5 fully-free — no scope directive)", () => {
@@ -87,5 +91,92 @@ describe("buildResearchPrompt (F10 conditional web-sources directive)", () => {
     expect(defaulted).toBe(explicitFalse);
     // And it carries none of the web directive.
     expect(defaulted).not.toMatch(/web sources/i);
+  });
+});
+
+// MEMORY (research-chat statelessness fix). The Collaborator was replying
+// "I don't have our earlier conversation" one turn later because the prompt
+// carried ONLY the current question. renderHistory feeds prior turns back in as
+// a compacted transcript, and buildResearchPrompt inserts them BEFORE the new
+// question. Each test below is mutation-sensitive: it fails if the specific
+// behavior it locks is removed.
+describe("renderHistory (compacted conversation memory)", () => {
+  const turn = (side: "you" | "them", text: string) => ({ side, text });
+
+  it("returns empty string for no prior turns (preserves historyless prompt)", () => {
+    // Mutant: emit a header even when empty => this goes RED and the F5 lock
+    // below (byte-identical) also goes RED.
+    expect(renderHistory([])).toBe("");
+  });
+
+  it("labels writer vs collaborator and preserves oldest-first order", () => {
+    const out = renderHistory([
+      turn("you", "Who is Maren?"),
+      turn("them", "Maren swore the Oath out of season."),
+    ]);
+    // POSITIVE: both speakers rendered with the right label.
+    expect(out).toBe(
+      "Writer: Who is Maren?\nCollaborator: Maren swore the Oath out of season.",
+    );
+    // NEGATIVE (ordering): the writer's line precedes the collaborator's.
+    expect(out.indexOf("Writer:")).toBeLessThan(out.indexOf("Collaborator:"));
+  });
+
+  it("keeps only the most recent HISTORY_TURN_CAP turns (drops the oldest)", () => {
+    const many = Array.from({ length: HISTORY_TURN_CAP + 3 }, (_, i) =>
+      turn(i % 2 === 0 ? "you" : "them", `msg-${i}`),
+    );
+    const out = renderHistory(many);
+    const lines = out.split("\n");
+    // Cap honored: exactly HISTORY_TURN_CAP lines survive.
+    expect(lines).toHaveLength(HISTORY_TURN_CAP);
+    // The 3 oldest are gone; the newest is present.
+    expect(out).not.toContain("msg-0");
+    expect(out).not.toContain("msg-2");
+    expect(out).toContain(`msg-${HISTORY_TURN_CAP + 2}`);
+  });
+
+  it("respects an explicit smaller cap", () => {
+    const out = renderHistory(
+      [turn("you", "a"), turn("them", "b"), turn("you", "c")],
+      1,
+    );
+    expect(out).toBe("Writer: c");
+  });
+
+  it("drops blank-text turns (never emits an empty speaker line)", () => {
+    const out = renderHistory([turn("you", "   "), turn("them", "real")]);
+    expect(out).toBe("Collaborator: real");
+  });
+});
+
+describe("buildResearchPrompt (memory wiring)", () => {
+  it("injects prior turns into the user message before the current question", () => {
+    const { user } = buildResearchPrompt("What next?", "Kirn", "- Maren (character)", false, [
+      { side: "you", text: "Tell me about the Oath." },
+      { side: "them", text: "It is sworn at 21." },
+    ]);
+    expect(user).toContain("Conversation so far");
+    expect(user).toContain("Writer: Tell me about the Oath.");
+    expect(user).toContain("Collaborator: It is sworn at 21.");
+    // The memory block must come BEFORE the current question.
+    expect(user.indexOf("Conversation so far")).toBeLessThan(
+      user.indexOf("Writer asks: What next?"),
+    );
+  });
+
+  it("is byte-identical to the historyless prompt when history is empty (F5/F10 lock)", () => {
+    const withEmpty = buildResearchPrompt("q", "T", "- Alice (character)", false, []);
+    const historyless = buildResearchPrompt("q", "T", "- Alice (character)", false);
+    expect(withEmpty.user).toBe(historyless.user);
+    expect(withEmpty.system).toBe(historyless.system);
+    expect(withEmpty.user).not.toContain("Conversation so far");
+  });
+
+  it("still emits CARDS_SENTINEL with history present", () => {
+    const { system } = buildResearchPrompt("q", "T", "", false, [
+      { side: "you", text: "hi" },
+    ]);
+    expect(system).toContain(CARDS_SENTINEL);
   });
 });

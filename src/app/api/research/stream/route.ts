@@ -26,7 +26,7 @@ import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 
 import { streamComplete, aiEnabled } from "@/lib/ai/saarouters";
-import { loadWikiSnapshot } from "@/lib/db/queries";
+import { loadWikiSnapshot, getResearchThread } from "@/lib/db/queries";
 import { insertResearchTurnPair } from "@/lib/db/mutations";
 import { deriveThreadTitle } from "@/lib/research/title";
 import { visibleProsePrefix } from "@/lib/research/streamParse";
@@ -85,7 +85,14 @@ export async function POST(req: NextRequest) {
   // free-context answering (no scope directive) and still emits CARDS_SENTINEL.
   const wiki = await loadWikiSnapshot();
   const gazetteer = buildGazetteer(wiki.entries);
-  const { system, user } = buildResearchPrompt(question, threadTitle, gazetteer);
+  // MEMORY: load the thread's prior turns so the Collaborator REMEMBERS the
+  // conversation instead of answering statelessly. The current turn is NOT
+  // persisted yet (finalizeStreamedAnswer writes on clean completion), so this
+  // returns exactly the earlier turns. buildResearchPrompt caps to the most
+  // recent 15 and only feeds side+text.
+  const priorTurns = await getResearchThread(threadId);
+  const history = priorTurns.map((t) => ({ side: t.side, text: t.text }));
+  const { system, user } = buildResearchPrompt(question, threadTitle, gazetteer, false, history);
 
   // F10: real web search. Retrieve + read full-body pages for this question, then
   // append them as grounded prompt context and hold the answer's citations to
@@ -117,7 +124,7 @@ export async function POST(req: NextRequest) {
         // citable grounding source — without this the gazetteer-only line makes
         // it refuse ("I can't search the web"). No context => system unchanged.
         webUser = `${user}\n\n${context}`;
-        webSystem = buildResearchPrompt(question, threadTitle, gazetteer, true).system;
+        webSystem = buildResearchPrompt(question, threadTitle, gazetteer, true, history).system;
       }
     }
   } catch {
