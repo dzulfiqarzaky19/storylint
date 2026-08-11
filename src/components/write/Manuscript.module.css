@@ -306,7 +306,7 @@
 /* A phrase the manuscript leans on (recurs, or the AI judged it pivotal). A
    thin leading accent marks it without competing with the open-row fill. */
 .railRowImportant {
-  box-shadow: inset 2px 0 0 0 var(--accent);
+  border-left: 2px solid var(--accent);
   padding-left: 8px;
 }
 
@@ -375,7 +375,7 @@
 .underline:focus-visible,
 :global(.write-underline-conflict):focus-visible,
 :global(.write-underline-unrecorded):focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
