@@ -213,11 +213,18 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
     await query(`INSERT INTO universes (id, name) VALUES ($1, $2)`, [concurrentId, "Concurrent Writer"]);
 
     // --- ACT ------------------------------------------------------------------
-    const count = await deleteUniverseCascade(u2Id);
-
-    const totalAfter = await totalRows(fixtureIds);
-
-    await query(`DELETE FROM universes WHERE id = $1`, [concurrentId]);
+    // The concurrent-writer row is NON-PREFIXED (`zz-`, not `test-f7s5-`), so the
+    // afterAll sweep does NOT cover it. A finally guarantees it is removed even if
+    // the cascade or the snapshot throws, so a mid-test failure cannot orphan it
+    // in the shared DB.
+    let count: Awaited<ReturnType<typeof deleteUniverseCascade>>;
+    let totalAfter: number;
+    try {
+      count = await deleteUniverseCascade(u2Id);
+      totalAfter = await totalRows(fixtureIds);
+    } finally {
+      await query(`DELETE FROM universes WHERE id = $1`, [concurrentId]);
+    }
 
     // (a) count === rows actually removed. The reported total is the summed
     //     rowCounts; it must equal the real drop in total table rows.
