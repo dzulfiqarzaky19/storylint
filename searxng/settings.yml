@@ -1,0 +1,20 @@
+# SearXNG settings for storylint's local web-search backend.
+#
+# Mounted into the searxng service (see docker-compose.yml) at
+# /etc/searxng/settings.yml. Extends SearXNG's own defaults; we only override
+# what storylint needs:
+#   - search.formats: enable the JSON API (default ships HTML only) so the
+#     web-search engine (src/lib/websearch) can parse results.
+#   - server.secret_key: required by SearXNG; local-dev value, not a secret.
+#
+# Read the docs before extending: https://docs.searxng.org/admin/settings/
+use_default_settings: true
+
+server:
+  secret_key: "f22993d4c189e87649609dce376f0d1ca159edd255ded13a6d808b3cf1f52a16"
+  image_proxy: true
+
+search:
+  formats:
+    - html
+    - json

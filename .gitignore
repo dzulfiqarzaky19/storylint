@@ -11,7 +11,9 @@ data/*.db-journal
 data/*.db-wal
 data/*.db-shm
 
-.env
+# Secrets stay local (.env.local, .env.production.local, ...). The committed
+# .env holds only non-secret local-dev defaults (e.g. the compose SearXNG URL),
+# so `docker compose up` + `npm run dev` works with zero manual env setup.
 .env*.local
 
 *.tsbuildinfo

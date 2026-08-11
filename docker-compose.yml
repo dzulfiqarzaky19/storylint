@@ -17,5 +17,26 @@ services:
       timeout: 5s
       retries: 10
 
+  # Web-search backend for the research chat (F10). Brought up by the same
+  # `docker compose up` as the db, JSON API enabled via the mounted settings so
+  # it is ready to use with zero manual steps. The app points at it via
+  # WEBSEARCH_SEARXNG_URL=http://localhost:8888 (committed in .env).
+  searxng:
+    image: searxng/searxng
+    container_name: storylint-searxng
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "wget -q -O - 'http://localhost:8080/search?q=ping&format=json' | grep -q results"
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 20s
+
 volumes:
   ashkeld_pgdata:
