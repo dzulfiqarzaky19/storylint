@@ -604,15 +604,30 @@
   .board {
     padding-top: 4px;
   }
+
+  /* Stack the speaker label above the message the moment the page goes
+     single-column (parity with every other surface), so the 130px .who column
+     stops crowding .turnText on mid-range widths (561-1200px). The phone tier
+     inherits this and only adds its own font-size bump. */
+  .turnRow {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .who {
+    width: auto;
+  }
+
+  .turnText {
+    max-width: none;
+  }
 }
 
 /* ---- Phone tier (<=560px) ------------------------------------------------ */
 @media (max-width: 560px) {
   .question { font-size: 30px; max-width: none; }
 
-  .turnRow { flex-direction: column; gap: 4px; }
-  .who { width: auto; }
-  .turnText { font-size: 17px; max-width: none; }
+  .turnText { font-size: 17px; }
 
   .cards { flex-direction: column; }
   .card { width: 100%; }
