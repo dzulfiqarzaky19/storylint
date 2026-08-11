@@ -76,3 +76,18 @@ export function categoryLabelById(categories: CategoryRow[], id: string): string
   if (id in KIND_SHELF) return SHELF_TITLES[KIND_SHELF[id as Kind]];
   return id;
 }
+
+/**
+ * TCK-006 — PURE singular form of a category label for the "+ Add new <x>"
+ * affordance (e.g. "Guilds" -> "guild", "Lore" -> "lore").
+ *
+ * Naive-but-sufficient English singularization: drop ONE trailing "s" and
+ * lowercase, matching the existing sidebar add-entry label
+ * (WikiIndex.tsx: resolveCategoryLabel(...).replace(/s$/, "").toLowerCase()).
+ * A label with no trailing "s" is returned lowercased unchanged. Pure and
+ * non-mutating; the ONE place the add-entry singular is decided, so the main
+ * shelf and the sidebar share the same ruling.
+ */
+export function categorySingular(label: string): string {
+  return label.replace(/s$/, "").toLowerCase();
+}

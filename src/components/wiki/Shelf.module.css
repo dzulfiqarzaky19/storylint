@@ -11,11 +11,27 @@
   gap: 12px;
 }
 
+/* TCK-007: the title is now a <button> (click-to-edit), so it carries a full
+   button reset and inherits the heading typography. It reads as plain text
+   until hover, when a faint background signals it is editable. */
 .title {
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 2px 4px;
+  margin: 0;
+  border-radius: 0;
+  cursor: text;
+  text-align: left;
+  font-family: inherit;
+}
+
+.title:hover {
+  background: var(--hover);
 }
 
 .count {
@@ -38,7 +54,7 @@
 }
 
 /* Empty category: the title reads lighter so a 0-entry shelf recedes, but the
-   Rename / options / delete controls stay full-strength (they live in
+   edit / reset / delete controls stay full-strength (they live in
    .headerActions, not affected here) so the user can still remove it. */
 .headingEmpty .title {
   color: var(--faint);
@@ -71,7 +87,7 @@
   min-width: 8ch;
 }
 
-/* Rename button + options menu trigger; the menu anchors to this box. */
+/* Reset button + trash icon live here (TCK-007 dropped the popover menu). */
 .headerActions {
   position: relative;
   display: flex;
@@ -94,36 +110,38 @@
   color: inherit;
 }
 
-/* Popover menu anchored under the "..." trigger. */
-.menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 20;
-  margin-top: 4px;
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg, #fff);
-  border: var(--rule-row);
-  border-radius: 0;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-}
-
-.menuItem {
-  text-align: left;
-  font-size: 12px;
-  padding: 8px 12px;
+/* TCK-007: direct trash icon (replaces the ⋯ menu's Delete). Danger-colored on
+   hover so the destructive action reads without relying on the glyph alone. */
+.deleteIcon {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--faint);
   background: transparent;
   border: none;
+  padding: 2px 6px;
+  border-radius: 0;
   cursor: pointer;
 }
 
-.menuItem:hover {
+.deleteIcon:hover {
   background: var(--hover);
+  color: var(--accent);
 }
 
-.menuItemDanger {
-  color: var(--danger, #b3261e);
+/* TCK-006: main-shelf add-entry affordance, mirroring the sidebar's "+ New".
+   Sits in the tiles row after the tiles, reads as a quiet action until hover. */
+.addEntry {
+  font-size: 13px;
+  color: var(--faint);
+  background: transparent;
+  border: 1px dashed var(--rule);
+  border-radius: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.addEntry:hover {
+  background: var(--hover);
+  color: inherit;
 }

@@ -13,6 +13,7 @@ import {
   applyCategoryRename,
   applyCategoryReset,
   categoryLabelById,
+  categorySingular,
 } from "@/lib/wiki/categoryLabels";
 import { SHELF_TITLES, KIND_SHELF } from "@/lib/domain/types";
 import type { CategoryRow } from "@/lib/domain/types";
@@ -135,5 +136,26 @@ describe("categoryLabelById", () => {
 
   it("returns the raw id for a user category absent from the list (no built-in default)", () => {
     expect(categoryLabelById([], "u-unknown")).toBe("u-unknown");
+  });
+});
+
+// TCK-006 — PURE singular form for the "+ Add new <x>" add-entry affordance.
+// Mutation-locked line in categorySingular:
+//  * `label.replace(/s$/, "").toLowerCase()` — drop the replace and "People"
+//    stays plural -> the "strips one trailing s" test RED; drop toLowerCase and
+//    "Guilds" -> "Guild" (capitalized) -> the lowercase test RED.
+describe("categorySingular", () => {
+  it("strips one trailing s and lowercases", () => {
+    expect(categorySingular("People")).toBe("people");
+    expect(categorySingular("Guilds")).toBe("guild");
+    expect(categorySingular("Places")).toBe("place");
+  });
+
+  it("lowercases a label with no trailing s unchanged", () => {
+    expect(categorySingular("Lore")).toBe("lore");
+  });
+
+  it("strips only ONE trailing s (does not over-singularize)", () => {
+    expect(categorySingular("Compass")).toBe("compas");
   });
 });

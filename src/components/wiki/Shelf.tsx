@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
 import { useDrag } from "@/components/dnd/DragContext";
+import { categorySingular } from "@/lib/wiki/categoryLabels";
 import { isEmptyCategory } from "./shelfState";
 import EntryTile from "./EntryTile";
 import styles from "./Shelf.module.css";
@@ -27,8 +28,13 @@ interface ShelfProps {
   onResetCategory: (categoryId: string) => void;
   /** Ask to delete the whole category (opens the danger confirm in the caller). */
   onRequestDeleteCategory: (categoryId: string) => void;
+  /** Start authoring a new entry on this shelf (TCK-006; same path as sidebar). */
+  onCreate?: (shelf: ShelfKey) => void;
   /** True when a custom label is set, so the "Reset" affordance is offered. */
   isRenamed: boolean;
+  /** True for the 4 seeded categories, which cannot be deleted (TCK-007): the
+   *  trash icon is hidden so the is_builtin invariant is honored in the UI. */
+  isBuiltin: boolean;
 }
 
 // One shelf group — heading row then wrapping tiles (README Screen 1 "Shelves").
@@ -47,16 +53,18 @@ export default function Shelf({
   onRenameCategory,
   onResetCategory,
   onRequestDeleteCategory,
+  onCreate,
   isRenamed,
+  isBuiltin,
 }: ShelfProps) {
   const drag = useDrag();
   const dragging = drag.dragging;
 
-  // Inline rename + a small header menu (reset / delete). `editing` holds the
-  // draft label; `menuOpen` toggles the reset/delete affordances. Both are
-  // purely local view state — the committed label lives in the reducer.
+  // Inline rename draft. `editing` holds the draft label while the title is being
+  // edited; null means the static title shows. Purely local view state — the
+  // committed label lives in the reducer. (TCK-007 dropped the popover menu, so
+  // there is no longer a `menuOpen` state.)
   const [editing, setEditing] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const commitRename = () => {
     if (editing === null) return;
@@ -73,8 +81,8 @@ export default function Shelf({
     drag.dropZone.id === shelf;
 
   // A category with no entries reads lighter (dimmed heading + a real-text
-  // hint) but keeps Rename / options / delete so the user can still remove it.
-  // Same predicate the unit test exercises, so a regression moves the UI too.
+  // hint) but keeps its edit/reset/delete controls so the user can still remove
+  // it. Same predicate the unit test exercises, so a regression moves the UI too.
   const isEmpty = isEmptyCategory(entries.length);
 
   return (
@@ -123,59 +131,45 @@ export default function Shelf({
             }}
           />
         ) : (
-          <h2 className={styles.title}>{title}</h2>
+          // TCK-007: the title itself is the rename affordance — click it to edit
+          // inline (the separate "Rename" button is gone). A real <button> keeps
+          // it keyboard-focusable and screen-reader-announced as an action.
+          <button
+            type="button"
+            className={styles.title}
+            aria-label={`Rename ${title} category`}
+            onClick={() => setEditing(title)}
+          >
+            {title}
+          </button>
         )}
         <span className={styles.count}>{entries.length}</span>
         <div className={styles.headerActions}>
-          <button
-            type="button"
-            className={styles.headerButton}
-            aria-label={`Rename ${title} category`}
-            onClick={() => {
-              setMenuOpen(false);
-              setEditing(title);
-            }}
-          >
-            Rename
-          </button>
-          <button
-            type="button"
-            className={styles.headerButton}
-            aria-haspopup="menu"
-            aria-expanded={menuOpen}
-            aria-label={`${title} category options`}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            {"\u22EF"}
-          </button>
-          {menuOpen ? (
-            <div className={styles.menu} role="menu">
-              {isRenamed ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className={styles.menuItem}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    onResetCategory(categoryId);
-                  }}
-                >
-                  Reset to default
-                </button>
-              ) : null}
-              <button
-                type="button"
-                role="menuitem"
-                className={`${styles.menuItem} ${styles.menuItemDanger}`}
-                onClick={() => {
-                  setMenuOpen(false);
-                  onRequestDeleteCategory(categoryId);
-                }}
-              >
-                Delete category
-              </button>
-            </div>
+          {/* Reset-to-default stays reachable for a renamed built-in (TCK-007
+              folded it out of the dropped ⋯ menu into the icon row). */}
+          {isRenamed ? (
+            <button
+              type="button"
+              className={styles.headerButton}
+              onClick={() => onResetCategory(categoryId)}
+            >
+              Reset to default
+            </button>
           ) : null}
+          {/* TCK-007: a direct trash icon replaces the ⋯ menu's "Delete category".
+              It still opens the danger ConfirmModal in the caller. Built-ins are
+              not deletable (is_builtin invariant), so the icon is hidden for them. */}
+          {isBuiltin ? null : (
+            <button
+              type="button"
+              className={styles.deleteIcon}
+              aria-label={`Delete ${title} category`}
+              title={`Delete ${title} category`}
+              onClick={() => onRequestDeleteCategory(categoryId)}
+            >
+              {"\u{1F5D1}"}
+            </button>
+          )}
         </div>
         <span className={styles.line} aria-hidden="true" />
       </div>
@@ -197,6 +191,19 @@ export default function Shelf({
             />
           ))
         )}
+        {/* TCK-006: add-entry affordance on the MAIN shelf, mirroring the
+            sidebar's "+ New <singular>" (WikiIndex). Same create path via
+            onCreate(shelf); the singular label routes through the shared
+            categorySingular seam so both surfaces agree. */}
+        {onCreate ? (
+          <button
+            type="button"
+            className={styles.addEntry}
+            onClick={() => onCreate(shelf)}
+          >
+            + Add new {categorySingular(title)}
+          </button>
+        ) : null}
       </div>
     </section>
   );

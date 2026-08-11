@@ -735,10 +735,12 @@ function WikiScreenInner({
             onRenameCategory={renameCategoryLabel}
             onResetCategory={resetCategory}
             onRequestDeleteCategory={setConfirmDeleteKind}
+            onCreate={createEntryOnShelf}
             isRenamed={
               cat.id in KIND_SHELF &&
               state.overrides[cat.id as Kind] !== undefined
             }
+            isBuiltin={cat.id in KIND_SHELF}
           />
         ))}
         <NewCategoryShelf onCreate={createCategoryOnShelf} />
