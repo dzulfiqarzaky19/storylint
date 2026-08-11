@@ -61,7 +61,7 @@
 .guidance {
   margin: 0;
   max-width: 46ch;
-  color: var(--ink-soft, #6b6b6b);
+  color: var(--muted);
   font-size: 15px;
   line-height: 1.6;
 }
