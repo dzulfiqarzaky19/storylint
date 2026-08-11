@@ -74,21 +74,34 @@ const u1ForeignCanonFactId = `test-f7s5-fact-${randomUUID()}`;
 const crossFacetFactId = `test-f7s5-fact-${randomUUID()}`;
 
 // Count every world-scoped table so we can prove total === before - after.
+// TCK-012: windowed to THIS test's EXACT fixture ids (passed per-call), not a
+// whole-table COUNT(*). A global COUNT(*) is fragile — ANY concurrent writer
+// (another suite, a stray psql, a live /wiki save) perturbs the global sum between
+// the before/after snapshots and breaks count===rows even when the cascade counted
+// correctly. Exact-id windowing (`id = ANY($ids)`) is immune to unrelated rows AND
+// to a stray row that merely shares the `test-f7s5-` prefix (a peer fixture or a
+// crashed-run orphan), which a LIKE-prefix window would still miscount. The
+// count===rows invariant is unchanged, only its window narrows. entry_facets has
+// no `id` column (PK = entry_id, book_id), so it is windowed by `entry_id`; every
+// facet in these tests hangs off a fixture entry, so the same id array covers it.
 const COUNT_ALL = `SELECT
-    (SELECT COUNT(*) FROM universes) +
-    (SELECT COUNT(*) FROM series) +
-    (SELECT COUNT(*) FROM books) +
-    (SELECT COUNT(*) FROM entries) +
-    (SELECT COUNT(*) FROM facts) +
-    (SELECT COUNT(*) FROM ties) +
-    (SELECT COUNT(*) FROM entry_facets) +
-    (SELECT COUNT(*) FROM chapter_appearances) +
-    (SELECT COUNT(*) FROM chapters) +
-    (SELECT COUNT(*) FROM open_questions) +
-    (SELECT COUNT(*) FROM research_threads) AS n`;
+    (SELECT COUNT(*) FROM universes WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM series WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM books WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM entries WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM facts WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM ties WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM entry_facets WHERE entry_id = ANY($1)) +
+    (SELECT COUNT(*) FROM chapter_appearances WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM chapters WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM open_questions WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM research_threads WHERE id = ANY($1)) AS n`;
 
-async function totalRows(): Promise<number> {
-  const r = await one<{ n: string }>(COUNT_ALL);
+// Sum of world-scoped rows whose id (entry_id for entry_facets) is in `ids` — the
+// caller's own fixture ids. Windowing here is what makes count===rows immune to
+// concurrent writers (see COUNT_ALL comment).
+async function totalRows(ids: string[]): Promise<number> {
+  const r = await one<{ n: string }>(COUNT_ALL, [ids]);
   return Number(r!.n);
 }
 
@@ -183,13 +196,28 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
     await insertFact({ id: crossFacetFactId, entryId: u1ForeignEntryId, key: "cameo", value: "seen in U2's book", fresh: false, sortOrder: 1, bookId: b2Id }, confirm);
 
     // --- Capture invariants BEFORE the delete ---------------------------------
+    // This test's OWN fixture ids — the window count===rows is measured over.
+    const fixtureIds = [
+      u2Id, se2Id, b2Id, orcId, trollId,
+      u2CanonFactId, u2BookFactId, u2TieId, u2ChapterId, u2ApprId, u2OpenQId, u2ThreadId,
+      u1ForeignEntryId, u1ForeignCanonFactId, crossFacetFactId,
+    ];
     const digestBefore = await u1Digest();
-    const totalBefore = await totalRows();
+    const totalBefore = await totalRows(fixtureIds);
+
+    // MUTATION-PROOF 1 (concurrent-writer immunity): a non-prefixed unrelated row
+    // lands between the before/after snapshots. With the fixture-id-windowed
+    // COUNT_ALL it MUST NOT affect count===rows; with the old global COUNT(*) it
+    // would. It is not in `fixtureIds`, so it is invisible to the count.
+    const concurrentId = `zz-concurrent-${randomUUID()}`;
+    await query(`INSERT INTO universes (id, name) VALUES ($1, $2)`, [concurrentId, "Concurrent Writer"]);
 
     // --- ACT ------------------------------------------------------------------
     const count = await deleteUniverseCascade(u2Id);
 
-    const totalAfter = await totalRows();
+    const totalAfter = await totalRows(fixtureIds);
+
+    await query(`DELETE FROM universes WHERE id = $1`, [concurrentId]);
 
     // (a) count === rows actually removed. The reported total is the summed
     //     rowCounts; it must equal the real drop in total table rows.
@@ -261,9 +289,10 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
       await insertFact({ id: siblingFactId, entryId: entId, key: "k", value: "sibling-only", fresh: false, sortOrder: 1, bookId: bSiblingId }, confirm);
       await insertChapter({ id: targetChapId, number: 1, title: "T Ch1", body: { type: "doc" }, bookId: bTargetId });
 
-      const totalBefore = await totalRows();
+      const bookFixtureIds = [uId, sId, bTargetId, bSiblingId, entId, canonFactId, targetFactId, siblingFactId, targetChapId];
+      const totalBefore = await totalRows(bookFixtureIds);
       const count = await deleteBookCascade(bTargetId);
-      const totalAfter = await totalRows();
+      const totalAfter = await totalRows(bookFixtureIds);
 
       // count === removed; the breakdown removes the book, its book-scoped fact,
       // its chapter — and NOTHING else.
@@ -313,9 +342,10 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
       await insertFact({ id: bookFactId, entryId: entId, key: "k", value: "book-only", fresh: false, sortOrder: 1, bookId: bId }, confirm);
       await insertChapter({ id: chapId, number: 1, title: "S Ch1", body: { type: "doc" }, bookId: bId });
 
-      const totalBefore = await totalRows();
+      const seriesFixtureIds = [uId, sTargetId, bId, entId, canonFactId, bookFactId, chapId];
+      const totalBefore = await totalRows(seriesFixtureIds);
       const count = await deleteSeriesCascade(sTargetId);
-      const totalAfter = await totalRows();
+      const totalAfter = await totalRows(seriesFixtureIds);
 
       expect(count.total).toBe(totalBefore - totalAfter);
       expect(count.series).toBe(1);
