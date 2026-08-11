@@ -50,6 +50,31 @@ describe("buildResearchPrompt (F5 fully-free — no scope directive)", () => {
   });
 });
 
+// TCK-015 (new-subject vs suggestion classification). The card `kind` enum was
+// listed but never taught: the model minted a fake `character` for a mere
+// suggestion/connection about EXISTING figures. The system prompt now carries ONE
+// directive teaching that character/world/organization/asKind are for a
+// GENUINELY NEW subject worth its own entry, while a suggestion/connection about
+// subjects that ALREADY exist is lore/beat. Behavior-bearing → mutation-proofed.
+describe("buildResearchPrompt (F-015 new-subject vs suggestion classification)", () => {
+  // The directive must appear in the system prompt. Mutant: delete the directive
+  // line → this goes RED.
+  it("teaches character/world/organization only for a genuinely NEW subject", () => {
+    const { system } = buildResearchPrompt("q", "Thread A", "- Alice (character)");
+    expect(system).toMatch(/genuinely new/i);
+  });
+
+  // The directive must teach the reverse: a suggestion/connection about EXISTING
+  // subjects is lore/beat, never a new character. Mutant: drop the "already
+  // exist"/"never mint" half → this goes RED.
+  it("teaches that a suggestion/connection about existing subjects is lore/beat", () => {
+    const { system } = buildResearchPrompt("q", "Thread A", "- Alice (character)");
+    expect(system).toMatch(/already exist/i);
+    expect(system).toMatch(/never mint/i);
+    expect(system).toMatch(/lore or beat/i);
+  });
+});
+
 // F10 GAP1 (web-sources grounding directive). The system prompt's "Ground every
 // answer ONLY in the gazetteer" line makes the model REFUSE web context even
 // when the route appends it to the user message. So the prompt must — ONLY when

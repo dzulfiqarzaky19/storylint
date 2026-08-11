@@ -92,6 +92,7 @@ export function buildResearchPrompt(
     "Immediately after the delimiter, output STRICT JSON only: an array of 2-3 cards shaped exactly as:",
     '[{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore"}]',
     "title: <=6 words. body: one or two sentences. asKind: the wiki kind this card would become if written in.",
+    "Classifying kind: use character/world/organization (and the matching asKind) ONLY for a GENUINELY NEW subject worth its own wiki entry. A suggestion or connection about subjects that ALREADY EXIST in the gazetteer is lore or beat — never mint a new character/world/organization card for a recommendation about existing subjects.",
     "Output nothing after the JSON array.",
   ].join("\n");
 
