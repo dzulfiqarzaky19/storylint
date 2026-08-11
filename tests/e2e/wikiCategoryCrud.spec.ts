@@ -39,20 +39,19 @@ test("wiki category CRUD: create a new category, it appears as its own group", a
     .selectOption("lore");
   await newShelf.getByRole("button", { name: "Add", exact: true }).click();
 
-  // The new category renders its own group header (a <section aria-label={label}>
-  // with an <h2> title) in the grid.
-  await expect(
-    grid(page).getByRole("heading", { level: 2, name: unique }).first(),
-  ).toBeVisible();
-
-  // Clean up: delete the just-created (empty) category so shared state is left
-  // as found. Open its header menu and confirm the danger modal.
+  // TCK-007 contract: the new category renders as <section aria-label={label}>
+  // whose title is a BUTTON (the inline-rename affordance), not an <h2>.
   const section = grid(page).locator(`section[aria-label="${unique}"]`);
-  await section.getByRole("button", { name: `${unique} category options` }).click();
-  await section.getByRole("menuitem", { name: "Delete category" }).click();
-  await page.getByRole("button", { name: "Delete category" }).click();
+  await expect(section).toBeVisible();
+
+  // Clean up: delete the just-created (empty) category so shared state is left as
+  // found. TCK-007 delete is a trash icon -> ConfirmModal "Delete category".
+  await section
+    .getByRole("button", { name: `Delete ${unique} category` })
+    .click();
+  await page.getByRole("button", { name: "Delete category", exact: true }).click();
   await expect(
-    grid(page).getByRole("heading", { level: 2, name: unique }),
+    grid(page).locator(`section[aria-label="${unique}"]`),
   ).toHaveCount(0);
 });
 
@@ -61,33 +60,26 @@ test("wiki category CRUD: renaming the People built-in updates its header, reset
 }) => {
   const g = grid(page);
   const people = g.locator('section[aria-label="People"]');
-  await expect(people.getByRole("heading", { level: 2, name: "People" })).toBeVisible();
+  await expect(people).toBeVisible();
 
   const renamed = `Cast ${Date.now()}`;
-  // Click the header "Rename" button, type a new label, commit with Enter.
+  // TCK-007 inline rename: the title itself is a button; click it to reveal an
+  // input (same aria-label), type a new label, commit with Enter.
   await people.getByRole("button", { name: "Rename People category" }).click();
   const input = people.getByRole("textbox", { name: "Rename People category" });
   await input.fill(renamed);
   await input.press("Enter");
 
-  // The header now shows the custom label. The section aria-label follows the
-  // title, so re-locate by the new label.
+  // The section aria-label follows the title, so re-locate by the new label.
   const renamedSection = g.locator(`section[aria-label="${renamed}"]`);
-  await expect(
-    renamedSection.getByRole("heading", { level: 2, name: renamed }),
-  ).toBeVisible();
+  await expect(renamedSection).toBeVisible();
 
-  // Reset back to the shelf default via the header menu -> "Reset to default".
+  // Reset back to the shelf default: TCK-007 folded "Reset to default" out of the
+  // dropped ⋯ menu into a direct header button, shown only for a renamed built-in.
   await renamedSection
-    .getByRole("button", { name: `${renamed} category options` })
+    .getByRole("button", { name: "Reset to default", exact: true })
     .click();
-  await renamedSection.getByRole("menuitem", { name: "Reset to default" }).click();
-  await expect(
-    g.locator('section[aria-label="People"]').getByRole("heading", {
-      level: 2,
-      name: "People",
-    }),
-  ).toBeVisible();
+  await expect(g.locator('section[aria-label="People"]')).toBeVisible();
 });
 
 test("wiki category CRUD: deleting a category with entries tombstones them", async ({
@@ -104,19 +96,18 @@ test("wiki category CRUD: deleting a category with entries tombstones them", asy
   await newShelf.getByRole("button", { name: "Add", exact: true }).click();
 
   const section = grid(page).locator(`section[aria-label="${unique}"]`);
-  await expect(
-    section.getByRole("heading", { level: 2, name: unique }),
-  ).toBeVisible();
+  await expect(section).toBeVisible();
 
-  // Delete it and confirm the danger modal names the category.
-  await section.getByRole("button", { name: `${unique} category options` }).click();
-  await section.getByRole("menuitem", { name: "Delete category" }).click();
+  // TCK-007 delete: trash icon opens the danger ConfirmModal naming the category.
+  await section
+    .getByRole("button", { name: `Delete ${unique} category` })
+    .click();
   await expect(
     page.getByRole("heading", { name: new RegExp(`Delete the ${unique} category`) }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Delete category" }).click();
+  await page.getByRole("button", { name: "Delete category", exact: true }).click();
 
   await expect(
-    grid(page).getByRole("heading", { level: 2, name: unique }),
+    grid(page).locator(`section[aria-label="${unique}"]`),
   ).toHaveCount(0);
 });
