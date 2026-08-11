@@ -138,3 +138,64 @@ describe('tiptapDocToMarkdown — mark branches', () => {
     expect(tiptapDocToMarkdown(doc(para(text('x', [{ type: 'highlight' }]))))).toBe('x');
   });
 });
+
+describe('tiptapDocToMarkdown — golden-master (full-document behavior lock)', () => {
+  // One rich document exercising heading, paragraph, inline marks, both list
+  // kinds, a nested + a stray-top-level listItem, blockquote, codeBlock, hr and
+  // hardBreak in a single walk. Locked to an exact byte string so ANY change in
+  // how blocks compose (join separator, prefix, ordering) trips exactly here.
+  // This is the durable behavior lock behind the listItem-case refactor: the
+  // asserted string is identical before and after that refactor.
+  it('serializes a full mixed document to the exact expected Markdown', () => {
+    const document = doc(
+      { type: 'heading', attrs: { level: 1 }, content: [text('Title')] },
+      para(text('Plain intro with '), text('bold', [{ type: 'bold' }]), text(' and '), text('code', [{ type: 'code' }]), text('.')),
+      para(text('l1'), { type: 'hardBreak' }, text('l2')),
+      {
+        type: 'bulletList',
+        content: [
+          { type: 'listItem', content: [para(text('first'))] },
+          { type: 'listItem', content: [para(text('second'))] },
+        ],
+      },
+      {
+        type: 'orderedList',
+        content: [
+          { type: 'listItem', content: [para(text('alpha'))] },
+          { type: 'listItem', content: [para(text('beta'))] },
+        ],
+      },
+      { type: 'blockquote', content: [para(text('quoted line'))] },
+      { type: 'codeBlock', content: [text('const x = 1;')] },
+      { type: 'horizontalRule' },
+      { type: 'listItem', content: [para(text('stray'))] },
+    );
+
+    const expected = [
+      '# Title',
+      '',
+      'Plain intro with **bold** and `code`.',
+      '',
+      'l1  ',
+      'l2',
+      '',
+      '- first',
+      '- second',
+      '',
+      '1. alpha',
+      '2. beta',
+      '',
+      '> quoted line',
+      '',
+      '```',
+      'const x = 1;',
+      '```',
+      '',
+      '---',
+      '',
+      'stray',
+    ].join('\n');
+
+    expect(tiptapDocToMarkdown(document)).toBe(expected);
+  });
+});
