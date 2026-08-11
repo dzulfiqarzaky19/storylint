@@ -45,3 +45,47 @@ describe("buildResearchPrompt (F5 fully-free — no scope directive)", () => {
     expect(buildResearchPrompt("q", undefined, "").user).not.toContain("Thread:");
   });
 });
+
+// F10 GAP1 (web-sources grounding directive). The system prompt's "Ground every
+// answer ONLY in the gazetteer" line makes the model REFUSE web context even
+// when the route appends it to the user message. So the prompt must — ONLY when
+// web context is actually present — tell the model that WEB SOURCES in the user
+// message are a legitimate grounding source to cite by URL. When no web context
+// is present the prompt stays byte-identical to F5 (the F5 tests above still
+// hold), so F5's network-free path is untouched.
+describe("buildResearchPrompt (F10 conditional web-sources directive)", () => {
+  // The exact conditional line: mutate the `hasWeb ? [...] : []` branch to always
+  // include it and the "byte-identical when no web" lock below goes RED; mutate
+  // it to never include it and THIS test goes RED.
+  it("adds a web-sources grounding directive ONLY when hasWeb is true", () => {
+    const withWeb = buildResearchPrompt("q", "T", "- Alice (character)", true).system;
+    const withoutWeb = buildResearchPrompt("q", "T", "- Alice (character)", false).system;
+    // POSITIVE: with web context, the model is told web sources are citable.
+    expect(withWeb).toMatch(/web sources/i);
+    expect(withWeb).toMatch(/cite/i);
+    // NEGATIVE: without web context, no such directive appears.
+    expect(withoutWeb).not.toMatch(/web sources/i);
+  });
+
+  // The web branch must NOT drop the gazetteer-first canon rule or the free
+  // framing — web is ADDITIVE grounding, the writer's wiki is still preferred for
+  // in-world canon and the model still never invents contradicting facts.
+  it("keeps the gazetteer/canon framing intact when web sources are present", () => {
+    const withWeb = buildResearchPrompt("q", "T", "- Alice (character)", true).system;
+    expect(withWeb).toMatch(/never invent contradicting facts/i);
+    expect(withWeb).toMatch(/ENTIRE wiki/);
+    expect(withWeb).toContain(CARDS_SENTINEL);
+  });
+
+  // F5 LOCK: default (no 4th arg) and hasWeb:false BOTH produce the SAME system
+  // prompt as before F10 — byte-identical. This is what keeps F5 (and every
+  // network-free path) unaffected. A mutant that always injects the web line
+  // breaks this equality.
+  it("produces a byte-identical system prompt when hasWeb is absent or false (F5 lock)", () => {
+    const defaulted = buildResearchPrompt("q", "T", "- Alice (character)").system;
+    const explicitFalse = buildResearchPrompt("q", "T", "- Alice (character)", false).system;
+    expect(defaulted).toBe(explicitFalse);
+    // And it carries none of the web directive.
+    expect(defaulted).not.toMatch(/web sources/i);
+  });
+});

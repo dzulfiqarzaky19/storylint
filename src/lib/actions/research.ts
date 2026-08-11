@@ -40,6 +40,10 @@ import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
 import { loadWikiSnapshot, getEntry } from "../db/queries";
 import { deriveThreadTitle } from "../research/title";
+import { loadWebSearchConfig } from "../websearch/search/config";
+import { retrieve, buildSearchImpl } from "../websearch/retrieve";
+import { enforceCitations } from "../websearch/ground/enforceCitations";
+import { renderWebContext, collectAllowedUrls } from "../research/webSearchAdapter";
 
 export type ActionResult<T = void> =
   | { ok: true; data: T }
@@ -273,10 +277,39 @@ export async function askResearchAi(input: {
       .join("\n");
 
     let answer: AiAnswer;
+    // F10: real web search. Retrieve + read full-body pages for this question,
+    // then append them as grounded prompt context and hold the reply's citations
+    // to exactly the URLs we read. Fail-soft: any engine error yields no web
+    // context and the answer falls back to wiki-only grounding. Opt-in
+    // ACTIVATION: only run live retrieval when web search is CONFIGURED, so a
+    // fresh clone boots green with zero surprise network egress.
+    let webSystem = system;
+    let webUser = user;
+    let allowedUrls: string[] = [];
+    try {
+      const cfg = loadWebSearchConfig(process.env);
+      if (cfg.enabled) {
+        const retrieval = await retrieve(question, {
+          searchImpl: buildSearchImpl(cfg),
+          maxRead: cfg.maxResults,
+        });
+        const context = renderWebContext(retrieval);
+        allowedUrls = collectAllowedUrls(retrieval);
+        if (context) {
+          webUser = `${user}\n\n${context}`;
+          webSystem = `${system}\nWeb sources are provided below as CONTEXT blocks with URLs. You MAY ground answers in them and cite their exact URLs; never cite a URL not provided.`;
+        }
+      }
+    } catch {
+      // Fail-soft: keep wiki-only prompt, no allowed citations.
+      webSystem = system;
+      webUser = user;
+      allowedUrls = [];
+    }
     try {
       answer = await completeJson<AiAnswer>({
-        system,
-        messages: [{ role: "user", content: user }],
+        system: webSystem,
+        messages: [{ role: "user", content: webUser }],
         maxTokens: 900,
         temperature: 0.7,
       });
@@ -284,14 +317,14 @@ export async function askResearchAi(input: {
       // Fallback: if strict JSON failed, take a plain reply with no cards.
       const reply = await complete({
         system: "You are a story-consistency collaborator. Answer in 2-4 sentences, grounded in the writer's world.",
-        messages: [{ role: "user", content: user }],
+        messages: [{ role: "user", content: webUser }],
         maxTokens: 400,
         temperature: 0.7,
       });
       answer = { reply, cards: [] };
     }
 
-    const reply = (answer.reply ?? "").trim() || "Here's a thought.";
+    const reply = enforceCitations((answer.reply ?? "").trim() || "Here's a thought.", allowedUrls);
     const cards = (answer.cards ?? [])
       .filter((c) => c && (c.title || c.body))
       .slice(0, 3);

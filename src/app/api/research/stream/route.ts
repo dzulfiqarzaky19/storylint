@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
   // exactly the URLs we read. Fail-soft: any engine error yields no web context
   // (empty read set) and the answer falls back to wiki-only grounding — the chat
   // never breaks because search is down or unconfigured.
+  let webSystem = system;
   let webUser = user;
   let allowedUrls: string[] = [];
   try {
@@ -110,10 +111,18 @@ export async function POST(req: NextRequest) {
       });
       const context = renderWebContext(retrieval);
       allowedUrls = collectAllowedUrls(retrieval);
-      if (context) webUser = `${user}\n\n${context}`;
+      if (context) {
+        // Append the web context to the user message AND re-frame the system
+        // prompt (hasWeb=true) so the model is told web sources are a legitimate,
+        // citable grounding source — without this the gazetteer-only line makes
+        // it refuse ("I can't search the web"). No context => system unchanged.
+        webUser = `${user}\n\n${context}`;
+        webSystem = buildResearchPrompt(question, threadTitle, gazetteer, true).system;
+      }
     }
   } catch {
     // Fail-soft: keep wiki-only prompt, no allowed citations.
+    webSystem = system;
     webUser = user;
     allowedUrls = [];
   }
@@ -142,7 +151,7 @@ export async function POST(req: NextRequest) {
         // wiki gazetteer). The blocking path omits temperature for the same
         // reason (saarouters.ts) — the route wants gateway-default sampling.
         for await (const delta of streamComplete({
-          system,
+          system: webSystem,
           messages: [{ role: "user", content: webUser }],
           maxTokens: 900,
           signal: req.signal,
