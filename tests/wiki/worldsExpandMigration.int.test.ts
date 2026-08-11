@@ -79,11 +79,15 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // FK order: membership links -> entries -> worlds -> universes.
-  await query(`DELETE FROM world_entities WHERE entity_id = ANY($1)`, [[entA1Id, entA2Id, entBId]]);
-  await query(`DELETE FROM entries WHERE id = ANY($1)`, [[entA1Id, entA2Id, entBId]]);
-  await query(`DELETE FROM worlds WHERE id = ANY($1)`, [[worldA, worldB]]);
-  await query(`DELETE FROM universes WHERE id = ANY($1)`, [[uAId, uBId]]);
+  // FK order: membership links -> entries -> worlds -> universes. Sweep by the
+  // `test-w1-%` PREFIX (not just this run's random UUIDs): if a prior run crashed
+  // mid-test (e.g. a mutation-proof RED), its orphaned rows carry fresh UUIDs this
+  // run's id-list can't match — a prefix sweep is what keeps the SHARED baseline
+  // self-healing. The live universe-1 / its world never match this prefix.
+  await query(`DELETE FROM world_entities WHERE entity_id LIKE 'test-w1-%'`);
+  await query(`DELETE FROM entries WHERE id LIKE 'test-w1-%'`);
+  await query(`DELETE FROM worlds WHERE id LIKE 'world-test-w1-%'`);
+  await query(`DELETE FROM universes WHERE id LIKE 'test-w1-%'`);
   await closePool();
 });
 
