@@ -96,14 +96,22 @@ export async function POST(req: NextRequest) {
   let allowedUrls: string[] = [];
   try {
     const cfg = loadWebSearchConfig(process.env);
-    const retrieval = await retrieve(question, {
-      searchImpl: buildSearchImpl(cfg),
-      maxRead: cfg.maxResults,
-      signal: req.signal,
-    });
-    const context = renderWebContext(retrieval);
-    allowedUrls = collectAllowedUrls(retrieval);
-    if (context) webUser = `${user}\n\n${context}`;
+    // Opt-in ACTIVATION (deliberate safe default, not a bug): only run live
+    // retrieval when web search is CONFIGURED (a real SearXNG base URL present),
+    // so a fresh clone boots green with zero surprise network egress. The
+    // Wikipedia floor stays standalone-CAPABLE (buildProviders always appends it)
+    // — a future explicit opt-in can flip activation here without touching the
+    // engine. Unconfigured => wiki-only, no network.
+    if (cfg.enabled) {
+      const retrieval = await retrieve(question, {
+        searchImpl: buildSearchImpl(cfg),
+        maxRead: cfg.maxResults,
+        signal: req.signal,
+      });
+      const context = renderWebContext(retrieval);
+      allowedUrls = collectAllowedUrls(retrieval);
+      if (context) webUser = `${user}\n\n${context}`;
+    }
   } catch {
     // Fail-soft: keep wiki-only prompt, no allowed citations.
     webUser = user;
