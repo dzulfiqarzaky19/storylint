@@ -28,7 +28,7 @@ export function buildResearchPrompt(
   // in-world canon and contradicting facts are still never invented.
   const webDirective = hasWeb
     ? [
-        "When the user's message includes a 'Web sources retrieved for this question' block, you MAY use those web sources to answer real-world questions, and you SHOULD cite them by their listed URL. Prefer the writer's wiki for in-world canon; use web sources for real-world facts. Cite ONLY URLs listed in that block.",
+        "IMPORTANT: the user's message includes a 'Web sources retrieved for this question' block. These are REAL web pages fetched live for this question. You DO have web access here — never say you cannot search the web or cannot cite external sources. Answer the question directly using those web sources and cite them inline by their listed URL. For real-world (non-fiction) questions, answer from the web sources, not from your own memory. Prefer the writer's wiki only for in-world canon. Cite ONLY URLs listed in that block.",
       ]
     : [];
   const system = [

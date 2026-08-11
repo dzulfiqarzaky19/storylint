@@ -22,6 +22,10 @@ export default function Turn({ turn, renderCard }: TurnProps) {
   // "Research" label shows as "Collaborator" without a data migration. The rule
   // is the pure `voiceLabel` helper (unit-tested + mutation-proven in isolation).
   const whoLabel = voiceLabel(turn.who);
+  // A collaborator turn with no text yet is the streaming placeholder (before the
+  // first delta). Show an animated "thinking" indicator so a 30s+ full-body web
+  // read reads as working, not frozen. The writer's own turn always has text.
+  const isThinking = !isYou && turn.text.length === 0;
   return (
     <div className={styles.turn}>
       <div className={styles.turnRow}>
@@ -29,7 +33,15 @@ export default function Turn({ turn, renderCard }: TurnProps) {
           {whoLabel}
         </div>
         <div className={`${styles.turnText}${isYou ? ` ${styles.turnTextYou}` : ""}`}>
-          {turn.text}
+          {isThinking ? (
+            <span className={styles.thinking} aria-label="Thinking" role="status">
+              <span />
+              <span />
+              <span />
+            </span>
+          ) : (
+            <>{turn.text}</>
+          )}
         </div>
       </div>
       {turn.cards.length > 0 && (

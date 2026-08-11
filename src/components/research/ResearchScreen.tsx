@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useReducer, useState, useTransition } from "react";
+import { useMemo, useReducer, useRef, useState, useTransition } from "react";
 import type { DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Kind, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
@@ -94,6 +94,12 @@ export default function ResearchScreen({
   // AI ask box (session-only). `asking` disables the input while a call is out.
   const [draft, setDraft] = useState("");
   const [asking, setAsking] = useState(false);
+  // Synchronous re-entrancy guard. `asking` is React state, so two calls fired
+  // in the same tick (a double-invoked event / a StrictMode transition replay)
+  // both read `asking === false` before either commits, and the question is
+  // POSTed and persisted TWICE. This ref flips synchronously so the second call
+  // returns immediately. Reset in askQuestion's finally, same as `asking`.
+  const askInFlight = useRef(false);
 
   // Lookup of every proposition by id (across all turns, incl. AI-appended)
   // for the Kept board. Derived from reducer state so AI cards are findable.
@@ -206,7 +212,8 @@ export default function ResearchScreen({
   // question text — a chip's label IS its question. There are no pre-written
   // seed turns; a chip is just a shortcut for typing that text and asking.
   const askQuestion = (question: string) => {
-    if (!question || asking) return;
+    if (!question || asking || askInFlight.current) return;
+    askInFlight.current = true;
     setAsking(true);
 
     // Client-side placeholder ids. The server generates its OWN real ids and
@@ -312,6 +319,7 @@ export default function ResearchScreen({
           error: err instanceof Error ? err.message : String(err),
         });
       } finally {
+        askInFlight.current = false;
         setAsking(false);
       }
     });
