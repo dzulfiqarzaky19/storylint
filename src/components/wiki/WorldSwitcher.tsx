@@ -8,7 +8,7 @@
 // the freshly created scope. Delete opens a DANGER ConfirmModal that shows the
 // REAL cascade row-count (advisory preview) before the writer confirms.
 
-import { useCallback, useEffect, useRef, useState, startTransition } from "react";
+import { useCallback, useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import {
@@ -21,6 +21,8 @@ import {
   previewCascade,
 } from "@/lib/actions/wiki";
 import ConfirmModal from "../ui/ConfirmModal";
+import Modal from "../ui/Modal";
+import { canSubmitName } from "./nameGate";
 import styles from "./WorldSwitcher.module.css";
 
 interface WorldSwitcherProps {
@@ -302,11 +304,16 @@ export default function WorldSwitcher({
 
 /**
  * On-system inline naming dialog. Replaces the raw window.prompt so creating a
- * universe/series/book reads as part of the app: an Ashkeld-tokened panel over
- * the scrim, focus moved to the field on open, Enter submits, Escape and the
- * backdrop cancel. The confirm button is disabled until the trimmed name is
- * non-empty, so an empty name can never be submitted (was the prompt's `if
- * (!name) return` guard).
+ * universe/series/book reads as part of the app. Built on the base <Modal>,
+ * which owns the scrim, the centered Ashkeld panel, the focus trap + restore,
+ * and dismissal (Escape and backdrop click both fire onClose -> onCancel). This
+ * dialog only supplies its content: a title, the name field (the first
+ * focusable, so Modal moves focus straight to it on open), and the actions.
+ *
+ * Enter submits via the form. The Create button is disabled until the name is
+ * submittable, and the submit handler re-checks the SAME gate (canSubmitName) so
+ * an empty or whitespace-only name can never be created even via Enter (this is
+ * the safety net that was the prompt's `if (!name) return`).
  */
 function NamePrompt({
   title,
@@ -318,27 +325,15 @@ function NamePrompt({
   onCancel: () => void;
 }) {
   const [value, setValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const trimmed = value.trim();
-
-  useEffect(() => {
-    inputRef.current?.focus();
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onCancel();
-    }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [onCancel]);
+  const submittable = canSubmitName(value);
 
   const submit = () => {
-    if (trimmed) onSubmit(trimmed);
+    if (canSubmitName(value)) onSubmit(value.trim());
   };
 
   return (
-    <div className={styles.promptBackdrop} onClick={onCancel}>
+    <Modal open onClose={onCancel} ariaLabel={title}>
       <form
-        className={styles.promptPanel}
-        onClick={(e) => e.stopPropagation()}
         onSubmit={(e) => {
           e.preventDefault();
           submit();
@@ -346,7 +341,6 @@ function NamePrompt({
       >
         <h2 className={styles.promptTitle}>{title}</h2>
         <input
-          ref={inputRef}
           className={styles.promptInput}
           type="text"
           aria-label={title}
@@ -357,11 +351,11 @@ function NamePrompt({
           <button type="button" className={styles.promptCancel} onClick={onCancel}>
             Cancel
           </button>
-          <button type="submit" className={styles.promptConfirm} disabled={!trimmed}>
+          <button type="submit" className={styles.promptConfirm} disabled={!submittable}>
             Create
           </button>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 }

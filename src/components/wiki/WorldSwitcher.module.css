@@ -109,28 +109,9 @@
 }
 
 /* Inline-input dialog for naming a new universe/series/book. Replaces the raw
-   window.prompt so naming reads as part of the app, not the browser. Mirrors the
-   ConfirmModal scrim + centered panel, on Ashkeld tokens (radius 0). */
-.promptBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: var(--scrim);
-}
-
-.promptPanel {
-  width: 100%;
-  max-width: 420px;
-  padding: 24px;
-  background: var(--surface);
-  border: var(--rule-major);
-  box-shadow: 0 12px 40px var(--scrim);
-}
-
+   window.prompt so naming reads as part of the app, not the browser. The scrim +
+   centered panel (square corners, Ashkeld tokens) now come from the base
+   <Modal>; only the panel-content styles below are dialog-specific. */
 .promptTitle {
   font-size: 20px;
   font-weight: 800;
