@@ -20,6 +20,17 @@ export const KIND_LABEL: Record<Kind, string> = {
   lore: "Lore",
 };
 
+/**
+ * Resolve a built-in kind label from an open category-id string. F9-B relaxed
+ * `entry.kind` to `string` (a category id); the built-in KIND_LABEL map is now a
+ * seed/fallback only. Returns the built-in label when `kind` is one of the four
+ * legacy built-ins, else the raw id (a user category has no built-in label; S1
+ * UI has no live category-label wiring yet, so the id is the safe fallback).
+ */
+export function kindLabelOf(kind: string): string {
+  return (KIND_LABEL as Record<string, string>)[kind] ?? kind;
+}
+
 export const KIND_SHELF: Record<Kind, Shelf> = {
   character: "people",
   world: "places",
@@ -42,11 +53,39 @@ export const SHELF_TITLES: Record<Shelf, string> = {
   lore: "Lore",
 };
 
+// ---- Categories (F9-B) ----------------------------------------------------
+
+/**
+ * A category row (F9-B). Categories are user-extensible data rows that replaced
+ * the fixed `Kind` enum + the `category_labels` override table. The 4 built-ins
+ * have `id` EQUAL to the historic enum strings ('character'/'world'/
+ * 'organization'/'lore') and `isBuiltin = true`; user categories get a generated
+ * id. `label` is the single source for the shelf/category header text. `shelf`
+ * groups the category under a shelf. `deletedAt` soft-deletes a user category
+ * (NULL = live). Mirrors the `categories` table (schema.sql).
+ */
+export interface CategoryRow {
+  id: string;
+  label: string;
+  shelf: string;
+  sortOrder: number;
+  isBuiltin: boolean;
+  /** Soft-delete marker (epoch millis). null = live; non-null = deleted. */
+  deletedAt: number | null;
+}
+
 // ---- Row types ------------------------------------------------------------
 
 export interface EntryRow {
   id: string;
-  kind: Kind;
+  /**
+   * F9-B: a category id (soft FK to categories.id). Relaxed from the closed
+   * `Kind` union to `string` at the DB boundary because categories are now
+   * user-extensible data rows, not a fixed enum. The 4 built-in ids still equal
+   * the old enum strings, so built-in lookups (KIND_LABEL/KIND_SHELF) keep
+   * working; a user category id simply has no built-in record-map entry.
+   */
+  kind: string;
   name: string;
   catalogueNo: string;
   note: string;
@@ -137,7 +176,8 @@ export interface DismissedSuggestionRow {
 /** A tie with the resolved target entry's display fields, for rendering the Ties block. */
 export interface ResolvedTie extends TieRow {
   toName: string;
-  toKind: Kind;
+  /** F9-B: a category id (soft FK to categories.id), relaxed from `Kind`. */
+  toKind: string;
   toCatalogueNo: string;
 }
 

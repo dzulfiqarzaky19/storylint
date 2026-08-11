@@ -11,7 +11,7 @@
 // caller renders <TrashPanel> only when entries.length > 0.
 
 import type { EntryRow } from "@/lib/domain/types";
-import { KIND_LABEL } from "@/lib/domain/types";
+import { kindLabelOf } from "@/lib/domain/types";
 import { trashCountdown } from "@/lib/wiki/trashCountdown";
 import styles from "./TrashPanel.module.css";
 
@@ -71,7 +71,7 @@ export default function TrashPanel({
               <div className={styles.meta}>
                 <span className={styles.name}>{e.name}</span>
                 <span className={styles.sub}>
-                  {KIND_LABEL[e.kind]}
+                  {kindLabelOf(e.kind)}
                   {e.deletedAt != null ? (
                     <>
                       {" \u00b7 "}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { EntryWithDetails } from "@/lib/domain/types";
-import { KIND_LABEL } from "@/lib/domain/types";
+import { kindLabelOf } from "@/lib/domain/types";
 import Timeline from "./Timeline";
 import DetailsColumn from "./DetailsColumn";
 import OpenQuestions from "./OpenQuestions";
@@ -75,7 +75,7 @@ export default function EntryBand({
   onAddFact,
   ai,
 }: EntryBandProps) {
-  const kindLabel = KIND_LABEL[entry.kind];
+  const kindLabel = kindLabelOf(entry.kind);
   const chapterCount = entry.appearances.length;
   const flaggedCount = entry.appearances.filter((a) => a.flag !== null).length;
   // Guard the irreversible soft-delete behind a confirm dialog: the trigger only

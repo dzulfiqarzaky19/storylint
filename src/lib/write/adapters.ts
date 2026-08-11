@@ -74,7 +74,7 @@ export function toCheckWiki(db: DbWiki): CheckWiki {
   return {
     entries: db.entries.map((e) => ({
       id: e.id,
-      kind: e.kind,
+      kind: e.kind as CheckWiki['entries'][number]['kind'], // F9-B: open category-id -> fixed engine union (live entries are built-ins)
       name: e.name,
       note: e.note,
       facts: e.facts.map((f) => ({

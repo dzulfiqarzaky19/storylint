@@ -12,6 +12,7 @@ import type {
   EntryWithDetails,
   WikiSnapshot,
   CategoryLabelOverrides,
+  CategoryRow,
   Kind,
   ChapterRow,
   ResearchTurnRow,
@@ -20,6 +21,7 @@ import type {
   ResearchTurnWithCards,
   ResearchProposition,
 } from "../domain/types";
+import { KIND_SHELF, SHELF_TITLES } from "../domain/types";
 
 // ---- Column selection fragments ------------------------------------------
 
@@ -59,6 +61,18 @@ const OPEN_QUESTION_COLS = `
   entry_id AS "entryId",
   text,
   sort_order AS "sortOrder"
+`;
+
+// F9-B: category rows (replaces category_labels). deleted_at cast to double
+// precision so a non-null soft-delete marker returns a JS number (mirrors the
+// getDeletedEntries cast rationale — bigint otherwise arrives as a string).
+const CATEGORY_COLS = `
+  id,
+  label,
+  shelf,
+  sort_order AS "sortOrder",
+  is_builtin AS "isBuiltin",
+  deleted_at::double precision AS "deletedAt"
 `;
 
 // ---- Entry reads ----------------------------------------------------------
@@ -163,6 +177,22 @@ export async function getTiesForEntry(entryId: string): Promise<ResolvedTie[]> {
   );
 }
 
+// ---- Categories (F9-B) ----------------------------------------------------
+
+/**
+ * Every LIVE category (deleted_at IS NULL), in header order (sort_order, id).
+ * Replaces the fixed Kind enum + category_labels reads: the 4 built-ins plus any
+ * user-created categories. Soft-deleted categories are excluded (mirrors the
+ * entries read-filter) so a deleted category vanishes from every live surface.
+ */
+export async function getCategories(): Promise<CategoryRow[]> {
+  return rows<CategoryRow>(
+    `SELECT ${CATEGORY_COLS} FROM categories
+      WHERE deleted_at IS NULL
+      ORDER BY sort_order, id`,
+  );
+}
+
 // ---- Composed reads -------------------------------------------------------
 
 /**
@@ -251,7 +281,13 @@ export async function loadWikiSnapshot(
        ORDER BY t.id`,
       [entryIds, bookId],
     ),
-    rows<{ kind: Kind; label: string }>(`SELECT kind, label FROM category_labels`),
+    rows<{ id: string; label: string }>(
+      // F9-B: overrides now derive from categories (category_labels retired). A
+      // built-in category whose stored label differs from its shelf default is
+      // treated as an override, preserving the exact WikiSnapshot.overrides shape
+      // the reducer/UI already consume. Only live categories participate.
+      `SELECT id, label FROM categories WHERE deleted_at IS NULL`,
+    ),
   ]);
 
   const byId: Record<string, EntryWithDetails> = {};
@@ -272,7 +308,16 @@ export async function loadWikiSnapshot(
 
   const composed = entries.map((e) => byId[e.id]!);
   const overrides: CategoryLabelOverrides = {};
-  for (const r of labelRows) overrides[r.kind] = r.label;
+  // F9-B: a built-in category whose stored label differs from its shelf default
+  // is a rename override. `KIND_SHELF` keys ARE the 4 built-in category ids, so
+  // `id in KIND_SHELF` both narrows the id to `Kind` and excludes user categories
+  // (which have no built-in shelf default and are not part of this legacy shape).
+  for (const r of labelRows) {
+    if (!(r.id in KIND_SHELF)) continue;
+    const kind = r.id as Kind;
+    const shelfDefault = SHELF_TITLES[KIND_SHELF[kind]];
+    if (r.label !== shelfDefault) overrides[kind] = r.label;
+  }
   return { entries: composed, byId, overrides };
 }
 

@@ -20,7 +20,11 @@ import type { WikiSuggestion } from "@/lib/state/wikiStore";
 export function toEngineSnapshot(snapshot: WikiSnapshot): EngineSnapshot {
   const entries: EngineEntry[] = snapshot.entries.map((e) => ({
     id: e.id,
-    kind: e.kind,
+    // F9-B: entry.kind is now an open string (a category id). The check engine's
+    // EntryKind stays the fixed built-in union (out of scope to widen); every
+    // live entry's kind is still one of the built-ins, so we cast at this
+    // boundary rather than widen the engine.
+    kind: e.kind as EngineEntry["kind"],
     name: e.name,
     note: e.note,
     facts: e.facts.map((f) => ({

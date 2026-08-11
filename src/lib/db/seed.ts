@@ -35,6 +35,22 @@ const KIND_SHELF: Record<Kind, string> = {
   lore: "lore",
 };
 
+// F9-B built-in categories. Their ids EQUAL the legacy kind enum strings, so
+// every seeded entry's `kind` already points at a real category row (no
+// backfill). Labels are the shelf defaults; sort_order matches shelf order.
+// Mirrors the seed block in schema.sql and the f9a migration's ON CONFLICT seed.
+const BUILTIN_CATEGORIES: Array<{
+  id: Kind;
+  label: string;
+  shelf: string;
+  sortOrder: number;
+}> = [
+  { id: "character", label: "People", shelf: "people", sortOrder: 0 },
+  { id: "world", label: "Places", shelf: "places", sortOrder: 1 },
+  { id: "organization", label: "Orders", shelf: "orders", sortOrder: 2 },
+  { id: "lore", label: "Lore", shelf: "lore", sortOrder: 3 },
+];
+
 const ENTRIES: SeedEntry[] = [
   {
     id: "maren",
@@ -470,6 +486,7 @@ async function seedWithin(client: PoolClient): Promise<void> {
   await client.query(`
     TRUNCATE TABLE
       universes, series, books, entry_facets,
+      categories,
       entries, facts, ties, chapter_appearances, open_questions,
       chapters, research_threads, research_turns, propositions, kept_cards,
       resolved_marks, dismissed_suggestions, phrase_mentions
@@ -486,6 +503,17 @@ async function seedWithin(client: PoolClient): Promise<void> {
   await client.query(
     `INSERT INTO books (id, series_id, name, sort_order) VALUES ('book-1', 'series-1', 'Ashkeld', 0)`,
   );
+
+  // F9-B categories: seed the 4 built-ins BEFORE entries, since entries.kind is a
+  // soft FK to categories(id). ids equal the legacy kind strings, so every seeded
+  // entry's kind already resolves to a real category row.
+  for (const c of BUILTIN_CATEGORIES) {
+    await client.query(
+      `INSERT INTO categories (id, label, shelf, sort_order, is_builtin)
+       VALUES ($1, $2, $3, $4, true)`,
+      [c.id, c.label, c.shelf, c.sortOrder],
+    );
+  }
 
   // Entries
   for (let i = 0; i < ENTRIES.length; i++) {

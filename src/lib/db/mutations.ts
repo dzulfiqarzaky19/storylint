@@ -11,7 +11,8 @@
 
 import { query, one, rows, withTransaction } from "./pool";
 import { DEFAULT_BOOK_ID, DEFAULT_SERIES_ID, DEFAULT_UNIVERSE_ID } from "./scope";
-import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, Kind } from "../domain/types";
+import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, CategoryRow, Shelf } from "../domain/types";
+import { SHELF_TITLES } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
 
 // Helpers marked "WIKI WRITE" below require a WikiWriteConfirmation token (product
@@ -556,65 +557,123 @@ export async function getMaxSortOrderForFacts(entryId: string): Promise<number> 
   return res[0]?.maxSort ?? 0;
 }
 
-// ---- Category labels + category "delete" (F6-S5) --------------------------
+// ---- Categories + category "delete" (F9-B; was F6-S5 category_labels) ------
 //
-// `category_labels(kind PK, label)` overrides the header text for a fixed kind
-// enum (reads coalesce label ?? SHELF_TITLES default via resolveCategoryLabel).
-// The table has NO FK to entries — a rename/reset never touches an entry, fact,
-// or tie, so it is NOT a wiki-knowledge write (product rule 1) and needs no
-// confirmation token. "Delete category" is the one exception: it is a BULK
-// soft-delete of every entry of that kind, so it reuses the S2 softDeleteEntry
-// gate and DEMANDS a WikiWriteConfirmation.
+// F9-B: categories are user-extensible data rows (the `categories` table) that
+// REPLACED the fixed kind enum + `category_labels` override table. A category's
+// `label` is the single source for the header text (reads no longer coalesce
+// against a separate override table). Renaming/resetting a category touches only
+// the categories row — no entry/fact/tie — so it is NOT a wiki-knowledge write
+// (product rule 1) and needs no confirmation token. Creating a category likewise
+// adds no wiki knowledge (an empty category), so it needs no token. "Delete
+// category" is the one exception: it is a BULK soft-delete of every entry of that
+// category, so it reuses the S2 softDeleteEntry gate and DEMANDS a
+// WikiWriteConfirmation.
 
-/** Read every category-label override (kind -> custom header text). */
-export async function getCategoryLabels(): Promise<{ kind: Kind; label: string }[]> {
-  return rows<{ kind: Kind; label: string }>(
-    `SELECT kind, label FROM category_labels`,
+/**
+ * The next free sort_order for a new category (max over LIVE categories + 1, or 0
+ * if none). A new user category sorts AFTER every existing one, so it appends to
+ * the end of the header list rather than colliding with a built-in's position.
+ */
+export async function getMaxCategorySortOrder(): Promise<number> {
+  const res = await rows<{ maxSort: number | null }>(
+    `SELECT MAX(sort_order) AS "maxSort" FROM categories WHERE deleted_at IS NULL`,
   );
+  return (res[0]?.maxSort ?? -1) + 1;
 }
 
 /**
- * Set (rename) the display label for a category. Upsert on the kind PK so a
- * second rename overwrites the first. TRIMS the input and treats an empty/
- * whitespace-only label as a no-op (never upserts a blank, which would render a
- * BLANK header — the resolver's `??` only catches null/undefined, not ""). Use
- * resetCategoryLabel to explicitly clear an override. No token: category_labels
- * touches no wiki entry/fact/tie, so product rule 1 does not apply.
+ * Create a new user category. TRIMS the label; a blank/whitespace-only label is
+ * rejected (a category with no header is meaningless) — the caller owns surfacing
+ * that. `isBuiltin` is always false (only the 4 seeded rows are built-in) and
+ * `deleted_at` starts NULL (live). Idempotent on the id (ON CONFLICT DO NOTHING)
+ * so a retried create never PK-violates or clobbers an existing category's label.
+ * Returns the created row (camelCase). No token: an empty category is not wiki
+ * knowledge (product rule 1 does not apply).
+ */
+export async function createCategory(input: {
+  id: string;
+  label: string;
+  shelf: Shelf;
+  sortOrder: number;
+}): Promise<CategoryRow> {
+  const label = input.label.trim();
+  if (label === "") throw new Error("createCategory: label must be non-empty");
+  const res = await one<CategoryRow>(
+    `INSERT INTO categories (id, label, shelf, sort_order, is_builtin, deleted_at)
+     VALUES ($1, $2, $3, $4, false, NULL)
+     ON CONFLICT (id) DO NOTHING
+     RETURNING id,
+               label,
+               shelf,
+               sort_order AS "sortOrder",
+               is_builtin AS "isBuiltin",
+               deleted_at::double precision AS "deletedAt"`,
+    [input.id, label, input.shelf, input.sortOrder],
+  );
+  if (!res) {
+    // ON CONFLICT DO NOTHING returns no row when the id already existed; fetch it
+    // so a retry is idempotent (returns the existing category, not an error).
+    const existing = await one<CategoryRow>(
+      `SELECT id, label, shelf, sort_order AS "sortOrder",
+              is_builtin AS "isBuiltin", deleted_at::double precision AS "deletedAt"
+         FROM categories WHERE id = $1`,
+      [input.id],
+    );
+    if (!existing) throw new Error("createCategory: no row returned");
+    return existing;
+  }
+  return res;
+}
+
+/**
+ * Set (rename) a category's display label. UPDATEs the categories row in place.
+ * TRIMS the input and treats an empty/whitespace-only label as a no-op (never
+ * writes a blank, which would render a BLANK header). Use resetCategoryLabel to
+ * restore a built-in's shelf default. No token: touches no wiki entry/fact/tie.
  */
 export async function renameCategory(input: {
-  kind: Kind;
+  kind: string;
   label: string;
 }): Promise<void> {
   const label = input.label.trim();
   if (label === "") return; // blank rename is a no-op, not a blanked header
   await query(
-    `INSERT INTO category_labels (kind, label)
-     VALUES ($1, $2)
-     ON CONFLICT (kind) DO UPDATE SET label = EXCLUDED.label`,
+    `UPDATE categories SET label = $2 WHERE id = $1`,
     [input.kind, label],
   );
 }
 
 /**
- * Reset a category to its default header by DELETING its override row (the read
- * path then coalesces to SHELF_TITLES). Idempotent: deleting an absent row is a
- * harmless no-op. No token (same rationale as renameCategory).
+ * Reset a category header to its default. For a built-in category the default is
+ * its shelf title (SHELF_TITLES[shelf]); the row's `label` is set back to that.
+ * Reads the category's shelf first so the correct default is restored, and only
+ * writes when the category is a built-in (a user category has no shelf default,
+ * so reset is a harmless no-op for it). Idempotent. No token (same rationale as
+ * renameCategory).
  */
-export async function resetCategoryLabel(kind: Kind): Promise<void> {
-  await query(`DELETE FROM category_labels WHERE kind = $1`, [kind]);
+export async function resetCategoryLabel(kind: string): Promise<void> {
+  const cat = await one<{ shelf: string; isBuiltin: boolean }>(
+    `SELECT shelf, is_builtin AS "isBuiltin" FROM categories WHERE id = $1`,
+    [kind],
+  );
+  if (!cat || !cat.isBuiltin) return; // unknown or user category: nothing to reset
+  const shelfDefault = SHELF_TITLES[cat.shelf as Shelf];
+  if (shelfDefault === undefined) return; // non-standard shelf: no default to restore
+  await query(`UPDATE categories SET label = $2 WHERE id = $1`, [kind, shelfDefault]);
 }
 
 /**
- * "Delete" a category: SOFT-delete every LIVE entry of that kind in one pass, so
- * their ties/references render the existing S2 "removed" tombstones. The kind
- * enum + shelf header STAY (the enum is a fixed CHECK constraint; the category
- * just goes empty). Reuses the S2 soft-delete semantics: stamp `deleted_at`
- * WITHOUT removing rows, guarded by `deleted_at IS NULL` so re-running preserves
- * the original timestamps (idempotent). REQUIRES a confirmation token — it is a
- * bulk, high-consequence soft-delete. Returns the number of entries deleted.
+ * "Delete" a category: SOFT-delete every LIVE entry of that category in one pass,
+ * so their ties/references render the existing S2 "removed" tombstones. The
+ * category ROW stays (F9-B keeps it as a soft-FK target; the category just goes
+ * empty). Reuses the S2 soft-delete semantics: stamp `deleted_at` WITHOUT
+ * removing rows, guarded by `deleted_at IS NULL` so re-running preserves the
+ * original timestamps (idempotent). REQUIRES a confirmation token — it is a bulk,
+ * high-consequence soft-delete. Returns the number of entries deleted.
  */
 export async function deleteCategory(
-  input: { kind: Kind; deletedAt: number },
+  input: { kind: string; deletedAt: number },
   _confirmation: WikiWriteConfirmation,
 ): Promise<number> {
   const res = await query(

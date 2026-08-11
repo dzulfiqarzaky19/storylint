@@ -21,13 +21,14 @@
 // =============================================================================
 
 import { randomUUID } from "node:crypto";
-import type { Kind, Shelf, EntryRow, EntryWithDetails } from "../domain/types";
+import type { Kind, Shelf, EntryRow, EntryWithDetails, CategoryRow } from "../domain/types";
 import { confirmWikiWrite } from "./confirmation";
 import { completeJson, aiEnabled } from "../ai/saarouters";
 import {
   loadWikiSnapshot,
   getDeletedEntries as getDeletedEntriesRow,
   getEntryWithDetails,
+  getCategories as getCategoriesRow,
   previewUniverseCascade,
   previewSeriesCascade,
   previewBookCascade,
@@ -46,6 +47,8 @@ import {
   updateFact,
   getMaxSortOrderForShelf,
   softDeleteEntry as softDeleteEntryRow,
+  createCategory as createCategoryRow,
+  getMaxCategorySortOrder,
   renameCategory as renameCategoryRow,
   resetCategoryLabel as resetCategoryLabelRow,
   deleteCategory as deleteCategoryRow,
@@ -392,17 +395,57 @@ export async function softDeleteEntry(input: {
   }
 }
 
-// ---- Category management (F6-S5) ------------------------------------------
+// ---- Category management (F6-S5; F9-B categories table) -------------------
 
 /**
- * Rename a category header (e.g. "People" -> "Cast"). Writes the label-override
- * row for the kind. NOT a wiki-content write (category_labels holds no wiki
- * knowledge), so product rule 1 does not apply and no confirmation token is
- * required. The mutation trims and treats a blank label as a reset. Mirrors
- * reducer `RENAME_CATEGORY`.
+ * List every live category (built-in + user), ordered for the shelf headers.
+ * Pure read, no confirmation token. Mirrors the snapshot's category ordering.
+ */
+export async function getCategories(): Promise<ActionResult<CategoryRow[]>> {
+  try {
+    const categories = await getCategoriesRow();
+    return { ok: true, data: categories };
+  } catch (err) {
+    return fail(err, "wiki.getCategories");
+  }
+}
+
+/**
+ * Create a new user category on a shelf. Generates a UUID id (built-ins keep the
+ * legacy enum-string ids; user categories are UUIDs), appends it after every
+ * existing category (max sort_order + 1), and stores the trimmed label. NOT a
+ * wiki-content write (an empty category holds no wiki knowledge), so no
+ * confirmation token. A blank label is rejected by the mutation. Returns the
+ * created row.
+ */
+export async function createCategory(input: {
+  label: string;
+  shelf: Shelf;
+}): Promise<ActionResult<CategoryRow>> {
+  try {
+    const id = randomUUID();
+    const sortOrder = await getMaxCategorySortOrder();
+    const category = await createCategoryRow({
+      id,
+      label: input.label,
+      shelf: input.shelf,
+      sortOrder,
+    });
+    return { ok: true, data: category };
+  } catch (err) {
+    return fail(err, "wiki.createCategory");
+  }
+}
+
+/**
+ * Rename a category header (e.g. "People" -> "Cast"). Updates the category row's
+ * label. NOT a wiki-content write (a category holds no wiki knowledge), so
+ * product rule 1 does not apply and no confirmation token is required. The
+ * mutation trims and treats a blank label as a no-op. Mirrors reducer
+ * `RENAME_CATEGORY`.
  */
 export async function renameCategory(input: {
-  kind: Kind;
+  kind: string;
   label: string;
 }): Promise<ActionResult> {
   try {
@@ -414,12 +457,12 @@ export async function renameCategory(input: {
 }
 
 /**
- * Reset a category header back to its shelf default by deleting the override
- * row. Idempotent (deleting an absent row is a no-op). No confirmation token
+ * Reset a category header back to its shelf default (built-in only; a user
+ * category has no default, so it is a no-op). Idempotent. No confirmation token
  * (not a wiki-content write). Mirrors reducer `RESET_CATEGORY`.
  */
 export async function resetCategoryLabel(input: {
-  kind: Kind;
+  kind: string;
 }): Promise<ActionResult> {
   try {
     await resetCategoryLabelRow(input.kind);
@@ -431,7 +474,7 @@ export async function resetCategoryLabel(input: {
 
 /**
  * WIKI WRITE (product rule 1). Delete a whole category: bulk soft-delete EVERY
- * live entry of the kind (their rows survive, so inbound ties render as
+ * live entry of the category (their rows survive, so inbound ties render as
  * tombstones). Irreversible from the UI, so it REQUIRES an explicit confirmation
  * and is gated behind a danger confirm dialog in the caller. Returns the number
  * of entries soft-deleted. Mirrors reducer `DELETE_CATEGORY`.
@@ -439,7 +482,7 @@ export async function resetCategoryLabel(input: {
  * @param input.confirmed must be the literal `true` — the confirmation gate.
  */
 export async function deleteCategory(input: {
-  kind: Kind;
+  kind: string;
   confirmed: true;
 }): Promise<ActionResult<{ deleted: number }>> {
   try {

@@ -1,8 +1,8 @@
 -- Ashkeld schema (Postgres). Deliberately portable:
 --   text primary keys, timestamps as bigint epoch millis, snake_case columns.
--- 13 tables from HANDOFF §5 (+ category_labels, F6). Drop in dependency order, recreate with FKs + indexes.
+-- 13 tables from HANDOFF §5 (+ categories, F9-B — replaces category_labels).
+-- Drop in dependency order, recreate with FKs + indexes.
 
-DROP TABLE IF EXISTS category_labels CASCADE;
 DROP TABLE IF EXISTS phrase_mentions CASCADE;
 DROP TABLE IF EXISTS dismissed_suggestions CASCADE;
 DROP TABLE IF EXISTS resolved_marks CASCADE;
@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS chapter_appearances CASCADE;
 DROP TABLE IF EXISTS ties CASCADE;
 DROP TABLE IF EXISTS facts CASCADE;
 DROP TABLE IF EXISTS entries CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS books CASCADE;
 DROP TABLE IF EXISTS series CASCADE;
 DROP TABLE IF EXISTS universes CASCADE;
@@ -43,13 +44,42 @@ CREATE TABLE books (
   sort_order  integer NOT NULL DEFAULT 0
 );
 
+-- categories (F9-B): user-extensible entry categories. REPLACES category_labels.
+-- The 4 built-ins are seeded with ids EQUAL to the historic entries.kind enum
+-- strings ('character'/'world'/'organization'/'lore'), so entries.kind already
+-- points at a valid category id with no backfill. `label` is the single source
+-- for the shelf/category header text (folds in the old category_labels override).
+-- shelf: which shelf the category renders under. is_builtin: the 4 seeded rows
+-- (never hard-deletable). deleted_at: soft-delete marker (epoch millis; NULL =
+-- live) for user-created categories. Created BEFORE entries so the FK resolves.
+CREATE TABLE categories (
+  id          text PRIMARY KEY,
+  label       text NOT NULL,
+  shelf       text NOT NULL,
+  sort_order  integer NOT NULL DEFAULT 0,
+  is_builtin  boolean NOT NULL DEFAULT false,
+  deleted_at  bigint
+);
+
+-- Seed the 4 built-in categories. ids MUST equal the historic kind enum strings
+-- so entries.kind (the soft FK below) needs no rewrite. Labels are the shelf
+-- defaults (SHELF_TITLES); a rename overwrites `label` in place.
+INSERT INTO categories (id, label, shelf, sort_order, is_builtin) VALUES
+  ('character',    'People', 'people', 0, true),
+  ('world',        'Places', 'places', 1, true),
+  ('organization', 'Orders', 'orders', 2, true),
+  ('lore',         'Lore',   'lore',   3, true);
+
 -- entries: id, kind, name, catalogueNo, note, summary, shelf, sortOrder.
 -- deleted_at: soft-delete marker (epoch millis). NULL = live; non-NULL = "deleted"
 -- but the ROW stays so ON DELETE CASCADE on child tables never fires and every
 -- referencing fact/tie/appearance/question survives as a dangling tombstone.
 CREATE TABLE entries (
   id            text PRIMARY KEY,
-  kind          text NOT NULL CHECK (kind IN ('character', 'world', 'organization', 'lore')),
+  -- F9-B: kind is a soft FK to categories(id) (was an inline CHECK enum). No
+  -- ON DELETE action — deleting a category soft-deletes its ENTRIES (stamps
+  -- their deleted_at), never removes the category row, so this FK never cascades.
+  kind          text NOT NULL REFERENCES categories(id),
   name          text NOT NULL,
   catalogue_no  text NOT NULL,
   note          text NOT NULL DEFAULT '',
@@ -208,15 +238,6 @@ CREATE TABLE phrase_mentions (
   PRIMARY KEY (phrase, chapter_number)
 );
 
--- category_labels: per-kind display-name override. kind is the fixed entry enum;
--- label is what the shelf/category header renders (reads coalesce label ?? default).
--- Independent table (no FK to entries): renaming a category never touches entries.
-CREATE TABLE category_labels (
-  kind   text PRIMARY KEY
-         CHECK (kind IN ('character', 'world', 'organization', 'lore')),
-  label  text NOT NULL
-);
-
 -- Indexes for the reads the screens need.
 CREATE INDEX idx_entries_shelf_sort       ON entries (shelf, sort_order);
 CREATE INDEX idx_entries_kind             ON entries (kind);
@@ -236,3 +257,5 @@ CREATE INDEX idx_facts_book                ON facts (book_id);
 CREATE INDEX idx_ties_book                 ON ties (book_id);
 CREATE INDEX idx_series_universe           ON series (universe_id);
 CREATE INDEX idx_books_series              ON books (series_id);
+-- F9-B: category header ordering (shelf grouping + sort_order).
+CREATE INDEX idx_categories_sort           ON categories (sort_order, id);
