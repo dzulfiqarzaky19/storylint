@@ -11,7 +11,7 @@
   color: var(--muted, #6b5d45);
   font: inherit;
   padding: 0.35rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -31,7 +31,7 @@
   font: inherit;
   padding: 0.35rem 0.5rem;
   border: 1px solid var(--border, #cbb89a);
-  border-radius: 6px;
+  border-radius: 0;
   min-width: 12rem;
 }
 
@@ -39,7 +39,7 @@
   font: inherit;
   padding: 0.35rem 0.5rem;
   border: 1px solid var(--border, #cbb89a);
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .commit,
@@ -47,7 +47,7 @@
   appearance: none;
   font: inherit;
   padding: 0.35rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   border: 1px solid var(--border, #cbb89a);
   background: transparent;

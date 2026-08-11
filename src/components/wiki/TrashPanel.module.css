@@ -48,7 +48,7 @@
   gap: 10px;
   padding: 8px 10px;
   border: 1px solid var(--rule);
-  border-radius: 3px;
+  border-radius: 0;
   background: var(--surface);
 }
 
@@ -94,7 +94,7 @@
   color: var(--ink);
   background: transparent;
   border: 1px solid var(--rule);
-  border-radius: 3px;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -120,7 +120,7 @@
   color: var(--on-accent);
   background: var(--accent);
   border: 1px solid var(--accent);
-  border-radius: 3px;
+  border-radius: 0;
   cursor: pointer;
 }
 

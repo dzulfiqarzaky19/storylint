@@ -70,7 +70,7 @@
   text-transform: uppercase;
   color: var(--muted-2);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0;
 }
 .addFact:hover {
   color: var(--accent);

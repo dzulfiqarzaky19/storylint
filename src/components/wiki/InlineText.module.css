@@ -7,7 +7,7 @@
   all: unset;
   cursor: text;
   display: inline;
-  border-radius: 3px;
+  border-radius: 0;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   transition: background 0.12s ease, box-shadow 0.12s ease;
@@ -37,7 +37,7 @@
   margin: 0;
   padding: 2px 6px;
   border: 1px solid var(--line, #d9d3c7);
-  border-radius: 4px;
+  border-radius: 0;
   background: var(--paper, #fff);
   resize: vertical;
 }

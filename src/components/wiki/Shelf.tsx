@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
 import { useDrag } from "@/components/dnd/DragContext";
+import { isEmptyCategory } from "./shelfState";
 import EntryTile from "./EntryTile";
 import styles from "./Shelf.module.css";
 
@@ -71,6 +72,11 @@ export default function Shelf({
     drag.dropZone?.type === "shelf" &&
     drag.dropZone.id === shelf;
 
+  // A category with no entries reads lighter (dimmed heading + a real-text
+  // hint) but keeps Rename / options / delete so the user can still remove it.
+  // Same predicate the unit test exercises, so a regression moves the UI too.
+  const isEmpty = isEmptyCategory(entries.length);
+
   return (
     <section
       className={`${styles.shelf} ${isZoneActive ? styles.zoneActive : ""}`}
@@ -97,7 +103,7 @@ export default function Shelf({
         drag.endDrag();
       }}
     >
-      <div className={styles.heading}>
+      <div className={`${styles.heading} ${isEmpty ? styles.headingEmpty : ""}`}>
         {editing !== null ? (
           <input
             className={styles.titleInput}
@@ -174,17 +180,23 @@ export default function Shelf({
         <span className={styles.line} aria-hidden="true" />
       </div>
       <div className={styles.tiles}>
-        {entries.map((entry) => (
-          <EntryTile
-            key={entry.id}
-            entry={entry}
-            selected={entry.id === selectedId}
-            hasContradiction={contradictions.has(entry.id)}
-            onSelect={onSelect}
-            onDropEntry={onDropEntry}
-            onDropFactOnEntry={onDropFactOnEntry}
-          />
-        ))}
+        {isEmpty ? (
+          <p className={styles.emptyHint} role="note">
+            No entries yet
+          </p>
+        ) : (
+          entries.map((entry) => (
+            <EntryTile
+              key={entry.id}
+              entry={entry}
+              selected={entry.id === selectedId}
+              hasContradiction={contradictions.has(entry.id)}
+              onSelect={onSelect}
+              onDropEntry={onDropEntry}
+              onDropFactOnEntry={onDropFactOnEntry}
+            />
+          ))
+        )}
       </div>
     </section>
   );

@@ -37,6 +37,22 @@
   margin-top: 14px;
 }
 
+/* Empty category: the title reads lighter so a 0-entry shelf recedes, but the
+   Rename / options / delete controls stay full-strength (they live in
+   .headerActions, not affected here) so the user can still remove it. */
+.headingEmpty .title {
+  color: var(--faint);
+}
+
+/* Real-text hint shown in the tiles area when the category has no entries.
+   Uses --faint, which meets AA (4.5:1) on --ground, so it is legible copy, not
+   a color-only cue. */
+.emptyHint {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--faint);
+}
+
 /* Active shelf drop zone: append + regroup (Direction B: background #eae7e7 = --hover). */
 .zoneActive {
   background: var(--hover);
@@ -50,7 +66,7 @@
   text-transform: uppercase;
   padding: 2px 6px;
   border: var(--rule-row);
-  border-radius: 4px;
+  border-radius: 0;
   background: var(--bg, #fff);
   min-width: 8ch;
 }
@@ -69,7 +85,7 @@
   background: transparent;
   border: none;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -90,7 +106,7 @@
   flex-direction: column;
   background: var(--bg, #fff);
   border: var(--rule-row);
-  border-radius: 6px;
+  border-radius: 0;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   overflow: hidden;
 }
