@@ -9,6 +9,7 @@ import {
   createEntryWithTie,
 } from "@/lib/db/mutations";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
+import { DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // F6-S4a — ties add/untie backend (INTEGRATION, real Postgres). Two locks:
@@ -106,6 +107,7 @@ describe("createEntryWithTie (F6-S4a, real Postgres)", () => {
       {
         entry: { id: personId, kind: "character", name: "Uncle Fen", catalogueNo: "TEST", note: "", summary: "", shelf: "cast", sortOrder: 999 },
         tie: { id: tieId, fromEntryId: anchor, toEntryId: personId, rel: "uncle" },
+        worldId: DEFAULT_WORLD_ID,
       },
       CONFIRM,
     );
@@ -132,6 +134,7 @@ describe("createEntryWithTie (F6-S4a, real Postgres)", () => {
         {
           entry: { id: personId, kind: "character", name: "Ghost", catalogueNo: "TEST", note: "", summary: "", shelf: "cast", sortOrder: 999 },
           tie: { id: tieId, fromEntryId: personId, toEntryId: `test-f6s4-MISSING-${randomUUID()}`, rel: "uncle" },
+          worldId: DEFAULT_WORLD_ID,
         },
         CONFIRM,
       ),

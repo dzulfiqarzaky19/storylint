@@ -306,6 +306,8 @@ export async function createEntryWithTie(
       universeId?: string;
     };
     tie: { id: string; fromEntryId: string; toEntryId: string; rel: string };
+    /** TCK-E06: active world to link the new entry into, atomically in this txn. */
+    worldId: string;
   },
   _confirmation: WikiWriteConfirmation,
 ): Promise<TieRow> {
@@ -324,6 +326,15 @@ export async function createEntryWithTie(
         input.entry.sortOrder,
         input.entry.universeId ?? DEFAULT_UNIVERSE_ID,
       ],
+    );
+    // TCK-E06: link the new entry into the active world in the SAME txn, so the
+    // entry, its tie, and its world membership commit or roll back together 
+    // never a persisted-but-invisible orphan. Idempotent (ON CONFLICT DO NOTHING).
+    await client.query(
+      `INSERT INTO world_entities (world_id, entity_id)
+       VALUES ($1, $2)
+       ON CONFLICT (world_id, entity_id) DO NOTHING`,
+      [input.worldId, input.entry.id],
     );
     const res = await client.query<TieRow>(
       `INSERT INTO ties (id, from_entry_id, to_entry_id, rel)

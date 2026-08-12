@@ -260,10 +260,11 @@ function WikiScreenInner({
           toEntryId: selected.id,
           rel: label,
           confirmed: true,
+          worldId: activeWorldId,
         }),
       );
     },
-    [selected, settle],
+    [selected, settle, activeWorldId],
   );
 
   // ---- Drop: suggestion onto Details column (add as a fresh fact) ------------
@@ -441,9 +442,12 @@ function WikiScreenInner({
         summary: "",
         sortOrder,
       });
-      settle("createEntry", createEntry({ id: entryId, kind, shelf, name }));
+      settle(
+        "createEntry",
+        createEntry({ id: entryId, kind, shelf, name, worldId: activeWorldId }),
+      );
     },
-    [state.order, settle],
+    [state.order, settle, activeWorldId],
   );
 
   // Soft-delete an entry: optimistically drop it from the session (index +

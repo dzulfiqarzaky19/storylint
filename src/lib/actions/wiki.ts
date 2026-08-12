@@ -79,6 +79,22 @@ function fail(err: unknown, where: string): { ok: false; error: string } {
   return { ok: false, error: `${where}: ${msg}` };
 }
 
+// TCK-E06 FAIL CLOSED: a NEW wiki entry is invisible on /wiki until it has a
+// `world_entities` link to the world the user is viewing (loadWorldSnapshot JOINs
+// membership on the active world). If the caller cannot name that world we must
+// REJECT the write rather than mint a persisted-but-invisible orphan. Returns the
+// trimmed world id when valid, or an error envelope when blank/missing.
+function requireWorldId(
+  worldId: string | undefined,
+  where: string,
+): { ok: true; worldId: string } | { ok: false; error: string } {
+  const trimmed = worldId?.trim();
+  if (!trimmed) {
+    return { ok: false, error: `${where}: missing worldId - refusing to create a world-orphan entry` };
+  }
+  return { ok: true, worldId: trimmed };
+}
+
 // ---- Read-only selection --------------------------------------------------
 
 /** Set the focused entry. Read-only session state; persisted nowhere. */
@@ -182,8 +198,13 @@ export async function createEntryTied(input: {
   toEntryId: string;
   rel: string;
   confirmed: true;
+  /** TCK-E06: the active world to link the new entry into (fail-closed). */
+  worldId: string;
 }): Promise<ActionResult<{ entryId: string; tieId: string }>> {
   try {
+    // Fail closed BEFORE any write: an entry with no world link is invisible.
+    const world = requireWorldId(input.worldId, "wiki.createEntryTied");
+    if (!world.ok) return world;
     const confirmation = confirmWikiWrite({ confirmed: input.confirmed });
     const entryId = randomUUID();
     const tieId = randomUUID();
@@ -200,6 +221,7 @@ export async function createEntryTied(input: {
           sortOrder: await getMaxSortOrderForShelf(input.shelf) + 1,
         },
         tie: { id: tieId, fromEntryId: input.toEntryId, toEntryId: entryId, rel: input.rel },
+        worldId: world.worldId,
       },
       confirmation,
     );
@@ -356,8 +378,13 @@ export async function createEntry(input: {
   name: string;
   note?: string;
   summary?: string;
+  /** TCK-E06: the active world to link the new entry into (fail-closed). */
+  worldId: string;
 }): Promise<ActionResult<{ entryId: string; sortOrder: number }>> {
   try {
+    // Fail closed BEFORE any write: an entry with no world link is invisible.
+    const world = requireWorldId(input.worldId, "wiki.createEntry");
+    if (!world.ok) return world;
     const confirmation = confirmWikiWrite({ confirmed: true });
     const id = input.id ?? randomUUID();
     const sortOrder = (await getMaxSortOrderForShelf(input.shelf)) + 1;
@@ -374,6 +401,9 @@ export async function createEntry(input: {
       },
       confirmation,
     );
+    // TCK-E06: link the new entry into the active world so /wiki (which JOINs
+    // world_entities on the active world) actually shows it after reload.
+    await linkEntityToWorldRow(world.worldId, id);
     return { ok: true, data: { entryId: id, sortOrder } };
   } catch (err) {
     return fail(err, "wiki.createEntry");

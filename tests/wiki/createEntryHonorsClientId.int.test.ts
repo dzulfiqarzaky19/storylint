@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { loadEnv } from "@/lib/db/env";
 import { query, closePool } from "@/lib/db/pool";
 import { createEntry } from "@/lib/actions/wiki";
+import { DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // createEntry client-id round-trip (INTEGRATION, real Postgres).
@@ -61,6 +62,7 @@ describe("createEntry action — honors the caller-supplied id (real Postgres)",
       kind: "character",
       shelf: "people",
       name: "Test Wanderer",
+      worldId: DEFAULT_WORLD_ID,
     });
 
     expect(result.ok).toBe(true);
