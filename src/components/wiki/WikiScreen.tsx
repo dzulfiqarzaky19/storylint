@@ -39,6 +39,7 @@ import {
   type ActionResult,
 } from "@/lib/actions/wiki";
 import { resolveCategoryLabel, categoryLabelById, defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
+import { kindForNewEntry } from "./createEntryKind";
 import { trashCountdown } from "@/lib/wiki/trashCountdown";
 import EntryBand from "./EntryBand";
 import WorldBand from "./WorldBand";
@@ -422,9 +423,9 @@ function WikiScreenInner({
   }, []);
 
   const createEntryOnShelf = useCallback(
-    (shelf: ShelfKey) => {
-      const kind: Kind = KIND_FOR_SHELF[shelf];
-      const name = `New ${KIND_LABEL[kind].toLowerCase()}`;
+    (shelf: ShelfKey, categoryId?: string) => {
+      const kind = kindForNewEntry(shelf, categoryId);
+      const name = `New ${KIND_LABEL[kindForNewEntry(shelf) as Kind].toLowerCase()}`;
       const entryId = newId();
       // Client-generated id is passed to the server so the reducer row and the
       // persisted row share one id — no reconciliation needed. sortOrder just

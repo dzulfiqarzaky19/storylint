@@ -351,7 +351,7 @@ export async function editFact(input: {
  */
 export async function createEntry(input: {
   id?: string;
-  kind: Kind;
+  kind: string;
   shelf: Shelf;
   name: string;
   note?: string;

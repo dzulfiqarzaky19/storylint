@@ -46,7 +46,7 @@ export interface WikiIndexProps {
   total: number;
   /** Start authoring a new ENTRY under the given category's shelf (per-group
    *  "+ New <singular>" affordance; same create path the main shelf uses). */
-  onCreateEntry?: (shelf: Shelf) => void;
+  onCreateEntry?: (shelf: Shelf, categoryId: string) => void;
   /** Create a new CATEGORY (bottom "+ New category" affordance). Mirrors the
    *  main shelf's NewCategoryShelf create path so both columns stay in sync. */
   onCreateCategory: (id: string, label: string) => void;
@@ -220,7 +220,7 @@ export default function WikiIndex({
                       className={styles.groupAdd}
                       aria-label={`Add new ${categorySingular(title)}`}
                       title={`Add new ${categorySingular(title)}`}
-                      onClick={() => onCreateEntry(shelf)}
+                      onClick={() => onCreateEntry(shelf, cat.id)}
                     >
                       {"+"}
                     </button>
@@ -278,7 +278,7 @@ export default function WikiIndex({
                       <button
                         type="button"
                         className={styles.emptyAdd}
-                        onClick={() => onCreateEntry(shelf)}
+                        onClick={() => onCreateEntry(shelf, cat.id)}
                       >
                         + New {categorySingular(title)}
                       </button>

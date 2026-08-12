@@ -29,7 +29,7 @@ interface ShelfProps {
   /** Ask to delete the whole category (opens the danger confirm in the caller). */
   onRequestDeleteCategory: (categoryId: string) => void;
   /** Start authoring a new entry on this shelf (TCK-006; same path as sidebar). */
-  onCreate?: (shelf: ShelfKey) => void;
+  onCreate?: (shelf: ShelfKey, categoryId: string) => void;
   /** True when a custom label is set, so the "Reset" affordance is offered. */
   isRenamed: boolean;
   /** True for the 4 seeded categories, which cannot be deleted (TCK-007): the
@@ -199,7 +199,7 @@ export default function Shelf({
           <button
             type="button"
             className={styles.addEntry}
-            onClick={() => onCreate(shelf)}
+            onClick={() => onCreate(shelf, categoryId)}
           >
             + Add new {categorySingular(title)}
           </button>

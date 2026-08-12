@@ -116,7 +116,7 @@ export type WikiAction =
       type: "CREATE_ENTRY";
       /** Server-generated entry id (reducer is pure; caller supplies it). */
       entryId: string;
-      kind: Kind;
+      kind: string;
       shelf: Shelf;
       name: string;
       note: string;
@@ -470,7 +470,7 @@ function createEntryInState(
   state: WikiState,
   action: {
     entryId: string;
-    kind: Kind;
+    kind: string;
     shelf: Shelf;
     name: string;
     note: string;
