@@ -83,14 +83,34 @@ export default function Modal({
     }
   }, [open]);
 
-  // Restore focus to the pre-open element whenever the dialog transitions to
-  // closed. Kept separate from the open effect so it also runs on unmount.
+  // Restore focus to the pre-open element when the dialog goes away. Consumers
+  // render this modal CONDITIONALLY (`{flag ? <Modal/> : null}`), so on close the
+  // component UNMOUNTS with `open` still true — the closed state is never seen by
+  // a mounted render. Restoring in the effect BODY (on an `!open` re-render) would
+  // therefore never fire for those consumers and focus would strand on <body>
+  // (WCAG 2.4.3 failure). Doing it in the effect CLEANUP instead runs it on both
+  // the open->closed transition AND unmount, covering every consumer.
+  //
+  // The cleanup fires on ANY teardown of this effect, so it must not YANK focus
+  // away from a still-open dialog or from an element the app deliberately focused.
+  // Guard: only reclaim focus when it is currently orphaned — on <body> or still
+  // inside the dialog that is going away — never when focus already moved to some
+  // other real control.
   useEffect(() => {
-    if (!open) {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    return () => {
       const toRestore = restoreRef.current;
       restoreRef.current = null;
-      if (toRestore && document.contains(toRestore)) toRestore.focus();
-    }
+      const active = document.activeElement;
+      const orphaned =
+        active === null ||
+        active === document.body ||
+        (dialog !== null && dialog.contains(active));
+      if (orphaned && toRestore && document.contains(toRestore)) {
+        toRestore.focus();
+      }
+    };
   }, [open]);
 
   // Native <dialog> fires `cancel` on Escape. Route it through onClose so the
