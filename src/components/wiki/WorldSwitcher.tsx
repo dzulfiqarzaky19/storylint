@@ -1,23 +1,22 @@
 "use client";
 
-// World switcher (F7 S5). The top-of-wiki picker for the ACTIVE universe ->
-// series -> book. Re-scoping is URL-driven: changing a select navigates to
-// /wiki?u=&se=&b= and the SERVER re-renders loadWikiSnapshot for that scope, so
-// the active world is shareable and E2E-testable (no client snapshot swap). New-*
-// affordances call the structural create actions (no wiki token) then navigate to
-// the freshly created scope. Delete opens a DANGER ConfirmModal that shows the
-// REAL cascade row-count (advisory preview) before the writer confirms.
+// World switcher (TCK-017, W-5 UI cut-over). The top-of-wiki picker for the
+// ACTIVE universe -> world. Series and Book are no longer surfaced here (book
+// handling moved to /write). Re-scoping is URL-driven: changing the universe
+// navigates to /wiki?u= and the SERVER re-renders loadWorldSnapshot for that
+// scope, so the active world is shareable and E2E-testable (no client snapshot
+// swap). The World select is a single derived option today (worlds are 1:1 per
+// universe under the W-1 backfill: `world-${universeId}`); it stays a real
+// <select> so its a11y/DOM shape survives when W-1 multi-world lands. New-*
+// affordances call the structural create actions (no wiki token) then navigate.
+// Delete opens a DANGER ConfirmModal that shows the REAL cascade row-count.
 
 import { useCallback, useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import {
   createUniverse,
-  createSeries,
-  createBook,
   deleteUniverse,
-  deleteSeries,
-  deleteBook,
   previewCascade,
 } from "@/lib/actions/wiki";
 import ConfirmModal from "../ui/ConfirmModal";
@@ -28,14 +27,11 @@ import styles from "./WorldSwitcher.module.css";
 interface WorldSwitcherProps {
   tree: WorldUniverseNode[];
   activeUniverseId: string;
-  activeSeriesId: string;
-  activeBookId: string;
+  /** Derived 1:1 from the universe (`world-${universeId}`). */
+  activeWorldId: string;
 }
 
-type DeleteTarget =
-  | { level: "universe"; id: string; name: string }
-  | { level: "series"; id: string; name: string }
-  | { level: "book"; id: string; name: string };
+type DeleteTarget = { level: "universe"; id: string; name: string };
 
 /** An open naming dialog: its heading and the callback that runs on submit. */
 type NamePromptState = {
@@ -43,17 +39,16 @@ type NamePromptState = {
   onSubmit: (name: string) => void;
 };
 
-/** Build /wiki?u=&se=&b= for a scope. Omitted axes fall back on the server default. */
-function scopeHref(u: string, se: string, b: string): string {
-  const params = new URLSearchParams({ u, se, b });
+/** Build /wiki?u= for a universe scope. Omitted axes fall back on the server default. */
+function scopeHref(u: string): string {
+  const params = new URLSearchParams({ u });
   return `/wiki?${params.toString()}`;
 }
 
 export default function WorldSwitcher({
   tree,
   activeUniverseId,
-  activeSeriesId,
-  activeBookId,
+  activeWorldId,
 }: WorldSwitcherProps) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -63,41 +58,16 @@ export default function WorldSwitcher({
   const [namePrompt, setNamePrompt] = useState<NamePromptState | null>(null);
 
   const universe = tree.find((u) => u.id === activeUniverseId) ?? tree[0];
-  const series =
-    universe?.series.find((s) => s.id === activeSeriesId) ?? universe?.series[0];
-  const books = series?.books ?? [];
 
   const go = useCallback(
-    (u: string, se: string, b: string) => {
-      startTransition(() => router.push(scopeHref(u, se, b)));
+    (u: string) => {
+      startTransition(() => router.push(scopeHref(u)));
     },
     [router],
   );
 
   // ---- Scope selects -------------------------------------------------------
-  const onPickUniverse = useCallback(
-    (uId: string) => {
-      const u = tree.find((x) => x.id === uId);
-      const firstSe = u?.series[0];
-      const firstB = firstSe?.books[0];
-      go(uId, firstSe?.id ?? "", firstB?.id ?? "");
-    },
-    [tree, go],
-  );
-
-  const onPickSeries = useCallback(
-    (seId: string) => {
-      const se = universe?.series.find((x) => x.id === seId);
-      const firstB = se?.books[0];
-      go(activeUniverseId, seId, firstB?.id ?? "");
-    },
-    [universe, activeUniverseId, go],
-  );
-
-  const onPickBook = useCallback(
-    (bId: string) => go(activeUniverseId, activeSeriesId, bId),
-    [activeUniverseId, activeSeriesId, go],
-  );
+  const onPickUniverse = useCallback((uId: string) => go(uId), [go]);
 
   // ---- New-* affordances ---------------------------------------------------
   const runCreate = useCallback(
@@ -128,30 +98,6 @@ export default function WorldSwitcher({
     });
   }, [runCreate, router]);
 
-  const onNewSeries = useCallback(() => {
-    if (!universe) return;
-    setNamePrompt({
-      title: `Name the new series in "${universe.name}"`,
-      onSubmit: (name) =>
-        void runCreate(
-          () => createSeries({ name, universeId: universe.id }),
-          () => router.refresh(),
-        ),
-    });
-  }, [runCreate, router, universe]);
-
-  const onNewBook = useCallback(() => {
-    if (!series) return;
-    setNamePrompt({
-      title: `Name the new book in "${series.name}"`,
-      onSubmit: (name) =>
-        void runCreate(
-          () => createBook({ name, seriesId: series.id }),
-          () => router.refresh(),
-        ),
-    });
-  }, [runCreate, router, series]);
-
   // ---- Delete cascade (danger) --------------------------------------------
   const openDelete = useCallback(
     async (target: DeleteTarget) => {
@@ -171,14 +117,7 @@ export default function WorldSwitcher({
     if (!deleteTarget) return;
     setBusy(true);
     setError(null);
-    let res;
-    if (deleteTarget.level === "universe") {
-      res = await deleteUniverse({ universeId: deleteTarget.id, confirmed: true });
-    } else if (deleteTarget.level === "series") {
-      res = await deleteSeries({ seriesId: deleteTarget.id, confirmed: true });
-    } else {
-      res = await deleteBook({ bookId: deleteTarget.id, confirmed: true });
-    }
+    const res = await deleteUniverse({ universeId: deleteTarget.id, confirmed: true });
     setBusy(false);
     setDeleteTarget(null);
     setPendingCount(null);
@@ -216,48 +155,22 @@ export default function WorldSwitcher({
         </label>
 
         <label className={styles.axis}>
-          <span className={styles.axisLabel}>Series</span>
+          <span className={styles.axisLabel}>World</span>
           <select
-            aria-label="Active series"
-            value={series?.id ?? ""}
+            aria-label="Active world"
+            value={activeWorldId}
             disabled={busy || !universe}
-            onChange={(e) => onPickSeries(e.target.value)}
+            onChange={() => undefined}
           >
-            {(universe?.series ?? []).map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
-        </label>
-
-        <label className={styles.axis}>
-          <span className={styles.axisLabel}>Book</span>
-          <select
-            aria-label="Active book"
-            value={activeBookId}
-            disabled={busy || !series}
-            onChange={(e) => onPickBook(e.target.value)}
-          >
-            {books.map((b) => (
-              <option key={b.id} value={b.id}>{b.name}</option>
-            ))}
+            {/* Worlds are 1:1 per universe today; one honest option, labeled by
+                the universe. Grows into a real multi-world picker when W-1 lands. */}
+            <option value={activeWorldId}>{universe?.name ?? "World"}</option>
           </select>
         </label>
       </div>
 
       <div className={styles.actions}>
         <button type="button" onClick={onNewUniverse} disabled={busy}>+ universe</button>
-        <button type="button" onClick={onNewSeries} disabled={busy || !universe}>+ series</button>
-        <button type="button" onClick={onNewBook} disabled={busy || !series}>+ book</button>
-        {series ? (
-          <button
-            type="button"
-            className={styles.danger}
-            disabled={busy}
-            onClick={() => void openDelete({ level: "book", id: activeBookId, name: books.find((b) => b.id === activeBookId)?.name ?? "book" })}
-          >
-            delete book
-          </button>
-        ) : null}
         {universe ? (
           <button
             type="button"
@@ -304,11 +217,11 @@ export default function WorldSwitcher({
 
 /**
  * On-system inline naming dialog. Replaces the raw window.prompt so creating a
- * universe/series/book reads as part of the app. Built on the base <Modal>,
- * which owns the scrim, the centered Ashkeld panel, the focus trap + restore,
- * and dismissal (Escape and backdrop click both fire onClose -> onCancel). This
- * dialog only supplies its content: a title, the name field (the first
- * focusable, so Modal moves focus straight to it on open), and the actions.
+ * universe reads as part of the app. Built on the base <Modal>, which owns the
+ * scrim, the centered Ashkeld panel, the focus trap + restore, and dismissal
+ * (Escape and backdrop click both fire onClose -> onCancel). This dialog only
+ * supplies its content: a title, the name field (the first focusable, so Modal
+ * moves focus straight to it on open), and the actions.
  *
  * Enter submits via the form. The Create button is disabled until the name is
  * submittable, and the submit handler re-checks the SAME gate (canSubmitName) so
