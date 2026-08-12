@@ -3,7 +3,8 @@
 // sort_order. No mutations here — writes happen via the server actions the
 // client invokes (research.ts). Product rule 1: the only wiki write is confirmCard.
 import { loadResearchSnapshot } from "@/lib/db/research";
-import { getAllEntries } from "@/lib/db/queries";
+import { getAllEntries, getWorldTree } from "@/lib/db/queries";
+import { resolveWikiScope } from "@/app/wiki/scope";
 import ResearchScreen from "@/components/research/ResearchScreen";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,19 @@ export default async function ResearchPage({
     kind: e.kind,
     deletedAt: e.deletedAt,
   }));
+  // TCK-E06: resolve the active world so a research-minted entry is linked into it
+  // (else it persists but is invisible on /wiki). The research URL carries no
+  // ?u=/?w=, so resolveWikiScope(tree, undefined, undefined) yields the default
+  // universe's first world (world-universe-1 today) — provably correct while every
+  // thread is universe-1 (see the invariant test that REDs the moment that changes).
+  const { activeWorldId } = resolveWikiScope(await getWorldTree(), undefined, undefined);
   // Key by thread id so switching threads remounts the reducer with fresh state.
-  return <ResearchScreen key={snapshot.threadId} snapshot={snapshot} entries={entries} />;
+  return (
+    <ResearchScreen
+      key={snapshot.threadId}
+      snapshot={snapshot}
+      entries={entries}
+      activeWorldId={activeWorldId}
+    />
+  );
 }

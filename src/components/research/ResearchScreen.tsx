@@ -72,10 +72,16 @@ export interface EnrichEntry {
 export default function ResearchScreen({
   snapshot,
   entries = [],
+  activeWorldId,
 }: {
   snapshot: ResearchSnapshot;
   /** Live wiki entries (deleted-filtered) for enrich-vs-duplicate. */
   entries?: EnrichEntry[];
+  /**
+   * TCK-E06: the world the writer is viewing. Threaded into confirmCard so a
+   * newly-minted entry is linked into this world (else it is invisible on /wiki).
+   */
+  activeWorldId: string;
 }) {
   const router = useRouter();
   const [state, dispatch] = useReducer(
@@ -203,6 +209,7 @@ export default function ResearchScreen({
           summary: card.body,
         },
         enrichEntryId,
+        worldId: activeWorldId,
         confirmed: true,
       }),
     );

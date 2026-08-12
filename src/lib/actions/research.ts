@@ -24,7 +24,7 @@ import {
   markKeptInWiki,
   upsertKeptCard,
   deleteKeptCard,
-  insertEntry,
+  insertEntryLinkedToWorld,
   insertFact,
   getProposition,
   getMaxSortOrderForShelf,
@@ -125,6 +125,13 @@ export async function confirmCard(input: {
    * `deleted_at IS NULL`), so a card can never enrich a tombstone.
    */
   enrichEntryId?: string;
+  /**
+   * TCK-E06 (research slice): the world the writer is viewing. A newly-MINTED
+   * entry is invisible on /wiki until it has a world_entities link to this world
+   * (loadWorldSnapshot JOINs membership on the active world). Required for the
+   * mint branch; the enrich branch ignores it (its target is already linked).
+   */
+  worldId: string;
   confirmed: true;
 }): Promise<ActionResult<{ entryId: string }>> {
   // Mint the token; omitting `confirmed: true` is a compile-time error. This is
@@ -178,7 +185,19 @@ export async function confirmCard(input: {
     const shelf = KIND_SHELF[input.entry.kind];
     const nextSort = (await getMaxSortOrderForShelf(shelf)) + 1;
 
-    await insertEntry(
+    // TCK-E06 FAIL CLOSED: refuse to mint a persisted-but-invisible world-orphan.
+    // A blank/missing worldId means the client could not name the active world, so
+    // reject rather than write an entry no /wiki view can ever show (mirrors the
+    // wiki-slice requireWorldId message). The enrich branch returns above, so it
+    // never reaches here and stays worldId-agnostic.
+    const worldId = input.worldId?.trim();
+    if (!worldId) {
+      return { ok: false, error: "confirmCard: missing worldId - refusing to create a world-orphan entry" };
+    }
+
+    // Entry + world link in ONE transaction: a bad worldId FK-throws and rolls the
+    // entry INSERT back with it, so a mint is atomic (never an orphan).
+    await insertEntryLinkedToWorld(
       {
         id: entryId,
         kind: input.entry.kind,
@@ -189,6 +208,7 @@ export async function confirmCard(input: {
         shelf,
         sortOrder: nextSort,
       },
+      worldId,
       confirmation,
     );
 

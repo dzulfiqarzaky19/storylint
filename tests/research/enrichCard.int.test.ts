@@ -101,6 +101,9 @@ describe("confirmCard enrich branch (F6-S3a, real Postgres)", () => {
       propositionId: propId,
       entry: { name: "The Tower", kind: "world", summary: "A black spire over Ashkeld." },
       enrichEntryId: targetId,
+      // TCK-E06: confirmCard now requires worldId, but the enrich branch ignores it
+      // (its target entry is already world-linked); any valid world satisfies the type.
+      worldId: "world-universe-1",
       confirmed: true,
     });
 
@@ -120,6 +123,9 @@ describe("confirmCard enrich branch (F6-S3a, real Postgres)", () => {
       propositionId: propId,
       entry: { name: "Doomed Keep", kind: "world", summary: "..." },
       enrichEntryId: targetId,
+      // TCK-E06: confirmCard now requires worldId, but the enrich branch ignores it
+      // (its target entry is already world-linked); any valid world satisfies the type.
+      worldId: "world-universe-1",
       confirmed: true,
     });
 
