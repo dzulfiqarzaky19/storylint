@@ -24,6 +24,7 @@ import {
 import ConfirmModal from "../ui/ConfirmModal";
 import Modal from "../ui/Modal";
 import { canSubmitName } from "./nameGate";
+import { scopeHref } from "./scopeHref";
 import styles from "./WorldSwitcher.module.css";
 
 interface WorldSwitcherProps {
@@ -42,17 +43,6 @@ type NamePromptState = {
   title: string;
   onSubmit: (name: string) => void;
 };
-
-/**
- * Build /wiki?u=&w= for a scope. `w` is optional: omit it (picking a universe)
- * and the server resolves that universe's first world; pass it (picking a world)
- * to select a specific world. Omitted axes fall back on the server default.
- */
-function scopeHref(u: string, w?: string): string {
-  const params = new URLSearchParams({ u });
-  if (w) params.set("w", w);
-  return `/wiki?${params.toString()}`;
-}
 
 export default function WorldSwitcher({
   tree,
@@ -92,7 +82,10 @@ export default function WorldSwitcher({
 
   // ---- New-* affordances ---------------------------------------------------
   const runCreate = useCallback(
-    async (fn: () => Promise<{ ok: true } | { ok: false; error: string }>, after: () => void) => {
+    async <T,>(
+      fn: () => Promise<{ ok: true; data: T } | { ok: false; error: string }>,
+      after: (data: T) => void,
+    ) => {
       setBusy(true);
       setError(null);
       const res = await fn();
@@ -101,7 +94,7 @@ export default function WorldSwitcher({
         setError(res.error);
         return;
       }
-      after();
+      after(res.data);
     },
     [],
   );
@@ -125,9 +118,15 @@ export default function WorldSwitcher({
       onSubmit: (name) =>
         void runCreate(
           () => createWorld({ worldName: name, universeId: activeUniverseId }),
-          // The new world lands under the active universe; re-render from the
-          // server so the World select lists it. The writer then switches to it.
-          () => router.refresh(),
+          // TCK-E02: the new world lands under the active universe — NAVIGATE to
+          // it (?w=<newWorldId>) so the writer lands ON the new (empty) world.
+          // A bare router.refresh() left ?w= absent and resolveWikiScope snapped
+          // back to the universe's first world (its gazetteer, not the new one).
+          ({ worldId }) =>
+            startTransition(() => {
+              router.push(scopeHref(activeUniverseId, worldId));
+              router.refresh();
+            }),
         ),
     });
   }, [runCreate, router, activeUniverseId]);
