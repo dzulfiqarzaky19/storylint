@@ -31,7 +31,6 @@ import {
   getEntryWithDetails,
   getCategories as getCategoriesRow,
   previewUniverseCascade,
-  previewSeriesCascade,
   previewBookCascade,
   previewWorldCascade,
   type CascadePreview,
@@ -56,14 +55,12 @@ import {
   deleteCategory as deleteCategoryRow,
   restoreEntry as restoreEntryRow,
   purgeDeletedBefore as purgeDeletedBeforeRow,
-  insertSeries,
   insertBook,
   createFreshUniverse as createFreshUniverseRow,
   insertWorld as insertWorldRow,
   linkEntityToWorld as linkEntityToWorldRow,
   unlinkEntityFromWorld as unlinkEntityFromWorldRow,
   deleteUniverseCascade,
-  deleteSeriesCascade,
   deleteBookCascade,
   deleteWorldCascade,
   type CascadeCount,
@@ -688,7 +685,7 @@ export async function suggestEntryFacts(input: {
 
 // ---- World structure (F7 S5) ----------------------------------------------
 //
-// STRUCTURAL, NOT wiki content. Creating or deleting a universe/series/book
+// STRUCTURAL, NOT wiki content. Creating or deleting a universe/world/book
 // shapes the world SKELETON; it never writes an entry, fact, tie, or facet, so
 // product rule 1 ("nothing enters the WIKI without confirmation") does not apply
 // and these actions carry NO WikiWriteConfirmation token. The DELETES are
@@ -698,17 +695,17 @@ export async function suggestEntryFacts(input: {
 // removed (count === rows-removed, by construction; see mutations.ts).
 
 /**
- * CONTINUATION: add a new book under an existing series (reuses that series'
- * universe canon by construction). Structural — no wiki token.
+ * CONTINUATION: add a new book under an existing WORLD (W-6: books.world_id;
+ * reuses that world's universe canon by construction). Structural — no wiki token.
  */
 export async function createBook(input: {
   name: string;
-  seriesId: string;
+  worldId: string;
   sortOrder?: number;
 }): Promise<ActionResult<{ bookId: string }>> {
   try {
     const id = randomUUID();
-    await insertBook({ id, name: input.name, seriesId: input.seriesId, sortOrder: input.sortOrder });
+    await insertBook({ id, name: input.name, worldId: input.worldId, sortOrder: input.sortOrder });
     return { ok: true, data: { bookId: id } };
   } catch (err) {
     return fail(err, "wiki.createBook");
@@ -716,46 +713,29 @@ export async function createBook(input: {
 }
 
 /**
- * CONTINUATION: add a new series under an existing universe (reuses that
- * universe's canon). Structural — no wiki token.
- */
-export async function createSeries(input: {
-  name: string;
-  universeId: string;
-  sortOrder?: number;
-}): Promise<ActionResult<{ seriesId: string }>> {
-  try {
-    const id = randomUUID();
-    await insertSeries({ id, name: input.name, universeId: input.universeId, sortOrder: input.sortOrder });
-    return { ok: true, data: { seriesId: id } };
-  } catch (err) {
-    return fail(err, "wiki.createSeries");
-  }
-}
-
-/**
- * FRESH world: a NEW universe with its first series + first book, in one
+ * FRESH world: a NEW universe with its first world + first book, in one
  * transaction. The new universe's wiki starts EMPTY (no entries carry its
- * universe_id). Structural — no wiki token.
+ * universe_id). W-6: mints universe + world + book (series is gone). Structural —
+ * no wiki token.
  */
 export async function createUniverse(input: {
   universeName: string;
-  seriesName?: string;
+  worldName?: string;
   bookName?: string;
-}): Promise<ActionResult<{ universeId: string; seriesId: string; bookId: string }>> {
+}): Promise<ActionResult<{ universeId: string; worldId: string; bookId: string }>> {
   try {
     const universeId = randomUUID();
-    const seriesId = randomUUID();
+    const worldId = randomUUID();
     const bookId = randomUUID();
     await createFreshUniverseRow({
       universeId,
-      seriesId,
+      worldId,
       bookId,
       universeName: input.universeName,
-      seriesName: input.seriesName,
+      worldName: input.worldName,
       bookName: input.bookName,
     });
-    return { ok: true, data: { universeId, seriesId, bookId } };
+    return { ok: true, data: { universeId, worldId, bookId } };
   } catch (err) {
     return fail(err, "wiki.createUniverse");
   }
@@ -763,10 +743,10 @@ export async function createUniverse(input: {
 
 /**
  * TCK-022 (W-4a): create a SECOND (or Nth) world inside an EXISTING universe (the
- * `+ world` affordance on the World switcher). Mints the world/series/book ids
- * and calls insertWorld, which lands all three in one transaction so the new
- * world always has a home for chapters. Defaults to the active universe when
- * none is passed. Structural — no wiki token (mirrors createUniverse).
+ * `+ world` affordance on the World switcher). Mints the world/book ids and calls
+ * insertWorld, which lands both in one transaction so the new world always has a
+ * home for chapters (W-6: the book hangs off the world directly, no series).
+ * Defaults to the active universe when none is passed. Structural — no wiki token.
  */
 export async function createWorld(input: {
   worldName: string;
@@ -774,13 +754,11 @@ export async function createWorld(input: {
 }): Promise<ActionResult<{ worldId: string }>> {
   try {
     const worldId = randomUUID();
-    const seriesId = randomUUID();
     const bookId = randomUUID();
     await insertWorldRow({
       id: worldId,
       universeId: input.universeId ?? DEFAULT_UNIVERSE_ID,
       title: input.worldName,
-      seriesId,
       bookId,
     });
     return { ok: true, data: { worldId } };
@@ -829,7 +807,7 @@ export async function unshareEntityFromWorld(input: {
 }
 
 /**
- * DANGER: delete a universe and its ENTIRE subtree (series, books, chapters,
+ * DANGER: delete a universe and its ENTIRE subtree (worlds' books, chapters,
  * entries, canon + book-scoped facts/ties/facets, appearances, open questions,
  * research threads). Gated on `confirmed: true`. Returns the authoritative
  * CascadeCount (total === rows removed).
@@ -846,26 +824,6 @@ export async function deleteUniverse(input: {
     return { ok: true, data: count };
   } catch (err) {
     return fail(err, "wiki.deleteUniverse");
-  }
-}
-
-/**
- * DANGER: delete a series and its books' subtree (books, chapters, book-scoped
- * facts/ties/facets, appearances). Entries and NULL-canon rows belong to the
- * universe and SURVIVE. Gated on `confirmed: true`. Returns the CascadeCount.
- */
-export async function deleteSeries(input: {
-  seriesId: string;
-  confirmed: true;
-}): Promise<ActionResult<CascadeCount>> {
-  try {
-    if (input.confirmed !== true) {
-      return { ok: false, error: "wiki.deleteSeries: not confirmed" };
-    }
-    const count = await deleteSeriesCascade(input.seriesId);
-    return { ok: true, data: count };
-  } catch (err) {
-    return fail(err, "wiki.deleteSeries");
   }
 }
 
@@ -920,18 +878,16 @@ export async function deleteWorld(input: {
  * gate asserts preview.total === delete count === rows actually removed.
  */
 export async function previewCascade(input: {
-  level: "universe" | "series" | "book" | "world";
+  level: "universe" | "book" | "world";
   id: string;
 }): Promise<ActionResult<CascadePreview>> {
   try {
     const preview =
       input.level === "universe"
         ? await previewUniverseCascade(input.id)
-        : input.level === "series"
-          ? await previewSeriesCascade(input.id)
-          : input.level === "book"
-            ? await previewBookCascade(input.id)
-            : await previewWorldCascade(input.id);
+        : input.level === "book"
+          ? await previewBookCascade(input.id)
+          : await previewWorldCascade(input.id);
     return { ok: true, data: preview };
   } catch (err) {
     return fail(err, "wiki.previewCascade");

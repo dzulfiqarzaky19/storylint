@@ -29,7 +29,7 @@ import { loadWorldSnapshot } from "@/lib/db/queries";
 //      membership SURVIVE (orphan = LEAVE — never delete the entity).
 //   D. unlink of a NON-member is a no-op (0 rows, no throw).
 //
-// SHARED-DB HYGIENE: the throwaway world/series/book use `test-tck023-*` ids and
+// SHARED-DB HYGIENE: the throwaway world/book use `test-tck023-*` ids and
 // are hard-deleted in afterAll in FK order (its link rows go first). The seeded
 // universe-1 / world-universe-1 / `maren` and the 15 baseline links are NEVER
 // mutated destructively: the only baseline row this test touches is the temporary
@@ -47,7 +47,6 @@ const ENTITY = "maren"; // seeded entry, home to universe-1
 // Throwaway SECOND world in the SAME universe (so its snapshot window resolves to
 // its own book, and maren can be linked into it as a shared member).
 const NEW_WORLD = `test-tck023-w-${randomUUID()}`;
-const NEW_SERIES = `test-tck023-s-${randomUUID()}`;
 const NEW_BOOK = `test-tck023-b-${randomUUID()}`;
 
 beforeAll(async () => {
@@ -58,7 +57,6 @@ beforeAll(async () => {
     id: NEW_WORLD,
     universeId: HOME_UNIVERSE,
     title: "TCK023 Shared World",
-    seriesId: NEW_SERIES,
     bookId: NEW_BOOK,
   });
 });
@@ -66,10 +64,9 @@ beforeAll(async () => {
 afterAll(async () => {
   // Remove any link this test made from the NEW world (and defensively any stray
   // test link on maren into the new world), then tear down the throwaway world
-  // subtree in FK order (its own links -> book -> series -> world).
+  // subtree in FK order (its own links -> book -> world).
   await query(`DELETE FROM world_entities WHERE world_id = $1`, [NEW_WORLD]);
   await query(`DELETE FROM books WHERE id = $1`, [NEW_BOOK]);
-  await query(`DELETE FROM series WHERE id = $1`, [NEW_SERIES]);
   await query(`DELETE FROM worlds WHERE id = $1`, [NEW_WORLD]);
   await closePool();
 });

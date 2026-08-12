@@ -11,7 +11,7 @@ import {
   upsertEntryFacet,
 } from "@/lib/db/mutations";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
-import { DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID, DEFAULT_SERIES_ID } from "@/lib/db/scope";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // F7-S4 — HYBRID FACET LAYER (INTEGRATION, real Postgres). The conceptual heart
@@ -135,7 +135,7 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
       confirm,
     );
     // A NEW book B2 under the existing series-1 (structural, no wiki token).
-    await insertBook({ id: b2Id, name: "Book Two", seriesId: DEFAULT_SERIES_ID });
+    await insertBook({ id: b2Id, name: "Book Two", worldId: DEFAULT_WORLD_ID });
     // B2 overrides ONLY the name -> White. summary/note stay NULL => canon shows.
     await upsertEntryFacet({ entryId: gandalfId, bookId: b2Id, name: FACET_NAME }, confirm);
 

@@ -9,13 +9,13 @@ import { getWorldTree } from "@/lib/db/queries";
 // TCK-022 (W-4a) — insertWorld + getWorldTree (INTEGRATION, real Postgres).
 //
 // insertWorld creates a SECOND (or Nth) world inside an existing universe, plus
-// its OWN first series + first book, in ONE transaction (books still carries
-// series_id until W-6, so a world needs a series+book home for chapters).
+// its OWN first book, in ONE transaction (W-6: books.world_id, so the book hangs
+// off the world directly — no series bridge).
 //
 // This test stands up a THROWAWAY universe (test-tck022-u-<uuid>), inserts two
 // worlds into it, and proves:
 //   A. insertWorld lands the world row AND its book row (its home for chapters).
-//   B. the tx is ATOMIC: a failing series/book insert rolls back the world row.
+//   B. the tx is ATOMIC: a failing book insert rolls back the world row.
 //   C. getWorldTree returns THIS universe's worlds ordered by sort_order.
 //
 // MUTATION (run manually at ready, per the moderate gate):
@@ -27,26 +27,23 @@ import { getWorldTree } from "@/lib/db/queries";
 //     `ORDER BY id` (or drop it) -> the ordered-worlds assertion goes RED.
 //
 // SHARED-DB HYGIENE: all ids are `test-tck022-*`; the whole fixture (worlds,
-// series, books, the universe) is hard-deleted in afterAll in FK order. The
-// seeded universe-1 / world-universe-1 are never touched.
+// books, the universe) is hard-deleted in afterAll in FK order. The seeded
+// universe-1 / world-universe-1 are never touched.
 // -----------------------------------------------------------------------------
 
 loadEnv();
 
 const UNI = `test-tck022-u-${randomUUID()}`;
-// The worlds we create; recorded so afterAll can clean up their series+books.
+// The worlds we create; recorded so afterAll can clean up their books.
 const worldIds: string[] = [];
-const seriesIds: string[] = [];
 const bookIds: string[] = [];
 
 function mkWorld(sortOrder: number, title: string) {
   const id = `test-tck022-w-${randomUUID()}`;
-  const seriesId = `test-tck022-s-${randomUUID()}`;
   const bookId = `test-tck022-b-${randomUUID()}`;
   worldIds.push(id);
-  seriesIds.push(seriesId);
   bookIds.push(bookId);
-  return { id, universeId: UNI, title, seriesId, bookId, sortOrder };
+  return { id, universeId: UNI, title, bookId, sortOrder };
 }
 
 beforeAll(async () => {
@@ -57,11 +54,10 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // FK order: books -> series -> worlds -> universe. Delete by our test ids only.
+  // FK order: books -> worlds -> universe. Delete by our test ids only.
   if (bookIds.length) await query(`DELETE FROM books WHERE id = ANY($1)`, [bookIds]);
-  if (seriesIds.length) await query(`DELETE FROM series WHERE id = ANY($1)`, [seriesIds]);
   if (worldIds.length) await query(`DELETE FROM worlds WHERE id = ANY($1)`, [worldIds]);
-  await query(`DELETE FROM series WHERE universe_id = $1`, [UNI]);
+  await query(`DELETE FROM books WHERE world_id IN (SELECT id FROM worlds WHERE universe_id = $1)`, [UNI]);
   await query(`DELETE FROM worlds WHERE universe_id = $1`, [UNI]);
   await query(`DELETE FROM universes WHERE id = $1`, [UNI]);
   await closePool();
@@ -79,22 +75,20 @@ describe("TCK-022 insertWorld (real Postgres)", () => {
     const worlds = await query<{ id: string }>(`SELECT id FROM worlds WHERE id = $1`, [w.id]);
     expect(worlds.rowCount).toBe(1);
 
-    // Its own series + book landed in the SAME tx (the chapter home).
-    const series = await query<{ id: string }>(`SELECT id FROM series WHERE id = $1`, [w.seriesId]);
-    expect(series.rowCount).toBe(1);
-    const books = await query<{ series_id: string }>(
-      `SELECT series_id FROM books WHERE id = $1`,
+    // Its own book landed in the SAME tx (the chapter home), keyed to THIS world.
+    const books = await query<{ world_id: string }>(
+      `SELECT world_id FROM books WHERE id = $1`,
       [w.bookId],
     );
     expect(books.rowCount).toBe(1);
-    expect(books.rows[0]!.series_id).toBe(w.seriesId); // the book hangs off its world's series
+    expect(books.rows[0]!.world_id).toBe(w.id); // the book hangs off its own world (W-6)
   });
 
-  it("B: is atomic — a duplicate series id (PK violation) rolls back the world row", async () => {
+  it("B: is atomic — a duplicate book id (PK violation) rolls back the world row", async () => {
     const first = mkWorld(1, "Atomic First");
     await insertWorld(first);
 
-    // Reuse the SAME series id -> the series INSERT (second statement in the tx)
+    // Reuse the SAME book id -> the book INSERT (second statement in the tx)
     // PK-violates, so the whole tx (incl. the world row) must roll back.
     const clashWorldId = `test-tck022-w-${randomUUID()}`;
     worldIds.push(clashWorldId);
@@ -103,8 +97,7 @@ describe("TCK-022 insertWorld (real Postgres)", () => {
         id: clashWorldId,
         universeId: UNI,
         title: "Atomic Clash",
-        seriesId: first.seriesId, // duplicate PK -> forced failure
-        bookId: `test-tck022-b-${randomUUID()}`,
+        bookId: first.bookId, // duplicate PK -> forced failure
         sortOrder: 2,
       }),
     ).rejects.toThrow();

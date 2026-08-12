@@ -10,7 +10,7 @@
 // the confirmation invariant (product rule 1) lives at the action layer.
 
 import { query, one, rows, withTransaction } from "./pool";
-import { DEFAULT_BOOK_ID, DEFAULT_SERIES_ID, DEFAULT_UNIVERSE_ID } from "./scope";
+import { DEFAULT_BOOK_ID, DEFAULT_WORLD_ID, DEFAULT_UNIVERSE_ID } from "./scope";
 import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, CategoryRow, Shelf } from "../domain/types";
 import { SHELF_TITLES } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
@@ -923,7 +923,7 @@ export async function updateThreadTitle(input: {
   ]);
 }
 
-// ---- F7 worlds hierarchy: structural creation (Universe/Series/Book) --------
+// ---- F7 worlds hierarchy: structural creation (Universe/World/Book) ---------
 //
 // These INSERT the STRUCTURAL rows of the worlds hierarchy. They are NOT wiki
 // content, so per product rule 1 they take NO WikiWriteConfirmation token (same
@@ -931,13 +931,13 @@ export async function updateThreadTitle(input: {
 //
 // CONTINUATION vs FRESH is pure ROUTING, not a canon copy — ratified by chick
 // (data-model gate) on schema evidence:
-//   * CONTINUATION = a new Series/Book under an EXISTING universe. The new book
+//   * CONTINUATION = a new World/Book under an EXISTING universe. The new book
 //     reuses that universe's canon BY CONSTRUCTION: canon entries carry the
 //     universe_id (loadWikiSnapshot filters on it) and canon facts/ties carry
 //     book_id = NULL, so they surface in every book of the universe. NO row is
 //     copied — a physical copy would DOUBLE canon (two `entries` rows for one
 //     character) and break the single-source assumption the merge relies on.
-//   * FRESH = a NEW universe (+ its first series and book). Its wiki is empty by
+//   * FRESH = a NEW universe (+ its first world and book). Its wiki is empty by
 //     construction because no entries carry the new universe_id yet.
 // So the fresh/continuation flag is simply WHICH universe_id the new structural
 // rows get: an existing one (continuation) or a newly-minted one (fresh).
@@ -946,15 +946,9 @@ export interface UniverseRow {
   id: string;
   name: string;
 }
-export interface SeriesRow {
-  id: string;
-  universeId: string;
-  name: string;
-  sortOrder: number;
-}
 export interface BookRow {
   id: string;
-  seriesId: string;
+  worldId: string;
   name: string;
   sortOrder: number;
 }
@@ -973,80 +967,62 @@ export async function insertUniverse(input: {
 }
 
 /**
- * Insert a series under a universe (CONTINUATION routing: default = active
- * universe, so the new series reuses that universe's canon by construction).
- */
-export async function insertSeries(input: {
-  id: string;
-  name: string;
-  universeId?: string;
-  sortOrder?: number;
-}): Promise<SeriesRow> {
-  const res = await one<SeriesRow>(
-    `INSERT INTO series (id, universe_id, name, sort_order)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id, universe_id AS "universeId", name, sort_order AS "sortOrder"`,
-    [input.id, input.universeId ?? DEFAULT_UNIVERSE_ID, input.name, input.sortOrder ?? 0],
-  );
-  if (!res) throw new Error("insertSeries: no row returned");
-  return res;
-}
-
-/**
- * Insert a book under a series (CONTINUATION routing: default = active series).
+ * Insert a book under a WORLD (CONTINUATION routing: default = the default world).
  * A new book starts EMPTY, so getNextChapterNumber(newBook) = 1 by construction
- * (COALESCE(MAX(number),0)+1 over zero chapters).
+ * (COALESCE(MAX(number),0)+1 over zero chapters). W-6: `worldId` replaces the old
+ * `seriesId`; the default is DEFAULT_WORLD_ID (a mis-set default silently mis-homes
+ * every continuation book, so it is mutation-proven — gate mutation (d)).
  */
 export async function insertBook(input: {
   id: string;
   name: string;
-  seriesId?: string;
+  worldId?: string;
   sortOrder?: number;
 }): Promise<BookRow> {
   const res = await one<BookRow>(
-    `INSERT INTO books (id, series_id, name, sort_order)
+    `INSERT INTO books (id, world_id, name, sort_order)
      VALUES ($1, $2, $3, $4)
-     RETURNING id, series_id AS "seriesId", name, sort_order AS "sortOrder"`,
-    [input.id, input.seriesId ?? DEFAULT_SERIES_ID, input.name, input.sortOrder ?? 0],
+     RETURNING id, world_id AS "worldId", name, sort_order AS "sortOrder"`,
+    [input.id, input.worldId ?? DEFAULT_WORLD_ID, input.name, input.sortOrder ?? 0],
   );
   if (!res) throw new Error("insertBook: no row returned");
   return res;
 }
 
 /**
- * FRESH world: create a NEW universe plus its first series and first book, in
- * ONE transaction so a universe never lands without a home for chapters. The new
+ * FRESH world: create a NEW universe plus its first world and first book, in ONE
+ * transaction so a universe never lands without a home for chapters. The new
  * universe's wiki is empty by construction (no entries carry its universe_id).
- * This is the "fresh" branch; continuation instead calls insertSeries/insertBook
- * against an existing universe_id.
+ * W-6: mints universe + world + book (series is gone). This is the "fresh" branch;
+ * continuation instead calls insertWorld/insertBook against an existing universe.
  */
 export async function createFreshUniverse(input: {
   universeId: string;
-  seriesId: string;
+  worldId: string;
   bookId: string;
   universeName: string;
-  seriesName?: string;
+  worldName?: string;
   bookName?: string;
-}): Promise<{ universe: UniverseRow; series: SeriesRow; book: BookRow }> {
+}): Promise<{ universe: UniverseRow; world: WorldRow; book: BookRow }> {
   return withTransaction(async (client) => {
     const uni = await client.query<UniverseRow>(
       `INSERT INTO universes (id, name) VALUES ($1, $2) RETURNING id, name`,
       [input.universeId, input.universeName],
     );
-    const ser = await client.query<SeriesRow>(
-      `INSERT INTO series (id, universe_id, name, sort_order)
+    const world = await client.query<WorldRow>(
+      `INSERT INTO worlds (id, universe_id, title, sort_order)
        VALUES ($1, $2, $3, 0)
-       RETURNING id, universe_id AS "universeId", name, sort_order AS "sortOrder"`,
-      [input.seriesId, input.universeId, input.seriesName ?? input.universeName],
+       RETURNING id, universe_id AS "universeId", title, sort_order AS "sortOrder"`,
+      [input.worldId, input.universeId, input.worldName ?? input.universeName],
     );
     const bk = await client.query<BookRow>(
-      `INSERT INTO books (id, series_id, name, sort_order)
+      `INSERT INTO books (id, world_id, name, sort_order)
        VALUES ($1, $2, $3, 0)
-       RETURNING id, series_id AS "seriesId", name, sort_order AS "sortOrder"`,
-      [input.bookId, input.seriesId, input.bookName ?? input.seriesName ?? input.universeName],
+       RETURNING id, world_id AS "worldId", name, sort_order AS "sortOrder"`,
+      [input.bookId, input.worldId, input.bookName ?? input.worldName ?? input.universeName],
     );
     // INSERT ... RETURNING always yields exactly one row.
-    return { universe: uni.rows[0]!, series: ser.rows[0]!, book: bk.rows[0]! };
+    return { universe: uni.rows[0]!, world: world.rows[0]!, book: bk.rows[0]! };
   });
 }
 
@@ -1063,12 +1039,10 @@ export interface WorldRow {
  * this is the first path that makes a second one, so the share/switch UI has two
  * worlds to move between.
  *
- * A world needs a home for chapters. Because `books` still carries `series_id`
- * (series is not dropped until W-6), a new world also mints its OWN first
- * series + first book in the SAME transaction (mirrors createFreshUniverse's
- * series+book insert), so chapters authored under the new world always have a
- * home. All three rows land atomically: a failure on any one rolls back the
- * others (no orphan world without a book, no book without its series).
+ * A world needs a home for chapters. W-6: `books` now FK `world_id` directly, so a
+ * new world mints its OWN first book straight under itself (no bridge series). Both
+ * rows land atomically: a failure on either rolls back the other (no orphan world
+ * without a book, no book without its world).
  *
  * Structural — no wiki content, so no confirmWikiWrite token. The new world's
  * wiki is empty by construction (no world_entities rows point at it).
@@ -1077,10 +1051,8 @@ export async function insertWorld(input: {
   id: string;
   universeId: string;
   title: string;
-  seriesId: string;
   bookId: string;
   sortOrder?: number;
-  seriesName?: string;
   bookName?: string;
 }): Promise<WorldRow> {
   return withTransaction(async (client) => {
@@ -1091,14 +1063,9 @@ export async function insertWorld(input: {
       [input.id, input.universeId, input.title, input.sortOrder ?? 0],
     );
     await client.query(
-      `INSERT INTO series (id, universe_id, name, sort_order)
+      `INSERT INTO books (id, world_id, name, sort_order)
        VALUES ($1, $2, $3, 0)`,
-      [input.seriesId, input.universeId, input.seriesName ?? input.title],
-    );
-    await client.query(
-      `INSERT INTO books (id, series_id, name, sort_order)
-       VALUES ($1, $2, $3, 0)`,
-      [input.bookId, input.seriesId, input.bookName ?? input.seriesName ?? input.title],
+      [input.bookId, input.id, input.bookName ?? input.title],
     );
     // INSERT ... RETURNING always yields exactly one row.
     return world.rows[0]!;
@@ -1227,7 +1194,6 @@ export interface CascadeCount {
   entries: number;
   researchThreads: number;
   books: number;
-  series: number;
   universes: number;
   // W-2: world-scoped counts. worldEntities = junction membership UNLINKED (the
   // entity ROW survives, reclaimable); categories = user categories owned by the
@@ -1249,7 +1215,6 @@ function emptyCascade(): CascadeCount {
     entries: 0,
     researchThreads: 0,
     books: 0,
-    series: 0,
     universes: 0,
     worldEntities: 0,
     categories: 0,
@@ -1259,19 +1224,20 @@ function emptyCascade(): CascadeCount {
 }
 
 /**
- * Delete a universe and its ENTIRE subtree (series, books, chapters, entries,
+ * Delete a universe and its ENTIRE subtree (worlds, books, chapters, entries,
  * canon + book-scoped facts/ties/facets, appearances, open questions, research
  * threads). Returns the per-table cascade count whose `total` is exactly the
  * number of rows removed. One transaction: either the whole subtree goes or
- * nothing does.
+ * nothing does. W-6: books now hang off worlds, so the book set joins books ->
+ * worlds (was books -> series).
  */
 export async function deleteUniverseCascade(universeId: string): Promise<CascadeCount> {
   return withTransaction(async (client) => {
     const c = emptyCascade();
-    // Book set of this universe (its series' books). Entry set of this universe.
+    // Book set of this universe (its worlds' books). Entry set of this universe.
     const booksOfUniverse = `SELECT b.id FROM books b
-        JOIN series s ON s.id = b.series_id
-        WHERE s.universe_id = $1`;
+        JOIN worlds w ON w.id = b.world_id
+        WHERE w.universe_id = $1`;
     const entriesOfUniverse = `SELECT id FROM entries WHERE universe_id = $1`;
 
     // STEP 1 — book-scoped facet rows for this universe's books (may sit on a
@@ -1321,59 +1287,19 @@ export async function deleteUniverseCascade(universeId: string): Promise<Cascade
       `DELETE FROM research_threads WHERE universe_id = $1`, [universeId],
     )).rowCount ?? 0;
 
-    // STEP 6 — the skeleton, leaf->root.
+    // STEP 6 — the skeleton, leaf->root. W-6: books now hang off worlds (series is
+    // gone), so the book delete keys off world_id. Worlds themselves are left intact
+    // here, exactly as before this slice (a universe delete never dropped worlds).
     c.books += (await client.query(
-      `DELETE FROM books WHERE series_id IN (SELECT id FROM series WHERE universe_id = $1)`,
+      `DELETE FROM books WHERE world_id IN (SELECT id FROM worlds WHERE universe_id = $1)`,
       [universeId],
-    )).rowCount ?? 0;
-    c.series += (await client.query(
-      `DELETE FROM series WHERE universe_id = $1`, [universeId],
     )).rowCount ?? 0;
     c.universes += (await client.query(
       `DELETE FROM universes WHERE id = $1`, [universeId],
     )).rowCount ?? 0;
 
     c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters
-      + c.openQuestions + c.entries + c.researchThreads + c.books + c.series + c.universes;
-    return c;
-  });
-}
-
-/**
- * Delete a series and its books' subtree (books, chapters, book-scoped
- * facts/ties/facets, appearances) WITHIN a universe. Entries/canon belong to the
- * universe, not the series, so a series delete NEVER removes entries or
- * NULL-canon rows — only the series' books and their book-scoped content.
- */
-export async function deleteSeriesCascade(seriesId: string): Promise<CascadeCount> {
-  return withTransaction(async (client) => {
-    const c = emptyCascade();
-    const booksOfSeries = `SELECT id FROM books WHERE series_id = $1`;
-
-    c.ties += (await client.query(
-      `DELETE FROM ties WHERE book_id IN (${booksOfSeries})`, [seriesId],
-    )).rowCount ?? 0;
-    c.facts += (await client.query(
-      `DELETE FROM facts WHERE book_id IN (${booksOfSeries})`, [seriesId],
-    )).rowCount ?? 0;
-    c.entryFacets += (await client.query(
-      `DELETE FROM entry_facets WHERE book_id IN (${booksOfSeries})`, [seriesId],
-    )).rowCount ?? 0;
-    c.chapterAppearances += (await client.query(
-      `DELETE FROM chapter_appearances WHERE book_id IN (${booksOfSeries})`, [seriesId],
-    )).rowCount ?? 0;
-    c.chapters += (await client.query(
-      `DELETE FROM chapters WHERE book_id IN (${booksOfSeries})`, [seriesId],
-    )).rowCount ?? 0;
-    c.books += (await client.query(
-      `DELETE FROM books WHERE series_id = $1`, [seriesId],
-    )).rowCount ?? 0;
-    c.series += (await client.query(
-      `DELETE FROM series WHERE id = $1`, [seriesId],
-    )).rowCount ?? 0;
-
-    c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters
-      + c.books + c.series;
+      + c.openQuestions + c.entries + c.researchThreads + c.books + c.universes;
     return c;
   });
 }
@@ -1382,7 +1308,7 @@ export async function deleteSeriesCascade(seriesId: string): Promise<CascadeCoun
  * Delete a single book and its book-scoped content (chapters, appearances, and
  * book-scoped facts/ties/facets book_id = target). NEVER touches NULL-canon rows
  * (they belong to the universe and stay visible in sibling books), never touches
- * a sibling book under the same series, never touches entries.
+ * a sibling book under the same world, never touches entries.
  */
 export async function deleteBookCascade(bookId: string): Promise<CascadeCount> {
   return withTransaction(async (client) => {
@@ -1413,10 +1339,13 @@ export async function deleteBookCascade(bookId: string): Promise<CascadeCount> {
 }
 
 /**
- * W-2 - Delete a WORLD and its world-owned data, WITHOUT destroying entities or
- * universe-canon. A world groups SHARED entities via the world_entities junction
- * and owns user categories (categories.world_id); it does NOT own books (books
- * hang off series under the universe, which a universe MAY share across worlds).
+ * W-2/W-6 - Delete a WORLD and its world-owned data, WITHOUT destroying entities
+ * or universe-canon. A world groups SHARED entities via the world_entities junction
+ * and owns user categories (categories.world_id). W-6: a world now ALSO OWNS its
+ * books directly (books.world_id), so deleting a world drops that book subtree
+ * (chapters, appearances, book-scoped facts/ties/facets, then the books) too. This
+ * is why the 2 leaked books used to survive a world delete pre-W-6 — books hung off
+ * series, not the world; now they cascade.
  *
  * THE INVARIANT (orphan=LEAVE): the entity ROWS survive, reclaimable. We DELETE
  * the junction membership only (unlink), never the entries. Deleting the world
@@ -1425,11 +1354,34 @@ export async function deleteBookCascade(bookId: string): Promise<CascadeCount> {
  *
  * Explicit COUNTED deletes in one transaction (never an implicit FK cascade, so
  * total is exact and count === rows-removed holds by construction), leaf->root:
- * junction -> user categories -> the world row.
+ * book subtree -> junction -> user categories -> the world row.
  */
 export async function deleteWorldCascade(worldId: string): Promise<CascadeCount> {
   return withTransaction(async (client) => {
     const c = emptyCascade();
+
+    // W-6: the world's own books' subtree (book-scoped rows), leaf->root, BEFORE
+    // the books themselves. Entries/universe-canon are NEVER touched here (they
+    // belong to the universe, shareable across worlds).
+    const booksOfWorld = `SELECT id FROM books WHERE world_id = $1`;
+    c.ties += (await client.query(
+      `DELETE FROM ties WHERE book_id IN (${booksOfWorld})`, [worldId],
+    )).rowCount ?? 0;
+    c.facts += (await client.query(
+      `DELETE FROM facts WHERE book_id IN (${booksOfWorld})`, [worldId],
+    )).rowCount ?? 0;
+    c.entryFacets += (await client.query(
+      `DELETE FROM entry_facets WHERE book_id IN (${booksOfWorld})`, [worldId],
+    )).rowCount ?? 0;
+    c.chapterAppearances += (await client.query(
+      `DELETE FROM chapter_appearances WHERE book_id IN (${booksOfWorld})`, [worldId],
+    )).rowCount ?? 0;
+    c.chapters += (await client.query(
+      `DELETE FROM chapters WHERE book_id IN (${booksOfWorld})`, [worldId],
+    )).rowCount ?? 0;
+    c.books += (await client.query(
+      `DELETE FROM books WHERE world_id = $1`, [worldId],
+    )).rowCount ?? 0;
 
     // UNLINK membership only. The entity rows (and universe-canon) survive.
     c.worldEntities += (await client.query(
@@ -1447,7 +1399,8 @@ export async function deleteWorldCascade(worldId: string): Promise<CascadeCount>
       `DELETE FROM worlds WHERE id = $1`, [worldId],
     )).rowCount ?? 0;
 
-    c.total = c.worldEntities + c.categories + c.worlds;
+    c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters
+      + c.books + c.worldEntities + c.categories + c.worlds;
     return c;
   });
 }

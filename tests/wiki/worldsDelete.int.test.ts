@@ -9,28 +9,30 @@ import {
   insertChapter,
   insertResearchThread,
   insertUniverse,
-  insertSeries,
   insertBook,
   upsertEntryFacet,
   deleteUniverseCascade,
   deleteBookCascade,
-  deleteSeriesCascade,
+  deleteWorldCascade,
 } from "@/lib/db/mutations";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
 import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
-// F7-S5 — WORLD DELETE-CASCADE (INTEGRATION, real Postgres). Deleting a universe
-// destroys its whole subtree; the reported cascade count MUST equal the rows
-// actually removed (the danger modal must not lie), and a foreign universe's
-// canon must be BYTE-IDENTICAL afterward.
+// F7-S5 / W-6 — WORLD DELETE-CASCADE (INTEGRATION, real Postgres). Deleting a
+// universe destroys its whole subtree; the reported cascade count MUST equal the
+// rows actually removed (the danger modal must not lie), and a foreign universe's
+// canon must be BYTE-IDENTICAL afterward. W-6: books hang off WORLDS directly
+// (books.world_id), so the book set joins books -> worlds (was books -> series).
 //
 // MECHANISM (adjudicated by chick, data-model gate): explicit-delete-all in one
 // transaction — every child row is deleted by an explicit statement (never left
 // to ON DELETE CASCADE), and the reported `total` is the SUM of those statements'
-// rowCounts. So count === rows-removed holds BY CONSTRUCTION.
+// rowCounts. So count === rows-removed holds BY CONSTRUCTION. (A universe delete
+// still leaves the worlds row to the DB's ON DELETE CASCADE, uncounted; the
+// count===rows window below never includes a world id, so the invariant holds.)
 //
-// FIXTURE — a THROWAWAY U2/Se2/B2 subtree plus one deliberate CROSS-UNIVERSE row:
+// FIXTURE — a THROWAWAY U2/World2/B2 subtree plus one deliberate CROSS-UNIVERSE row:
 //   * U2 has an entry (orc) with: canon fact, open question, chapter+appearance,
 //     a scalar entry_facet (book_id=B2), a book-scoped fact (book_id=B2), a canon
 //     tie to a second U2 entry, and a research thread.
@@ -47,7 +49,7 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 // SHARED-DB HYGIENE: ids are `test-f7s5-*`; afterAll hard-deletes any residue in
 // FK order (the happy path deletes U2 itself, but afterAll covers a failed run
 // and the cross-universe U1 entry, which the U2 delete deliberately leaves).
-// universe-1 / series-1 / book-1 are never structurally deleted.
+// universe-1 / world-universe-1 / book-1 are never structurally deleted.
 // -----------------------------------------------------------------------------
 
 loadEnv();
@@ -56,7 +58,7 @@ const confirm = confirmWikiWrite({ confirmed: true });
 
 // U2 throwaway subtree.
 const u2Id = `test-f7s5-uni-${randomUUID()}`;
-const se2Id = `test-f7s5-ser-${randomUUID()}`;
+const w2Id = `test-f7s5-wr-${randomUUID()}`;
 const b2Id = `test-f7s5-bk-${randomUUID()}`;
 const orcId = `test-f7s5-ent-${randomUUID()}`;
 const trollId = `test-f7s5-ent-${randomUUID()}`;
@@ -84,9 +86,11 @@ const crossFacetFactId = `test-f7s5-fact-${randomUUID()}`;
 // count===rows invariant is unchanged, only its window narrows. entry_facets has
 // no `id` column (PK = entry_id, book_id), so it is windowed by `entry_id`; every
 // facet in these tests hangs off a fixture entry, so the same id array covers it.
+// W-6: worlds are counted here too (windowed by id), but a UNIVERSE delete leaves
+// the world to DB CASCADE — so no world id is placed in a universe-delete window.
 const COUNT_ALL = `SELECT
     (SELECT COUNT(*) FROM universes WHERE id = ANY($1)) +
-    (SELECT COUNT(*) FROM series WHERE id = ANY($1)) +
+    (SELECT COUNT(*) FROM worlds WHERE id = ANY($1)) +
     (SELECT COUNT(*) FROM books WHERE id = ANY($1)) +
     (SELECT COUNT(*) FROM entries WHERE id = ANY($1)) +
     (SELECT COUNT(*) FROM facts WHERE id = ANY($1)) +
@@ -148,17 +152,21 @@ afterAll(async () => {
   await query(`DELETE FROM research_threads WHERE id = ANY($1)`, [[u2ThreadId]]);
   await query(`DELETE FROM entries WHERE id = ANY($1)`, [[orcId, trollId, u1ForeignEntryId]]);
   await query(`DELETE FROM books WHERE id = ANY($1)`, [[b2Id]]);
-  await query(`DELETE FROM series WHERE id = ANY($1)`, [[se2Id]]);
+  await query(`DELETE FROM worlds WHERE id = ANY($1)`, [[w2Id]]);
   await query(`DELETE FROM universes WHERE id = ANY($1)`, [[u2Id]]);
   await closePool();
 });
 
-describe("F7-S5 world delete-cascade (real Postgres)", () => {
+describe("F7-S5/W-6 world delete-cascade (real Postgres)", () => {
   it("deleteUniverseCascade: count === rows removed, subtree gone, U1 canon untouched, cross-universe entry survives", async () => {
     // --- Seed the U2 subtree ---------------------------------------------------
     await insertUniverse({ id: u2Id, name: "Second World" });
-    await insertSeries({ id: se2Id, name: "Second Series", universeId: u2Id, sortOrder: 0 });
-    await insertBook({ id: b2Id, name: "Second Book", seriesId: se2Id, sortOrder: 0 });
+    // W-6: the book hangs off a WORLD, so U2 needs a world for B2 to live under.
+    await query(
+      `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ($1, $2, 'Second World World', 0)`,
+      [w2Id, u2Id],
+    );
+    await insertBook({ id: b2Id, name: "Second Book", worldId: w2Id, sortOrder: 0 });
 
     await insertEntry(
       { id: orcId, kind: "character", name: "Orc", catalogueNo: "S5-1", note: "", summary: "A U2 orc.", shelf: "characters", sortOrder: 0, universeId: u2Id },
@@ -196,9 +204,11 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
     await insertFact({ id: crossFacetFactId, entryId: u1ForeignEntryId, key: "cameo", value: "seen in U2's book", fresh: false, sortOrder: 1, bookId: b2Id }, confirm);
 
     // --- Capture invariants BEFORE the delete ---------------------------------
-    // This test's OWN fixture ids — the window count===rows is measured over.
+    // This test's OWN fixture ids — the window count===rows is measured over. The
+    // world id (w2Id) is INTENTIONALLY excluded: a universe delete drops the world
+    // via DB ON DELETE CASCADE (uncounted), so counting it would break count===rows.
     const fixtureIds = [
-      u2Id, se2Id, b2Id, orcId, trollId,
+      u2Id, b2Id, orcId, trollId,
       u2CanonFactId, u2BookFactId, u2TieId, u2ChapterId, u2ApprId, u2OpenQId, u2ThreadId,
       u1ForeignEntryId, u1ForeignCanonFactId, crossFacetFactId,
     ];
@@ -232,7 +242,6 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
 
     // Sanity on the breakdown: the subtree we seeded is fully represented.
     expect(count.universes).toBe(1);
-    expect(count.series).toBe(1);
     expect(count.books).toBe(1);
     expect(count.entries).toBe(2); // orc + troll (NOT the U1 foreign entry)
     expect(count.chapters).toBe(1);
@@ -245,9 +254,9 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
     // entry_facets removed: orc's B2 scalar override = 1
     expect(count.entryFacets).toBe(1);
 
-    // (b) every U2-subtree row is gone.
+    // (b) every U2-subtree row is gone (including the world, via DB CASCADE).
     expect(await one(`SELECT id FROM universes WHERE id = $1`, [u2Id])).toBeNull();
-    expect(await one(`SELECT id FROM series WHERE id = $1`, [se2Id])).toBeNull();
+    expect(await one(`SELECT id FROM worlds WHERE id = $1`, [w2Id])).toBeNull();
     expect(await one(`SELECT id FROM books WHERE id = $1`, [b2Id])).toBeNull();
     expect(await one(`SELECT id FROM entries WHERE id = $1`, [orcId])).toBeNull();
     expect(await one(`SELECT id FROM entries WHERE id = $1`, [trollId])).toBeNull();
@@ -271,10 +280,10 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
   });
 
   it("deleteBookCascade: removes only the target book's book-scoped rows; canon and sibling book survive", async () => {
-    // Two books under ONE series under a fresh universe; a canon fact (book_id
+    // Two books under ONE world under a fresh universe; a canon fact (book_id
     // NULL) plus a book-scoped fact in EACH book, on a shared entry.
     const uId = `test-f7s5-uni-${randomUUID()}`;
-    const sId = `test-f7s5-ser-${randomUUID()}`;
+    const wId = `test-f7s5-wr-${randomUUID()}`;
     const bTargetId = `test-f7s5-bk-${randomUUID()}`;
     const bSiblingId = `test-f7s5-bk-${randomUUID()}`;
     const entId = `test-f7s5-ent-${randomUUID()}`;
@@ -284,9 +293,12 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
     const targetChapId = `test-f7s5-chap-${randomUUID()}`;
     try {
       await insertUniverse({ id: uId, name: "BookDel World" });
-      await insertSeries({ id: sId, name: "BookDel Series", universeId: uId, sortOrder: 0 });
-      await insertBook({ id: bTargetId, name: "Target Book", seriesId: sId, sortOrder: 0 });
-      await insertBook({ id: bSiblingId, name: "Sibling Book", seriesId: sId, sortOrder: 1 });
+      await query(
+        `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ($1, $2, 'BookDel World World', 0)`,
+        [wId, uId],
+      );
+      await insertBook({ id: bTargetId, name: "Target Book", worldId: wId, sortOrder: 0 });
+      await insertBook({ id: bSiblingId, name: "Sibling Book", worldId: wId, sortOrder: 1 });
       await insertEntry(
         { id: entId, kind: "character", name: "Shared", catalogueNo: "S5-B", note: "", summary: "", shelf: "characters", sortOrder: 0, universeId: uId },
         confirm,
@@ -296,7 +308,7 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
       await insertFact({ id: siblingFactId, entryId: entId, key: "k", value: "sibling-only", fresh: false, sortOrder: 1, bookId: bSiblingId }, confirm);
       await insertChapter({ id: targetChapId, number: 1, title: "T Ch1", body: { type: "doc" }, bookId: bTargetId });
 
-      const bookFixtureIds = [uId, sId, bTargetId, bSiblingId, entId, canonFactId, targetFactId, siblingFactId, targetChapId];
+      const bookFixtureIds = [uId, bTargetId, bSiblingId, entId, canonFactId, targetFactId, siblingFactId, targetChapId];
       const totalBefore = await totalRows(bookFixtureIds);
       const count = await deleteBookCascade(bTargetId);
       const totalAfter = await totalRows(bookFixtureIds);
@@ -324,47 +336,53 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
       await query(`DELETE FROM chapters WHERE id = ANY($1)`, [[targetChapId]]);
       await query(`DELETE FROM entries WHERE id = ANY($1)`, [[entId]]);
       await query(`DELETE FROM books WHERE id = ANY($1)`, [[bTargetId, bSiblingId]]);
-      await query(`DELETE FROM series WHERE id = ANY($1)`, [[sId]]);
+      await query(`DELETE FROM worlds WHERE id = ANY($1)`, [[wId]]);
       await query(`DELETE FROM universes WHERE id = ANY($1)`, [[uId]]);
     }
   });
 
-  it("deleteSeriesCascade: removes the series' books subtree; entries, canon, and universe survive", async () => {
+  it("deleteWorldCascade: removes the world's books subtree; entries, canon, and universe survive", async () => {
+    // W-6: a world now OWNS its books. Deleting the world drops its book subtree
+    // (book-scoped fact + chapter + the book) while universe-canon and the entry
+    // (universe-owned, shareable) survive.
     const uId = `test-f7s5-uni-${randomUUID()}`;
-    const sTargetId = `test-f7s5-ser-${randomUUID()}`;
+    const wTargetId = `test-f7s5-wr-${randomUUID()}`;
     const bId = `test-f7s5-bk-${randomUUID()}`;
     const entId = `test-f7s5-ent-${randomUUID()}`;
     const canonFactId = `test-f7s5-fact-${randomUUID()}`;
     const bookFactId = `test-f7s5-fact-${randomUUID()}`;
     const chapId = `test-f7s5-chap-${randomUUID()}`;
     try {
-      await insertUniverse({ id: uId, name: "SeriesDel World" });
-      await insertSeries({ id: sTargetId, name: "Target Series", universeId: uId, sortOrder: 0 });
-      await insertBook({ id: bId, name: "Series Book", seriesId: sTargetId, sortOrder: 0 });
+      await insertUniverse({ id: uId, name: "WorldDel World" });
+      await query(
+        `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ($1, $2, 'Target World', 0)`,
+        [wTargetId, uId],
+      );
+      await insertBook({ id: bId, name: "World Book", worldId: wTargetId, sortOrder: 0 });
       await insertEntry(
-        { id: entId, kind: "character", name: "Kept", catalogueNo: "S5-S", note: "", summary: "", shelf: "characters", sortOrder: 0, universeId: uId },
+        { id: entId, kind: "character", name: "Kept", catalogueNo: "S5-W", note: "", summary: "", shelf: "characters", sortOrder: 0, universeId: uId },
         confirm,
       );
       await insertFact({ id: canonFactId, entryId: entId, key: "k", value: "canon", fresh: false, sortOrder: 0 }, confirm);
       await insertFact({ id: bookFactId, entryId: entId, key: "k", value: "book-only", fresh: false, sortOrder: 1, bookId: bId }, confirm);
-      await insertChapter({ id: chapId, number: 1, title: "S Ch1", body: { type: "doc" }, bookId: bId });
+      await insertChapter({ id: chapId, number: 1, title: "W Ch1", body: { type: "doc" }, bookId: bId });
 
-      const seriesFixtureIds = [uId, sTargetId, bId, entId, canonFactId, bookFactId, chapId];
-      const totalBefore = await totalRows(seriesFixtureIds);
-      const count = await deleteSeriesCascade(sTargetId);
-      const totalAfter = await totalRows(seriesFixtureIds);
+      const worldFixtureIds = [uId, wTargetId, bId, entId, canonFactId, bookFactId, chapId];
+      const totalBefore = await totalRows(worldFixtureIds);
+      const count = await deleteWorldCascade(wTargetId);
+      const totalAfter = await totalRows(worldFixtureIds);
 
       expect(count.total).toBe(totalBefore - totalAfter);
-      expect(count.series).toBe(1);
+      expect(count.worlds).toBe(1);
       expect(count.books).toBe(1);
       expect(count.facts).toBe(1); // only the book-scoped fact
       expect(count.chapters).toBe(1);
 
-      // Series + its book + book-scoped fact gone.
-      expect(await one(`SELECT id FROM series WHERE id = $1`, [sTargetId])).toBeNull();
+      // World + its book + book-scoped fact gone.
+      expect(await one(`SELECT id FROM worlds WHERE id = $1`, [wTargetId])).toBeNull();
       expect(await one(`SELECT id FROM books WHERE id = $1`, [bId])).toBeNull();
       expect(await one(`SELECT id FROM facts WHERE id = $1`, [bookFactId])).toBeNull();
-      // Entry, its canon fact, and the universe survive (series delete is subtree-only).
+      // Entry, its canon fact, and the universe survive (world delete is subtree-only).
       expect(await one(`SELECT id FROM entries WHERE id = $1`, [entId])).not.toBeNull();
       expect(await one(`SELECT id FROM facts WHERE id = $1`, [canonFactId])).not.toBeNull();
       expect(await one(`SELECT id FROM universes WHERE id = $1`, [uId])).not.toBeNull();
@@ -373,7 +391,7 @@ describe("F7-S5 world delete-cascade (real Postgres)", () => {
       await query(`DELETE FROM chapters WHERE id = ANY($1)`, [[chapId]]);
       await query(`DELETE FROM entries WHERE id = ANY($1)`, [[entId]]);
       await query(`DELETE FROM books WHERE id = ANY($1)`, [[bId]]);
-      await query(`DELETE FROM series WHERE id = ANY($1)`, [[sTargetId]]);
+      await query(`DELETE FROM worlds WHERE id = ANY($1)`, [[wTargetId]]);
       await query(`DELETE FROM universes WHERE id = ANY($1)`, [[uId]]);
     }
   });

@@ -20,43 +20,38 @@ DROP TABLE IF EXISTS facts CASCADE;
 DROP TABLE IF EXISTS entries CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS books CASCADE;
-DROP TABLE IF EXISTS series CASCADE;
 DROP TABLE IF EXISTS worlds CASCADE;
 DROP TABLE IF EXISTS universes CASCADE;
 
--- F7 worlds hierarchy: Universe owns the wiki; Series groups Books; Book owns
--- Chapters. Created FIRST so the scope FKs below can reference them. These are
--- STRUCTURAL tables (not wiki content) — no confirmWikiWrite token gates them.
+-- F7 worlds hierarchy (W-6: series merged into worlds): Universe owns the wiki;
+-- World groups Books; Book owns Chapters. Created FIRST so the scope FKs below can
+-- reference them. STRUCTURAL tables (not wiki content) — no confirmWikiWrite token
+-- gates them.
 CREATE TABLE universes (
   id    text PRIMARY KEY,
   name  text NOT NULL
 );
 
-CREATE TABLE series (
-  id           text PRIMARY KEY,
-  universe_id  text NOT NULL REFERENCES universes(id) ON DELETE CASCADE,
-  name         text NOT NULL,
-  sort_order   integer NOT NULL DEFAULT 0
-);
-
-CREATE TABLE books (
-  id          text PRIMARY KEY,
-  series_id   text NOT NULL REFERENCES series(id) ON DELETE CASCADE,
-  name        text NOT NULL,
-  sort_order  integer NOT NULL DEFAULT 0
-);
-
--- W-1 (world-model epic): worlds — a world groups SHARED entities (via the
--- world_entities junction below) and owns user categories (categories.world_id).
--- Sibling to series under a universe; one world per universe today (1:1), but a
--- universe may grow more. STRUCTURAL (not wiki content) so no confirmWikiWrite
--- token gates it. Created BEFORE categories so categories.world_id FK resolves.
+-- W-1/W-6: worlds — a world groups SHARED entities (via the world_entities
+-- junction below), owns user categories (categories.world_id), and (W-6) OWNS its
+-- books directly (books.world_id). A universe may hold many worlds. STRUCTURAL
+-- (not wiki content) so no confirmWikiWrite token gates it. Created BEFORE books
+-- and categories so their world_id FKs resolve.
 CREATE TABLE worlds (
   id           text PRIMARY KEY,
   universe_id  text NOT NULL REFERENCES universes(id) ON DELETE CASCADE,
   title        text NOT NULL,
   description  text NOT NULL DEFAULT '',
   sort_order   integer NOT NULL DEFAULT 0
+);
+
+-- W-6: a book belongs directly to a WORLD (was series_id). Deleting a world
+-- cascades its books (ON DELETE CASCADE).
+CREATE TABLE books (
+  id          text PRIMARY KEY,
+  world_id    text NOT NULL REFERENCES worlds(id) ON DELETE CASCADE,
+  name        text NOT NULL,
+  sort_order  integer NOT NULL DEFAULT 0
 );
 
 -- categories (F9-B): user-extensible entry categories. REPLACES category_labels.
@@ -286,8 +281,7 @@ CREATE INDEX idx_appearances_book_chapter  ON chapter_appearances (book_id, chap
 CREATE INDEX idx_research_threads_universe ON research_threads (universe_id);
 CREATE INDEX idx_facts_book                ON facts (book_id);
 CREATE INDEX idx_ties_book                 ON ties (book_id);
-CREATE INDEX idx_series_universe           ON series (universe_id);
-CREATE INDEX idx_books_series              ON books (series_id);
+CREATE INDEX idx_books_world               ON books (world_id);
 -- F9-B: category header ordering (shelf grouping + sort_order).
 CREATE INDEX idx_categories_sort           ON categories (sort_order, id);
 -- W-1 (world-model epic): world-by-universe (tree read) + membership reverse

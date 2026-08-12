@@ -3,6 +3,15 @@ import { randomUUID } from "node:crypto";
 import { loadEnv } from "@/lib/db/env";
 import { query, rows, one, closePool } from "@/lib/db/pool";
 import { migrate, down } from "@/lib/db/migrations/w1-worlds-expand.mjs";
+// W-6 hung books.world_id -> worlds(id) ON DELETE CASCADE off the worlds table
+// this migration owns. W-1's down() legitimately owns ONLY its own objects
+// (worlds/world_entities/categories.world_id) and drops them WITHOUT CASCADE, so a
+// global W-1 down can only run once the later W-6 layer is reversed first. The
+// global-down test below reverses the whole stack it depends on (w6b -> w6a -> W-1),
+// then restores it (W-1 -> w6a -> w6b), leaving the shared DB at the W-6 target for
+// any later serial int file.
+import { migrate as w6aUp, down as w6aDown } from "@/lib/db/migrations/w6a-books-world-expand.mjs";
+import { migrate as w6bUp, down as w6bDown } from "@/lib/db/migrations/w6b-series-contract.mjs";
 
 loadEnv();
 
@@ -159,7 +168,14 @@ describe("W-1 worlds-membership expand migration (real Postgres)", () => {
     // Prove the real down() runs and drops the objects globally, then restore via
     // migrate() so the suite (and any later serial int file) sees the expanded
     // shape. Scoped-safe: --no-file-parallelism, W-1 is the first worlds consumer.
+    //
+    // W-1's down owns ONLY worlds/world_entities/categories.world_id and drops them
+    // WITHOUT CASCADE. The later W-6 layer hung books.world_id -> worlds(id) off the
+    // worlds table, so a global W-1 down can only run once W-6 is reversed first.
+    // Reverse the whole stack it depends on (w6b -> w6a), then W-1 down cleanly.
     await migrate();
+    await w6bDown(); // rebuild bridge series, restore books.series_id NOT NULL
+    await w6aDown(); // drop books.world_id (+ its FK to worlds) so worlds has no dependents
     await down();
     expect(await one(`SELECT to_regclass('public.worlds') AS r`)).toEqual({ r: null });
     expect(await one(`SELECT to_regclass('public.world_entities') AS r`)).toEqual({ r: null });
@@ -168,8 +184,18 @@ describe("W-1 worlds-membership expand migration (real Postgres)", () => {
     );
     expect(hasCol.length).toBe(0);
 
-    // Restore the expanded shape + re-link this fixture for a clean afterAll.
+    // Restore the FULL expanded shape (W-1 -> w6a -> w6b) so the shared DB is back
+    // at the W-6 target — books.world_id NOT NULL + its FK, series gone — for any
+    // later serial int file (w6BooksWorld asserts the FK exists). Re-link this
+    // fixture too for a clean afterAll.
     await migrate();
     expect(await worldOf(entBId)).toBe(worldB);
+    await w6aUp();
+    await w6bUp();
+    // The W-6 FK must be back (w6a re-creates it on a genuinely fresh column).
+    const fk = await rows(
+      `SELECT 1 FROM pg_constraint WHERE conname = 'books_world_id_fkey'`,
+    );
+    expect(fk.length).toBe(1);
   });
 });

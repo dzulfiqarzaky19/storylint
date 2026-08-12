@@ -32,7 +32,7 @@ loadEnv();
 //          distinct from the 2 canon-UNION sites (necessary-not-sufficient).
 //  - shared-entity-2-worlds: an entity linked to TWO worlds appears in EACH world's
 //          snapshot independently (membership is the junction, not universe_id).
-//  - G4  fail-closed: a FOREIGN asOfBookId (a book in another world's series) makes
+//  - G4  fail-closed: a FOREIGN asOfBookId (a book in another world) makes
 //          the window EMPTY -> canon-only facts survive, ZERO book-scoped rows, and
 //          never another world's books.
 //  - G5  default-parity: loadWorldSnapshot('world-universe-1', DEFAULT_BOOK_ID)
@@ -52,17 +52,16 @@ loadEnv();
 // -----------------------------------------------------------------------------
 
 const uId = `test-w3-uni-${randomUUID()}`;
-const seId = `test-w3-se-${randomUUID()}`;
 const worldId = `world-${uId}`;
 const world2Id = `world-test-w3-w2-${randomUUID()}`; // 2nd world in the SAME universe
-// Two books in one series, sort_order 0 (book-1) and 1 (book-2). The as-of-N
+// Two books in one world, sort_order 0 (book-1) and 1 (book-2). The as-of-N
 // window is `sort_order <= chosen`, so book-1 is "before" book-2.
 const book1Id = `test-w3-b1-${randomUUID()}`;
 const book2Id = `test-w3-b2-${randomUUID()}`;
-// A foreign book (its own universe/series) used for G4 fail-closed: it is NOT in
-// worldId's series, so it can never enter worldId's window.
+// A foreign book (its own universe/world) used for G4 fail-closed: it is NOT in
+// worldId's world, so it can never enter worldId's window.
 const foreignUId = `test-w3-funi-${randomUUID()}`;
-const foreignSeId = `test-w3-fse-${randomUUID()}`;
+const foreignWorldId = `world-test-w3-fw-${randomUUID()}`;
 const foreignBookId = `test-w3-fb-${randomUUID()}`;
 
 // Entities. entMain carries all four fact/appearance kinds. entShared is linked to
@@ -81,17 +80,17 @@ async function seedFixture(): Promise<void> {
   await query(`INSERT INTO universes (id, name) VALUES ($1,$2), ($3,$4)`, [
     uId, "W3 Universe", foreignUId, "W3 Foreign Universe",
   ]);
-  await query(`INSERT INTO series (id, universe_id, name, sort_order) VALUES ($1,$2,'S',0), ($3,$4,'FS',0)`, [
-    seId, uId, foreignSeId, foreignUId,
+  // W-6: worlds FIRST (books.world_id FKs worlds). TWO worlds in worldId's
+  // universe + a foreign world in the foreign universe (for G4 fail-closed).
+  await query(`INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ($1,$2,'World One',0), ($3,$2,'World Two',1), ($4,$5,'Foreign World',0)`, [
+    worldId, uId, world2Id, foreignWorldId, foreignUId,
   ]);
+  // Books hang DIRECTLY off a world (W-6: books.world_id). book1/book2 live in
+  // worldId; the foreign book lives in the foreign world (never in worldId's window).
   await query(
-    `INSERT INTO books (id, series_id, name, sort_order) VALUES ($1,$2,'Book One',0), ($3,$2,'Book Two',1), ($4,$5,'Foreign',0)`,
-    [book1Id, seId, book2Id, foreignBookId, foreignSeId],
+    `INSERT INTO books (id, world_id, name, sort_order) VALUES ($1,$2,'Book One',0), ($3,$2,'Book Two',1), ($4,$5,'Foreign',0)`,
+    [book1Id, worldId, book2Id, foreignBookId, foreignWorldId],
   );
-  // TWO worlds in the SAME universe (both derive from uId). Titles arbitrary.
-  await query(`INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ($1,$2,'World One',0), ($3,$2,'World Two',1)`, [
-    worldId, uId, world2Id,
-  ]);
   // Entities live in the universe; membership is the junction below.
   await query(
     `INSERT INTO entries (id, kind, name, catalogue_no, shelf, universe_id, deleted_at)
@@ -131,15 +130,15 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // FK order: leaf child rows -> membership -> entries -> worlds -> books ->
-  // series -> universes. Sweep by the `test-w3-%` PREFIX so a crashed mutation
+  // worlds -> universes. Sweep by the `test-w3-%` PREFIX so a crashed mutation
   // run's fresh-UUID orphans still get healed (W-1 lesson).
   await query(`DELETE FROM chapter_appearances WHERE id LIKE 'test-w3-%'`);
   await query(`DELETE FROM facts WHERE id LIKE 'test-w3-%'`);
   await query(`DELETE FROM world_entities WHERE entity_id LIKE 'test-w3-%'`);
   await query(`DELETE FROM entries WHERE id LIKE 'test-w3-%'`);
-  await query(`DELETE FROM worlds WHERE id LIKE 'world-test-w3-%'`);
   await query(`DELETE FROM books WHERE id LIKE 'test-w3-%'`);
-  await query(`DELETE FROM series WHERE id LIKE 'test-w3-%'`);
+  await query(`DELETE FROM worlds WHERE id LIKE 'world-test-w3-%'`);
+  await query(`DELETE FROM worlds WHERE id LIKE 'world-%test-w3-%'`);
   await query(`DELETE FROM universes WHERE id LIKE 'test-w3-%'`);
   await closePool();
 });
@@ -200,7 +199,7 @@ describe("W-3 loadWorldSnapshot as-of-book window (real Postgres)", () => {
   });
 
   it("G4 fail-closed: a FOREIGN asOfBookId yields canon-only facts and ZERO book-scoped rows", async () => {
-    // foreignBookId is in another universe's series -> not in worldId's window ->
+    // foreignBookId is in another world -> not in worldId's window ->
     // the sort_order subquery is out-of-world, window is empty.
     const foreign = await loadWorldSnapshot(worldId, foreignBookId);
     const facts = factIdsOfMain(foreign);

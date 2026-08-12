@@ -335,7 +335,7 @@ export async function loadWikiSnapshot(
  *     belongs to a world via a `we.world_id = $1` link (a shared entity carries one
  *     link row per world, so it appears in EACH world's snapshot independently).
  *  2. The book axis is a WINDOW, not a single book. `win` = every book in this
- *     world's series whose sort_order <= the chosen book's sort_order (the "as of
+ *     world (W-6: books.world_id) whose sort_order <= the chosen book's (the "as of
  *     book N" set). Later-book rows (sort_order > chosen) are EXCLUDED so a future
  *     book's spoiler never leaks into an earlier-N read. A foreign/unknown
  *     asOfBookId yields an EMPTY window (fail-closed): the world then shows
@@ -352,21 +352,18 @@ export async function loadWorldSnapshot(
   asOfBookId: string = DEFAULT_BOOK_ID,
 ): Promise<WikiSnapshot> {
   // The as-of-N window, shared by every book-scoped read below. Reads `$2`
-  // (asOfBookId) and is bounded to THIS world's series (worlds->universe->series
-  // ->books), so a sibling world's book can never enter the window. An unknown
-  // asOfBookId makes the subquery NULL => `<= NULL` is never true => empty window.
+  // (asOfBookId) and is bounded to THIS world's OWN books (W-6: books.world_id
+  // directly, no series hop), so a sibling world's book can never enter the window.
+  // An unknown asOfBookId makes the subquery NULL => `<= NULL` is never true =>
+  // empty window (fail-closed).
   const WIN_CTE = `WITH win AS (
       SELECT b.id
         FROM books b
-        JOIN series s ON s.id = b.series_id
-        JOIN worlds w ON w.universe_id = s.universe_id
-       WHERE w.id = $1
+       WHERE b.world_id = $1
          AND b.sort_order <= (
            SELECT b2.sort_order
              FROM books b2
-             JOIN series s2 ON s2.id = b2.series_id
-             JOIN worlds w2 ON w2.universe_id = s2.universe_id
-            WHERE w2.id = $1 AND b2.id = $2
+            WHERE b2.world_id = $1 AND b2.id = $2
          )
     )`;
 
@@ -684,13 +681,14 @@ export async function listResearchThreads(): Promise<
 
 // ---- World tree (F7 S5 switcher) ------------------------------------------
 //
-// The top-bar picker needs the whole world SKELETON: every universe, its
-// series, and each series' books, NESTED. The nesting is the load-bearing part:
-// a series is grouped under its universe by `series.universe_id === universe.id`
-// and a book under its series by `book.series_id === series.id`. Dropping either
-// parent predicate flattens or mis-nests the tree (a book would surface under the
-// wrong series/universe in the picker), so both are mutation-locked in the S5
-// test. Ordered by sort_order then id for a stable, deterministic picker.
+// The top-bar picker needs the whole world SKELETON: every universe, its worlds,
+// and each world's books, NESTED. W-6: books hang off WORLDS now (books.world_id),
+// so the nesting is universe -> world -> book. The nesting is the load-bearing
+// part: a world is grouped under its universe by `world.universe_id ===
+// universe.id` and a book under its world by `book.world_id === world.id`.
+// Dropping either parent predicate flattens or mis-nests the tree (a book would
+// surface under the wrong world/universe in the picker), so both are
+// mutation-locked. Ordered by sort_order then id for a stable picker.
 
 export interface WorldBookNode {
   id: string;
@@ -698,9 +696,9 @@ export interface WorldBookNode {
   sortOrder: number;
 }
 
-export interface WorldSeriesNode {
+export interface WorldNode {
   id: string;
-  name: string;
+  title: string;
   sortOrder: number;
   books: WorldBookNode[];
 }
@@ -708,58 +706,46 @@ export interface WorldSeriesNode {
 export interface WorldUniverseNode {
   id: string;
   name: string;
-  series: WorldSeriesNode[];
   /**
-   * TCK-022 (W-4a): the universe's REAL worlds (from the `worlds` table),
-   * ordered by sort_order. Until W-4a this was implicitly 1:1 (`world-${id}`);
-   * now the switcher lists every world so a second one is selectable. Ordered by
-   * sort_order (then id as a stable tiebreak) so the switcher order is
-   * deterministic. The existing `series` field is untouched for compatibility.
+   * TCK-022 (W-4a) / W-6: the universe's REAL worlds (from the `worlds` table),
+   * ordered by sort_order, each carrying its OWN books (W-6: books.world_id).
+   * Ordered by sort_order (then id as a stable tiebreak) so the switcher order is
+   * deterministic.
    */
-  worlds: { id: string; title: string }[];
+  worlds: WorldNode[];
 }
 
 export async function getWorldTree(): Promise<WorldUniverseNode[]> {
   const universes = await rows<{ id: string; name: string }>(
     `SELECT id, name FROM universes ORDER BY id`,
   );
-  const series = await rows<{ id: string; name: string; universeId: string; sortOrder: number }>(
-    `SELECT id, name, universe_id AS "universeId", sort_order AS "sortOrder"
-       FROM series ORDER BY sort_order, id`,
-  );
-  const books = await rows<{ id: string; name: string; seriesId: string; sortOrder: number }>(
-    `SELECT id, name, series_id AS "seriesId", sort_order AS "sortOrder"
+  const books = await rows<{ id: string; name: string; worldId: string; sortOrder: number }>(
+    `SELECT id, name, world_id AS "worldId", sort_order AS "sortOrder"
        FROM books ORDER BY sort_order, id`,
   );
-  // TCK-022: the real per-universe world list, ordered by sort_order then id so
-  // the switcher renders a stable order. Fetched once and grouped in memory
-  // (mirrors the series/books nesting below).
-  const worlds = await rows<{ id: string; title: string; universeId: string }>(
-    `SELECT id, title, universe_id AS "universeId"
+  // The real per-universe world list, ordered by sort_order then id so the
+  // switcher renders a stable order. Fetched once and grouped in memory.
+  const worlds = await rows<{ id: string; title: string; universeId: string; sortOrder: number }>(
+    `SELECT id, title, universe_id AS "universeId", sort_order AS "sortOrder"
        FROM worlds ORDER BY sort_order, id`,
   );
 
-  // NEST — each book under its series (book.seriesId === series.id), each series
-  // under its universe (series.universeId === universe.id). These two equalities
-  // are the tree's structure; the S5 test mutates each to prove it.
+  // NEST — each book under its world (book.worldId === world.id), each world under
+  // its universe (world.universeId === universe.id). These two equalities are the
+  // tree's structure; the getWorldTree test mutates each to prove it.
   return universes.map((u) => ({
     id: u.id,
     name: u.name,
-    series: series
-      .filter((se) => se.universeId === u.id)
-      .map((se) => ({
-        id: se.id,
-        name: se.name,
-        sortOrder: se.sortOrder,
-        books: books
-          .filter((b) => b.seriesId === se.id)
-          .map((b) => ({ id: b.id, name: b.name, sortOrder: b.sortOrder })),
-      })),
-    // TCK-022: attach only THIS universe's worlds (world.universeId === u.id),
-    // preserving the sort_order,id ordering from the query above.
     worlds: worlds
       .filter((w) => w.universeId === u.id)
-      .map((w) => ({ id: w.id, title: w.title })),
+      .map((w) => ({
+        id: w.id,
+        title: w.title,
+        sortOrder: w.sortOrder,
+        books: books
+          .filter((b) => b.worldId === w.id)
+          .map((b) => ({ id: b.id, name: b.name, sortOrder: b.sortOrder })),
+      })),
   }));
 }
 
@@ -782,7 +768,6 @@ export interface CascadePreview {
   entries: number;
   researchThreads: number;
   books: number;
-  series: number;
   universes: number;
   // W-5: world-scoped preview counts, mirroring CascadeCount so a world delete's
   // advisory total matches deleteWorldCascade's authoritative count. worldEntities
@@ -810,17 +795,18 @@ function sumPreview(
   const worlds = c.worlds ?? 0;
   const total =
     c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters +
-    c.openQuestions + c.entries + c.researchThreads + c.books + c.series + c.universes +
+    c.openQuestions + c.entries + c.researchThreads + c.books + c.universes +
     worldEntities + categories + worlds;
   return { ...c, worldEntities, categories, worlds, total };
 }
 
-/** Advisory count of everything deleteUniverseCascade would remove. */
+/** Advisory count of everything deleteUniverseCascade would remove. W-6: books
+ * join to the universe through worlds (books.world_id), and series is gone. */
 export async function previewUniverseCascade(universeId: string): Promise<CascadePreview> {
-  const booksOf = `SELECT b.id FROM books b JOIN series s ON s.id = b.series_id WHERE s.universe_id = $1`;
+  const booksOf = `SELECT b.id FROM books b JOIN worlds w ON w.id = b.world_id WHERE w.universe_id = $1`;
   const entriesOf = `SELECT id FROM entries WHERE universe_id = $1`;
   const [
-    tiesBook, factsBook, efBook, tiesEntry, factsEntry, efEntry, oq, appr, chap, ent, thr, bk, se, uni,
+    tiesBook, factsBook, efBook, tiesEntry, factsEntry, efEntry, oq, appr, chap, ent, thr, bk, uni,
   ] = await Promise.all([
     countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id IN (${booksOf})`, [universeId]),
     countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id IN (${booksOf})`, [universeId]),
@@ -833,8 +819,7 @@ export async function previewUniverseCascade(universeId: string): Promise<Cascad
     countOne(`SELECT COUNT(*) AS n FROM chapters WHERE book_id IN (${booksOf})`, [universeId]),
     countOne(`SELECT COUNT(*) AS n FROM entries WHERE universe_id = $1`, [universeId]),
     countOne(`SELECT COUNT(*) AS n FROM research_threads WHERE universe_id = $1`, [universeId]),
-    countOne(`SELECT COUNT(*) AS n FROM books WHERE series_id IN (SELECT id FROM series WHERE universe_id = $1)`, [universeId]),
-    countOne(`SELECT COUNT(*) AS n FROM series WHERE universe_id = $1`, [universeId]),
+    countOne(`SELECT COUNT(*) AS n FROM books WHERE world_id IN (SELECT id FROM worlds WHERE universe_id = $1)`, [universeId]),
     countOne(`SELECT COUNT(*) AS n FROM universes WHERE id = $1`, [universeId]),
   ]);
   return sumPreview({
@@ -847,26 +832,7 @@ export async function previewUniverseCascade(universeId: string): Promise<Cascad
     entries: ent,
     researchThreads: thr,
     books: bk,
-    series: se,
     universes: uni,
-  });
-}
-
-/** Advisory count of everything deleteSeriesCascade would remove. */
-export async function previewSeriesCascade(seriesId: string): Promise<CascadePreview> {
-  const booksOf = `SELECT id FROM books WHERE series_id = $1`;
-  const [ties, facts, ef, appr, chap, bk, se] = await Promise.all([
-    countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id IN (${booksOf})`, [seriesId]),
-    countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id IN (${booksOf})`, [seriesId]),
-    countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE book_id IN (${booksOf})`, [seriesId]),
-    countOne(`SELECT COUNT(*) AS n FROM chapter_appearances WHERE book_id IN (${booksOf})`, [seriesId]),
-    countOne(`SELECT COUNT(*) AS n FROM chapters WHERE book_id IN (${booksOf})`, [seriesId]),
-    countOne(`SELECT COUNT(*) AS n FROM books WHERE series_id = $1`, [seriesId]),
-    countOne(`SELECT COUNT(*) AS n FROM series WHERE id = $1`, [seriesId]),
-  ]);
-  return sumPreview({
-    ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
-    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, series: se, universes: 0,
   });
 }
 
@@ -882,28 +848,37 @@ export async function previewBookCascade(bookId: string): Promise<CascadePreview
   ]);
   return sumPreview({
     ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
-    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, series: 0, universes: 0,
+    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, universes: 0,
   });
 }
 
 /**
- * W-5 — advisory count of everything deleteWorldCascade would remove, MIRRORING
- * that mutation exactly (mutations.ts deleteWorldCascade): the world's
- * world_entities junction rows (membership UNLINKED, entity ROWS survive so they
- * are NEVER counted as entries), the world's user categories (built-ins have
- * world_id NULL and are excluded), and the world row itself. Entries, sibling
- * worlds, universe-canon, and the global built-in categories are untouched, so
- * preview.total === deleteWorldCascade(...).total by construction.
+ * W-5/W-6 — advisory count of everything deleteWorldCascade would remove,
+ * MIRRORING that mutation exactly (mutations.ts deleteWorldCascade): W-6 the
+ * world's OWN books' subtree (book-scoped ties/facts/facets/appearances/chapters +
+ * the books, keyed by books.world_id), then the world's world_entities junction
+ * rows (membership UNLINKED, entity ROWS survive so they are NEVER counted as
+ * entries), the world's user categories (built-ins have world_id NULL and are
+ * excluded), and the world row itself. Entries, sibling worlds, universe-canon,
+ * and the global built-in categories are untouched, so preview.total ===
+ * deleteWorldCascade(...).total by construction.
  */
 export async function previewWorldCascade(worldId: string): Promise<CascadePreview> {
-  const [we, cat, wo] = await Promise.all([
+  const booksOf = `SELECT id FROM books WHERE world_id = $1`;
+  const [ties, facts, ef, appr, chap, bk, we, cat, wo] = await Promise.all([
+    countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id IN (${booksOf})`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id IN (${booksOf})`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE book_id IN (${booksOf})`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapter_appearances WHERE book_id IN (${booksOf})`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM chapters WHERE book_id IN (${booksOf})`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM books WHERE world_id = $1`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM world_entities WHERE world_id = $1`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM categories WHERE world_id = $1`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM worlds WHERE id = $1`, [worldId]),
   ]);
   return sumPreview({
-    ties: 0, facts: 0, entryFacets: 0, chapterAppearances: 0, chapters: 0,
-    openQuestions: 0, entries: 0, researchThreads: 0, books: 0, series: 0, universes: 0,
+    ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
+    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, universes: 0,
     worldEntities: we, categories: cat, worlds: wo,
   });
 }

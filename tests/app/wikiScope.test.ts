@@ -23,8 +23,8 @@ import type { WorldUniverseNode } from "@/lib/db/queries";
 // Legacy tree: no `worlds` rows on either universe (pre-backfill shape). Locks
 // the `world-${universeId}` fallback that keeps the page renderable.
 const legacyTree: WorldUniverseNode[] = [
-  { id: DEFAULT_UNIVERSE_ID, name: "Ashkeld", series: [], worlds: [] },
-  { id: "universe-2", name: "Second World", series: [], worlds: [] },
+  { id: DEFAULT_UNIVERSE_ID, name: "Ashkeld", worlds: [] },
+  { id: "universe-2", name: "Second World", worlds: [] },
 ];
 
 // TCK-022 tree: the default universe has TWO worlds (ordered), universe-2 has one.
@@ -32,17 +32,15 @@ const multiWorldTree: WorldUniverseNode[] = [
   {
     id: DEFAULT_UNIVERSE_ID,
     name: "Ashkeld",
-    series: [],
     worlds: [
-      { id: "world-a", title: "World A" },
-      { id: "world-b", title: "World B" },
+      { id: "world-a", title: "World A", sortOrder: 0, books: [] },
+      { id: "world-b", title: "World B", sortOrder: 1, books: [] },
     ],
   },
   {
     id: "universe-2",
     name: "Second World",
-    series: [],
-    worlds: [{ id: "world-u2", title: "U2 World" }],
+    worlds: [{ id: "world-u2", title: "U2 World", sortOrder: 0, books: [] }],
   },
 ];
 

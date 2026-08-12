@@ -480,12 +480,12 @@ function bodyOf(paragraphs: string[]) {
 
 export async function seedWithin(client: PoolClient): Promise<void> {
   // Idempotent: clear everything, then insert. CASCADE covers FK children.
-  // F7: universes/series/books/entry_facets are cleared too (CASCADE from the
+  // F7/W-6: universes/books/entry_facets are cleared too (CASCADE from the
   // structural parents also clears any facet rows). Order does not matter under
-  // one TRUNCATE ... CASCADE.
+  // one TRUNCATE ... CASCADE. (series is gone — W-6 merged it into worlds.)
   await client.query(`
     TRUNCATE TABLE
-      universes, series, books, entry_facets,
+      universes, books, entry_facets,
       worlds, world_entities,
       categories,
       entries, facts, ties, chapter_appearances, open_questions,
@@ -494,15 +494,17 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     RESTART IDENTITY CASCADE
   `);
 
-  // F7 worlds hierarchy: one Universe 1 / Series 1 / Book 1 so a fresh seed lands
-  // in exactly the state a live DB reaches after the f7a-worlds-expand migration
-  // (every scope-bearing row stamped U1/B1). Ids match f7a's exported U1/SE1/B1.
+  // F7/W-6 worlds hierarchy: one Universe 1 / World 1 / Book 1 so a fresh seed
+  // lands in exactly the state a live DB reaches after the w6a-books-world-expand
+  // migration (books hang off the world directly). The world is inserted BEFORE
+  // the book so books.world_id FK resolves; its id matches B1 below
+  // ('world-' || universe_id), so B1's ON CONFLICT re-insert is a no-op.
   await client.query(`INSERT INTO universes (id, name) VALUES ('universe-1', 'Ashkeld')`);
   await client.query(
-    `INSERT INTO series (id, universe_id, name, sort_order) VALUES ('series-1', 'universe-1', 'Ashkeld', 0)`,
+    `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ('world-universe-1', 'universe-1', 'Ashkeld', 0)`,
   );
   await client.query(
-    `INSERT INTO books (id, series_id, name, sort_order) VALUES ('book-1', 'series-1', 'Ashkeld', 0)`,
+    `INSERT INTO books (id, world_id, name, sort_order) VALUES ('book-1', 'world-universe-1', 'Ashkeld', 0)`,
   );
 
   // F9-B categories: seed the 4 built-ins BEFORE entries, since entries.kind is a

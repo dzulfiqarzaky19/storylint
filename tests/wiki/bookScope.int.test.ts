@@ -4,14 +4,14 @@ import { loadEnv } from "@/lib/db/env";
 import { query, closePool } from "@/lib/db/pool";
 import { getChapter, getAppearancesForEntry, loadWikiSnapshot } from "@/lib/db/queries";
 import { getNextChapterNumber, insertChapter } from "@/lib/db/mutations";
-import { DEFAULT_UNIVERSE_ID, DEFAULT_SERIES_ID, DEFAULT_BOOK_ID } from "@/lib/db/scope";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID, DEFAULT_BOOK_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // F7-S2 — book-scoped reads, CROSS-BOOK LEAK LOCK (INTEGRATION, real Postgres).
 //
 // After S1a/S1b every chapter/appearance carries a book_id and chapter `number`
 // is unique only WITHIN a book (UNIQUE(book_id, number)). This test stands up a
-// SECOND book B2 under the same series, gives it its own Chapter 1 and an
+// SECOND book B2 under the same world, gives it its own Chapter 1 and an
 // appearance on an entry, and proves the scoped reads never leak across books:
 //
 //  - getChapter(1, B2) returns B2's Ch.1, NOT B1's Ch.1.
@@ -26,7 +26,7 @@ import { DEFAULT_UNIVERSE_ID, DEFAULT_SERIES_ID, DEFAULT_BOOK_ID } from "@/lib/d
 //
 // SHARED-DB HYGIENE: all ids are `test-f7s2-<uuid>`; the whole fixture (book B2,
 // its chapter, the entry, its appearances) is hard-deleted in afterEach in FK
-// order. book-1 / universe-1 / series-1 are never touched.
+// order. book-1 / universe-1 / world-universe-1 are never touched.
 // -----------------------------------------------------------------------------
 
 loadEnv();
@@ -38,10 +38,10 @@ beforeAll(async () => {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL not set; integration test needs a live DB (.env.local).");
   }
-  // Second book under the SAME default series/universe as book-1.
-  await query(`INSERT INTO books (id, series_id, name, sort_order) VALUES ($1, $2, 'F7S2 Book', 99)`, [
+  // Second book under the SAME default world as book-1 (W-6: books.world_id).
+  await query(`INSERT INTO books (id, world_id, name, sort_order) VALUES ($1, $2, 'F7S2 Book', 99)`, [
     B2,
-    DEFAULT_SERIES_ID,
+    DEFAULT_WORLD_ID,
   ]);
 
   // An entry in the default universe that appears in BOTH books' Chapter 1.
