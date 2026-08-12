@@ -18,6 +18,13 @@ interface NewCategoryShelfProps {
    * (WikiScreen createCategoryOnShelf via defaultCategoryShelf()).
    */
   onCreate: (id: string, label: string) => void;
+  /**
+   * Where the trigger is rendered. The main "panel" insets the trigger by the
+   * shared gutter so "+ New category" lines up with the gutter-padded Shelf
+   * blocks above it; the "sidebar" (default) sits flush like the other flat
+   * "+ New …" create rows. The popup itself is identical either way.
+   */
+  variant?: "panel" | "sidebar";
 }
 
 // F9-B S3 / TCK-009 / TCK-019: the "+ New category" affordance rendered after
@@ -29,7 +36,10 @@ interface NewCategoryShelfProps {
 // a top-level sibling category and closes the popup; Cancel / Escape / backdrop
 // close it without creating; the base Modal restores focus to the trigger. No
 // shelf picker — a new category is a sibling of People/Places/Orders/Lore.
-export default function NewCategoryShelf({ onCreate }: NewCategoryShelfProps) {
+export default function NewCategoryShelf({
+  onCreate,
+  variant = "sidebar",
+}: NewCategoryShelfProps) {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
   const titleId = useId();
@@ -59,7 +69,11 @@ export default function NewCategoryShelf({ onCreate }: NewCategoryShelfProps) {
     <section className={styles.newShelf}>
       <button
         type="button"
-        className={styles.addButton}
+        className={
+          variant === "panel"
+            ? `${styles.addButton} ${styles.addButtonPanel}`
+            : styles.addButton
+        }
         onClick={() => {
           idRef.current = crypto.randomUUID();
           setLabel("");

@@ -775,7 +775,7 @@ function WikiScreenInner({
             isBuiltin={cat.id in KIND_SHELF}
           />
         ))}
-        <NewCategoryShelf onCreate={createCategoryOnShelf} />
+        <NewCategoryShelf variant="panel" onCreate={createCategoryOnShelf} />
       </div>
       <PosterBand
         suggestions={state.suggestions}

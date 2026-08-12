@@ -27,6 +27,16 @@
   text-decoration: underline;
 }
 
+/* TCK-020c: in the MAIN panel the category Shelf blocks are inset by the shared
+   gutter (Shelf.module.css .shelf padding), so the flush sidebar trigger looked
+   misaligned there. The "panel" variant matches that horizontal inset (and the
+   Shelf's 40px bottom breathing room via the top gap) so "+ New category" lines
+   up under the entries above it. The sidebar keeps the flush default. */
+.addButtonPanel {
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
 /* Modal slot content. */
 .title {
   font-size: 20px;
