@@ -33,6 +33,7 @@ import {
   previewUniverseCascade,
   previewSeriesCascade,
   previewBookCascade,
+  previewWorldCascade,
   type CascadePreview,
 } from "../db/queries";
 import {
@@ -64,6 +65,7 @@ import {
   deleteUniverseCascade,
   deleteSeriesCascade,
   deleteBookCascade,
+  deleteWorldCascade,
   type CascadeCount,
 } from "../db/mutations";
 import { RETENTION_MS } from "../wiki/retention";
@@ -888,12 +890,37 @@ export async function deleteBook(input: {
 }
 
 /**
+ * DANGER: delete a WORLD and its world-owned data WITHOUT destroying entities or
+ * universe-canon (orphan=LEAVE). Unlinks the world's world_entities membership
+ * (the entity ROWS survive, reclaimable), drops the world's user categories
+ * (built-ins are global and survive), and removes the world row. Sibling worlds,
+ * books (universe-owned), and entries SURVIVE. Gated on `confirmed: true`.
+ * Returns the CascadeCount (total === rows removed). The CALLER must never delete
+ * a universe's LAST world (that would orphan every shared entity with no world to
+ * reclaim it in); the WorldSwitcher disables the affordance in that case.
+ */
+export async function deleteWorld(input: {
+  worldId: string;
+  confirmed: true;
+}): Promise<ActionResult<CascadeCount>> {
+  try {
+    if (input.confirmed !== true) {
+      return { ok: false, error: "wiki.deleteWorld: not confirmed" };
+    }
+    const count = await deleteWorldCascade(input.worldId);
+    return { ok: true, data: count };
+  } catch (err) {
+    return fail(err, "wiki.deleteWorld");
+  }
+}
+
+/**
  * ADVISORY: how many rows a delete would remove (the danger modal's preview).
  * Read-only; the authoritative count is still the delete action's return. The S5
  * gate asserts preview.total === delete count === rows actually removed.
  */
 export async function previewCascade(input: {
-  level: "universe" | "series" | "book";
+  level: "universe" | "series" | "book" | "world";
   id: string;
 }): Promise<ActionResult<CascadePreview>> {
   try {
@@ -902,7 +929,9 @@ export async function previewCascade(input: {
         ? await previewUniverseCascade(input.id)
         : input.level === "series"
           ? await previewSeriesCascade(input.id)
-          : await previewBookCascade(input.id);
+          : input.level === "book"
+            ? await previewBookCascade(input.id)
+            : await previewWorldCascade(input.id);
     return { ok: true, data: preview };
   } catch (err) {
     return fail(err, "wiki.previewCascade");

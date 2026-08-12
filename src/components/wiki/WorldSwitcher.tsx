@@ -18,6 +18,7 @@ import {
   createUniverse,
   createWorld,
   deleteUniverse,
+  deleteWorld,
   previewCascade,
 } from "@/lib/actions/wiki";
 import ConfirmModal from "../ui/ConfirmModal";
@@ -32,7 +33,9 @@ interface WorldSwitcherProps {
   activeWorldId: string;
 }
 
-type DeleteTarget = { level: "universe"; id: string; name: string };
+type DeleteTarget =
+  | { level: "universe"; id: string; name: string }
+  | { level: "world"; id: string; name: string };
 
 /** An open naming dialog: its heading and the callback that runs on submit. */
 type NamePromptState = {
@@ -64,6 +67,12 @@ export default function WorldSwitcher({
   const [namePrompt, setNamePrompt] = useState<NamePromptState | null>(null);
 
   const universe = tree.find((u) => u.id === activeUniverseId) ?? tree[0];
+  // The active universe's worlds and the one currently selected. Deleting the
+  // LAST world would orphan every shared entity with no world to reclaim it in,
+  // so the delete-world affordance is disabled whenever only one world remains.
+  const worlds = universe?.worlds ?? [];
+  const activeWorld = worlds.find((w) => w.id === activeWorldId) ?? worlds[0];
+  const canDeleteWorld = worlds.length > 1 && !!activeWorld;
 
   const go = useCallback(
     (u: string, w?: string) => {
@@ -142,24 +151,44 @@ export default function WorldSwitcher({
     if (!deleteTarget) return;
     setBusy(true);
     setError(null);
-    const res = await deleteUniverse({ universeId: deleteTarget.id, confirmed: true });
+    // A world delete unlinks its shared entities (orphan=LEAVE) and drops the
+    // world; a universe delete tears down the whole subtree. Route by level.
+    const res =
+      deleteTarget.level === "world"
+        ? await deleteWorld({ worldId: deleteTarget.id, confirmed: true })
+        : await deleteUniverse({ universeId: deleteTarget.id, confirmed: true });
     setBusy(false);
+    // The active universe's first REMAINING world (never the just-deleted one),
+    // captured before deleteTarget is cleared, for a world delete's post-nav.
+    const remainingWorld =
+      deleteTarget.level === "world"
+        ? (universe?.worlds ?? []).find((w) => w.id !== deleteTarget.id)
+        : undefined;
+    const deletedLevel = deleteTarget.level;
     setDeleteTarget(null);
     setPendingCount(null);
     if (!res.ok) {
       setError(res.error);
       return;
     }
-    // The deleted scope is gone; go home to the default world and re-render.
+    // The deleted scope is gone. For a world delete, land on the first remaining
+    // world of the active universe; for a universe delete, go home to the server
+    // default. Then re-render from the server.
     startTransition(() => {
-      router.push("/wiki");
+      router.push(
+        deletedLevel === "world" && remainingWorld
+          ? scopeHref(activeUniverseId, remainingWorld.id)
+          : "/wiki",
+      );
       router.refresh();
     });
-  }, [deleteTarget, router]);
+  }, [deleteTarget, router, universe, activeUniverseId]);
 
   const deleteBody =
     deleteTarget && pendingCount !== null
-      ? `This permanently removes ${pendingCount} row${pendingCount === 1 ? "" : "s"} (the ${deleteTarget.level} and everything inside it). This cannot be undone.`
+      ? deleteTarget.level === "world"
+        ? `This permanently removes ${pendingCount} row${pendingCount === 1 ? "" : "s"} (this world and its links). Shared entities are unlinked, not deleted, and survive in their other worlds. This cannot be undone.`
+        : `This permanently removes ${pendingCount} row${pendingCount === 1 ? "" : "s"} (the ${deleteTarget.level} and everything inside it). This cannot be undone.`
       : "Counting what will be removed...";
 
   return (
@@ -190,7 +219,7 @@ export default function WorldSwitcher({
             {/* TCK-022 (W-4a): the active universe's REAL worlds, ordered by
                 sort_order (getWorldTree). A second world is now selectable and
                 switching navigates to /wiki?u=&w=. */}
-            {(universe?.worlds ?? []).map((w) => (
+            {(worlds).map((w) => (
               <option key={w.id} value={w.id}>{w.title}</option>
             ))}
           </select>
@@ -200,6 +229,20 @@ export default function WorldSwitcher({
       <div className={styles.actions}>
         <button type="button" onClick={onNewUniverse} disabled={busy}>+ universe</button>
         <button type="button" onClick={onNewWorld} disabled={busy || !universe}>+ world</button>
+        {activeWorld ? (
+          <button
+            type="button"
+            className={styles.danger}
+            // SAFETY: never orphan the last world. Disabled while the active
+            // universe has a single world (canDeleteWorld requires >1).
+            disabled={busy || !canDeleteWorld}
+            onClick={() =>
+              void openDelete({ level: "world", id: activeWorld.id, name: activeWorld.title })
+            }
+          >
+            delete world
+          </button>
+        ) : null}
         {universe ? (
           <button
             type="button"

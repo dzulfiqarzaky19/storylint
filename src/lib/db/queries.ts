@@ -784,6 +784,15 @@ export interface CascadePreview {
   books: number;
   series: number;
   universes: number;
+  // W-5: world-scoped preview counts, mirroring CascadeCount so a world delete's
+  // advisory total matches deleteWorldCascade's authoritative count. worldEntities
+  // = junction membership rows UNLINKED (entity ROWS survive, orphan=LEAVE, never
+  // counted as entries); categories = the world's user categories (built-ins have
+  // world_id NULL, never counted); worlds = the world row. Every non-world preview
+  // leaves these 0.
+  worldEntities: number;
+  categories: number;
+  worlds: number;
   total: number;
 }
 
@@ -792,11 +801,18 @@ async function countOne(sql: string, params: unknown[]): Promise<number> {
   return r ? Number(r.n) : 0;
 }
 
-function sumPreview(c: Omit<CascadePreview, "total">): CascadePreview {
+function sumPreview(
+  c: Omit<CascadePreview, "total" | "worldEntities" | "categories" | "worlds"> &
+    Partial<Pick<CascadePreview, "worldEntities" | "categories" | "worlds">>,
+): CascadePreview {
+  const worldEntities = c.worldEntities ?? 0;
+  const categories = c.categories ?? 0;
+  const worlds = c.worlds ?? 0;
   const total =
     c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters +
-    c.openQuestions + c.entries + c.researchThreads + c.books + c.series + c.universes;
-  return { ...c, total };
+    c.openQuestions + c.entries + c.researchThreads + c.books + c.series + c.universes +
+    worldEntities + categories + worlds;
+  return { ...c, worldEntities, categories, worlds, total };
 }
 
 /** Advisory count of everything deleteUniverseCascade would remove. */
@@ -867,6 +883,28 @@ export async function previewBookCascade(bookId: string): Promise<CascadePreview
   return sumPreview({
     ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
     openQuestions: 0, entries: 0, researchThreads: 0, books: bk, series: 0, universes: 0,
+  });
+}
+
+/**
+ * W-5 — advisory count of everything deleteWorldCascade would remove, MIRRORING
+ * that mutation exactly (mutations.ts deleteWorldCascade): the world's
+ * world_entities junction rows (membership UNLINKED, entity ROWS survive so they
+ * are NEVER counted as entries), the world's user categories (built-ins have
+ * world_id NULL and are excluded), and the world row itself. Entries, sibling
+ * worlds, universe-canon, and the global built-in categories are untouched, so
+ * preview.total === deleteWorldCascade(...).total by construction.
+ */
+export async function previewWorldCascade(worldId: string): Promise<CascadePreview> {
+  const [we, cat, wo] = await Promise.all([
+    countOne(`SELECT COUNT(*) AS n FROM world_entities WHERE world_id = $1`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM categories WHERE world_id = $1`, [worldId]),
+    countOne(`SELECT COUNT(*) AS n FROM worlds WHERE id = $1`, [worldId]),
+  ]);
+  return sumPreview({
+    ties: 0, facts: 0, entryFacets: 0, chapterAppearances: 0, chapters: 0,
+    openQuestions: 0, entries: 0, researchThreads: 0, books: 0, series: 0, universes: 0,
+    worldEntities: we, categories: cat, worlds: wo,
   });
 }
 
