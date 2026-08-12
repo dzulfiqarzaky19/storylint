@@ -43,7 +43,7 @@ import {
   updateFactEntry,
   reorderShelf,
   insertDismissedSuggestion,
-  insertEntry,
+  insertEntryLinkedToWorld,
   updateEntryFields,
   updateFact,
   getMaxSortOrderForShelf,
@@ -388,7 +388,10 @@ export async function createEntry(input: {
     const confirmation = confirmWikiWrite({ confirmed: true });
     const id = input.id ?? randomUUID();
     const sortOrder = (await getMaxSortOrderForShelf(input.shelf)) + 1;
-    await insertEntry(
+    // TCK-E06: entry INSERT + world link run in ONE txn so a nonexistent worldId
+    // FK-throws and rolls the entry back with it (no persisted-but-invisible
+    // orphan). requireWorldId above already fail-closed on blank/missing worldId.
+    await insertEntryLinkedToWorld(
       {
         id,
         kind: input.kind,
@@ -399,11 +402,9 @@ export async function createEntry(input: {
         shelf: input.shelf,
         sortOrder,
       },
+      world.worldId,
       confirmation,
     );
-    // TCK-E06: link the new entry into the active world so /wiki (which JOINs
-    // world_entities on the active world) actually shows it after reload.
-    await linkEntityToWorldRow(world.worldId, id);
     return { ok: true, data: { entryId: id, sortOrder } };
   } catch (err) {
     return fail(err, "wiki.createEntry");

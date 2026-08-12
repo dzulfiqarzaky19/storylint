@@ -106,6 +106,33 @@ describe("TCK-E06 createEntry — links the new entry into the active world (rea
     expect(await entryCount(id)).toBe(0);
     expect(await worldLinkCount(WORLD, id)).toBe(0);
   });
+
+  it("FAILS CLOSED on a valid-format but NONEXISTENT worldId - atomic rollback, NO orphan", async () => {
+    // Zebra Required finding: createEntry was insertEntry() then a SEPARATE
+    // linkEntityToWorldRow(). requireWorldId only rejects blank/missing, so a
+    // well-formed worldId that names no world PASSED the guard, the entry
+    // COMMITTED, then the link threw on the world_entities.world_id FK - leaving
+    // exactly the E06 orphan (entry persisted, invisible on reload). The fix runs
+    // both INSERTs in ONE txn (insertEntryLinkedToWorld) so the FK throw rolls the
+    // entry back with it. This locks that atomicity.
+    const id = `test-e06-${randomUUID()}`;
+    createdEntries.push(id);
+
+    const result = await createEntry({
+      id,
+      kind: "character",
+      shelf: "people",
+      name: "E06 Atomic Guard",
+      worldId: `world-does-not-exist-${randomUUID()}`,
+    });
+
+    // The bad worldId FK-throws inside the txn -> the whole txn rolls back.
+    expect(result.ok).toBe(false);
+    // Load-bearing: BEFORE the atomic fix the entry COMMITS before the link
+    // throws -> entryCount === 1 (orphan) -> this assertion goes RED.
+    expect(await entryCount(id)).toBe(0);
+    expect(await worldLinkCount(WORLD, id)).toBe(0);
+  });
 });
 
 describe("TCK-E06 createEntryTied — links the tied child into the active world (real Postgres)", () => {

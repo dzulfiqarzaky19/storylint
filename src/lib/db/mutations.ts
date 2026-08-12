@@ -152,6 +152,68 @@ export async function insertEntry(
 }
 
 /**
+ * WIKI WRITE (product rule 1). Create a new entry AND link it into the active
+ * world in ONE transaction (TCK-E06). Both writes share a single client/txn, so
+ * a bad worldId (valid format but no such world) FK-throws on the world_entities
+ * INSERT and rolls the entry INSERT back WITH it, never leaving a persisted-but-
+ * invisible orphan (the E06 bug). Mirrors insertEntry's ON CONFLICT(id) DO UPDATE
+ * so a client-authored id re-submit still upserts in place (idempotent), and the
+ * link is ON CONFLICT(world_id,entity_id) DO NOTHING so re-linking is a no-op.
+ * Requires a confirmation token.
+ */
+export async function insertEntryLinkedToWorld(
+  entry: {
+    id: string;
+    kind: string;
+    name: string;
+    catalogueNo: string;
+    note: string;
+    summary: string;
+    shelf: string;
+    sortOrder: number;
+    universeId?: string;
+  },
+  worldId: string,
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  await withTransaction(async (client) => {
+    // Entry INSERT first, then the world link, both before COMMIT. ON CONFLICT(id)
+    // DO UPDATE keeps insertEntry's idempotency verbatim (re-confirm upserts).
+    await client.query(
+      `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order, universe_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       ON CONFLICT (id) DO UPDATE SET
+         kind = EXCLUDED.kind,
+         name = EXCLUDED.name,
+         catalogue_no = EXCLUDED.catalogue_no,
+         note = EXCLUDED.note,
+         summary = EXCLUDED.summary,
+         shelf = EXCLUDED.shelf,
+         sort_order = EXCLUDED.sort_order`,
+      [
+        entry.id,
+        entry.kind,
+        entry.name,
+        entry.catalogueNo,
+        entry.note,
+        entry.summary,
+        entry.shelf,
+        entry.sortOrder,
+        entry.universeId ?? DEFAULT_UNIVERSE_ID,
+      ],
+    );
+    // Link the new entry into the active world in the SAME txn. A nonexistent
+    // worldId FK-throws here and rolls the entry INSERT back with it.
+    await client.query(
+      `INSERT INTO world_entities (world_id, entity_id)
+       VALUES ($1, $2)
+       ON CONFLICT (world_id, entity_id) DO NOTHING`,
+      [worldId, entry.id],
+    );
+  });
+}
+
+/**
  * WIKI WRITE (product rule 1). Soft-delete a single entry: stamp deleted_at so
  * the row is hidden from every live read (getAllEntries/getEntry filter
  * `deleted_at IS NULL`) WITHOUT removing the row — the ON DELETE CASCADE on
