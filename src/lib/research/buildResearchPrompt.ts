@@ -90,8 +90,9 @@ export function buildResearchPrompt(
     // JSON. Emitting the sentinel verbatim is REQUIRED for cards to be captured.
     `Then, on its own, output EXACTLY this delimiter line (copy it verbatim, including the invisible characters):${CARDS_SENTINEL}`,
     "Immediately after the delimiter, output STRICT JSON only: an array of 2-3 cards shaped exactly as:",
-    '[{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore"}]',
+    '[{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore", "forEntry": string}]',
     "title: <=6 words. body: one or two sentences. asKind: the wiki kind this card would become if written in.",
+    "forEntry: if a card describes a trait, curse, relationship, or detail that BELONGS TO an entry already listed in the Gazetteer, you MUST set forEntry to that entry's EXACT name, copied verbatim from the Gazetteer list, so it attaches to that entry instead of minting a duplicate. Omit forEntry entirely ONLY when the card introduces a genuinely NEW subject that is not in the Gazetteer. Example: if the Gazetteer lists \"Elowen Vance\" and the writer asks for a curse on her, return {\"kind\":\"lore\",\"title\":\"The Ashen Curse\",\"body\":\"...\",\"asKind\":\"lore\",\"forEntry\":\"Elowen Vance\"}.",
     "Classifying kind: use character/world/organization (and the matching asKind) ONLY for a GENUINELY NEW subject worth its own wiki entry. A suggestion or connection about subjects that ALREADY EXIST in the gazetteer is lore or beat — never mint a new character/world/organization card for a recommendation about existing subjects.",
     "Output nothing after the JSON array.",
   ].join("\n");

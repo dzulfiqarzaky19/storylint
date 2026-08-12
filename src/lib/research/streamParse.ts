@@ -26,6 +26,7 @@ export interface ParsedCard {
   title?: string;
   body?: string;
   asKind?: string;
+  forEntry?: string;
 }
 
 export interface SplitAnswer {

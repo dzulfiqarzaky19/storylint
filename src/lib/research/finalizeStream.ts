@@ -36,6 +36,7 @@ export interface NormalizedCard {
   title: string;
   body: string;
   asKind: string;
+  forEntry?: string;
 }
 
 /** The persist callback the route injects — F2a's atomic insertResearchTurnPair. */
@@ -71,16 +72,20 @@ export interface FinalizeInput {
  * trimmed title (default "Untitled") and body, stable ids. Mirrors askResearchAi.
  */
 export function normalizeStreamedCards(
-  cards: { kind?: string; title?: string; body?: string; asKind?: string }[],
+  cards: { kind?: string; title?: string; body?: string; asKind?: string; forEntry?: string }[],
   idPrefix: string,
 ): NormalizedCard[] {
-  return cards.map((c, i) => ({
-    id: `${idPrefix}-${i}`,
-    kind: AI_ASK_KINDS.includes(c.kind ?? "") ? (c.kind as string) : "lore",
-    title: (c.title ?? "Untitled").trim(),
-    body: (c.body ?? "").trim(),
-    asKind: AI_ASK_KINDS.includes(c.asKind ?? "") ? (c.asKind as string) : "lore",
-  }));
+  return cards.map((c, i) => {
+    const forEntry = c.forEntry?.trim();
+    return {
+      id: `${idPrefix}-${i}`,
+      kind: AI_ASK_KINDS.includes(c.kind ?? "") ? (c.kind as string) : "lore",
+      title: (c.title ?? "Untitled").trim(),
+      body: (c.body ?? "").trim(),
+      asKind: AI_ASK_KINDS.includes(c.asKind ?? "") ? (c.asKind as string) : "lore",
+      forEntry: forEntry ? forEntry : undefined,
+    };
+  });
 }
 
 /**
@@ -138,6 +143,7 @@ export async function finalizeStreamedAnswer(
       title: c.title,
       body: c.body,
       asKind: c.asKind,
+      forEntry: c.forEntry,
       sortOrder: i,
       kept: false,
       inWiki: false,

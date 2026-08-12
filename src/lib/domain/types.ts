@@ -220,6 +220,15 @@ export interface WikiSnapshot {
 export interface ResearchProposition extends PropositionRow {
   kept: boolean;
   inWiki: boolean;
+  /**
+   * TCK-021: OPTIONAL in-memory routing hint — the exact name of an existing
+   * entry the AI says this card is ABOUT, so it enriches that entry (a detail /
+   * fact row) instead of minting a new one. NOT persisted (no `propositions`
+   * column); it rides the card returned to the client for this turn only. On a
+   * reload it is absent and the title-matcher (recommendEnrichTarget) is the
+   * fallback, so routing degrades gracefully.
+   */
+  forEntry?: string;
 }
 
 export interface ResearchTurnWithCards extends ResearchTurnRow {

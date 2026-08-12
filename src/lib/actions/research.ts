@@ -221,6 +221,7 @@ interface AiProposition {
   title?: string;
   body?: string;
   asKind?: string;
+  forEntry?: string;
 }
 interface AiAnswer {
   reply?: string;
@@ -263,8 +264,9 @@ export async function askResearchAi(input: {
       "You help them think through their own world. Ground every answer ONLY in the gazetteer provided; never invent contradicting facts.",
       "Reply as a thoughtful writing partner in 2-4 sentences, then propose 2-3 concrete 'cards' the writer could keep.",
       "Return STRICT JSON only, no prose outside JSON, shaped exactly as:",
-      '{"reply": string, "cards": [{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore"}]}',
+      '{"reply": string, "cards": [{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore", "forEntry": string}]}',
       "title: <=6 words. body: one or two sentences. asKind: the wiki kind this card would become if written in.",
+      "forEntry: if a card describes a trait, curse, relationship, or detail that BELONGS TO an entry already listed in the gazetteer, you MUST set forEntry to that entry's EXACT name, copied verbatim from the gazetteer list, so it attaches to that entry instead of minting a duplicate. Omit forEntry entirely ONLY when the card introduces a genuinely NEW subject not in the gazetteer.",
     ].join("\n");
 
     const user = [
@@ -337,12 +339,14 @@ export async function askResearchAi(input: {
     // Normalize the AI cards once, so the SAME shape is persisted and returned.
     const normCards = cards.map((c, i) => {
       const asKind = AI_ASK_KINDS.includes(c.asKind ?? "") ? (c.asKind as string) : "lore";
+      const forEntry = c.forEntry?.trim();
       return {
         id: `ai-card-${stamp}-${rid}-${i}`,
         kind: AI_ASK_KINDS.includes(c.kind ?? "") ? (c.kind as string) : "lore",
         title: (c.title ?? "Untitled").trim(),
         body: (c.body ?? "").trim(),
         asKind,
+        forEntry: forEntry ? forEntry : undefined,
       };
     });
 
@@ -391,6 +395,7 @@ export async function askResearchAi(input: {
         title: c.title,
         body: c.body,
         asKind: c.asKind,
+        forEntry: c.forEntry,
         sortOrder: i,
         kept: false,
         inWiki: false,

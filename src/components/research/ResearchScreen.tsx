@@ -24,7 +24,7 @@ import QuestionBlock from "./QuestionBlock";
 import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
 import ConfirmationStrip from "./ConfirmationStrip";
-import { recommendEnrichTarget } from "@/lib/research/recommendEnrichTarget";
+import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
 import Composer from "./Composer";
 import PromptChip from "./PromptChip";
 import KeptBoard from "./KeptBoard";
@@ -134,13 +134,21 @@ export default function ResearchScreen({
     ? cardById.get(state.pendingPropositionId)
     : undefined;
 
-  // F6 enrich-vs-duplicate: recommend an existing LIVE entry to fold the pending
-  // card into, rather than spawning a duplicate. Pure + deleted-filtered.
+  // F6 / TCK-021 enrich-vs-duplicate routing. The AI's EXPLICIT pick wins:
+  // resolveForEntry honors `pendingCard.forEntry` (the exact name of a live entry
+  // the card is ABOUT) and, on a match, routes there. Only when the AI gave no
+  // usable hint (absent/blank name, or it names no live entry) do we fall back to
+  // the title-guessing recommender. Both return the same EnrichRecommendation
+  // shape, so the confirm strip's "Add to <entry>" path is reused unchanged.
   const enrichRecommendation = useMemo(
     () =>
       pendingCard
-        ? recommendEnrichTarget(
-            { title: pendingCard.title, body: pendingCard.body },
+        ? routeEnrichTarget(
+            {
+              forEntry: pendingCard.forEntry,
+              title: pendingCard.title,
+              body: pendingCard.body,
+            },
             entries,
           )
         : null,
