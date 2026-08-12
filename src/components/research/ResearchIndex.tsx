@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import type { ResearchThreadRow } from "@/lib/domain/types";
+import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./ResearchIndex.module.css";
 
 export interface ResearchIndexProps {
@@ -31,6 +32,10 @@ export default function ResearchIndex({
   onDelete,
 }: ResearchIndexProps) {
   const [open, setOpen] = useState(false);
+  // Thread pending deletion (title kept for the dialog copy), or null when the
+  // danger ConfirmModal is closed. Replaces the raw window.confirm so the delete
+  // reads as part of the app (matches the wiki's delete flows).
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; title: string } | null>(null);
   const panelId = useId();
 
   return (
@@ -83,9 +88,7 @@ export default function ResearchIndex({
                   className={styles.trash}
                   aria-label={`Delete thread "${t.title}"`}
                   title="Delete thread"
-                  onClick={() => {
-                    if (window.confirm("Delete this thread?")) onDelete(t.id);
-                  }}
+                  onClick={() => setPendingDelete({ id: t.id, title: t.title })}
                 >
                   {"\uD83D\uDDD1"}
                 </button>
@@ -105,6 +108,21 @@ export default function ResearchIndex({
           </li>
         ) : null}
       </ul>
+
+      {onDelete && pendingDelete ? (
+        <ConfirmModal
+          title={`Delete "${pendingDelete.title}"?`}
+          body="This removes the thread and its research history. This cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          danger
+          onConfirm={() => {
+            onDelete(pendingDelete.id);
+            setPendingDelete(null);
+          }}
+          onCancel={() => setPendingDelete(null)}
+        />
+      ) : null}
     </nav>
   );
 }
