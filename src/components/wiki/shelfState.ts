@@ -10,6 +10,24 @@ export function isEmptyCategory(entryCount: number): boolean {
   return entryCount === 0;
 }
 
+/** TCK-018 — the outcome of committing a category-header rename draft. Pure so
+ *  the reset-vs-rename-vs-noop decision is unit-testable in the node test env;
+ *  WikiIndex.tsx's commitRename calls THIS and dispatches the matching callback,
+ *  so a regression here moves the UI. Mirrors the reducer/backend trim ruling:
+ *  a BLANK draft resets to the built-in default, a changed draft renames (with
+ *  the RAW, untrimmed label — the backend trims), and an unchanged draft is a
+ *  no-op (no spurious rename write). */
+export type RenameOutcome =
+  | { action: "reset" }
+  | { action: "rename"; label: string }
+  | { action: "noop" };
+
+export function resolveRename(draft: string, currentTitle: string): RenameOutcome {
+  if (draft.trim() === "") return { action: "reset" };
+  if (draft.trim() !== currentTitle) return { action: "rename", label: draft };
+  return { action: "noop" };
+}
+
 /** TCK-005 — build the sidebar's initial per-category collapse map from the
  *  live category ids. Every group starts EXPANDED (value `false`) so the whole
  *  world is scannable at a glance, matching the previous hardcoded-4 default.

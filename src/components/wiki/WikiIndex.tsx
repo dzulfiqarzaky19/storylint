@@ -3,7 +3,7 @@
 import { useId, useState, type ReactNode } from "react";
 import type { EntryWithDetails, Shelf, CategoryRow } from "@/lib/domain/types";
 import { categorySingular } from "@/lib/wiki/categoryLabels";
-import { initialCollapse } from "./shelfState";
+import { initialCollapse, resolveRename } from "./shelfState";
 import NewCategoryShelf from "./NewCategoryShelf";
 import styles from "./WikiIndex.module.css";
 
@@ -97,9 +97,11 @@ export default function WikiIndex({
     const value = draft;
     setEditing(null);
     // A blank draft is a reset (matches the reducer/backend trim ruling); a
-    // non-blank change renames. Same rule the main shelf header applies.
-    if (value.trim() === "") onResetCategory(id);
-    else if (value.trim() !== title) onRenameCategory(id, value);
+    // non-blank change renames. resolveRename (shelfState.ts) owns that pure
+    // decision so it stays unit-tested in the node env; this just dispatches.
+    const outcome = resolveRename(value, title);
+    if (outcome.action === "reset") onResetCategory(id);
+    else if (outcome.action === "rename") onRenameCategory(id, outcome.label);
   };
 
   return (
@@ -129,7 +131,23 @@ export default function WikiIndex({
           const shelf = cat.shelf as Shelf;
           return (
             <section key={cat.id} className={styles.group}>
+              {/* TCK-018: ONE consolidated control cluster per category. The
+                  organize/"filter" axis (collapse + title-as-rename + count)
+                  sits on the left; ALL actions on this category (+ entry, Reset,
+                  delete) are gathered into a single right-aligned action group
+                  instead of being split across the head and the list bottom. */}
               <div className={styles.groupHead}>
+                <button
+                  type="button"
+                  className={styles.groupChevron}
+                  aria-label={
+                    isCollapsed ? `Expand ${title}` : `Collapse ${title}`
+                  }
+                  aria-expanded={!isCollapsed}
+                  onClick={() => toggle(cat.id)}
+                >
+                  {isCollapsed ? "+" : "\u2212"}
+                </button>
                 {editing === cat.id ? (
                   <input
                     className={styles.groupTitleInput}
@@ -161,40 +179,49 @@ export default function WikiIndex({
                   </button>
                 )}
                 <span className={styles.groupCount}>{entries.length}</span>
-                <button
-                  type="button"
-                  className={styles.groupChevron}
-                  aria-label={
-                    isCollapsed ? `Expand ${title}` : `Collapse ${title}`
-                  }
-                  aria-expanded={!isCollapsed}
-                  onClick={() => toggle(cat.id)}
-                >
-                  {isCollapsed ? "+" : "\u2212"}
-                </button>
-                {isRenamed(cat.id) ? (
-                  <button
-                    type="button"
-                    className={styles.groupReset}
-                    onClick={() => onResetCategory(cat.id)}
-                  >
-                    Reset
-                  </button>
-                ) : null}
-                {/* TCK-005/007: trash icon deletes the whole category (opens the
-                    danger confirm in the caller). Built-ins are not deletable
-                    (is_builtin invariant), so the icon is hidden for them. */}
-                {cat.isBuiltin ? null : (
-                  <button
-                    type="button"
-                    className={styles.groupDelete}
-                    aria-label={`Delete ${title} category`}
-                    title={`Delete ${title} category`}
-                    onClick={() => onRequestDeleteCategory(cat.id)}
-                  >
-                    {"\u{1F5D1}"}
-                  </button>
-                )}
+
+                {/* TCK-018: the consolidated action cluster — add / reset /
+                    delete, right-aligned as one group. Previously the "+ New"
+                    lived at the BOTTOM of the entry list, apart from edit/delete;
+                    it now sits with them so filter + add + edit + delete read as
+                    one control. */}
+                <div className={styles.groupActions}>
+                  {onCreateEntry ? (
+                    <button
+                      type="button"
+                      className={styles.groupAdd}
+                      aria-label={`Add new ${categorySingular(title)}`}
+                      title={`Add new ${categorySingular(title)}`}
+                      onClick={() => onCreateEntry(shelf)}
+                    >
+                      {"+"}
+                    </button>
+                  ) : null}
+                  {isRenamed(cat.id) ? (
+                    <button
+                      type="button"
+                      className={styles.groupReset}
+                      onClick={() => onResetCategory(cat.id)}
+                    >
+                      Reset
+                    </button>
+                  ) : null}
+                  {/* TCK-005/007: trash icon deletes the whole category (opens the
+                      danger confirm in the CALLER via onRequestDeleteCategory —
+                      no inline confirm here). Built-ins are not deletable
+                      (is_builtin invariant), so the icon is hidden for them. */}
+                  {cat.isBuiltin ? null : (
+                    <button
+                      type="button"
+                      className={styles.groupDelete}
+                      aria-label={`Delete ${title} category`}
+                      title={`Delete ${title} category`}
+                      onClick={() => onRequestDeleteCategory(cat.id)}
+                    >
+                      {"\u{1F5D1}"}
+                    </button>
+                  )}
+                </div>
               </div>
 
               {!isCollapsed && (
@@ -218,11 +245,11 @@ export default function WikiIndex({
                       </button>
                     </li>
                   ))}
-                  {onCreateEntry ? (
+                  {entries.length === 0 && onCreateEntry ? (
                     <li>
                       <button
                         type="button"
-                        className={styles.add}
+                        className={styles.emptyAdd}
                         onClick={() => onCreateEntry(shelf)}
                       >
                         + New {categorySingular(title)}

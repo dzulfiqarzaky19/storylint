@@ -115,7 +115,6 @@
 }
 
 .groupChevron {
-  margin-left: auto;
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
@@ -124,6 +123,34 @@
   border: none;
   padding: 0 2px;
   cursor: pointer;
+}
+
+/* TCK-018: the consolidated per-category action cluster. Add / Reset / delete
+   sit together, right-aligned (margin-left:auto pushes the group to the far
+   edge), so the category's organize axis and ALL its actions read as one row.
+   No shadow, radius-0, real tokens per the Ashkeld contract. */
+.groupActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* Compact "+" that authors a new entry in this category, gathered into the
+   action cluster (was previously a full-width button at the list bottom). */
+.groupAdd {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  color: var(--accent-deep, var(--accent));
+}
+
+.groupAdd:hover {
+  color: var(--accent);
 }
 
 /* Reset-to-default for a renamed built-in (small text button). */
@@ -206,7 +233,10 @@
   color: var(--muted);
 }
 
-.add {
+/* TCK-018: the in-list create affordance is now shown ONLY for an EMPTY
+   category (the always-present compact "+" moved into the head action cluster).
+   Keeps an obvious "author the first entry" call-to-action when a shelf is bare. */
+.emptyAdd {
   width: 100%;
   padding: 7px 8px;
   margin-top: 2px;
@@ -219,7 +249,7 @@
   color: var(--accent-deep, var(--accent));
 }
 
-.add:hover {
+.emptyAdd:hover {
   text-decoration: underline;
 }
 
