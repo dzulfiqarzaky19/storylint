@@ -82,7 +82,7 @@ export default function ResearchIndex({
                   <span className={styles.itemNote}>{t.subtitle}</span>
                 ) : null}
               </button>
-              {onDelete ? (
+              {onDelete && threads.length > 1 ? (
                 <button
                   type="button"
                   className={styles.trash}
