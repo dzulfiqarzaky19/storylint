@@ -7,6 +7,30 @@ import { initialCollapse, resolveRename } from "./shelfState";
 import NewCategoryShelf from "./NewCategoryShelf";
 import styles from "./WikiIndex.module.css";
 
+/** TCK-020: disclosure chevron. A single right-pointing SVG glyph; direction is
+ *  driven by CSS (the caller adds an "open" modifier that rotates it 90deg to
+ *  point down). Crisp at any font, unlike the old +/- and U+2304 text glyphs.
+ *  Decorative only — the expand/collapse state lives on aria-expanded. */
+function Chevron({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polyline points="6 4 10 8 6 12" />
+    </svg>
+  );
+}
+
 export interface WikiIndexProps {
   /** F9-B / TCK-005: the FULL live category list (built-in + user), in the
    *  reducer's sorted order — the SAME source the main shelf maps. Drives one
@@ -118,8 +142,11 @@ export default function WikiIndex({
       >
         <span className={styles.title}>The world</span>
         <span className={styles.count}>{total} entries</span>
-        <span className={styles.railToggleChevron} aria-hidden="true">
-          {open ? "\u2304" : "\u203A"}
+        <span
+          className={`${styles.railToggleChevron}${open ? ` ${styles.chevronOpen}` : ""}`}
+          aria-hidden="true"
+        >
+          <Chevron />
         </span>
       </button>
 
@@ -139,14 +166,14 @@ export default function WikiIndex({
               <div className={styles.groupHead}>
                 <button
                   type="button"
-                  className={styles.groupChevron}
+                  className={`${styles.groupChevron}${!isCollapsed ? ` ${styles.chevronOpen}` : ""}`}
                   aria-label={
                     isCollapsed ? `Expand ${title}` : `Collapse ${title}`
                   }
                   aria-expanded={!isCollapsed}
                   onClick={() => toggle(cat.id)}
                 >
-                  {isCollapsed ? "\u203A" : "\u2304"}
+                  <Chevron />
                 </button>
                 {editing === cat.id ? (
                   <input

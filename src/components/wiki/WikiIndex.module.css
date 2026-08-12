@@ -40,6 +40,19 @@
   color: var(--muted);
 }
 
+/* TCK-020: the disclosure chevron SVG points right (closed) by default; the
+   .chevronOpen modifier rotates it 90deg to point down (open). One glyph, one
+   rotation — the crisp equivalent of the old right/down text pair. */
+.railToggleChevron svg,
+.groupChevron svg {
+  display: block;
+  transition: transform 120ms ease;
+}
+
+.chevronOpen svg {
+  transform: rotate(90deg);
+}
+
 /* The grouped index panel. Always shown on desktop; collapses behind the
    header toggle on the stacked tier (see the media query). */
 .panel {
