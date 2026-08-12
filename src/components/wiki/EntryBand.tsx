@@ -93,7 +93,12 @@ export default function EntryBand({
   return (
     <section className={styles.band} aria-label="Entry">
       <div className={styles.main}>
-        <p className={styles.kicker}>
+        {/* Kicker is a flex CLUSTER (spans + ShareControls' <div>/<label> + a
+            button), not prose. It MUST be a <div>: a <div>/<label> inside a <p>
+            is invalid HTML, so the browser auto-closes the <p> and the SSR DOM
+            diverges from the client React tree -> React #418 hydration mismatch
+            on a clean /wiki load. TCK-E04. */}
+        <div className={styles.kicker}>
           <span className={styles.kind}>{kindLabel}</span>
           <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
           <ShareControls
@@ -111,7 +116,7 @@ export default function EntryBand({
           >
             Delete
           </button>
-        </p>
+        </div>
         <h1 className={styles.name}>
           <InlineText
             value={entry.name}
