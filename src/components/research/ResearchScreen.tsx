@@ -35,7 +35,6 @@ import styles from "./ResearchScreen.module.css";
 // AI (same path as the ask box) — no pre-written seed turns. Curly apostrophe
 // on the last one.
 const CHIPS = [
-  "Push on that",
   "Give me a scene",
   "I’m stuck — ask me something",
 ];
