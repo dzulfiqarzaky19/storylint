@@ -119,7 +119,7 @@ export default function WikiIndex({
         <span className={styles.title}>The world</span>
         <span className={styles.count}>{total} entries</span>
         <span className={styles.railToggleChevron} aria-hidden="true">
-          {open ? "\u2212" : "+"}
+          {open ? "\u2304" : "\u203A"}
         </span>
       </button>
 
@@ -146,7 +146,7 @@ export default function WikiIndex({
                   aria-expanded={!isCollapsed}
                   onClick={() => toggle(cat.id)}
                 >
-                  {isCollapsed ? "+" : "\u2212"}
+                  {isCollapsed ? "\u203A" : "\u2304"}
                 </button>
                 {editing === cat.id ? (
                   <input
