@@ -646,6 +646,7 @@
   .confirmSentence { flex: 1 1 100%; }
 
   .composerPlaceholder { font-size: 20px; }
+  .aiInput { font-size: 18px; }
 
   /* WCAG 2.5.5: 44px tap targets on phones. */
   .keep,
