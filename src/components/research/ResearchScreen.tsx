@@ -491,7 +491,6 @@ export default function ResearchScreen({
             </Composer>
           </section>
 
-          <div className={styles.bottomSpacer} />
         </main>
 
         <KeptBoard

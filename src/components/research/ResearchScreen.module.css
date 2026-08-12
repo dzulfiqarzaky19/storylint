@@ -20,6 +20,8 @@
 .body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
 }
 
@@ -320,8 +322,12 @@
 /* ---- 5. Composer (2px ink top rule) ----------------------------------- */
 
 .footer {
-  margin: 30px var(--gutter) 0;
-  padding-top: 18px;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  margin-top: auto;
+  padding: 18px var(--gutter);
+  background: var(--ground);
   border-top: var(--rule-major);
 }
 
@@ -499,10 +505,6 @@
   color: var(--accent-deep);
 }
 
-.bottomSpacer {
-  height: 40px;
-}
-
 /* ---- Responsive: rail stacks below at <=1200px (parity with Write) ------ */
 /* The KEPT rail becomes a collapsible panel pinned to the bottom of the
    viewport, opened/closed by the "KEPT" toggle. The header is a sticky ~74px
@@ -525,6 +527,14 @@
 
   .body {
     overflow-y: visible;
+  }
+
+  /* On mobile the page scrolls as one document, so pin the composer to the
+     viewport bottom, just above the 54px sticky KEPT toggle bar. */
+  .footer {
+    position: sticky;
+    bottom: 54px;
+    z-index: 2;
   }
 
   .boardWrap {
