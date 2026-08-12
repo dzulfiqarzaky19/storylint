@@ -59,6 +59,14 @@ export default async function WikiPage({
         activeWorldId={activeWorldId}
       />
       <WikiScreen
+        // TCK-E02: key on the active world so switching worlds REMOUNTS the
+        // screen. WikiScreen seeds its reducer from `snapshot` in a once-only
+        // initializer (no prop-sync effect), so without a changing key a
+        // client-side world switch keeps the previous world's entries on screen
+        // even though the server sent the new (empty) snapshot — the visible
+        // "snap-back". Remounting on world id re-runs the initializer with the
+        // new snapshot.
+        key={activeWorldId}
         snapshot={snapshot}
         suggestions={suggestions}
         contradictionEntryIds={contradictionEntryIds}
