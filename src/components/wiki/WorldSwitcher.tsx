@@ -11,7 +11,7 @@
 // actions (no wiki token) then navigate. Delete opens a DANGER ConfirmModal that
 // shows the REAL cascade row-count.
 
-import { useCallback, useState, startTransition } from "react";
+import { useCallback, useRef, useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import {
@@ -268,9 +268,18 @@ function NamePrompt({
 }) {
   const [value, setValue] = useState("");
   const submittable = canSubmitName(value);
+  // Re-entrancy guard: a same-tick Enter + Create-click (or a React double-fire)
+  // must create only ONE world/universe. Flip this true SYNCHRONOUSLY at the top
+  // of submit() before onSubmit runs, so the second same-tick call is dropped.
+  // Mirrors ResearchScreen's askInFlight ref. The prompt unmounts on success, so
+  // it never needs resetting on the happy path.
+  const submittingRef = useRef(false);
 
   const submit = () => {
-    if (canSubmitName(value)) onSubmit(value.trim());
+    if (submittingRef.current) return;
+    if (!canSubmitName(value)) return;
+    submittingRef.current = true;
+    onSubmit(value.trim());
   };
 
   return (
