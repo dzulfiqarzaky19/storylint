@@ -199,3 +199,60 @@ describe("W-1 worlds-membership expand migration (real Postgres)", () => {
     expect(fk.length).toBe(1);
   });
 });
+
+// -----------------------------------------------------------------------------
+// W-6 w6a RAISE-GUARD lock (the 1-world-per-universe invariant the backfill key
+// depends on). w6a's GUARD 1 MUST refuse the migration when ANY universe owns
+// >1 world, because `world-${series.universe_id}` is then ambiguous (which of the
+// N worlds is the book's home?). It is 0-firing on the live baseline; this test
+// makes it firing so the raise is LOCKED — flipping the raise to a skip (`if
+// (false && ...)`) must turn this RED (the migration would no longer reject).
+//
+// GUARD 1 runs on `worlds GROUP BY universe_id HAVING count(*) > 1` and throws
+// BEFORE GUARD 2's `series` JOIN, so it fires even though the live baseline has
+// already dropped `series` (w6b ran). The two throwaway worlds carry NO books, so
+// nothing else about the schema/backfill changes; the migration rolls back on the
+// raise and the baseline is untouched.
+//
+// SHARED-DB HYGIENE: ids `test-w6a-raise-*`; the fixture is torn down in a finally
+// (the raise leaves the txn rolled back, so only the two seeded worlds + universe
+// remain to sweep) so the baseline stays universe-1 / world-universe-1 / book-1.
+// -----------------------------------------------------------------------------
+describe("W-6 w6a N>1 raise-guard (real Postgres)", () => {
+  it("REJECTS the migration when a universe owns >1 world (backfill would be ambiguous)", async () => {
+    const uId = `test-w6a-raise-uni-${randomUUID()}`;
+    const w1Id = `world-${uId}`; // the derivable 'world-${universe}' id
+    const w2Id = `test-w6a-raise-wr2-${randomUUID()}`; // the SECOND, ambiguity-making world
+    try {
+      await query(`INSERT INTO universes (id, name) VALUES ($1, 'W6a Raise Universe')`, [uId]);
+      await query(
+        `INSERT INTO worlds (id, universe_id, title, sort_order)
+           VALUES ($1, $2, 'Raise World 1', 0), ($3, $2, 'Raise World 2', 1)`,
+        [w1Id, uId, w2Id],
+      );
+
+      // Sanity: the fixture really does give this universe TWO worlds (the exact
+      // condition GUARD 1 must catch). If this were 1, the guard could not fire and
+      // the test would be vacuous.
+      const cnt = await one<{ n: string }>(
+        `SELECT count(*) AS n FROM worlds WHERE universe_id = $1`,
+        [uId],
+      );
+      expect(Number(cnt?.n)).toBe(2);
+
+      // w6a MUST refuse rather than silently mis-home. Match the ACTUAL thrown
+      // string ("N>1 worlds") — a message ONLY GUARD 1 produces, so the assertion
+      // locks GUARD 1 SPECIFICALLY. If the raise is skipped (`if (false && ...)`),
+      // w6aUp() no longer throws the N>1 message; on the live baseline (series
+      // already dropped by w6b) it instead falls through to GUARD 2's `series`
+      // JOIN and rejects with `relation "series" does not exist`, which does NOT
+      // match /N>1 worlds/ — so this assertion goes RED. Either way, disabling
+      // GUARD 1 turns this test RED; only the intact GUARD 1 makes it GREEN.
+      await expect(w6aUp()).rejects.toThrow(/N>1 worlds/);
+    } finally {
+      // The raise rolled back the migration's txn; only the seeded rows remain.
+      await query(`DELETE FROM worlds WHERE id = ANY($1)`, [[w1Id, w2Id]]);
+      await query(`DELETE FROM universes WHERE id = $1`, [uId]);
+    }
+  });
+});
