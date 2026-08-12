@@ -173,6 +173,7 @@ export default function WikiIndex({
                     type="button"
                     className={styles.groupTitle}
                     aria-label={`Rename ${title} category`}
+                    title={`Rename ${title} category`}
                     onClick={() => startRename(cat.id, title)}
                   >
                     {title}

@@ -1,52 +1,84 @@
+/* TCK-019: the "+ New category" affordance, shared by the main shelf and the
+   sidebar. The trigger is now a FLAT button matching "+ New thread" / "+ New
+   chapter" (ResearchIndex/WriteIndex .add): full-width, no box, a rule-row
+   top border, accent-deep label, underline on hover. The create form moved
+   into the base <Modal>, so this module styles the trigger plus the modal's
+   slot content (heading, input, actions), mirroring ConfirmModal's tokens. */
+
 .newShelf {
-  display: flex;
-  align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 2px;
 }
 
 .addButton {
-  appearance: none;
-  border: 1px dashed var(--border, #cbb89a);
-  background: transparent;
-  color: var(--muted, #6b5d45);
-  font: inherit;
-  padding: 0.35rem 0.75rem;
-  border-radius: 0;
+  width: 100%;
+  padding: 9px 8px;
+  margin-top: 2px;
+  background: none;
+  border: none;
+  border-top: var(--rule-row);
   cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-deep, var(--accent));
 }
 
 .addButton:hover {
-  border-color: var(--accent, #8a6d3b);
-  color: var(--accent, #8a6d3b);
+  text-decoration: underline;
+}
+
+/* Modal slot content. */
+.title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .form {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .input {
   font: inherit;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid var(--border, #cbb89a);
+  font-size: 14px;
+  padding: 8px 10px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
   border-radius: 0;
-  min-width: 12rem;
 }
 
-.commit,
-.cancel {
-  appearance: none;
-  font: inherit;
-  padding: 0.35rem 0.75rem;
-  border-radius: 0;
-  cursor: pointer;
-  border: 1px solid var(--border, #cbb89a);
-  background: transparent;
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .commit {
-  border-color: var(--accent, #8a6d3b);
-  color: var(--accent, #8a6d3b);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--on-ink);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.cancel {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.cancel:hover {
+  background: var(--hover);
 }
