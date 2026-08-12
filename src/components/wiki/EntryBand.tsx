@@ -8,6 +8,7 @@ import DetailsColumn from "./DetailsColumn";
 import OpenQuestions from "./OpenQuestions";
 import EntryAside from "./EntryAside";
 import type { TieCandidate } from "./TiesBlock";
+import ShareControls, { type ShareWorld } from "./ShareControls";
 import InlineText from "./InlineText";
 import ConfirmModal from "../ui/ConfirmModal";
 import { appearLine } from "@/lib/domain/derive";
@@ -20,6 +21,12 @@ interface EntryBandProps {
   onSelect: (id: string) => void;
   /** Soft-delete this entry (removes it from the gazetteer; ties to it tombstone). */
   onDelete: (id: string) => void;
+  /** TCK-023 (W-4b): world-membership controls (share into a world / unlink here). */
+  sharing: {
+    worlds: ShareWorld[];
+    activeWorldId: string;
+    onError: (message: string) => void;
+  };
   /** Drop a tile onto the Ties block → create a tie from this entry. */
   onDropOnTies: () => void;
   /** Every OTHER live entry — the add-tie search pool for the Ties block. */
@@ -64,6 +71,7 @@ export default function EntryBand({
   liveEntryIds,
   onSelect,
   onDelete,
+  sharing,
   onDropOnTies,
   tieCandidates,
   onUntie,
@@ -88,6 +96,13 @@ export default function EntryBand({
         <p className={styles.kicker}>
           <span className={styles.kind}>{kindLabel}</span>
           <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
+          <ShareControls
+            entryId={entry.id}
+            entryName={entry.name}
+            activeWorldId={sharing.activeWorldId}
+            worlds={sharing.worlds}
+            onError={sharing.onError}
+          />
           <button
             type="button"
             className={styles.deleteEntry}

@@ -1105,6 +1105,43 @@ export async function insertWorld(input: {
   });
 }
 
+// ---- World membership (TCK-023, W-4b: the "share" op) ---------------------
+// world_entities is the M2M membership junction (PRIMARY KEY(world_id, entity_id)).
+// An entry stays HOME to its universe_id; world membership is ADDITIVE — a link
+// row makes the entity appear in that world's loadWorldSnapshot (which reads
+// membership through `JOIN world_entities`). STRUCTURAL, not wiki CONTENT (it adds
+// no fact/prose to the entry, only a grouping), so — like insertWorld — it needs
+// NO WikiWriteConfirmation token.
+
+/**
+ * TCK-023 (W-4b): LINK an existing entity into a world (share it). Inserts one
+ * membership row. IDEMPOTENT: ON CONFLICT (world_id, entity_id) DO NOTHING means a
+ * double-link leaves EXACTLY ONE row (never a PK violation, never a duplicate).
+ * The entity's HOME-world membership and every other link are untouched.
+ */
+export async function linkEntityToWorld(worldId: string, entityId: string): Promise<void> {
+  await query(
+    `INSERT INTO world_entities (world_id, entity_id)
+     VALUES ($1, $2)
+     ON CONFLICT (world_id, entity_id) DO NOTHING`,
+    [worldId, entityId],
+  );
+}
+
+/**
+ * TCK-023 (W-4b): UNLINK an entity from a world (stop sharing it there). Drops
+ * ONLY that one membership row; the entity ROW is NEVER deleted (orphan = LEAVE,
+ * mirroring deleteWorldCascade's rule that unlinking never destroys the entity)
+ * and every OTHER world link — including its home membership — survives. Unlink of
+ * a NON-member is a no-op (0 rows, no throw).
+ */
+export async function unlinkEntityFromWorld(worldId: string, entityId: string): Promise<void> {
+  await query(
+    `DELETE FROM world_entities WHERE world_id = $1 AND entity_id = $2`,
+    [worldId, entityId],
+  );
+}
+
 // ---- Entry facets (F7 S4 scalar override) ---------------------------------
 // A facet is a per-book SCALAR override of an entry (name/summary/note). Unlike
 // the structural universe/series/book inserts above, a facet IS wiki CONTENT

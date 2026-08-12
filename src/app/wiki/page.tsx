@@ -46,6 +46,11 @@ export default async function WikiPage({
     resolvedMarkKeys,
   });
 
+  // TCK-023 (W-4b): the flat world list (every world across universes) is the
+  // share-target pool for the entry's ShareControls. The active world is the
+  // unlink target. Both are derived from the same tree already loaded above.
+  const worlds = tree.flatMap((u) => u.worlds.map((w) => ({ id: w.id, title: w.title })));
+
   return (
     <>
       <WorldSwitcher
@@ -57,6 +62,8 @@ export default async function WikiPage({
         snapshot={snapshot}
         suggestions={suggestions}
         contradictionEntryIds={contradictionEntryIds}
+        worlds={worlds}
+        activeWorldId={activeWorldId}
       />
     </>
   );

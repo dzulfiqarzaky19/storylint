@@ -21,6 +21,7 @@
 // =============================================================================
 
 import { randomUUID } from "node:crypto";
+import { revalidatePath } from "next/cache";
 import type { Kind, Shelf, EntryRow, EntryWithDetails, CategoryRow } from "../domain/types";
 import { confirmWikiWrite } from "./confirmation";
 import { completeJson, aiEnabled } from "../ai/saarouters";
@@ -58,6 +59,8 @@ import {
   insertBook,
   createFreshUniverse as createFreshUniverseRow,
   insertWorld as insertWorldRow,
+  linkEntityToWorld as linkEntityToWorldRow,
+  unlinkEntityFromWorld as unlinkEntityFromWorldRow,
   deleteUniverseCascade,
   deleteSeriesCascade,
   deleteBookCascade,
@@ -781,6 +784,45 @@ export async function createWorld(input: {
     return { ok: true, data: { worldId } };
   } catch (err) {
     return fail(err, "wiki.createWorld");
+  }
+}
+
+/**
+ * TCK-023 (W-4b): SHARE an existing entity into a world — link it so it appears
+ * in that world's gazetteer as an additive member. Idempotent (the DB helper's
+ * ON CONFLICT DO NOTHING), so re-sharing is harmless. Structural — no wiki token
+ * (mirrors createWorld). Revalidates /wiki so the server re-renders the target
+ * world's snapshot with the newly-linked entity.
+ */
+export async function shareEntityToWorld(input: {
+  worldId: string;
+  entityId: string;
+}): Promise<ActionResult> {
+  try {
+    await linkEntityToWorldRow(input.worldId, input.entityId);
+    revalidatePath("/wiki");
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.shareEntityToWorld");
+  }
+}
+
+/**
+ * TCK-023 (W-4b): UNSHARE an entity from a world — drop ONLY that membership link.
+ * The entity row and its home-world membership survive (orphan = LEAVE); unlink of
+ * a non-member is a no-op. Structural — no wiki token. Revalidates /wiki so the
+ * world's snapshot re-renders without the unlinked entity.
+ */
+export async function unshareEntityFromWorld(input: {
+  worldId: string;
+  entityId: string;
+}): Promise<ActionResult> {
+  try {
+    await unlinkEntityFromWorldRow(input.worldId, input.entityId);
+    revalidatePath("/wiki");
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.unshareEntityFromWorld");
   }
 }
 

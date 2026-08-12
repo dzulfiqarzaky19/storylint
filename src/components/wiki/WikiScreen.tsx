@@ -58,6 +58,10 @@ interface WikiScreenProps {
   snapshot: WikiSnapshot;
   suggestions: WikiSuggestion[];
   contradictionEntryIds: string[];
+  /** TCK-023 (W-4b): every world across universes — the entry share-target pool. */
+  worlds: { id: string; title: string }[];
+  /** TCK-023 (W-4b): the world currently being viewed (the unlink target). */
+  activeWorldId: string;
 }
 
 export default function WikiScreen(props: WikiScreenProps) {
@@ -72,6 +76,8 @@ function WikiScreenInner({
   snapshot,
   suggestions,
   contradictionEntryIds,
+  worlds,
+  activeWorldId,
 }: WikiScreenProps) {
   const [state, dispatch] = useReducer(
     wikiReducer,
@@ -734,6 +740,11 @@ function WikiScreenInner({
         tieCandidates={tieCandidates}
         onSelect={select}
         onDelete={deleteEntry}
+        sharing={{
+          worlds,
+          activeWorldId,
+          onError: (message) => dispatch({ type: "SET_ERROR", error: message }),
+        }}
         onDropOnTies={dropOnTies}
         onUntie={untieFromSelected}
         onTieExisting={tieExistingToSelected}
