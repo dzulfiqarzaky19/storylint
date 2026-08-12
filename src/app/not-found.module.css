@@ -1,0 +1,52 @@
+/* TCK-E07 not-found (404) — Ashkeld tokens (globals.css). No hex literals;
+   border-radius 0 per HANDOFF §3. */
+
+.wrap {
+  min-height: 60dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+}
+
+.panel {
+  max-width: 34rem;
+  border: var(--rule-major);
+  background: var(--surface);
+  padding: 2rem;
+}
+
+.code {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-deep);
+}
+
+.title {
+  margin-top: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.body {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.home {
+  display: inline-block;
+  margin-top: 1.5rem;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--on-ink);
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+}
+
+.home:hover {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+}
