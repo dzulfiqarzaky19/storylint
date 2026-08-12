@@ -1050,6 +1050,61 @@ export async function createFreshUniverse(input: {
   });
 }
 
+export interface WorldRow {
+  id: string;
+  universeId: string;
+  title: string;
+  sortOrder: number;
+}
+
+/**
+ * TCK-022 (W-4a): create a SECOND (or Nth) world inside an EXISTING universe.
+ * Today worlds are 1:1 per universe (the W-1 backfill `world-${universeId}`);
+ * this is the first path that makes a second one, so the share/switch UI has two
+ * worlds to move between.
+ *
+ * A world needs a home for chapters. Because `books` still carries `series_id`
+ * (series is not dropped until W-6), a new world also mints its OWN first
+ * series + first book in the SAME transaction (mirrors createFreshUniverse's
+ * series+book insert), so chapters authored under the new world always have a
+ * home. All three rows land atomically: a failure on any one rolls back the
+ * others (no orphan world without a book, no book without its series).
+ *
+ * Structural — no wiki content, so no confirmWikiWrite token. The new world's
+ * wiki is empty by construction (no world_entities rows point at it).
+ */
+export async function insertWorld(input: {
+  id: string;
+  universeId: string;
+  title: string;
+  seriesId: string;
+  bookId: string;
+  sortOrder?: number;
+  seriesName?: string;
+  bookName?: string;
+}): Promise<WorldRow> {
+  return withTransaction(async (client) => {
+    const world = await client.query<WorldRow>(
+      `INSERT INTO worlds (id, universe_id, title, sort_order)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, universe_id AS "universeId", title, sort_order AS "sortOrder"`,
+      [input.id, input.universeId, input.title, input.sortOrder ?? 0],
+    );
+    await client.query(
+      `INSERT INTO series (id, universe_id, name, sort_order)
+       VALUES ($1, $2, $3, 0)`,
+      [input.seriesId, input.universeId, input.seriesName ?? input.title],
+    );
+    await client.query(
+      `INSERT INTO books (id, series_id, name, sort_order)
+       VALUES ($1, $2, $3, 0)`,
+      [input.bookId, input.seriesId, input.bookName ?? input.seriesName ?? input.title],
+    );
+    // INSERT ... RETURNING always yields exactly one row.
+    return world.rows[0]!;
+  });
+}
+
 // ---- Entry facets (F7 S4 scalar override) ---------------------------------
 // A facet is a per-book SCALAR override of an entry (name/summary/note). Unlike
 // the structural universe/series/book inserts above, a facet IS wiki CONTENT

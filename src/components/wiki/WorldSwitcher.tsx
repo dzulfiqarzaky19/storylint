@@ -1,21 +1,22 @@
 "use client";
 
-// World switcher (TCK-017, W-5 UI cut-over). The top-of-wiki picker for the
-// ACTIVE universe -> world. Series and Book are no longer surfaced here (book
-// handling moved to /write). Re-scoping is URL-driven: changing the universe
-// navigates to /wiki?u= and the SERVER re-renders loadWorldSnapshot for that
-// scope, so the active world is shareable and E2E-testable (no client snapshot
-// swap). The World select is a single derived option today (worlds are 1:1 per
-// universe under the W-1 backfill: `world-${universeId}`); it stays a real
-// <select> so its a11y/DOM shape survives when W-1 multi-world lands. New-*
-// affordances call the structural create actions (no wiki token) then navigate.
-// Delete opens a DANGER ConfirmModal that shows the REAL cascade row-count.
+// World switcher (TCK-017, W-5 UI cut-over; TCK-022 W-4a multi-world). The
+// top-of-wiki picker for the ACTIVE universe -> world. Series and Book are no
+// longer surfaced here (book handling moved to /write). Re-scoping is URL-driven:
+// changing the universe navigates to /wiki?u= and picking a world to /wiki?u=&w=;
+// the SERVER re-renders loadWorldSnapshot for that scope, so the active world is
+// shareable and E2E-testable (no client snapshot swap). The World select lists
+// the active universe's REAL worlds (TCK-022) — a second world is now creatable
+// (`+ world`) and selectable. New-* affordances call the structural create
+// actions (no wiki token) then navigate. Delete opens a DANGER ConfirmModal that
+// shows the REAL cascade row-count.
 
 import { useCallback, useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import {
   createUniverse,
+  createWorld,
   deleteUniverse,
   previewCascade,
 } from "@/lib/actions/wiki";
@@ -27,7 +28,7 @@ import styles from "./WorldSwitcher.module.css";
 interface WorldSwitcherProps {
   tree: WorldUniverseNode[];
   activeUniverseId: string;
-  /** Derived 1:1 from the universe (`world-${universeId}`). */
+  /** The active world id (TCK-022: resolved from ?w= against the universe's worlds). */
   activeWorldId: string;
 }
 
@@ -39,9 +40,14 @@ type NamePromptState = {
   onSubmit: (name: string) => void;
 };
 
-/** Build /wiki?u= for a universe scope. Omitted axes fall back on the server default. */
-function scopeHref(u: string): string {
+/**
+ * Build /wiki?u=&w= for a scope. `w` is optional: omit it (picking a universe)
+ * and the server resolves that universe's first world; pass it (picking a world)
+ * to select a specific world. Omitted axes fall back on the server default.
+ */
+function scopeHref(u: string, w?: string): string {
   const params = new URLSearchParams({ u });
+  if (w) params.set("w", w);
   return `/wiki?${params.toString()}`;
 }
 
@@ -60,14 +66,20 @@ export default function WorldSwitcher({
   const universe = tree.find((u) => u.id === activeUniverseId) ?? tree[0];
 
   const go = useCallback(
-    (u: string) => {
-      startTransition(() => router.push(scopeHref(u)));
+    (u: string, w?: string) => {
+      startTransition(() => router.push(scopeHref(u, w)));
     },
     [router],
   );
 
   // ---- Scope selects -------------------------------------------------------
+  // Picking a universe drops the world param so the server resolves that
+  // universe's first world; picking a world keeps the active universe and sets w.
   const onPickUniverse = useCallback((uId: string) => go(uId), [go]);
+  const onPickWorld = useCallback(
+    (wId: string) => go(activeUniverseId, wId),
+    [go, activeUniverseId],
+  );
 
   // ---- New-* affordances ---------------------------------------------------
   const runCreate = useCallback(
@@ -97,6 +109,19 @@ export default function WorldSwitcher({
         ),
     });
   }, [runCreate, router]);
+
+  const onNewWorld = useCallback(() => {
+    setNamePrompt({
+      title: "Name the new world",
+      onSubmit: (name) =>
+        void runCreate(
+          () => createWorld({ worldName: name, universeId: activeUniverseId }),
+          // The new world lands under the active universe; re-render from the
+          // server so the World select lists it. The writer then switches to it.
+          () => router.refresh(),
+        ),
+    });
+  }, [runCreate, router, activeUniverseId]);
 
   // ---- Delete cascade (danger) --------------------------------------------
   const openDelete = useCallback(
@@ -160,17 +185,21 @@ export default function WorldSwitcher({
             aria-label="Active world"
             value={activeWorldId}
             disabled={busy || !universe}
-            onChange={() => undefined}
+            onChange={(e) => onPickWorld(e.target.value)}
           >
-            {/* Worlds are 1:1 per universe today; one honest option, labeled by
-                the universe. Grows into a real multi-world picker when W-1 lands. */}
-            <option value={activeWorldId}>{universe?.name ?? "World"}</option>
+            {/* TCK-022 (W-4a): the active universe's REAL worlds, ordered by
+                sort_order (getWorldTree). A second world is now selectable and
+                switching navigates to /wiki?u=&w=. */}
+            {(universe?.worlds ?? []).map((w) => (
+              <option key={w.id} value={w.id}>{w.title}</option>
+            ))}
           </select>
         </label>
       </div>
 
       <div className={styles.actions}>
         <button type="button" onClick={onNewUniverse} disabled={busy}>+ universe</button>
+        <button type="button" onClick={onNewWorld} disabled={busy || !universe}>+ world</button>
         {universe ? (
           <button
             type="button"

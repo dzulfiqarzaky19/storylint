@@ -709,6 +709,14 @@ export interface WorldUniverseNode {
   id: string;
   name: string;
   series: WorldSeriesNode[];
+  /**
+   * TCK-022 (W-4a): the universe's REAL worlds (from the `worlds` table),
+   * ordered by sort_order. Until W-4a this was implicitly 1:1 (`world-${id}`);
+   * now the switcher lists every world so a second one is selectable. Ordered by
+   * sort_order (then id as a stable tiebreak) so the switcher order is
+   * deterministic. The existing `series` field is untouched for compatibility.
+   */
+  worlds: { id: string; title: string }[];
 }
 
 export async function getWorldTree(): Promise<WorldUniverseNode[]> {
@@ -722,6 +730,13 @@ export async function getWorldTree(): Promise<WorldUniverseNode[]> {
   const books = await rows<{ id: string; name: string; seriesId: string; sortOrder: number }>(
     `SELECT id, name, series_id AS "seriesId", sort_order AS "sortOrder"
        FROM books ORDER BY sort_order, id`,
+  );
+  // TCK-022: the real per-universe world list, ordered by sort_order then id so
+  // the switcher renders a stable order. Fetched once and grouped in memory
+  // (mirrors the series/books nesting below).
+  const worlds = await rows<{ id: string; title: string; universeId: string }>(
+    `SELECT id, title, universe_id AS "universeId"
+       FROM worlds ORDER BY sort_order, id`,
   );
 
   // NEST — each book under its series (book.seriesId === series.id), each series
@@ -740,6 +755,11 @@ export async function getWorldTree(): Promise<WorldUniverseNode[]> {
           .filter((b) => b.seriesId === se.id)
           .map((b) => ({ id: b.id, name: b.name, sortOrder: b.sortOrder })),
       })),
+    // TCK-022: attach only THIS universe's worlds (world.universeId === u.id),
+    // preserving the sort_order,id ordering from the query above.
+    worlds: worlds
+      .filter((w) => w.universeId === u.id)
+      .map((w) => ({ id: w.id, title: w.title })),
   }));
 }
 

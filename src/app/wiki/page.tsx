@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 export default async function WikiPage({
   searchParams,
 }: {
-  searchParams: Promise<{ u?: string }>;
+  searchParams: Promise<{ u?: string; w?: string }>;
 }) {
   const sp = await searchParams;
   const tree = await getWorldTree();
@@ -27,6 +27,7 @@ export default async function WikiPage({
   const { activeUniverseId, activeWorldId, activeBookId } = resolveWikiScope(
     tree,
     sp.u,
+    sp.w,
   );
 
   const [snapshot, chapter, dismissedSuggestionKeys, resolvedMarkKeys] =

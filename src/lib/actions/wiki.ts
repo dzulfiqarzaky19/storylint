@@ -57,12 +57,14 @@ import {
   insertSeries,
   insertBook,
   createFreshUniverse as createFreshUniverseRow,
+  insertWorld as insertWorldRow,
   deleteUniverseCascade,
   deleteSeriesCascade,
   deleteBookCascade,
   type CascadeCount,
 } from "../db/mutations";
 import { RETENTION_MS } from "../wiki/retention";
+import { DEFAULT_UNIVERSE_ID } from "../db/scope";
 
 // ---- Result envelope ------------------------------------------------------
 
@@ -751,6 +753,34 @@ export async function createUniverse(input: {
     return { ok: true, data: { universeId, seriesId, bookId } };
   } catch (err) {
     return fail(err, "wiki.createUniverse");
+  }
+}
+
+/**
+ * TCK-022 (W-4a): create a SECOND (or Nth) world inside an EXISTING universe (the
+ * `+ world` affordance on the World switcher). Mints the world/series/book ids
+ * and calls insertWorld, which lands all three in one transaction so the new
+ * world always has a home for chapters. Defaults to the active universe when
+ * none is passed. Structural — no wiki token (mirrors createUniverse).
+ */
+export async function createWorld(input: {
+  worldName: string;
+  universeId?: string;
+}): Promise<ActionResult<{ worldId: string }>> {
+  try {
+    const worldId = randomUUID();
+    const seriesId = randomUUID();
+    const bookId = randomUUID();
+    await insertWorldRow({
+      id: worldId,
+      universeId: input.universeId ?? DEFAULT_UNIVERSE_ID,
+      title: input.worldName,
+      seriesId,
+      bookId,
+    });
+    return { ok: true, data: { worldId } };
+  } catch (err) {
+    return fail(err, "wiki.createWorld");
   }
 }
 
