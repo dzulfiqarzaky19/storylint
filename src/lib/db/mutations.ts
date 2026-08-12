@@ -1129,11 +1129,28 @@ export async function insertWorld(input: {
   bookName?: string;
 }): Promise<WorldRow> {
   return withTransaction(async (client) => {
+    // TCK-E08: default the sort_order to a MONOTONIC next value within the universe
+    // (COALESCE(MAX+1, 0)) so a newly-minted world lands AFTER the universe's
+    // existing worlds instead of colliding at 0 with the seed world. The collision
+    // made getWorldTree's `ORDER BY sort_order, id` tiebreak on the random UUID, so
+    // resolveWikiScope's default (worlds[0]) could pick a stray new world over the
+    // seed and bare /wiki rendered the wrong world. Computed INSIDE this
+    // transaction (not the action layer) so the MAX read + INSERT are atomic and
+    // race-safe. An EXPLICIT sortOrder (tests, callers that order deliberately)
+    // still wins - this only fills the omitted default.
+    const sortOrder =
+      input.sortOrder ??
+      (
+        await client.query<{ next: number }>(
+          `SELECT COALESCE(MAX(sort_order) + 1, 0) AS next FROM worlds WHERE universe_id = $1`,
+          [input.universeId],
+        )
+      ).rows[0]!.next;
     const world = await client.query<WorldRow>(
       `INSERT INTO worlds (id, universe_id, title, sort_order)
        VALUES ($1, $2, $3, $4)
        RETURNING id, universe_id AS "universeId", title, sort_order AS "sortOrder"`,
-      [input.id, input.universeId, input.title, input.sortOrder ?? 0],
+      [input.id, input.universeId, input.title, sortOrder],
     );
     await client.query(
       `INSERT INTO books (id, world_id, name, sort_order)
