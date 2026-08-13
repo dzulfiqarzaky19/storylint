@@ -112,7 +112,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 8px 10px;
-  background: var(--fresh, #fbf4dd);
+  background: var(--fresh);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .aiText {
