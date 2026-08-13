@@ -116,9 +116,9 @@ export function OutstandingRail({
       </div>
 
       <div className={styles.promise}>
-        <div className={styles.promiseHead}>
+        <h2 className={styles.promiseHead}>
           Nothing enters the gazetteer until you write it in.
-        </div>
+        </h2>
         <div className={styles.promiseSub}>
           Works with the AI off — the checking is your own wiki, read back at
           you.
