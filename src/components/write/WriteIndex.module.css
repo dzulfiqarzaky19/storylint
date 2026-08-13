@@ -70,14 +70,14 @@
   background: none;
   border: none;
   border-left: 2px solid transparent;
-  border-top: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.12));
+  border-top: var(--rule-row);
   cursor: pointer;
   text-align: left;
   color: inherit;
 }
 
 .item:hover {
-  background: var(--surface, rgba(0, 0, 0, 0.03));
+  background: var(--surface);
 }
 
 .itemActive {
@@ -86,11 +86,11 @@
 }
 
 .itemActive .itemName {
-  color: var(--on-ink, #fff);
+  color: var(--on-ink);
 }
 
 .itemActive .itemNote {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--on-ink-muted);
 }
 
 .itemNote {
@@ -120,11 +120,11 @@
 }
 
 .dotRed {
-  background: var(--danger, #c0392b);
+  background: var(--danger);
 }
 
 .dotYellow {
-  background: var(--warning, #d6a419);
+  background: var(--warning);
 }
 
 .itemActive .dot {
@@ -137,7 +137,7 @@
   margin-top: 2px;
   background: none;
   border: none;
-  border-top: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.12));
+  border-top: var(--rule-row);
   cursor: pointer;
   text-align: left;
   font-size: 13px;

@@ -87,7 +87,7 @@
   gap: 8px;
   width: 100%;
   padding: 8px 0;
-  border-top: 1px solid var(--rule-minor, rgba(0, 0, 0, 0.12));
+  border-top: var(--rule-row);
 }
 
 .groupTitle {
@@ -115,11 +115,11 @@
   text-transform: uppercase;
   font-family: inherit;
   padding: 2px 4px;
-  border: 1px solid var(--border, #cbb89a);
+  border: var(--rule-row);
   border-radius: 0;
   min-width: 8rem;
   color: inherit;
-  background: var(--surface, #fff);
+  background: var(--surface);
 }
 
 .groupCount {
@@ -194,7 +194,7 @@
 }
 
 .groupDelete:hover {
-  color: var(--danger, #b3261e);
+  color: var(--danger);
 }
 
 .list {
@@ -220,7 +220,7 @@
 }
 
 .item:hover {
-  background: var(--surface, rgba(0, 0, 0, 0.03));
+  background: var(--surface);
 }
 
 .itemActive {
@@ -229,11 +229,11 @@
 }
 
 .itemActive .itemName {
-  color: var(--on-ink, #fff);
+  color: var(--on-ink);
 }
 
 .itemActive .itemNote {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--on-ink-muted);
 }
 
 .itemName {

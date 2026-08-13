@@ -76,7 +76,7 @@
 }
 
 .item:hover {
-  background: var(--surface, rgba(0, 0, 0, 0.03));
+  background: var(--surface);
 }
 
 /* Row wrapper: the select button + a hover-revealed trash affordance sit side
@@ -122,7 +122,7 @@
 }
 
 .itemRowActive .trash {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--on-ink-muted);
 }
 
 .trash:hover {
@@ -142,11 +142,11 @@
 }
 
 .itemActive .itemName {
-  color: var(--on-ink, #fff);
+  color: var(--on-ink);
 }
 
 .itemActive .itemNote {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--on-ink-muted);
 }
 
 .itemName {

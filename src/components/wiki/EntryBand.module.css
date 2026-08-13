@@ -34,7 +34,7 @@
 }
 
 .deleteEntry:hover {
-  color: #fff;
+  color: var(--on-accent);
   background: var(--danger);
 }
 
