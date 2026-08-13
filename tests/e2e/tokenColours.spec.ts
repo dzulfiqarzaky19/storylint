@@ -229,4 +229,24 @@ test.describe("HF3 token single-source-of-truth", () => {
     expect(expand((await tokenValue(page, "--accent")).toLowerCase())).toBe("#ec3013");
     expect(expand((await tokenValue(page, "--on-accent")).toLowerCase())).toBe("#ffffff");
   });
+
+  // HF3-follow (held for HF1): DetailsColumn.module.css dead-accent fallback
+  // strips. .aiAdd (accent bg + on-accent text) and .aiSuggest (accent border +
+  // accent text) must resolve to the tokens, never the stale #ec3013/#fff
+  // literals. Byte-invisible (fallback == token). Gates the SHIPPED wiki rules.
+  test("wiki details aiAdd/aiSuggest resolve to --accent/--on-accent (fallbacks stripped)", async ({
+    page,
+  }) => {
+    await page.goto("/wiki");
+    await page.waitForLoadState("networkidle");
+    const addBg = await probeProp(page, "__aiAdd", "backgroundColor", "button");
+    expect(addBg.cls, "DetailsColumn __aiAdd rule present").not.toBeNull();
+    expect(addBg.value).toBe(ACCENT);
+    const addFg = await probeProp(page, "__aiAdd", "color", "button");
+    expect(addFg.value).toBe(ON_ACCENT);
+    const sugFg = await probeProp(page, "__aiSuggest", "color", "button");
+    expect(sugFg.value).toBe(ACCENT);
+    const sugBorder = await probeProp(page, "__aiSuggest", "borderColor", "button");
+    expect(sugBorder.value).toBe(ACCENT);
+  });
 });
