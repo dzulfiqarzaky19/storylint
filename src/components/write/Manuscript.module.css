@@ -151,6 +151,7 @@
 .action {
   font-size: 13px;
   padding: 9px 13px;
+  min-height: 40px;
   cursor: pointer;
   background: none;
   font-family: inherit;
@@ -291,6 +292,7 @@
   padding: 14px 0;
   cursor: pointer;
   border-bottom: var(--rule-row, 1px solid var(--rule));
+  min-height: 40px;
   background: none;
   width: 100%;
   text-align: left;

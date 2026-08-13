@@ -73,6 +73,7 @@
   cursor: pointer;
   text-align: left;
   color: inherit;
+  min-height: 40px;
 }
 
 .item:hover {
@@ -88,7 +89,7 @@
 }
 
 .itemRow .item {
-  padding-right: 30px;
+  padding-right: 44px;
 }
 
 /* Trash: hidden until the row is hovered or the button is focused, so the list
@@ -101,8 +102,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   background: none;
   border: none;
@@ -171,6 +172,7 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--accent-deep, var(--accent));
+  min-height: 40px;
 }
 
 .add:hover {
