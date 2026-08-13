@@ -38,6 +38,13 @@
   background: var(--danger);
 }
 
+/* TCK-HF2W-C3 (net-new): keyboard-focus parity with :hover — Tabbing to the
+   delete control must show the same danger fill a pointer hover gives. */
+.deleteEntry:focus-visible {
+  color: var(--on-accent);
+  background: var(--danger);
+}
+
 .kind {
   font-size: 12px;
   font-weight: 700;
