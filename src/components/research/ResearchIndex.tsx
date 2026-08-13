@@ -5,6 +5,37 @@ import type { ResearchThreadRow } from "@/lib/domain/types";
 import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./ResearchIndex.module.css";
 
+// TCK-HF2W-A2: replace the U+1F5D1 trash emoji on each thread's delete button with
+// an inline SVG in the same register as WikiIndex's Chevron / DetailsColumn's
+// Sparkle+Dismiss icons (viewBox 0 0 16 16, 1em box, stroke=currentColor,
+// aria-hidden + focusable=false so it inherits the .trash colour token — --muted,
+// --on-ink-muted on the active row, --accent-deep on hover — and stays decorative;
+// the button's aria-label + title carry the meaning). Crisp and colour-consistent
+// at any size, unlike the platform-dependent emoji glyph.
+function TrashIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M2.5 4 H13.5" />
+      <path d="M6 4 V2.75 A0.75 0.75 0 0 1 6.75 2 H9.25 A0.75 0.75 0 0 1 10 2.75 V4" />
+      <path d="M4 4 L4.6 13.1 A1 1 0 0 0 5.6 14 H10.4 A1 1 0 0 0 11.4 13.1 L12 4" />
+      <path d="M6.5 7 V11" />
+      <path d="M9.5 7 V11" />
+    </svg>
+  );
+}
+
 export interface ResearchIndexProps {
   threads: ResearchThreadRow[];
   selectedId: string;
@@ -90,7 +121,7 @@ export default function ResearchIndex({
                   title="Delete thread"
                   onClick={() => setPendingDelete({ id: t.id, title: t.title })}
                 >
-                  {"\uD83D\uDDD1"}
+                  <TrashIcon />
                 </button>
               ) : null}
             </div>
