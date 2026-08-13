@@ -183,3 +183,84 @@ test.describe("HF5 hover paint is gated behind hover-capable pointers (CSSOM)", 
     expect(facts.hasActive, ".home:active pressed state must exist").toBe(true);
   });
 });
+
+/**
+ * Read declared-property facts for a class whose hashed name CONTAINS `frag`,
+ * from the live CSSOM. Reports whether a `:disabled` rule sets
+ * `cursor: not-allowed`, and whether a `:focus-visible` rule declares an
+ * `outline` (a real focus ring, not just a border-color tweak). Runs in the
+ * page so it reads the REAL built + applied CSSOM.
+ */
+async function inputRuleFacts(
+  page: Page,
+  frag: string,
+): Promise<{ disabledNotAllowed: boolean; focusVisibleOutline: boolean }> {
+  return page.evaluate((f) => {
+    let disabledNotAllowed = false;
+    let focusVisibleOutline = false;
+    const disRe = new RegExp(`\\.[\\w-]*${f}[\\w-]*:disabled`, "i");
+    const fvRe = new RegExp(`\\.[\\w-]*${f}[\\w-]*:focus-visible`, "i");
+    const walk = (rules: CSSRuleList) => {
+      for (const rule of Array.from(rules)) {
+        if (rule instanceof CSSMediaRule) {
+          walk(rule.cssRules);
+        } else if (rule instanceof CSSStyleRule) {
+          if (
+            disRe.test(rule.selectorText) &&
+            /not-allowed/i.test(rule.style.cursor)
+          ) {
+            disabledNotAllowed = true;
+          }
+          if (
+            fvRe.test(rule.selectorText) &&
+            // The built rule is `outline: <w> solid var(--accent)`. A CSS
+            // variable in the shorthand leaves the `outlineStyle` LONGHAND
+            // empty in the CSSOM (it cannot be resolved at parse time), so we
+            // read the shorthand text and require a real, non-`none` outline.
+            /(^|[;{\s])outline\s*:/i.test(rule.cssText) &&
+            !/(^|[;{\s])outline\s*:\s*none\b/i.test(rule.cssText)
+          ) {
+            focusVisibleOutline = true;
+          }
+        }
+      }
+    };
+    for (const sheet of Array.from(document.styleSheets)) {
+      let rules: CSSRuleList | null = null;
+      try {
+        rules = sheet.cssRules;
+      } catch {
+        continue;
+      }
+      if (rules) walk(rules);
+    }
+    return { disabledNotAllowed, focusVisibleOutline };
+  }, frag);
+}
+
+test.describe("HF5 part-B: research AI controls have touch-safe + a11y states (CSSOM)", () => {
+  test(".aiSend: :hover is gated behind @media(hover:hover) and :active exists", async ({
+    page,
+  }) => {
+    await page.goto("/research");
+    // ResearchScreen mounts -> its CSS-module chunk is loaded, so the .aiSend
+    // rules are in the CSSOM whether or not the AI box itself is rendered.
+    await expect(page.locator("body")).toBeVisible();
+
+    const facts = await ruleFacts(page, "aiSend");
+    expect(facts.hoverGated, ".aiSend:hover must be inside @media(hover:hover)").toBe(true);
+    expect(facts.hoverUngated, ".aiSend:hover must NOT exist ungated (sticky-tap risk)").toBe(false);
+    expect(facts.hasActive, ".aiSend:active pressed state must exist").toBe(true);
+  });
+
+  test(".aiInput: :disabled shows not-allowed and :focus-visible has a real outline ring", async ({
+    page,
+  }) => {
+    await page.goto("/research");
+    await expect(page.locator("body")).toBeVisible();
+
+    const facts = await inputRuleFacts(page, "aiInput");
+    expect(facts.disabledNotAllowed, ".aiInput:disabled must set cursor:not-allowed").toBe(true);
+    expect(facts.focusVisibleOutline, ".aiInput:focus-visible must declare a real outline ring").toBe(true);
+  });
+});
