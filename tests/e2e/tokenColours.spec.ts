@@ -22,6 +22,8 @@ const WARNING = "rgb(214, 164, 25)"; //  --warning    #d6a419
 const ON_INK_MUTED = "rgb(188, 188, 187)"; // --on-ink-muted #bcbcbb
 const RULE = "rgb(215, 211, 211)"; //    --rule       #d7d3d3
 const OLD_RULE_MINOR = "rgba(0, 0, 0, 0.12)"; // the stripped fallback
+const ACCENT = "rgb(236, 48, 19)"; //    --accent     #ec3013
+const ON_ACCENT = "rgb(255, 255, 255)"; // --on-accent #ffffff
 
 // Resolve one hashed CSS-module class (by its human suffix, e.g. "__dotYellow")
 // from a loaded stylesheet, mount a bare probe element with that class, read a
@@ -203,5 +205,28 @@ test.describe("HF3 token single-source-of-truth", () => {
     expect(ratio).toBeGreaterThanOrEqual(4.5);
     // Guard the literal too: --ink is the intended pairing background.
     expect((await tokenValue(page, "--ink")).toLowerCase()).toBe("#201e1d");
+  });
+
+  // HF3-follow (held for HF2): ResearchScreen.module.css dead-accent fallback
+  // strips. Each stripped rule must resolve to the --accent / --on-accent TOKEN
+  // (the strip is byte-invisible: fallback == token value), never a stale
+  // literal. Gates the SHIPPED research rules loaded on /research.
+  test("research aiSend resolves to --accent bg + --on-accent text (fallbacks stripped)", async ({
+    page,
+  }) => {
+    await page.goto("/research");
+    await page.waitForLoadState("networkidle");
+    const bg = await probeProp(page, "__aiSend", "backgroundColor", "button");
+    expect(bg.cls, "ResearchScreen __aiSend rule present").not.toBeNull();
+    expect(bg.value).toBe(ACCENT);
+    const fg = await probeProp(page, "__aiSend", "color", "button");
+    expect(fg.value).toBe(ON_ACCENT);
+    // token identity: the two globals tokens back these rules. The built CSS
+    // may minify custom-property values (#ffffff -> #fff), so expand shorthand
+    // hex before comparing (the resolved rgb() checks above are the real proof).
+    const expand = (h: string) =>
+      /^#[0-9a-f]{3}$/.test(h) ? "#" + h.slice(1).replace(/./g, (c) => c + c) : h;
+    expect(expand((await tokenValue(page, "--accent")).toLowerCase())).toBe("#ec3013");
+    expect(expand((await tokenValue(page, "--on-accent")).toLowerCase())).toBe("#ffffff");
   });
 });
