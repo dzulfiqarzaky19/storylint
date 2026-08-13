@@ -119,21 +119,26 @@ svg {
   outline-offset: 2px;
 }
 
+/* TCK-HF6: guard against horizontal overflow at ALL widths, not just the phone
+   tier. The wide fixed-width desktop columns can overflow at any viewport, so
+   the clamp is global. `overflow-x: clip` (not `hidden`) clips without creating
+   a scroll container or scroll port, so it never hijacks focus-scroll and does
+   not force an `overflow-y` change. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 /* ---------------------------------------------------------------------------
    Phone tier (<=560px). The desktop layout is untouched; here we only shrink
-   the shared gutter (every screen reads var(--gutter)) and guard against
-   horizontal overflow from the wide fixed-width desktop columns. Per-screen
-   type scaling and column stacking live in each module's own @media block.
+   the shared gutter (every screen reads var(--gutter)). Per-screen type scaling
+   and column stacking live in each module's own @media block. The horizontal-
+   overflow guard is now global (see above), no longer phone-scoped.
    --------------------------------------------------------------------------- */
 
 @media (max-width: 560px) {
   :root {
     --gutter: 18px;
-  }
-
-  html,
-  body {
-    max-width: 100%;
-    overflow-x: hidden;
   }
 }
