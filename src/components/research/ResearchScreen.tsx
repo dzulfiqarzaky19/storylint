@@ -473,6 +473,18 @@ export default function ResearchScreen({
           )}
 
           <section className={styles.footer}>
+            {state.error && (
+              <div className={styles.errorBar} role="alert" aria-live="assertive">
+                <span className={styles.errorText}>{state.error}</span>
+                <button
+                  type="button"
+                  className={styles.errorDismiss}
+                  onClick={() => dispatch({ type: "SET_ERROR", error: null })}
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
             <Composer
               ai={{
                 value: draft,

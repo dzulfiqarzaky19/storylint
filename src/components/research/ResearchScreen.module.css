@@ -335,6 +335,40 @@
   flex: 1;
 }
 
+/* Error alert (dismissible, assertive live region). Surfaces a failed server
+   action / stream error in the composer region. The reducer nulls state.error
+   on the next ask (APPEND_STREAMING_TURN), so this auto-clears on a good ask.
+   Sits above the composer inside the sticky footer, accent-filled to read as a
+   loud failure banner (parity with the wiki errorBar). */
+.errorBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.errorText {
+  flex: 1;
+  min-width: 0;
+}
+
+.errorDismiss {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  background: var(--on-accent);
+  color: var(--accent-deep);
+  border: none;
+  cursor: pointer;
+}
+
 /* Placeholder rendered as 24px/700 faint text (no real input in the prototype). */
 .composerPlaceholder {
   font-size: 24px;
