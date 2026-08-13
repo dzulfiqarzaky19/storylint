@@ -46,7 +46,13 @@
   font-weight: 600;
 }
 
-.home:hover {
-  background: var(--accent-deep);
-  border-color: var(--accent-deep);
+@media (hover: hover) {
+  .home:hover {
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
+  }
+}
+
+.home:active {
+  transform: translateY(1px);
 }

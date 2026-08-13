@@ -36,8 +36,14 @@
   cursor: pointer;
 }
 
-.cancel:hover {
-  background: var(--hover);
+@media (hover: hover) {
+  .cancel:hover {
+    background: var(--hover);
+  }
+}
+
+.cancel:active {
+  transform: translateY(1px);
 }
 
 .confirm {
@@ -49,6 +55,10 @@
   border: 1px solid var(--ink);
   border-radius: 0;
   cursor: pointer;
+}
+
+.confirm:active {
+  transform: translateY(1px);
 }
 
 /* Destructive confirm: red, for deletes and other irreversible actions. */
@@ -63,7 +73,13 @@
   cursor: pointer;
 }
 
-.confirmDanger:hover {
-  background: var(--accent-deep);
-  border-color: var(--accent-deep);
+@media (hover: hover) {
+  .confirmDanger:hover {
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
+  }
+}
+
+.confirmDanger:active {
+  transform: translateY(1px);
 }

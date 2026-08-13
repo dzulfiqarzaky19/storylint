@@ -465,7 +465,7 @@ export function Manuscript({
               <EditorContent editor={editor} />
             </div>
             {state.error ? (
-              <p className={`${styles.saveState} ${styles.saveError}`} role="status">
+              <p className={`${styles.saveState} ${styles.saveError}`} role="alert">
                 {state.error}
               </p>
             ) : (
