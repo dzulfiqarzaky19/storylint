@@ -5,6 +5,52 @@ import { useDrag } from "@/components/dnd/DragContext";
 import InlineText from "./InlineText";
 import styles from "./DetailsColumn.module.css";
 
+// TCK-HF2W-A1: replace the two text glyphs (U+2726 sparkle, U+2715 x) with inline
+// SVGs in the same register as WikiIndex's Chevron (viewBox 0 0 16 16, 1em box,
+// stroke=currentColor, aria-hidden + focusable=false so they inherit colour and
+// stay decorative — the visible label / aria-label carries the meaning). Crisp at
+// any size, unlike font glyphs whose shape/baseline vary by platform font.
+function SparkleIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M8 2 L9.4 6.6 L14 8 L9.4 9.4 L8 14 L6.6 9.4 L2 8 L6.6 6.6 Z" />
+    </svg>
+  );
+}
+
+function DismissIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <line x1="4" y1="4" x2="12" y2="12" />
+      <line x1="12" y1="4" x2="4" y2="12" />
+    </svg>
+  );
+}
+
 interface DetailsColumnProps {
   entryId: string;
   facts: FactRow[];
@@ -123,7 +169,13 @@ export default function DetailsColumn({
             disabled={ai.busy}
             onClick={ai.onSuggest}
           >
-            {ai.busy ? "Thinking…" : "✦ Suggest details"}
+            {ai.busy ? (
+              "Thinking…"
+            ) : (
+              <>
+                <SparkleIcon /> Suggest details
+              </>
+            )}
           </button>
           {ai.suggestions.length > 0 && (
             <ul className={styles.aiList}>
@@ -146,7 +198,7 @@ export default function DetailsColumn({
                       onClick={() => ai.onDismiss(s.key)}
                       aria-label={`Dismiss ${s.key}`}
                     >
-                      ✕
+                      <DismissIcon />
                     </button>
                   </span>
                 </li>
