@@ -230,7 +230,7 @@
 }
 
 .item:hover {
-  background: var(--surface);
+  background: var(--hover);
 }
 
 .itemActive {
