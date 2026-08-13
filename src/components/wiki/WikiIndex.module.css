@@ -53,6 +53,16 @@
   transform: rotate(90deg);
 }
 
+/* TCK-HF7: honour prefers-reduced-motion. The 90deg end-state stays (it encodes
+   open/closed, not motion); only the 120ms tween is removed so the glyph snaps
+   instead of animating for users who asked for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .railToggleChevron svg,
+  .groupChevron svg {
+    transition: none;
+  }
+}
+
 /* The grouped index panel. Always shown on desktop; collapses behind the
    header toggle on the stacked tier (see the media query). */
 .panel {
