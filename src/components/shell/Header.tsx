@@ -39,7 +39,7 @@ export default function Header() {
         <span className={styles.wordmark}>ASHKELD</span>
         <span className={styles.descriptor}>{current.descriptor}</span>
       </div>
-      <nav className={styles.nav}>
+      <nav className={styles.nav} aria-label="Primary">
         {NAV.map((item) => {
           const isActive = item.href === current.href;
           return (

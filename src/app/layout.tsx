@@ -26,8 +26,29 @@ export default function RootLayout({
   return (
     <html lang="en" className={archivo.variable}>
       <body>
+        <style>{`
+          .skipLink {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            z-index: 100;
+            padding: 8px 14px;
+            background: var(--ground);
+            color: var(--ink);
+            border: var(--rule-major);
+            font-weight: 700;
+          }
+          .skipLink:focus {
+            left: 0;
+          }
+        `}</style>
+        <a href="#main" className="skipLink">
+          Skip to main content
+        </a>
         <Header />
-        {children}
+        <div id="main" tabIndex={-1}>
+          {children}
+        </div>
       </body>
     </html>
   );
