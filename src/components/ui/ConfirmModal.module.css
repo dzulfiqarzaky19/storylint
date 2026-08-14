@@ -61,6 +61,16 @@
   transform: translateY(1px);
 }
 
+/* Busy/spent confirm: after the first click (or while the caller is pending)
+   the button is disabled so a double-click cannot re-fire. Dim it and swap to a
+   not-allowed cursor so the busy state reads; :active lift is suppressed. */
+.confirm:disabled,
+.confirmDanger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Destructive confirm: red, for deletes and other irreversible actions. */
 .confirmDanger {
   padding: 8px 16px;
