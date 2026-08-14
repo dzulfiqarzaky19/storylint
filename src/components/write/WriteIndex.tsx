@@ -1,9 +1,35 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useCallback, useId, useState, useSyncExternalStore } from "react";
 import styles from "./WriteIndex.module.css";
 import type { ChapterSeverity } from "@/lib/check/severity";
 import { shouldShowChapterDot } from "@/lib/check/severity";
+
+/** The stacked-tier breakpoint — mirrors @media(max-width:1200px) in the CSS. */
+const STACKED_QUERY = "(max-width: 1200px)";
+
+/**
+ * True only on the stacked tier (<=1200px), where the chapter `.panel` folds
+ * behind the header toggle. Above 1200px the panel is ALWAYS shown, so the
+ * header must NOT masquerade as a collapse control (see WriteIndex). SSR-safe
+ * via useSyncExternalStore: the server snapshot is `false` (desktop, plain
+ * heading — no focusable no-op button in the pre-hydration HTML), then the
+ * client subscribes to the live media query.
+ */
+function useIsStackedTier(): boolean {
+  const subscribe = useCallback((onChange: () => void) => {
+    if (typeof window === "undefined" || !window.matchMedia) return () => {};
+    const mql = window.matchMedia(STACKED_QUERY);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+  const getSnapshot = () =>
+    typeof window !== "undefined" && !!window.matchMedia
+      ? window.matchMedia(STACKED_QUERY).matches
+      : false;
+  const getServerSnapshot = () => false;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
 
 export interface WriteIndexChapter {
   number: number;
@@ -50,25 +76,41 @@ export default function WriteIndex({
 }: WriteIndexProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+  const stacked = useIsStackedTier();
+
+  // Header content is identical across tiers; only its SEMANTICS differ.
+  const headerInner = (
+    <>
+      <span className={styles.title}>Chapters</span>
+      <span className={styles.count}>{chapters.length}</span>
+    </>
+  );
 
   return (
     <nav
       className={`${styles.index} ${open ? styles.indexOpen : ""}`}
       aria-label="Chapters"
     >
-      <button
-        type="button"
-        className={styles.railToggle}
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <span className={styles.title}>Chapters</span>
-        <span className={styles.count}>{chapters.length}</span>
-        <span className={styles.railToggleChevron} aria-hidden="true">
-          {open ? "\u2212" : "+"}
-        </span>
-      </button>
+      {stacked ? (
+        // Stacked tier (<=1200px): the panel folds, so the header is a REAL
+        // collapse toggle with an honest aria-expanded/aria-controls.
+        <button
+          type="button"
+          className={styles.railToggle}
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {headerInner}
+          <span className={styles.railToggleChevron} aria-hidden="true">
+            {open ? "\u2212" : "+"}
+          </span>
+        </button>
+      ) : (
+        // Desktop (>1200px): the panel is always shown, so the header is a plain
+        // heading — no button role, no (lying) aria-expanded, not focusable.
+        <h2 className={styles.railToggle}>{headerInner}</h2>
+      )}
 
       <ul id={panelId} className={styles.panel}>
         {chapters.map((c) => (
