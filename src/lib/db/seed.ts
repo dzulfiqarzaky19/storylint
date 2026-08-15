@@ -10,6 +10,22 @@ import { loadEnv } from "./env";
 import { getPool, closePool, withTransaction } from "./pool";
 import type { PoolClient } from "pg";
 import { extractCandidatePhrases } from "../check/unrecorded";
+import {
+  ASH2_ENTRIES,
+  ASH2_FACTS,
+  ASH2_TIES,
+  ASH2_CHAPTERS,
+  VOSK_ENTRIES,
+  VOSK_FACTS,
+  VOSK_TIES,
+  VOSK1_CHAPTERS,
+  VOSK2_CHAPTERS,
+  HALEN_ENTRIES,
+  HALEN_FACTS,
+  HALEN_TIES,
+  HALEN1_CHAPTERS,
+  HALEN2_CHAPTERS,
+} from "./seed-content";
 
 // ---------------------------------------------------------------------------
 // Seed data (verbatim from)
@@ -17,7 +33,7 @@ import { extractCandidatePhrases } from "../check/unrecorded";
 
 type Kind = "character" | "world" | "organization" | "lore";
 
-interface SeedEntry {
+export interface SeedEntry {
   id: string;
   kind: Kind;
   name: string;
@@ -382,7 +398,7 @@ const OPEN_QUESTIONS: Array<[string, string, string]> = [
 // the entry's "Eyes: Green"). Chapter 4 states the oath sworn "at nineteen",
 // which contradicts The Lantern Oath "sworn at twenty-one". These are the same
 // contradictions the wiki timeline flags, now readable in the manuscript itself.
-interface SeedChapter {
+export interface SeedChapter {
   id: string;
   number: number;
   title: string;
@@ -478,6 +494,98 @@ function bodyOf(paragraphs: string[]) {
 // Insert routine
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Multi-book additive content (Ashkeld II / Vosk Reach / Halen City).
+//
+// Purely ADDITIVE on top of the Book I data above (which stays byte-identical).
+// Each group states, in one place, the (universe, world, book) an authored
+// bundle homes to, so the LINKAGE is data, not spread across insert loops:
+//   - worldId is the world_entities world every entry in `entries` links to
+//     EXPLICITLY (the load-bearing linkage: ash2 -> Ashkeld, vosk -> Vosk,
+//     halen -> Halen). It is NOT derived from universe_id, so a Vosk entry
+//     (universe-1) homes to world-vosk, never to Ashkeld.
+//   - universeId is stamped on entries.universe_id (canon), independent of
+//     world membership: Vosk shares universe-1 with Ashkeld but lives in its
+//     own world.
+// ---------------------------------------------------------------------------
+
+interface ContentWorld {
+  worldId: string;
+  universeId: string;
+  entries: SeedEntry[];
+  facts: Array<[string, string, string, string]>;
+  ties: Array<[string, string, string]>;
+}
+
+interface ContentBook {
+  bookId: string;
+  chapters: SeedChapter[];
+}
+
+// New universes/worlds/books to create. world-universe-1 (Ashkeld) already
+// exists; Ash II entries just join it.
+const NEW_UNIVERSES: Array<[string, string]> = [
+  ["universe-2", "THE GLASS PRECINCT"],
+];
+const NEW_WORLDS: Array<{
+  id: string;
+  universeId: string;
+  title: string;
+  sortOrder: number;
+}> = [
+  { id: "world-vosk", universeId: "universe-1", title: "VOSK REACH", sortOrder: 1 },
+  { id: "world-halen", universeId: "universe-2", title: "HALEN CITY", sortOrder: 0 },
+];
+
+// New books, inserted AFTER their world exists (FK books.world_id).
+const NEW_BOOKS: Array<{
+  id: string;
+  worldId: string;
+  name: string;
+  sortOrder: number;
+}> = [
+  { id: "book-2", worldId: "world-universe-1", name: "ASHKELD BOOK II", sortOrder: 1 },
+  { id: "book-vosk-1", worldId: "world-vosk", name: "VOSK REACH BOOK I", sortOrder: 0 },
+  { id: "book-vosk-2", worldId: "world-vosk", name: "VOSK REACH BOOK II", sortOrder: 1 },
+  { id: "book-halen-1", worldId: "world-halen", name: "HALEN CITY BOOK I", sortOrder: 0 },
+  { id: "book-halen-2", worldId: "world-halen", name: "HALEN CITY BOOK II", sortOrder: 1 },
+];
+
+// Entry bundles -> the world each links to explicitly + the universe stamped on
+// entries.universe_id. Ash II joins the existing Ashkeld world.
+const CONTENT_WORLDS: ContentWorld[] = [
+  {
+    worldId: "world-universe-1",
+    universeId: "universe-1",
+    entries: ASH2_ENTRIES,
+    facts: ASH2_FACTS,
+    ties: ASH2_TIES,
+  },
+  {
+    worldId: "world-vosk",
+    universeId: "universe-1",
+    entries: VOSK_ENTRIES,
+    facts: VOSK_FACTS,
+    ties: VOSK_TIES,
+  },
+  {
+    worldId: "world-halen",
+    universeId: "universe-2",
+    entries: HALEN_ENTRIES,
+    facts: HALEN_FACTS,
+    ties: HALEN_TIES,
+  },
+];
+
+// Chapter bundles -> the book each chapter belongs to.
+const CONTENT_BOOKS: ContentBook[] = [
+  { bookId: "book-2", chapters: ASH2_CHAPTERS },
+  { bookId: "book-vosk-1", chapters: VOSK1_CHAPTERS },
+  { bookId: "book-vosk-2", chapters: VOSK2_CHAPTERS },
+  { bookId: "book-halen-1", chapters: HALEN1_CHAPTERS },
+  { bookId: "book-halen-2", chapters: HALEN2_CHAPTERS },
+];
+
 export async function seedWithin(client: PoolClient): Promise<void> {
   // Idempotent: clear everything, then insert. CASCADE covers FK children.
   // F7/W-6: universes/books/entry_facets are cleared too (CASCADE from the
@@ -507,6 +615,29 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     `INSERT INTO books (id, world_id, name, sort_order) VALUES ('book-1', 'world-universe-1', 'ASHKELD BOOK I', 0)`,
   );
 
+  // Multi-book additive hierarchy. FK order: universe -> world -> book. Book I's
+  // universe-1 / world-universe-1 / book-1 already exist above; these add
+  // universe-2 (Halen), the two new worlds (Vosk under universe-1, Halen under
+  // universe-2), and the five new books.
+  for (const [nu_id, nu_name] of NEW_UNIVERSES) {
+    await client.query(`INSERT INTO universes (id, name) VALUES ($1, $2)`, [
+      nu_id,
+      nu_name,
+    ]);
+  }
+  for (const w of NEW_WORLDS) {
+    await client.query(
+      `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ($1, $2, $3, $4)`,
+      [w.id, w.universeId, w.title, w.sortOrder],
+    );
+  }
+  for (const b of NEW_BOOKS) {
+    await client.query(
+      `INSERT INTO books (id, world_id, name, sort_order) VALUES ($1, $2, $3, $4)`,
+      [b.id, b.worldId, b.name, b.sortOrder],
+    );
+  }
+
   // F9-B categories: seed the 4 built-ins BEFORE entries, since entries.kind is a
   // soft FK to categories(id). ids equal the legacy kind strings, so every seeded
   // entry's kind already resolves to a real category row.
@@ -528,6 +659,28 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     );
   }
 
+  // Multi-book new entries + their EXPLICIT world membership. Inserted BEFORE
+  // B1/B2 so B2's NOT-EXISTS guard sees these rows and skips them. Each bundle
+  // stamps entries.universe_id from its universe and links every entry to ITS
+  // world explicitly (the load-bearing linkage). A Vosk entry is universe-1 but
+  // homes to world-vosk, never Ashkeld — which the B2 default ('world-'||
+  // universe_id) would get wrong, so the explicit row here is the fix.
+  for (const g of CONTENT_WORLDS) {
+    for (let i = 0; i < g.entries.length; i++) {
+      const e = g.entries[i]!;
+      await client.query(
+        `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order, universe_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [e.id, e.kind, e.name, e.no, e.note, e.summary, KIND_SHELF[e.kind], i, g.universeId],
+      );
+      await client.query(
+        `INSERT INTO world_entities (world_id, entity_id) VALUES ($1, $2)
+         ON CONFLICT (world_id, entity_id) DO NOTHING`,
+        [g.worldId, e.id],
+      );
+    }
+  }
+
   // W-1 world layer backfill. Runs AFTER the entries loop (B2 links every entry,
   // so entries must exist first) and inside THIS seed transaction (a separate
   // connection could not see the uncommitted entries above). The two INSERTs are
@@ -542,6 +695,9 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     `INSERT INTO worlds (id, universe_id, title, sort_order)
        SELECT 'world-' || u.id, u.id, u.name, 0
          FROM universes u
+        WHERE NOT EXISTS (
+          SELECT 1 FROM worlds w WHERE w.universe_id = u.id
+        )
      ON CONFLICT (id) DO NOTHING`,
   );
 
@@ -554,6 +710,9 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     `INSERT INTO world_entities (world_id, entity_id)
        SELECT 'world-' || e.universe_id, e.id
          FROM entries e
+        WHERE NOT EXISTS (
+          SELECT 1 FROM world_entities we WHERE we.entity_id = e.id
+        )
      ON CONFLICT (world_id, entity_id) DO NOTHING`,
   );
 
@@ -617,6 +776,63 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     }
   }
 
+  // ---- Multi-book additive facts / ties / chapters ----------------------
+  // Purely additive. New facts/ties reference new entries (and, for Ash II, some
+  // existing Book I entries by id, e.g. halvard) — all valid FKs. New chapters
+  // belong to their own books; each book restarts at Chapter 1.
+
+  // New facts. sort_order continues from the existing FACTS count so ordering is
+  // stable across the merged set. ids are globally unique (k*/l*/m*/n*, vf*, hf*).
+  {
+    let fi = FACTS.length;
+    for (const g of CONTENT_WORLDS) {
+      for (const [id, entryId, key, value] of g.facts) {
+        await client.query(
+          `INSERT INTO facts (id, entry_id, key, value, fresh, sort_order)
+           VALUES ($1, $2, $3, $4, false, $5)`,
+          [id, entryId, key, value, fi++],
+        );
+      }
+    }
+  }
+
+  // New ties. Same id pattern tie-<from>-<to>; new pairs stay unique.
+  for (const g of CONTENT_WORLDS) {
+    for (const [from, to, rel] of g.ties) {
+      await client.query(
+        `INSERT INTO ties (id, from_entry_id, to_entry_id, rel)
+         VALUES ($1, $2, $3, $4)`,
+        [`tie-${from}-${to}`, from, to, rel],
+      );
+    }
+  }
+
+  // New chapters, keyed by their book. phrase_mentions is a book-AGNOSTIC index
+  // keyed (phrase, chapter_number) app-wide (getPhraseChapterCounts groups over
+  // ALL rows; saveChapterBody DELETE/INSERTs by chapter_number alone). Every book
+  // reuses chapter numbers 1-7, so seeding across books collides on shared
+  // phrases at the same number — resolve it exactly as a live save does, with
+  // ON CONFLICT DO UPDATE (last writer wins). Book I's own chapter/phrase rows
+  // above are untouched (they run first and clean); only the derived ranking
+  // index reflects the multi-book reality, which is the real app behavior.
+  for (const bk of CONTENT_BOOKS) {
+    for (const ch of bk.chapters) {
+      await client.query(
+        `INSERT INTO chapters (id, number, title, body, book_id)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [ch.id, ch.number, ch.title, JSON.stringify(bodyOf(ch.paragraphs)), bk.bookId],
+      );
+      for (const [phrase, count] of extractCandidatePhrases(ch.paragraphs)) {
+        await client.query(
+          `INSERT INTO phrase_mentions (phrase, chapter_number, count)
+           VALUES ($1, $2, $3)
+           ON CONFLICT (phrase, chapter_number) DO UPDATE SET count = EXCLUDED.count`,
+          [phrase, ch.number, count],
+        );
+      }
+    }
+  }
+
   // Research (threads / turns / propositions) is created at runtime by real AI
   // conversations — nothing to seed. TRUNCATE above left these tables empty.
 
@@ -629,6 +845,9 @@ async function main(): Promise<void> {
 
   const counts = await getPool().query<{ table_name: string; n: string }>(`
     SELECT 'entries' AS table_name, count(*)::text AS n FROM entries
+    UNION ALL SELECT 'universes', count(*)::text FROM universes
+    UNION ALL SELECT 'worlds', count(*)::text FROM worlds
+    UNION ALL SELECT 'books', count(*)::text FROM books
     UNION ALL SELECT 'facts', count(*)::text FROM facts
     UNION ALL SELECT 'ties', count(*)::text FROM ties
     UNION ALL SELECT 'chapter_appearances', count(*)::text FROM chapter_appearances

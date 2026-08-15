@@ -84,13 +84,19 @@ describe("TCK-011 seed backfills the world layer (real Postgres, scratch db)", (
       client.release();
     }
 
-    // B1: exactly one world, id/title derived from the seeded universe.
+    // B1/multi-book: the Ashkeld world exists (Book I + Ash II), plus the two new
+    // worlds (Vosk under universe-1, Halen under universe-2) => 3 worlds total.
     const worlds = await scratchPool.query<{ id: string; universe_id: string; title: string }>(
-      `SELECT id, universe_id, title FROM worlds`,
+      `SELECT id, universe_id, title FROM worlds ORDER BY id`,
     );
-    expect(worlds.rowCount).toBe(1);
-    expect(worlds.rows[0]!.id).toBe("world-universe-1");
-    expect(worlds.rows[0]!.universe_id).toBe("universe-1");
+    expect(worlds.rowCount).toBe(3);
+    const ashkeld = worlds.rows.find((w) => w.id === "world-universe-1");
+    expect(ashkeld).toBeDefined();
+    expect(ashkeld!.universe_id).toBe("universe-1");
+    expect(worlds.rows.some((w) => w.id === "world-vosk" && w.universe_id === "universe-1")).toBe(true);
+    expect(worlds.rows.some((w) => w.id === "world-halen" && w.universe_id === "universe-2")).toBe(true);
+    // No stray auto-world for universe-2 (B1's NOT EXISTS guard).
+    expect(worlds.rows.some((w) => w.id === "world-universe-2")).toBe(false);
 
     // B2: every entry is linked to its universe's world (link count == entry count,
     // and every link points at world-universe-1 since the seed has one universe).
@@ -99,18 +105,23 @@ describe("TCK-011 seed backfills the world layer (real Postgres, scratch db)", (
     expect(Number(entryCount)).toBeGreaterThan(0); // sanity: the seed has entries
     expect(linkCount).toBe(entryCount);            // per-row parity, not a magic number
 
-    // Per-row: NO entry is left unlinked, and NO link points at a foreign world.
+    // Per-row: NO entry is left unlinked. Every entry has at least one world.
     const orphanEntries = (await scratchPool.query<{ n: string }>(
       `SELECT count(*)::text AS n FROM entries e
         WHERE NOT EXISTS (SELECT 1 FROM world_entities we WHERE we.entity_id = e.id)`,
     )).rows[0]!.n;
     expect(orphanEntries).toBe("0");
-    const misHomed = (await scratchPool.query<{ n: string }>(
+    // Multi-book seed: entries link to their OWN world explicitly, which is NOT
+    // always 'world-'||universe_id — Vosk entries are universe-1 but home to
+    // world-vosk, never Ashkeld. The load-bearing invariant is therefore that no
+    // vosk-*/halen-* entry leaks into the Ashkeld world, and each new-world entry
+    // sits in exactly its own world.
+    const ashkeldLeak = (await scratchPool.query<{ n: string }>(
       `SELECT count(*)::text AS n FROM world_entities we
-         JOIN entries e ON e.id = we.entity_id
-        WHERE we.world_id <> 'world-' || e.universe_id`,
+        WHERE we.world_id = 'world-universe-1'
+          AND (we.entity_id LIKE 'vosk-%' OR we.entity_id LIKE 'halen-%')`,
     )).rows[0]!.n;
-    expect(misHomed).toBe("0");
+    expect(ashkeldLeak).toBe("0");
 
     // Built-ins stay GLOBAL (world_id NULL) so a shared entity's kind resolves in
     // any world.
