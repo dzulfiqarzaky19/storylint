@@ -549,11 +549,16 @@ export async function getChapter(
  * omits the (large) body so the Write left index stays light — the selected
  * chapter's body is loaded separately via getChapter(number).
  */
-export async function listChapters(): Promise<
-  { id: string; number: number; title: string }[]
-> {
+export async function listChapters(
+  bookId: string = DEFAULT_BOOK_ID,
+): Promise<{ id: string; number: number; title: string }[]> {
+  // T-SCOPE-2: chapter number is unique only WITHIN a book (UNIQUE(book_id,
+  // number)), so an unfiltered list collides every book's Chapter 1..7 into one
+  // 42-row index (six "CHAPTER ONE"). The Write left index shows exactly the
+  // ACTIVE book's chapters; the caller passes the resolved active book id.
   return rows<{ id: string; number: number; title: string }>(
-    `SELECT id, number, title FROM chapters ORDER BY number`,
+    `SELECT id, number, title FROM chapters WHERE book_id = $1 ORDER BY number`,
+    [bookId],
   );
 }
 

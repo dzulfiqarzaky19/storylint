@@ -53,6 +53,7 @@ import {
   renameCategory as renameCategoryRow,
   renameWorld as renameWorldRow,
   renameUniverse as renameUniverseRow,
+  renameBook as renameBookRow,
   resetCategoryLabel as resetCategoryLabelRow,
   deleteCategory as deleteCategoryRow,
   restoreEntry as restoreEntryRow,
@@ -833,6 +834,25 @@ export async function renameUniverse(input: {
     return { ok: true, data: undefined };
   } catch (err) {
     return fail(err, "wiki.renameUniverse");
+  }
+}
+
+/**
+ * T-SCOPE-2: rename a BOOK (the /write book dropdown Rename affordance).
+ * Structural — no wiki token. Same trim + blank-is-no-op contract as
+ * renameWorld/renameUniverse. Revalidates /write so the book pill + chapter list
+ * re-render with the new name.
+ */
+export async function renameBook(input: {
+  bookId: string;
+  name: string;
+}): Promise<ActionResult> {
+  try {
+    await renameBookRow({ id: input.bookId, name: input.name });
+    revalidatePath("/write");
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.renameBook");
   }
 }
 

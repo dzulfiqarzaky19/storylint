@@ -17,13 +17,15 @@ import { Manuscript } from '@/components/write/Manuscript';
 import { checkManuscript } from '@/lib/check';
 import { chapterSeverity, buildSeverityByNumber } from '@/lib/check/severity';
 import {
-  getAllChaptersWithBody,
   getChapter,
+  getChaptersForBook,
   getPhraseChapterCounts,
   getResolvedMarkKeys,
+  getWorldTree,
   listChapters,
   loadWikiSnapshot,
 } from '@/lib/db/queries';
+import { resolveWriteScope } from './scope';
 import { buildCheckInput, docToParagraphs, paragraphsToDoc, toCheckWiki } from '@/lib/write/adapters';
 import { extractCandidatePhrases } from '@/lib/check/unrecorded';
 import { aiEnabled } from '@/lib/ai/saarouters';
@@ -37,11 +39,18 @@ const EMPTY_BODY = paragraphsToDoc(['']);
 export default async function WritePage({
   searchParams,
 }: {
-  searchParams: Promise<{ chapter?: string }>;
+  searchParams: Promise<{ chapter?: string; u?: string; w?: string; book?: string }>;
 }) {
-  const { chapter: chapterParam } = await searchParams;
+  const { chapter: chapterParam, u: uParam, w: wParam, book: bookParam } = await searchParams;
 
-  const chapters = await listChapters();
+  // T-SCOPE-2: resolve the active WORLD + BOOK from the URL with the SAME pure
+  // resolver the BookPill uses, so the header and the chapter list never disagree
+  // on which book is active. listChapters is now SCOPED to that book, so the left
+  // index shows exactly the active book's chapters (not all 42 across six books).
+  const tree = await getWorldTree();
+  const { activeBookId } = resolveWriteScope(tree, uParam, wParam, bookParam);
+
+  const chapters = await listChapters(activeBookId);
   // Default to the last chapter (the working edge); an unknown/absent param also
   // falls back to it so a stale URL never lands on nothing.
   const lastNumber = chapters.length > 0 ? chapters[chapters.length - 1]!.number : 1;
@@ -50,7 +59,7 @@ export default async function WritePage({
     chapters.some((c) => c.number === requested) ? requested : lastNumber;
 
   const [chapter, wiki, resolvedMarkKeys] = await Promise.all([
-    getChapter(chapterNumber),
+    getChapter(chapterNumber, activeBookId),
     loadWikiSnapshot(),
     getResolvedMarkKeys(),
   ]);
@@ -79,9 +88,9 @@ export default async function WritePage({
   // chapterCounts is ranking-only and never gates mark existence, so it is
   // omitted here. The ACTIVE chapter is forced to null: the writer already sees
   // its marks in the right rail, so a dot on it would be redundant noise.
-  const allChapters = await getAllChaptersWithBody();
+  const bookChapters = await getChaptersForBook(activeBookId);
   const severityByNumber = buildSeverityByNumber(
-    allChapters,
+    bookChapters,
     chapterNumber,
     (chapterBody) =>
       chapterSeverity(

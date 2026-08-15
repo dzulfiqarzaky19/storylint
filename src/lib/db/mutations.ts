@@ -752,6 +752,24 @@ export async function renameUniverse(input: {
 }
 
 /**
+ * T-SCOPE-2: rename a BOOK in place (the /write book dropdown Rename affordance).
+ * UPDATEs books.name. Same trim + blank-is-no-op contract as
+ * renameWorld/renameUniverse, so a whitespace-only rename never blanks the
+ * book's name. Structural — no wiki token (renames no wiki CONTENT).
+ */
+export async function renameBook(input: {
+  id: string;
+  name: string;
+}): Promise<void> {
+  const name = input.name.trim();
+  if (name === "") return; // blank rename is a no-op, not a blanked book name
+  await query(
+    `UPDATE books SET name = $2 WHERE id = $1`,
+    [input.id, name],
+  );
+}
+
+/**
  * Reset a category header to its default. For a built-in category the default is
  * its shelf title (SHELF_TITLES[shelf]); the row's `label` is set back to that.
  * Reads the category's shelf first so the correct default is restored, and only

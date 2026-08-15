@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import ScopePill from "./ScopePill";
+import BookPill from "./BookPill";
 import styles from "./Header.module.css";
 
 type NavItem = {
@@ -48,13 +49,31 @@ export interface HeaderScope {
   basePath?: string;
 }
 
-export default function Header({ scope }: { scope?: HeaderScope }) {
+/**
+ * T-SCOPE-2: the /write surface passes `bookScope={{ tree }}` to render the
+ * BookPill (ACTIVE WORLD -> ACTIVE BOOK, book dropdown). It takes precedence over
+ * `scope` (the world ScopePill) and the static wordmark; a surface passes at most
+ * one. Both degrade gracefully to the wordmark when omitted.
+ */
+export interface HeaderBookScope {
+  tree: WorldUniverseNode[];
+}
+
+export default function Header({
+  scope,
+  bookScope,
+}: {
+  scope?: HeaderScope;
+  bookScope?: HeaderBookScope;
+}) {
   const pathname = usePathname();
   const current = activeItem(pathname);
 
   return (
     <header className={styles.header}>
-      {scope ? (
+      {bookScope ? (
+        <BookPill tree={bookScope.tree} />
+      ) : scope ? (
         <ScopePill tree={scope.tree} basePath={scope.basePath} />
       ) : (
         <div className={styles.brand}>
