@@ -35,7 +35,7 @@ export interface ConfirmationStripProps {
  * trigger; "Cancel" writes nothing. F6: when the recommender matches an existing
  * entry, the strip defaults to ENRICHING it (not spawning a duplicate), while
  * still offering "New entry instead" and a picker to enrich a different entry.
- * README §Screen 2.4 / HANDOFF §6.
+ * README §Screen 2.4
  */
 export default function ConfirmationStrip({
   title,

@@ -18,8 +18,8 @@ export function splitSentences(paragraph: string): string[] {
 /**
  * The occurrence index of `quote` within `paragraph`: how many identical
  * substrings precede the first match. For the manuscript each quote is unique,
- * so this is 0, but the engine must compute it rather than assume it (HANDOFF §7
- * "recomputed on every check").
+ * so this is 0, but the engine must compute it rather than assume it
+ * ("recomputed on every check").
  */
 export function occurrenceIndexOf(paragraph: string, quote: string): number {
   const at = paragraph.indexOf(quote);

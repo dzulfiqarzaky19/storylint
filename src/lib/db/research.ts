@@ -12,7 +12,7 @@ import type { ResearchTurnWithCards, ResearchThreadRow } from "../domain/types";
 
 /**
  * Turns with ordinal <= this are shown on first render; higher ordinals are the
- * deferred `more` turns, revealed when a prompt chip is clicked (HANDOFF §6/§9.4).
+ * deferred `more` turns, revealed when a prompt chip is clicked.
  */
 export const INITIAL_VISIBLE_MAX_ORDINAL = 3;
 

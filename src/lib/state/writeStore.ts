@@ -1,5 +1,5 @@
 // =============================================================================
-// Write store (HANDOFF §8) — useReducer state shape + action union + reducer.
+// Write store — useReducer state shape + action union + reducer.
 //
 // Reducer is the session source of truth; each action fires alongside its
 // matching Server Action (src/lib/actions/write.ts). Pure reducer.

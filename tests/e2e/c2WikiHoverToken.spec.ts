@@ -13,7 +13,7 @@ import { join } from "node:path";
 //
 // BINDING PIN (raccoon): `--surface` is still a legitimate token used 7 other
 // times across the wiki CSS (InlineText:40, PosterBand:26, TrashPanel:52,
-// WikiIndex:132, WorldSwitcher:41/75/128). This is NOT a blanket rename — those
+// WikiIndex:132, WorldSwitcher:28/78/205). This is NOT a blanket rename — those
 // 7 MUST stay byte-identical. This spec asserts both: the hover flipped to
 // --hover LIVE, AND exactly those 7 --surface usages remain, unchanged.
 
@@ -28,9 +28,9 @@ const SURVIVING_SURFACE: ReadonlyArray<readonly [string, number]> = [
   ["PosterBand.module.css", 26],
   ["TrashPanel.module.css", 52],
   ["WikiIndex.module.css", 132],
-  ["WorldSwitcher.module.css", 41],
-  ["WorldSwitcher.module.css", 75],
-  ["WorldSwitcher.module.css", 128],
+  ["WorldSwitcher.module.css", 28],
+  ["WorldSwitcher.module.css", 78],
+  ["WorldSwitcher.module.css", 205],
 ];
 
 test("C2: .item:hover paints --hover (not the white --surface) on /wiki", async ({

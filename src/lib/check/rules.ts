@@ -1,5 +1,5 @@
 /**
- * Declarative contradiction rule table (HANDOFF §7 Pass A).
+ * Declarative contradiction rule table.
  *
  * Each rule describes how a manuscript sentence can contradict a recorded fact.
  * The engine (contradiction.ts) walks facts, applies matching rules per

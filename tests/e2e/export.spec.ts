@@ -14,12 +14,12 @@ loadEnv();
 // Drives the actual Export affordance in the Write header at the canonical
 // 1440x900 frame: clicking it must trigger a NATIVE browser download (the route
 // sets Content-Disposition: attachment) whose bytes are EXACTLY the assembled
-// Markdown for the seeded "Ashkeld" book. We assert on the download event
+// Markdown for the seeded "ASHKELD BOOK I" book. We assert on the download event
 // itself (filename + streamed body), and the body is compared byte-for-byte to
 // novelToMarkdown(book, chapters) computed independently from the same DB — not
 // merely a 200 / non-empty check.
 //
-// The seeded book is DEFAULT_BOOK_ID "book-1", name "Ashkeld" -> slug "ashkeld".
+// The seeded book is DEFAULT_BOOK_ID "book-1", name "ASHKELD BOOK I" -> slug "ashkeld-book-i".
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/write");
@@ -43,8 +43,8 @@ test("write: Export book downloads the assembled Markdown for the whole novel", 
     page.getByTestId("export-book").click(),
   ]);
 
-  // Filename comes from the slugified book title -> "ashkeld.md".
-  expect(download.suggestedFilename()).toBe("ashkeld.md");
+  // Filename comes from the slugified book title -> "ashkeld-book-i.md".
+  expect(download.suggestedFilename()).toBe("ashkeld-book-i.md");
 
   // Read the downloaded bytes.
   const stream = await download.createReadStream();
@@ -57,7 +57,7 @@ test("write: Export book downloads the assembled Markdown for the whole novel", 
 
   // Sanity anchors on the assembled contract (fail fast with a readable message
   // if the equality above regresses): single book H1, seeded chapter 7 heading.
-  expect(downloaded.startsWith("# Ashkeld\n\n")).toBe(true);
+  expect(downloaded.startsWith("# ASHKELD BOOK I\n\n")).toBe(true);
   expect(downloaded.match(/^# /gm)).toHaveLength(1);
   expect(downloaded).toContain("## 7. Low Water");
 });
@@ -72,7 +72,7 @@ test("api: export route serves markdown as an attachment (headers + body)", asyn
   expect(res.status()).toBe(200);
   expect(res.headers()["content-type"]).toBe("text/markdown; charset=utf-8");
   expect(res.headers()["content-disposition"]).toBe(
-    'attachment; filename="ashkeld.md"',
+    'attachment; filename="ashkeld-book-i.md"',
   );
 
   // Body is the independently-assembled novel Markdown, byte-for-byte.

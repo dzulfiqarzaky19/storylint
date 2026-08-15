@@ -1,7 +1,7 @@
 "use server";
 
 // =============================================================================
-// Wiki Server Actions (HANDOFF §8)
+// Wiki Server Actions
 //
 // PRODUCT RULE 1 — "Nothing enters the wiki without an explicit confirmation."
 //
@@ -16,7 +16,7 @@
 //   dismissal, never a new fact.
 //
 // Each action returns an ActionResult so the client store can SURFACE a failed
-// write instead of letting it vanish (HANDOFF §8: per-mutation, no silent
+// write instead of letting it vanish (: per-mutation, no silent
 // write-behind).
 // =============================================================================
 
@@ -51,6 +51,8 @@ import {
   createCategory as createCategoryRow,
   getMaxCategorySortOrder,
   renameCategory as renameCategoryRow,
+  renameWorld as renameWorldRow,
+  renameUniverse as renameUniverseRow,
   resetCategoryLabel as resetCategoryLabelRow,
   deleteCategory as deleteCategoryRow,
   restoreEntry as restoreEntryRow,
@@ -795,6 +797,42 @@ export async function createWorld(input: {
     return { ok: true, data: { worldId } };
   } catch (err) {
     return fail(err, "wiki.createWorld");
+  }
+}
+
+/**
+ * Rename a world (the manage-screen Rename affordance). Structural — no wiki
+ * token. The DB helper trims and treats a blank as a no-op, so a whitespace-only
+ * rename never blanks the world's name. Revalidates /wiki so the switcher and
+ * every world-scoped view re-render with the new title.
+ */
+export async function renameWorld(input: {
+  worldId: string;
+  title: string;
+}): Promise<ActionResult> {
+  try {
+    await renameWorldRow({ id: input.worldId, title: input.title });
+    revalidatePath("/wiki");
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.renameWorld");
+  }
+}
+
+/**
+ * Rename a universe (the manage-screen Rename affordance). Structural — no wiki
+ * token. Same trim + blank-is-no-op contract as renameWorld. Revalidates /wiki.
+ */
+export async function renameUniverse(input: {
+  universeId: string;
+  name: string;
+}): Promise<ActionResult> {
+  try {
+    await renameUniverseRow({ id: input.universeId, name: input.name });
+    revalidatePath("/wiki");
+    return { ok: true, data: undefined };
+  } catch (err) {
+    return fail(err, "wiki.renameUniverse");
   }
 }
 

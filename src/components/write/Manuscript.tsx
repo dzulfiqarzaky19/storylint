@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Manuscript (HANDOFF §6/§7/§8) — the full Write screen client.
+ * Manuscript — the full Write screen client.
  *
  * Owns:
  *   - The Tiptap v3 editor (StarterKit, paragraphs only) rendering the chapter

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * InlineNote (HANDOFF §6/§8) — the note that opens under a paragraph when a
+ * InlineNote — the note that opens under a paragraph when a
  * mark is selected. Rendered via React `createPortal` into the ProseMirror
  * widget host the decoration plugin places at the end of the paragraph, so it
  * sits in document flow rather than floating.

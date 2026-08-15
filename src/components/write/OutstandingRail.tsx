@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * OutstandingRail (HANDOFF §6/§8) — the 360px right rail:
+ * OutstandingRail — the 360px right rail:
  *   - "Two signals" legend (two swatches, never merged).
  *   - The outstanding-marks list (one row per live mark). Clicking a row is the
  *     SAME action as clicking the underline (opens/closes the note). One open at

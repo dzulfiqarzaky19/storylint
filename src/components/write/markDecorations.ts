@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * ProseMirror decoration plugin for the Write screen (HANDOFF §8).
+ * ProseMirror decoration plugin for the Write screen.
  *
  * Turns the check engine's `Mark[]` into ProseMirror decorations over the live
  * document:

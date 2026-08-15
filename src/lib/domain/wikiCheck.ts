@@ -2,7 +2,7 @@
 // shape, run checkManuscript against the seeded chapter, and project the result
 // into what the Wiki screen needs: poster suggestions (with a stable
 // suggestionKey) and the set of entry ids carrying an unresolved contradiction
-// (for the tile corner flag). HANDOFF §7 "one engine, two screens".
+// (for the tile corner flag). "one engine, two screens".
 //
 // This keeps the Wiki poster band's suggestions DERIVED from the same engine run
 // the Write screen uses — never seeded as static data.

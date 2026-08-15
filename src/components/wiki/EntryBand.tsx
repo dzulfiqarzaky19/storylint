@@ -65,7 +65,7 @@ interface EntryBandProps {
 }
 
 // Entry band: two columns, 40px gap, 34px top padding.
-// Main column flex:1, right column fixed 340px (HANDOFF §4 / README Screen 1).
+// Main column flex:1, right column fixed 340px.
 export default function EntryBand({
   entry,
   liveEntryIds,

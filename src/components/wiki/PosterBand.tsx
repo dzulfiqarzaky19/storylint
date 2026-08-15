@@ -14,7 +14,7 @@ interface PosterBandProps {
   onLeave: (s: WikiSuggestion) => void;
 }
 
-// Full-bleed accent poster. Renders ONLY when suggestions exist (HANDOFF §4).
+// Full-bleed accent poster. Renders ONLY when suggestions exist.
 // Each card is a draggable SOURCE ("card" item): drop it on the Details column to
 // add-as-fresh-fact. The buttons are the explicit alternative: "Write it in"
 // routes through the confirmation-gated Server Action (PRODUCT RULE 1), "Leave

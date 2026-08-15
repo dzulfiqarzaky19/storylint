@@ -1,5 +1,5 @@
 /**
- * Pass A — contradiction detection (HANDOFF §7).
+ * Pass A — contradiction detection.
  *
  * Walks recorded facts, applies each matching rule to every sentence of every
  * paragraph, and emits a `conflict` mark when a rule reports a mismatch. The
@@ -13,7 +13,7 @@ import { normalizeQuote } from './normalize';
 import { sha1 } from './hash';
 import { splitSentences, occurrenceIndexOf } from './text';
 
-// The three note actions for a contradiction (HANDOFF §6 m1/m4).
+// The three note actions for a contradiction.
 const CONFLICT_ACTIONS: MarkAction[] = [
   { id: 'wiki', label: 'The wiki is out of date — change it' },
   { id: 'text', label: 'Change the sentence' },

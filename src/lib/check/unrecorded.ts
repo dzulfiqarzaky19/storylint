@@ -1,5 +1,5 @@
 /**
- * Pass B — unrecorded detection (HANDOFF §7).
+ * Pass B — unrecorded detection.
  *
  * §7 frames this as "an unmatched-proper-noun pass", but its own two target
  * phrases — "her mother’s brass ring" and "the tallow rule" — are lowercase, so

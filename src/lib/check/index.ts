@@ -2,7 +2,7 @@
  * Consistency-check engine — public surface (Phase 2, TDD).
  *
  * This module is intentionally PURE: no React, no DB, no network, no AI.
- * `checkManuscript` is the single entry point (HANDOFF §7). It runs on the
+ * `checkManuscript` is the single entry point. It runs on the
  * server at page load and on the client debounced ~300ms as the user types.
  *
  * NOTE: This file currently exports the SIGNATURE ONLY plus a stub that
@@ -17,7 +17,7 @@
 // No src/lib/domain/types.ts exists on disk yet, so the wiki-snapshot shape the
 // engine consumes is defined here. When the domain layer lands it should either
 // re-export these or these should move there; the field names below mirror the
-// seed data in HANDOFF §6 (entries/facts/ties/aliases).
+// seed data in (entries/facts/ties/aliases).
 // ---------------------------------------------------------------------------
 
 export type EntryKind = 'character' | 'world' | 'organization' | 'lore';
@@ -63,7 +63,7 @@ export interface WikiSnapshot {
 export type MarkKind = 'conflict' | 'missing';
 
 /**
- * The rail kind LABEL shown above a mark's reason (HANDOFF §6 "Rail kind
+ * The rail kind LABEL shown above a mark's reason ("Rail kind
  * labels"). This is derived from `Mark.kind` ('conflict' → 'Contradiction',
  * 'missing' → 'Unrecorded'); it is NOT the `Mark.rail` field, which carries the
  * short reason sentence.
@@ -201,7 +201,7 @@ import { projectSuggestion } from './suggestions';
 export { normalize } from './normalize';
 
 /**
- * The single, pure entry point (HANDOFF §7). One run produces BOTH marks and
+ * The single, pure entry point. One run produces BOTH marks and
  * suggestions: suggestions are the projection of `missing` marks, so seeding
  * them separately would be a bug.
  */

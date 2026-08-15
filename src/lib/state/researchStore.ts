@@ -1,5 +1,5 @@
 // =============================================================================
-// Research store (HANDOFF §8) — useReducer state shape + action union + reducer.
+// Research store — useReducer state shape + action union + reducer.
 //
 // Reducer is the session source of truth; each action fires alongside its
 // matching Server Action (src/lib/actions/research.ts). Pure reducer.

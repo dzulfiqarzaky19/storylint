@@ -15,6 +15,39 @@
   color: var(--muted);
 }
 
+.typeGate {
+  display: block;
+  margin-top: 16px;
+}
+
+.typeGateHint {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.typeGateHint strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.typeGateInput {
+  margin-top: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+}
+
+.typeGateInput:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
 .actions {
   display: flex;
   /* Confirm is first in the DOM (so Modal focuses it on open); row-reverse puts

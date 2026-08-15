@@ -11,7 +11,7 @@ export type ResearchScope = "chat" | Kind;
 export type Flag = "red" | "yellow";
 export type TurnSide = "them" | "you";
 
-// ---- Kind / shelf metadata (HANDOFF §6) -----------------------------------
+// ---- Kind / shelf metadata -----------------------------------
 
 export const KIND_LABEL: Record<Kind, string> = {
   character: "Person",
@@ -197,7 +197,7 @@ export interface EntryWithDetails extends EntryRow {
 export type CategoryLabelOverrides = Partial<Record<Kind, string>>;
 
 /**
- * The read-only projection the check engine consumes (HANDOFF §7).
+ * The read-only projection the check engine consumes.
  * Pure data: entries with their facts, ties, appearances, open questions.
  */
 export interface WikiSnapshot {

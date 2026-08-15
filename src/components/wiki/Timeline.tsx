@@ -6,7 +6,7 @@ interface TimelineProps {
 }
 
 // "The story so far" timeline rows. Entries with no appearances render one
-// placeholder row (HANDOFF §6 timeline note).
+// placeholder row.
 export default function Timeline({ appearances }: TimelineProps) {
   if (appearances.length === 0) {
     return (

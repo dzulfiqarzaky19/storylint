@@ -1,7 +1,7 @@
 "use client";
 
 // =============================================================================
-// Drag context (HANDOFF §8) — shared DnD session state for the Wiki and
+// Drag context — shared DnD session state for the Wiki and
 // Research screens (drag tiles between shelves, facts between tiles, cards onto
 // the Kept board). Contract scaffold: provider + typed context + hook. No
 // pointer wiring or rendering here; Phase 4/5 build against this shape.

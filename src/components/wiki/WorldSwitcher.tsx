@@ -1,30 +1,36 @@
 "use client";
 
-// World switcher (TCK-017, W-5 UI cut-over; TCK-022 W-4a multi-world). The
-// top-of-wiki picker for the ACTIVE universe -> world. Series and Book are no
-// longer surfaced here (book handling moved to /write). Re-scoping is URL-driven:
-// changing the universe navigates to /wiki?u= and picking a world to /wiki?u=&w=;
-// the SERVER re-renders loadWorldSnapshot for that scope, so the active world is
-// shareable and E2E-testable (no client snapshot swap). The World select lists
-// the active universe's REAL worlds (TCK-022) — a second world is now creatable
-// (`+ world`) and selectable. New-* affordances call the structural create
-// actions (no wiki token) then navigate. Delete opens a DANGER ConfirmModal that
-// shows the REAL cascade row-count.
+// World switcher — design 3a (wordmark breadcrumb + dropdown). Replaces the old
+// toolbar band of two <select>s and four buttons. The header now reads as a
+// breadcrumb — "Universe / World ▾" — that opens ONE dropdown listing every
+// universe (as a group header) with its worlds beneath; picking a world
+// navigates to that scope. Creating a universe/world lives in the same menu;
+// DELETE and RENAME moved to the dedicated /wiki/manage screen (design 3c),
+// reached via the menu's "Manage…" link, so this control stays a lean
+// switch-and-create affordance.
+//
+// Re-scoping is still URL-driven (the SERVER re-renders loadWorldSnapshot for the
+// picked scope, so the active world is shareable + E2E-testable): picking a world
+// navigates to /wiki?u=&w=. New-* affordances call the structural create actions
+// (no wiki token) then navigate. The menu's open/close + outside-click/Escape
+// dismissal is local UI state; the selectable model (flattenSwitcher) and the
+// breadcrumb label (breadcrumbLabel) are pure and unit-tested (switcherMenu.ts).
 
-import { useCallback, useRef, useState, startTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  startTransition,
+} from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
-import {
-  createUniverse,
-  createWorld,
-  deleteUniverse,
-  deleteWorld,
-  previewCascade,
-} from "@/lib/actions/wiki";
-import ConfirmModal from "../ui/ConfirmModal";
+import { createUniverse, createWorld } from "@/lib/actions/wiki";
 import Modal from "../ui/Modal";
 import { canSubmitName } from "./nameGate";
 import { scopeHref } from "./scopeHref";
+import { flattenSwitcher, breadcrumbLabel } from "./switcherMenu";
 import styles from "./WorldSwitcher.module.css";
 
 interface WorldSwitcherProps {
@@ -33,10 +39,6 @@ interface WorldSwitcherProps {
   /** The active world id (TCK-022: resolved from ?w= against the universe's worlds). */
   activeWorldId: string;
 }
-
-type DeleteTarget =
-  | { level: "universe"; id: string; name: string }
-  | { level: "world"; id: string; name: string };
 
 /** An open naming dialog: its heading and the callback that runs on submit. */
 type NamePromptState = {
@@ -52,32 +54,41 @@ export default function WorldSwitcher({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
-  const [pendingCount, setPendingCount] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
   const [namePrompt, setNamePrompt] = useState<NamePromptState | null>(null);
 
-  const universe = tree.find((u) => u.id === activeUniverseId) ?? tree[0];
-  // The active universe's worlds and the one currently selected. Deleting the
-  // LAST world would orphan every shared entity with no world to reclaim it in,
-  // so the delete-world affordance is disabled whenever only one world remains.
-  const worlds = universe?.worlds ?? [];
-  const activeWorld = worlds.find((w) => w.id === activeWorldId) ?? worlds[0];
-  const canDeleteWorld = worlds.length > 1 && !!activeWorld;
+  const rootRef = useRef<HTMLDivElement>(null);
 
+  // Pure model (unit-tested in switcherMenu.test.ts).
+  const items = flattenSwitcher(tree, activeUniverseId, activeWorldId);
+  const crumb = breadcrumbLabel(tree, activeUniverseId, activeWorldId);
+
+  // ---- Menu dismissal: outside-click + Escape ------------------------------
+  useEffect(() => {
+    if (!open) return;
+    const onDocPointer = (e: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDocPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDocPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  // ---- Scope navigation ----------------------------------------------------
   const go = useCallback(
     (u: string, w?: string) => {
+      setOpen(false);
       startTransition(() => router.push(scopeHref(u, w)));
     },
     [router],
-  );
-
-  // ---- Scope selects -------------------------------------------------------
-  // Picking a universe drops the world param so the server resolves that
-  // universe's first world; picking a world keeps the active universe and sets w.
-  const onPickUniverse = useCallback((uId: string) => go(uId), [go]);
-  const onPickWorld = useCallback(
-    (wId: string) => go(activeUniverseId, wId),
-    [go, activeUniverseId],
   );
 
   // ---- New-* affordances ---------------------------------------------------
@@ -100,6 +111,7 @@ export default function WorldSwitcher({
   );
 
   const onNewUniverse = useCallback(() => {
+    setOpen(false);
     setNamePrompt({
       title: "Name the new universe",
       onSubmit: (name) =>
@@ -113,6 +125,7 @@ export default function WorldSwitcher({
   }, [runCreate, router]);
 
   const onNewWorld = useCallback(() => {
+    setOpen(false);
     setNamePrompt({
       title: "Name the new world",
       onSubmit: (name) =>
@@ -131,144 +144,101 @@ export default function WorldSwitcher({
     });
   }, [runCreate, router, activeUniverseId]);
 
-  // ---- Delete cascade (danger) --------------------------------------------
-  const openDelete = useCallback(
-    async (target: DeleteTarget) => {
-      setError(null);
-      setPendingCount(null);
-      setDeleteTarget(target);
-      // Fetch the advisory blast radius (server action) so the modal shows a REAL
-      // number before the writer confirms.
-      const res = await previewCascade({ level: target.level, id: target.id });
-      if (res.ok) setPendingCount(res.data.total);
-      else setError(res.error);
-    },
-    [],
-  );
-
-  const confirmDelete = useCallback(async () => {
-    if (!deleteTarget) return;
-    setBusy(true);
-    setError(null);
-    // A world delete unlinks its shared entities (orphan=LEAVE) and drops the
-    // world; a universe delete tears down the whole subtree. Route by level.
-    const res =
-      deleteTarget.level === "world"
-        ? await deleteWorld({ worldId: deleteTarget.id, confirmed: true })
-        : await deleteUniverse({ universeId: deleteTarget.id, confirmed: true });
-    setBusy(false);
-    // The active universe's first REMAINING world (never the just-deleted one),
-    // captured before deleteTarget is cleared, for a world delete's post-nav.
-    const remainingWorld =
-      deleteTarget.level === "world"
-        ? (universe?.worlds ?? []).find((w) => w.id !== deleteTarget.id)
-        : undefined;
-    const deletedLevel = deleteTarget.level;
-    setDeleteTarget(null);
-    setPendingCount(null);
-    if (!res.ok) {
-      setError(res.error);
-      return;
-    }
-    // The deleted scope is gone. For a world delete, land on the first remaining
-    // world of the active universe; for a universe delete, go home to the server
-    // default. Then re-render from the server.
-    startTransition(() => {
-      router.push(
-        deletedLevel === "world" && remainingWorld
-          ? scopeHref(activeUniverseId, remainingWorld.id)
-          : "/wiki",
-      );
-      router.refresh();
-    });
-  }, [deleteTarget, router, universe, activeUniverseId]);
-
-  const deleteBody =
-    deleteTarget && pendingCount !== null
-      ? deleteTarget.level === "world"
-        ? `This permanently removes ${pendingCount} row${pendingCount === 1 ? "" : "s"} (this world and its links). Shared entities are unlinked, not deleted, and survive in their other worlds. This cannot be undone.`
-        : `This permanently removes ${pendingCount} row${pendingCount === 1 ? "" : "s"} (the ${deleteTarget.level} and everything inside it). This cannot be undone.`
-      : "Counting what will be removed...";
-
   return (
     <section className={styles.switcher} aria-label="World switcher">
-      <div className={styles.axes}>
-        <label className={styles.axis}>
-          <span className={styles.axisLabel}>Universe</span>
-          <select
-            aria-label="Active universe"
-            value={universe?.id ?? ""}
-            disabled={busy}
-            onChange={(e) => onPickUniverse(e.target.value)}
-          >
-            {tree.map((u) => (
-              <option key={u.id} value={u.id}>{u.name}</option>
-            ))}
-          </select>
-        </label>
+      <div className={styles.bar} ref={rootRef}>
+        <button
+          type="button"
+          className={styles.crumb}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          disabled={busy || !crumb}
+          onClick={() => setOpen((o) => !o)}
+        >
+          {crumb ? (
+            <>
+              <span className={styles.crumbUniverse}>{crumb.universe}</span>
+              <span className={styles.crumbSep} aria-hidden="true">
+                /
+              </span>
+              <span className={styles.crumbWorld}>{crumb.world}</span>
+            </>
+          ) : (
+            <span className={styles.crumbWorld}>No worlds</span>
+          )}
+          <span className={styles.caret} aria-hidden="true">
+            ▾
+          </span>
+        </button>
 
-        <label className={styles.axis}>
-          <span className={styles.axisLabel}>World</span>
-          <select
-            aria-label="Active world"
-            value={activeWorldId}
-            disabled={busy || !universe}
-            onChange={(e) => onPickWorld(e.target.value)}
-          >
-            {/* TCK-022 (W-4a): the active universe's REAL worlds, ordered by
-                sort_order (getWorldTree). A second world is now selectable and
-                switching navigates to /wiki?u=&w=. */}
-            {(worlds).map((w) => (
-              <option key={w.id} value={w.id}>{w.title}</option>
-            ))}
-          </select>
-        </label>
+        {open ? (
+          <div className={styles.menu} role="menu" aria-label="Switch universe or world">
+            <ul className={styles.menuList}>
+              {tree.map((u) => (
+                <li key={u.id} className={styles.group}>
+                  <p className={styles.groupHead}>{u.name}</p>
+                  <ul className={styles.groupList}>
+                    {items
+                      .filter((it) => it.universeId === u.id)
+                      .map((it) => (
+                        <li key={it.worldId}>
+                          <button
+                            type="button"
+                            role="menuitemradio"
+                            aria-checked={it.active}
+                            className={
+                              it.active ? `${styles.item} ${styles.itemActive}` : styles.item
+                            }
+                            onClick={() => go(it.universeId, it.worldId)}
+                          >
+                            <span className={styles.tick} aria-hidden="true">
+                              {it.active ? "✓" : ""}
+                            </span>
+                            {it.worldTitle}
+                          </button>
+                        </li>
+                      ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+
+            <div className={styles.menuFooter}>
+              <button
+                type="button"
+                role="menuitem"
+                className={styles.footerAction}
+                onClick={onNewWorld}
+                disabled={busy}
+              >
+                + New world
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className={styles.footerAction}
+                onClick={onNewUniverse}
+                disabled={busy}
+              >
+                + New universe
+              </button>
+              <Link
+                href="/wiki/manage"
+                role="menuitem"
+                className={styles.manageLink}
+                onClick={() => setOpen(false)}
+              >
+                Manage universes &amp; worlds…
+              </Link>
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      <div className={styles.actions}>
-        <button type="button" onClick={onNewUniverse} disabled={busy}>+ universe</button>
-        <button type="button" onClick={onNewWorld} disabled={busy || !universe}>+ world</button>
-        {activeWorld ? (
-          <button
-            type="button"
-            className={styles.danger}
-            // SAFETY: never orphan the last world. Disabled while the active
-            // universe has a single world (canDeleteWorld requires >1).
-            disabled={busy || !canDeleteWorld}
-            onClick={() =>
-              void openDelete({ level: "world", id: activeWorld.id, name: activeWorld.title })
-            }
-          >
-            delete world
-          </button>
-        ) : null}
-        {universe ? (
-          <button
-            type="button"
-            className={styles.danger}
-            disabled={busy}
-            onClick={() => void openDelete({ level: "universe", id: universe.id, name: universe.name })}
-          >
-            delete universe
-          </button>
-        ) : null}
-      </div>
-
-      {error ? <p role="alert" className={styles.error}>{error}</p> : null}
-
-      {deleteTarget ? (
-        <ConfirmModal
-          title={`Delete ${deleteTarget.name}?`}
-          body={deleteBody}
-          confirmLabel={pendingCount === null ? "Counting..." : `Delete ${pendingCount} rows`}
-          cancelLabel="Cancel"
-          danger
-          onConfirm={() => void confirmDelete()}
-          onCancel={() => {
-            setDeleteTarget(null);
-            setPendingCount(null);
-          }}
-        />
+      {error ? (
+        <p role="alert" className={styles.error}>
+          {error}
+        </p>
       ) : null}
 
       {namePrompt ? (
@@ -288,8 +258,8 @@ export default function WorldSwitcher({
 
 /**
  * On-system inline naming dialog. Replaces the raw window.prompt so creating a
- * universe reads as part of the app. Built on the base <Modal>, which owns the
- * scrim, the centered Ashkeld panel, the focus trap + restore, and dismissal
+ * universe/world reads as part of the app. Built on the base <Modal>, which owns
+ * the scrim, the centered Ashkeld panel, the focus trap + restore, and dismissal
  * (Escape and backdrop click both fire onClose -> onCancel). This dialog only
  * supplies its content: a title, the name field (the first focusable, so Modal
  * moves focus straight to it on open), and the actions.
@@ -313,8 +283,6 @@ function NamePrompt({
   // Re-entrancy guard: a same-tick Enter + Create-click (or a React double-fire)
   // must create only ONE world/universe. Flip this true SYNCHRONOUSLY at the top
   // of submit() before onSubmit runs, so the second same-tick call is dropped.
-  // Mirrors ResearchScreen's askInFlight ref. The prompt unmounts on success, so
-  // it never needs resetting on the happy path.
   const submittingRef = useRef(false);
 
   const submit = () => {

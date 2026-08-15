@@ -1,5 +1,5 @@
 /**
- * Write-screen adapters (HANDOFF §6/§7/§8).
+ * Write-screen adapters.
  *
  * Pure, framework-free glue between shapes:
  *   1. The stored chapter body (ProseMirror doc JSON) ⇄ the engine's

@@ -6,7 +6,7 @@ interface OpenQuestionsProps {
 }
 
 // "Still open" — 300px fixed column, accent em-dash at 800 weight. Fallback copy
-// for entries with none (HANDOFF §6).
+// for entries with none.
 export default function OpenQuestions({ questions }: OpenQuestionsProps) {
   return (
     <div className={styles.column}>

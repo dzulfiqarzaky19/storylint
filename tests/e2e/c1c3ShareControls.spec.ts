@@ -8,7 +8,7 @@ import { join } from "node:path";
 // height base so the two controls line up. They now carry identical min-height +
 // identical padding (+ identical border/font), so they render equal client-rect
 // heights by construction.
-//   GATE SHAPE: the seed has ONE world ("Ashkeld"), so ShareControls renders
+//   GATE SHAPE: the seed has ONE world ("ASHKELD WORLD"), so ShareControls renders
 //   .unlink but NOT .select (the share-to-OTHER-world <select> only appears when
 //   another world exists — targets.length>0). So .select's live height is not
 //   gate-reachable. We therefore assert (a) LIVE that .unlink renders at the

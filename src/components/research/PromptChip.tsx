@@ -9,7 +9,7 @@ export interface PromptChipProps {
 
 /**
  * A canned prompt chip. Clicking advances the thread by revealing the deferred
- * `more` turns (HANDOFF §9.4 — real prompt sending needs the AI layer, out of
+ * `more` turns ( — real prompt sending needs the AI layer, out of
  * scope). README §Screen 2.5.
  */
 export default function PromptChip({ label, onClick }: PromptChipProps) {

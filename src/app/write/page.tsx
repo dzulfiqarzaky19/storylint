@@ -1,5 +1,5 @@
 // =============================================================================
-// Write screen — server component (HANDOFF §6/§7/§8).
+// Write screen — server component.
 //
 // Runs the SAME pure engine at load that the client re-runs on every keystroke,
 // so the proof is marked from first paint. `force-dynamic` because the page

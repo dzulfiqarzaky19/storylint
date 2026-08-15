@@ -718,6 +718,40 @@ export async function renameCategory(input: {
 }
 
 /**
+ * Rename a WORLD in place. UPDATEs worlds.title. TRIMS the input and treats an
+ * empty/whitespace-only title as a no-op (never writes a blank, which would
+ * render a nameless world in the switcher and manage screen). Structural — no
+ * wiki token (touches no entry/fact/tie), mirroring renameCategory.
+ */
+export async function renameWorld(input: {
+  id: string;
+  title: string;
+}): Promise<void> {
+  const title = input.title.trim();
+  if (title === "") return; // blank rename is a no-op, not a blanked world name
+  await query(
+    `UPDATE worlds SET title = $2 WHERE id = $1`,
+    [input.id, title],
+  );
+}
+
+/**
+ * Rename a UNIVERSE in place. UPDATEs universes.name. Same trim + blank-is-no-op
+ * contract as renameWorld/renameCategory. Structural — no wiki token.
+ */
+export async function renameUniverse(input: {
+  id: string;
+  name: string;
+}): Promise<void> {
+  const name = input.name.trim();
+  if (name === "") return; // blank rename is a no-op, not a blanked universe name
+  await query(
+    `UPDATE universes SET name = $2 WHERE id = $1`,
+    [input.id, name],
+  );
+}
+
+/**
  * Reset a category header to its default. For a built-in category the default is
  * its shelf title (SHELF_TITLES[shelf]); the row's `label` is set back to that.
  * Reads the category's shelf first so the correct default is restored, and only

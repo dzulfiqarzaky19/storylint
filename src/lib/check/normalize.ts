@@ -1,5 +1,5 @@
 /**
- * Normalization shared by both check passes (HANDOFF §7).
+ * Normalization shared by both check passes.
  *
  * Folds equivalent surface forms so the manuscript can be compared against the
  * wiki without spurious mismatches:

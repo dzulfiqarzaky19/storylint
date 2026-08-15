@@ -1,7 +1,7 @@
 "use server";
 
 // =============================================================================
-// Research Server Actions (HANDOFF §8)
+// Research Server Actions
 //
 // PRODUCT RULE 1 — "Nothing enters the wiki without an explicit confirmation."
 //
@@ -12,7 +12,7 @@
 //     - proposeCard sets a card "pending" and reveals the confirmation strip;
 //       it writes nothing until confirmCard.
 //     - cancelPending clears the pending state and writes nothing
-//       (HANDOFF §8: "`Cancel` writes nothing").
+//.
 //
 //   insertEntry (the wiki write) requires a WikiWriteConfirmation token, so the
 //   type checker rejects any attempt to create an entry from a non-confirmed
@@ -49,7 +49,7 @@ export type ActionResult<T = void> =
   | { ok: true; data: T }
   | { ok: false; error: string };
 
-/** kind -> shelf (HANDOFF §6). Matches the seed's KIND_SHELF. */
+/** kind -> shelf. Matches the seed's KIND_SHELF. */
 const KIND_SHELF: Record<Kind, string> = {
   character: "people",
   world: "places",
@@ -105,7 +105,7 @@ export async function cancelPending(): Promise<ActionResult> {
  *
  * Steps (all under the minted token): create the entry, mark the source card
  * as kept + in_wiki. The card is auto-kept so it appears on the board flipped
- * to "In the wiki" (HANDOFF §8 / README behavior table).
+ * to "In the wiki".
  *
  * @param input.confirmed must be the literal `true` — the confirmation gate.
  */

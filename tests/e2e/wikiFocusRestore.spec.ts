@@ -13,8 +13,9 @@ import { test, expect, type Page } from "@playwright/test";
 // CLEANUP function (it never gets an open===false re-render). Proving it on ONE
 // surface proves the shared primitive for all of them.
 //
-// We drive the "+ world" NamePrompt because it is fully DETERMINISTIC on the
-// shared live DB: the trigger is always present when a universe is active, and
+// We drive the "+ New world" NamePrompt on the /wiki/manage screen because it is
+// fully DETERMINISTIC on the shared live DB: the trigger is always present and
+// stable (it does not live inside a dismiss-on-outside-click dropdown), and
 // Cancel / Escape close the dialog WITHOUT writing anything (no seeding, no
 // cleanup, no DB churn — the failure mode that made an entry-delete drive flaky).
 //
@@ -22,10 +23,10 @@ import { test, expect, type Page } from "@playwright/test";
 // (no DOM), so focus-restore can only be proven in a real browser.
 
 async function openNewWorldPrompt(page: Page) {
-  await page.goto("/wiki");
+  await page.goto("/wiki/manage");
   await page.waitForLoadState("networkidle");
 
-  const trigger = page.getByRole("button", { name: "+ world" }).first();
+  const trigger = page.getByRole("button", { name: "+ New world" }).first();
   await expect(trigger).toBeVisible();
   await expect(trigger).toBeEnabled();
   return trigger;

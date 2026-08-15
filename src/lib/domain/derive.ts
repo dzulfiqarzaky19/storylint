@@ -1,4 +1,4 @@
-// Derived display strings (HANDOFF §6 "Derived strings" — compute, never hardcode).
+// Derived display strings.
 
 /** `${chapterCount} chapters · ${flaggedCount} to settle`, or "no chapters yet". */
 export function appearLine(chapterCount: number, flaggedCount: number): string {

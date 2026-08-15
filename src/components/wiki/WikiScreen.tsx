@@ -1,6 +1,6 @@
 "use client";
 
-// Wiki screen (HANDOFF §8). The reducer store (wikiStore) is the SESSION source
+// Wiki screen. The reducer store (wikiStore) is the SESSION source
 // of truth so drag feedback is instant; each reducer action is fired ALONGSIDE
 // its matching Server Action (actions/wiki.ts), per-mutation, and a failed write
 // is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag

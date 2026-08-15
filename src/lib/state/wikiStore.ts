@@ -1,5 +1,5 @@
 // =============================================================================
-// Wiki store (HANDOFF §8) — useReducer state shape + action union + pure reducer.
+// Wiki store — useReducer state shape + action union + pure reducer.
 //
 // The reducer is the SESSION source of truth so drag feedback is instant. Each
 // reducer action is fired ALONGSIDE its matching Server Action (src/lib/actions/

@@ -1,6 +1,5 @@
 // Server component: load the wiki snapshot + the seeded Chapter 7 manuscript,
-// run the consistency-check engine (HANDOFF §7 "one engine, two screens") to
-// DERIVE the poster-band suggestions and the entries carrying an unresolved
+// run the consistency-check engine to DERIVE the poster-band suggestions and the entries carrying an unresolved
 // contradiction, and hand everything to the interactive client screen.
 //
 // TCK-017 (W-5 UI cut-over): the wiki header now presents exactly Universe +

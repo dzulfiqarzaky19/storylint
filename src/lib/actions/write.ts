@@ -1,7 +1,7 @@
 "use server";
 
 // =============================================================================
-// Write Server Actions (HANDOFF §8)
+// Write Server Actions
 //
 // PRODUCT RULE 1 — "Nothing enters the wiki without an explicit confirmation."
 //

@@ -1,5 +1,5 @@
 /**
- * Suggestion projection (HANDOFF §7 "One engine, two screens").
+ * Suggestion projection.
  *
  * A `missing` mark on the Write screen is the SAME finding as a suggestion on
  * the Wiki poster band. This module projects a `missing` mark into
@@ -29,7 +29,7 @@ interface Projection {
 // once the Write screen wires real chapters through. Flagged in the report.)
 const DEFAULT_SOURCE = 'Chapter 7';
 
-// Editorial projection for the two seeded Chapter-7 phrases (HANDOFF §6 s1/s2).
+// Editorial projection for the two seeded Chapter-7 phrases.
 const PROJECTIONS: Record<string, Projection> = {
   [normalizeQuote('her mother’s brass ring')]: {
     key: 'Carries',

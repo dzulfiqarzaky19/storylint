@@ -1,5 +1,5 @@
 /**
- * Lexicon — the "already written down" index (HANDOFF §7 Pass B).
+ * Lexicon — the "already written down" index.
  *
  * Built from entry names, aliases, notes, and every fact value, all normalized.
  * Pass B diffs candidate noun phrases from the manuscript against this index;

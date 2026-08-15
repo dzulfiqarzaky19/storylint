@@ -1,111 +1,188 @@
-/* World switcher (F7 S5) — the top-of-wiki Universe/Series/Book picker + world
-   actions. On-system with the Ashkeld tokens: no hex literals (globals.css owns
-   those), border-radius 0 everywhere, rule tokens for borders, one shared
-   control rhythm so the picker row and the action row sit on the same baseline. */
+/* World switcher — design 3a (wordmark breadcrumb + dropdown). On-system with
+   the Ashkeld tokens: no hex literals (globals.css owns those), border-radius 0
+   everywhere, rule tokens for borders, 2px ink rule under the band to match the
+   gazetteer's editorial header. */
 
 .switcher {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 16px;
-  padding: 12px var(--gutter);
+  position: relative;
+  padding: 10px var(--gutter);
   border-bottom: var(--rule-major);
   margin-bottom: 16px;
 }
 
-.axes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+/* The breadcrumb + its anchored dropdown share this positioned wrapper so the
+   menu drops directly under the crumb (and outside-click detection has one
+   root). */
+.bar {
+  position: relative;
+  display: inline-block;
 }
 
-.axis {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: inherit;
+  padding: 6px 12px;
+  border: var(--rule-row);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
 }
 
-.axisLabel {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 800;
+.crumb:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.crumb:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.crumb:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.crumbUniverse {
+  font-size: 13px;
+  font-weight: 700;
   color: var(--muted);
 }
 
-.axis select {
-  font: inherit;
-  height: 34px;
-  padding: 0 10px;
-  border: var(--rule-row);
-  background: var(--surface);
+.crumbSep {
+  color: var(--muted-2);
+}
+
+.crumbWorld {
+  font-size: 15px;
+  font-weight: 800;
   color: var(--ink);
-  min-width: min(11rem, 100%);
+}
+
+.caret {
+  margin-left: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ---- Dropdown ------------------------------------------------------------ */
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 40;
+  min-width: 260px;
+  max-height: min(70vh, 480px);
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.menuList {
+  list-style: none;
+  padding: 4px 0;
+}
+
+.group + .group {
+  border-top: 1px solid var(--rule);
+}
+
+.groupHead {
+  padding: 8px 14px 4px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.groupList {
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
   cursor: pointer;
 }
 
-.axis select:hover {
+.item:hover {
   background: var(--hover);
 }
 
-.axis select:focus-visible {
-  border-color: var(--ink);
+.item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
-.axis select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.itemActive {
+  font-weight: 800;
+  background: var(--hover);
 }
 
-.actions {
+.tick {
+  display: inline-block;
+  width: 12px;
+  color: var(--accent);
+}
+
+.menuFooter {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 8px;
-  margin-left: auto;
+  flex-direction: column;
+  border-top: var(--rule-major);
+  padding: 4px 0;
 }
 
-.actions button {
+.footerAction {
+  width: 100%;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
-  height: 34px;
-  padding: 0 14px;
-  border: var(--rule-row);
-  background: var(--surface);
+  text-align: left;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
   color: var(--ink);
   cursor: pointer;
 }
 
-.actions button:hover:not(:disabled) {
+.footerAction:hover:not(:disabled) {
   background: var(--hover);
 }
 
-.actions button:disabled {
+.footerAction:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Destructive world actions (delete book / universe). Red border + label so the
-   danger reads at a glance; fills red on hover to preview the intent. Scoped
-   under .actions so it matches the `.actions button` base specificity and wins
-   on source order (no !important needed). */
-.actions button.danger {
-  border-color: var(--danger);
-  color: var(--danger);
+.manageLink {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 8px 14px;
+  color: var(--accent);
 }
 
-.actions button.danger:hover:not(:disabled) {
-  background: var(--danger);
-  border-color: var(--danger);
-  color: var(--on-accent);
+.manageLink:hover {
+  background: var(--hover);
 }
 
 .error {
-  flex-basis: 100%;
   color: var(--danger);
   font-size: 13px;
-  margin: 4px 0 0;
+  margin: 6px 0 0;
 }
 
 /* Inline-input dialog for naming a new universe/series/book. Replaces the raw

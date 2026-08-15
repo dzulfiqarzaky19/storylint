@@ -1,4 +1,4 @@
-// Idempotent seed of ALL HANDOFF §6 data, verbatim (curly apostrophes preserved).
+// Idempotent seed of ALL data, verbatim (curly apostrophes preserved).
 // Postgres via pg. Runs inside one transaction; TRUNCATE first so re-running is safe.
 // Usage: npm run db:seed
 //
@@ -12,7 +12,7 @@ import type { PoolClient } from "pg";
 import { extractCandidatePhrases } from "../check/unrecorded";
 
 // ---------------------------------------------------------------------------
-// Seed data (verbatim from HANDOFF §6)
+// Seed data (verbatim from)
 // ---------------------------------------------------------------------------
 
 type Kind = "character" | "world" | "organization" | "lore";
@@ -499,12 +499,12 @@ export async function seedWithin(client: PoolClient): Promise<void> {
   // migration (books hang off the world directly). The world is inserted BEFORE
   // the book so books.world_id FK resolves; its id matches B1 below
   // ('world-' || universe_id), so B1's ON CONFLICT re-insert is a no-op.
-  await client.query(`INSERT INTO universes (id, name) VALUES ('universe-1', 'Ashkeld')`);
+  await client.query(`INSERT INTO universes (id, name) VALUES ('universe-1', 'FANTASY UNIVERSE')`);
   await client.query(
-    `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ('world-universe-1', 'universe-1', 'Ashkeld', 0)`,
+    `INSERT INTO worlds (id, universe_id, title, sort_order) VALUES ('world-universe-1', 'universe-1', 'ASHKELD WORLD', 0)`,
   );
   await client.query(
-    `INSERT INTO books (id, world_id, name, sort_order) VALUES ('book-1', 'world-universe-1', 'Ashkeld', 0)`,
+    `INSERT INTO books (id, world_id, name, sort_order) VALUES ('book-1', 'world-universe-1', 'ASHKELD BOOK I', 0)`,
   );
 
   // F9-B categories: seed the 4 built-ins BEFORE entries, since entries.kind is a
