@@ -20,17 +20,20 @@ test("wiki: left index groups the world and click focuses an entry", async ({
   await page.goto("/wiki");
   const index = page.locator('nav[aria-label="The world"]');
   await expect(index).toBeVisible();
-  // Four collapsible groups, each an aria-expanded button.
-  for (const group of ["PEOPLE", "PLACES", "ORDERS", "LORE"]) {
+  // Four collapsible groups. The collapse control is the CHEVRON button carrying
+  // aria-expanded; its accessible name is "Collapse <Label>" / "Expand <Label>".
+  // Category labels are the seeded (title-case) BUILTIN_CATEGORIES labels; the
+  // uppercase look is CSS only, so match the seeded label text.
+  for (const group of ["People", "Places", "Orders", "Lore"]) {
     await expect(
-      index.locator("button[aria-expanded]").filter({ hasText: group }),
+      index.getByRole("button", { name: new RegExp(`(Collapse|Expand) ${group}`) }),
     ).toBeVisible();
   }
   // Clicking an index entry focuses it: the big entry heading changes.
   await index.getByRole("button", { name: /Teodor Kest/ }).click();
   await expect(page.getByRole("heading", { name: /Teodor Kest/i })).toBeVisible();
   // Collapsing a group hides its items.
-  const people = index.locator("button[aria-expanded]").filter({ hasText: "PEOPLE" });
+  const people = index.getByRole("button", { name: /(Collapse|Expand) People/ });
   await people.click();
   await expect(people).toHaveAttribute("aria-expanded", "false");
 });

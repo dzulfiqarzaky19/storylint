@@ -12,10 +12,21 @@ import { test, expect, type Page } from "@playwright/test";
 // robust we avoid asserting global counts; where a control persists (create),
 // we assert the NEW artifact appears rather than a total. Toggles are reverted.
 
-const SHELVES = ["PEOPLE", "PLACES", "ORDERS", "LORE"] as const;
+const SHELVES = ["People", "Places", "Orders", "Lore"] as const;
 
 function index(page: Page) {
   return page.locator('nav[aria-label="The world"]');
+}
+
+// A category group's collapse control is the CHEVRON button (the element that
+// carries aria-expanded). Its accessible name is "Collapse <Label>" when open
+// and "Expand <Label>" when collapsed (WikiIndex groupChevron). The group title
+// is a SEPARATE button (rename affordance), so we must target the chevron by its
+// accessible name, not by hasText on the aria-expanded button.
+function groupToggle(page: Page, label: string) {
+  return index(page).getByRole("button", {
+    name: new RegExp(`(Collapse|Expand) ${escapeRe(label)}`),
+  });
 }
 
 function escapeRe(s: string): string {
@@ -39,9 +50,7 @@ test("wiki index: the four world groups render as collapsible sections", async (
   // Header shows a live entry count.
   await expect(idx.getByText(/\d+ entries/)).toBeVisible();
   for (const group of SHELVES) {
-    await expect(
-      idx.locator("button[aria-expanded]").filter({ hasText: group }),
-    ).toBeVisible();
+    await expect(groupToggle(page, group)).toBeVisible();
   }
 });
 
@@ -49,7 +58,7 @@ test("wiki index: collapsing a group hides its items, re-opening restores them",
   page,
 }) => {
   const idx = index(page);
-  const people = idx.locator("button[aria-expanded]").filter({ hasText: "PEOPLE" });
+  const people = groupToggle(page, "People");
   await expect(people).toHaveAttribute("aria-expanded", "true");
   // Grab a visible entry name inside PEOPLE to assert hide/show.
   const teodor = idx.getByRole("button", { name: /Teodor Kest/ });
@@ -201,9 +210,9 @@ test("wiki create: '+ New people' adds an authored entry to the People group", a
   page,
 }) => {
   const idx = index(page);
-  // Label is "+ New " + singularised shelf title, lowercased. "People" has no
-  // trailing 's' to strip, so the People shelf reads "+ New people".
-  const create = idx.getByRole("button", { name: /\+ New people/i });
+  // TCK-018: the add control is now an icon "+" button; its accessible name is
+  // "Add new " + singularised category label (People -> "Add new people").
+  const create = idx.getByRole("button", { name: /Add new people/i });
   await expect(create).toBeVisible();
   await create.click();
   // A new authored entry ("New person") becomes the focused heading.
