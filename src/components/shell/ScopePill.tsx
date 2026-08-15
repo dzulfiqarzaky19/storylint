@@ -153,11 +153,16 @@ export default function ScopePill({ tree }: ScopePillProps) {
         disabled={busy}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className={pill.wordmark}>ASHKELD</span>
         {crumb ? (
-          <span className={pill.world}>{crumb.world}</span>
+          <>
+            <span className={pill.wordmark}>{crumb.universe}</span>
+            <span className={pill.world}>{crumb.world}</span>
+          </>
         ) : (
-          <span className={pill.world}>No worlds</span>
+          <>
+            <span className={pill.wordmark}>ASHKELD</span>
+            <span className={pill.world}>No worlds</span>
+          </>
         )}
         <span className={pill.caret} aria-hidden="true">
           ▾
