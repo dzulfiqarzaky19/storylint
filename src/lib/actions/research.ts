@@ -38,7 +38,12 @@ import { randomUUID } from "node:crypto";
 import type { Kind, ResearchScope } from "../domain/types";
 import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
-import { loadWikiSnapshot, getEntry } from "../db/queries";
+import {
+  loadWikiSnapshot,
+  loadWorldSnapshot,
+  getResearchThreadWorldId,
+  getEntry,
+} from "../db/queries";
 import { deriveThreadTitle } from "../research/title";
 import { loadWebSearchConfig } from "../websearch/search/config";
 import { retrieve, buildSearchImpl } from "../websearch/retrieve";
@@ -270,8 +275,16 @@ export async function askResearchAi(input: {
   }
 
   try {
-    // Ground on the wiki so answers stay inside the writer's own world.
-    const wiki = await loadWikiSnapshot();
+    // T-RESEARCH-2 (LOAD-BEARING): ground on the thread's OWN world, not the
+    // whole universe. loadWorldSnapshot(threadWorldId) returns only the entities
+    // linked to that world, so the AI answers inside the world the thread belongs
+    // to (a Blackspade thread never sees Ashkeld canon). Falls back to the
+    // whole-wiki snapshot only when the thread has no world (legacy/none), which
+    // the NOT NULL migration makes impossible for new rows.
+    const threadWorldId = await getResearchThreadWorldId(threadId);
+    const wiki = threadWorldId
+      ? await loadWorldSnapshot(threadWorldId)
+      : await loadWikiSnapshot();
     const gazetteer = wiki.entries
       .map((e) => {
         const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
@@ -437,16 +450,20 @@ export async function createThread(input?: {
   title?: string;
   subtitle?: string;
   scope?: ResearchScope;
+  worldId?: string;
 }): Promise<ActionResult<{ threadId: string }>> {
   try {
     const id = randomUUID();
-    const sortOrder = await getNextResearchThreadSortOrder();
+    // T-RESEARCH-2: a thread belongs to ONE world; order it within that world's
+    // rail and stamp its world_id so it appears under the world the writer is in.
+    const sortOrder = await getNextResearchThreadSortOrder(input?.worldId);
     const row = await insertResearchThread({
       id,
       title: input?.title?.trim() || "New thread",
       subtitle: input?.subtitle?.trim() ?? "",
       sortOrder,
       scope: input?.scope ?? "chat",
+      worldId: input?.worldId,
     });
     return { ok: true, data: { threadId: row.id } };
   } catch (err) {

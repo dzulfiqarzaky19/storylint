@@ -86,6 +86,12 @@ vi.mock("@/lib/ai/saarouters", () => ({
 // FULL entry list via buildGazetteer.
 vi.mock("@/lib/db/queries", () => ({
   loadWikiSnapshot: vi.fn(async () => ({ entries: WIKI_ENTRIES })),
+  // T-RESEARCH-2: the route now grounds on the THREAD's world. These seam/prompt
+  // tests exercise the whole-wiki FALLBACK path (a thread with no resolvable
+  // world), so getResearchThreadWorldId returns null and loadWorldSnapshot is
+  // present but unused. worldGrounding.test.ts proves the world-scoped path.
+  getResearchThreadWorldId: vi.fn(async () => null),
+  loadWorldSnapshot: vi.fn(async () => ({ entries: WIKI_ENTRIES })),
   // The route reads prior thread turns via getResearchThread(threadId) and maps
   // them to { side, text }. These tests exercise the stream/abort/prompt seams,
   // not history replay, so an empty prior-turn list is the faithful mock surface.

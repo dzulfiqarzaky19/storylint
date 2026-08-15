@@ -68,7 +68,9 @@ async function freshProposition(
   const threadId = `test-e06r-th-${tag}`;
   const turnId = `test-e06r-tn-${tag}`;
   const propId = `test-e06r-p-${tag}`;
-  await query(`INSERT INTO research_threads (id, title, universe_id) VALUES ($1, $2, $3)`, [threadId, "T", universeId]);
+  // world_id is NOT NULL (T-RESEARCH-2); a thread in universe-N backfills to that
+  // universe's default world `world-${universeId}` (== world-universe-1 here).
+  await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", universeId, `world-${universeId}`]);
   await query(
     `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text) VALUES ($1, $2, 0, 'them', 'AI', '')`,
     [turnId, threadId],

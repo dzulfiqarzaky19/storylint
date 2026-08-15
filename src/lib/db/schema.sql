@@ -208,7 +208,14 @@ CREATE TABLE research_threads (
     CHECK (scope IN ('chat', 'character', 'world', 'organization', 'lore')),
   -- F7: a universe is a canon; research sees that universe's wiki. NOT NULL as of
   -- the S1b CONTRACT phase (f7a stamped every existing thread to universe-1).
-  universe_id text NOT NULL REFERENCES universes(id)
+  universe_id text NOT NULL REFERENCES universes(id),
+  -- T-RESEARCH-2: a thread is grounded in ONE world (not just its universe), so
+  -- the AI's gazetteer is that world's linked entries via loadWorldSnapshot. NOT
+  -- NULL: a null would silently fall back to the default world (the exact bug this
+  -- fixes). Fresh dbs seed world_id directly; the live-DB add+backfill+SET NOT NULL
+  -- lives in migrations/research-world-expand.mts (mirrors w6a). ON DELETE CASCADE:
+  -- deleting a world takes its threads (and their turns) with it.
+  world_id text NOT NULL REFERENCES worlds(id) ON DELETE CASCADE
 );
 
 -- research_turns: id, threadId, ordinal, side, who, text

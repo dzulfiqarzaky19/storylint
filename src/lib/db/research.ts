@@ -55,12 +55,15 @@ export function selectResearchThread(
 }
 
 /**
- * List all threads for the left index, ordered by sort_order. Returns exactly
- * what the DB holds — an EMPTY list when there are no threads (research now
- * starts empty; there is no synthetic seed thread to fall back to).
+ * List threads for the left index, ordered by sort_order. T-RESEARCH-2: pass
+ * `worldId` to list only the ACTIVE world's threads (the rail mirrors the active
+ * world, like /wiki mirrors the active world's entries). Returns exactly what the
+ * DB holds — an EMPTY list when that world has no threads yet.
  */
-export async function loadResearchThreads(): Promise<ResearchThreadRow[]> {
-  return listResearchThreads();
+export async function loadResearchThreads(
+  worldId?: string,
+): Promise<ResearchThreadRow[]> {
+  return listResearchThreads(worldId);
 }
 
 /**
@@ -71,8 +74,9 @@ export async function loadResearchThreads(): Promise<ResearchThreadRow[]> {
  */
 export async function loadResearchSnapshot(
   threadId?: string,
+  worldId?: string,
 ): Promise<ResearchSnapshot> {
-  const threads = await loadResearchThreads();
+  const threads = await loadResearchThreads(worldId);
   const selected = selectResearchThread(threads, threadId);
   if (!selected) return EMPTY_RESEARCH_SNAPSHOT;
   const turns = await getResearchThread(selected.id);

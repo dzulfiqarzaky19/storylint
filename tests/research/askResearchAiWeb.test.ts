@@ -50,6 +50,11 @@ vi.mock("@/lib/ai/saarouters", () => ({
 
 vi.mock("@/lib/db/queries", () => ({
   loadWikiSnapshot: vi.fn(async () => WIKI),
+  // T-RESEARCH-2: askResearchAi grounds on the thread's world. These web-wiring
+  // tests exercise the whole-wiki FALLBACK (no resolvable world), so
+  // getResearchThreadWorldId returns null and loadWorldSnapshot is unused here.
+  getResearchThreadWorldId: vi.fn(async () => null),
+  loadWorldSnapshot: vi.fn(async () => WIKI),
   getEntry: vi.fn(async () => null),
 }));
 

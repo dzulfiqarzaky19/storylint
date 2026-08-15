@@ -665,18 +665,49 @@ export async function getResearchThread(
 // query above is modified.
 
 /**
- * List every research thread for the LEFT sidebar, in sort_order (then id as a
- * stable tiebreaker so newly-created threads sharing a sort_order are ordered
- * deterministically). Column aliases map snake_case -> camelCase.
+ * List research threads for the LEFT sidebar, in sort_order (then id as a stable
+ * tiebreaker). Column aliases map snake_case -> camelCase.
+ *
+ * T-RESEARCH-2: WORLD-scoped. Pass `worldId` to list only that world's threads
+ * (the sidebar shows the active world's conversations, mirroring how /wiki shows
+ * the active world's entries). Omit it to list every thread (used by paths that
+ * are not world-scoped, e.g. a global count). Filtering in SQL (not in JS) is
+ * mutation-provable: dropping the WHERE bleeds sibling-world threads into the rail.
  */
-export async function listResearchThreads(): Promise<
-  import("../domain/types").ResearchThreadRow[]
-> {
+export async function listResearchThreads(
+  worldId?: string,
+): Promise<import("../domain/types").ResearchThreadRow[]> {
+  if (worldId !== undefined) {
+    return rows<import("../domain/types").ResearchThreadRow>(
+      `SELECT id, title, subtitle, sort_order AS "sortOrder", scope, world_id AS "worldId"
+       FROM research_threads
+       WHERE world_id = $1
+       ORDER BY sort_order, id`,
+      [worldId],
+    );
+  }
   return rows<import("../domain/types").ResearchThreadRow>(
-    `SELECT id, title, subtitle, sort_order AS "sortOrder", scope
+    `SELECT id, title, subtitle, sort_order AS "sortOrder", scope, world_id AS "worldId"
      FROM research_threads
      ORDER BY sort_order, id`,
   );
+}
+
+/**
+ * T-RESEARCH-2 (load-bearing): the world_id of ONE thread, so the AI-grounding
+ * path (askResearchAi / the stream route) can call loadWorldSnapshot(worldId)
+ * and ground the answer on THAT thread's world's linked entries instead of the
+ * default-universe canon. Returns null for an unknown thread (caller decides the
+ * fallback). Read-only, single row.
+ */
+export async function getResearchThreadWorldId(
+  threadId: string,
+): Promise<string | null> {
+  const row = await one<{ worldId: string }>(
+    `SELECT world_id AS "worldId" FROM research_threads WHERE id = $1`,
+    [threadId],
+  );
+  return row?.worldId ?? null;
 }
 
 // ---- World tree (F7 S5 switcher) ------------------------------------------

@@ -26,7 +26,12 @@ import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 
 import { streamComplete, aiEnabled } from "@/lib/ai/saarouters";
-import { loadWikiSnapshot, getResearchThread } from "@/lib/db/queries";
+import {
+  loadWikiSnapshot,
+  loadWorldSnapshot,
+  getResearchThreadWorldId,
+  getResearchThread,
+} from "@/lib/db/queries";
 import { insertResearchTurnPair } from "@/lib/db/mutations";
 import { deriveThreadTitle } from "@/lib/research/title";
 import { visibleProsePrefix } from "@/lib/research/streamParse";
@@ -80,10 +85,17 @@ export async function POST(req: NextRequest) {
     return jsonError("AI is not configured. Add SAAROUTERS_API_KEY to .env.local.", 400);
   }
 
-  // F5: fully-free research chat — the AI always sees the ENTIRE wiki, no scope
-  // narrowing. buildGazetteer renders every entry; buildResearchPrompt frames
-  // free-context answering (no scope directive) and still emits CARDS_SENTINEL.
-  const wiki = await loadWikiSnapshot();
+  // T-RESEARCH-2 (LOAD-BEARING, live path): ground the streamed answer on the
+  // thread's OWN world, not the whole universe. This is the route the UI actually
+  // hits, so it is the one that makes a Blackspade thread stop seeing Ashkeld
+  // canon. loadWorldSnapshot(threadWorldId) returns only that world's entities;
+  // buildGazetteer then renders exactly that world. Falls back to the whole-wiki
+  // snapshot only when the thread has no world (legacy), which the NOT NULL
+  // migration makes impossible for new rows.
+  const threadWorldId = await getResearchThreadWorldId(threadId);
+  const wiki = threadWorldId
+    ? await loadWorldSnapshot(threadWorldId)
+    : await loadWikiSnapshot();
   const gazetteer = buildGazetteer(wiki.entries);
   // MEMORY: load the thread's prior turns so the Collaborator REMEMBERS the
   // conversation instead of answering statelessly. The current turn is NOT

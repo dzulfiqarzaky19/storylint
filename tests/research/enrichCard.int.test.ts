@@ -47,7 +47,8 @@ async function freshProposition(title: string, body: string): Promise<string> {
   const threadId = `test-f6s3-th-${tag}`;
   const turnId = `test-f6s3-tn-${tag}`;
   const propId = `test-f6s3-p-${tag}`;
-  await query(`INSERT INTO research_threads (id, title, universe_id) VALUES ($1, $2, $3)`, [threadId, "T", DEFAULT_UNIVERSE_ID]);
+  // world_id is NOT NULL (T-RESEARCH-2): stamp the default universe's world.
+  await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", DEFAULT_UNIVERSE_ID, `world-${DEFAULT_UNIVERSE_ID}`]);
   await query(
     `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text) VALUES ($1, $2, 0, 'them', 'AI', '')`,
     [turnId, threadId],

@@ -268,13 +268,31 @@ export default function ResearchScreen({
       let reconciled = false;
       let sawError = false;
       try {
+        // T-RESEARCH-1: with NO active thread (an empty research surface), the
+        // first question auto-creates a default thread in the ACTIVE world and
+        // asks against it — instead of erroring "No active thread". createThread
+        // returns the real id; we chat against it now and sync the URL AFTER the
+        // exchange persists (a mid-stream router.push would remount and abort it).
+        let activeThreadId = threadId;
+        let createdThreadId: string | null = null;
+        if (!activeThreadId) {
+          const created = await createThread({ worldId: activeWorldId });
+          if (!created.ok) throw new Error(created.error ?? "Could not start a thread.");
+          activeThreadId = created.data.threadId;
+          createdThreadId = created.data.threadId;
+        }
         const res = await fetch("/api/research/stream", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             question,
-            threadId,
-            threadTitle: snapshot.threads.find((t) => t.id === threadId)?.title,
+            threadId: activeThreadId,
+            // A pre-existing thread carries its title (memory/auto-title); an
+            // auto-created thread has none yet, so send undefined and let the
+            // route derive it from this first question.
+            threadTitle: createdThreadId
+              ? undefined
+              : snapshot.threads.find((t) => t.id === activeThreadId)?.title,
           }),
         });
 
@@ -301,6 +319,11 @@ export default function ResearchScreen({
               dispatch({ type: "RECONCILE_TURN", tempTurnId: tempThemId, turn: themTurn });
             }
             reconciled = true;
+            // T-RESEARCH-1: now that the auto-created thread has a persisted turn,
+            // point the URL at it so the rail selects it and a refresh keeps it.
+            if (createdThreadId) {
+              router.push(`/research?thread=${encodeURIComponent(createdThreadId)}`);
+            }
           },
           onError: (message) => {
             dispatch({ type: "SET_ERROR", error: message });
@@ -352,7 +375,9 @@ export default function ResearchScreen({
   };
   const addThread = () => {
     startTransition(async () => {
-      const res = await createThread();
+      // T-RESEARCH-2: stamp the new thread with the world the writer is viewing,
+      // so it lands in THIS world's rail rather than the default world.
+      const res = await createThread({ worldId: activeWorldId });
       if (res.ok) {
         router.push(`/research?thread=${encodeURIComponent(res.data.threadId)}`);
       } else {
@@ -385,7 +410,12 @@ export default function ResearchScreen({
       if (nextActive) {
         router.push(`/research?thread=${encodeURIComponent(nextActive.id)}`);
       } else {
-        const created = await createThread();
+        // T-RESEARCH-2: deleting the last thread opens a fresh one — it MUST land
+        // in the ACTIVE world (like addThread/auto-create), never silently in the
+        // default world. createThread()'s no-arg fallback is world-universe-1, so
+        // a writer in Vosk/Halen would otherwise get an Ashkeld thread invisible in
+        // their rail that grounds the AI on the wrong world.
+        const created = await createThread({ worldId: activeWorldId });
         if (created.ok) {
           router.push(
             `/research?thread=${encodeURIComponent(created.data.threadId)}`,

@@ -12,10 +12,14 @@ export const dynamic = "force-dynamic";
 export default async function ResearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ thread?: string }>;
+  searchParams: Promise<{ thread?: string; u?: string; w?: string }>;
 }) {
-  const { thread } = await searchParams;
-  const snapshot = await loadResearchSnapshot(thread);
+  const { thread, u, w } = await searchParams;
+  // T-RESEARCH-2: resolve the ACTIVE world from ?u=/?w= (same resolver /wiki
+  // uses) and scope the thread list + selected thread to it, so switching worlds
+  // in the header shows THAT world's threads.
+  const { activeWorldId } = resolveWikiScope(await getWorldTree(), u, w);
+  const snapshot = await loadResearchSnapshot(thread, activeWorldId);
   // Live wiki entries (getAllEntries is soft-delete-filtered, F6-S2) so the
   // confirmation strip can recommend enriching an existing entry instead of
   // spawning a duplicate. Mapped to the minimal shape the recommender needs.
@@ -25,13 +29,11 @@ export default async function ResearchPage({
     kind: e.kind,
     deletedAt: e.deletedAt,
   }));
-  // TCK-E06: resolve the active world so a research-minted entry is linked into it
-  // (else it persists but is invisible on /wiki). The research URL carries no
-  // ?u=/?w=, so resolveWikiScope(tree, undefined, undefined) yields the default
-  // universe's first world (world-universe-1 today) — provably correct while every
-  // thread is universe-1 (see the invariant test that REDs the moment that changes).
-  const { activeWorldId } = resolveWikiScope(await getWorldTree(), undefined, undefined);
   // Key by thread id so switching threads remounts the reducer with fresh state.
+  // activeWorldId (resolved above) is threaded into confirmCard so a
+  // research-minted entry is linked into the ACTIVE world (else invisible on
+  // /wiki) AND into the composer so a first-message auto-create (T-RESEARCH-1)
+  // lands the default thread in the world the writer is viewing.
   return (
     <ResearchScreen
       key={snapshot.threadId}

@@ -30,7 +30,7 @@ const getMock = vi.mocked(getResearchThread);
 // -----------------------------------------------------------------------------
 
 function thread(over: Partial<ResearchThreadRow>): ResearchThreadRow {
-  return { id: "t", title: "T", subtitle: "", sortOrder: 0, scope: "chat", ...over };
+  return { id: "t", title: "T", subtitle: "", sortOrder: 0, scope: "chat", worldId: "world-1", ...over };
 }
 
 describe("selectResearchThread", () => {

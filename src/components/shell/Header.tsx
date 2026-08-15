@@ -39,6 +39,13 @@ function activeItem(pathname: string): NavItem {
  */
 export interface HeaderScope {
   tree: WorldUniverseNode[];
+  /**
+   * T-RESEARCH-2: the surface the ScopePill navigates on a world switch.
+   * Defaults to "/wiki" (the pill's own default) when omitted, so /wiki is
+   * unchanged; /research passes "/research" so switching worlds re-scopes
+   * /research rather than jumping to /wiki.
+   */
+  basePath?: string;
 }
 
 export default function Header({ scope }: { scope?: HeaderScope }) {
@@ -48,7 +55,7 @@ export default function Header({ scope }: { scope?: HeaderScope }) {
   return (
     <header className={styles.header}>
       {scope ? (
-        <ScopePill tree={scope.tree} />
+        <ScopePill tree={scope.tree} basePath={scope.basePath} />
       ) : (
         <div className={styles.brand}>
           <span className={styles.wordmark}>ASHKELD</span>

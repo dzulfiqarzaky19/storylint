@@ -39,6 +39,13 @@ import pill from "./ScopePill.module.css";
 
 interface ScopePillProps {
   tree: WorldUniverseNode[];
+  /**
+   * T-RESEARCH-2: the surface this pill navigates. Defaults to "/wiki" so the
+   * existing /wiki usage is unchanged; /research passes "/research" so a world
+   * switch re-scopes /research instead of jumping to /wiki. The ?u=/?w= scope
+   * contract is identical on both surfaces.
+   */
+  basePath?: string;
 }
 
 /** An open naming dialog: its heading and the callback that runs on submit. */
@@ -47,7 +54,7 @@ type NamePromptState = {
   onSubmit: (name: string) => void;
 };
 
-export default function ScopePill({ tree }: ScopePillProps) {
+export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [busy, setBusy] = useState(false);
@@ -95,7 +102,7 @@ export default function ScopePill({ tree }: ScopePillProps) {
   // trips react-hooks/preserve-manual-memoization. Let the compiler own it.
   const go = (u: string, w?: string) => {
     setOpen(false);
-    startTransition(() => router.push(scopeHref(u, w)));
+    startTransition(() => router.push(scopeHref(u, w, basePath)));
   };
 
   const runCreate = async <T,>(
@@ -136,7 +143,7 @@ export default function ScopePill({ tree }: ScopePillProps) {
           // first world (a bare refresh snaps back to worlds[0]).
           ({ worldId }) =>
             startTransition(() => {
-              router.push(scopeHref(activeUniverseId, worldId));
+              router.push(scopeHref(activeUniverseId, worldId, basePath));
               router.refresh();
             }),
         ),

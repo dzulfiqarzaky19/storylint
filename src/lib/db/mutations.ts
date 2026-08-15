@@ -812,10 +812,19 @@ export async function deleteCategory(
 // conversation column, never an entry. No existing helper above is modified.
 
 /** Next free sort_order for a new research thread (max + 1, or 0 if none). */
-export async function getNextResearchThreadSortOrder(): Promise<number> {
-  const res = await rows<{ maxSort: number | null }>(
-    `SELECT MAX(sort_order) AS "maxSort" FROM research_threads`,
-  );
+export async function getNextResearchThreadSortOrder(
+  worldId?: string,
+): Promise<number> {
+  // T-RESEARCH-2: order a new thread relative to its OWN world's threads when a
+  // world is given (so each world's rail numbers from 0), else the global max.
+  const res = worldId
+    ? await rows<{ maxSort: number | null }>(
+        `SELECT MAX(sort_order) AS "maxSort" FROM research_threads WHERE world_id = $1`,
+        [worldId],
+      )
+    : await rows<{ maxSort: number | null }>(
+        `SELECT MAX(sort_order) AS "maxSort" FROM research_threads`,
+      );
   return (res[0]?.maxSort ?? -1) + 1;
 }
 
@@ -831,14 +840,20 @@ export async function insertResearchThread(input: {
   sortOrder: number;
   scope: import("../domain/types").ResearchScope;
   universeId?: string;
+  worldId?: string;
 }): Promise<import("../domain/types").ResearchThreadRow> {
-  // F7: research_threads.universe_id is NOT NULL as of the S1b contract; a new
-  // thread is grounded in the active universe's canon by default.
+  // F7: universe_id is NOT NULL (S1b contract). T-RESEARCH-2: world_id is NOT
+  // NULL too — a thread is grounded in ONE world. Default to the active
+  // universe's DEFAULT world only when the caller omits worldId (legacy callers);
+  // the research action always passes the active world so a new thread lands in
+  // the world the writer is viewing (never silently in the default world).
+  const universeId = input.universeId ?? DEFAULT_UNIVERSE_ID;
+  const worldId = input.worldId ?? `world-${universeId}`;
   const res = await one<import("../domain/types").ResearchThreadRow>(
-    `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id)
-     VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, title, subtitle, sort_order AS "sortOrder", scope`,
-    [input.id, input.title, input.subtitle, input.sortOrder, input.scope, input.universeId ?? DEFAULT_UNIVERSE_ID],
+    `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING id, title, subtitle, sort_order AS "sortOrder", scope, world_id AS "worldId"`,
+    [input.id, input.title, input.subtitle, input.sortOrder, input.scope, universeId, worldId],
   );
   if (!res) throw new Error("insertResearchThread: no row returned");
   return res;

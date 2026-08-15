@@ -245,4 +245,7 @@ export interface ResearchThreadRow {
   subtitle: string;
   sortOrder: number;
   scope: ResearchScope;
+  // T-RESEARCH-2: the world this thread is grounded in. Its linked entries are the
+  // AI gazetteer (loadWorldSnapshot), and the thread list is filtered by it.
+  worldId: string;
 }
