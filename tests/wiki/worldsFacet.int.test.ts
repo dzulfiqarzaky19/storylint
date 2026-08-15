@@ -12,6 +12,7 @@ import {
 } from "@/lib/db/mutations";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
 import { DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
+import { ENTRIES, CONTENT_WORLDS } from "@/lib/db/seed";
 
 // -----------------------------------------------------------------------------
 // F7-S4 — HYBRID FACET LAYER (INTEGRATION, real Postgres). The conceptual heart
@@ -44,8 +45,8 @@ import { DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID, DEFAULT_WORLD_ID } from "@/lib/db
 //
 // DEFAULT-BOOK INVARIANT: with ZERO facet rows and all canon facts book_id=NULL,
 // loadWikiSnapshot(U1, book-1) is BYTE-IDENTICAL to the pre-S4 canon-only read.
-// Baseline: 15 composed entries in U1 (seed.ts declares exactly 15 real entry
-// rows: 5 character + 3 world + 3 organization + 4 lore; zero are soft-deleted).
+// Baseline: SEED_CANON_COUNT composed entries in U1, DERIVED from the seed source
+// (ENTRIES + universe-1 CONTENT_WORLDS bundles) so a reseed cannot re-break it.
 // We snapshot
 // BEFORE seeding, assert the baseline, and after adding B2 facets re-assert the
 // B1 view of Gandalf is untouched (Grey) — the override never leaks to B1.
@@ -71,17 +72,23 @@ const tieId = `test-f7s4-tie-${randomUUID()}`;
 const CANON_NAME = "Grey the Wizard";
 const FACET_NAME = "White the Wizard";
 
-// The canon baseline. RULING (a) STALE TEST, not a missing seed row: seed.ts
-// declares EXACTLY 15 real entry-row literals under universe-1 — 5 character
-// (seed.ts L57,66,75,84,93) + 3 world (L102,111,120) + 3 organization
-// (L129,138,146) + 4 lore (L155,164,173,182) — none soft-deleted. It is a
-// deliberate, complete set; there is NO half-defined 16th row or gap. The prior
-// hardcoded 16 was calibrated against a DB that carried 1 UI-created stray
-// ('New person'/'New place', now hard-deleted): 15 seed + 1 stray = 16. A clean
-// seed reads 15, so the constant, not the seed, was wrong. Single source of
-// truth so both invariant checks stay pinned to the seed. (NB: seed.ts L22
-// `kind: Kind;` is the TS interface decl, NOT a row — do not count it.)
-const SEED_CANON_COUNT = 15;
+// The canon baseline, DERIVED FROM THE SEED SOURCE (not a hard-coded literal)
+// so a future reseed can never silently re-break this assertion. The count
+// query below is UNIVERSE-scoped (universe_id = DEFAULT_UNIVERSE_ID), so the
+// baseline is every non-deleted, non-test entry the seed stamps with
+// universe-1: the legacy Book I set (ENTRIES, all universe-1) PLUS every
+// CONTENT_WORLDS bundle whose universeId is universe-1 (Ash II + Vosk). Halen
+// is universe-2, so it is correctly excluded. This mirrors exactly how seed.ts
+// inserts entries (ENTRIES -> universe-1; each CONTENT_WORLDS bundle -> its own
+// universeId). At time of writing this evaluates to 32 (15 + 5 + 12); if the
+// seed grows, the constant tracks it automatically. Single source of truth so
+// both invariant checks stay pinned to the seed.
+const SEED_CANON_COUNT =
+  ENTRIES.length +
+  CONTENT_WORLDS.filter((w) => w.universeId === DEFAULT_UNIVERSE_ID).reduce(
+    (n, w) => n + w.entries.length,
+    0,
+  );
 
 beforeAll(async () => {
   if (!process.env.DATABASE_URL) {

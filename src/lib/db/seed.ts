@@ -8,6 +8,7 @@
 // The 3 ADDED facts (oath/saltnames, §6/§9) ARE seeded so contradiction rules work.
 import { loadEnv } from "./env";
 import { getPool, closePool, withTransaction } from "./pool";
+import { pathToFileURL } from "node:url";
 import type { PoolClient } from "pg";
 import { extractCandidatePhrases } from "../check/unrecorded";
 import {
@@ -67,7 +68,12 @@ const BUILTIN_CATEGORIES: Array<{
   { id: "lore", label: "Lore", shelf: "lore", sortOrder: 3 },
 ];
 
-const ENTRIES: SeedEntry[] = [
+// EXPORTED (not just used internally): tests derive the seeded universe-1 canon
+// count from these arrays rather than hard-coding a magic number, so a future
+// reseed can't silently re-break the count assertion. Exporting the array is
+// value-only; it changes no seed behavior. (Importing this module is made
+// side-effect-free by the run-guard on main() at the bottom of the file.)
+export const ENTRIES: SeedEntry[] = [
   {
     id: "maren",
     kind: "character",
@@ -509,7 +515,7 @@ function bodyOf(paragraphs: string[]) {
 //     own world.
 // ---------------------------------------------------------------------------
 
-interface ContentWorld {
+export interface ContentWorld {
   worldId: string;
   universeId: string;
   entries: SeedEntry[];
@@ -553,7 +559,10 @@ const NEW_BOOKS: Array<{
 
 // Entry bundles -> the world each links to explicitly + the universe stamped on
 // entries.universe_id. Ash II joins the existing Ashkeld world.
-const CONTENT_WORLDS: ContentWorld[] = [
+// EXPORTED alongside ENTRIES: universe-1's canon set is ENTRIES (legacy Book I,
+// all stamped universe-1) PLUS every CONTENT_WORLDS bundle whose universeId is
+// 'universe-1' (Ash II + Vosk). Tests sum these to derive the count.
+export const CONTENT_WORLDS: ContentWorld[] = [
   {
     worldId: "world-universe-1",
     universeId: "universe-1",
@@ -863,8 +872,21 @@ async function main(): Promise<void> {
   await closePool();
 }
 
-main().catch(async (err) => {
-  console.error("[db:seed] failed:", err);
-  await closePool();
-  process.exit(1);
-});
+// Run-guard: only execute the seeding side effect when this file is invoked as
+// the entry script (`tsx src/lib/db/seed.ts` / `npm run db:seed`). Under a test
+// runner (vitest) this module is IMPORTED for its exported data (ENTRIES,
+// CONTENT_WORLDS), where argv[1] is the runner, not this file — so main() is
+// skipped and the import is side-effect-free. This changes no db:seed behavior.
+const invokedDirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  process.argv[1] != null &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (invokedDirectly) {
+  main().catch(async (err) => {
+    console.error("[db:seed] failed:", err);
+    await closePool();
+    process.exit(1);
+  });
+}
