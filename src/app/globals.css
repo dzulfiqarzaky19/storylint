@@ -84,6 +84,17 @@ body {
     display: flex;
     flex-direction: column;
   }
+
+  /* #main is body's flex child that holds the screen. It must grow to fill the
+     remaining height under the header and pass a real height down, or the
+     screen's own `flex: 1` has nothing to fill against and collapses to content
+     height (~3/4 viewport on wide screens). */
+  body > #main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 a {
