@@ -1,5 +1,5 @@
 // TCK-022 / TCK-E02 — the pure /wiki scope href builder, extracted from
-// WorldSwitcher so the nav target is unit-testable and mutation-provable without
+// ScopePill so the nav target is unit-testable and mutation-provable without
 // pulling in the client component's React / next-navigation / server-action
 // imports.
 //

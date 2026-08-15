@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { WorldUniverseNode } from "@/lib/db/queries";
+import ScopePill from "./ScopePill";
 import styles from "./Header.module.css";
 
 type NavItem = {
@@ -29,16 +31,30 @@ function activeItem(pathname: string): NavItem {
   return match ?? WIKI;
 }
 
-export default function Header() {
+/**
+ * Global header. On a scope-bearing surface (wiki), pass `scope={{ tree }}` and
+ * the brand becomes the design-3a ScopePill (ASHKELD · world ▾ dropdown). With no
+ * scope (research/write/home), it degrades to the static ASHKELD wordmark +
+ * descriptor — no scope data required, so those surfaces never crash.
+ */
+export interface HeaderScope {
+  tree: WorldUniverseNode[];
+}
+
+export default function Header({ scope }: { scope?: HeaderScope }) {
   const pathname = usePathname();
   const current = activeItem(pathname);
 
   return (
     <header className={styles.header}>
-      <div className={styles.brand}>
-        <span className={styles.wordmark}>ASHKELD</span>
-        <span className={styles.descriptor}>{current.descriptor}</span>
-      </div>
+      {scope ? (
+        <ScopePill tree={scope.tree} />
+      ) : (
+        <div className={styles.brand}>
+          <span className={styles.wordmark}>ASHKELD</span>
+          <span className={styles.descriptor}>{current.descriptor}</span>
+        </div>
+      )}
       <nav className={styles.nav} aria-label="Primary">
         {NAV.map((item) => {
           const isActive = item.href === current.href;

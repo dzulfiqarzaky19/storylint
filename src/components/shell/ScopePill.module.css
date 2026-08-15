@@ -1,0 +1,64 @@
+/* ScopePill — design 3a: the scope switcher folded into the header wordmark.
+   On-system Ashkeld tokens only (globals.css owns hex), border-radius 0. The
+   pill sits where the static wordmark used to; the dropdown itself reuses
+   WorldSwitcher.module.css (.menu and below), so only the pill face lives here. */
+
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+/* The clickable breadcrumb face: ASHKELD · <world> ▾. Ink fill + on-ink text,
+   matching design 3a's .scopePill. The -10px inset pulls the fill to the layout
+   gutter edge so the wordmark still reads as the brand anchor. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: inherit;
+  padding: 4px 10px;
+  margin-left: -10px;
+  border: none;
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--on-ink);
+  cursor: pointer;
+}
+
+.pill:hover:not(:disabled) {
+  background: var(--accent-deep);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wordmark {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.world {
+  font-size: 13px;
+  opacity: 0.66;
+}
+
+.caret {
+  font-size: 10px;
+  opacity: 0.66;
+}
+
+/* Phone tier: keep the pill a 44px WCAG tap target (matches Header's nav). */
+@media (max-width: 560px) {
+  .pill {
+    min-height: 44px;
+  }
+}

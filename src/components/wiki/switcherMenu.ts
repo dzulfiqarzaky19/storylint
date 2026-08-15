@@ -1,7 +1,7 @@
 /* Pure model for the design-3a breadcrumb switcher menu, extracted from
-   WorldSwitcher so the "what does the menu show and what's active?" decision is
+   ScopePill so the "what does the menu show and what's active?" decision is
    unit-testable in the node env (no React/DOM types leak in). The interactive
-   dropdown wiring in WorldSwitcher.tsx is proven by the Firefox / playwright
+   dropdown wiring in ScopePill.tsx is proven by the Firefox / playwright
    drive; the shape below is proven here (same split as scopeHref.ts). */
 
 import type { WorldUniverseNode } from "@/lib/db/queries";

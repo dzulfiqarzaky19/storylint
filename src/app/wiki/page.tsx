@@ -10,7 +10,6 @@
 import { loadWorldSnapshot, getChapter, getDismissedSuggestionKeys, getResolvedMarkKeys, getWorldTree } from "@/lib/db/queries";
 import { checkWiki, paragraphsFromBody } from "@/lib/domain/wikiCheck";
 import WikiScreen from "@/components/wiki/WikiScreen";
-import WorldSwitcher from "@/components/wiki/WorldSwitcher";
 import { resolveWikiScope } from "./scope";
 
 export const dynamic = "force-dynamic";
@@ -51,13 +50,7 @@ export default async function WikiPage({
   const worlds = tree.flatMap((u) => u.worlds.map((w) => ({ id: w.id, title: w.title })));
 
   return (
-    <>
-      <WorldSwitcher
-        tree={tree}
-        activeUniverseId={activeUniverseId}
-        activeWorldId={activeWorldId}
-      />
-      <WikiScreen
+    <WikiScreen
         // TCK-E02: key on the active world so switching worlds REMOUNTS the
         // screen. WikiScreen seeds its reducer from `snapshot` in a once-only
         // initializer (no prop-sync effect), so without a changing key a
@@ -72,6 +65,5 @@ export default async function WikiPage({
         worlds={worlds}
         activeWorldId={activeWorldId}
       />
-    </>
   );
 }

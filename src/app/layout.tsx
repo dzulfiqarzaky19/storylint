@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo } from "next/font/google";
-import Header from "@/components/shell/Header";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -45,7 +44,9 @@ export default function RootLayout({
         <a href="#main" className="skipLink">
           Skip to main content
         </a>
-        <Header />
+        {/* Header is rendered per-surface (wiki gets the scoped ScopePill; other
+            surfaces a plain wordmark) so only scope-bearing routes load the tree.
+            See the layout.tsx under each surface route. */}
         <div id="main" tabIndex={-1}>
           {children}
         </div>
