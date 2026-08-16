@@ -26,7 +26,7 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Extension } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -122,6 +122,20 @@ export function Manuscript({
   aiEnabled = false,
 }: ManuscriptProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Preserve the active scope (u/w/book) when switching chapters. Selecting a
+  // chapter must NOT drop the world/book — a bare /write?chapter=N resets the
+  // page resolver to the default (Ashkeld) world, snapping the header + wiki off
+  // the book the writer is actually in. Keep every existing param, override only
+  // ?chapter=.
+  const writeChapterHref = useCallback(
+    (n: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('chapter', String(n));
+      return `/write?${params.toString()}`;
+    },
+    [searchParams],
+  );
   // Rebuild the serializable entries into a Map once; used by every live check.
   const chapterCountsMap = useMemo(
     () => new Map(chapterCounts ?? []),
@@ -430,15 +444,15 @@ export function Manuscript({
   const selectChapter = useCallback(
     (n: number) => {
       if (n === chapterNumber) return;
-      router.push(`/write?chapter=${n}`);
+      router.push(writeChapterHref(n));
     },
-    [router, chapterNumber],
+    [router, chapterNumber, writeChapterHref],
   );
   const addChapter = useCallback(() => {
     void createChapter().then((res) => {
-      if (res.ok) router.push(`/write?chapter=${res.data.number}`);
+      if (res.ok) router.push(writeChapterHref(res.data.number));
     });
-  }, [router]);
+  }, [router, writeChapterHref]);
 
   return (
     <div className={styles.screen}>
