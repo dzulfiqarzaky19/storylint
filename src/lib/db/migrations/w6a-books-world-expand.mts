@@ -19,13 +19,15 @@
 // Apply:   npx tsx src/lib/db/migrations/w6a-books-world-expand.mts
 // Revert:  npx tsx src/lib/db/migrations/w6a-books-world-expand.mts --down
 //
-// BACKFILL KEY (settled D-W6, Option A = MERGE not rename): a book's home world is
-// UNIVERSE-scoped, `world_id = 'world-' || series.universe_id`. That is valid ONLY
-// under the 1-world-per-universe invariant, so a RAISE-GUARD enforces the invariant
-// BEFORE the backfill and NEVER guesses. It is 0-firing on the live DB today
-// (verified: no universe has >1 world), but it is MANDATORY: if a universe ever
-// grows a 2nd world, `book -> world` stops being derivable and the migration MUST
-// refuse rather than silently mis-home every book.
+// BACKFILL KEY (corrected): a book's home world is SERIES-scoped, not universe-scoped.
+// Every series id is `series-<worldId>` (e.g. series-world-vosk -> world-vosk), so
+// `world_id = regexp_replace(series_id, '^series-', '')` derives each book's OWN world
+// EVEN when a universe owns several worlds. The original key `'world-' || universe_id`
+// assumed one-world-per-universe, which the shipped worlds feature invalidated
+// (universe-1 owns Ashkeld + Vosk + more), so it would collapse every book of a
+// multi-world universe into a single world. The guards below enforce the REAL
+// invariant per book: the derived world must EXIST and sit in the book's universe;
+// otherwise RAISE rather than silently mis-home.
 import { loadEnv } from "../env";
 import { getPool, closePool } from "../pool";
 
@@ -41,32 +43,35 @@ export async function migrate(): Promise<void> {
       `ALTER TABLE books ADD COLUMN IF NOT EXISTS world_id text REFERENCES worlds(id) ON DELETE CASCADE`,
     );
 
-    // GUARD 1 — the 1-world-per-universe invariant the backfill key depends on.
-    // If ANY universe owns >1 world, `world-${series.universe_id}` is ambiguous
-    // (which of the N worlds is the book's home?), so RAISE rather than guess.
-    const multiWorld = await client.query<{ universe_id: string; n: string }>(
-      `SELECT universe_id, count(*) AS n
-         FROM worlds GROUP BY universe_id HAVING count(*) > 1
-         ORDER BY universe_id LIMIT 1`,
+    // GUARD 1 — every book's derived world (series-<worldId>) must sit in the book's
+    // OWN universe. A series id that names a world in a DIFFERENT universe means the
+    // `series-<worldId>` convention broke for that row, so RAISE rather than mis-home
+    // the book into a foreign universe's world.
+    const crossUniverse = await client.query<{ id: string; derived: string }>(
+      `SELECT b.id, regexp_replace(b.series_id, '^series-', '') AS derived
+         FROM books b
+         JOIN series s ON s.id = b.series_id
+         JOIN worlds w ON w.id = regexp_replace(b.series_id, '^series-', '')
+        WHERE w.universe_id <> s.universe_id
+        ORDER BY b.id LIMIT 1`,
     );
-    if (multiWorld.rowCount && multiWorld.rows[0]) {
-      const { universe_id, n } = multiWorld.rows[0];
+    if (crossUniverse.rowCount && crossUniverse.rows[0]) {
+      const { id, derived } = crossUniverse.rows[0];
       throw new Error(
-        `W-6 backfill ambiguous: universe ${universe_id} has N>1 worlds ` +
-          `(${n}); book->world not derivable (1-world-per-universe invariant violated)`,
+        `W-6 backfill: book ${id} derives world ${derived}, which is NOT in the ` +
+          `book's universe (series-<worldId> convention violated)`,
       );
     }
 
-    // GUARD 2 — every book's target world must already exist. If a book's
-    // `world-${series.universe_id}` row is ABSENT, the backfill would leave that
-    // book's world_id NULL (and the assert below would fire), so RAISE up front
-    // naming the missing target world AND the orphaned book.
+    // GUARD 2 — every book's target world must already exist. If a book's derived
+    // `series-<worldId>` world row is ABSENT, the backfill would leave that book's
+    // world_id NULL (and the assert below would fire), so RAISE up front naming the
+    // missing target world AND the orphaned book.
     const missingTarget = await client.query<{ id: string; target: string }>(
-      `SELECT b.id, 'world-' || s.universe_id AS target
+      `SELECT b.id, regexp_replace(b.series_id, '^series-', '') AS target
          FROM books b
-         JOIN series s ON s.id = b.series_id
         WHERE NOT EXISTS (
-          SELECT 1 FROM worlds w WHERE w.id = 'world-' || s.universe_id
+          SELECT 1 FROM worlds w WHERE w.id = regexp_replace(b.series_id, '^series-', '')
         )
         ORDER BY b.id LIMIT 1`,
     );
@@ -77,16 +82,14 @@ export async function migrate(): Promise<void> {
       );
     }
 
-    // BACKFILL — per-row JOIN so each book's world_id is derived from THAT book's
-    // series' universe. NOT an aggregate assignment: a mis-homing mutation of the
-    // JOIN predicate (`s.id = b.series_id`) is observable PER-BOOK (gate mutation
-    // (a)), not just in a total count. Re-run-safe: re-assigning the same value is
-    // a no-op after GUARD 1/2 pass.
+    // BACKFILL — per-row derivation so each book's world_id comes from THAT book's
+    // own series id (`series-<worldId>`). NOT an aggregate assignment: a mis-homing
+    // mutation of the key is observable PER-BOOK (gate mutation (a)), not just in a
+    // total count. Re-run-safe: re-assigning the same value is a no-op after the
+    // guards pass.
     await client.query(
-      `UPDATE books b
-          SET world_id = 'world-' || s.universe_id
-         FROM series s
-        WHERE s.id = b.series_id`,
+      `UPDATE books
+          SET world_id = regexp_replace(series_id, '^series-', '')`,
     );
 
     // ASSERT — after a clean backfill NO book may carry world_id NULL. If any
@@ -138,7 +141,7 @@ async function main(): Promise<void> {
     await migrate();
     console.log(
       "[w6a-books-world-expand] applied: added books.world_id + per-row backfilled " +
-        "from each book's series' universe (world-${universe_id}); series intact.",
+        "from each book's series id (series-<worldId> -> world_id); series intact.",
     );
   }
   await closePool();
