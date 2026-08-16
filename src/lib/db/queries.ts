@@ -15,6 +15,7 @@ import type {
   CategoryRow,
   Kind,
   ChapterRow,
+  ChapterCheckCacheRow,
   ResearchTurnRow,
   PropositionRow,
   KeptCardRow,
@@ -931,6 +932,29 @@ export async function getChaptersForBook(bookId: string): Promise<ChapterRow[]> 
   return rows<ChapterRow>(
     `SELECT id, number, title, body FROM chapters WHERE book_id = $1 ORDER BY number`,
     [bookId],
+  );
+}
+
+// ---- Chapter AI-check cache (T-AICACHE) -----------------------------------
+
+/**
+ * The persisted AI cross-check result for a chapter, or null when none is cached.
+ * The caller compares bodyHash/wikiHash against the chapter's current body and
+ * wiki snapshot to decide whether the cached marks are still fresh (rehydrate the
+ * rail) or stale (re-run the AI). Reads only; never mutates.
+ */
+export async function getChapterCheckCache(
+  chapterId: string,
+): Promise<ChapterCheckCacheRow | null> {
+  return one<ChapterCheckCacheRow>(
+    `SELECT chapter_id AS "chapterId",
+            body_hash  AS "bodyHash",
+            wiki_hash  AS "wikiHash",
+            marks,
+            checked_at AS "checkedAt"
+       FROM chapter_check_cache
+      WHERE chapter_id = $1`,
+    [chapterId],
   );
 }
 

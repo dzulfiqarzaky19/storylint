@@ -11,7 +11,7 @@
 
 import { query, one, rows, withTransaction } from "./pool";
 import { DEFAULT_BOOK_ID, DEFAULT_WORLD_ID, DEFAULT_UNIVERSE_ID } from "./scope";
-import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, CategoryRow, Shelf } from "../domain/types";
+import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, CategoryRow, Shelf, ChapterCheckCacheRow } from "../domain/types";
 import { SHELF_TITLES } from "../domain/types";
 import type { WikiWriteConfirmation } from "../actions/confirmation";
 
@@ -1560,4 +1560,39 @@ export async function deleteWorldCascade(worldId: string): Promise<CascadeCount>
       + c.books + c.worldEntities + c.categories + c.worlds;
     return c;
   });
+}
+
+// ---- Chapter AI-check cache (T-AICACHE) -----------------------------------
+
+/**
+ * Persist the AI cross-check result for a chapter (idempotent upsert by
+ * chapter_id). `bodyHash`/`wikiHash` stamp what the AI actually saw so a later
+ * open can tell whether the cached `marks` are still fresh. Called only on a
+ * SUCCESSFUL AI pass (never on a gateway error), so a failed check never
+ * overwrites a good cached result. Returns the stored row (camelCase).
+ */
+export async function upsertChapterCheckCache(input: {
+  chapterId: string;
+  bodyHash: string;
+  wikiHash: string;
+  marks: unknown;
+  checkedAt: number;
+}): Promise<ChapterCheckCacheRow> {
+  const res = await one<ChapterCheckCacheRow>(
+    `INSERT INTO chapter_check_cache (chapter_id, body_hash, wiki_hash, marks, checked_at)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (chapter_id)
+       DO UPDATE SET body_hash  = EXCLUDED.body_hash,
+                     wiki_hash   = EXCLUDED.wiki_hash,
+                     marks       = EXCLUDED.marks,
+                     checked_at  = EXCLUDED.checked_at
+     RETURNING chapter_id AS "chapterId",
+               body_hash  AS "bodyHash",
+               wiki_hash  AS "wikiHash",
+               marks,
+               checked_at AS "checkedAt"`,
+    [input.chapterId, input.bodyHash, input.wikiHash, JSON.stringify(input.marks), input.checkedAt],
+  );
+  if (!res) throw new Error("upsertChapterCheckCache: no row returned");
+  return res;
 }

@@ -28,15 +28,17 @@ import {
   upsertResolvedMark,
   insertChapter,
   getNextChapterNumber,
+  upsertChapterCheckCache,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import { completeJson, aiEnabled } from "../ai/saarouters";
-import { loadWikiSnapshot } from "../db/queries";
+import { loadWikiSnapshot, getChapter } from "../db/queries";
 import { docToParagraphs } from "../write/adapters";
 import { extractCandidatePhrases } from "../check/unrecorded";
 import type { Mark } from "../check";
 import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
 import { selectGazetteer, findRetrievalMisses } from "../check/retrieval";
+import { hashValue } from "../check/hash";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
@@ -479,6 +481,43 @@ export async function aiCheckChapter(
     }).filter((mk) => !resolved.has(mk.markKey));
 
     return { ok: true, data: { marks } };
+  } catch (err) {
+    return { ok: false, error: messageOf(err) };
+  }
+}
+
+// ---- T-AICACHE: persist the AI cross-check result for a chapter -----------
+
+/**
+ * Persist the reconciled AI marks for a chapter so a later open rehydrates the
+ * Write rail instantly instead of re-firing the (network) AI call. The client
+ * calls this after a SUCCESSFUL runAiCheck reconcile, passing the FULL current
+ * body + the reconciled full mark set + the active scope. The server computes
+ * the invalidation hashes (bodyHash over the body, wikiHash over the wiki
+ * snapshot the AI grounds in) so both sides use the identical hash function, and
+ * resolves the chapter row id from (chapterNumber, bookId). A missing chapter is
+ * a silent no-op (nothing to cache); it never throws into the editor. Never
+ * writes the wiki.
+ */
+export async function persistChapterCheck(input: {
+  chapterNumber: number;
+  universeId: string;
+  bookId: string;
+  body: unknown;
+  marks: Mark[];
+}): Promise<ActionResult<{ cached: boolean }>> {
+  try {
+    const chapter = await getChapter(input.chapterNumber, input.bookId);
+    if (!chapter) return { ok: true, data: { cached: false } };
+    const wiki = await loadWikiSnapshot(input.universeId, input.bookId);
+    await upsertChapterCheckCache({
+      chapterId: chapter.id,
+      bodyHash: hashValue(input.body),
+      wikiHash: hashValue(wiki),
+      marks: input.marks,
+      checkedAt: Date.now(),
+    });
+    return { ok: true, data: { cached: true } };
   } catch (err) {
     return { ok: false, error: messageOf(err) };
   }

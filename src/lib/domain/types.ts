@@ -136,6 +136,20 @@ export interface ChapterRow {
   body: unknown; // ProseMirror JSON document
 }
 
+/**
+ * A row of chapter_check_cache (T-AICACHE): the last persisted AI cross-check
+ * result for a chapter. `bodyHash`/`wikiHash` are the invalidation signal (the
+ * cache is fresh only while both match the chapter's current body and wiki
+ * snapshot); `marks` is the stored AI Mark[] to rehydrate the Write rail.
+ */
+export interface ChapterCheckCacheRow {
+  chapterId: string;
+  bodyHash: string;
+  wikiHash: string;
+  marks: unknown; // Mark[] (jsonb)
+  checkedAt: number;
+}
+
 export interface ResearchTurnRow {
   id: string;
   threadId: string;

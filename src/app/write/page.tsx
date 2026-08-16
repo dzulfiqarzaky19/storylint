@@ -15,9 +15,11 @@
 
 import { Manuscript } from '@/components/write/Manuscript';
 import { checkManuscript } from '@/lib/check';
+import type { Mark } from '@/lib/check';
 import { chapterSeverity, buildSeverityByNumber } from '@/lib/check/severity';
 import {
   getChapter,
+  getChapterCheckCache,
   getChaptersForBook,
   getPhraseChapterCounts,
   getResolvedMarkKeys,
@@ -29,6 +31,7 @@ import { resolveWriteScope } from './scope';
 import { buildCheckInput, docToParagraphs, paragraphsToDoc, toCheckWiki } from '@/lib/write/adapters';
 import { extractCandidatePhrases } from '@/lib/check/unrecorded';
 import { aiEnabled } from '@/lib/ai/saarouters';
+import { hashValue } from '@/lib/check/hash';
 
 export const dynamic = 'force-dynamic';
 
@@ -100,6 +103,23 @@ export default async function WritePage({
       ),
   );
 
+  // T-AICACHE: rehydrate the last AI cross-check from cache when it is still
+  // FRESH. The cached row is valid only while BOTH the body it was checked
+  // against and the wiki snapshot the AI grounded in are unchanged (hash match).
+  // On a hit we pass the stored AI marks so the rail shows them from first paint
+  // with NO gateway call; on a miss/stale row the client re-runs the AI as before.
+  let initialAiMarks: Mark[] = [];
+  if (aiEnabled() && chapter) {
+    const cache = await getChapterCheckCache(chapter.id);
+    if (
+      cache &&
+      cache.bodyHash === hashValue(body) &&
+      cache.wikiHash === hashValue(wiki)
+    ) {
+      initialAiMarks = cache.marks as Mark[];
+    }
+  }
+
   return (
     <Manuscript
       key={chapterNumber}
@@ -117,6 +137,8 @@ export default async function WritePage({
       }))}
       aiEnabled={aiEnabled()}
       activeBookId={activeBookId}
+      activeUniverseId={activeUniverseId}
+      initialAiMarks={initialAiMarks}
     />
   );
 }

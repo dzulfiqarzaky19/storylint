@@ -50,6 +50,7 @@ import {
   createChapter,
   explainMark,
   aiCheckChapter,
+  persistChapterCheck,
 } from '@/lib/actions/write';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
@@ -88,6 +89,16 @@ export interface ManuscriptProps {
   chapters: WriteIndexChapter[];
   /** The active book id (resolved by page.tsx), for the chapter export link. */
   activeBookId: string;
+  /** The active universe id (resolved by page.tsx), for persisting the AI cache. */
+  activeUniverseId: string;
+  /**
+   * AI marks rehydrated from a FRESH chapter_check_cache row (T-AICACHE): the last
+   * persisted AI cross-check for this chapter, valid because the body + wiki it was
+   * checked against are unchanged. Non-empty => the rail shows the AI result from
+   * first paint and the mount-time AI re-run is SKIPPED (no gateway call). Empty =>
+   * no cache or stale, so the client runs the AI check on mount as before.
+   */
+  initialAiMarks?: Mark[];
   /** AI gateway configured at load; gates the inline note's ✦ Ask AI affordance. */
   aiEnabled?: boolean;
 }
@@ -121,6 +132,8 @@ export function Manuscript({
   chapters,
   chapterCounts,
   activeBookId,
+  activeUniverseId,
+  initialAiMarks,
   aiEnabled = false,
 }: ManuscriptProps) {
   const router = useRouter();
@@ -143,9 +156,15 @@ export function Manuscript({
     () => new Map(chapterCounts ?? []),
     [chapterCounts],
   );
+  // T-AICACHE: merge any FRESH cached AI marks into the first-paint mark set so
+  // the rail shows the AI result immediately, matching what pushDeterministicMarks
+  // will render once the editor mounts.
+  const seededInitialMarks = initialAiMarks && initialAiMarks.length > 0
+    ? mergeMarks(initialMarks, initialAiMarks)
+    : initialMarks;
   const [state, dispatch] = useReducer(
     writeReducer,
-    { chapterNumber, body: initialBody, marks: initialMarks, resolvedMarkKeys },
+    { chapterNumber, body: initialBody, marks: seededInitialMarks, resolvedMarkKeys },
     initWriteState,
   );
 
@@ -177,8 +196,16 @@ export function Manuscript({
   // AI check (Core 2): marks produced by the on-save AI pass, cached client-side
   // so the fast deterministic pass can render alongside them. Reconciled per
   // save using paragraph hashes so only changed paragraphs are re-sent.
-  const aiMarksRef = useRef<Mark[]>([]);
-  const aiHashesRef = useRef<string[]>([]);
+  const aiMarksRef = useRef<Mark[]>(initialAiMarks ?? []);
+  // When we rehydrate cached AI marks, seed the paragraph hashes to the CURRENT
+  // body (via a lazy useRef initializer, computed once) so changedParagraphIndices
+  // sees no change and the mount AI re-run is a no-op until the writer actually
+  // edits. With no cached marks this seeds to [] (unchanged prior behavior).
+  const aiHashesRef = useRef<string[]>(
+    initialAiMarks && initialAiMarks.length > 0
+      ? hashParagraphs(docToParagraphs(initialBody))
+      : [],
+  );
   const aiCheckSeqRef = useRef(0);
   const [aiChecking, setAiChecking] = useState(false);
 
@@ -280,11 +307,22 @@ export function Manuscript({
         aiHashesRef.current = hashParagraphs(paragraphs);
         pushDeterministicMarks(body);
         if (editor) editor.view.dispatch(editor.state.tr.setMeta('write-marks', true));
+        // T-AICACHE: persist the reconciled FULL AI mark set so returning to this
+        // chapter rehydrates the rail without re-calling the gateway. Fire-and-
+        // forget: a cache write failure never blocks the editor. The server
+        // stamps bodyHash/wikiHash so a later open knows if the row is still fresh.
+        void persistChapterCheck({
+          chapterNumber,
+          universeId: activeUniverseId,
+          bookId: activeBookId,
+          body,
+          marks: aiMarksRef.current,
+        });
       } finally {
         if (seq === aiCheckSeqRef.current) setAiChecking(false);
       }
     },
-    [aiEnabled, editor, pushDeterministicMarks],
+    [aiEnabled, editor, pushDeterministicMarks, chapterNumber, activeUniverseId, activeBookId],
   );
 
   useEffect(() => {

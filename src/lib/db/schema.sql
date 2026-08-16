@@ -271,6 +271,22 @@ CREATE TABLE phrase_mentions (
   PRIMARY KEY (phrase, chapter_number)
 );
 
+-- chapter_check_cache (T-AICACHE): persists the LAST AI cross-check result per
+-- chapter so the Write rail rehydrates instantly on open instead of re-firing the
+-- (network) AI call every navigation. body_hash + wiki_hash are the invalidation
+-- signal: the row is FRESH only while BOTH still match the chapter's current body
+-- and the wiki snapshot the AI last saw; a mismatch on either re-runs the AI.
+-- Deterministic marks are NOT cached (cheap, re-derived every load) — only the
+-- expensive AI Mark[] (jsonb). One row per chapter (PK) so ON DELETE CASCADE
+-- cleans it with the chapter. Runtime cache only: starts empty, never seeded.
+CREATE TABLE chapter_check_cache (
+  chapter_id  text PRIMARY KEY REFERENCES chapters(id) ON DELETE CASCADE,
+  body_hash   text NOT NULL,
+  wiki_hash   text NOT NULL,
+  marks       jsonb NOT NULL,
+  checked_at  bigint NOT NULL
+);
+
 -- Indexes for the reads the screens need.
 CREATE INDEX idx_entries_shelf_sort       ON entries (shelf, sort_order);
 CREATE INDEX idx_entries_kind             ON entries (kind);
