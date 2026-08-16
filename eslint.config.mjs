@@ -9,7 +9,11 @@ const eslintConfig = [
   ...next,
   {
     ignores: [
-      '.next/**',
+      // Generated build output: the default `.next` plus every isolated dist dir
+      // (`.next-verify`, `.next-review`, `.next-e2e`, per-agent `.next-<label>`,
+      // and any stray `.next.stale-*`). These hold turbopack chunks, never source;
+      // linting them produced ~100 phantom errors. Mirror `.gitignore`'s `.next*`.
+      '.next**/**',
       'node_modules/**',
       'next-env.d.ts',
       // Vendored design handoff reference, not application source.
