@@ -587,6 +587,20 @@ export const CONTENT_WORLDS: ContentWorld[] = [
 ];
 
 // Chapter bundles -> the book each chapter belongs to.
+// One default research thread PER WORLD so /research is never empty ("Threads 0")
+// on a fresh world switch: every world opens on a real, world-grounded thread
+// instead of relying on the first-question auto-create. Each carries its world_id
+// (NOT NULL FK) so the AI grounds on THAT world's gazetteer via loadWorldSnapshot,
+// never the default Ashkeld. Title mirrors the runtime auto-create ("New thread")
+// so a seeded thread and a user-created one are indistinguishable. universeId must
+// match the world's universe (universe_id is NOT NULL too). sort_order 0 = the
+// first (and only) thread in each world's rail.
+const SEED_THREADS: Array<{ id: string; worldId: string; universeId: string }> = [
+  { id: "thread-ashkeld-1", worldId: "world-universe-1", universeId: "universe-1" },
+  { id: "thread-vosk-1", worldId: "world-vosk", universeId: "universe-1" },
+  { id: "thread-halen-1", worldId: "world-halen", universeId: "universe-2" },
+];
+
 const CONTENT_BOOKS: ContentBook[] = [
   { bookId: "book-2", chapters: ASH2_CHAPTERS },
   { bookId: "book-vosk-1", chapters: VOSK1_CHAPTERS },
@@ -842,7 +856,20 @@ export async function seedWithin(client: PoolClient): Promise<void> {
     }
   }
 
-  // Research (threads / turns / propositions) is created at runtime by real AI
+  // One default research thread PER WORLD (SEED_THREADS). Title "New thread"
+  // matches the runtime auto-create so a fresh world is never "Threads 0"; the
+  // AI grounds on the thread's OWN world via world_id. Turns/propositions stay
+  // empty (a brand-new thread has no conversation yet), like a user-created
+  // thread before its first question.
+  for (const t of SEED_THREADS) {
+    await client.query(
+      `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
+       VALUES ($1, 'New thread', '', 0, 'chat', $2, $3)`,
+      [t.id, t.universeId, t.worldId],
+    );
+  }
+
+  // Research turns / propositions are created at runtime by real AI
   // conversations — nothing to seed. TRUNCATE above left these tables empty.
 
   // kept_cards, resolved_marks, dismissed_suggestions start empty (runtime state).

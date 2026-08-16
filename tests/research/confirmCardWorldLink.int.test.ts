@@ -195,14 +195,22 @@ describe("TCK-E06 default-world PIN — case-(a) invariant guard (real Postgres)
     expect(activeWorldId).toBe(DEFAULT_WORLD);
   });
 
-  it("4b. every research thread is universe-1, so the URL-default world is correct for ALL threads today", async () => {
-    // The moment a thread carries a non-default universe_id, `world-${universe_id}`
-    // stops equaling the resolveWikiScope default and confirmCard would link the
-    // entry into the WRONG world — this assertion REDs then, forcing the case-(b)
-    // rewrite (derive worldId from the thread's own universe).
-    const rows = await query<{ universe_id: string }>(`SELECT DISTINCT universe_id FROM research_threads`);
-    for (const r of rows.rows) {
-      expect(`world-${r.universe_id}`).toBe(DEFAULT_WORLD);
-    }
+  it("4b. every research thread's world_id belongs to its universe_id (grounding is self-consistent)", async () => {
+    // Historical note: 4b once asserted EVERY thread was universe-1, so the
+    // URL-default world always matched. That premise is gone — T-RESEARCH-2 made
+    // confirmCard derive the target world from the THREAD's own world (not the URL
+    // default), and the seed now grounds a thread per world (incl. universe-2's
+    // Halen). The live invariant today is the one that actually keeps grounding
+    // correct: each thread's world_id must be a world OF its universe_id, so the
+    // AI snapshot loaded for that thread is that world's canon, never a foreign
+    // one. A mutant that seeds a thread whose world belongs to another universe
+    // REDs here.
+    const bad = await query<{ id: string }>(
+      `SELECT rt.id
+         FROM research_threads rt
+         JOIN worlds w ON w.id = rt.world_id
+        WHERE w.universe_id <> rt.universe_id`,
+    );
+    expect(bad.rows).toEqual([]);
   });
 });
