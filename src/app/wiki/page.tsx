@@ -7,8 +7,8 @@
 // /write. The ACTIVE universe still comes from the URL (?u=); the active WORLD is
 // derived 1:1 from it (`world-${universeId}`). Scope resolution is the PURE
 // resolveWikiScope helper (see ./scope.ts) so its defaults are unit-testable.
-import { loadWorldSnapshot, getChapter, getDismissedSuggestionKeys, getResolvedMarkKeys, getWorldTree } from "@/lib/db/queries";
-import { checkWiki, paragraphsFromBody } from "@/lib/domain/wikiCheck";
+import { loadWorldSnapshot, getChaptersForBook, getDismissedSuggestionKeys, getResolvedMarkKeys, getWorldTree } from "@/lib/db/queries";
+import { checkWikiBook } from "@/lib/domain/wikiCheck";
 import WikiScreen from "@/components/wiki/WikiScreen";
 import { resolveWikiScope } from "./scope";
 
@@ -28,18 +28,20 @@ export default async function WikiPage({
     sp.w,
   );
 
-  const [snapshot, chapter, dismissedSuggestionKeys, resolvedMarkKeys] =
+  const [snapshot, chapters, dismissedSuggestionKeys, resolvedMarkKeys] =
     await Promise.all([
       loadWorldSnapshot(activeWorldId, activeBookId),
-      getChapter(7),
+      // Poster band derives from the ACTIVE book's chapters (every chapter), so a
+      // not-recorded detail the writer mentioned in ANY chapter surfaces here.
+      // Replaces the DUMMY single-chapter-7-of-default-book read.
+      getChaptersForBook(activeBookId),
       getDismissedSuggestionKeys(),
       getResolvedMarkKeys(),
     ]);
 
-  const paragraphs = chapter ? paragraphsFromBody(chapter.body) : [];
-  const { suggestions, contradictionEntryIds } = checkWiki({
+  const { suggestions, contradictionEntryIds } = checkWikiBook({
     snapshot,
-    paragraphs,
+    chapters: chapters.map((c) => ({ number: c.number, body: c.body })),
     dismissedSuggestionKeys,
     resolvedMarkKeys,
   });

@@ -120,6 +120,59 @@ export function checkWiki(input: {
   return { suggestions: wikiSuggestions, contradictionEntryIds };
 }
 
+/**
+ * Whole-book derive for the /wiki poster band (journey steps 3 + 6).
+ *
+ * The poster band shows the not-recorded details across the ACTIVE book, so a
+ * detail the writer mentioned in ANY chapter surfaces here (not just a single
+ * hardcoded chapter of the default book — the DUMMY this replaces). Runs the
+ * SAME pure engine per chapter, unions the suggestions, and stamps each with its
+ * REAL `Chapter N` source (replacing the DUMMY 'Chapter 7' source label).
+ *
+ * A phrase mentioned in several chapters yields one card, attributed to the
+ * FIRST (earliest) chapter it appears in (deduped by suggestionKey), so the band
+ * lists each unrecorded detail once. Contradiction entry ids are unioned across
+ * all chapters for the tile corner flags.
+ *
+ * Deterministic only — no AI. Cost is O(sum of chapter lengths) per /wiki load,
+ * which is why an AI cache is a SEPARATE concern (the AI layer, not this one).
+ */
+export function checkWikiBook(input: {
+  snapshot: WikiSnapshot;
+  chapters: { number: number; body: unknown }[];
+  dismissedSuggestionKeys: string[];
+  resolvedMarkKeys: string[];
+}): CheckedWiki {
+  const { snapshot, chapters, dismissedSuggestionKeys, resolvedMarkKeys } = input;
+
+  const bySuggestionKey = new Map<string, WikiSuggestion>();
+  const contradictionIds = new Set<string>();
+
+  // Ascending chapter order so the FIRST-seen chapter wins as a suggestion's
+  // source. getChaptersForBook already returns ordered rows, but sort defensively
+  // so the "earliest chapter" invariant does not depend on the caller's order.
+  const ordered = [...chapters].sort((a, b) => a.number - b.number);
+
+  for (const ch of ordered) {
+    const { suggestions, contradictionEntryIds } = checkWiki({
+      snapshot,
+      paragraphs: paragraphsFromBody(ch.body),
+      dismissedSuggestionKeys,
+      resolvedMarkKeys,
+    });
+    for (const s of suggestions) {
+      if (bySuggestionKey.has(s.suggestionKey)) continue; // earliest chapter wins
+      bySuggestionKey.set(s.suggestionKey, { ...s, source: `Chapter ${ch.number}` });
+    }
+    for (const id of contradictionEntryIds) contradictionIds.add(id);
+  }
+
+  return {
+    suggestions: [...bySuggestionKey.values()],
+    contradictionEntryIds: [...contradictionIds],
+  };
+}
+
 // The engine does not expose the anchoring entryId on a Mark, so recover it the
 // same way the rules do: a mark's quote references the subject entry. For the
 // seeded manuscript the subject is the focus character (Maren) for the two

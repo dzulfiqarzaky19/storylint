@@ -11,7 +11,11 @@ export function worldLine(entryCount: number): string {
   return `${entryCount} entries · drag a tile anywhere it belongs`;
 }
 
-/** `Chapter 7 mentioned ${n} things the gazetteer has never written down.` */
+/**
+ * Poster-band headline. The band now derives across the whole active book (not a
+ * single hardcoded chapter), so the headline drops the old "Chapter 7" prefix and
+ * counts across the book: `${n} things the gazetteer has never written down.`
+ */
 export function sugHeadline(n: number): string {
-  return `Chapter 7 mentioned ${n} things the gazetteer has never written down.`;
+  return `${n} things the gazetteer has never written down.`;
 }

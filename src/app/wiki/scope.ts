@@ -57,13 +57,17 @@ export function resolveWikiScope(
   // universe can never cross-scope. Default to the universe's first world; if it
   // has none (pre-backfill), the legacy 1:1 id keeps the page renderable.
   const worlds = universe?.worlds ?? [];
-  const activeWorldId =
-    worlds.find((w) => w.id === wParam)?.id ??
-    worlds[0]?.id ??
-    `world-${activeUniverseId}`;
+  const activeWorld =
+    worlds.find((w) => w.id === wParam) ?? worlds[0];
+  const activeWorldId = activeWorld?.id ?? `world-${activeUniverseId}`;
+  // The poster band derives over the ACTIVE world's book, so switching worlds
+  // shows THAT world's not-recorded details (not the default book's). Pick the
+  // active world's first book (books are sort_order-then-id ordered); fall back
+  // to DEFAULT_BOOK_ID only when the world carries no book row (pre-backfill).
+  const activeBookId = activeWorld?.books[0]?.id ?? DEFAULT_BOOK_ID;
   return {
     activeUniverseId,
     activeWorldId,
-    activeBookId: DEFAULT_BOOK_ID,
+    activeBookId,
   };
 }
