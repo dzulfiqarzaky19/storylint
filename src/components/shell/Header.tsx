@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import ScopePill from "./ScopePill";
 import BookPill from "./BookPill";
+import { navHref } from "./navScope";
 import styles from "./Header.module.css";
 
 type NavItem = {
@@ -67,7 +68,16 @@ export default function Header({
   bookScope?: HeaderBookScope;
 }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const current = activeItem(pathname);
+  // Carry the active world (u, w) across surfaces so switching world on any
+  // surface stays active when you navigate to another (the "global scope"
+  // intent). Surface-specific axes (?book=/?thread=) are intentionally dropped
+  // by navHref — each destination re-resolves its own sub-axis for that world.
+  const navScope = {
+    u: searchParams.get("u") ?? undefined,
+    w: searchParams.get("w") ?? undefined,
+  };
 
   return (
     <header className={styles.header}>
@@ -87,7 +97,7 @@ export default function Header({
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={navHref(item.href, navScope)}
               className={isActive ? styles.navActive : styles.navItem}
               aria-current={isActive ? "page" : undefined}
             >
