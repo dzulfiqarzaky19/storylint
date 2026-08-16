@@ -98,12 +98,19 @@ export function normalize(value: string): string {
 }
 
 /**
- * A lighter normalization for the stable mark key: lower-case + collapse
- * whitespace only. This is deliberately NOT the semantic `normalize` above:
- * markKey must stay stable and match the documented
+ * A lighter normalization for the stable mark key: unify apostrophes + lower-case
+ * + collapse whitespace only. This is deliberately NOT the semantic `normalize`
+ * above: markKey must stay stable and match the documented
  * `sha1(ruleId | normalizedQuote | entryId)` where normalizedQuote is the quote
  * with casing/whitespace folded but its words otherwise intact.
+ *
+ * The curly apostrophe (U+2019) is folded to the straight one (U+0027) FIRST, so
+ * a phrase written straight in one chapter and curly in another yields ONE key.
+ * Without this, "her mother's brass ring" (straight) and its curly twin produce
+ * two markKeys and the /wiki poster band shows the same detail twice. Direction
+ * (curly -> straight) matches `phraseIndexKey` in unrecorded.ts, keeping the two
+ * key paths consistent.
  */
 export function normalizeQuote(quote: string): string {
-  return quote.toLowerCase().replace(/\s+/g, ' ').trim();
+  return quote.replace(/\u2019/g, "'").toLowerCase().replace(/\s+/g, ' ').trim();
 }

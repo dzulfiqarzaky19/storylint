@@ -16,10 +16,19 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { createHash } from 'node:crypto';
 import { normalize } from '@/lib/check';
+import { normalizeQuote } from '@/lib/check/normalize';
 
 function eq(a: string, b: string): boolean {
   return normalize(a) === normalize(b);
+}
+
+// The documented mark-key formula: sha1(ruleId | normalizeQuote(quote) | entryId).
+// Reproduced here so the test asserts the DOWNSTREAM key, not just the normalizer,
+// proving a straight/curly quote pair collapses to the SAME markKey.
+function markKeyOf(ruleId: string, quote: string, entryId: string): string {
+  return createHash('sha1').update(`${ruleId}|${normalizeQuote(quote)}|${entryId}`).digest('hex');
 }
 
 describe('normalize — number-words ↔ digits', () => {
@@ -66,5 +75,32 @@ describe('normalize — simple plurals', () => {
   it('combined: casing + article + plural on a phrase', () => {
     // "Her own grey eyes" vs the recorded "grey eye" attribute should collapse.
     expect(eq('Grey Eyes', 'grey eye')).toBe(true);
+  });
+});
+
+describe('normalizeQuote — apostrophe unification (T-WIKI-DEDUP)', () => {
+  // A straight (U+0027) and curly (U+2019) apostrophe are the SAME editorial
+  // detail. When one chapter writes the quote straight and another curly, the
+  // choke-point normalizeQuote must fold both to one canonical form, or the two
+  // yield different markKeys and the /wiki poster band shows the SAME card twice.
+  const straight = "her mother's brass ring";
+  const curly = 'her mother\u2019s brass ring';
+
+  it('collapses a straight and curly apostrophe to the same normalized quote', () => {
+    expect(normalizeQuote(straight)).toBe(normalizeQuote(curly));
+  });
+
+  it('yields the SAME markKey for the straight/curly twin (dedupe holds)', () => {
+    expect(markKeyOf('unrecorded', straight, 'maren')).toBe(
+      markKeyOf('unrecorded', curly, 'maren'),
+    );
+  });
+
+  it('canonicalizes to the straight apostrophe (matches phraseIndexKey direction)', () => {
+    expect(normalizeQuote(curly)).toBe(straight);
+  });
+
+  it('still folds casing and whitespace alongside the apostrophe', () => {
+    expect(normalizeQuote('  Her Mother\u2019s   Brass  Ring  ')).toBe(straight);
   });
 });

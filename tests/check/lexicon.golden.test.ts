@@ -56,11 +56,20 @@ describe('lexicon golden-master — checkManuscript on seeded fixtures', () => {
 
 // Baselines captured at HEAD before the normalizePhrase inlining. DO NOT edit
 // these to make a refactor pass — a diff here means behavior changed.
+//
+// T-WIKI-DEDUP re-baseline (reviewed, not a silent bless): normalizeQuote now
+// folds the curly apostrophe (U+2019 -> U+0027) so a phrase written straight in
+// one chapter and curly in another yields ONE markKey (the /wiki poster band was
+// showing the "her mother's brass ring" card twice). That intentionally changes
+// exactly ONE line below — the brass-ring missing markKey
+// 06e402d4... -> 9457d9f8... The tallow-rule key (no apostrophe), both conflict
+// keys (no apostrophe), and every SUGGESTIONS line are BYTE-UNCHANGED, proving
+// the fold touched only apostrophe-bearing quotes and nothing else.
 const GOLDEN_CHAPTER7 = [
   'MARKS:',
   'conflict | attribute-mismatch | Her own grey eyes | 934b5b4eeb9418df6734007878068a7b9bcf41c0 | maren | 2 | 0 | wiki+text+leave',
   'conflict | constraint-violation | nineteen and sworn | 921875d39deeefc48ed3ccbdbc9c155a3c9b16bb | maren | 0 | 0 | wiki+text+leave',
-  'missing | unrecorded | her mother’s brass ring | 06e402d426e9bc78bf0a5104b6d7cd8e44fbbf95 | maren | 1 | 0 | add+edit+leave',
+  'missing | unrecorded | her mother’s brass ring | 9457d9f862f84a41d9c73c0b44f694d0dd276f10 | maren | 1 | 0 | add+edit+leave',
   'missing | unrecorded | the tallow rule | 4602863bd83a90d7c07112ed2648ab00bbf59759 | vergelight | 1 | 0 | add+edit+leave',
   'SUGGESTIONS:',
   'Chapter 7 | Carries | Her mother’s brass ring',

@@ -179,7 +179,12 @@ export const expectedSuggestions: ExpectedSuggestion[] = [
 // ---------------------------------------------------------------------------
 
 export function normalizedQuoteForKey(quote: string): string {
-  return quote.toLowerCase().replace(/\s+/g, ' ').trim();
+  // Mirror of src/lib/check/normalize.ts::normalizeQuote — including the
+  // curly-apostrophe fold (U+2019 -> U+0027) added by T-WIKI-DEDUP so a phrase
+  // written straight in one chapter and curly in another yields ONE markKey.
+  // This helper reproduces the production formula for the regression tests; it
+  // must track it exactly or the fixture lies about its own key derivation.
+  return quote.replace(/\u2019/g, "'").toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
 export function markKeyOf(ruleId: string, quote: string, entryId: string): string {
