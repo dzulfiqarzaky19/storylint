@@ -48,7 +48,7 @@ export default async function WritePage({
   // on which book is active. listChapters is now SCOPED to that book, so the left
   // index shows exactly the active book's chapters (not all 42 across six books).
   const tree = await getWorldTree();
-  const { activeBookId } = resolveWriteScope(tree, uParam, wParam, bookParam);
+  const { activeUniverseId, activeBookId } = resolveWriteScope(tree, uParam, wParam, bookParam);
 
   const chapters = await listChapters(activeBookId);
   // Default to the last chapter (the working edge); an unknown/absent param also
@@ -60,7 +60,7 @@ export default async function WritePage({
 
   const [chapter, wiki, resolvedMarkKeys] = await Promise.all([
     getChapter(chapterNumber, activeBookId),
-    loadWikiSnapshot(),
+    loadWikiSnapshot(activeUniverseId, activeBookId),
     getResolvedMarkKeys(),
   ]);
 
