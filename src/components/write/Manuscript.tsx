@@ -52,7 +52,6 @@ import {
   aiCheckChapter,
 } from '@/lib/actions/write';
 import { docToParagraphs } from '@/lib/write/adapters';
-import { DEFAULT_BOOK_ID } from '@/lib/db/scope';
 import {
   createMarkDecorationPlugin,
   resolveMarkRange,
@@ -87,6 +86,8 @@ export interface ManuscriptProps {
   chapterCounts?: [string, number][];
   /** All chapters, for the LEFT index (Track C). Ordered by number. */
   chapters: WriteIndexChapter[];
+  /** The active book id (resolved by page.tsx), for the chapter export link. */
+  activeBookId: string;
   /** AI gateway configured at load; gates the inline note's ✦ Ask AI affordance. */
   aiEnabled?: boolean;
 }
@@ -119,6 +120,7 @@ export function Manuscript({
   resolvedMarkKeys,
   chapters,
   chapterCounts,
+  activeBookId,
   aiEnabled = false,
 }: ManuscriptProps) {
   const router = useRouter();
@@ -484,10 +486,10 @@ export function Manuscript({
             <h1 className={styles.title}>{chapterTitle}</h1>
             <a
               className={styles.exportLink}
-              href={`/api/export/${DEFAULT_BOOK_ID}`}
-              data-testid="export-book"
+              href={`/api/export/${activeBookId}/chapter/${chapterNumber}`}
+              data-testid="export-chapter"
             >
-              Export book (Markdown)
+              Export chapter (Markdown)
             </a>
             <div className={styles.titleRule} />
             <div className={styles.editor}>

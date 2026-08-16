@@ -116,6 +116,7 @@ export default async function WritePage({
         severity: severityByNumber.get(c.number) ?? null,
       }))}
       aiEnabled={aiEnabled()}
+      activeBookId={activeBookId}
     />
   );
 }
