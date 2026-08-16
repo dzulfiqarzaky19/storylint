@@ -5,7 +5,42 @@
 
 .root {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Visible header action next to the pill: exports the active book as Markdown.
+   Understated text affordance (not an ink fill) so it reads as secondary to the
+   brand pill. Hallmark: no hex (vars only), border-radius 0. */
+.export {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.export:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.export:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.export:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* The clickable breadcrumb face: ASHKELD · <world> ▾. Ink fill + on-ink text,

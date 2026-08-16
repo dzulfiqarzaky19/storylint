@@ -148,15 +148,6 @@ export default function BookPill({ tree }: BookPillProps) {
     });
   };
 
-  // Export the ACTIVE book as one Markdown file. Navigating to the download
-  // endpoint (Content-Disposition: attachment) triggers a file download without
-  // leaving the page. Guarded on activeBook so it can't request a null id.
-  const onExportBook = () => {
-    if (!activeBook) return;
-    setOpen(false);
-    window.location.href = `/api/export/${activeBook.id}`;
-  };
-
   const onRenameBook = () => {
     if (!activeBook) return;
     setOpen(false);
@@ -221,6 +212,26 @@ export default function BookPill({ tree }: BookPillProps) {
         </span>
       </button>
 
+      {activeBook ? (
+        <a
+          className={pill.export}
+          href={`/api/export/${activeBook.id}`}
+          title={`Export "${activeBook.name}" as Markdown`}
+          data-testid="export-book"
+        >
+          Export
+        </a>
+      ) : (
+        <span
+          className={pill.export}
+          aria-disabled="true"
+          title="No book to export"
+          data-testid="export-book"
+        >
+          Export
+        </span>
+      )}
+
       {open ? (
         <div className={switcher.menu} role="menu" aria-label="Switch book">
           <ul className={switcher.menuList}>
@@ -269,16 +280,6 @@ export default function BookPill({ tree }: BookPillProps) {
               disabled={busy || !activeBook}
             >
               Rename book
-            </button>
-            <button
-              type="button"
-              role="menuitem"
-              className={switcher.footerAction}
-              onClick={onExportBook}
-              disabled={busy || !activeBook}
-              title={activeBook ? undefined : "No book to export"}
-            >
-              Export book (Markdown)
             </button>
             <button
               type="button"
