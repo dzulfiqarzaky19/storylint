@@ -330,6 +330,21 @@ export function Manuscript({
     bump();
   }, [editor, state.marks, state.openMarkKey, bump]);
 
+  // Check ON OPEN, not only on save. When a chapter mounts we re-run the
+  // deterministic pass (contradiction + not-recorded) over the initial body and,
+  // when AI is enabled, kick the AI cross-check once — so opening a chapter
+  // immediately shows its marks instead of waiting for the first edit/save. The
+  // component is keyed by chapterNumber (page.tsx), so this fires once per open.
+  const didMountCheckRef = useRef(false);
+  useEffect(() => {
+    if (!editor || didMountCheckRef.current) return;
+    didMountCheckRef.current = true;
+    const body = editor.getJSON();
+    pushDeterministicMarks(body);
+    editor.view.dispatch(editor.state.tr.setMeta('write-marks', true));
+    void runAiCheck(body);
+  }, [editor, pushDeterministicMarks, runAiCheck]);
+
   // ---- Interactions -------------------------------------------------------
 
   const selectMark = useCallback((markKey: string) => {
