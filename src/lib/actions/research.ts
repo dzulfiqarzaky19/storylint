@@ -35,7 +35,7 @@ import {
   deleteThread as deleteThreadRow,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
-import type { Kind, ResearchScope } from "../domain/types";
+import type { Kind, Shelf, ResearchScope } from "../domain/types";
 import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
 import {
@@ -137,6 +137,7 @@ export async function confirmCard(input: {
    * mint branch; the enrich branch ignores it (its target is already linked).
    */
   worldId: string;
+  category?: { id: string; shelf: Shelf };
   confirmed: true;
 }): Promise<ActionResult<{ entryId: string }>> {
   // Mint the token; omitting `confirmed: true` is a compile-time error. This is
@@ -187,7 +188,12 @@ export async function confirmCard(input: {
 
     // Derive a stable entry id from the proposition so re-confirming is idempotent.
     const entryId = `prop-${input.propositionId}`;
-    const shelf = KIND_SHELF[input.entry.kind];
+    // A user-created category (picker "+ Add new") drives the entry's kind + shelf
+    // directly from the real category row; the built-in path derives shelf from
+    // the closed Kind map. Route on the presence of well-formed category data, not
+    // a flag - a category object is either a complete {id, shelf} or absent.
+    const entryKind = input.category ? input.category.id : input.entry.kind;
+    const shelf = input.category ? input.category.shelf : KIND_SHELF[input.entry.kind];
     const nextSort = (await getMaxSortOrderForShelf(shelf)) + 1;
 
     // TCK-E06 FAIL CLOSED: refuse to mint a persisted-but-invisible world-orphan.
@@ -205,7 +211,7 @@ export async function confirmCard(input: {
     await insertEntryLinkedToWorld(
       {
         id: entryId,
-        kind: input.entry.kind,
+        kind: entryKind,
         name: input.entry.name,
         catalogueNo: "—",
         note: prop.kind.toLowerCase(),

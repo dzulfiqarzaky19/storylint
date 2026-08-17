@@ -53,4 +53,21 @@ describe("resolvePickerTarget — kind narrowing", () => {
       resolvePickerTarget({ ...base, categoryId: "cat-custom-42" }).entry.kind,
     ).toBe("lore");
   });
+
+  it("new-category mint (empty categoryId + proposeCategoryName) still mints a valid entry", () => {
+    // The picker clears categoryId to the empty sentinel and carries the new
+    // name in proposeCategoryName. This pure resolver has no real id yet, so its
+    // kind falls back to lore INERTLY — handleConfirm mints the real category and
+    // overrides the kind with the created id. What must survive here is the mint
+    // shape: no enrichEntryId, entryName -> name, factValue -> summary.
+    const out = resolvePickerTarget({
+      ...base,
+      categoryId: "",
+      proposeCategoryName: "Artifacts",
+    });
+    expect(out.enrichEntryId).toBeUndefined();
+    expect(out.entry.name).toBe("Kelda");
+    expect(out.entry.summary).toBe("storm grey");
+    expect(out.entry.kind).toBe("lore");
+  });
 });

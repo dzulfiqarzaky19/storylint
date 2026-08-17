@@ -3,7 +3,7 @@
 import { useMemo, useReducer, useRef, useState, useTransition } from "react";
 import type { DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Kind, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
+import type { Kind, Shelf, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
 import {
   researchReducer,
   initResearchState,
@@ -26,6 +26,8 @@ import PropositionCard from "./PropositionCard";
 import WikiTargetPicker from "@/components/wiki/WikiTargetPicker";
 import type { PickerResult } from "@/lib/research/resolvePickerTarget";
 import { resolvePickerTarget } from "@/lib/research/resolvePickerTarget";
+import { createCategory } from "@/lib/actions/wiki";
+import { defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
 import { synthesizeResolvedTarget } from "@/lib/research/synthesizeResolvedTarget";
 import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
 import Composer from "./Composer";
@@ -234,15 +236,35 @@ export default function ResearchScreen({
     const entryId = args.enrichEntryId ?? `prop-${card.id}`;
     // Optimistic: reflect the write locally (kept + inWiki, modal closes).
     dispatch({ type: "CONFIRM_CARD", propositionId: card.id, entryId });
-    runAction(() =>
-      confirmCard({
+    // A brand-new category is a real categories row: mint it FIRST, then hand
+    // confirmCard the created {id, shelf} so the entry's kind is that real
+    // category (not the lore fallback). The proposed NAME's presence is what
+    // routes to a category mint - no separate flag.
+    const newCategoryName = result.proposeCategoryName?.trim();
+    runAction(async () => {
+      let category: { id: string; shelf: Shelf } | undefined;
+      if (newCategoryName) {
+        // A stable id keyed to the card makes the mint idempotent: React strict
+        // mode (and any double-fire / retry) invokes this twice, and createCategory
+        // ON CONFLICT collapses the second into the first instead of minting a
+        // duplicate category row. A fresh randomUUID() per call would defeat that.
+        const created = await createCategory({
+          id: `cat-${card.id}`,
+          label: newCategoryName,
+          shelf: defaultCategoryShelf(),
+        });
+        if (!created.ok) return created;
+        category = { id: created.data.id, shelf: created.data.shelf as Shelf };
+      }
+      return confirmCard({
         propositionId: card.id,
         entry: args.entry,
         enrichEntryId: args.enrichEntryId,
         worldId: activeWorldId,
+        category,
         confirmed: true,
-      }),
-    );
+      });
+    });
   };
 
   // ---- AI ask (STREAMING; persists you+them turns on stream-complete) --------

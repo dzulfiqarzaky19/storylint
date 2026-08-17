@@ -37,8 +37,14 @@ const VALID_KINDS: readonly Kind[] = [
  * these are what the writer confirmed, not the defaults they were shown.
  */
 export interface PickerResult {
-  /** Picked category id (a live category / built-in kind). Drives a mint's kind. */
+  /**
+   * Picked category id (a live category / built-in kind). Drives a mint's kind.
+   * Empty when the writer is minting a NEW category — `proposeCategoryName` then
+   * carries the name and the caller resolves the real id via createCategory.
+   */
   categoryId: string;
+  /** Set -> mint a new category with this name first, then use its id as kind. */
+  proposeCategoryName?: string;
   /** Set -> enrich this live entry. Absent -> mint a new entry. */
   entryId?: string;
   /** New entry's name (mint) OR the fact key written onto the enriched entry. */
@@ -56,9 +62,12 @@ export interface ConfirmCardArgs {
 
 /**
  * Narrow a picked category id to the closed `Kind` union confirmCard's mint path
- * requires. Built-in category ids equal the Kind strings; anything else (a user
- * category — deferred to a follow-up that relaxes the contract) falls back to
- * `lore` so a mint never crashes on an out-of-union kind.
+ * requires. Built-in category ids equal the Kind strings. Anything else (a user
+ * category id, or the empty sentinel of a brand-new category) falls back to
+ * `lore` so this pure resolver never crashes on an out-of-union kind. On the
+ * new-category path this fallback is inert: the caller mints the real category
+ * and passes its `{id, shelf}` to confirmCard, which uses the real id as the
+ * entry kind and never reads this `lore`.
  */
 function toKind(categoryId: string): Kind {
   return (VALID_KINDS as readonly string[]).includes(categoryId)

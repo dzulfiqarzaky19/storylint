@@ -43,6 +43,7 @@ export interface WikiTargetPickerProps {
 }
 
 const NEW_ENTRY = "\u0000new-entry" as const;
+const NEW_CATEGORY = "\u0000new-category" as const;
 
 /**
  * The shared "Add to the wiki" drill-down modal. Category -> entry -> key/value,
@@ -62,7 +63,8 @@ export default function WikiTargetPicker({
 }: WikiTargetPickerProps) {
   // Category: default to the resolved id, else the first live category. A propose
   // -only resolved category (no id) still lands on a real pill so a mint has a
-  // valid kind; the deferred "+ Add new category" flow is a follow-up ticket.
+  // valid kind. Selecting the NEW_CATEGORY sentinel reveals a name field and
+  // mints a fresh category row on confirm (the caller runs createCategory first).
   const [categoryId, setCategoryId] = useState(
     () =>
       resolvedTarget.category.id ??
@@ -70,6 +72,14 @@ export default function WikiTargetPicker({
       resolvedTarget.entry.proposeKind ??
       "lore",
   );
+
+  // New-category name (mint a category): seeded from the producer's proposed
+  // category name when it named one without an id, still fully editable.
+  const [newCategoryName, setNewCategoryName] = useState(
+    () => resolvedTarget.category.proposeName ?? "",
+  );
+
+  const isNewCategory = categoryId === NEW_CATEGORY;
 
   // Entry: the resolved existing id (ENRICH default) or the NEW_ENTRY sentinel
   // (MINT default) when the producer proposes a name instead of an id.
@@ -110,16 +120,28 @@ export default function WikiTargetPicker({
     return entries.find((e) => e.id === checkedAgainst.entryId)?.name;
   }, [checkedAgainst, entries]);
 
-  const confirmDisabled = isMint
-    ? newName.trim() === "" || factValue.trim() === ""
-    : factKey.trim() === "" || factValue.trim() === "";
+  // A new category forces a mint (there are no existing entries under a category
+  // that does not exist yet), so it needs BOTH its own name AND the new entry's
+  // name before confirm is allowed. A plain mint needs the new entry name; an
+  // enrich needs a fact key. Every branch needs a value.
+  const mintingEntry = isNewCategory || isMint;
+  const confirmDisabled =
+    (isNewCategory && newCategoryName.trim() === "") ||
+    (mintingEntry
+      ? newName.trim() === "" || factValue.trim() === ""
+      : factKey.trim() === "" || factValue.trim() === "");
 
   const submit = () => {
     if (confirmDisabled) return;
     onConfirm({
-      categoryId,
-      entryId: isMint ? undefined : entrySel,
-      entryName: isMint ? newName.trim() : factKey.trim(),
+      // A brand-new category has no id yet; the caller mints it via createCategory
+      // and uses the returned id as the entry's kind. categoryId carries the
+      // sentinel in that case, so leave it empty and let proposeCategoryName drive.
+      categoryId: isNewCategory ? "" : categoryId,
+      proposeCategoryName: isNewCategory ? newCategoryName.trim() : undefined,
+      // A new category can only hold a new entry -> always a mint.
+      entryId: isNewCategory || isMint ? undefined : entrySel,
+      entryName: isNewCategory || isMint ? newName.trim() : factKey.trim(),
       factKey: factKey.trim(),
       factValue: factValue.trim(),
     });
@@ -172,7 +194,29 @@ export default function WikiTargetPicker({
                 {c.label}
               </button>
             ))}
+            <button
+              type="button"
+              role="radio"
+              aria-checked={isNewCategory}
+              className={isNewCategory ? styles.pillActive : styles.pill}
+              onClick={() => {
+                setCategoryId(NEW_CATEGORY);
+                setEntrySel(NEW_ENTRY);
+              }}
+            >
+              + Add new
+            </button>
           </div>
+          {isNewCategory && (
+            <input
+              type="text"
+              className={styles.field}
+              placeholder="New category name"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              aria-label="New category name"
+            />
+          )}
         </section>
 
         <section className={styles.level} aria-label="Entry">
