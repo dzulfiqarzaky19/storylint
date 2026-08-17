@@ -3,7 +3,7 @@
 // sort_order. No mutations here — writes happen via the server actions the
 // client invokes (research.ts). Product rule 1: the only wiki write is confirmCard.
 import { loadResearchSnapshot } from "@/lib/db/research";
-import { getAllEntries, getWorldTree } from "@/lib/db/queries";
+import { getWorldEntries, getCategories, getWorldTree } from "@/lib/db/queries";
 import { resolveWikiScope } from "@/app/wiki/scope";
 import ResearchScreen from "@/components/research/ResearchScreen";
 
@@ -20,14 +20,21 @@ export default async function ResearchPage({
   // in the header shows THAT world's threads.
   const { activeWorldId } = resolveWikiScope(await getWorldTree(), u, w);
   const snapshot = await loadResearchSnapshot(thread, activeWorldId);
-  // Live wiki entries (getAllEntries is soft-delete-filtered, F6-S2) so the
-  // confirmation strip can recommend enriching an existing entry instead of
-  // spawning a duplicate. Mapped to the minimal shape the recommender needs.
-  const entries = (await getAllEntries()).map((e) => ({
+  // Live wiki entries scoped to the ACTIVE world (getWorldEntries joins
+  // world_entities, same membership /wiki shows, soft-delete-filtered) so the
+  // wiki-target picker recommends/lists only THIS world's entries, never a
+  // sibling world's. Mapped to the minimal shape the recommender + picker need.
+  const entries = (await getWorldEntries(activeWorldId)).map((e) => ({
     id: e.id,
     name: e.name,
     kind: e.kind,
     deletedAt: e.deletedAt,
+  }));
+  // Live categories for the wiki-target picker pills (F9-B): the 4 built-ins
+  // plus any user-created ones, mapped to the minimal {id,label} the modal needs.
+  const categories = (await getCategories()).map((c) => ({
+    id: c.id,
+    label: c.label,
   }));
   // Key by thread id so switching threads remounts the reducer with fresh state.
   // activeWorldId (resolved above) is threaded into confirmCard so a
@@ -39,6 +46,7 @@ export default async function ResearchPage({
       key={snapshot.threadId}
       snapshot={snapshot}
       entries={entries}
+      categories={categories}
       activeWorldId={activeWorldId}
     />
   );

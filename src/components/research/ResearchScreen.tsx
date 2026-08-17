@@ -23,7 +23,10 @@ import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
 import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
-import ConfirmationStrip from "./ConfirmationStrip";
+import WikiTargetPicker from "@/components/wiki/WikiTargetPicker";
+import type { PickerResult } from "@/lib/research/resolvePickerTarget";
+import { resolvePickerTarget } from "@/lib/research/resolvePickerTarget";
+import { synthesizeResolvedTarget } from "@/lib/research/synthesizeResolvedTarget";
 import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
 import Composer from "./Composer";
 import PromptChip from "./PromptChip";
@@ -71,11 +74,14 @@ export interface EnrichEntry {
 export default function ResearchScreen({
   snapshot,
   entries = [],
+  categories = [],
   activeWorldId,
 }: {
   snapshot: ResearchSnapshot;
   /** Live wiki entries (deleted-filtered) for enrich-vs-duplicate. */
   entries?: EnrichEntry[];
+  /** Live categories for the wiki-target picker pills (built-ins + user rows). */
+  categories?: { id: string; label: string }[];
   /**
    * TCK-E06: the world the writer is viewing. Threaded into confirmCard so a
    * newly-minted entry is linked into this world (else it is invisible on /wiki).
@@ -125,14 +131,18 @@ export default function ResearchScreen({
 
   const visibleTurns = state.turns.filter((t) => visibleSet.has(t.id));
 
+  // A card written INTO the wiki leaves the Kept board — Kept is the holding
+  // area for propositions NOT yet in the wiki, so once one lands (inWiki) it
+  // drops off rather than lingering with an "in the wiki" badge.
   const keptItems: KeptEntry[] = state.keptIds
+    .filter((id) => !inWikiSet.has(id))
     .map((id) => cardById.get(id))
     .filter((c): c is ResearchProposition => Boolean(c))
     .map((c) => ({
       id: c.id,
       kind: c.kind,
       title: c.title,
-      inWiki: inWikiSet.has(c.id),
+      inWiki: false,
     }));
 
   const pendingCard = state.pendingPropositionId
@@ -158,6 +168,26 @@ export default function ResearchScreen({
           )
         : null,
     [pendingCard, entries],
+  );
+
+  // T-WRITE-WIKI-MODAL (slice C): the modal is producer-agnostic — it consumes a
+  // ResolvedTarget default. /research has no check Mark to read one off, so we
+  // synthesize the same shape from the pending card + the F6 recommendation
+  // (enrich when one matched, else propose-by-name mint). On /write (slice A) a
+  // real Mark supplies this instead. Null until a card is pending (modal closed).
+  const resolvedTarget = useMemo(
+    () =>
+      pendingCard
+        ? synthesizeResolvedTarget(
+            {
+              title: pendingCard.title,
+              body: pendingCard.body,
+              asKind: pendingCard.asKind,
+            },
+            enrichRecommendation,
+          )
+        : null,
+    [pendingCard, enrichRecommendation],
   );
 
   // ---- Handlers (reducer fires immediately; server action alongside) ------
@@ -191,23 +221,24 @@ export default function ResearchScreen({
     runAction(() => cancelPending());
   };
 
-  const handleConfirm = (enrichEntryId: string | undefined) => {
+  // The modal's confirm IS the wiki-write gate (product rule 1). Its PickerResult
+  // maps to confirmCard's EXISTING arguments via the pure resolvePickerTarget —
+  // the write contract is reused unchanged. ENRICH vs MINT is carried solely by
+  // whether the writer landed on an existing entry (result.entryId set).
+  const handleConfirm = (result: PickerResult) => {
     if (!pendingCard) return;
     const card = pendingCard;
-    // Enrich -> the existing entry's id; new -> the derived prop- id. This is the
+    const args = resolvePickerTarget(result);
+    // Enrich -> the existing entry's id; mint -> the derived prop- id. This is the
     // id the optimistic reducer flips to in_wiki, matching confirmCard's return.
-    const entryId = enrichEntryId ?? `prop-${card.id}`;
-    // Optimistic: reflect the write locally (kept + inWiki, strip closes).
+    const entryId = args.enrichEntryId ?? `prop-${card.id}`;
+    // Optimistic: reflect the write locally (kept + inWiki, modal closes).
     dispatch({ type: "CONFIRM_CARD", propositionId: card.id, entryId });
     runAction(() =>
       confirmCard({
         propositionId: card.id,
-        entry: {
-          name: card.title,
-          kind: toEntryKind(card.asKind),
-          summary: card.body,
-        },
-        enrichEntryId,
+        entry: args.entry,
+        enrichEntryId: args.enrichEntryId,
         worldId: activeWorldId,
         confirmed: true,
       }),
@@ -492,10 +523,10 @@ export default function ResearchScreen({
             </>
           )}
 
-          {pendingCard && (
-            <ConfirmationStrip
-              title={pendingCard.title}
-              recommendation={enrichRecommendation}
+          {pendingCard && resolvedTarget && (
+            <WikiTargetPicker
+              resolvedTarget={resolvedTarget}
+              categories={categories}
               entries={entries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
               onConfirm={handleConfirm}
               onCancel={handleCancel}

@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 
 // Exhaustive RESEARCH-screen click-through (per-screen e2e). Drives every
 // interactive control on /research at 1440x900 and asserts the flow. Product
-// rule 1 is sacred: the ConfirmationStrip is the ONLY wiki-write path — Keep
+// rule 1 is sacred: the WikiTargetPicker modal is the ONLY wiki-write path — Keep
 // alone must never write, and Cancel must write nothing. The confirm+persist
 // path (which is idempotent-hostile under a shared DB) is already covered in
 // smoke.spec.ts, so here we lean on the Cancel path and toggle reverts to stay
@@ -94,9 +94,9 @@ test.skip("research chips: all prompt chips render and clicking one never writes
     await expect(chip.first()).toBeVisible();
   }
   // A chip is a canned conversational action (it advances/reveals turns); it is
-  // NOT a wiki write. Clicking it must never raise the confirmation strip.
+  // NOT a wiki write. Clicking it must never raise the wiki-target modal.
   await page.getByRole("button", { name: /Push on that/i }).first().click();
-  await expect(page.getByText("Yes, write it in", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: "Add to the wiki" })).toHaveCount(0);
 });
 
 // ---------------------------------------------------------------------------
@@ -141,8 +141,8 @@ test.skip("research card: Keep inverts to Kept and back, and never writes the wi
   await expect(kept).toBeVisible();
   await expect(kept).toHaveAttribute("aria-pressed", "true");
 
-  // Rule 1: keeping is not a wiki write — no confirmation strip, no "In the wiki".
-  await expect(page.getByText("Yes, write it in", { exact: false })).toHaveCount(0);
+  // Rule 1: keeping is not a wiki write — no wiki-target modal, no "In the wiki".
+  await expect(page.getByRole("dialog", { name: "Add to the wiki" })).toHaveCount(0);
 
   // Revert (only if this card is not already permanently in the wiki).
   if (await kept.isEnabled()) {
@@ -154,18 +154,18 @@ test.skip("research card: Keep inverts to Kept and back, and never writes the wi
 });
 
 // ---------------------------------------------------------------------------
-// Confirmation strip: "Make it an entry" reveals it; Cancel writes NOTHING.
+// Wiki-target modal: "Make it an entry" opens it; Cancel writes NOTHING.
 // This is the rule-1 gate. We deliberately use Cancel (not Confirm) so the
 // shared DB is untouched.
 // ---------------------------------------------------------------------------
 // TODO(F4-P0+): rewrite for the empty-start real-AI flow (create → pick scope →
 // ask → streamed answer with proposition cards). No seeded cards exist now, so
 // the "Make it an entry" gate needs a real AI answer first. Authored post-P0 wipe.
-test.skip("research strip: 'Make it an entry' reveals the strip and Cancel writes nothing", async ({
+test.skip("research modal: 'Make it an entry' opens the picker and Cancel writes nothing", async ({
   page,
 }) => {
-  // Strip must be absent until a card is proposed.
-  await expect(page.getByText("Yes, write it in", { exact: false })).toHaveCount(0);
+  // Modal must be absent until a card is proposed.
+  await expect(page.getByRole("dialog", { name: "Add to the wiki" })).toHaveCount(0);
 
   // Use a card that is NOT already in the wiki (its Keep is enabled).
   const propose = page
@@ -174,13 +174,13 @@ test.skip("research strip: 'Make it an entry' reveals the strip and Cancel write
   await expect(propose).toBeVisible();
   await propose.click();
 
-  const strip = page.locator('[role="group"][aria-label="Confirm wiki write"]');
-  await expect(strip).toBeVisible();
-  await expect(strip.getByRole("button", { name: /Yes, write it in/i })).toBeVisible();
+  const modal = page.getByRole("dialog", { name: "Add to the wiki" });
+  await expect(modal).toBeVisible();
+  await expect(modal.getByRole("button", { name: /Create entry|Add detail/ })).toBeVisible();
 
-  // Cancel hides the strip and writes nothing.
-  await strip.getByRole("button", { name: "Cancel", exact: true }).click();
-  await expect(page.getByText("Yes, write it in", { exact: false })).toHaveCount(0);
+  // Cancel closes the modal and writes nothing.
+  await modal.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Add to the wiki" })).toHaveCount(0);
 });
 
 // ---------------------------------------------------------------------------

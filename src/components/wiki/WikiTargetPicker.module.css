@@ -1,0 +1,197 @@
+/* Hallmark · component: modal · genre: editorial · theme: project (Archivo · #fff paper · vermilion accent)
+ * states: default · hover · focus · active · disabled
+ * The shared "Add to the wiki" drill-down. Locked to global tokens (no inline
+ * colours/fonts). Overlay + centered panel; drills category -> entry -> detail.
+ * contrast: pass
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--ink) 52%, transparent);
+}
+
+.panel {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: var(--surface);
+  border: var(--rule-major);
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: var(--rule-major);
+  padding-bottom: 14px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.provenance {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.level {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.levelLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill,
+.pillActive {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 13px;
+  border: 1px solid var(--rule);
+  background: var(--tile);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 120ms var(--ease-out, ease-out);
+}
+
+.pill:hover {
+  border-color: var(--accent);
+}
+
+.pillActive {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+
+.pill:focus-visible,
+.pillActive:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.search,
+.field {
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  width: 100%;
+}
+
+.search:focus-visible,
+.field:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 10px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-top: var(--rule-major);
+  padding-top: 18px;
+}
+
+.confirm {
+  min-height: 42px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  cursor: pointer;
+  transition: background-color 120ms var(--ease-out, ease-out);
+}
+
+.confirm:hover {
+  background: var(--accent-deep);
+}
+
+.confirm:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.confirm:disabled {
+  background: var(--rule);
+  color: var(--muted-2);
+  cursor: not-allowed;
+}
+
+.cancel {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 12px;
+  min-height: 42px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel:hover {
+  color: var(--ink);
+}
+
+.cancel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Phone tier: stack the key/value pair, tighten the panel padding. */
+@media (max-width: 560px) {
+  .panel {
+    padding: 20px 18px 18px;
+    gap: 18px;
+    max-height: calc(100vh - 24px);
+  }
+
+  .kv {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+}

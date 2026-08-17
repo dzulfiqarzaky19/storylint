@@ -87,6 +87,23 @@ export async function getAllEntries(): Promise<EntryRow[]> {
   );
 }
 
+/**
+ * Entries VISIBLE in one world — the same membership scope /wiki shows
+ * (`loadWorldSnapshot` joins `world_entities` on `we.world_id`). Unlike
+ * getAllEntries (every universe), this is bounded to `worldId` so a
+ * world-scoped surface (the wiki-target picker) never offers an entry from a
+ * sibling world. Soft-deleted rows are filtered, matching every live read.
+ */
+export async function getWorldEntries(worldId: string): Promise<EntryRow[]> {
+  return rows<EntryRow>(
+    `SELECT ${ENTRY_COLS} FROM entries e
+       JOIN world_entities we ON we.entity_id = e.id AND we.world_id = $1
+      WHERE e.deleted_at IS NULL
+      ORDER BY e.shelf, e.sort_order, e.name`,
+    [worldId],
+  );
+}
+
 export async function getEntry(id: string): Promise<EntryRow | null> {
   // F6 read-filter (behavior lock): a soft-deleted entry is not fetchable by id
   // from any live read path.
