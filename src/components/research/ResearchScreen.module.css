@@ -552,9 +552,6 @@
   color: var(--muted-2);
 }
 
-.keptStateWiki {
-  color: var(--accent-deep);
-}
 
 /* ---- Responsive: rail stacks below at <=1200px (parity with Write) ------ */
 /* The KEPT rail becomes a collapsible panel pinned to the bottom of the

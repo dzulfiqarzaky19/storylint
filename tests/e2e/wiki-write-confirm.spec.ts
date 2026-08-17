@@ -6,8 +6,8 @@ import { reseed } from "./_helpers/seed";
 // WIKI-WRITE CONFIRMATION (integration, DB read-back).
 //
 // PRODUCT RULE 1 — "Nothing enters the wiki without an explicit confirmation."
-// smoke.spec.ts already proves the "Yes, write it in" UI flips a kept card to the
-// "In the wiki" state. This file goes one layer deeper and proves the confirmed
+// smoke.spec.ts already proves the WikiTargetPicker write drops the card off the
+// Kept board. This file goes one layer deeper and proves the confirmed
 // write actually LANDS IN POSTGRES: after the confirmation, a real `entries` row
 // exists (id `prop-<propositionId>`) and its `kept_cards.in_wiki` flag is TRUE.
 // It also proves the negative half of the rule — that BEFORE a confirmation, no
@@ -53,16 +53,16 @@ test("wiki write: confirming a research card LANDS the fact in Postgres (product
     .getByRole("button", { name: "Make it an entry", exact: true })
     .first()
     .click();
-  await expect(
-    page.getByText("Yes, write it in", { exact: false }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Yes, write it in", exact: false })
-    .click();
+  const modal = page.getByRole("dialog", { name: "Add to the wiki" });
+  await expect(modal).toBeVisible();
+  await modal.getByRole("button", { name: /Create entry|Add detail/ }).click();
+  await expect(modal).toHaveCount(0);
 
-  // The UI reflects the write (guard so the read-back races nothing).
+  // The UI reflects the write (guard so the read-back races nothing). Since the
+  // slice-C decision, "In the wiki" shows on the Threads card only (the written
+  // card drops off the Kept board), so scope the assertion to a thread turn.
   await expect(
-    page.getByText("In the wiki", { exact: false }).first(),
+    page.locator('[class*="turn"]').getByText("In the wiki", { exact: false }).first(),
   ).toBeVisible();
 
   // --- Positive half: the fact actually persisted to Postgres. ---

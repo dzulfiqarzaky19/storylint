@@ -144,7 +144,6 @@ export default function ResearchScreen({
       id: c.id,
       kind: c.kind,
       title: c.title,
-      inWiki: false,
     }));
 
   const pendingCard = state.pendingPropositionId

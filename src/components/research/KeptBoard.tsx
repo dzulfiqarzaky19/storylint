@@ -9,7 +9,6 @@ export interface KeptEntry {
   id: string;
   kind: string;
   title: string;
-  inWiki: boolean;
 }
 
 export interface KeptBoardProps {
@@ -85,7 +84,7 @@ export default function KeptBoard({
             </div>
           ) : (
             items.map((k) => (
-              <KeptItem key={k.id} kind={k.kind} title={k.title} inWiki={k.inWiki} />
+              <KeptItem key={k.id} kind={k.kind} title={k.title} />
             ))
           )}
         </div>

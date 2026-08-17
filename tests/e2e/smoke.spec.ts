@@ -185,27 +185,33 @@ test("focus ring is the accent colour (2px/3px solid) — keyboard focus visible
   expect(outline!.style).toBe("solid");
 });
 
-test("research: 'Yes, write it in' flips the kept item to 'In the wiki'", async ({
+test("research: a card written into the wiki DROPS OFF the Kept board (no 'In the wiki' badge there)", async ({
   page,
 }) => {
   await page.goto("/research");
-  // Keep a card, make it an entry, confirm.
+  // Keep a card, then write it into the wiki via the WikiTargetPicker modal (the
+  // only wiki-write path since slice C). Capture the kept item's title first so
+  // we can assert it LEAVES the board after the write.
+  const keptRegion = page.locator('[aria-label="Kept"]');
   await page.getByRole("button", { name: "Keep", exact: true }).first().click();
+  const keptTitle = await keptRegion
+    .locator('[class*="keptTitle"]')
+    .first()
+    .innerText();
+
   await page
     .getByRole("button", { name: "Make it an entry", exact: true })
     .first()
     .click();
-  await page.getByRole("button", { name: "Yes, write it in", exact: false }).click();
-  // The kept board item now shows the "In the wiki" state.
-  await expect(page.getByText("In the wiki", { exact: false }).first()).toBeVisible();
+  const modal = page.getByRole("dialog", { name: "Add to the wiki" });
+  await expect(modal).toBeVisible();
+  await modal.getByRole("button", { name: /Create entry|Add detail/ }).click();
+  await expect(modal).toHaveCount(0);
 
-  // Regression (data-integrity): a card written into the wiki is permanently
-  // kept. Its "Kept" toggle must be DISABLED so it cannot be un-kept — an
-  // un-keep would delete the kept_cards row that records the wiki write and
-  // desync the board from the persisted entry on reload.
-  const keptToggle = page.getByRole("button", { name: "Kept", exact: true }).first();
-  await expect(keptToggle).toBeVisible();
-  await expect(keptToggle).toBeDisabled();
+  // New contract: "In the wiki" lives on the Threads card only. Kept is a working
+  // queue of NOT-yet-written cards, so a written card drops off it entirely.
+  await expect(keptRegion.getByText("In the wiki", { exact: false })).toHaveCount(0);
+  await expect(keptRegion.getByText(keptTitle, { exact: true })).toHaveCount(0);
 });
 
 // ---------------------------------------------------------------------------
