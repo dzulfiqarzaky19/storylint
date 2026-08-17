@@ -43,6 +43,7 @@ import {
   hashParagraphs,
   changedParagraphIndices,
   reconcileAiMarks,
+  AI_CONFLICT_RULE_ID,
 } from '@/lib/check/ai';
 import {
   writeReducer,
@@ -57,7 +58,8 @@ import {
   aiCheckChapter,
   persistChapterCheck,
 } from '@/lib/actions/write';
-import { createEntry, createFact, createCategory } from '@/lib/actions/wiki';
+import { createEntry, createFact, createCategory, editFact } from '@/lib/actions/wiki';
+import { resolveWikiWriteMode } from '@/lib/write/resolveWikiWriteMode';
 import { KIND_SHELF, type Shelf } from '@/lib/domain/types';
 import { defaultCategoryShelf } from '@/lib/wiki/categoryLabels';
 import WikiTargetPicker from '@/components/wiki/WikiTargetPicker';
@@ -540,12 +542,23 @@ export function Manuscript({
       try {
         const args = resolvePickerTarget(result);
         if (args.enrichEntryId) {
-          const res = await createFact({
-            id: `mark-fact-${markKey}`,
-            entryId: args.enrichEntryId,
-            key: args.entry.name,
-            value: args.entry.summary,
-          });
+          // Resolving a CONTRADICTION corrects the fact it contradicts in place;
+          // any other enrich appends a new fact. Editing keeps the wiki from
+          // holding both the old value and its correction (which re-flags).
+          const writeMode = resolveWikiWriteMode(mark);
+          const res =
+            writeMode.mode === 'edit'
+              ? await editFact({
+                  factId: writeMode.factId,
+                  key: args.entry.name,
+                  value: args.entry.summary,
+                })
+              : await createFact({
+                  id: `mark-fact-${markKey}`,
+                  entryId: args.enrichEntryId,
+                  key: args.entry.name,
+                  value: args.entry.summary,
+                });
           if (!res.ok) {
             dispatch({ type: 'SET_ERROR', error: res.error });
             return;
