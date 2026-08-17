@@ -267,18 +267,6 @@ function WikiScreenInner({
     [selected, settle, activeWorldId],
   );
 
-  // ---- Drop: suggestion onto Details column (add as a fresh fact) ------------
-  const addSuggestionToDetails = useCallback(
-    (suggestionKey: string) => {
-      const item = drag.dragging;
-      if (!item || item.type !== "card") return;
-      const s = state.suggestions.find((x) => x.suggestionKey === suggestionKey);
-      if (!s) return;
-      writeSuggestion(s);
-    },
-    [drag.dragging, state.suggestions],
-  );
-
   // Shared: write a suggestion as a fresh fact (drop OR "Write it in" button).
   const writeSuggestion = useCallback(
     (s: WikiSuggestion) => {
@@ -311,6 +299,18 @@ function WikiScreenInner({
       );
     },
     [state.byId, selected, settle],
+  );
+
+  // ---- Drop: suggestion onto Details column (add as a fresh fact) ------------
+  const addSuggestionToDetails = useCallback(
+    (suggestionKey: string) => {
+      const item = drag.dragging;
+      if (!item || item.type !== "card") return;
+      const s = state.suggestions.find((x) => x.suggestionKey === suggestionKey);
+      if (!s) return;
+      writeSuggestion(s);
+    },
+    [drag.dragging, state.suggestions, writeSuggestion],
   );
 
   const leaveSuggestion = useCallback(

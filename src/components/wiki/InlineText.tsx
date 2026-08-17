@@ -33,10 +33,15 @@ export default function InlineText({
   const [draft, setDraft] = useState(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
-  // Keep the draft in sync if the underlying value changes while not editing.
-  useEffect(() => {
-    if (!editing) setDraft(value);
-  }, [value, editing]);
+  // Keep the draft in sync when the underlying value changes while not editing.
+  // React's "adjust state during render" pattern: setting state on the current
+  // component while rendering re-renders it immediately with no visible flash,
+  // instead of an effect (which paints the stale draft first, then corrects).
+  const [lastValue, setLastValue] = useState(value);
+  if (!editing && value !== lastValue) {
+    setLastValue(value);
+    setDraft(value);
+  }
 
   useEffect(() => {
     if (editing && inputRef.current) {

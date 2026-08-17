@@ -170,19 +170,17 @@ export function Manuscript({
 
   // Latest reducer state for the plugin's getData() closure and debounced jobs.
   const stateRef = useRef<WriteState>(state);
-  stateRef.current = state;
+  useEffect(() => {
+    stateRef.current = state;
+  });
 
   // Stable DOM host for the inline note; the plugin places it, React portals into it.
-  const noteHostRef = useRef<HTMLElement | null>(null);
-  if (noteHostRef.current === null && typeof document !== 'undefined') {
+  const [noteHost] = useState<HTMLElement | null>(() => {
+    if (typeof document === 'undefined') return null;
     const el = document.createElement('div');
     el.setAttribute('data-write-note-host', '');
-    noteHostRef.current = el;
-  }
-
-  // Re-render trigger so the portal follows the host once the widget mounts it.
-  const [, forceRender] = useState(0);
-  const bump = useCallback(() => forceRender((n) => n + 1), []);
+    return el;
+  });
 
   const [busy, setBusy] = useState(false);
 
@@ -213,15 +211,19 @@ export function Manuscript({
   const onSelectMarkRef = useRef<(markKey: string) => void>(() => {});
 
   // The plugin reads this each recompute (marks, open mark, host, click cb).
+  // getPluginData is invoked ONLY from ProseMirror plugin lifecycle
+  // (init/apply/decorations/handleClick) via createMarkDecorationPlugin, never
+  // during React render, so its reads of stateRef/onSelectMarkRef are latest-ref
+  // reads at dispatch time, not render-time.
   const getPluginData = useCallback((): MarkDecorationData => {
     const s = stateRef.current;
     return {
       marks: s.marks,
       openMarkKey: s.openMarkKey,
-      noteHost: noteHostRef.current,
+      noteHost,
       onUnderlineClick: (markKey) => onSelectMarkRef.current(markKey),
     };
-  }, []);
+  }, [noteHost]);
 
   // Register the decoration plugin once via a StarterKit-sibling extension.
   const decorationExtension = useMemo(
@@ -363,12 +365,13 @@ export function Manuscript({
   }, [editor, wiki, chapterNumber, pushDeterministicMarks, runAiCheck]);
 
   // Redraw decorations whenever marks / open mark change (rail clicks, resolves).
+  // The plugin (re)mounts the note-host widget on this dispatch; the portal into
+  // noteHost re-evaluates on the same state.openMarkKey change that triggered us,
+  // so no extra forced re-render is needed here.
   useEffect(() => {
     if (!editor) return;
     editor.view.dispatch(editor.state.tr.setMeta('write-marks', true));
-    // The widget may have (re)mounted the host; refresh the portal.
-    bump();
-  }, [editor, state.marks, state.openMarkKey, bump]);
+  }, [editor, state.marks, state.openMarkKey]);
 
   // Check ON OPEN, not only on save. When a chapter mounts we re-run the
   // deterministic pass (contradiction + not-recorded) over the initial body and,
@@ -390,7 +393,9 @@ export function Manuscript({
   const selectMark = useCallback((markKey: string) => {
     dispatch({ type: 'OPEN_MARK', markKey });
   }, []);
-  onSelectMarkRef.current = selectMark;
+  useEffect(() => {
+    onSelectMarkRef.current = selectMark;
+  });
 
   const openMark = useMemo(
     () => state.marks.find((m) => m.markKey === state.openMarkKey) ?? null,
@@ -553,7 +558,7 @@ export function Manuscript({
       </div>
 
       {/* Portal the note into the plugin's widget host under the open paragraph. */}
-      {openMark && noteHostRef.current
+      {openMark && noteHost
         ? createPortal(
             <InlineNote
               mark={openMark}
@@ -569,7 +574,7 @@ export function Manuscript({
                 onApplyRewrite: (rewrite) => applyRewrite(openMark, rewrite),
               }}
             />,
-            noteHostRef.current,
+            noteHost,
           )
         : null}
     </div>
