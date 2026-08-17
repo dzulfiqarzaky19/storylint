@@ -252,3 +252,137 @@ describe('reconcileAiMarks', () => {
     expect(out.map((m) => m.markKey)).toEqual(['a']);
   });
 });
+
+// ---------------------------------------------------------------------------
+// T-WRITE-WIKI-MODAL Slice B: every AI mark carries TWO distinct nested objects
+//   resolvedTarget  = where an accepted write GOES (may propose a NEW entry)
+//   checkedAgainst  = the existing wiki SOURCE the signal was read from
+// Both ride the SAME marks jsonb (no new cache column). These lock the contract:
+// the objects must survive the cache round-trip, be produced on the cold AI path,
+// resolve factId SERVER-SIDE (never fabricated), and keep the id-XOR-proposeName
+// modal invariant. The cache is a transparent jsonb column: page.tsx casts the
+// stored value straight back to Mark[], so JSON.parse(JSON.stringify(...)) is a
+// faithful stand-in for the DB round-trip.
+// ---------------------------------------------------------------------------
+describe('Slice B — resolvedTarget + checkedAgainst on AI marks', () => {
+  const roundTrip = (marks: Mark[]): Mark[] =>
+    JSON.parse(JSON.stringify(marks)) as Mark[];
+
+  it('a conflict carries checkedAgainst {entryId,factKey,recordedValue} + a server-resolved factId, all intact through the cache round-trip', () => {
+    const res: AiCheckResponse = {
+      conflicts: [
+        {
+          quote: 'twenty-three members',
+          entryId: 'sept',
+          factKey: 'members',
+          reason: 'The Quiet Sept has twenty-one members.',
+          recorded: 'Twenty-one, never more',
+        },
+      ],
+    };
+    const marks = aiResultToMarks(res, paragraphs, {
+      // The server builds this map from the loaded gazetteer snapshot; the model
+      // never sees or echoes the opaque fact id.
+      factIdByEntryKey: { ['sept\u0000members']: 'fact-sept-members-uuid' },
+    });
+    expect(marks).toHaveLength(1);
+
+    const persisted = roundTrip(marks)[0]!;
+    // checkedAgainst = the wiki SOURCE the AI read from.
+    expect(persisted.checkedAgainst).toEqual({
+      entryId: 'sept',
+      factKey: 'members',
+      factId: 'fact-sept-members-uuid',
+      recordedValue: 'Twenty-one, never more',
+    });
+    // resolvedTarget = where an accepted write GOES; a conflict targets the
+    // same existing entry (category left for the modal to resolve from the id).
+    expect(persisted.resolvedTarget).toEqual({
+      category: {},
+      entry: { id: 'sept' },
+    });
+  });
+
+  it('the server resolves factId from (entryId,factKey) and NEVER fabricates one when the key does not match', () => {
+    const res: AiCheckResponse = {
+      conflicts: [
+        {
+          quote: 'twenty-three members',
+          entryId: 'sept',
+          factKey: 'not-a-real-key',
+          reason: 'x',
+          recorded: 'Twenty-one',
+        },
+      ],
+    };
+    const marks = aiResultToMarks(res, paragraphs, {
+      factIdByEntryKey: { ['sept\u0000members']: 'fact-sept-members-uuid' },
+    });
+    const ca = marks[0]!.checkedAgainst!;
+    // The echoed key + entry are still recorded (they are what the model saw),
+    // but factId stays UNSET rather than being invented from a non-match.
+    expect(ca.entryId).toBe('sept');
+    expect(ca.factKey).toBe('not-a-real-key');
+    expect(ca.factId).toBeUndefined();
+  });
+
+  it('a missing finding about a KNOWN entity resolves the write-target to that entry + fact, with no wiki source (that is why it is missing)', () => {
+    const res: AiCheckResponse = {
+      missing: [
+        {
+          quote: 'her grandmother’s iron key',
+          entryId: 'sept',
+          reason: 'A new object tied to the Sept.',
+          key: 'heirloom',
+          value: 'iron key on a cord',
+        },
+      ],
+    };
+    const persisted = roundTrip(
+      aiResultToMarks(res, paragraphs, {
+        factIdByEntryKey: { ['sept\u0000members']: 'x' },
+      }),
+    )[0]!;
+    expect(persisted.resolvedTarget).toEqual({
+      category: {},
+      entry: { id: 'sept' },
+      fact: { key: 'heirloom', value: 'iron key on a cord' },
+    });
+    // The KNOWN entity IS the source the fact was checked against, but no
+    // single fact matched (that is WHY it is missing), so only entryId is set
+    // — factKey/factId/recordedValue stay absent.
+    expect(persisted.checkedAgainst).toEqual({ entryId: 'sept' });
+  });
+
+  it('a newEntity finding proposes a NEW target by name (never an id) and carries no checkedAgainst', () => {
+    const prose = ['Saint Osk blessed the harbour before the ships sailed.'];
+    const res: AiCheckResponse = {
+      newEntity: [
+        { quote: 'Saint Osk', name: 'Saint Osk', kind: 'character', reason: 'A new figure.' },
+      ],
+    };
+    const persisted = roundTrip(aiResultToMarks(res, prose))[0]!;
+    // id-XOR-proposeName: a proposed target has proposeName set and NO id at both
+    // the category and entry levels, matching the modal's "+ Add new" branch.
+    const rt = persisted.resolvedTarget!;
+    expect(rt.category.id).toBeUndefined();
+    expect(rt.category.proposeName).toBe('character');
+    expect(rt.entry.id).toBeUndefined();
+    expect(rt.entry.proposeName).toBe('Saint Osk');
+    expect(rt.entry.proposeKind).toBe('character');
+    expect(persisted.checkedAgainst).toBeUndefined();
+  });
+
+  it('older cached marks with NEITHER object rehydrate cleanly (both stay optional)', () => {
+    // A mark produced before Slice B has no resolvedTarget/checkedAgainst. The
+    // round-trip must not invent them, so the modal can fall back to a blank pick.
+    const legacy: Mark[] = aiResultToMarks(
+      { conflicts: [{ quote: 'twenty-three members', reason: 'x' }] },
+      paragraphs,
+    );
+    const persisted = roundTrip(legacy)[0]!;
+    // entryId empty -> no resolvedTarget, no checkedAgainst (nothing to point at).
+    expect(persisted.resolvedTarget).toBeUndefined();
+    expect(persisted.checkedAgainst).toBeUndefined();
+  });
+});

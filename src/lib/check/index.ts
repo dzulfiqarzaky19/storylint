@@ -134,6 +134,54 @@ export interface Mark {
   importance?: MarkImportance;
   /** Times this phrase occurs in the current chapter (>=1). Drives importance. */
   recurrence?: number;
+  /**
+   * T-WRITE-WIKI-MODAL (slice B): the wiki write-target the SIGNAL resolved to,
+   * so the "Add to the wiki" modal opens already drilled to a default the user
+   * can override. Producer-agnostic — the AI fills it today, a deterministic
+   * rule can fill the same shape later. Optional: absent on older cached marks
+   * and on deterministic marks that carry no resolved target.
+   */
+  resolvedTarget?: ResolvedTarget;
+  /**
+   * The WIKI SOURCE the signal was checked against ("from where" the AI read to
+   * raise it): the existing entry/fact it compared the manuscript to. Distinct
+   * from resolvedTarget (where a write GOES, possibly a NEW entry) — for a
+   * contradiction the two usually share an entry; for a not-written-down detail
+   * with nothing recorded yet this is empty (that is WHY it is missing). An
+   * object so an optional field (e.g. a manuscript span) can be added later
+   * without breaking the cached-mark contract.
+   */
+  checkedAgainst?: CheckedAgainst;
+}
+
+/**
+ * The wiki write-target a signal resolved to, unified across all signal kinds so
+ * one shape drives the modal's category -> entry -> fact drill-down. At each of
+ * the category and entry levels EXACTLY ONE of {existing id, propose-new name}
+ * is set, matching the modal's "pick an existing pill" vs "+ Add new" choice; a
+ * level with NEITHER is an unresolved default the user fills in. `fact` is the
+ * key/value to write (present for a not-written-down detail or a contradiction;
+ * absent for a bare new-entity proposal until the writer adds one).
+ */
+export interface ResolvedTarget {
+  category: { id?: string; proposeName?: string };
+  entry: { id?: string; proposeName?: string; proposeKind?: string };
+  fact?: { key: string; value: string };
+}
+
+/**
+ * The existing wiki source a signal was checked against. `entryId` + `factKey`
+ * are what the model can echo (both are in the gazetteer it sees); `factId` is
+ * resolved SERVER-SIDE from (entryId, factKey) so the model never handles an
+ * opaque id. `recordedValue` is what the wiki currently says (the conflict's
+ * `recorded`, promoted to first-class). All optional: a pure not-written-down
+ * signal checked against nothing leaves this empty.
+ */
+export interface CheckedAgainst {
+  entryId?: string;
+  factKey?: string;
+  factId?: string;
+  recordedValue?: string;
 }
 
 export type MarkImportance = 'high' | 'normal' | 'low';

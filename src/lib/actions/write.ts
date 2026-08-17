@@ -401,17 +401,19 @@ export async function aiCheckChapter(
       "Report THREE kinds of finding:",
       "  conflicts: a claim that CONTRADICTS a recorded gazetteer fact (wrong count, wrong colour, wrong age, wrong relationship, impossible per a recorded rule, etc.).",
       "  missing:   a concrete, checkable NEW fact about a KNOWN entity (one already in the gazetteer) that the gazetteer does not record yet.",
+      "  For a missing finding, set entryId to the bracketed gazetteer id of that KNOWN entity, and key/value to the new fact to record.",
       "  newEntity: the prose introduces a GENUINELY NEW subject that has NO entry in the gazetteer at all — a named character, place/world, organization, or standalone piece of lore worth its own entry. Propose it for the writer to confirm; you are NOT creating it.",
       "HARD RULES:",
       "- Ground ONLY in the gazetteer. Never invent a contradicting fact. If the gazetteer does not constrain something, it is NOT a conflict.",
       "- Every quote MUST be copied VERBATIM from the paragraph text (exact characters, including punctuation). Do not paraphrase.",
       "- Prefer few, high-confidence findings over many weak ones. If unsure, omit it.",
       "- entryId must be one of the bracketed ids from the gazetteer, or empty.",
+      "- On a conflict, ALSO return factKey: the exact gazetteer fact key you checked the claim against (the text before the colon inside the entry’s [key: value; ...] list, e.g. \"chair-count\"). Leave it empty if no single recorded fact applies.",
       "- newEntity is ONLY for a subject with NO existing entry. If the subject already appears in the gazetteer, it is `missing` (a new fact about it), never `newEntity`. Never propose a newEntity that duplicates a gazetteer entry.",
       "- newEntity.kind MUST be exactly one of: character | world | organization | lore. If unsure, use lore.",
       "- newEntity.name is the proposed short display name for the entry (e.g. \"Saint Osk\").",
       "Return STRICT JSON only, no prose, shaped exactly:",
-      '{"conflicts":[{"quote":string,"entryId":string,"reason":string,"recorded":string,"paragraph":number}],"missing":[{"quote":string,"reason":string,"key":string,"value":string,"paragraph":number}],"newEntity":[{"quote":string,"name":string,"kind":string,"reason":string,"paragraph":number}]}',
+      '{"conflicts":[{"quote":string,"entryId":string,"factKey":string,"reason":string,"recorded":string,"paragraph":number}],"missing":[{"quote":string,"entryId":string,"reason":string,"key":string,"value":string,"paragraph":number}],"newEntity":[{"quote":string,"name":string,"kind":string,"reason":string,"paragraph":number}]}',
     ].join("\n");
 
     const user = [
@@ -475,9 +477,21 @@ export async function aiCheckChapter(
       }
     }
 
+    // Server-side (entryId, factKey) -> stable factId, built from the SAME
+    // gazetteer snapshot we grounded the model on. The model only ever echoes
+    // the human-readable factKey; we resolve the opaque id here so checkedAgainst
+    // carries a stable fact reference without trusting the model to repeat one.
+    const factIdByEntryKey: Record<string, string> = {};
+    for (const e of selection.entries) {
+      for (const f of e.facts) {
+        factIdByEntryKey[`${e.id}\u0000${f.key}`] = f.id;
+      }
+    }
+
     const resolved = new Set(input.resolvedMarkKeys ?? []);
     const marks = aiResultToMarks(parsed, paragraphs, {
       preferredIndexByQuote,
+      factIdByEntryKey,
     }).filter((mk) => !resolved.has(mk.markKey));
 
     return { ok: true, data: { marks } };

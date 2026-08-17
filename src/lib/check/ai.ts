@@ -18,7 +18,7 @@
  * dropped — a mark we cannot anchor is worse than no mark.
  */
 
-import type { Mark, MarkAction } from './index';
+import type { Mark, MarkAction, ResolvedTarget, CheckedAgainst } from './index';
 import { normalizeQuote } from './normalize';
 import { sha1 } from './hash';
 import { occurrenceIndexOf } from './text';
@@ -69,22 +69,38 @@ export interface AiConflictFinding {
   quote: string;
   /** Wiki entry id this contradicts (best-effort; may be empty). */
   entryId?: string;
+  /**
+   * The gazetteer fact KEY the claim was checked against (e.g. "chair-count").
+   * Human-readable and already visible to the model, so it echoes a key rather
+   * than an opaque fact id; the server resolves (entryId, factKey) -> factId.
+   */
+  factKey?: string;
   /** Short reason (rail). */
   reason?: string;
   /** What the wiki actually says (optional, folded into the note). */
   recorded?: string;
+  /** Model paragraph index hint (disambiguates identical substrings only). */
+  paragraph?: number;
 }
 
 /** One unrecorded finding as returned by the model. */
 export interface AiMissingFinding {
   /** Verbatim manuscript run naming something not in the wiki. */
   quote: string;
+  /**
+   * Wiki entry id the new fact belongs to, when the subject is a KNOWN entity
+   * (same bracketed-id mechanism conflicts use). Empty when the subject itself
+   * is not yet in the wiki.
+   */
+  entryId?: string;
   /** Reason / what it is (rail + note). */
   reason?: string;
   /** Proposed fact key if the writer chooses to record it. */
   key?: string;
   /** Proposed fact value if the writer chooses to record it. */
   value?: string;
+  /** Model paragraph index hint (disambiguates identical substrings only). */
+  paragraph?: number;
 }
 
 /** One new-entity finding as returned by the model (TCK-016). */
@@ -97,6 +113,8 @@ export interface AiNewEntityFinding {
   kind?: string;
   /** Short reason / what it is (rail + note). */
   reason?: string;
+  /** Model paragraph index hint (disambiguates identical substrings only). */
+  paragraph?: number;
 }
 
 /** The strict JSON shape aiCheckChapter asks the model for. */
@@ -138,17 +156,47 @@ function locateParagraph(
  *
  * @param response   parsed model JSON
  * @param paragraphs the CURRENT manuscript paragraphs (for grounding + position)
- * @param opts.paragraphIndexByQuote optional hint of where each quote came from,
+ * @param opts.preferredIndexByQuote optional hint of where each quote came from,
  *        used only to disambiguate identical substrings across paragraphs.
+ * @param opts.factIdByEntryKey optional `${entryId}\u0000${factKey}` -> factId
+ *        map from the loaded wiki snapshot. Lets the pure mapper attach the
+ *        stable server-side factId to `checkedAgainst` WITHOUT the model ever
+ *        echoing an opaque id; absent/unmatched leaves factId unset (never
+ *        fabricated).
  */
 export function aiResultToMarks(
   response: AiCheckResponse,
   paragraphs: string[],
-  opts?: { preferredIndexByQuote?: Record<string, number> },
+  opts?: {
+    preferredIndexByQuote?: Record<string, number>;
+    factIdByEntryKey?: Record<string, string>;
+  },
 ): Mark[] {
   const marks: Mark[] = [];
   const seen = new Set<string>();
   const preferred = opts?.preferredIndexByQuote ?? {};
+  const factIdByEntryKey = opts?.factIdByEntryKey ?? {};
+
+  // The AI signal’s existing wiki source, with factId resolved server-side
+  // from (entryId, factKey). Returns undefined when nothing was checked against,
+  // so a pure not-written-down mark carries no checkedAgainst at all.
+  const buildCheckedAgainst = (
+    entryId: string,
+    factKey: string,
+    recordedValue: string,
+  ): CheckedAgainst | undefined => {
+    const eid = entryId.trim();
+    const key = factKey.trim();
+    const recorded = recordedValue.trim();
+    if (!eid && !key && !recorded) return undefined;
+    const factId = eid && key ? factIdByEntryKey[`${eid}\u0000${key}`] : undefined;
+    const ca: CheckedAgainst = {};
+    if (eid) ca.entryId = eid;
+    if (key) ca.factKey = key;
+    if (factId) ca.factId = factId;
+    if (recorded) ca.recordedValue = recorded;
+    return ca;
+  };
 
   const push = (
     ruleId: string,
@@ -158,6 +206,10 @@ export function aiResultToMarks(
     rail: string,
     noteText: string,
     actions: MarkAction[],
+    targets?: {
+      resolvedTarget?: ResolvedTarget;
+      checkedAgainst?: CheckedAgainst;
+    },
   ) => {
     const quote = (quoteRaw ?? '').trim();
     if (!quote) return;
@@ -174,7 +226,7 @@ export function aiResultToMarks(
     if (seen.has(key)) return;
     seen.add(key);
 
-    marks.push({
+    const mark: Mark = {
       markKey: key,
       kind,
       ruleId,
@@ -190,7 +242,10 @@ export function aiResultToMarks(
         paragraphIndex,
         occurrenceIndex: occurrenceIndexOf(paragraphs[paragraphIndex]!, quote),
       },
-    });
+    };
+    if (targets?.resolvedTarget) mark.resolvedTarget = targets.resolvedTarget;
+    if (targets?.checkedAgainst) mark.checkedAgainst = targets.checkedAgainst;
+    marks.push(mark);
   };
 
   for (const c of response.conflicts ?? []) {
@@ -199,27 +254,55 @@ export function aiResultToMarks(
     const note = recorded
       ? `${reason} Your wiki records: ${recorded}.`
       : reason;
+    const entryId = (c.entryId ?? '').trim().replace(/^\[+|\]+$/g, '').trim();
+    const factKey = (c.factKey ?? '').trim();
+    // A contradiction was READ FROM the entry/fact it disagrees with, so
+    // checkedAgainst and the write-target share that entry. resolvedTarget
+    // leaves category unresolved here (the pure mapper lacks the entity’s
+    // kind); the modal/caller fills it from the snapshot.
+    const checkedAgainst = buildCheckedAgainst(entryId, factKey, recorded);
+    const resolvedTarget: ResolvedTarget | undefined = entryId
+      ? { category: {}, entry: { id: entryId } }
+      : undefined;
     push(
       AI_CONFLICT_RULE_ID,
       'conflict',
       c.quote,
-      (c.entryId ?? '').trim(),
+      entryId,
       reason,
       note,
       AI_CONFLICT_ACTIONS,
+      { resolvedTarget, checkedAgainst },
     );
   }
 
   for (const m of response.missing ?? []) {
     const reason = (m.reason ?? '').trim() || 'This is not written down yet.';
+    // A new fact about a KNOWN entity resolves its write-target to that entry;
+    // an unknown subject leaves the target unresolved for the writer to pick.
+    const entryId = (m.entryId ?? '').trim().replace(/^\[+|\]+$/g, '').trim();
+    const key = (m.key ?? '').trim();
+    const value = (m.value ?? '').trim();
+    const resolvedTarget: ResolvedTarget | undefined = entryId
+      ? {
+          category: {},
+          entry: { id: entryId },
+          ...(key && value ? { fact: { key, value } } : {}),
+        }
+      : undefined;
+    // Missing = nothing recorded yet, so there is usually no wiki source it was
+    // checked against. If the model DID cite the entry it looked at, keep that
+    // as the source (factKey empty since the fact is precisely what is absent).
+    const checkedAgainst = buildCheckedAgainst(entryId, '', '');
     push(
       AI_MISSING_RULE_ID,
       'missing',
       m.quote,
-      '', // unrecorded → no entry to anchor to yet
+      '', // markKey anchor stays empty: the FACT is unrecorded even when its entity is known
       reason,
       reason,
       AI_MISSING_ACTIONS,
+      { resolvedTarget, checkedAgainst },
     );
   }
 
@@ -234,6 +317,13 @@ export function aiResultToMarks(
     const note = why
       ? `Proposes a new wiki entry — ${subject}. ${why}`
       : `Proposes a new wiki entry — ${subject}.`;
+    // A brand-new subject proposes a NEW entry by name at both the category
+    // (its kind) and entry levels — proposeName, never an id, since neither
+    // exists yet. No checkedAgainst: there is no wiki source, that is the point.
+    const resolvedTarget: ResolvedTarget = {
+      category: { proposeName: kind },
+      entry: { proposeName: name || undefined, proposeKind: kind },
+    };
     push(
       AI_NEW_ENTITY_RULE_ID,
       'missing', // rides the writer-confirm path; NOT a conflict (RULE 2)
@@ -242,6 +332,7 @@ export function aiResultToMarks(
       rail,
       note,
       AI_MISSING_ACTIONS,
+      { resolvedTarget },
     );
   }
 
