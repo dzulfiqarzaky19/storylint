@@ -17,6 +17,8 @@ import { Manuscript } from '@/components/write/Manuscript';
 import { checkManuscript } from '@/lib/check';
 import type { Mark } from '@/lib/check';
 import { chapterSeverity, buildSeverityByNumber } from '@/lib/check/severity';
+import { resolveChapterMarks } from '@/lib/check/resolve';
+import type { ChapterCheckCacheRow } from '@/lib/domain/types';
 import {
   getChapter,
   getChapterCheckCache,
@@ -85,21 +87,39 @@ export default async function WritePage({
     buildCheckInput({ body, db: wiki, resolvedMarkKeys, chapterCounts }),
   );
 
-  // Feature 1 — left-index severity dots. Re-run the (pure, in-memory) engine
-  // over EVERY chapter's body, reusing the single wiki snapshot + book-wide
-  // resolvedMarkKeys already loaded above (no per-chapter DB round trips).
-  // chapterCounts is ranking-only and never gates mark existence, so it is
-  // omitted here. The ACTIVE chapter is forced to null: the writer already sees
-  // its marks in the right rail, so a dot on it would be redundant noise.
+  // Feature 1: left-index severity dots. Each chapter's dot must reflect the
+  // SAME mark set the writer sees in the rail on open, or the index lies ("a dot,
+  // but nothing to check" - the bug this ticket fixes). So the dot derives from
+  // resolveChapterMarks, the ONE resolver the active rail also reads (regex plus
+  // that chapter's fresh AI-cache marks). The ACTIVE chapter is still forced to
+  // null (buildSeverityByNumber) so its redundant dot never shows.
   const bookChapters = await getChaptersForBook(activeBookId);
+
+  // Per-chapter AI-cache rows for the resolver's freshness gate. Fetched only
+  // when AI is on (else every resolve is a pure-regex fallback and the rows would
+  // go unused). One bounded query per chapter in the active book, run in
+  // parallel; reuses the existing getChapterCheckCache, no new DB function.
+  const aiOn = aiEnabled();
+  const cacheRowByNumber = new Map<number, ChapterCheckCacheRow | null>();
+  if (aiOn) {
+    await Promise.all(
+      bookChapters.map(async (c) => {
+        cacheRowByNumber.set(c.number, await getChapterCheckCache(c.id));
+      }),
+    );
+  }
   const severityByNumber = buildSeverityByNumber(
     bookChapters,
     chapterNumber,
-    (chapterBody) =>
+    (chapterBody, chapterNum) =>
       chapterSeverity(
-        checkManuscript(
-          buildCheckInput({ body: chapterBody, db: wiki, resolvedMarkKeys }),
-        ).marks,
+        resolveChapterMarks({
+          body: chapterBody,
+          db: wiki,
+          resolvedMarkKeys,
+          aiEnabled: aiOn,
+          cacheRow: cacheRowByNumber.get(chapterNum) ?? null,
+        }),
       ),
   );
 

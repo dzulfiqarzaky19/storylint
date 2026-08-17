@@ -37,7 +37,7 @@ docs/
 /Fiction writing app redesign/
 *.log
 tasks/
-
+prototypes/
 # Scratch/probe files at repo root (agent throwaways: _dump.cjs, _engine.mts,
 # _srv2.log, verification output). Never source, never pushed.
 /_*

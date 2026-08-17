@@ -61,11 +61,11 @@ export function shouldShowChapterDot(
 export function buildSeverityByNumber<T extends { number: number; body: unknown }>(
   chapters: readonly T[],
   activeNumber: number,
-  computeFn: (body: unknown) => ChapterSeverity,
+  computeFn: (body: unknown, chapterNumber: number) => ChapterSeverity,
 ): Map<number, ChapterSeverity> {
   const byNumber = new Map<number, ChapterSeverity>();
   for (const c of chapters) {
-    byNumber.set(c.number, c.number === activeNumber ? null : computeFn(c.body));
+    byNumber.set(c.number, c.number === activeNumber ? null : computeFn(c.body, c.number));
   }
   return byNumber;
 }
