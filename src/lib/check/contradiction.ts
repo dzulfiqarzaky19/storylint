@@ -8,7 +8,7 @@
  */
 
 import type { Mark, MarkAction, WikiEntry, WikiFact, WikiSnapshot } from './index';
-import { rules, type Rule, type RuleContext } from './rules';
+import { rules, type Rule, type RuleContext, type RuleMatch } from './rules';
 import { normalizeQuote } from './normalize';
 import { sha1 } from './hash';
 import { splitSentences, occurrenceIndexOf } from './text';
@@ -28,7 +28,7 @@ function markKey(ruleId: string, quote: string, entryId: string): string {
 function applyRule(
   rule: Rule,
   ctx: RuleContext,
-): { quote: string; entryId: string; rail: string; noteText: string } | null {
+): RuleMatch | null {
   const match = ctx.sentence.match(rule.extract);
   if (!match) return null;
   return rule.compare(match, ctx);
@@ -71,6 +71,24 @@ export function findContradictions(
           if (seen.has(key)) continue;
           seen.add(key);
 
+          // A deterministic contradiction is READ FROM a real recorded fact, so it
+          // carries the same write-target seams an AI conflict does: checkedAgainst
+          // pins the exact facts row (so resolveWikiWriteMode edits it in place
+          // instead of appending a second, still-contradicting fact), and
+          // resolvedTarget opens the "change it" modal locked to that entry+fact
+          // with the corrected value pre-filled when the rule named one.
+          const checkedAgainst = {
+            factId: fact.id,
+            entryId: entry.id,
+            factKey: fact.key,
+            recordedValue: fact.value,
+          };
+          const resolvedTarget = {
+            category: {},
+            entry: { id: entry.id },
+            fact: { key: fact.key, value: result.suggestedValue ?? '' },
+          };
+
           marks.push({
             markKey: key,
             // Surface the exact entry this mark is anchored to (the SAME id that
@@ -83,6 +101,8 @@ export function findContradictions(
             rail: result.rail,
             noteText: result.noteText,
             actions: CONFLICT_ACTIONS,
+            checkedAgainst,
+            resolvedTarget,
             position: {
               paragraphIndex,
               occurrenceIndex: occurrenceIndexOf(paragraph, result.quote),

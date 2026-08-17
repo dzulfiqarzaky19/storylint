@@ -79,6 +79,12 @@ export interface AiConflictFinding {
   reason?: string;
   /** What the wiki actually says (optional, folded into the note). */
   recorded?: string;
+  /**
+   * The corrected value the manuscript implies for this fact, so the change modal
+   * opens with the new value prefilled (one confirm away). Optional: empty when
+   * the prose implies no single replacement, and the writer types it themselves.
+   */
+  suggested?: string;
   /** Model paragraph index hint (disambiguates identical substrings only). */
   paragraph?: number;
 }
@@ -256,13 +262,18 @@ export function aiResultToMarks(
       : reason;
     const entryId = (c.entryId ?? '').trim().replace(/^\[+|\]+$/g, '').trim();
     const factKey = (c.factKey ?? '').trim();
+    const suggested = (c.suggested ?? '').trim();
     // A contradiction was READ FROM the entry/fact it disagrees with, so
     // checkedAgainst and the write-target share that entry. resolvedTarget
     // leaves category unresolved here (the pure mapper lacks the entity’s
     // kind); the modal/caller fills it from the snapshot.
     const checkedAgainst = buildCheckedAgainst(entryId, factKey, recorded);
     const resolvedTarget: ResolvedTarget | undefined = entryId
-      ? { category: {}, entry: { id: entryId } }
+      ? {
+          category: {},
+          entry: { id: entryId },
+          ...(factKey ? { fact: { key: factKey, value: suggested } } : {}),
+        }
       : undefined;
     push(
       AI_CONFLICT_RULE_ID,

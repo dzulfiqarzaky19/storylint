@@ -82,6 +82,39 @@ describe('checkManuscript — seeded Chapter 7', () => {
     expect(m4!.noteText.toLowerCase()).toContain('green');
   });
 
+  it('m4 resolves its target for an in-place EDIT: checkedAgainst + resolvedTarget carry the corrected value', () => {
+    // WHY (user-caught live bug): a deterministic contradiction opened the wiki
+    // modal in ADD UI (empty key/value) and appended a second fact instead of
+    // CORRECTING the contradicted one. The engine now resolves the exact row it
+    // walked (checkedAgainst.factId/entryId/factKey) and the correction to apply
+    // (resolvedTarget.fact = the asserted value, capitalized to match wiki casing),
+    // which is the single signal WikiTargetPicker (locked EDIT) and
+    // resolveWikiWriteMode (edit-in-place) both read. Drop either field on the push
+    // and the modal falls back to ADD + append -> the bug returns.
+    const { marks } = checkManuscript({ paragraphs: chapter7Paragraphs, wiki });
+    const m4 = markByQuote(marks, 'Her own grey eyes');
+    expect(m4).toBeDefined();
+
+    // The walked fact is Maren's recorded Eyes fact.
+    const eyesFact = wiki.entries
+      .find((e) => e.id === 'maren')!
+      .facts.find((f) => f.key.toLowerCase() === 'eyes')!;
+
+    expect(m4!.checkedAgainst).toBeDefined();
+    expect(m4!.checkedAgainst!.entryId).toBe('maren');
+    expect(m4!.checkedAgainst!.factId).toBe(eyesFact.id);
+    expect(m4!.checkedAgainst!.factKey).toBe(eyesFact.key);
+
+    // resolvedTarget pre-fills the modal: same entry, same key, the CORRECTED value
+    // (the manuscript's asserted attribute, capitalized to sit beside wiki casing).
+    expect(m4!.resolvedTarget).toBeDefined();
+    expect(m4!.resolvedTarget!.entry?.id).toBe('maren');
+    expect(m4!.resolvedTarget!.fact?.key).toBe(eyesFact.key);
+    expect(m4!.resolvedTarget!.fact?.value).toBe('Grey');
+    // The correction must NOT re-assert the recorded (contradicted) value.
+    expect(m4!.resolvedTarget!.fact?.value).not.toBe(eyesFact.value);
+  });
+
   it('m2 and m3 are missing (Unrecorded) marks with add/edit/leave actions', () => {
     const { marks } = checkManuscript({ paragraphs: chapter7Paragraphs, wiki });
 

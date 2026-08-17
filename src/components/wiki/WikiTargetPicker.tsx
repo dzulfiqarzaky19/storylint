@@ -110,8 +110,15 @@ export default function WikiTargetPicker({
   );
 
   // Key/value: prefilled from the resolved fact so the default write is one
-  // confirm away; both editable (suggested-but-editable at every level).
-  const [factKey, setFactKey] = useState(() => resolvedTarget.fact?.key ?? "");
+  // confirm away; both editable (suggested-but-editable at every level). On a
+  // CONTRADICTION the resolvedTarget.fact may be absent (a legacy/cached mark, or
+  // the model returned no `suggested` value) — fall back to checkedAgainst.factKey
+  // so the locked key is never empty and the writer can always type the fix. The
+  // value has no reliable fallback (recordedValue is the OLD, contradicted value,
+  // not the correction), so it stays empty for the writer when unsuggested.
+  const [factKey, setFactKey] = useState(
+    () => resolvedTarget.fact?.key ?? checkedAgainst?.factKey ?? "",
+  );
   const [factValue, setFactValue] = useState(
     () => resolvedTarget.fact?.value ?? "",
   );
@@ -119,6 +126,21 @@ export default function WikiTargetPicker({
   const [entryQuery, setEntryQuery] = useState("");
 
   const isMint = entrySel === NEW_ENTRY;
+
+  // A CONTRADICTION resolves against a known existing fact, so its write is an
+  // in-place CORRECTION, not an add: the target entry+fact are already decided by
+  // the signal. In that case the modal LOCKS the category and entry to that target
+  // — there is nothing to pick, only the value to fix — so the writer can't misfile
+  // a correction onto the wrong entry. Gated on the resolved factId so the modal
+  // shows EDIT exactly when resolveWikiWriteMode can actually edit that row in place
+  // (both AI conflicts and the deterministic rules now resolve it); an AI conflict
+  // the server never matched to a row, and /research and not-written-down signals,
+  // carry no factId and stay in the free-pick add flow untouched.
+  const isLockedEdit = Boolean(checkedAgainst?.factId);
+  const lockedEntryName = useMemo(() => {
+    if (!isLockedEdit) return undefined;
+    return entries.find((e) => e.id === checkedAgainst?.entryId)?.name;
+  }, [isLockedEdit, entries, checkedAgainst]);
 
   // Entries under the picked category, filtered by the search box. The resolved
   // default entry stays reachable even when it sorts past the slice cap.
@@ -168,14 +190,16 @@ export default function WikiTargetPicker({
       className={styles.overlay}
       role="dialog"
       aria-modal="true"
-      aria-label="Add to the wiki"
+      aria-label={isLockedEdit ? "Change the wiki" : "Add to the wiki"}
       onKeyDown={(e) => {
         if (e.key === "Escape") onCancel();
       }}
     >
       <div className={styles.panel}>
         <header className={styles.head}>
-          <h2 className={styles.title}>Add to the wiki</h2>
+          <h2 className={styles.title}>
+            {isLockedEdit ? "Change the wiki" : "Add to the wiki"}
+          </h2>
           {checkedName && (
             <p className={styles.provenance}>
               Checked against <strong>{checkedName}</strong>
@@ -189,6 +213,11 @@ export default function WikiTargetPicker({
 
         <section className={styles.level} aria-label="Category">
           <span className={styles.levelLabel}>Category</span>
+          {isLockedEdit ? (
+            <span className={styles.fixedTarget}>
+              {categories.find((c) => c.id === categoryId)?.label ?? categoryId}
+            </span>
+          ) : (
           <div className={styles.pills} role="radiogroup" aria-label="Category">
             {categories.map((c) => (
               <button
@@ -223,7 +252,8 @@ export default function WikiTargetPicker({
               + Add new
             </button>
           </div>
-          {isNewCategory && (
+          )}
+          {!isLockedEdit && isNewCategory && (
             <input
               type="text"
               className={styles.field}
@@ -237,6 +267,10 @@ export default function WikiTargetPicker({
 
         <section className={styles.level} aria-label="Entry">
           <span className={styles.levelLabel}>Entry</span>
+          {isLockedEdit ? (
+            <span className={styles.fixedTarget}>{lockedEntryName}</span>
+          ) : (
+          <>
           <input
             type="text"
             className={styles.search}
@@ -278,11 +312,17 @@ export default function WikiTargetPicker({
               aria-label="New entry name"
             />
           )}
+          </>
+          )}
         </section>
 
         <section className={styles.level} aria-label="Detail">
           <span className={styles.levelLabel}>
-            {isMint ? "First detail" : "Detail to add"}
+            {isLockedEdit
+              ? "Changed value"
+              : isMint
+                ? "First detail"
+                : "Detail to add"}
           </span>
           <div className={styles.kv}>
             <input
@@ -292,6 +332,7 @@ export default function WikiTargetPicker({
               value={factKey}
               onChange={(e) => setFactKey(e.target.value)}
               aria-label="Detail key"
+              readOnly={isLockedEdit}
             />
             <input
               type="text"
@@ -311,7 +352,11 @@ export default function WikiTargetPicker({
             onClick={submit}
             disabled={confirmDisabled}
           >
-            {isMint ? "Create entry" : "Add detail"}
+            {isLockedEdit
+              ? "Change it"
+              : isMint
+                ? "Create entry"
+                : "Add detail"}
           </button>
           <button
             type="button"

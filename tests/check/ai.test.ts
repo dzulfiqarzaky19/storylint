@@ -296,10 +296,36 @@ describe('Slice B — resolvedTarget + checkedAgainst on AI marks', () => {
       recordedValue: 'Twenty-one, never more',
     });
     // resolvedTarget = where an accepted write GOES; a conflict targets the
-    // same existing entry (category left for the modal to resolve from the id).
+    // same existing entry (category left for the modal to resolve from the id)
+    // and prefills the fact key it checked against so the change modal opens
+    // key-locked. No `suggested` here, so the value starts empty for the writer.
     expect(persisted.resolvedTarget).toEqual({
       category: {},
       entry: { id: 'sept' },
+      fact: { key: 'members', value: '' },
+    });
+  });
+
+  it('a conflict with a model-suggested corrected value prefills the change modal fact value (one confirm away)', () => {
+    const res: AiCheckResponse = {
+      conflicts: [
+        {
+          quote: 'twenty-three members',
+          entryId: 'sept',
+          factKey: 'members',
+          reason: 'The Quiet Sept has twenty-one members.',
+          recorded: 'Twenty-one, never more',
+          suggested: 'Twenty-three',
+        },
+      ],
+    };
+    const marks = aiResultToMarks(res, paragraphs, {
+      factIdByEntryKey: { ['sept\u0000members']: 'fact-sept-members-uuid' },
+    });
+    expect(marks[0]!.resolvedTarget).toEqual({
+      category: {},
+      entry: { id: 'sept' },
+      fact: { key: 'members', value: 'Twenty-three' },
     });
   });
 

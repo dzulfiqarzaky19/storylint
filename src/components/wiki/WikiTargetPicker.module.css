@@ -66,6 +66,17 @@
   color: var(--faint);
 }
 
+.fixedTarget {
+  align-self: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--tile);
+  color: var(--ink);
+}
+
 .pills {
   display: flex;
   flex-wrap: wrap;

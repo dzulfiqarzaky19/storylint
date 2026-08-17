@@ -11,6 +11,15 @@
 import type { WikiEntry, WikiSnapshot } from './index';
 import { normalize } from './normalize';
 
+/**
+ * Capitalize the first letter so a manuscript-cased assertion ("blue") is
+ * suggested in the same style the wiki records facts in ("Green"), keeping the
+ * corrected value visually consistent with its neighbours.
+ */
+function capitalize(value: string): string {
+  return value ? value[0]!.toUpperCase() + value.slice(1) : value;
+}
+
 export interface RuleContext {
   /** The sentence being examined. */
   sentence: string;
@@ -31,6 +40,15 @@ export interface RuleMatch {
   rail: string;
   /** Longer inline note. */
   noteText: string;
+  /**
+   * The corrected value the manuscript implies for the walked fact, when the rule
+   * can name one (e.g. the asserted eye colour, the asserted head count). Lets the
+   * "change it" modal open with the fix pre-filled so the correction is one confirm
+   * away. Omitted when no single corrected value follows from the contradiction
+   * (a cross-entry constraint violation faults the timing, not the walked fact),
+   * leaving the writer to type the value.
+   */
+  suggestedValue?: string;
 }
 
 export interface Rule {
@@ -88,6 +106,7 @@ const attributeMismatch: Rule = {
     return {
       quote: quote.trim(),
       entryId: ctx.entry.id,
+      suggestedValue: capitalize(asserted),
       rail: `${ctx.entry.name} · Eyes: ${ctx.recordedValue.toLowerCase()}.`,
       noteText: `${ctx.entry.name} records ${ctx.recordedValue.toLowerCase()} eyes, set in Chapter 1. This sentence gives them as ${asserted.toLowerCase()}.`,
     };
@@ -172,6 +191,7 @@ const memberCount: Rule = {
     return {
       quote: match[0].trim(),
       entryId: ctx.entry.id,
+      suggestedValue: capitalize(asserted),
       rail: `${ctx.entry.name} · Members: ${ctx.recordedValue.toLowerCase()}.`,
       noteText: `Your wiki records ${ctx.entry.name} as ${ctx.recordedValue.toLowerCase()}. This sentence puts the count at ${asserted.toLowerCase()}.`,
     };

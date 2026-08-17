@@ -12,15 +12,17 @@ import type { Mark, CheckedAgainst } from "@/lib/check";
 // STACKED a second fact beside the one it contradicts, leaving the wiki holding BOTH
 // the old value and the correction — and the next check re-flags the same conflict.
 //
-// The one signal that a real row is being CORRECTED is a conflict mark
-// (AI_CONFLICT_RULE_ID) whose server-resolved checkedAgainst.factId points at an
-// actual facts row. Anything else — a conflict the server never matched to a row
-// (factId unset; Slice B never fabricates one), or any non-conflict enrich — has no
-// row to correct, so it appends.
+// The one signal that a real row is being CORRECTED is a CONFLICT mark
+// (kind: 'conflict' — an AI conflict OR a deterministic rule) whose resolved
+// checkedAgainst.factId points at an actual facts row. Anything else — a conflict
+// the engine never matched to a row (factId unset; no path fabricates one), or any
+// non-conflict enrich (a 'missing' / new-entity record) — has no row to correct, so
+// it appends. Guarding on kind (not ruleId) is what lets BOTH conflict sources edit
+// while every 'missing' mark still adds.
 //
 // MUTATION TARGET (reverted after RED): drop the `&& factId` guard, or the
-// `ruleId === AI_CONFLICT_RULE_ID` guard, and the 'create'-expecting cases flip to
-// 'edit' (or vice versa) -> RED here instead of on a live screen.
+// `kind === 'conflict'` guard, and the 'create'-expecting cases flip to 'edit'
+// (or vice versa) -> RED here instead of on a live screen.
 // -----------------------------------------------------------------------------
 
 function mark(overrides: Partial<Mark>): Mark {
@@ -64,9 +66,11 @@ describe("resolveWikiWriteMode — edit-in-place vs append routing", () => {
   });
 
   it("a MISSING mark never edits, even if it somehow carries a factId -> APPEND", () => {
-    // Only a conflict corrects an existing fact; an unrecorded-detail mark records
-    // a NEW fact. Guarding on ruleId (not just factId presence) keeps that line.
+    // Only a conflict (kind: 'conflict') corrects an existing fact; an
+    // unrecorded-detail mark is kind: 'missing' and records a NEW fact. Guarding on
+    // kind (not just factId presence) keeps that line.
     const m = mark({
+      kind: "missing",
       ruleId: AI_MISSING_RULE_ID,
       checkedAgainst: checkedAgainst({ entryId: "e1", factId: "f-99" }),
     });
@@ -74,7 +78,9 @@ describe("resolveWikiWriteMode — edit-in-place vs append routing", () => {
   });
 
   it("a NEW-ENTITY mark with a stray factId -> APPEND (mint path, never an edit)", () => {
+    // New-entity proposals are kind: 'missing' too (there is no fact row yet).
     const m = mark({
+      kind: "missing",
       ruleId: AI_NEW_ENTITY_RULE_ID,
       checkedAgainst: checkedAgainst({ factId: "f-77" }),
     });

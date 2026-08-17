@@ -409,11 +409,12 @@ export async function aiCheckChapter(
       "- Prefer few, high-confidence findings over many weak ones. If unsure, omit it.",
       "- entryId must be one of the bracketed ids from the gazetteer, or empty.",
       "- On a conflict, ALSO return factKey: the exact gazetteer fact key you checked the claim against (the text before the colon inside the entry’s [key: value; ...] list, e.g. \"chair-count\"). Leave it empty if no single recorded fact applies.",
+      "- On a conflict, ALSO return suggested: the CORRECTED value for that fact as the manuscript now implies it (what the gazetteer SHOULD say to match the prose, e.g. if recorded is \"four\" and the prose says five chairs, suggested is \"five\"). Keep it a short value only, no key, no prose. Leave it empty if the prose does not imply a single replacement value.",
       "- newEntity is ONLY for a subject with NO existing entry. If the subject already appears in the gazetteer, it is `missing` (a new fact about it), never `newEntity`. Never propose a newEntity that duplicates a gazetteer entry.",
       "- newEntity.kind MUST be exactly one of: character | world | organization | lore. If unsure, use lore.",
       "- newEntity.name is the proposed short display name for the entry (e.g. \"Saint Osk\").",
       "Return STRICT JSON only, no prose, shaped exactly:",
-      '{"conflicts":[{"quote":string,"entryId":string,"factKey":string,"reason":string,"recorded":string,"paragraph":number}],"missing":[{"quote":string,"entryId":string,"reason":string,"key":string,"value":string,"paragraph":number}],"newEntity":[{"quote":string,"name":string,"kind":string,"reason":string,"paragraph":number}]}',
+      '{"conflicts":[{"quote":string,"entryId":string,"factKey":string,"recorded":string,"suggested":string,"reason":string,"paragraph":number}],"missing":[{"quote":string,"entryId":string,"reason":string,"key":string,"value":string,"paragraph":number}],"newEntity":[{"quote":string,"name":string,"kind":string,"reason":string,"paragraph":number}]}',
     ].join("\n");
 
     const user = [
