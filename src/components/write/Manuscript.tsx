@@ -32,7 +32,12 @@ import { Extension } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 
 import { checkManuscript } from '@/lib/check';
-import type { Mark, MarkAction, WikiSnapshot as CheckWiki } from '@/lib/check';
+import type {
+  Mark,
+  MarkAction,
+  ResolvedTarget,
+  WikiSnapshot as CheckWiki,
+} from '@/lib/check';
 import {
   mergeMarks,
   hashParagraphs,
@@ -52,6 +57,14 @@ import {
   aiCheckChapter,
   persistChapterCheck,
 } from '@/lib/actions/write';
+import { createEntry, createFact, createCategory } from '@/lib/actions/wiki';
+import { KIND_SHELF, type Shelf } from '@/lib/domain/types';
+import { defaultCategoryShelf } from '@/lib/wiki/categoryLabels';
+import WikiTargetPicker from '@/components/wiki/WikiTargetPicker';
+import {
+  resolvePickerTarget,
+  type PickerResult,
+} from '@/lib/research/resolvePickerTarget';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
   createMarkDecorationPlugin,
@@ -101,6 +114,16 @@ export interface ManuscriptProps {
   initialAiMarks?: Mark[];
   /** AI gateway configured at load; gates the inline note's ✦ Ask AI affordance. */
   aiEnabled?: boolean;
+  /** The active world id (resolved by page.tsx); a minted entry links into it. */
+  activeWorldId: string;
+  /**
+   * Live wiki entries (world-scoped, deleted-filtered — the SAME set /wiki and
+   * /research show) the "Add to the wiki" modal offers to enrich. Landing on one
+   * makes the confirm an ENRICH; leaving it on "+ new" makes it a MINT.
+   */
+  pickerEntries: { id: string; name: string; kind: string }[];
+  /** Live category pills for the modal's top level (built-in + user-created). */
+  pickerCategories: { id: string; label: string }[];
 }
 
 /** Maps a note action id to the store/server resolution id. */
@@ -135,6 +158,9 @@ export function Manuscript({
   activeUniverseId,
   initialAiMarks,
   aiEnabled = false,
+  activeWorldId,
+  pickerEntries,
+  pickerCategories,
 }: ManuscriptProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -183,6 +209,12 @@ export function Manuscript({
   });
 
   const [busy, setBusy] = useState(false);
+
+  // The mark whose "Add to the wiki" modal is open, held in LOCAL state so the
+  // writeReducer keeps its invariant of never touching the wiki. null => no modal.
+  // The modal's confirm IS the only wiki-write gate (product rule 1); cancel
+  // writes nothing.
+  const [pendingPickerMark, setPendingPickerMark] = useState<Mark | null>(null);
 
   // AI advice per mark (session-only; read-only; keyed by markKey). Cleared
   // implicitly by keying — a mark with no entry shows the ✦ Ask AI button.
@@ -439,6 +471,13 @@ export function Manuscript({
   const handleAction = useCallback(
     async (mark: Mark, action: MarkAction) => {
       const resolution = resolutionIdOf(action);
+      if (resolution === 'wiki') {
+        // "Add to the wiki" -> open the drill-down modal defaulted to the mark's
+        // resolved target. The confirm gate does the write; nothing happens yet.
+        setPendingPickerMark(mark);
+        dispatch({ type: 'OPEN_MARK', markKey: null });
+        return;
+      }
       setBusy(true);
       try {
         if (resolution === 'text') {
@@ -464,13 +503,8 @@ export function Manuscript({
           // 'leave' persisted → suppress locally too (survives reload via DB).
           dispatch({ type: 'RESOLVE_MARK', markKey: mark.markKey, actionId: 'leave' });
         } else if (res.data.kind === 'needsConfirmation') {
-          // 'wiki' → the confirmed wiki path owns the actual write (product rule 1).
-          // Surface it as a non-error notice; the Wiki screen handles confirmation.
-          dispatch({
-            type: 'SET_ERROR',
-            error:
-              'Send this to the wiki thread to write it in — nothing enters the gazetteer without a yes.',
-          });
+          // The 'wiki' resolution is intercepted above and never reaches here; any
+          // other needsConfirmation has no inline gate, so just close the note.
           dispatch({ type: 'OPEN_MARK', markKey: null });
         }
       } finally {
@@ -478,6 +512,85 @@ export function Manuscript({
       }
     },
     [editor, aiEnabled, aiAdvice, handleExplain],
+  );
+
+  const handlePickerCancel = useCallback(() => {
+    // Cancel writes NOTHING (product rule 1). Reopen the mark's note so the
+    // writer lands back where they were, not on a blank manuscript.
+    const mark = pendingPickerMark;
+    setPendingPickerMark(null);
+    if (mark) dispatch({ type: 'OPEN_MARK', markKey: mark.markKey });
+  }, [pendingPickerMark]);
+
+  // The modal's confirm IS the wiki-write gate (product rule 1). The writer's
+  // PickerResult maps through the SAME pure resolvePickerTarget /research uses;
+  // the one bit it carries (entryId present) routes ENRICH vs MINT. /write has a
+  // Mark, not a proposition, so it drives the manual-authoring actions directly
+  // (createFact / createEntry) rather than /research's proposition-coupled
+  // confirmCard. Mark-keyed ids make a double-confirm idempotent: insertFact and
+  // insertEntry are both ON CONFLICT (id) DO UPDATE, so re-confirming the same
+  // mark updates in place instead of stacking a duplicate.
+  const handlePickerConfirm = useCallback(
+    async (result: PickerResult) => {
+      const mark = pendingPickerMark;
+      if (!mark) return;
+      const markKey = mark.markKey;
+      setPendingPickerMark(null);
+      setBusy(true);
+      try {
+        const args = resolvePickerTarget(result);
+        if (args.enrichEntryId) {
+          const res = await createFact({
+            id: `mark-fact-${markKey}`,
+            entryId: args.enrichEntryId,
+            key: args.entry.name,
+            value: args.entry.summary,
+          });
+          if (!res.ok) {
+            dispatch({ type: 'SET_ERROR', error: res.error });
+            return;
+          }
+        } else {
+          // MINT. A brand-new category is a real categories row: mint it FIRST so
+          // the entry's kind is that real category id, not the lore fallback. The
+          // proposed NAME's presence is what routes to a category mint.
+          const newCategoryName = result.proposeCategoryName?.trim();
+          let kind: string = args.entry.kind;
+          let shelf: Shelf = KIND_SHELF[args.entry.kind];
+          if (newCategoryName) {
+            const cat = await createCategory({
+              id: `cat-${markKey}`,
+              label: newCategoryName,
+              shelf: defaultCategoryShelf(),
+            });
+            if (!cat.ok) {
+              dispatch({ type: 'SET_ERROR', error: cat.error });
+              return;
+            }
+            kind = cat.data.id;
+            shelf = cat.data.shelf as Shelf;
+          }
+          const entry = await createEntry({
+            id: `mint-${markKey}`,
+            kind,
+            shelf,
+            name: args.entry.name,
+            summary: args.entry.summary,
+            worldId: activeWorldId,
+          });
+          if (!entry.ok) {
+            dispatch({ type: 'SET_ERROR', error: entry.error });
+            return;
+          }
+        }
+        // Written -> resolve the mark locally so it drops off the rail and
+        // survives reload (the wiki now records what the mark flagged).
+        dispatch({ type: 'RESOLVE_MARK', markKey, actionId: 'leave' });
+      } finally {
+        setBusy(false);
+      }
+    },
+    [pendingPickerMark, activeWorldId],
   );
 
   // Replace the flagged run's SENTENCE in the editor with the AI's suggested
@@ -557,6 +670,17 @@ export function Manuscript({
         />
       </div>
 
+      {pendingPickerMark ? (
+        <WikiTargetPicker
+          resolvedTarget={writeMarkTarget(pendingPickerMark)}
+          checkedAgainst={pendingPickerMark.checkedAgainst}
+          categories={pickerCategories}
+          entries={pickerEntries}
+          onConfirm={handlePickerConfirm}
+          onCancel={handlePickerCancel}
+        />
+      ) : null}
+
       {/* Portal the note into the plugin's widget host under the open paragraph. */}
       {openMark && noteHost
         ? createPortal(
@@ -578,6 +702,23 @@ export function Manuscript({
           )
         : null}
     </div>
+  );
+}
+
+/**
+ * The modal's ResolvedTarget DEFAULT for a /write mark. A contradiction/AI mark
+ * carries a resolved target from the check engine (slice B) — use it verbatim.
+ * A mark without one (older cached / deterministic) falls back to a MINT proposed
+ * by the flagged phrase, seeding the fact key/value from the phrase + note so the
+ * default write is one confirm away, still fully editable in the modal.
+ */
+function writeMarkTarget(mark: Mark): ResolvedTarget {
+  return (
+    mark.resolvedTarget ?? {
+      category: {},
+      entry: { proposeName: mark.quote },
+      fact: { key: mark.quote, value: mark.noteText },
+    }
   );
 }
 

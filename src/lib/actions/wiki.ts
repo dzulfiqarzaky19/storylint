@@ -47,6 +47,7 @@ import {
   updateEntryFields,
   updateFact,
   getMaxSortOrderForShelf,
+  getMaxSortOrderForFacts,
   softDeleteEntry as softDeleteEntryRow,
   createCategory as createCategoryRow,
   getMaxCategorySortOrder,
@@ -620,14 +621,30 @@ export async function purgeExpiredDeleted(input: {
  * reducer `CREATE_FACT`. Returns the new fact id + sortOrder.
  */
 export async function createFact(input: {
+  /**
+   * Caller-supplied stable id (optional). A mark-keyed id (the /write modal's
+   * `mark-fact-<markKey>`) makes a re-confirm idempotent: insertFact is
+   * ON CONFLICT (id) DO UPDATE, so confirming the same mark twice updates the
+   * fact in place instead of stacking a duplicate. Omitted (manual authoring)
+   * -> a fresh uuid, unchanged behavior.
+   */
+  id?: string;
   entryId: string;
   key: string;
   value: string;
-  sortOrder: number;
+  /**
+   * Append position among the entry's facts. Optional: omitted, it derives
+   * `getMaxSortOrderForFacts(entryId) + 1` so a client (the /write modal) that
+   * can't see the entry's current facts still appends correctly instead of
+   * guessing a colliding index.
+   */
+  sortOrder?: number;
 }): Promise<ActionResult<{ factId: string }>> {
   try {
     const confirmation = confirmWikiWrite({ confirmed: true });
-    const id = randomUUID();
+    const id = input.id ?? randomUUID();
+    const sortOrder =
+      input.sortOrder ?? (await getMaxSortOrderForFacts(input.entryId)) + 1;
     const fact = await insertFact(
       {
         id,
@@ -635,7 +652,7 @@ export async function createFact(input: {
         key: input.key,
         value: input.value,
         fresh: true,
-        sortOrder: input.sortOrder,
+        sortOrder,
       },
       confirmation,
     );

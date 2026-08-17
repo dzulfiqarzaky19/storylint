@@ -24,7 +24,9 @@ import {
   getChapterCheckCache,
   getChaptersForBook,
   getPhraseChapterCounts,
+  getCategories,
   getResolvedMarkKeys,
+  getWorldEntries,
   getWorldTree,
   listChapters,
   loadWikiSnapshot,
@@ -53,7 +55,7 @@ export default async function WritePage({
   // on which book is active. listChapters is now SCOPED to that book, so the left
   // index shows exactly the active book's chapters (not all 42 across six books).
   const tree = await getWorldTree();
-  const { activeUniverseId, activeBookId } = resolveWriteScope(tree, uParam, wParam, bookParam);
+  const { activeUniverseId, activeWorldId, activeBookId } = resolveWriteScope(tree, uParam, wParam, bookParam);
 
   const chapters = await listChapters(activeBookId);
   // Default to the last chapter (the working edge); an unknown/absent param also
@@ -71,6 +73,16 @@ export default async function WritePage({
 
   const body = chapter?.body ?? EMPTY_BODY;
   const title = chapter?.title ?? 'Low Water';
+
+  // Wiki-target picker (T-WRITE-WIKI-MODAL slice A): the "Add to the wiki"
+  // modal on an open mark needs the live entry list (world-scoped, same
+  // membership /wiki + /research show) and the category pills. getWorldEntries
+  // is soft-delete-filtered and bounded to the active world, so the modal never
+  // offers a sibling world's entry.
+  const [pickerEntries, pickerCategories] = await Promise.all([
+    getWorldEntries(activeWorldId),
+    getCategories(),
+  ]);
 
   // Tier 2 recurrence ranking: fetch DISTINCT-chapter counts ONLY for the
   // phrases actually on THIS chapter (extractCandidatePhrases keys are the same
@@ -158,6 +170,9 @@ export default async function WritePage({
       aiEnabled={aiEnabled()}
       activeBookId={activeBookId}
       activeUniverseId={activeUniverseId}
+      activeWorldId={activeWorldId}
+      pickerEntries={pickerEntries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
+      pickerCategories={pickerCategories.map((c) => ({ id: c.id, label: c.label }))}
       initialAiMarks={initialAiMarks}
     />
   );
