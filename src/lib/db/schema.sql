@@ -3,6 +3,7 @@
 -- 13 tables from HANDOFF §5 (+ categories, F9-B — replaces category_labels).
 -- Drop in dependency order, recreate with FKs + indexes.
 
+DROP TABLE IF EXISTS chapter_check_cache CASCADE;
 DROP TABLE IF EXISTS phrase_mentions CASCADE;
 DROP TABLE IF EXISTS world_entities CASCADE;
 DROP TABLE IF EXISTS dismissed_suggestions CASCADE;
