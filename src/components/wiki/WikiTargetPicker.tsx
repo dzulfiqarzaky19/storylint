@@ -46,6 +46,30 @@ const NEW_ENTRY = "\u0000new-entry" as const;
 const NEW_CATEGORY = "\u0000new-category" as const;
 
 /**
+ * The modal's default category id, by precedence. Pure + exported so the ordering
+ * is unit-testable (it shipped inverted once: categories[0] ahead of proposeKind
+ * defaulted every /write mark to the first pill, "People", regardless of kind).
+ *
+ *   1. `category.id`        — an explicit existing category (ENRICH / research).
+ *   2. `entry.proposeKind`  — the RESOLVED kind the producer computed for THIS
+ *                             mark; it must beat an arbitrary first pill so a
+ *                             "New organization" mark defaults to Orders, not People.
+ *   3. `categories[0]?.id`  — last-resort fallback when the target resolved neither.
+ *   4. `"lore"`             — backstop for an empty category list.
+ */
+export function pickerCategoryDefault(
+  resolvedTarget: ResolvedTarget,
+  categories: PickerCategory[],
+): string {
+  return (
+    resolvedTarget.category.id ??
+    resolvedTarget.entry.proposeKind ??
+    categories[0]?.id ??
+    "lore"
+  );
+}
+
+/**
  * The shared "Add to the wiki" drill-down modal. Category -> entry -> key/value,
  * every level suggested-but-editable, defaulted to `resolvedTarget`. Producer-
  * agnostic (props only, no /research or /write coupling) so /write reuses it
@@ -61,16 +85,8 @@ export default function WikiTargetPicker({
   onConfirm,
   onCancel,
 }: WikiTargetPickerProps) {
-  // Category: default to the resolved id, else the first live category. A propose
-  // -only resolved category (no id) still lands on a real pill so a mint has a
-  // valid kind. Selecting the NEW_CATEGORY sentinel reveals a name field and
-  // mints a fresh category row on confirm (the caller runs createCategory first).
-  const [categoryId, setCategoryId] = useState(
-    () =>
-      resolvedTarget.category.id ??
-      categories[0]?.id ??
-      resolvedTarget.entry.proposeKind ??
-      "lore",
+  const [categoryId, setCategoryId] = useState(() =>
+    pickerCategoryDefault(resolvedTarget, categories),
   );
 
   // New-category name (mint a category): seeded from the producer's proposed
