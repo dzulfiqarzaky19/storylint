@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "verify": "npm run lint && npm run typecheck && npm test",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "e2e:clean": "node tests/e2e/clean.mjs",
