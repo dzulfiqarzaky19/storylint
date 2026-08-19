@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { reseed } from "./_helpers/seed";
-import { withDb } from "./_helpers/db";
+import { reseed } from "../_helpers/seed";
+import { withDb } from "../_helpers/db";
 
 // ===========================================================================
 // F2b — streamed research answer PERSISTS across a reload (the happy path of

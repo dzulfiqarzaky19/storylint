@@ -1,6 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
-import { railRows } from "./_helpers/rail";
-import { reseed } from "./_helpers/seed";
+import { railRows } from "../_helpers/rail";
+import { reseed } from "../_helpers/seed";
 
 // ===========================================================================
 // Group 3 — Marks (user-journey e2e for the /write inline-note actions).

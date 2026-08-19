@@ -1,5 +1,5 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
-import { reseed } from "./_helpers/seed";
+import { reseed } from "../_helpers/seed";
 
 // ===========================================================================
 // Group 1 — Books (user-journey e2e for the book switcher / CRUD / export).

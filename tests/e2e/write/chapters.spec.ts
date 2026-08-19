@@ -1,5 +1,5 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
-import { reseed } from "./_helpers/seed";
+import { reseed } from "../_helpers/seed";
 
 // ===========================================================================
 // Group 2 — Chapters (user-journey e2e for the /write chapter list + editor).
