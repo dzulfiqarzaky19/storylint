@@ -593,12 +593,14 @@ export const CONTENT_WORLDS: ContentWorld[] = [
 // (NOT NULL FK) so the AI grounds on THAT world's gazetteer via loadWorldSnapshot,
 // never the default Ashkeld. Title mirrors the runtime auto-create ("New thread")
 // so a seeded thread and a user-created one are indistinguishable. universeId must
-// match the world's universe (universe_id is NOT NULL too). sort_order 0 = the
-// first (and only) thread in each world's rail.
-const SEED_THREADS: Array<{ id: string; worldId: string; universeId: string }> = [
-  { id: "thread-ashkeld-1", worldId: "world-universe-1", universeId: "universe-1" },
-  { id: "thread-vosk-1", worldId: "world-vosk", universeId: "universe-1" },
-  { id: "thread-halen-1", worldId: "world-halen", universeId: "universe-2" },
+// match the world's universe (universe_id is NOT NULL too). sort_order orders the
+// rail within each world; the default Ashkeld world seeds two so the thread-delete
+// affordance (hidden when only one thread remains, E13) is reachable.
+const SEED_THREADS: Array<{ id: string; worldId: string; universeId: string; sort: number }> = [
+  { id: "thread-ashkeld-1", worldId: "world-universe-1", universeId: "universe-1", sort: 0 },
+  { id: "thread-ashkeld-2", worldId: "world-universe-1", universeId: "universe-1", sort: 1 },
+  { id: "thread-vosk-1", worldId: "world-vosk", universeId: "universe-1", sort: 0 },
+  { id: "thread-halen-1", worldId: "world-halen", universeId: "universe-2", sort: 0 },
 ];
 
 const CONTENT_BOOKS: ContentBook[] = [
@@ -864,8 +866,8 @@ export async function seedWithin(client: PoolClient): Promise<void> {
   for (const t of SEED_THREADS) {
     await client.query(
       `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
-       VALUES ($1, 'New thread', '', 0, 'chat', $2, $3)`,
-      [t.id, t.universeId, t.worldId],
+       VALUES ($1, 'New thread', '', $4, 'chat', $2, $3)`,
+      [t.id, t.universeId, t.worldId, t.sort],
     );
   }
 

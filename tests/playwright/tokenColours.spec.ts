@@ -48,8 +48,11 @@ async function probeProp(
         for (const rule of Array.from(rules)) {
           const st = (rule as CSSStyleRule).selectorText;
           if (st && st.indexOf(suffix) !== -1) {
-            // take the first simple-class token that carries the suffix
-            const m = st.match(new RegExp("\\.([A-Za-z0-9_-]*" + suffix + "[A-Za-z0-9_-]*)"));
+            // Match the class whose token ENDS at the suffix. Without the
+            // trailing (?![\w-]) guard, suffix "__add" also matches
+            // "__addFact"/"__addButton" and the probe silently reads the wrong
+            // element (a border:none div -> currentColor, not the hairline).
+            const m = st.match(new RegExp("\\.([A-Za-z0-9_-]*" + suffix + ")(?![A-Za-z0-9_-])"));
             if (m && m[1]) {
               cls = m[1];
               break;
