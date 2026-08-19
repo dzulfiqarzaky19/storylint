@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 
 // Two honest tiers, split by filename suffix so the everyday `test` run never
@@ -8,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 // `npm test` runs unit only (safe against warm dev data). `npm run test:int`
 // runs the DB suite deliberately. Select a tier with `--project unit|int`.
 export default defineConfig({
+  plugins: [react()],
   resolve: {
     alias: {
       // Mirror tsconfig `@/* -> ./src/*` so tests import the engine by path.
@@ -42,6 +44,20 @@ export default defineConfig({
           // execution so the shared-DB suite is deterministic. (Per-file
           // fixture-scoped counts are the belt; this is the suspenders.)
           fileParallelism: false,
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'component',
+          // React component + a11y tests, rendered in jsdom (no browser, no
+          // server, no DB). This is where UI/a11y checks live — NOT e2e. Real
+          // CSS layout/computed-style facts jsdom can't compute stay out of
+          // here (they belong to a browser tool), so this tier proves render,
+          // roles/labels/headings, interactions, and component logic only.
+          include: ['tests/**/*.component.test.tsx'],
+          environment: 'jsdom',
+          setupFiles: ['tests/setup-component.ts'],
         },
       },
     ],
