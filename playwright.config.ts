@@ -12,7 +12,14 @@ const TEST_DATABASE_URL = loadTestEnv();
 // starts its own via webServer. Single desktop viewport per the design's
 // canonical frame size.
 export default defineConfig({
-  testDir: "./tests/e2e",
+  // Two real-browser tiers live under tests/: `e2e/` is pure user journeys, and
+  // `playwright/` is browser-only NON-journey gates — computed-CSS / rendered-
+  // geometry facts (token resolution, touch-target heights, reduced-motion,
+  // focus fills) that jsdom cannot compute, so they can't move to the component
+  // tier but are not journeys either. testMatch is explicit so Playwright never
+  // picks up the Vitest `*.component.test.tsx` files under tests/components/.
+  testDir: "./tests",
+  testMatch: ["e2e/**/*.spec.ts", "playwright/**/*.spec.ts"],
   timeout: 30_000,
   expect: { timeout: 8_000 },
   fullyParallel: false,

@@ -76,6 +76,7 @@ import {
 } from './markDecorations';
 import { InlineNote } from './InlineNote';
 import { OutstandingRail } from './OutstandingRail';
+import SaveStateFooter from './SaveStateFooter';
 import WriteIndex, { type WriteIndexChapter } from './WriteIndex';
 import styles from './Manuscript.module.css';
 
@@ -664,15 +665,11 @@ export function Manuscript({
             <div className={styles.editor}>
               <EditorContent editor={editor} />
             </div>
-            {state.error ? (
-              <p className={`${styles.saveState} ${styles.saveError}`} role="alert">
-                {state.error}
-              </p>
-            ) : (
-              <p className={styles.saveState} role="status">
-                {state.dirty ? 'Saving…' : aiChecking ? 'Checking with AI…' : 'Saved'}
-              </p>
-            )}
+            <SaveStateFooter
+              error={state.error}
+              dirty={state.dirty}
+              aiChecking={aiChecking}
+            />
           </div>
         </div>
 
