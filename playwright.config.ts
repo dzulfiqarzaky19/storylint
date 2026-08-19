@@ -1,4 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadTestEnv } from "./tests/e2e/load-test-env";
+
+// Force the whole e2e suite onto the ISOLATED test DB (:5435/ashkeld_test) before
+// anything connects. This is what makes `playwright test` safe: global-setup's
+// db:reset/db:seed and the webServer below all inherit this DATABASE_URL, so the
+// live dev DB on :5434 is never touched. Throws if it isn't the test DB.
+const TEST_DATABASE_URL = loadTestEnv();
 
 // Smoke-only Playwright config (HANDOFF §8: "Playwright smoke at 1440×900").
 // Assumes the app is already running on port 3100 (started by the gate) OR
@@ -29,8 +36,13 @@ export default defineConfig({
   webServer: {
     command: "npx next start -p 3100",
     url: "http://localhost:3100",
-    reuseExistingServer: true,
-    timeout: 60_000,
+    // Point the served app at the test DB explicitly, and at the isolated e2e
+    // build dir so it never serves (or races) the shared .next dev build.
+    // reuseExistingServer is FALSE so a stray live-DB server on 3100 is never
+    // reused for e2e — the runner starts its own test-DB-backed server.
+    env: { DATABASE_URL: TEST_DATABASE_URL, NEXT_DIST_DIR: ".next-e2e" },
+    reuseExistingServer: false,
+    timeout: 120_000,
   },
   projects: [
     {

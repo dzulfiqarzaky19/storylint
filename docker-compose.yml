@@ -17,6 +17,29 @@ services:
       timeout: 5s
       retries: 10
 
+  # Isolated Postgres for the e2e suite. SEPARATE database, SEPARATE port, and
+  # SEPARATE volume from `db` above, so `playwright test` (which resets+seeds the
+  # DB every run) can NEVER touch the live dev data in `ashkeld`. The e2e runner
+  # points DATABASE_URL at this via .env.test; nothing else uses it. Brought up
+  # by the same `docker compose up` — one command, zero manual setup.
+  db_test:
+    image: postgres:17-alpine
+    container_name: ashkeld_db_test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ashkeld
+      POSTGRES_PASSWORD: ashkeld
+      POSTGRES_DB: ashkeld_test
+    ports:
+      - "5435:5432"
+    volumes:
+      - ashkeld_test_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ashkeld -d ashkeld_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   # Web-search backend for the research chat (F10). Brought up by the same
   # `docker compose up` as the db, JSON API enabled via the mounted settings so
   # it is ready to use with zero manual steps. The app points at it via
@@ -42,3 +65,4 @@ services:
 
 volumes:
   ashkeld_pgdata:
+  ashkeld_test_pgdata:
