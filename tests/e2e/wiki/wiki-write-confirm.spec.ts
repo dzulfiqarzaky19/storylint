@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { queryOne } from "./_helpers/db";
-import { reseed } from "./_helpers/seed";
+import { queryOne } from "../_helpers/db";
+import { reseed } from "../_helpers/seed";
 
 // -----------------------------------------------------------------------------
 // WIKI-WRITE CONFIRMATION (integration, DB read-back).

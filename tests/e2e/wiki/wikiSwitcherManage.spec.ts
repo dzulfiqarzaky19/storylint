@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { countRows, queryOne } from "./_helpers/db";
+import { countRows, queryOne } from "../_helpers/db";
 
 // 3a WorldSwitcher (breadcrumb dropdown) + 3c manage screen (/wiki/manage).
 //
