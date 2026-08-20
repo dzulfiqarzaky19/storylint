@@ -1199,12 +1199,26 @@ export async function insertBookWithFirstChapter(input: {
   firstChapterTitle: string;
   firstChapterBody: unknown;
 }): Promise<BookRow> {
+  const worldId = input.worldId ?? DEFAULT_WORLD_ID;
   return withTransaction(async (client) => {
+    // A new book APPENDS to the world's shelf (MAX(sort_order)+1), never ties at
+    // 0. A 0-tie let getWorldTree's (sort_order, id) break by id, so a UUID book
+    // (id < "book-1") displaced the seeded first book as books[0] — the no-param
+    // /write default silently jumped to the new empty book. Appending keeps the
+    // authored first book the stable default. An explicit sortOrder still wins.
+    const nextSort =
+      input.sortOrder ??
+      (
+        await client.query<{ next: number }>(
+          `SELECT COALESCE(MAX(sort_order) + 1, 0) AS next FROM books WHERE world_id = $1`,
+          [worldId],
+        )
+      ).rows[0]!.next;
     const res = await client.query<BookRow>(
       `INSERT INTO books (id, world_id, name, sort_order)
        VALUES ($1, $2, $3, $4)
        RETURNING id, world_id AS "worldId", name, sort_order AS "sortOrder"`,
-      [input.id, input.worldId ?? DEFAULT_WORLD_ID, input.name, input.sortOrder ?? 0],
+      [input.id, worldId, input.name, nextSort],
     );
     await client.query(
       `INSERT INTO chapters (id, number, title, body, book_id)
