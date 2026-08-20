@@ -81,6 +81,7 @@ import { OutstandingRail } from './OutstandingRail';
 import SaveStateFooter from './SaveStateFooter';
 import WriteIndex, { type WriteIndexChapter } from './WriteIndex';
 import ChapterDeleteDialog from './ChapterDeleteDialog';
+import EditableChapterTitle from './EditableChapterTitle';
 import styles from './Manuscript.module.css';
 
 const CHECK_DEBOUNCE_MS = 300;
@@ -700,7 +701,12 @@ export function Manuscript({
         <div className={styles.manuscriptScroll}>
           <div className={styles.manuscript}>
             <div className={styles.eyebrow}>Chapter {numberWord(chapterNumber)}</div>
-            <h1 className={styles.title}>{chapterTitle}</h1>
+            <EditableChapterTitle
+              number={chapterNumber}
+              title={chapterTitle}
+              onRename={handleRename}
+              className={styles.title}
+            />
             <a
               className={styles.exportLink}
               href={`/api/export/${activeBookId}/chapter/${chapterNumber}`}
