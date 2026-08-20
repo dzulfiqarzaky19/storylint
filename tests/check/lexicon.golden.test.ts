@@ -65,10 +65,16 @@ describe('lexicon golden-master — checkManuscript on seeded fixtures', () => {
 // 06e402d4... -> 9457d9f8... The tallow-rule key (no apostrophe), both conflict
 // keys (no apostrophe), and every SUGGESTIONS line are BYTE-UNCHANGED, proving
 // the fold touched only apostrophe-bearing quotes and nothing else.
+//
+// T-WRITE-JOURNEYS §3.2 re-baseline (reviewed): a contradiction no longer offers
+// a `leave` dismiss (it must be resolved), so both conflict action strings drop
+// from `wiki+text+leave` to `wiki+text`. markKeys, quotes, and every `missing`
+// line (still `add+edit+leave`) are BYTE-UNCHANGED — the change is exactly the
+// dropped conflict dismiss and nothing else.
 const GOLDEN_CHAPTER7 = [
   'MARKS:',
-  'conflict | attribute-mismatch | Her own grey eyes | 934b5b4eeb9418df6734007878068a7b9bcf41c0 | maren | 2 | 0 | wiki+text+leave',
-  'conflict | constraint-violation | nineteen and sworn | 921875d39deeefc48ed3ccbdbc9c155a3c9b16bb | maren | 0 | 0 | wiki+text+leave',
+  'conflict | attribute-mismatch | Her own grey eyes | 934b5b4eeb9418df6734007878068a7b9bcf41c0 | maren | 2 | 0 | wiki+text',
+  'conflict | constraint-violation | nineteen and sworn | 921875d39deeefc48ed3ccbdbc9c155a3c9b16bb | maren | 0 | 0 | wiki+text',
   'missing | unrecorded | her mother’s brass ring | 9457d9f862f84a41d9c73c0b44f694d0dd276f10 | maren | 1 | 0 | add+edit+leave',
   'missing | unrecorded | the tallow rule | 4602863bd83a90d7c07112ed2648ab00bbf59759 | vergelight | 1 | 0 | add+edit+leave',
   'SUGGESTIONS:',

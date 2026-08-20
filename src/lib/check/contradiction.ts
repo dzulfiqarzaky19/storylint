@@ -13,11 +13,13 @@ import { normalizeQuote } from './normalize';
 import { sha1 } from './hash';
 import { splitSentences, occurrenceIndexOf } from './text';
 
-// The three note actions for a contradiction.
+// A contradiction's note actions. The `text` button is the merged AI button:
+// InlineNote relabels it "Ask AI" and hides it when AI is off (it selects the
+// flagged run AND fetches a grounded rewrite). A contradiction has no dismiss —
+// it must be resolved, never permanently suppressed — so there is no `leave`.
 const CONFLICT_ACTIONS: MarkAction[] = [
   { id: 'wiki', label: 'The wiki is out of date — change it' },
-  { id: 'text', label: 'Change the sentence' },
-  { id: 'leave', label: 'It’s deliberate, leave it' },
+  { id: 'text', label: 'Ask AI' },
 ];
 
 function markKey(ruleId: string, quote: string, entryId: string): string {

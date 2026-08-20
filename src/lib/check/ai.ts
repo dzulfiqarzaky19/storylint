@@ -53,14 +53,13 @@ function clampEntityKind(kind: string | undefined): NewEntityKind {
 // identical for AI and non-AI marks.
 const AI_CONFLICT_ACTIONS: MarkAction[] = [
   { id: 'wiki', label: 'The wiki is out of date — change it' },
-  { id: 'text', label: 'Change the sentence' },
-  { id: 'leave', label: 'It’s deliberate, leave it' },
+  { id: 'text', label: 'Ask AI' },
 ];
 
 const AI_MISSING_ACTIONS: MarkAction[] = [
   { id: 'add', label: 'Add to the wiki' },
-  { id: 'edit', label: 'Add, but let me word it' },
-  { id: 'leave', label: 'Not now' },
+  { id: 'edit', label: 'Ask AI' },
+  { id: 'leave', label: 'Remove suggestion' },
 ];
 
 /** One conflict finding as returned by the model. */

@@ -65,9 +65,10 @@ describe('checkManuscript — seeded Chapter 7', () => {
     expect(m1!.rail.toLowerCase()).toContain('twenty-one');
     // Rail one-liner and note reference the twenty-one constraint.
     expect(m1!.noteText.toLowerCase()).toContain('twenty-one');
-    // Three actions in the spec: wiki / text / leave.
-    expect(m1!.actions).toHaveLength(3);
-    expect(m1!.actions.map((a) => a.id)).toEqual(['wiki', 'text', 'leave']);
+    // A contradiction offers two actions: wiki / text (Ask AI). No `leave` —
+    // a contradiction must be resolved, never permanently dismissed.
+    expect(m1!.actions).toHaveLength(2);
+    expect(m1!.actions.map((a) => a.id)).toEqual(['wiki', 'text']);
   });
 
   it('m4 is an attribute-mismatch conflict: Maren Eyes green vs grey', () => {

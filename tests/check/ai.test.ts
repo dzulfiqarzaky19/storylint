@@ -47,7 +47,7 @@ describe('aiResultToMarks — mapping + grounding', () => {
     expect(marks[0]!.position.paragraphIndex).toBe(0);
     expect(marks[0]!.markKey).toMatch(/^[0-9a-f]{40}$/);
     // Actions mirror the deterministic conflict set (rule-1-safe include path).
-    expect(marks[0]!.actions.map((a) => a.id)).toEqual(['wiki', 'text', 'leave']);
+    expect(marks[0]!.actions.map((a) => a.id)).toEqual(['wiki', 'text']);
   });
 
   it('maps a verbatim missing finding to a missing Mark', () => {
@@ -192,7 +192,7 @@ describe('aiResultToMarks — newEntity (TCK-016)', () => {
     const conflict = marks.find((m) => m.kind === 'conflict');
     const plainMissing = marks.find((m) => m.ruleId === AI_MISSING_RULE_ID);
     expect(conflict?.ruleId).toBe(AI_CONFLICT_RULE_ID);
-    expect(conflict?.actions.map((a) => a.id)).toEqual(['wiki', 'text', 'leave']);
+    expect(conflict?.actions.map((a) => a.id)).toEqual(['wiki', 'text']);
     expect(plainMissing?.kind).toBe('missing');
     expect(plainMissing?.actions.map((a) => a.id)).toEqual(['add', 'edit', 'leave']);
   });

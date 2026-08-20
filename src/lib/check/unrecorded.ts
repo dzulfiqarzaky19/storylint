@@ -37,10 +37,14 @@ import { normalize, normalizeQuote } from './normalize';
 import { sha1 } from './hash';
 import { occurrenceIndexOf } from './text';
 
+// An unrecorded note's actions. `edit` is the merged AI button (relabeled
+// "Ask AI", hidden when AI is off). `leave` is a permanent suppress via
+// resolved_marks — "Remove suggestion" names that honestly (an unrecorded note
+// is optional, so unlike a contradiction it keeps a dismiss).
 const MISSING_ACTIONS: MarkAction[] = [
   { id: 'add', label: 'Add to the wiki' },
-  { id: 'edit', label: 'Add, but let me word it' },
-  { id: 'leave', label: 'Not now' },
+  { id: 'edit', label: 'Ask AI' },
+  { id: 'leave', label: 'Remove suggestion' },
 ];
 
 // Nouns that turn "the <recorded-token> X" into a named rule/lore designator.

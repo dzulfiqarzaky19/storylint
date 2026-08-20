@@ -26,6 +26,15 @@ function noteKindLabel(mark: Mark): string {
     : 'Not written down yet';
 }
 
+/**
+ * The merged "Ask AI" button is the engine's `text` (contradiction) / `edit`
+ * (unrecorded) action: clicking it selects the flagged run AND fetches a grounded
+ * rewrite. Naming the ids here keeps the busy-label + AI-gate in one place.
+ */
+function isAiAction(action: MarkAction): boolean {
+  return action.id === 'text' || action.id === 'edit';
+}
+
 export interface InlineNoteAi {
   /** AI gateway configured; when false the AI affordance is hidden entirely. */
   enabled: boolean;
@@ -70,28 +79,22 @@ export function InlineNote({ mark, busy, onAction, ai }: InlineNoteProps) {
       </div>
       <div className={styles.noteText}>{mark.noteText}</div>
       <div className={styles.noteActions}>
-        {mark.actions.map((action, i) => (
-          <button
-            key={action.id}
-            type="button"
-            className={`${styles.action} ${i === 0 ? styles.actionPrimary : styles.actionSecondary}`}
-            disabled={busy}
-            onClick={() => onAction(mark, action)}
-          >
-            {action.label}
-          </button>
-        ))}
-        {showAi && !hasAdvice ? (
-          <button
-            type="button"
-            className={`${styles.action} ${styles.actionSecondary}`}
-            disabled={busy || ai?.busy}
-            onClick={() => ai?.onExplain()}
-            data-testid="write-ai-explain"
-          >
-            {ai?.busy ? 'Asking…' : '✦ Ask AI'}
-          </button>
-        ) : null}
+        {mark.actions
+          // `text`/`edit` is the merged "Ask AI" button (select the run + fetch a
+          // grounded rewrite). It only makes sense when AI is configured, so it
+          // drops out entirely when AI is off — leaving red=1, gray=2 non-AI buttons.
+          .filter((action) => showAi || (action.id !== 'text' && action.id !== 'edit'))
+          .map((action, i) => (
+            <button
+              key={action.id}
+              type="button"
+              className={`${styles.action} ${i === 0 ? styles.actionPrimary : styles.actionSecondary}`}
+              disabled={busy || (isAiAction(action) && ai?.busy)}
+              onClick={() => onAction(mark, action)}
+            >
+              {isAiAction(action) && ai?.busy ? 'Asking…' : action.label}
+            </button>
+          ))}
       </div>
       {showAi && hasAdvice ? (
         <div className={styles.aiAdvice} data-testid="write-ai-advice">
