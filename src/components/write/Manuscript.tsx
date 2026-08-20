@@ -644,10 +644,10 @@ export function Manuscript({
     [router, chapterNumber, writeChapterHref],
   );
   const addChapter = useCallback(() => {
-    void createChapter().then((res) => {
+    void createChapter({ bookId: activeBookId }).then((res) => {
       if (res.ok) router.push(writeChapterHref(res.data.number));
     });
-  }, [router, writeChapterHref]);
+  }, [router, writeChapterHref, activeBookId]);
 
   // Rename a chapter's title in place. The DB is the source of truth for the
   // left index + the manuscript heading, so on success we router.refresh() to

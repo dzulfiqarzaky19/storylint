@@ -60,6 +60,7 @@ import {
   restoreEntry as restoreEntryRow,
   purgeDeletedBefore as purgeDeletedBeforeRow,
   insertBook,
+  insertBookWithFirstChapter,
   createFreshUniverse as createFreshUniverseRow,
   insertWorld as insertWorldRow,
   linkEntityToWorld as linkEntityToWorldRow,
@@ -756,7 +757,18 @@ export async function createBook(input: {
 }): Promise<ActionResult<{ bookId: string }>> {
   try {
     const id = randomUUID();
-    await insertBook({ id, name: input.name, worldId: input.worldId, sortOrder: input.sortOrder });
+    // A user-created book seeds its first chapter atomically so the writer lands
+    // on a real "Chapter One" row (persisted, not a UI placeholder) ready to type
+    // in. insertBookWithFirstChapter rolls back the book if the chapter fails.
+    await insertBookWithFirstChapter({
+      id,
+      name: input.name,
+      worldId: input.worldId,
+      sortOrder: input.sortOrder,
+      firstChapterId: randomUUID(),
+      firstChapterTitle: "Chapter One",
+      firstChapterBody: { type: "doc", content: [{ type: "paragraph" }] },
+    });
     return { ok: true, data: { bookId: id } };
   } catch (err) {
     return fail(err, "wiki.createBook");

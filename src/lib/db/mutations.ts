@@ -1181,6 +1181,42 @@ export async function insertBook(input: {
 }
 
 /**
+ * Insert a book AND its first chapter ("Chapter One") in ONE transaction, so a
+ * user-created book always lands with a home chapter ready to write in (never an
+ * empty shell the /write page has to fake with EMPTY_BODY). This is the book-CRUD
+ * create path (BookPill "+ New book"); the structural fresh-universe/new-world
+ * paths still start empty by design (they mint their book as scaffolding, not as
+ * a writing target). Atomic: a failure on the chapter rolls back the book, so
+ * there is never a bookless-chapter or a chapterless user book. The caller mints
+ * both ids so this stays a pure parameterized write.
+ */
+export async function insertBookWithFirstChapter(input: {
+  id: string;
+  name: string;
+  worldId?: string;
+  sortOrder?: number;
+  firstChapterId: string;
+  firstChapterTitle: string;
+  firstChapterBody: unknown;
+}): Promise<BookRow> {
+  return withTransaction(async (client) => {
+    const res = await client.query<BookRow>(
+      `INSERT INTO books (id, world_id, name, sort_order)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, world_id AS "worldId", name, sort_order AS "sortOrder"`,
+      [input.id, input.worldId ?? DEFAULT_WORLD_ID, input.name, input.sortOrder ?? 0],
+    );
+    await client.query(
+      `INSERT INTO chapters (id, number, title, body, book_id)
+       VALUES ($1, 1, $2, $3, $4)`,
+      [input.firstChapterId, input.firstChapterTitle, JSON.stringify(input.firstChapterBody), input.id],
+    );
+    if (!res.rows[0]) throw new Error("insertBookWithFirstChapter: no book row returned");
+    return res.rows[0];
+  });
+}
+
+/**
  * FRESH world: create a NEW universe plus its first world and first book, in ONE
  * transaction so a universe never lands without a home for chapters. The new
  * universe's wiki is empty by construction (no entries carry its universe_id).

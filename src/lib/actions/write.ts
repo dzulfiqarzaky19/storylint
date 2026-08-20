@@ -119,15 +119,20 @@ const EMPTY_CHAPTER_BODY = {
  */
 export async function createChapter(input?: {
   title?: string;
+  bookId?: string;
 }): Promise<ActionResult<{ number: number }>> {
   try {
-    const number = await getNextChapterNumber();
+    // Book scope: numbering and insertion must target the active book, or
+    // "+ New chapter" on a freshly created book lands the row in
+    // DEFAULT_BOOK_ID and the new book never grows past its seeded Chapter One.
+    const number = await getNextChapterNumber(input?.bookId);
     const title = input?.title?.trim() || "Untitled";
     await insertChapter({
       id: randomUUID(),
       number,
       title,
       body: EMPTY_CHAPTER_BODY,
+      bookId: input?.bookId,
     });
     return { ok: true, data: { number } };
   } catch (err) {
