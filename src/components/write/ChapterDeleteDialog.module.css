@@ -1,0 +1,69 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.panel {
+  width: min(440px, 100%);
+  background: var(--paper, var(--surface));
+  border: var(--rule-major, 2px solid var(--ink));
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cancel,
+.confirm {
+  padding: 8px 16px;
+  min-height: 40px;
+  border: 2px solid var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancel {
+  background: none;
+  color: inherit;
+}
+
+.confirm {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--on-ink, #fff);
+}
+
+.cancel:hover {
+  background: var(--surface);
+}
+
+.confirm:hover {
+  filter: brightness(0.94);
+}

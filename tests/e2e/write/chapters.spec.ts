@@ -13,7 +13,15 @@ import { reseed } from "../_helpers/seed";
 // afterAll to keep the shared DB pristine for later-sorting specs.
 // ===========================================================================
 
-test.afterAll(reseed);
+// This file is write-HEAVY: 2.1 creates a chapter, 2.2 renames + deletes, and
+// 2.2b creates an empty one — each leaves the shared DB with a different
+// landing chapter, and gotoWrite asserts on the SEEDED landing chapter's text
+// ("nineteen and sworn", Chapter 7). A single afterAll reseed is therefore not
+// enough here (an earlier test's created/deleted chapter poisons the next test's
+// gotoWrite). So every test in this file reseeds after itself to stay
+// order-independent. (Read-mostly specs still use the cheaper afterAll form —
+// see tests/e2e/_helpers/seed.ts.)
+test.afterEach(reseed);
 
 // --- helpers ----------------------------------------------------------------
 

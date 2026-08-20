@@ -31,7 +31,10 @@ describe("SaveStateFooter live-region politeness", () => {
     const { rerender } = render(
       <SaveStateFooter error={null} dirty={true} aiChecking={false} />,
     );
-    expect(screen.getByRole("status")).toHaveTextContent("Saving");
+    // Re-baselined (T-WRITE-JOURNEYS 2.2): the dirty state reads "Unsaved
+    // changes" so the chapters journey has a visible dirty indicator to assert
+    // against; it replaced the old optimistic "Saving…" copy.
+    expect(screen.getByRole("status")).toHaveTextContent("Unsaved changes");
 
     rerender(
       <SaveStateFooter error={null} dirty={false} aiChecking={true} />,

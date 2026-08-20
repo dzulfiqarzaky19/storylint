@@ -499,6 +499,57 @@ export async function insertChapter(input: {
   return res!;
 }
 
+/** Rename a chapter (title only) within its book. */
+export async function renameChapter(input: {
+  number: number;
+  title: string;
+  bookId?: string;
+}): Promise<void> {
+  // Book scope: `number` is unique only within a book, so the UPDATE must carry
+  // book_id or renaming Chapter 1 could rename a sibling book's Chapter 1.
+  await query(
+    `UPDATE chapters SET title = $2 WHERE number = $1 AND book_id = $3`,
+    [input.number, input.title, input.bookId ?? DEFAULT_BOOK_ID],
+  );
+}
+
+/** How many chapters a book has (guards the last-chapter-can't-delete rule). */
+export async function countChaptersInBook(
+  bookId: string = DEFAULT_BOOK_ID,
+): Promise<number> {
+  const res = await one<{ n: number }>(
+    `SELECT COUNT(*)::int AS n FROM chapters WHERE book_id = $1`,
+    [bookId],
+  );
+  return res?.n ?? 0;
+}
+
+/**
+ * Delete one chapter from a book. Removes the chapter row (its
+ * chapter_check_cache row cascades via ON DELETE CASCADE) and clears the
+ * chapter's rows from the book-agnostic phrase_mentions rank index so a deleted
+ * chapter's phrases stop inflating cross-chapter recurrence. Both run in one
+ * transaction so the index is never left referencing a gone chapter. Returns the
+ * number of chapter rows removed (0 when the number/book pair did not match).
+ */
+export async function deleteChapter(input: {
+  number: number;
+  bookId?: string;
+}): Promise<{ deleted: number }> {
+  const bookId = input.bookId ?? DEFAULT_BOOK_ID;
+  return withTransaction(async (client) => {
+    await client.query(
+      `DELETE FROM phrase_mentions WHERE chapter_number = $1`,
+      [input.number],
+    );
+    const res = await client.query(
+      `DELETE FROM chapters WHERE number = $1 AND book_id = $2`,
+      [input.number, bookId],
+    );
+    return { deleted: res.rowCount ?? 0 };
+  });
+}
+
 // ---- Resolved marks (Write) -----------------------------------------------
 
 /**

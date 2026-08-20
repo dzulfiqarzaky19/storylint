@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useId, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import styles from "./WriteIndex.module.css";
 import type { ChapterSeverity } from "@/lib/check/severity";
 import { shouldShowChapterDot } from "@/lib/check/severity";
@@ -50,6 +57,10 @@ export interface WriteIndexProps {
   onSelect: (n: number) => void;
   /** Append a new empty chapter. */
   onCreate?: () => void;
+  /** Commit a new title for a chapter (inline rename of the active row). */
+  onRename?: (n: number, title: string) => void;
+  /** Ask to delete a chapter (opens the caller's confirm modal). */
+  onRequestDelete?: (n: number) => void;
 }
 
 /** Spell small chapter numbers ("Chapter seven") to match the manuscript eyebrow. */
@@ -59,6 +70,79 @@ function numberWord(n: number): string {
     "nine", "ten", "eleven", "twelve",
   ];
   return words[n] ?? String(n);
+}
+
+/**
+ * The active chapter's title, rendered click-to-edit (same affordance as the
+ * wiki). It lives INSIDE the row button, so every pointer/key event that drives
+ * editing must stopPropagation — otherwise the row's select handler fires and
+ * the caret is stolen. Enter commits and blurs; Escape reverts to the saved
+ * title. Blur commits too (a click-away is an implicit confirm). Committing an
+ * empty/whitespace title is refused (reverts), so a chapter never loses its name.
+ */
+function EditableTitle({
+  number,
+  title,
+  onRename,
+}: {
+  number: number;
+  title: string;
+  onRename?: (n: number, title: string) => void;
+}) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+
+  // Keep the DOM text in sync when the saved title changes from OUTSIDE an edit
+  // (e.g. a fresh server render after rename). We never rewrite it mid-edit —
+  // that would fight the caret — so this only runs when the element isn't focused.
+  useEffect(() => {
+    const el = ref.current;
+    if (el && document.activeElement !== el && el.textContent !== title) {
+      el.textContent = title;
+    }
+  }, [title]);
+
+  const commit = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const next = (el.textContent ?? "").trim();
+    if (!next || next === title) {
+      // Empty or unchanged → revert the DOM to the saved title, write nothing.
+      el.textContent = title;
+      return;
+    }
+    onRename?.(number, next);
+  }, [number, title, onRename]);
+
+  return (
+    <span
+      ref={ref}
+      className={`${styles.itemName} write-chapter-title`}
+      // The row button carries aria-current for the nav-state test; this span
+      // repeats it so a descendant selector (filter has [aria-current]) can reach
+      // INTO the active row for the editable title, which a button-only attribute
+      // can't satisfy.
+      aria-current="true"
+      contentEditable
+      suppressContentEditableWarning
+      spellCheck={false}
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        e.stopPropagation();
+        if (e.key === "Enter") {
+          e.preventDefault();
+          ref.current?.blur();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          if (ref.current) ref.current.textContent = title;
+          ref.current?.blur();
+        }
+      }}
+      onBlur={commit}
+    >
+      {title}
+    </span>
+  );
 }
 
 /**
@@ -73,10 +157,19 @@ export default function WriteIndex({
   selectedNumber,
   onSelect,
   onCreate,
+  onRename,
+  onRequestDelete,
 }: WriteIndexProps) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const stacked = useIsStackedTier();
+
+  const active = chapters.find((c) => c.number === selectedNumber);
+  // Deleting the last chapter would leave a book with none, so the affordance is
+  // disabled at one chapter (the server enforces the same invariant). One delete
+  // button targets the ACTIVE chapter, kept out of the row list so it never
+  // inflates the chapter-row count the way a per-row button would.
+  const canDelete = chapters.length > 1;
 
   // Header content is identical across tiers; only its SEMANTICS differ.
   const headerInner = (
@@ -113,41 +206,63 @@ export default function WriteIndex({
       )}
 
       <ul id={panelId} className={styles.panel}>
-        {chapters.map((c) => (
-          <li key={c.number}>
-            <button
-              type="button"
-              className={
-                c.number === selectedNumber
-                  ? `${styles.item} ${styles.itemActive}`
-                  : styles.item
-              }
-              aria-current={c.number === selectedNumber ? "true" : undefined}
-              onClick={() => onSelect(c.number)}
-            >
-              <span className={styles.itemNote}>
-                Chapter {numberWord(c.number)}
-              </span>
-              <span className={styles.itemName}>{c.title}</span>
-              {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
-                <span
-                  className={`${styles.dot} ${
-                    c.severity === "red" ? styles.dotRed : styles.dotYellow
-                  }`}
-                  aria-label={
-                    c.severity === "red"
-                      ? "Has a contradiction"
-                      : "Has an unrecorded detail"
-                  }
-                />
-              ) : null}
-            </button>
-          </li>
-        ))}
+        {chapters.map((c) => {
+          const isActive = c.number === selectedNumber;
+          return (
+            <li key={c.number}>
+              <button
+                type="button"
+                className={
+                  isActive ? `${styles.item} ${styles.itemActive}` : styles.item
+                }
+                aria-current={isActive ? "true" : undefined}
+                onClick={() => onSelect(c.number)}
+              >
+                <span className={styles.itemNote}>
+                  Chapter {numberWord(c.number)}
+                </span>
+                {isActive ? (
+                  <EditableTitle
+                    number={c.number}
+                    title={c.title}
+                    onRename={onRename}
+                  />
+                ) : (
+                  <span className={styles.itemName}>{c.title}</span>
+                )}
+                {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
+                  <span
+                    className={`${styles.dot} ${
+                      c.severity === "red" ? styles.dotRed : styles.dotYellow
+                    }`}
+                    aria-label={
+                      c.severity === "red"
+                        ? "Has a contradiction"
+                        : "Has an unrecorded detail"
+                    }
+                  />
+                ) : null}
+              </button>
+            </li>
+          );
+        })}
         {onCreate ? (
           <li>
             <button type="button" className={styles.add} onClick={onCreate}>
               + New chapter
+            </button>
+          </li>
+        ) : null}
+        {active && onRequestDelete ? (
+          <li>
+            <button
+              type="button"
+              className={styles.delete}
+              disabled={!canDelete}
+              aria-label={`Delete chapter ${active.number}: ${active.title}`}
+              onClick={() => onRequestDelete(active.number)}
+            >
+              Delete this chapter
             </button>
           </li>
         ) : null}

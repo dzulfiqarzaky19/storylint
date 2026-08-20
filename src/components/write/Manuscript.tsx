@@ -54,6 +54,8 @@ import {
   resolveMark as resolveMarkAction,
   saveManuscript,
   createChapter,
+  renameChapter,
+  deleteChapter,
   explainMark,
   aiCheckChapter,
   persistChapterCheck,
@@ -78,6 +80,7 @@ import { InlineNote } from './InlineNote';
 import { OutstandingRail } from './OutstandingRail';
 import SaveStateFooter from './SaveStateFooter';
 import WriteIndex, { type WriteIndexChapter } from './WriteIndex';
+import ChapterDeleteDialog from './ChapterDeleteDialog';
 import styles from './Manuscript.module.css';
 
 const CHECK_DEBOUNCE_MS = 300;
@@ -218,6 +221,11 @@ export function Manuscript({
   // The modal's confirm IS the only wiki-write gate (product rule 1); cancel
   // writes nothing.
   const [pendingPickerMark, setPendingPickerMark] = useState<Mark | null>(null);
+
+  // The chapter number awaiting a delete confirm (its dialog is open), plus an
+  // in-flight flag so a double-click can't fire two deletes. null => no dialog.
+  const [pendingDeleteNumber, setPendingDeleteNumber] = useState<number | null>(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
 
   // AI advice per mark (session-only; read-only; keyed by markKey). Cleared
   // implicitly by keying — a mark with no entry shows the ✦ Ask AI button.
@@ -641,6 +649,43 @@ export function Manuscript({
     });
   }, [router, writeChapterHref]);
 
+  // Rename a chapter's title in place. The DB is the source of truth for the
+  // left index + the manuscript heading, so on success we router.refresh() to
+  // re-pull the server-rendered title rather than mirror it in client state.
+  const handleRename = useCallback(
+    (n: number, title: string) => {
+      void renameChapter({ number: n, title, bookId: activeBookId }).then((res) => {
+        if (res.ok) router.refresh();
+        else dispatch({ type: 'SET_ERROR', error: res.error });
+      });
+    },
+    [router, activeBookId],
+  );
+
+  const requestDeleteChapter = useCallback((n: number) => {
+    setPendingDeleteNumber(n);
+  }, []);
+
+  // Confirm the delete: remove the chapter, then navigate to the surviving
+  // sibling the server picked (nearest lower, else the new lowest) so the writer
+  // never lands on a gone chapter. router.push re-resolves the page against the
+  // surviving list, which also refreshes the left index.
+  const confirmDeleteChapter = useCallback(() => {
+    if (pendingDeleteNumber === null) return;
+    setDeleteBusy(true);
+    void deleteChapter({ number: pendingDeleteNumber, bookId: activeBookId }).then((res) => {
+      setDeleteBusy(false);
+      setPendingDeleteNumber(null);
+      if (res.ok) {
+        // push moves off the deleted chapter; refresh re-pulls the server chapter
+        // list so the deleted row leaves the left index even when the client
+        // router would otherwise serve the pre-delete list from its cache.
+        router.push(writeChapterHref(res.data.next));
+        router.refresh();
+      } else dispatch({ type: 'SET_ERROR', error: res.error });
+    });
+  }, [pendingDeleteNumber, activeBookId, router, writeChapterHref]);
+
   return (
     <div className={styles.screen}>
       <div className={styles.body}>
@@ -649,6 +694,8 @@ export function Manuscript({
           selectedNumber={chapterNumber}
           onSelect={selectChapter}
           onCreate={addChapter}
+          onRename={handleRename}
+          onRequestDelete={requestDeleteChapter}
         />
         <div className={styles.manuscriptScroll}>
           <div className={styles.manuscript}>
@@ -688,6 +735,16 @@ export function Manuscript({
           entries={pickerEntries}
           onConfirm={handlePickerConfirm}
           onCancel={handlePickerCancel}
+        />
+      ) : null}
+
+      {pendingDeleteNumber !== null ? (
+        <ChapterDeleteDialog
+          number={pendingDeleteNumber}
+          title={chapters.find((c) => c.number === pendingDeleteNumber)?.title ?? ''}
+          busy={deleteBusy}
+          onConfirm={confirmDeleteChapter}
+          onCancel={() => setPendingDeleteNumber(null)}
         />
       ) : null}
 

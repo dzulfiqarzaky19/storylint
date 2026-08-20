@@ -31,7 +31,7 @@ export default function SaveStateFooter({
   }
   return (
     <p className={styles.saveState} role="status">
-      {dirty ? "Saving…" : aiChecking ? "Checking with AI…" : "Saved"}
+      {dirty ? "Unsaved changes" : aiChecking ? "Checking with AI…" : "Saved"}
     </p>
   );
 }

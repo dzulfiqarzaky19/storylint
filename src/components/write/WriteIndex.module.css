@@ -152,6 +152,30 @@
   text-decoration: underline;
 }
 
+.delete {
+  width: 100%;
+  padding: 9px 8px;
+  min-height: 40px;
+  margin-top: 2px;
+  background: none;
+  border: none;
+  border-top: var(--rule-row);
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.delete:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.delete:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
 /* Stacked tier: the whole chapter list folds behind the header toggle. Closed
    by default (React state) so the page opens on the manuscript; the revealed
    panel scrolls within a capped height so it can never bleed over the body. */
