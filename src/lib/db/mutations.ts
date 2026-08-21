@@ -9,6 +9,7 @@
 // These are minimal, clearly-named helpers. They do not enforce product rules;
 // the confirmation invariant (product rule 1) lives at the action layer.
 
+import { randomUUID } from "node:crypto";
 import { query, one, rows, withTransaction } from "./pool";
 import { DEFAULT_BOOK_ID, DEFAULT_WORLD_ID, DEFAULT_UNIVERSE_ID } from "./scope";
 import type { FactRow, TieRow, ResolvedMarkRow, KeptCardRow, PropositionRow, CategoryRow, Shelf, ChapterCheckCacheRow } from "../domain/types";
@@ -1262,6 +1263,15 @@ export async function createFreshUniverse(input: {
        RETURNING id, world_id AS "worldId", name, sort_order AS "sortOrder"`,
       [input.bookId, input.worldId, input.bookName ?? input.worldName ?? input.universeName],
     );
+    // R2: every world is born with exactly ONE default research thread so /research
+    // never renders an empty rail (and R3's last-thread-delete guard always has a
+    // floor of one). Same 7-col shape as insertResearchThread, scoped to the new
+    // world (thread.world_id FKs worlds.id, so this runs AFTER the world INSERT).
+    await client.query(
+      `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [randomUUID(), "New thread", "", 0, "chat", input.universeId, input.worldId],
+    );
     // INSERT ... RETURNING always yields exactly one row.
     return { universe: uni.rows[0]!, world: world.rows[0]!, book: bk.rows[0]! };
   });
@@ -1324,6 +1334,13 @@ export async function insertWorld(input: {
       `INSERT INTO books (id, world_id, name, sort_order)
        VALUES ($1, $2, $3, 0)`,
       [input.bookId, input.id, input.bookName ?? input.title],
+    );
+    // R2: mint the world's ONE default research thread (see createFreshUniverse).
+    // Scoped to input.id (this world) — AFTER the world INSERT to satisfy the FK.
+    await client.query(
+      `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [randomUUID(), "New thread", "", 0, "chat", input.universeId, input.id],
     );
     // INSERT ... RETURNING always yields exactly one row.
     return world.rows[0]!;
