@@ -1235,8 +1235,9 @@ export async function insertBookWithFirstChapter(input: {
  * FRESH world: create a NEW universe plus its first world and first book, in ONE
  * transaction so a universe never lands without a home for chapters. The new
  * universe's wiki is empty by construction (no entries carry its universe_id).
- * W-6: mints universe + world + book (series is gone). This is the "fresh" branch;
- * continuation instead calls insertWorld/insertBook against an existing universe.
+ * W-6: mints universe + world + book (series is gone), plus the world's ONE
+ * default research thread (R2: a world is born with a thread). This is the "fresh"
+ * branch; continuation instead calls insertWorld/insertBook against an existing universe.
  */
 export async function createFreshUniverse(input: {
   universeId: string;
@@ -1291,9 +1292,9 @@ export interface WorldRow {
  * worlds to move between.
  *
  * A world needs a home for chapters. W-6: `books` now FK `world_id` directly, so a
- * new world mints its OWN first book straight under itself (no bridge series). Both
- * rows land atomically: a failure on either rolls back the other (no orphan world
- * without a book, no book without its world).
+ * new world mints its OWN first book straight under itself (no bridge series). R2:
+ * it is also born with ONE default research thread. All three rows land atomically:
+ * a failure on any rolls back the others (no orphan world without a book/thread).
  *
  * Structural — no wiki content, so no confirmWikiWrite token. The new world's
  * wiki is empty by construction (no world_entities rows point at it).

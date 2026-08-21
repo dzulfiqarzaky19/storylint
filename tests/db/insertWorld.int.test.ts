@@ -14,13 +14,17 @@ import { getWorldTree } from "@/lib/db/queries";
 //
 // This test stands up a THROWAWAY universe (test-tck022-u-<uuid>), inserts two
 // worlds into it, and proves:
-//   A. insertWorld lands the world row AND its book row (its home for chapters).
+//   A. insertWorld lands the world row, its book row (its home for chapters),
+//      AND its ONE default research thread (R2: a world is born with a thread so
+//      /research never renders an empty rail and the last-thread guard has a floor).
 //   B. the tx is ATOMIC: a failing book insert rolls back the world row.
 //   C. getWorldTree returns THIS universe's worlds ordered by sort_order.
 //
 // MUTATION (run manually at ready, per the moderate gate):
 //   - A/book: drop the `INSERT INTO books ...` line in insertWorld -> assertion A
 //     (book exists) goes RED.
+//   - A/thread: drop the R2 `INSERT INTO research_threads ...` line in insertWorld
+//     -> the default-thread assertion (exactly one, scoped to this world) goes RED.
 //   - B/atomic: replace `withTransaction` body so the world insert is NOT rolled
 //     back on a later failure -> assertion B (world absent after failure) RED.
 //   - C/order: mutate getWorldTree's `ORDER BY sort_order, id` on worlds to
@@ -82,6 +86,17 @@ describe("TCK-022 insertWorld (real Postgres)", () => {
     );
     expect(books.rowCount).toBe(1);
     expect(books.rows[0]!.world_id).toBe(w.id); // the book hangs off its own world (W-6)
+
+    // R2: the world is born with EXACTLY ONE default research thread, in the SAME
+    // tx, scoped to THIS world (so /research never renders an empty rail).
+    const threads = await query<{ title: string; scope: string; universe_id: string }>(
+      `SELECT title, scope, universe_id FROM research_threads WHERE world_id = $1`,
+      [w.id],
+    );
+    expect(threads.rowCount).toBe(1);
+    expect(threads.rows[0]!.title).toBe("New thread");
+    expect(threads.rows[0]!.scope).toBe("chat");
+    expect(threads.rows[0]!.universe_id).toBe(UNI); // bound to the new world's universe, not the default
   });
 
   it("B: is atomic — a duplicate book id (PK violation) rolls back the world row", async () => {

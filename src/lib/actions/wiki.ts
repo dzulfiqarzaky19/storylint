@@ -807,8 +807,9 @@ export async function createUniverse(input: {
 /**
  * TCK-022 (W-4a): create a SECOND (or Nth) world inside an EXISTING universe (the
  * `+ world` affordance on the World switcher). Mints the world/book ids and calls
- * insertWorld, which lands both in one transaction so the new world always has a
- * home for chapters (W-6: the book hangs off the world directly, no series).
+ * insertWorld, which lands them in one transaction so the new world always has a
+ * home for chapters and one default research thread (R2). W-6: the book hangs off
+ * the world directly, no series.
  * Defaults to the active universe when none is passed. Structural — no wiki token.
  */
 export async function createWorld(input: {

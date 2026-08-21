@@ -175,6 +175,16 @@ describe("F7-S3/W-6 worlds-hierarchy creation flows (real Postgres)", () => {
     const snap = await loadWikiSnapshot(freshUniId, freshBookId);
     expect(snap.entries.length).toBe(0);
 
+    // R2: the fresh world is born with EXACTLY ONE default research thread, scoped
+    // to the fresh world/universe (so /research never renders an empty rail). The
+    // wiki-empty assert above is about world_entities, NOT threads — this locks the
+    // separate thread seed on the createFreshUniverse path.
+    const freshThreads = await one<{ n: string }>(
+      `SELECT COUNT(*)::text AS n FROM research_threads WHERE world_id = $1 AND universe_id = $2`,
+      [freshWorldId, freshUniId],
+    );
+    expect(freshThreads?.n).toBe("1");
+
     // New book under the fresh world -> chapter numbering starts at 1.
     const next = await getNextChapterNumber(freshBookId);
     expect(next).toBe(1);
