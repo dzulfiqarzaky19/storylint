@@ -7495,6 +7495,250 @@
         }
       ],
       "chapter": 65
+    },
+    {
+      "name": "Aunt Pluto",
+      "kind": "character",
+      "summary": "Codename Cruella, an Augusti assassin and one of the few beings capable of killing Ryan permanently. Her Genome power is a death-curse: she can 'mark' a target, and the closer she physically moves to a marked person, the closer they come to inescapable death, no way out. Augustus dispatches her to kill Felix (for joining the Carnival and telling Narcinia the truth); she has already marked both Felix and, earlier, Ryan himself. Her approach is treated as a death sentence, forcing Ryan to flee New Rome with Felix.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti assassin, codename 'Cruella'"
+        },
+        {
+          "key": "note",
+          "value": "Death-curse power: marks a target, proximity kills them"
+        },
+        {
+          "key": "note",
+          "value": "One of few able to kill Ryan permanently"
+        },
+        {
+          "key": "note",
+          "value": "Already marked both Felix and Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Sent by Augustus to kill Felix"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "assassin for"
+        },
+        {
+          "to": "Augustus",
+          "rel": "serves"
+        },
+        {
+          "to": "Felix",
+          "rel": "marked to kill"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "marked"
+        }
+      ],
+      "chapter": 66
+    },
+    {
+      "name": "The Gravity Gun",
+      "kind": "concept",
+      "summary": "A secret Dynamis weapon developed to neutralize the near-unkillable Augustus ('Mob Zeus'/the Living Sun), the one obstacle that makes attacking the Augusti so dangerous. Alphonse Manada references it and Felix confirms Dynamis is counting on it, though Don Hector himself never believed in the weapon. It represents the alliance's gamble that they can finally put the Living Sun 'out of commission.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Secret Dynamis weapon meant to disable Augustus"
+        },
+        {
+          "key": "note",
+          "value": "The alliance's answer to the near-unkillable Living Sun"
+        },
+        {
+          "key": "note",
+          "value": "Referenced by Alphonse Manada; Don Hector doubted it"
+        },
+        {
+          "key": "note",
+          "value": "Key to the plan to attack the Augusti"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "weapon of"
+        },
+        {
+          "to": "Augustus",
+          "rel": "intended target"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "champion of"
+        }
+      ],
+      "chapter": 66
+    },
+    {
+      "name": "Felix",
+      "kind": "character",
+      "summary": "Refined (Atom Cat): recovering from Acid Rain's gut-wound, Felix announces he's quitting Il Migliore to join the Carnival, feeling more aligned with its values than Dynamis's red tape. He reveals he never romantically loved Livia, their match was arranged by their parents (best friends from the old Camorra branch) since childhood, he cares for her only as a friend and could never be her 'Prince Charming.' He told Narcinia the full truth of Augustus's crimes. Suspecting Ryan is secretly close to Livia, he turns wary and distant. Warned Augustus has sent Aunt Pluto to kill him, he's initially resigned to martyrdom until Ryan guilts him into fleeing (invoking how Fortuna would grieve).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Quits Il Migliore to join the Carnival"
+        },
+        {
+          "key": "note",
+          "value": "Never loved Livia; their match was arranged since childhood"
+        },
+        {
+          "key": "note",
+          "value": "Told Narcinia the truth about Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Grows wary of Ryan's closeness to Livia"
+        },
+        {
+          "key": "note",
+          "value": "Marked for death by Aunt Pluto; flees with Ryan"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "arranged ex, only friendship"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "joins"
+        },
+        {
+          "to": "Aunt Pluto",
+          "rel": "targeted by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "flees with"
+        }
+      ],
+      "chapter": 66
+    },
+    {
+      "name": "Narcinia",
+      "kind": "character",
+      "summary": "Refined: Felix's adoptive sister, revealed to be a victim of Augustus's cruelty. Augustus murdered her birth parents and arranged her adoption specifically to exploit her Genome power to manufacture drugs (Bliss). She has no memory of her real parents because Bacchus shattered her young mind, he can psychically torture people into madness or gaslight them into false beliefs. Felix breaks the truth to her at the hospital, leaving her visibly upset as Mortimer drives her away.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Felix's adoptive sister; her power is used to make Bliss"
+        },
+        {
+          "key": "note",
+          "value": "Augustus murdered her birth parents and arranged her adoption"
+        },
+        {
+          "key": "note",
+          "value": "Bacchus shattered her memory of her real parents"
+        },
+        {
+          "key": "note",
+          "value": "Learns the truth from Felix; leaves distraught"
+        },
+        {
+          "key": "note",
+          "value": "Driven by Mortimer"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "victim of"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "mind shattered by"
+        },
+        {
+          "to": "Felix",
+          "rel": "adoptive sister"
+        }
+      ],
+      "chapter": 66
+    },
+    {
+      "name": "Bacchus",
+      "kind": "character",
+      "summary": "Refined: an Augusti with a mind-breaking psychic power, he can psychically torture people to madness or gaslight them into believing false things. He shattered a young Narcinia's mind, erasing her memories of her murdered birth parents so Augustus could exploit her. Ryan mentally files this away for when he plans to blow up the Bliss Factory.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti with a mind-breaking psychic power"
+        },
+        {
+          "key": "note",
+          "value": "Can torture minds to madness or implant false beliefs"
+        },
+        {
+          "key": "note",
+          "value": "Shattered young Narcinia's memory of her parents"
+        },
+        {
+          "key": "note",
+          "value": "Tied to the Bliss Factory operation"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "shattered her mind"
+        },
+        {
+          "to": "Bliss Factory",
+          "rel": "linked to"
+        }
+      ],
+      "chapter": 66
+    },
+    {
+      "name": "The Shroud",
+      "kind": "character",
+      "summary": "Refined (Translucent/Matty Boy): the invisible vigilante was gravely wounded during the Meta-Gang fight when Wardrobe's imperfect nurse persona left him exposed; shrapnel hit his vital organs and he was placed in an artificial coma in intensive care. Though he had killed Ryan a few times across loops, Ryan came to appreciate his repeated help (notably keeping Adam from the Bahamut). Wardrobe blames herself for his injuries.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Gravely wounded in the Meta-Gang fight; artificial coma"
+        },
+        {
+          "key": "note",
+          "value": "Shrapnel struck his vital organs"
+        },
+        {
+          "key": "note",
+          "value": "Ryan values his cross-loop help despite past killings"
+        },
+        {
+          "key": "note",
+          "value": "Wardrobe blames herself for his injuries"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Wardrobe",
+          "rel": "wounded under her care"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "ally"
+        }
+      ],
+      "chapter": 66
     }
   ],
   "plotObservations": [
@@ -8358,6 +8602,29 @@
         "Dynamis"
       ],
       "chapter": 65
+    },
+    {
+      "title": "The Hit",
+      "beat": "At Felix's hospital room, Nora feeds Ryan intel on Lab Sixty-Six's defenses (missile-proof, one elevator/blast-door entry, no emergency exit, 'secure not safe'), narrowing his infiltration options. Felix announces he's quitting Il Migliore for the Carnival and, wary that Ryan seems tied to Livia, confronts him, revealing he never loved Livia (their match was arranged since childhood) and that he told Narcinia the truth: Augustus murdered her birth parents and arranged her adoption to exploit her drug-making power, with Bacchus shattering her memory. The Il Migliore members are summoned to a war-council meeting (Ryan barred), confirming the Dynamis-Carnival strike on the Augusti is imminent. Livia calls in a panic: Augustus, now marshaling for war, has sent Aunt Pluto ('Cruella') to kill Felix, her death-curse already marks him and Ryan. Rather than abandon a teammate, Ryan guilts the resigned Felix into fleeing and arranges for Len to bathysphere them out to France, urging her to rebuild Vulcan's armor fast. The storm Enrique foretold breaks: war has come to New Rome, and they escape in the Pandamobile.",
+      "entities": [
+        "Ryan Romano",
+        "Nora Moore",
+        "Lab Sixty-Six",
+        "Felix",
+        "Livia",
+        "Narcinia",
+        "Augustus",
+        "Bacchus",
+        "Aunt Pluto",
+        "The Shroud",
+        "Wardrobe",
+        "The Panda",
+        "Len",
+        "The Carnival",
+        "Dynamis",
+        "The Augusti"
+      ],
+      "chapter": 66
     }
   ]
 }
