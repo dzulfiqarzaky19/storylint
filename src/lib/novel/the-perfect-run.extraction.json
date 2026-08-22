@@ -397,6 +397,14 @@
           {
             "key": "confirmed",
             "value": "Still needs the Saturn Armor to harm Augustus"
+          },
+          {
+            "key": "milestone",
+            "value": "Livia becomes his girlfriend; relationship not bound to resets"
+          },
+          {
+            "key": "vow",
+            "value": "Accepts 'Be happy too'; agrees to stop suicide-reloads and drugs"
           }
         ],
         "ties": [
@@ -639,6 +647,14 @@
           {
             "to": "livia",
             "rel": "his lover, who shields him from her father"
+          },
+          {
+            "to": "livia",
+            "rel": "his girlfriend, who reforms his habits and list"
+          },
+          {
+            "to": "venus",
+            "rel": "heals his burns; he clocks her as a deadlier enemy"
           }
         ],
         "appearances": [
@@ -737,7 +753,8 @@
           96,
           97,
           98,
-          99
+          99,
+          101
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -2819,7 +2836,8 @@
           8,
           65,
           74,
-          100
+          100,
+          101
         ],
         "questions": []
       },
@@ -6114,7 +6132,8 @@
           24,
           36,
           38,
-          66
+          66,
+          101
         ],
         "questions": []
       },
@@ -8527,6 +8546,18 @@
           {
             "key": "note",
             "value": "Duels a giant plant monster in the New Rome war"
+          },
+          {
+            "key": "real name",
+            "value": "Luca Veran"
+          },
+          {
+            "key": "role",
+            "value": "Camorra don, runs Triton's Resort; Augustus loyalist"
+          },
+          {
+            "key": "crime",
+            "value": "Murdered Narcinia's real parents and abducted her"
           }
         ],
         "ties": [
@@ -8549,11 +8580,20 @@
           {
             "to": "new-rome",
             "rel": "fights in the war"
+          },
+          {
+            "to": "venus",
+            "rel": "his wife"
+          },
+          {
+            "to": "narcinia",
+            "rel": "abducted her as a baby; raised as his daughter"
           }
         ],
         "appearances": [
           38,
-          69
+          69,
+          101
         ],
         "questions": []
       },
@@ -8578,6 +8618,18 @@
           {
             "key": "note",
             "value": "Pressures Fortuna to inherit her business/mantle"
+          },
+          {
+            "key": "real name",
+            "value": "Andrea Julani-Veran"
+          },
+          {
+            "key": "power",
+            "value": "Superficial aesthetic surgery (skin/hair/eyes; lethal only with contact)"
+          },
+          {
+            "key": "operation",
+            "value": "Runs the resort's brothel + Bliss-addiction/blackmail racket"
           }
         ],
         "ties": [
@@ -8600,11 +8652,20 @@
           {
             "to": "the-augusti",
             "rel": "Olympian"
+          },
+          {
+            "to": "mars",
+            "rel": "her husband"
+          },
+          {
+            "to": "fortuna",
+            "rel": "her daughter"
           }
         ],
         "appearances": [
           38,
-          60
+          60,
+          101
         ],
         "questions": []
       },
@@ -11178,7 +11239,8 @@
           69,
           92,
           93,
-          99
+          99,
+          101
         ],
         "questions": []
       },
@@ -11406,7 +11468,8 @@
           96,
           97,
           98,
-          99
+          99,
+          101
         ],
         "questions": []
       },
@@ -13655,6 +13718,66 @@
           100
         ],
         "questions": []
+      },
+      {
+        "id": "triton-s-resort",
+        "kind": "location",
+        "name": "Triton's Resort",
+        "summary": "CH101: a lavish Augusti-owned resort complex west of New Rome, on a hill between the Colosseum Maximus and Little Lilith (the red-light district). Glass domes, white spires, pleasure gardens, thermal pools and coastal views in Roman style; entrances are segregated by status. Run by Mars (Luca Veran) and Venus (Andrea Julani-Veran), it is publicly a luxury resort but privately the epicenter of New Rome's prostitution trade, using Venus's face-reshaping power to sell celebrity/hero lookalikes and hooking clients on Bliss for blackmail. Bugged throughout except Livia's private lovers' suite.",
+        "facts": [
+          {
+            "key": "owner",
+            "value": "The Augusti; operated by Mars and Venus"
+          },
+          {
+            "key": "secret",
+            "value": "Center of New Rome prostitution + Bliss-addiction blackmail"
+          }
+        ],
+        "ties": [
+          {
+            "to": "venus",
+            "rel": "she runs its brothel/Bliss operation"
+          },
+          {
+            "to": "livia",
+            "rel": "keeps a private lovers' suite there"
+          }
+        ],
+        "appearances": [
+          101
+        ],
+        "questions": []
+      },
+      {
+        "id": "station-orpheon",
+        "kind": "location",
+        "name": "Station Orpheon",
+        "summary": "CH101 (from CH100 lore): France's secret Antarctic bacteriological-weapons base and the likely site of the Alchemist's fortress that Ryan glimpsed in the Purple World, buried in snow and ice. Eva Fabre was its lead geneticist when a purple-flash crash and lethal outbreak wiped out the staff in Dec 1992. Livia connects Ryan's vision to it via a tale Bacchus told her: Bacchus was investigating the Alchemist before Last Easter and she 'twisted' him, leaving him deranged and Bliss-obsessed. Ryan flags finding this base as a Perfect Run objective, suspecting the Violet Ultimate One steered him toward it.",
+        "facts": [
+          {
+            "key": "identity",
+            "value": "France's secret Antarctic bioweapons base; the Alchemist's origin site"
+          },
+          {
+            "key": "lead",
+            "value": "Ryan's Purple-World vision of an icebound fortress points here"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-alchemist",
+            "rel": "her Antarctic base / origin (as Eva Fabre)"
+          },
+          {
+            "to": "bacchus",
+            "rel": "investigated her here and was 'twisted'"
+          }
+        ],
+        "appearances": [
+          101
+        ],
+        "questions": []
       }
     ]
   },
@@ -15812,6 +15935,10 @@
           {
             "chapter": 100,
             "summary": "CH100 'Past Fragment: No Planet for Old Men' (a ~2005 flashback, origin lore): Cardinal Andreas Torque, Inquisitor-General of the Vatican's secret Malleus Maleficarum, investigates the pre-Genome-age incidents (the Stanford Incident and worldwide monster outbreaks) and tracks the immortal teleporting geneticist Eva Fabre, revealed to be a legion of blue-particle copies who calls herself the Alchemist and is seeding the Elixirs to force mankind's evolution. Her hive wipes out his order and captures him; dosed with Janus Augusti's mind-opening crystals and a Blue Elixir, Torque's soul ascends into the Blue World and melds with the Ultimate One, the psionic information-god at its center, an experience of divine rapture that leaves him a broken addict craving only to return as the old world burns. This exposes the true origin of the Genome age, the Alchemist, the Blue World deity, and the Augusti dynasty's complicity."
+          },
+          {
+            "chapter": 101,
+            "summary": "CH101 'Lover's Breath': Ryan and Livia formalize their romance, she agrees to be his girlfriend on the condition it last until they choose to end it rather than until a reset. Reviewing Ryan's Perfect Run to-do list, Livia adds 'Be happy too' and bans his suicide-reloads and drugs, and crucially connects Ryan's Purple-World vision of an icebound Alchemist fortress to Station Orpheon, France's secret Antarctic base, revealing Bacchus was 'twisted' investigating the Alchemist before Last Easter. At the Augusti-owned Triton's Resort, Ryan meets Mars (Luca Veran) and is healed by Venus (Andrea Julani-Veran), learning the resort is a prostitution/Bliss-addiction front, and resolves to eventually bring down Augustus and the Veran clan to free Livia while reforming the empire."
           }
         ],
         "entities": [
@@ -15869,13 +15996,18 @@
           "the-malleus-maleficarum",
           "the-blue-world",
           "the-stanford-incident",
-          "the-blue-elixir"
+          "the-blue-elixir",
+          "station-orpheon",
+          "bacchus",
+          "triton-s-resort",
+          "mars",
+          "venus"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 233,
+    "entities": 235,
     "plotlines": 104,
     "books": 1
   }

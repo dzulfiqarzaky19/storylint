@@ -14590,6 +14590,144 @@
         }
       ],
       "chapter": 100
+    },
+    {
+      "name": "Mars",
+      "kind": "character",
+      "summary": "CH101: real name Luca Veran, a Camorra don and Augustus's follower who runs Triton's Resort. An Italian-George-Clooney charmer with blue eyes, father of Fortuna, Atom Kitty (Felix) and the abducted Narcinia. Warmly welcomes Ryan as Livia's boyfriend and floats a family dinner when Narcinia returns (May 14), but makes casual racist remarks about 'normies'. Ryan privately recalls Mars murdered Narcinia's real parents and abducted her as a baby. Attends the Augusti meeting scheduled for the 15th; pushes (with Venus) to destroy the Manada clan.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Luca Veran"
+        },
+        {
+          "key": "role",
+          "value": "Camorra don, runs Triton's Resort; Augustus loyalist"
+        },
+        {
+          "key": "crime",
+          "value": "Murdered Narcinia's real parents and abducted her"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Venus",
+          "rel": "his wife"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "abducted her as a baby; raised as his daughter"
+        }
+      ],
+      "chapter": 101
+    },
+    {
+      "name": "Venus",
+      "kind": "character",
+      "summary": "CH101: real name Andrea Julani-Veran, Fortuna's mother and a beautiful woman in her forties. Her power is limited to superficial aesthetic surgery, reshaping skin, eye color, hair (and, with sustained contact, potentially lethal reshaping), healing Ryan's lightning burns in a green flash. She runs Triton's Resort's prostitution/Bliss-addiction operation, using her face-reshaping power to sell celebrity/hero lookalikes and to hook clients on Bliss for blackmail. Colder and deadlier than her husband, she resents Ryan for 'usurping' her son Felix's place with Livia and quietly plots against him, pushing to destroy the Manada clan and reclaim Felix.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Andrea Julani-Veran"
+        },
+        {
+          "key": "power",
+          "value": "Superficial aesthetic surgery (skin/hair/eyes; lethal only with contact)"
+        },
+        {
+          "key": "operation",
+          "value": "Runs the resort's brothel + Bliss-addiction/blackmail racket"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mars",
+          "rel": "her husband"
+        },
+        {
+          "to": "Fortuna",
+          "rel": "her daughter"
+        }
+      ],
+      "chapter": 101
+    },
+    {
+      "name": "Triton's Resort",
+      "kind": "location",
+      "summary": "CH101: a lavish Augusti-owned resort complex west of New Rome, on a hill between the Colosseum Maximus and Little Lilith (the red-light district). Glass domes, white spires, pleasure gardens, thermal pools and coastal views in Roman style; entrances are segregated by status. Run by Mars (Luca Veran) and Venus (Andrea Julani-Veran), it is publicly a luxury resort but privately the epicenter of New Rome's prostitution trade, using Venus's face-reshaping power to sell celebrity/hero lookalikes and hooking clients on Bliss for blackmail. Bugged throughout except Livia's private lovers' suite.",
+      "facts": [
+        {
+          "key": "owner",
+          "value": "The Augusti; operated by Mars and Venus"
+        },
+        {
+          "key": "secret",
+          "value": "Center of New Rome prostitution + Bliss-addiction blackmail"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Venus",
+          "rel": "she runs its brothel/Bliss operation"
+        },
+        {
+          "to": "Livia",
+          "rel": "keeps a private lovers' suite there"
+        }
+      ],
+      "chapter": 101
+    },
+    {
+      "name": "Station Orpheon",
+      "kind": "location",
+      "summary": "CH101 (from CH100 lore): France's secret Antarctic bacteriological-weapons base and the likely site of the Alchemist's fortress that Ryan glimpsed in the Purple World, buried in snow and ice. Eva Fabre was its lead geneticist when a purple-flash crash and lethal outbreak wiped out the staff in Dec 1992. Livia connects Ryan's vision to it via a tale Bacchus told her: Bacchus was investigating the Alchemist before Last Easter and she 'twisted' him, leaving him deranged and Bliss-obsessed. Ryan flags finding this base as a Perfect Run objective, suspecting the Violet Ultimate One steered him toward it.",
+      "facts": [
+        {
+          "key": "identity",
+          "value": "France's secret Antarctic bioweapons base; the Alchemist's origin site"
+        },
+        {
+          "key": "lead",
+          "value": "Ryan's Purple-World vision of an icebound fortress points here"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "her Antarctic base / origin (as Eva Fabre)"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "investigated her here and was 'twisted'"
+        }
+      ],
+      "chapter": 101
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH101 'Lover's Breath': officially asks Livia to be his girlfriend; she insists their relationship last 'until we choose to break up', not until a reset, refusing to let his power define its end. He shares his Perfect Run to-do list (Kill Psypsy, Cure the Psycho condition, Prevent the Leporimachia, Reconcile Wyvern & Vulcan, Find the Alchemist's Antarctic base, Bury my daddy issues, Make Livia happy); Livia strikes his other 'fuck/marry' goals and adds 'Be happy too', banning his suicide-reloads and his drugs. He offers Livia an endorphin-blocker Bliss cure and to tear down Triton's Resort for her. He's healed by Venus and resolves to eventually bring down Augustus and the Veran 'Olympians' for Livia's sake.",
+      "facts": [
+        {
+          "key": "milestone",
+          "value": "Livia becomes his girlfriend; relationship not bound to resets"
+        },
+        {
+          "key": "vow",
+          "value": "Accepts 'Be happy too'; agrees to stop suicide-reloads and drugs"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "his girlfriend, who reforms his habits and list"
+        },
+        {
+          "to": "Venus",
+          "rel": "heals his burns; he clocks her as a deadlier enemy"
+        }
+      ],
+      "chapter": 101
     }
   ],
   "plotObservations": [
@@ -16299,6 +16437,22 @@
         "The Blue Elixir"
       ],
       "chapter": 100
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH101 'Lover's Breath': Ryan and Livia formalize their romance, she agrees to be his girlfriend on the condition it last until they choose to end it rather than until a reset. Reviewing Ryan's Perfect Run to-do list, Livia adds 'Be happy too' and bans his suicide-reloads and drugs, and crucially connects Ryan's Purple-World vision of an icebound Alchemist fortress to Station Orpheon, France's secret Antarctic base, revealing Bacchus was 'twisted' investigating the Alchemist before Last Easter. At the Augusti-owned Triton's Resort, Ryan meets Mars (Luca Veran) and is healed by Venus (Andrea Julani-Veran), learning the resort is a prostitution/Bliss-addiction front, and resolves to eventually bring down Augustus and the Veran clan to free Livia while reforming the empire.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Station Orpheon",
+        "The Alchemist",
+        "Bacchus",
+        "Triton's Resort",
+        "Mars",
+        "Venus",
+        "Narcinia"
+      ],
+      "chapter": 101
     }
   ]
 }
