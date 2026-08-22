@@ -6515,6 +6515,246 @@
         }
       ],
       "chapter": 61
+    },
+    {
+      "name": "The Black Elixir",
+      "kind": "concept",
+      "summary": "A Mechron-made Elixir, a bottle of black starless liquid that Adam throws as a last-ditch Psycho-making grenade. Unlike normal Elixirs it behaves as a living blob of black oil that acts even inside Ryan's stopped time (like Violet-World powers), melting carbon armor and seeping into flesh. Adam's body can't assimilate it, so it devours him alive, puppeteering his dissolving skeleton and speaking through his corpse in an alien voice that begs Ryan to 'open the gate' and 'send me back to the Black,' insisting 'this dimension is not' its home. It cancels Fallout's atomic ray (energy simply stops existing past a point), proving it trumps even nuclear power, before consuming its host and dissipating into nothing.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Mechron-made Elixir; black starless liquid"
+        },
+        {
+          "key": "note",
+          "value": "Acts as living oil even in stopped time"
+        },
+        {
+          "key": "note",
+          "value": "Devours its incompatible host (killed Adam) alive"
+        },
+        {
+          "key": "note",
+          "value": "Speaks through the corpse: 'open the gate... send me to the Black'"
+        },
+        {
+          "key": "note",
+          "value": "Cancels/trumps Fallout's nuclear blasts"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "created by"
+        },
+        {
+          "to": "Adam the Ogre",
+          "rel": "consumed"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "echoes 'open the gate' motif"
+        }
+      ],
+      "chapter": 62
+    },
+    {
+      "name": "Dr. Stitch",
+      "kind": "character",
+      "summary": "A Carnival member and medic dressed as a plague doctor, whose expertise is viruses and bacteria; he carries grotesque organic devices in a waist bag, including a wriggling white tumor he grafts onto Shroud's wound so his engineered bacteria colony can repair the flesh. Brought in by Ace's portal, he and Wardrobe are sent to the field infirmary to save Shroud (whose arm Acid Rain blew off) and the other wounded.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Carnival medic; dresses as a plague doctor"
+        },
+        {
+          "key": "note",
+          "value": "Expertise in viruses and bacteria"
+        },
+        {
+          "key": "note",
+          "value": "Uses engineered bacteria/tumor grafts to heal"
+        },
+        {
+          "key": "note",
+          "value": "Treats the maimed Shroud alongside Wardrobe"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "member"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "treats"
+        },
+        {
+          "to": "Ace",
+          "rel": "teammate"
+        }
+      ],
+      "chapter": 62
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "Francis Grey, alias Psyshock ('Psypsy'), the Meta-Gang's brainjacker second-in-command, a body almost entirely made of nerves who intertwines his tendrils with Mechron's biomechanical brain-database to crack its firewalls (aiming at the Bahamut). Cornered in the bunker command center, he is captured after Blackthorn poisons him with a genetically altered aconitine neurotoxin: since Psyshock's death triggers his mind-transfer, keeping him unconscious disables it, and being nearly all nerve tissue makes him doubly vulnerable to the neurotoxin. He is carried off drugged to containment, ending the Meta-Gang's leadership.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Francis Grey; Meta-Gang brainjacker second-in-command"
+        },
+        {
+          "key": "note",
+          "value": "Body of nerves; jacks into Mechron's brain-database"
+        },
+        {
+          "key": "note",
+          "value": "Death triggers mind-transfer; unconsciousness disables it"
+        },
+        {
+          "key": "note",
+          "value": "Captured via Blackthorn's aconitine neurotoxin"
+        },
+        {
+          "key": "note",
+          "value": "Doubly vulnerable to neurotoxin (all nerves)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "second-in-command"
+        },
+        {
+          "to": "Adam the Ogre",
+          "rel": "served"
+        },
+        {
+          "to": "Blackthorn",
+          "rel": "neutralized by"
+        }
+      ],
+      "chapter": 62
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Len Sabino (Genius, Ryan's adoptive sister), who during the Rust Town siege infiltrates Mechron's bunker via its sea tunnels, fleeing the lower levels when Dynamis invades, and successfully steals the brain-duplicating braintech, her quiet-triumph goal for the raid. Her success means Ryan may finally carry a consciousness across loops (potentially Len's, to preserve her against her depression). She confirms she is safe under the sea afterward.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Infiltrated Mechron's bunker via sea tunnels during the raid"
+        },
+        {
+          "key": "note",
+          "value": "Stole the brain-duplicating braintech"
+        },
+        {
+          "key": "note",
+          "value": "Fled the lower levels ahead of Dynamis"
+        },
+        {
+          "key": "note",
+          "value": "Braintech may let Ryan carry a mind across loops"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "adoptive sister / ally"
+        },
+        {
+          "to": "Mechron",
+          "rel": "stole tech from"
+        },
+        {
+          "to": "The Braintech",
+          "rel": "secured"
+        }
+      ],
+      "chapter": 62
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "Alphonse 'Fallout' Manada, Dynamis VP, leads the bunker assault firsthand: his metal hands channel gamma/nuclear rays that vaporize enemies and melt through walls to carve a path. He out-blasts the Meta's forcefield ('unstoppable force beats immovable object'), destroying the biomechanical brain-database. Ruthless (orders a full wipeout of Psyshock's brainwashed thralls, overruled only partly by Enrique's plea to capture them), he confirms Adam dead and Psyshock neutralized, then moves to arrest their father Don Hector at the family manor before he can mount a counter-coup. Ryan needles him with the nickname 'Atomic Cancer.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Leads the bunker assault; melts walls, vaporizes foes"
+        },
+        {
+          "key": "note",
+          "value": "Nuclear rays out-blast the Meta forcefield"
+        },
+        {
+          "key": "note",
+          "value": "Ruthless: orders thralls wiped out (Enrique softens it)"
+        },
+        {
+          "key": "note",
+          "value": "Moves to arrest Don Hector at the manor"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "VP / raid leader"
+        },
+        {
+          "to": "Blackthorn",
+          "rel": "brother"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "moves to arrest"
+        }
+      ],
+      "chapter": 62
+    },
+    {
+      "name": "Blackthorn",
+      "kind": "character",
+      "summary": "Enrique 'Blackthorn' Manada fights the bunker raid personally (not a rear-line pencil-pusher), spreading near-invisible vines to map corridors, locating Adam and Psyshock, and lending Ryan a Beretta. His rose-plant grows into a floral squid that restrains Psyshock and gasses him with genetically altered aconitine neurotoxin, cleverly disabling the mind-transfer. More humane than his brother, he pleads to capture Psyshock's thralls as victims rather than wipe them out, and is visibly remorseful about the Black Elixir horror ('It was our early days all over again'). He confirms Leo Hargraves knew of the bunker, agrees Mechron's tech is dangerous, and leads the group to arrest Don Hector, still vowing Ryan will explain his agenda.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Fights the raid personally; vine-maps the bunker"
+        },
+        {
+          "key": "note",
+          "value": "Poison-rose squid + aconitine neutralizes Psyshock"
+        },
+        {
+          "key": "note",
+          "value": "More humane than Alphonse; spares thralls as victims"
+        },
+        {
+          "key": "note",
+          "value": "Remorseful at the Black Elixir; knows Leo knew of the bunker"
+        },
+        {
+          "key": "note",
+          "value": "Leads the move to arrest Don Hector"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "CBO / raid leader"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "captured"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "brother"
+        }
+      ],
+      "chapter": 62
     }
   ],
   "plotObservations": [
@@ -7304,6 +7544,27 @@
         "Livia Augusti"
       ],
       "chapter": 61
+    },
+    {
+      "title": "Quest Complete",
+      "beat": "In the field shelter, Dr. Stitch (Carnival medic) and Wardrobe barely save the maimed Shroud with engineered bacteria. Ace portals Ryan and the Panda into Mechron's bunker, where Fallout and Dynamis security fight door-to-door through Psyshock's suicide-bomber thralls and human shields. Blackthorn (fighting personally, vine-mapping the halls) locates Adam and Psyshock at the brain-database command center. Cornered, Adam smashes a Mechron-made Black Elixir, which acts even in stopped time and, unable to assimilate him, devours him alive, its alien voice begging Ryan to 'open the gate' and 'send me to the Black' while canceling Fallout's nuclear ray, before dissolving Adam to nothing. Fallout then out-blasts the forcefield and vaporizes the brain-database; Blackthorn's poison-rose squid gasses Psyshock unconscious with aconitine, disabling his death-triggered mind-transfer. Ryan freezes time to disarm suicide belts and spare thralls, saving many but not all. The Meta-Gang is destroyed. Leo admits he knew of the bunker; the group heads to the Manada manor to arrest Don Hector. Len radios: safe under the sea, she has the braintech.",
+      "entities": [
+        "Ryan Romano",
+        "Dr. Stitch",
+        "Wardrobe",
+        "The Shroud",
+        "Ace",
+        "The Panda",
+        "Alphonse Manada",
+        "Blackthorn",
+        "Adam the Ogre",
+        "The Black Elixir",
+        "Psyshock",
+        "Leo Hargraves",
+        "Len",
+        "Hector Manada"
+      ],
+      "chapter": 62
     }
   ]
 }
