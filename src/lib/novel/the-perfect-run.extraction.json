@@ -309,6 +309,14 @@
           {
             "key": "plan",
             "value": "Aerial insertion, grab Tyrano, torch Lab 66, flee before Fallout arrives"
+          },
+          {
+            "key": "origin",
+            "value": "First injects his Violet Elixir here, birthing his time-loop power"
+          },
+          {
+            "key": "gambit",
+            "value": "Baits the Carnival to kill Bloodstream; sends Len away on the Laika"
           }
         ],
         "ties": [
@@ -463,6 +471,14 @@
           {
             "to": "black-flux",
             "rel": "his mysterious new energy"
+          },
+          {
+            "to": "the-violet-elixir",
+            "rel": "injects it for the first time"
+          },
+          {
+            "to": "the-carnival",
+            "rel": "lures them to the hideout"
           }
         ],
         "appearances": [
@@ -550,7 +566,8 @@
           85,
           86,
           87,
-          88
+          88,
+          89
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -709,6 +726,14 @@
           {
             "key": "arc",
             "value": "Resolves to raid Lab 66 to face what remains of Bloodstream"
+          },
+          {
+            "key": "origin",
+            "value": "Built the Laika; refuses to abandon her father"
+          },
+          {
+            "key": "stakes",
+            "value": "Her death is Bloodstream's doomsday trigger"
           }
         ],
         "ties": [
@@ -799,6 +824,14 @@
           {
             "to": "lab-sixty-six",
             "rel": "the raid target"
+          },
+          {
+            "to": "freddie-sabino",
+            "rel": "her father"
+          },
+          {
+            "to": "the-laika",
+            "rel": "built and fled in it"
           }
         ],
         "appearances": [
@@ -838,7 +871,8 @@
           85,
           86,
           87,
-          88
+          88,
+          89
         ],
         "questions": []
       },
@@ -1820,7 +1854,8 @@
           61,
           62,
           63,
-          80
+          80,
+          89
         ],
         "questions": []
       },
@@ -1849,6 +1884,14 @@
           {
             "key": "note",
             "value": "Now a covert fourth faction in New Rome"
+          },
+          {
+            "key": "structure",
+            "value": "Cell-based, highly resilient; unites only for big operations"
+          },
+          {
+            "key": "op",
+            "value": "Hunts Bloodstream; goal: destroy every clone, protect the children"
           }
         ],
         "ties": [
@@ -1859,12 +1902,21 @@
           {
             "to": "the-shroud",
             "rel": "operative in New Rome"
+          },
+          {
+            "to": "leo-hargraves",
+            "rel": "leader"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "their target in the origin loop"
           }
         ],
         "appearances": [
           2,
           17,
-          66
+          66,
+          89
         ],
         "questions": []
       },
@@ -2699,6 +2751,18 @@
           {
             "key": "reveal",
             "value": "Len's father, reunited with her at last"
+          },
+          {
+            "key": "power",
+            "value": "Green(blood control)/Blue(pure info); each cell hosts his mind, reforms from one"
+          },
+          {
+            "key": "conversion",
+            "value": "His blood in your bloodstream overwrites you into a copy of him"
+          },
+          {
+            "key": "doomsday",
+            "value": "If Len dies he becomes an extinction-level plague; limits are psychological"
           }
         ],
         "ties": [
@@ -2741,6 +2805,18 @@
           {
             "to": "dr-tyrano",
             "rel": "kept and exploited by him"
+          },
+          {
+            "to": "freddie-sabino",
+            "rel": "his human self"
+          },
+          {
+            "to": "len",
+            "rel": "her death is his doomsday trigger"
+          },
+          {
+            "to": "pythia",
+            "rel": "prophesied his extinction event"
           }
         ],
         "appearances": [
@@ -2753,7 +2829,8 @@
           81,
           82,
           84,
-          88
+          88,
+          89
         ],
         "questions": []
       },
@@ -2762,7 +2839,16 @@
         "kind": "character",
         "name": "Cesare",
         "summary": "Len's dead brother; Bloodstream refuses to accept his death and projects the identity onto Ryan, forcing Ryan to answer to the name to avoid a violent episode.",
-        "facts": [],
+        "facts": [
+          {
+            "key": "note",
+            "value": "Ryan's pre-power identity, forced on him by Bloodstream's denial of Cesare's death"
+          },
+          {
+            "key": "act",
+            "value": "Baits the Carnival to the hideout to get Bloodstream killed"
+          }
+        ],
         "ties": [
           {
             "to": "len",
@@ -2771,10 +2857,19 @@
           {
             "to": "bloodstream",
             "rel": "son"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "the identity he was forced into"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "his captor/'father'"
           }
         ],
         "appearances": [
-          8
+          8,
+          89
         ],
         "questions": []
       },
@@ -6159,7 +6254,8 @@
         ],
         "appearances": [
           27,
-          40
+          40,
+          89
         ],
         "questions": []
       },
@@ -7336,7 +7432,8 @@
           }
         ],
         "appearances": [
-          35
+          35,
+          89
         ],
         "questions": []
       },
@@ -8111,7 +8208,8 @@
           }
         ],
         "appearances": [
-          40
+          40,
+          89
         ],
         "questions": []
       },
@@ -9232,7 +9330,8 @@
         ],
         "appearances": [
           57,
-          85
+          85,
+          89
         ],
         "questions": []
       },
@@ -9367,7 +9466,8 @@
         ],
         "appearances": [
           59,
-          62
+          62,
+          89
         ],
         "questions": []
       },
@@ -12089,6 +12189,174 @@
           88
         ],
         "questions": []
+      },
+      {
+        "id": "freddie-sabino",
+        "kind": "character",
+        "name": "Freddie Sabino",
+        "summary": "CH89 (flashback origin): the human behind Bloodstream. Born 1980 in Otranto, Italy, to a fisherman and housewife; married young, dropped out of college, became an Otranto municipal policeman (his only job). Abandoned by his wife before Last Easter, left to raise daughter Len (Lenora) and son Cesare alone. On Last Easter's eve he stole two Elixirs mistaken for drugs from his station and fled the apocalypse, becoming the Psycho Bloodstream by 2009. A loving but broken father whose delusions (he 'dreams of a Green Hell,' believes the Elixirs are Satan's poison) drive escalating abuse; he keeps his children isolated and dependent.",
+        "facts": [
+          {
+            "key": "origin",
+            "value": "b. 1980 Otranto; ex-municipal policeman; stole 2 Elixirs on Last Easter"
+          },
+          {
+            "key": "family",
+            "value": "Widower-by-abandonment; father of Len and the dead Cesare"
+          }
+        ],
+        "ties": [
+          {
+            "to": "bloodstream",
+            "rel": "his Psycho identity"
+          },
+          {
+            "to": "len",
+            "rel": "his daughter"
+          },
+          {
+            "to": "cesare",
+            "rel": "his dead son"
+          }
+        ],
+        "appearances": [
+          89
+        ],
+        "questions": []
+      },
+      {
+        "id": "mr-wave",
+        "kind": "character",
+        "name": "Mr. Wave",
+        "summary": "CH89: a Carnival member, 'the oddest of the group,' a creature of living wavelengths who speaks of himself in the third person and rarely takes things seriously. His firm moral line in the Bloodstream operation: no harming the children, even if they were Genomes.",
+        "facts": [
+          {
+            "key": "power",
+            "value": "A being of living wavelengths"
+          },
+          {
+            "key": "code",
+            "value": "Refuses to harm children"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-carnival",
+            "rel": "member"
+          }
+        ],
+        "appearances": [
+          89
+        ],
+        "questions": []
+      },
+      {
+        "id": "stitch",
+        "kind": "character",
+        "name": "Stitch",
+        "summary": "CH89: the Carnival's plague-doctor medic and biological analyst. He examines Bloodstream's samples and delivers the chapter's terrifying reveal: the target's 'limits' (only human hosts, only ~10 clones) are purely psychological, not biological. Bloodstream can infect anything with a circulatory system; his self-hatred is the only cap on unlimited potential. Stitch also sterilizes areas after Leo incinerates each clone.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Carnival medic / biologist; sterilizes incinerated clone sites"
+          },
+          {
+            "key": "reveal",
+            "value": "Bloodstream's limits are psychological, not biological"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-carnival",
+            "rel": "member"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "analyzed his biology"
+          }
+        ],
+        "appearances": [
+          89
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-laika",
+        "kind": "item",
+        "name": "The Laika",
+        "summary": "CH89: the ten-meter scavenged submarine Len built (named for the Soviet space dog) in the Porto Venere boathouse to carry the 'family' to America in ~12 days. Fully automated (no manual controls), it auto-redirects to the nearest shore on any problem, and once its autopilot+timer is engaged it cannot be disabled. In the origin loop, Len flees in it alone at Ryan's insistence while he goes to die with Bloodstream.",
+        "facts": [
+          {
+            "key": "spec",
+            "value": "10m automated scavenged sub; ~12-day crossing; autopilot can't be disabled once set"
+          }
+        ],
+        "ties": [
+          {
+            "to": "len",
+            "rel": "built it"
+          },
+          {
+            "to": "porto-venere",
+            "rel": "housed in its boathouse"
+          }
+        ],
+        "appearances": [
+          89
+        ],
+        "questions": []
+      },
+      {
+        "id": "porto-venere",
+        "kind": "location",
+        "name": "Porto Venere",
+        "summary": "CH89: the small abandoned coastal town near Genoa on the Tyrrhenian Sea where Ryan (as Cesare), Len, and Bloodstream hid in the origin loop, in a former boat club whose boathouse held the Laika. Isolated enough to stay hidden from the Carnival, close enough to Genoa for supply runs.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Origin-loop hideout of Bloodstream's 'family'"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-laika",
+            "rel": "built in its boathouse"
+          }
+        ],
+        "appearances": [
+          89
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-violet-elixir",
+        "kind": "item",
+        "name": "The Violet Elixir",
+        "summary": "CH89 (origin): the Violet Elixir Ryan (as Cesare) secretly kept in a syringe throughout the origin loop, hidden because Bloodstream could only sense Elixirs inside a Genome's blood (so he'd know the instant Ryan used it). At the chapter's climax, out of desperation as the Carnival attacks, Ryan injects it into his own arm for the very first time and 'the world turned purple' as he runs. This is the birth of his Violet time-manipulation power and, ultimately, his save-point loop.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "The Elixir Ryan first injects in the origin loop, granting Violet time-power"
+          },
+          {
+            "key": "stealth",
+            "value": "Undetectable to Bloodstream until injected into a Genome's blood"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "his first Elixir"
+          },
+          {
+            "to": "elixir-mechanics",
+            "rel": "the bonding that sets his loop"
+          }
+        ],
+        "appearances": [
+          89
+        ],
+        "questions": []
       }
     ]
   },
@@ -14119,12 +14387,42 @@
           "the-knockoff-elixir",
           "lab-sixty-six"
         ]
+      },
+      {
+        "id": "origin-loop-bloodstream-s-last-stand",
+        "title": "Origin Loop: Bloodstream's Last Stand",
+        "summary": "CH89 (flashback to Ryan's first, powerless life as 'Cesare'): Leo Hargraves briefs the Carnival on their target Freddie Sabino / Bloodstream, a Green/Blue Psycho who lives in every blood cell and converts anyone he infects into a copy of himself. Meanwhile Ryan and Len hide with the delusional Bloodstream in Porto Venere, building the submarine Laika to flee to America. Ryan endures Bloodstream's love-and-abuse, learns the Psycho plans to kill everyone if his children die, and secretly resolves he must die. Stitch delivers the doom reveal: Bloodstream's limits are only psychological, and if Len dies he becomes an extinction-level plague. Ryan baits the Carnival to the hideout, forces Len onto the Laika alone, returns to die beside Bloodstream, and injects his Violet Elixir for the very first time. The world turns purple, and Ryan runs, the birth of his time loop.",
+        "beats": [
+          {
+            "chapter": 89,
+            "summary": "CH89 (flashback to Ryan's first, powerless life as 'Cesare'): Leo Hargraves briefs the Carnival on their target Freddie Sabino / Bloodstream, a Green/Blue Psycho who lives in every blood cell and converts anyone he infects into a copy of himself. Meanwhile Ryan and Len hide with the delusional Bloodstream in Porto Venere, building the submarine Laika to flee to America. Ryan endures Bloodstream's love-and-abuse, learns the Psycho plans to kill everyone if his children die, and secretly resolves he must die. Stitch delivers the doom reveal: Bloodstream's limits are only psychological, and if Len dies he becomes an extinction-level plague. Ryan baits the Carnival to the hideout, forces Len onto the Laika alone, returns to die beside Bloodstream, and injects his Violet Elixir for the very first time. The world turns purple, and Ryan runs, the birth of his time loop."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "cesare",
+          "len",
+          "bloodstream",
+          "freddie-sabino",
+          "the-carnival",
+          "leo-hargraves",
+          "stitch",
+          "mr-wave",
+          "mathias-martel",
+          "ace",
+          "the-cossack",
+          "pythia",
+          "the-laika",
+          "porto-venere",
+          "the-violet-elixir",
+          "elixir-mechanics"
+        ]
       }
     ]
   },
   "counts": {
-    "entities": 211,
-    "plotlines": 100,
+    "entities": 217,
+    "plotlines": 101,
     "books": 1
   }
 }
