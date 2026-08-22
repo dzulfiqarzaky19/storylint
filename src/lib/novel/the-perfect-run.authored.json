@@ -10490,6 +10490,290 @@
         }
       ],
       "chapter": 78
+    },
+    {
+      "name": "Monaco",
+      "kind": "location",
+      "summary": "CH79 flashback (Ryan's early 'Perfect Run' to free Monaco): the pocket dimension's rules mapped precisely. The teleport effect triggers on crossing Monaco's legal frontier (airspace included, but NOT territorial waters, per old Franco-Monégasque treaty gaps) and fires either on approaching the Monte-Carlo, staying 2+ hours, or next falling asleep after having entered. It never releases a victim once entered. Animals teleport straight to the maze kitchens (not the marble entry hall). The effect does NOT apply to machines past the 2-hour limit. Damage self-repairs: doors reseal the instant they leave sight; a smuggled nuke's blast is undone by fresh rooms within 24 hours. The real Monte-Carlo is only the anchor on Earth; the true maze is a separate reality Jean-Stéphanie may have BECOME. Ryan proved even nuking the whole microstate (a French nuke on his drone) couldn't dispel the effect; it took him ~5 years of loops mastering particle physics to breach it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Teleport triggers on crossing frontier (air yes, waters no), 2hr stay, or next sleep"
+        },
+        {
+          "key": "note",
+          "value": "Animals go to the kitchens; machines are exempt past 2hr"
+        },
+        {
+          "key": "note",
+          "value": "Self-repairs: doors reseal off-sight; nuke damage undone in 24hr"
+        },
+        {
+          "key": "note",
+          "value": "Real Monte-Carlo is only the Earth anchor; true maze is a separate reality"
+        },
+        {
+          "key": "note",
+          "value": "Nuking the microstate did not dispel the effect"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Jean-Stéphanie",
+          "rel": "maze may be his very being"
+        },
+        {
+          "to": "The Resonators",
+          "rel": "breached by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "freed by"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "Simon",
+      "kind": "character",
+      "summary": "CH79 flashback shows the run where Ryan actually SAVES Simon rather than losing him: Ryan reaches Room 44 with the French Foreign Legion password ('Français par le sang versé...'), reveals himself as an immortal, and plants a Resonator in Simon's lifelong tunnel to open the escape portal. After Ryan single-handedly massacres the entire clown army, Simon has refused to evacuate until Ryan (as 'part of everyone') leaves too. Here Simon SURVIVES, chooses to stay behind and fence off Monaco as its self-appointed border guard for the rest of his short life, and gives Ryan a parting gift: Nietzsche's 'Thus Spoke Zarathustra', pointing him to the concept of eternal recurrence he knows Ryan will 'like.' This is the origin of Ryan's guiding philosophy.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Saved via Legion password and a Resonator in his tunnel"
+        },
+        {
+          "key": "note",
+          "value": "Refuses to leave until Ryan does ('you're part of everyone')"
+        },
+        {
+          "key": "note",
+          "value": "Survives; stays to fence off Monaco as border guard"
+        },
+        {
+          "key": "note",
+          "value": "Gifts Ryan Nietzsche's 'Thus Spoke Zarathustra' (eternal recurrence)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "gives him the eternal-recurrence book"
+        },
+        {
+          "to": "Monaco",
+          "rel": "self-appointed border guard"
+        },
+        {
+          "to": "The Resonators",
+          "rel": "escape opened in his tunnel"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "Jean-Stéphanie",
+      "kind": "character",
+      "summary": "CH79 flashback: as Ryan breaches the maze, the loudspeaker 'voice' (Jean-Stéphanie or the maze itself) turns from obsequious to openly passive-aggressive and vengeful, announcing the Monte-Carlo will 'permanently close due to the Andorran invasion' and unleashing every clown, then wave after wave of circus minibosses (acrobats/ninjas, firecrackers, magicians, strongmen, ringmasters) against Ryan. Confirms Ryan's theory that the controller is a Yellow or Violet Psycho tied to the yellow/violet teleport flash, and that only a powerful Yellow or Violet could permanently destroy the maze.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Voice turns passive-aggressive and vengeful when the maze is breached"
+        },
+        {
+          "key": "note",
+          "value": "Throws waves of circus minibosses (ninjas, magicians, ringmasters) at Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Suspected Yellow/Violet Psycho tied to the yellow-violet teleport flash"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Monaco",
+          "rel": "is/controls the maze"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "nemesis in the jailbreak"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "Quicksave",
+      "kind": "identity",
+      "summary": "CH79 flashback reveals the ORIGIN of Ryan's 'Quicksave' superhero alias: when Simon asks who he is during the Monaco jailbreak, Ryan blurts out 'I'm Quicksave, the boulder who rolls' (a Sisyphus reference he immediately regrets sounding cooler in his head). He wears a custom metal mask with two rounded eye-glasses and night-vision, and crowns it with a stolen clown's rounded hat as a souvenir.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Name coined on the spot during the Monaco jailbreak"
+        },
+        {
+          "key": "note",
+          "value": "Tagline 'the boulder who rolls' is a Sisyphus reference"
+        },
+        {
+          "key": "note",
+          "value": "Debuts a metal night-vision mask topped with a stolen clown hat"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "alias of"
+        },
+        {
+          "to": "Simon",
+          "rel": "first named to"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "Martine",
+      "kind": "character",
+      "summary": "CH79 flashback: among the ~40 Monaco captives Ryan frees, Martine is the warm blonde community leader whose death (April 28th, on a shrimp supply run) was the deadline forcing Ryan's rescue timing. After the jailbreak she leads the survivors west to rebuild, unaware she once lived a century of loops alongside Ryan; she parts with sad warmth, sensing they'll never meet again, and tells him he'll always be welcome. She embodies the bittersweet core of a Perfect Run: Ryan saves people who will never truly know him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Warm blonde community leader among the Monaco captives"
+        },
+        {
+          "key": "note",
+          "value": "Her looming April 28th death set Ryan's rescue deadline"
+        },
+        {
+          "key": "note",
+          "value": "Leads survivors west after the jailbreak; parts with Ryan warmly"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "saved by, never truly knows him"
+        },
+        {
+          "to": "Simon",
+          "rel": "fellow survivor"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "The Resonators",
+      "kind": "item",
+      "summary": "A matched pair of nuclear-powered, steel-plated cube devices ~40cm across, each with a hand-sized particle-collider 'mouth' on one face and a control panel on the other. Built by Ryan over ~5 years of loops with a Genius's help, using scavenged parts of CERN's unfinished Hadron collider. They create a 'convergence' mimicking Ryan's own two-places-at-once power: particles stream from one cube to the other, forcing a path through dimensions. Ryan used them to breach Monaco's pocket dimension, opening a portal in Simon's tunnel (Monaco 'turned purple' as the barrier broke). They include a nuclear self-destruct sequence, which Ryan triggered to bury the maze behind the escaping captives. Ryan muses they could one day build an interdimensional radio.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Paired nuclear cube colliders ~40cm, built from CERN Hadron parts"
+        },
+        {
+          "key": "note",
+          "value": "Force an inter-dimensional 'convergence' mimicking Ryan's power"
+        },
+        {
+          "key": "note",
+          "value": "Breached Monaco's pocket dimension via Simon's tunnel"
+        },
+        {
+          "key": "note",
+          "value": "Have a nuclear self-destruct sequence"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "built and used by"
+        },
+        {
+          "to": "Monaco",
+          "rel": "used to breach"
+        },
+        {
+          "to": "Simon",
+          "rel": "portal opened in his tunnel"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "The Croupiers",
+      "kind": "faction",
+      "summary": "CH79 flashback details the clown-croupiers as Monaco's staff-army in full: metal-masked in permanent grins, they only turn lethal during 'closed hours' and when the maze is threatened, then swarm in the hundreds armed with silver cutlery, golf clubs, sushi knives and nightsticks. Above the rank-and-file sit circus-themed minibosses summoned in escalating waves, acrobat/ninja swordsmen throwing shurikens, firecracker-throwers, magicians, strongmen, and ringmasters. They worship Jean-Stéphanie, chant anti-Andorran war slogans, and regenerate endlessly, but Ryan (as Quicksave) slaughters the entire garrison single-handed until the survivors drop their grins and flee screaming.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Metal-masked grinning staff-army, lethal in 'closed hours'"
+        },
+        {
+          "key": "note",
+          "value": "Swarm in hundreds with cutlery, clubs, knives, nightsticks"
+        },
+        {
+          "key": "note",
+          "value": "Circus minibosses: ninjas, firecrackers, magicians, strongmen, ringmasters"
+        },
+        {
+          "key": "note",
+          "value": "Regenerate endlessly; routed by Quicksave in the jailbreak"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Jean-Stéphanie",
+          "rel": "worship"
+        },
+        {
+          "to": "Monaco",
+          "rel": "guardians of"
+        },
+        {
+          "to": "Quicksave",
+          "rel": "routed by"
+        }
+      ],
+      "chapter": 79
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH79 flashback illuminates Ryan's defining early arc, his self-set 'Perfect Run' to free Monaco. Key power revelation: because he exists simultaneously in a place beyond spacetime and on Earth, 'I am an exit', the pocket dimension can push back the convergence of his two selves but never fully sever it, which is how a mortal escape becomes possible. He realizes the bittersweet truth of a Perfect Run here: he lived over a century of loops beside these people, knows them better than they know themselves, yet remains a stranger they meet only once, 'This was the perfect ending, for everyone. Everyone but Ryan.' He debuts the Quicksave persona, adopts Simon's Sisyphus/Camus outlook, and receives Nietzsche's eternal recurrence as its capstone. He freezes time to absorb the entire century of memories into himself before the save point advances, then drives into the sunset, his Perfect Run complete.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "'I am an exit': his two-places-at-once nature lets him breach the maze"
+        },
+        {
+          "key": "note",
+          "value": "Lives centuries beside people who meet him only once, the Perfect Run's ache"
+        },
+        {
+          "key": "note",
+          "value": "Adopts Camus (Simon) + Nietzsche's eternal recurrence as his philosophy"
+        },
+        {
+          "key": "note",
+          "value": "Freezes time to absorb a century of memories before the save point advances"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Simon",
+          "rel": "philosophical mentor"
+        },
+        {
+          "to": "Monaco",
+          "rel": "freed its captives"
+        },
+        {
+          "to": "Quicksave",
+          "rel": "persona debuts here"
+        }
+      ],
+      "chapter": 79
     }
   ],
   "plotObservations": [
@@ -11684,6 +11968,21 @@
         "Vulcan"
       ],
       "chapter": 78
+    },
+    {
+      "title": "Goodbye, Monaco!",
+      "beat": "Flashback to Ryan's self-appointed 'Perfect Run': after years of loops mapping Monaco's pocket dimension (proving nukes, drones, and animals can't break or bypass it) he realizes 'I am an exit' and spends five years building the Resonators from CERN parts. On April 27th he plants one in Simon's tunnel to tear open an escape portal, single-handedly massacres the entire clown garrison and its circus minibosses as 'Quicksave', and evacuates ~40 captives including Simon and Martine. Simon survives, stays to fence off Monaco, and gifts Ryan Nietzsche's 'Thus Spoke Zarathustra'. Ryan detonates the Resonator's nuke behind them and, knowing these people he lived a century beside will never truly know him, freezes time to absorb every memory before driving into the sunset, his Perfect Run complete.",
+      "entities": [
+        "Ryan Romano",
+        "Quicksave",
+        "Simon",
+        "Martine",
+        "Monaco",
+        "The Croupiers",
+        "Jean-Stéphanie",
+        "The Resonators"
+      ],
+      "chapter": 79
     }
   ]
 }
