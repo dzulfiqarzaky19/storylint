@@ -871,7 +871,8 @@
           116,
           117,
           118,
-          119
+          119,
+          120
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1361,7 +1362,8 @@
           71,
           72,
           92,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -2866,7 +2868,8 @@
           116,
           117,
           118,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -3819,6 +3822,14 @@
           {
             "key": "early wrinkle",
             "value": "Geist already erased by retroactive Black power; save unavailable"
+          },
+          {
+            "key": "raid result",
+            "value": "Bunker cleared non-lethally with the memory-team; Psyshock and Frank neutralized"
+          },
+          {
+            "key": "omen",
+            "value": "The Plymouth Fury survives undamaged for the first time - 'Perfect Run confirmed'"
           }
         ],
         "ties": [
@@ -3849,13 +3860,22 @@
           {
             "to": "geist",
             "rel": "first casualty, showing the timeline risk"
+          },
+          {
+            "to": "adam-the-ogre",
+            "rel": "the boss waiting at the end of the raid"
+          },
+          {
+            "to": "livia",
+            "rel": "scripted the Frank ruse and fights at Ryan's side"
           }
         ],
         "appearances": [
           7,
           117,
           118,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -4356,7 +4376,8 @@
           115,
           116,
           118,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -5157,7 +5178,8 @@
           75,
           76,
           94,
-          95
+          95,
+          120
         ],
         "questions": []
       },
@@ -6234,7 +6256,8 @@
           115,
           117,
           118,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -7000,7 +7023,8 @@
           106,
           107,
           108,
-          118
+          118,
+          120
         ],
         "questions": []
       },
@@ -7631,6 +7655,14 @@
           {
             "key": "death",
             "value": "KO'd by the Panda's kick, then drowned in Len's water bubble"
+          },
+          {
+            "key": "power reveal",
+            "value": "A Violet, like Ryan - can manipulate time/space, hence uniquely dangerous"
+          },
+          {
+            "key": "priority target",
+            "value": "Shrewder and crueler than Augustus/Fallout; taken down first"
           }
         ],
         "ties": [
@@ -7657,6 +7689,14 @@
           {
             "to": "mechron",
             "rel": "wields his salvaged gravity gun"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "final one-on-one duel; fellow Violet"
+          },
+          {
+            "to": "the-meta-gang",
+            "rel": "its leader, cornered as his bunker falls"
           }
         ],
         "appearances": [
@@ -7667,7 +7707,8 @@
           92,
           94,
           95,
-          96
+          96,
+          120
         ],
         "questions": []
       },
@@ -7830,7 +7871,8 @@
           95,
           96,
           105,
-          112
+          112,
+          120
         ],
         "questions": []
       },
@@ -7972,7 +8014,8 @@
           29,
           73,
           77,
-          95
+          95,
+          120
         ],
         "questions": []
       },
@@ -10625,7 +10668,8 @@
           54,
           55,
           73,
-          95
+          95,
+          120
         ],
         "questions": []
       },
@@ -12327,7 +12371,8 @@
           116,
           117,
           118,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -12766,7 +12811,8 @@
           73,
           74,
           94,
-          96
+          96,
+          120
         ],
         "questions": []
       },
@@ -13800,7 +13846,8 @@
           115,
           117,
           118,
-          119
+          119,
+          120
         ],
         "questions": []
       },
@@ -14096,7 +14143,8 @@
         ],
         "appearances": [
           87,
-          105
+          105,
+          120
         ],
         "questions": []
       },
@@ -14430,16 +14478,33 @@
           {
             "key": "role",
             "value": "Minor Meta-Gang Psycho, bubbled by Len in the raid"
+          },
+          {
+            "key": "real name",
+            "value": "Penanggalan (Ryan's 'Pale Guy' was a first-run placeholder)"
+          },
+          {
+            "key": "fate",
+            "value": "Flanked by Livia and Bianca, knocked out by a Fisty Brothers blow"
           }
         ],
         "ties": [
           {
             "to": "the-meta-gang",
             "rel": "member"
+          },
+          {
+            "to": "the-meta-gang",
+            "rel": "minor member subdued in the bunker raid"
+          },
+          {
+            "to": "livia",
+            "rel": "told Ryan his true name"
           }
         ],
         "appearances": [
-          95
+          95,
+          120
         ],
         "questions": []
       },
@@ -14452,16 +14517,33 @@
           {
             "key": "role",
             "value": "Minor Meta-Gang Psycho, bubbled by Len in the raid"
+          },
+          {
+            "key": "real name",
+            "value": "Catcher (Ryan's 'Fuckface' was his own first-run nickname)"
+          },
+          {
+            "key": "power",
+            "value": "Disembodied head projecting crimson Red-Flux energy arms; spits acid"
           }
         ],
         "ties": [
           {
             "to": "the-meta-gang",
             "rel": "member"
+          },
+          {
+            "to": "the-meta-gang",
+            "rel": "minor member subdued in the bunker raid"
+          },
+          {
+            "to": "livia",
+            "rel": "told Ryan her true name"
           }
         ],
         "appearances": [
-          95
+          95,
+          120
         ],
         "questions": []
       },
@@ -17502,6 +17584,10 @@
           {
             "chapter": 119,
             "summary": "CH119 'The Last Save': aboard the submarine, six travelers (Livia, Len, Bianca, Felix, Shroud, and the Panda/Timmy) don helmets on Alchemo's throne machine. The Panda gets a heartfelt send-off (Ryan tells him he was never useless); Sunshine warns Ryan the Black World power annihilated Mechron and nearly all Sarajevo through careless curiosity, so use it sparingly - Augustus's death isn't worth the world. Ryan activates his power; during transfer the Illuminati/Violet Ultimate One pyramid watches through the Violet Flux window. All reload to May 8th (17th loop) with memories intact, confirmed by texts. Then two crises hit: Ryan CAN'T SAVE (his Elixir blocks freezing past 10 seconds, as in Monaco), so memories aren't locked; and his retroactive Black power - strengthened over two loops - has already ERASED Geist from existence (invisible even to Livia's precognition), proving lethal Black Flux could permanently scar the timeline. Chronoradio echoes urge him on. Ryan opens the run anyway: rams Ghoul, delivers the mail, and takes a comedic joyride tormenting Ghoul."
+          },
+          {
+            "chapter": 120,
+            "summary": "CH120 'Speedrunners': Ryan runs the honed bunker assault with his memory-loaded team. He drives Livia and Fortuna to the Junkyard (Ghoul chained to the hood), air-drops Felix and the Panda/Timmy, and Shroud saves Fortuna from collapsing debris; the guards (Reptilian, Gemini, Acid Rain, Mosquito, Mongrel) are subdued non-lethally. Inside, Bianca (secret code confirmed) turns on her old Meta-Gang, and the recreational Psychos fall - Ink Machine, Rakshasa, Incognito, Catcher (aka 'Fuckface'), and Penanggalan (aka 'Pale Guy'). Ryan Bliss-overdoses Psyshock and cons Frank the Mad into guarding the infirmary via a fake 'Agent Frank/Pearl Harbor' script Livia authored. His Plymouth Fury takes no damage for the first time ever - a 'holy sign.' He reaches the deep chamber and confronts Adam the Ogre, who reveals he is a fellow VIOLET; the priority-kill duel begins."
           }
         ],
         "entities": [
@@ -17609,7 +17695,9 @@
           "bruno-and-julie-costa",
           "the-gravity-gun",
           "juno",
-          "elixir-mechanics"
+          "elixir-mechanics",
+          "fuckface",
+          "pale-guy"
         ]
       }
     ]

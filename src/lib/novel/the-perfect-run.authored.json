@@ -16500,6 +16500,110 @@
         }
       ],
       "chapter": 119
+    },
+    {
+      "name": "Adam the Ogre",
+      "kind": "character",
+      "summary": "CH120 (revealed a VIOLET; final confrontation): after Ryan's team routs the Meta-Gang bunker, Ryan reaches the deep chamber and faces Big Fat Adam alone. Adam emerges grinning, carbon skin black, and reveals he is a fellow VIOLET ('never tasted a fellow Violet before') - meaning he too can manipulate time/space, making him uniquely dangerous. Ryan names him the deadliest of his foes: Augustus is stronger and Fallout more determined, but Adam is shrewder, crueler, and more dangerous, which is why he had to be taken down FIRST. The duel begins on a cliffhanger, Ryan warning 'make that last loop count - you won't get another.'",
+      "facts": [
+        {
+          "key": "power reveal",
+          "value": "A Violet, like Ryan - can manipulate time/space, hence uniquely dangerous"
+        },
+        {
+          "key": "priority target",
+          "value": "Shrewder and crueler than Augustus/Fallout; taken down first"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "final one-on-one duel; fellow Violet"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "its leader, cornered as his bunker falls"
+        }
+      ],
+      "chapter": 120
+    },
+    {
+      "name": "The Perfect Run",
+      "kind": "concept",
+      "summary": "CH120 (bunker raid executed flawlessly): the memory-loaded team runs the honed assault. Ryan drives Livia and Fortuna in (Ghoul chained to the hood mid-joyride); Felix and the Panda/Timmy air-drop; Shroud saves Fortuna from collapsing debris. They breach the Junkyard past its guards (Reptilian, Gemini, Acid Rain, Mosquito, Mongrel) non-lethally. Inside, Bianca (secret code confirmed) turns on her old teammates; the recreational-area Psychos are subdued (Ink Machine, Rakshasa, Incognito, Catcher, Penanggalan). Ryan Bliss-overdoses Psyshock and cons Frank the Mad into standing guard via a fake 'Agent Frank/Pearl Harbor' script Livia scripted. Even his Plymouth Fury takes no damage - a first, which Ryan reads as a holy sign the Perfect Run is on. He reaches the deep chamber to face Adam the Ogre, the priority kill.",
+      "facts": [
+        {
+          "key": "raid result",
+          "value": "Bunker cleared non-lethally with the memory-team; Psyshock and Frank neutralized"
+        },
+        {
+          "key": "omen",
+          "value": "The Plymouth Fury survives undamaged for the first time - 'Perfect Run confirmed'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam the Ogre",
+          "rel": "the boss waiting at the end of the raid"
+        },
+        {
+          "to": "Livia",
+          "rel": "scripted the Frank ruse and fights at Ryan's side"
+        }
+      ],
+      "chapter": 120
+    },
+    {
+      "name": "Fuckface",
+      "kind": "character",
+      "summary": "CH120 (real name revealed: CATCHER): the floating disembodied Asian woman's head Ryan crudely nicknamed 'Fuckface' on his first suicide run is actually named Catcher, as Livia informs him. She fights with crimson Red-Flux energy arms/tentacles that deflect bullets and spits acid, but Ryan freezes time, closes in, and smashes her head against the bar counter, knocking her out. Ryan (a self-styled completionist) resolves to learn the real names of the bunker's minor Psychos he never bothered with before, since they died in his Meta-Gang-run civil war and he never knew them.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Catcher (Ryan's 'Fuckface' was his own first-run nickname)"
+        },
+        {
+          "key": "power",
+          "value": "Disembodied head projecting crimson Red-Flux energy arms; spits acid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "minor member subdued in the bunker raid"
+        },
+        {
+          "to": "Livia",
+          "rel": "told Ryan her true name"
+        }
+      ],
+      "chapter": 120
+    },
+    {
+      "name": "Pale Guy",
+      "kind": "character",
+      "summary": "CH120 (real name revealed: PENANGGALAN): the sickly white, bald 'Pale Guy' Ryan never named is actually Penanggalan, per Livia. A nimble dodger, he is flanked and cornered by Livia (wielding the Fisty Brothers gauntlets) and Bianca's vibration blasts until a Fisty blow to the chest knocks him into a wall, out of the fight. Like Catcher, one of the minor Meta-Gang Psychos Ryan is now bothering to know by their true names.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Penanggalan (Ryan's 'Pale Guy' was a first-run placeholder)"
+        },
+        {
+          "key": "fate",
+          "value": "Flanked by Livia and Bianca, knocked out by a Fisty Brothers blow"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "minor member subdued in the bunker raid"
+        },
+        {
+          "to": "Livia",
+          "rel": "told Ryan his true name"
+        }
+      ],
+      "chapter": 120
     }
   ],
   "plotObservations": [
@@ -18602,6 +18706,31 @@
         "Alchemo"
       ],
       "chapter": 119
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH120 'Speedrunners': Ryan runs the honed bunker assault with his memory-loaded team. He drives Livia and Fortuna to the Junkyard (Ghoul chained to the hood), air-drops Felix and the Panda/Timmy, and Shroud saves Fortuna from collapsing debris; the guards (Reptilian, Gemini, Acid Rain, Mosquito, Mongrel) are subdued non-lethally. Inside, Bianca (secret code confirmed) turns on her old Meta-Gang, and the recreational Psychos fall - Ink Machine, Rakshasa, Incognito, Catcher (aka 'Fuckface'), and Penanggalan (aka 'Pale Guy'). Ryan Bliss-overdoses Psyshock and cons Frank the Mad into guarding the infirmary via a fake 'Agent Frank/Pearl Harbor' script Livia authored. His Plymouth Fury takes no damage for the first time ever - a 'holy sign.' He reaches the deep chamber and confronts Adam the Ogre, who reveals he is a fellow VIOLET; the priority-kill duel begins.",
+      "entities": [
+        "Ryan Romano",
+        "The Perfect Run",
+        "Adam the Ogre",
+        "Livia",
+        "Fortuna",
+        "Felix",
+        "The Panda",
+        "Mr. See-Through",
+        "Sarin",
+        "Psyshock",
+        "Frank the Mad",
+        "Fuckface",
+        "Pale Guy",
+        "Ink Machine",
+        "Rakshasa",
+        "Incognito",
+        "The Meta-Gang",
+        "Ghoul"
+      ],
+      "chapter": 120
     }
   ]
 }
