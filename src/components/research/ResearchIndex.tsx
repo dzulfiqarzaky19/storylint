@@ -161,7 +161,7 @@ export default function ResearchIndex({
                 <button
                   type="button"
                   className={styles.trash}
-                  aria-label={`Delete thread "${shownTitle}"`}
+                  aria-label={`Delete thread "${t.title}"`}
                   title="Delete thread"
                   onClick={() =>
                     setPendingDelete({ id: t.id, title: shownTitle })

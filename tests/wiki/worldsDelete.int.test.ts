@@ -192,7 +192,7 @@ describe("F7-S5/W-6 world delete-cascade (real Postgres)", () => {
       `INSERT INTO open_questions (id, entry_id, text, sort_order) VALUES ($1, $2, $3, $4)`,
       [u2OpenQId, orcId, "Where did the orc come from?", 0],
     );
-    await insertResearchThread({ id: u2ThreadId, title: "U2 thread", subtitle: "", sortOrder: 0, scope: "chat", universeId: u2Id });
+    await insertResearchThread({ id: u2ThreadId, title: "U2 thread", subtitle: "", sortOrder: 0, scope: "chat", universeId: u2Id, worldId: w2Id });
 
     // --- CROSS-UNIVERSE trap: a U1 canon entry + a B2-scoped facet fact on it ---
     await insertEntry(

@@ -213,8 +213,14 @@ describe("W-3 loadWorldSnapshot as-of-book window (real Postgres)", () => {
   it("G5 default-parity: loadWorldSnapshot(world-universe-1, DEFAULT) matches loadWikiSnapshot() entry-ids (live, read-only)", async () => {
     const world = await loadWorldSnapshot("world-universe-1", DEFAULT_BOOK_ID);
     const wiki = await loadWikiSnapshot();
+    // universe-1 holds TWO worlds: Ashkeld (world-universe-1) and Vosk (world-vosk).
+    // loadWikiSnapshot() is UNIVERSE-scoped so it returns both worlds entries;
+    // loadWorldSnapshot(world-universe-1) is WORLD-scoped so Vosk is correctly absent.
+    // Parity holds against wiki entries FILTERED to this world membership.
+    const members = await query("SELECT entity_id FROM world_entities WHERE world_id = 'world-universe-1'");
+    const memberIds = new Set(members.rows.map((r) => r.entity_id));
     const worldIds = world.entries.map((e) => e.id).sort();
-    const wikiIds = wiki.entries.map((e) => e.id).sort();
+    const wikiIds = wiki.entries.map((e) => e.id).filter((id) => memberIds.has(id)).sort();
     expect(worldIds).toEqual(wikiIds);
   });
 });
