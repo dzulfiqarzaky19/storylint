@@ -381,6 +381,14 @@
           {
             "key": "plan",
             "value": "Destroy the bunker only after the crisis is solved"
+          },
+          {
+            "key": "confession",
+            "value": "Lived a full lifetime trapped in the Monaco thin place"
+          },
+          {
+            "key": "milestone",
+            "value": "Consummates his relationship with Livia"
           }
         ],
         "ties": [
@@ -607,6 +615,14 @@
           {
             "to": "alphonse-manada",
             "rel": "targets him as the hardest Dynamis obstacle"
+          },
+          {
+            "to": "livia",
+            "rel": "his date and now lover; his sole confidant"
+          },
+          {
+            "to": "the-midnight-road",
+            "rel": "takes her there on the date"
           }
         ],
         "appearances": [
@@ -703,7 +719,8 @@
           94,
           95,
           96,
-          97
+          97,
+          98
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1982,7 +1999,8 @@
           86,
           91,
           92,
-          93
+          93,
+          98
         ],
         "questions": []
       },
@@ -10357,7 +10375,8 @@
         "appearances": [
           64,
           68,
-          79
+          79,
+          98
         ],
         "questions": []
       },
@@ -11235,6 +11254,14 @@
           {
             "key": "romance",
             "value": "Accepts Ryan's advance; can't foresee him, so it's a real surprise"
+          },
+          {
+            "key": "gift",
+            "value": "Ryan gives her 'the unexpected'; her power can't foresee him"
+          },
+          {
+            "key": "choice",
+            "value": "Sleeps with Ryan in Augustus's villa as open rebellion"
           }
         ],
         "ties": [
@@ -11281,6 +11308,14 @@
           {
             "to": "ryan-romano",
             "rel": "grows close; he asks her out"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "her lover; shares his burden"
+          },
+          {
+            "to": "augustus",
+            "rel": "defies him openly by choosing Ryan"
           }
         ],
         "appearances": [
@@ -11293,7 +11328,8 @@
           94,
           95,
           96,
-          97
+          97,
+          98
         ],
         "questions": []
       },
@@ -13296,6 +13332,58 @@
         ],
         "appearances": [
           97
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-midnight-road",
+        "kind": "location",
+        "name": "The Midnight Road",
+        "summary": "CH98: Ryan's name for a 'thin place', a natural space anomaly he takes Livia to on their date, reached by a particle-accelerator device hidden in his Plymouth Fury. A deserted, endlessly looping highway (~30 km before it folds back) under purple auroras that show mirages of alien realms (seas of mercury, floating ice, green lightning), with a duplicate highway visible in the distance where the travelers see themselves. Ryan believes it sits close to the Purple World, a border realm between Earth's reality and the crossroads of all space-time. It follows Earth's own timestream.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "A thin place / space anomaly; a looping interdimensional highway"
+          },
+          {
+            "key": "access",
+            "value": "Reached via Genius particle-accelerator tech"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-purple-world",
+            "rel": "sits near it, a border realm"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "he named it and takes Livia there"
+          }
+        ],
+        "appearances": [
+          98
+        ],
+        "questions": []
+      },
+      {
+        "id": "thin-places",
+        "kind": "concept",
+        "name": "Thin Places",
+        "summary": "CH98: natural space anomalies where space-time folds due to gravitational or electromagnetic forces, likened to caves inside the 'mountain' of Earth's reality. Distinct from the colored dimensions above reality, they lie 'sideways' and follow the same timestream as our own. They require Genius tech to access. Ryan learned of them researching particle physics in Switzerland; the Midnight Road is one, and the deadly Monaco anomaly is implied to be another.",
+        "facts": [
+          {
+            "key": "definition",
+            "value": "Sideways space-time folds; same timestream, Genius-tech access only"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-midnight-road",
+            "rel": "an example of one"
+          }
+        ],
+        "appearances": [
+          98
         ],
         "questions": []
       }
@@ -15443,6 +15531,10 @@
           {
             "chapter": 97,
             "summary": "CH97 'A Breath of Fresh Air' (day after the raid): Ryan consolidates. He recruits Dr. Tyrano remotely for the Psycho-cure research (dangling a dinosaur Knockoff), though Tyrano is bound to Dynamis and can't sabotage the Knockoff supply, so Lab 66 must still be assaulted. He gives the real A-bomb to Vulcan (becoming her assistant) and a decoy to the suicidal plushie. With Shroud he maps the Dynamis endgame: flip Enrique, but Alphonse/Fallout won't surrender Bloodstream's power give-and-take monopoly, so Ryan will stop him with an upgraded Saturn armor. Len's tests reveal the Panda's second power is accelerated learning (mastering origami, French, and Bruce Lee's kick in half an hour). Ryan reassures Len she's family forever, and she finally consents to the memory transfer and to having her father's blood tracker removed, learning to 'let the dead rest.' Ryan leaves for his date with Livia."
+          },
+          {
+            "chapter": 98,
+            "summary": "CH98 'White Night': Ryan takes Livia on their date to the Midnight Road, a thin place he reaches via his car's particle accelerator. There he confides his deepest secret, that he once lived an entire full lifetime trapped in the Monaco anomaly and has never dared have a family, making Livia his sole confidant. Livia, freed of her foresight because she cannot predict him, vows to stop her father Augustus's coming war and to share Ryan's burden. She then brings Ryan into Augustus's villa on Mount Augustus and into her bed, an open act of rebellion, and they spend the night together, cementing their bond as partners."
           }
         ],
         "entities": [
@@ -15488,13 +15580,15 @@
           "the-saturn-armor",
           "jamie",
           "origami",
-          "the-monster-girl-project"
+          "the-monster-girl-project",
+          "the-midnight-road",
+          "monaco"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 225,
+    "entities": 227,
     "plotlines": 104,
     "books": 1
   }

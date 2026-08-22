@@ -14218,6 +14218,102 @@
         }
       ],
       "chapter": 97
+    },
+    {
+      "name": "The Midnight Road",
+      "kind": "location",
+      "summary": "CH98: Ryan's name for a 'thin place', a natural space anomaly he takes Livia to on their date, reached by a particle-accelerator device hidden in his Plymouth Fury. A deserted, endlessly looping highway (~30 km before it folds back) under purple auroras that show mirages of alien realms (seas of mercury, floating ice, green lightning), with a duplicate highway visible in the distance where the travelers see themselves. Ryan believes it sits close to the Purple World, a border realm between Earth's reality and the crossroads of all space-time. It follows Earth's own timestream.",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "A thin place / space anomaly; a looping interdimensional highway"
+        },
+        {
+          "key": "access",
+          "value": "Reached via Genius particle-accelerator tech"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Purple World",
+          "rel": "sits near it, a border realm"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "he named it and takes Livia there"
+        }
+      ],
+      "chapter": 98
+    },
+    {
+      "name": "Thin Places",
+      "kind": "concept",
+      "summary": "CH98: natural space anomalies where space-time folds due to gravitational or electromagnetic forces, likened to caves inside the 'mountain' of Earth's reality. Distinct from the colored dimensions above reality, they lie 'sideways' and follow the same timestream as our own. They require Genius tech to access. Ryan learned of them researching particle physics in Switzerland; the Midnight Road is one, and the deadly Monaco anomaly is implied to be another.",
+      "facts": [
+        {
+          "key": "definition",
+          "value": "Sideways space-time folds; same timestream, Genius-tech access only"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Midnight Road",
+          "rel": "an example of one"
+        }
+      ],
+      "chapter": 98
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH98 'White Night': Ryan's date with Livia. He drives her to the Midnight Road (a thin place) via his car's particle accelerator, and there, in a rare act of total trust, unburdens his darkest secret: he once spent an ENTIRE full lifetime trapped in the Monaco anomaly, which is why he calls himself immortal, and has never dared start a family because loop-timing would produce a different child each reset. Livia is the only one he's ever told. The evening deepens into genuine intimacy; she brings him into her father's villa at Mount Augustus as an open act of rebellion, and they spend the night together.",
+      "facts": [
+        {
+          "key": "confession",
+          "value": "Lived a full lifetime trapped in the Monaco thin place"
+        },
+        {
+          "key": "milestone",
+          "value": "Consummates his relationship with Livia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "his date and now lover; his sole confidant"
+        },
+        {
+          "to": "The Midnight Road",
+          "rel": "takes her there on the date"
+        }
+      ],
+      "chapter": 98
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH98: on her date with Ryan she experiences, for the first time in ~14 years, life without her foresight guiding her (she can't predict Ryan), finding it terrifying but refreshing, 'the unexpected' is his gift to her. She confesses she's seen the fuller lives she could have had with Felix but couldn't make them real ('watching is not living'), and vows to stop her father's coming war. Moved by Ryan's confession, she offers to share his burden. She dislikes sushi (a comic near-miss), and finally brings Ryan into her father's villa and her bed as a deliberate act of rebellion against Augustus.",
+      "facts": [
+        {
+          "key": "gift",
+          "value": "Ryan gives her 'the unexpected'; her power can't foresee him"
+        },
+        {
+          "key": "choice",
+          "value": "Sleeps with Ryan in Augustus's villa as open rebellion"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "her lover; shares his burden"
+        },
+        {
+          "to": "Augustus",
+          "rel": "defies him openly by choosing Ryan"
+        }
+      ],
+      "chapter": 98
     }
   ],
   "plotObservations": [
@@ -15887,6 +15983,18 @@
         "The Monster Girl Project"
       ],
       "chapter": 97
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH98 'White Night': Ryan takes Livia on their date to the Midnight Road, a thin place he reaches via his car's particle accelerator. There he confides his deepest secret, that he once lived an entire full lifetime trapped in the Monaco anomaly and has never dared have a family, making Livia his sole confidant. Livia, freed of her foresight because she cannot predict him, vows to stop her father Augustus's coming war and to share Ryan's burden. She then brings Ryan into Augustus's villa on Mount Augustus and into her bed, an open act of rebellion, and they spend the night together, cementing their bond as partners.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "The Midnight Road",
+        "Augustus",
+        "Monaco"
+      ],
+      "chapter": 98
     }
   ]
 }
