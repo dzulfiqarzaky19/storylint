@@ -24,6 +24,7 @@ const NAV: NavItem[] = [
   WIKI,
   { href: "/research", label: "research", descriptor: "the workings" },
   { href: "/write", label: "write", descriptor: "chapter seven, in proof" },
+  { href: "/plot", label: "plot", descriptor: "the arcs, chapter by chapter" },
 ];
 
 function activeItem(pathname: string): NavItem {

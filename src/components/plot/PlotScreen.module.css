@@ -1,0 +1,356 @@
+/* /plot screen — Ashkeld tokens only (globals.css custom props); radius 0;
+   no shadows. Column widths are custom props so the responsive block can
+   retune density per viewport in one place. */
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  --lane-col: 240px;
+  --beat-col: 46px;
+}
+
+.head {
+  padding: 30px var(--gutter) 0;
+}
+
+.kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.title {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 10px 0 8px;
+  text-wrap: pretty;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+.subWarn {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.empty {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 46ch;
+  margin-top: 6px;
+}
+
+/* ---- grid ------------------------------------------------------------- */
+
+.gridWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 var(--gutter) var(--gutter);
+}
+
+.grid {
+  display: grid;
+  border-top: var(--rule-major);
+  border-left: var(--rule-row);
+  min-width: max-content;
+}
+
+.headCell {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--tile);
+  border-right: var(--rule-row);
+  border-bottom: var(--rule-row);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.corner {
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+}
+
+.chapHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.chapNum {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.chapTitle {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--faint);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- lane rows -------------------------------------------------------- */
+
+.laneRow {
+  display: contents;
+}
+
+.laneLabel {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
+  border-right: var(--rule-row);
+  border-bottom: var(--rule-row);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.laneName {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.laneMeta {
+  font-size: 12px;
+  color: var(--muted-2);
+}
+
+.neglect {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.fresh {
+  color: var(--accent-deep);
+}
+.cool {
+  color: var(--muted);
+}
+.warm {
+  color: var(--warning);
+}
+.idle {
+  color: var(--faint);
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* ---- cells ------------------------------------------------------------ */
+
+.cell {
+  border-right: var(--rule-row);
+  border-bottom: var(--rule-row);
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.blank {
+  background: var(--surface);
+}
+
+/* A stall (>= LONG_GAP empty chapters between two beats) — the sagging middle.
+   A faint warm wash so a long quiet stretch is visible without shouting. */
+.gap {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--surface),
+    var(--surface) 5px,
+    var(--fresh) 5px,
+    var(--fresh) 6px
+  );
+}
+
+.beat {
+  background: var(--tile);
+  cursor: pointer;
+}
+.beat:hover {
+  background: var(--hover);
+}
+.beat:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+}
+
+/* A beat that carries a canon-break warning: danger dot + a corner flag, so a
+   contradiction never reads the same as a clean beat. */
+.beatWarn .dot {
+  background: var(--danger);
+}
+.flag {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--danger);
+}
+
+/* ---- drawer (beat drill-down) ---------------------------------------- */
+
+.drawerScrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  z-index: 50;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawer {
+  width: min(440px, 100vw);
+  height: 100%;
+  background: var(--surface);
+  border-left: var(--rule-major);
+  padding: 28px var(--gutter);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drawerClose {
+  align-self: flex-end;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.drawerClose:hover {
+  color: var(--accent);
+}
+
+.drawerKicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.drawerTitle {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.drawerOwner {
+  font-size: 14px;
+  color: var(--muted-2);
+  margin-bottom: 12px;
+}
+
+.drawerBody {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--body-ink);
+}
+
+.drawerWarn {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--drop);
+  border-left: 3px solid var(--danger);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--danger-deep);
+  font-weight: 600;
+}
+
+/* ---- responsive ------------------------------------------------------- */
+
+/* Tablet: narrow the lane column and tighten the title so the grid keeps more
+   room for chapter columns before it needs to scroll. */
+@media (max-width: 1200px) {
+  .screen {
+    --lane-col: 190px;
+  }
+  .title {
+    font-size: 38px;
+  }
+}
+
+/* Mobile: compact density; the grid scrolls both axes inside gridWrap. The
+   drawer becomes a bottom sheet so it never exceeds a phone's width. */
+@media (max-width: 640px) {
+  .head {
+    padding: 22px 20px 0;
+  }
+  .gridWrap {
+    padding: 0 20px 20px;
+  }
+  .screen {
+    --lane-col: 150px;
+    --beat-col: 40px;
+  }
+  .title {
+    font-size: 30px;
+  }
+  .laneName {
+    font-size: 13px;
+  }
+  .drawerScrim {
+    align-items: flex-end;
+  }
+  .drawer {
+    width: 100vw;
+    height: auto;
+    max-height: 82vh;
+    border-left: none;
+    border-top: var(--rule-major);
+    padding: 22px 20px;
+  }
+}
+
+/* Wide desktop (2K/4K): a touch more air in the lane column and beat cells so
+   the grid doesn't strand a lake of whitespace at the right on 1440p+. */
+@media (min-width: 1920px) {
+  .screen {
+    --lane-col: 280px;
+    --beat-col: 54px;
+  }
+}
