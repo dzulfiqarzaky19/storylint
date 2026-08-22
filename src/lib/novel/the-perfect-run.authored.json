@@ -4892,6 +4892,44 @@
         }
       ],
       "chapter": 50
+    },
+    {
+      "name": "Schrodinger",
+      "kind": "character",
+      "summary": "Eugène-Henry Schrodinger, a prideful white Persian cat with blue eyes from Len's orphanage, and Ryan's beloved pet. Exposed to Violet-dimension energies (and the alien entity) at the end of the prior loop, he now carries that change across the reset: he manifests at Ryan's car far from the orphanage and teleports away with a 'pop' when Ryan tries to pet him, apparently having gained a Genome-like power. In the disastrous loop he was the sole survivor of the Ischia strike, luckier than Fortuna herself.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Eugène-Henry; prideful white Persian cat, Ryan's pet"
+        },
+        {
+          "key": "note",
+          "value": "From Len's orphanage; blue-eyed"
+        },
+        {
+          "key": "note",
+          "value": "Gained a teleport power from Violet-dimension exposure"
+        },
+        {
+          "key": "note",
+          "value": "Sole survivor of the Ischia orbital strike in a prior loop"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "pet"
+        },
+        {
+          "to": "Len Sabino",
+          "rel": "from orphanage of"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "changed by"
+        }
+      ],
+      "chapter": 51
     }
   ],
   "plotObservations": [
@@ -5501,6 +5539,19 @@
         "The Purple World"
       ],
       "chapter": 50
+    },
+    {
+      "title": "Route Split",
+      "beat": "A new loop resets everyone's memories, wiping Ryan's progress with Jasmine (Vulcan doesn't remember him). Choosing to avoid an Augusti run so soon after losing her, Ryan takes the Dynamis path instead: he pitches Wyvern to join Il Migliore and warns Shroud that Adam is after the orbital Bahamut. Shroud, shaken that Ryan knows the secret name, believes him and postpones the Carnival's Augusti strikes to prioritize the bunker crisis, urging Ryan to infiltrate Dynamis and report back. Ryan then notices his cat Schrodinger has gained a teleport power from Violet-dimension exposure. Finally Len, who overheard the time-travel recording, radios him live: she now knows he can time-travel, and asks why he didn't just re-run their reconciliation. Ryan explains he wants their bond to be true, not manufactured, and heads to the orphanage where Len agrees to meet him.",
+      "entities": [
+        "Ryan Romano",
+        "Wyvern",
+        "The Shroud",
+        "Schrodinger",
+        "Len Sabino",
+        "Vulcan"
+      ],
+      "chapter": 51
     }
   ]
 }
