@@ -7,11 +7,11 @@ import { reseed } from "../_helpers/seed";
 //
 // Rebuilt from the user's own acceptance steps (2026-08-22). This file folds the
 // three former research locks (R1 world-scope, R2 born-with-one-thread, R3
-// last-thread floor) into one surface file, and adds RED-FIRST guideline specs
-// (test.fixme) for the behaviors the user described that are NOT built yet
-// (rename + auto-title, switch-without-waiting-on-AI, readable hover). Those
-// fixme specs are the acceptance CONTRACT for whoever implements the feature —
-// they fail on purpose today (feature absent), never a silent skip.
+// last-thread floor) into one surface file, and adds LIVE acceptance-truth tests
+// for the behaviors the user described (rename + auto-title,
+// switch-without-waiting-on-AI, readable hover). Those assert the user's steps as
+// the source of truth — where the code does not yet match, the test FAILS and
+// exposes the gap rather than silently skipping it.
 //
 // The GREEN half is fully deterministic (no AI): the thread rail is a server
 // render of the active world's threads, so counts/scope/create are exact.

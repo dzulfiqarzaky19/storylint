@@ -12,7 +12,7 @@ import { reseed } from "../_helpers/seed";
 // siloed spec still passes.
 //
 // It drives ONLY built, deterministic (no-AI) behavior — the unbuilt steps live
-// as test.fixme guideline specs in their surface files, not here. It MUTATES the
+// as their own live acceptance-truth tests in the surface files, not here. It MUTATES the
 // thread set (creates + deletes a throwaway), so it reseeds in its own afterAll.
 // =============================================================================
 
