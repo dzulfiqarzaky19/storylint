@@ -810,7 +810,8 @@
           102,
           103,
           104,
-          105
+          105,
+          106
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -2146,7 +2147,8 @@
           93,
           98,
           99,
-          105
+          105,
+          106
         ],
         "questions": []
       },
@@ -5842,7 +5844,8 @@
           70,
           80,
           83,
-          99
+          99,
+          106
         ],
         "questions": []
       },
@@ -5969,7 +5972,8 @@
           56,
           75,
           94,
-          95
+          95,
+          106
         ],
         "questions": []
       },
@@ -6582,7 +6586,8 @@
           94,
           95,
           96,
-          102
+          102,
+          106
         ],
         "questions": []
       },
@@ -6792,7 +6797,8 @@
           25,
           67,
           68,
-          92
+          92,
+          106
         ],
         "questions": []
       },
@@ -8244,7 +8250,8 @@
           35,
           89,
           93,
-          94
+          94,
+          106
         ],
         "questions": []
       },
@@ -8732,6 +8739,14 @@
           {
             "key": "crime",
             "value": "Murdered Narcinia's real parents and abducted her"
+          },
+          {
+            "key": "power range",
+            "value": "Teleports objects within ~10 meters"
+          },
+          {
+            "key": "role",
+            "value": "Springs Augustus's trap; his call is the kill signal"
           }
         ],
         "ties": [
@@ -8762,12 +8777,21 @@
           {
             "to": "narcinia",
             "rel": "abducted her as a baby; raised as his daughter"
+          },
+          {
+            "to": "augustus",
+            "rel": "executes his assassination order on Mathias"
+          },
+          {
+            "to": "venus",
+            "rel": "his wife, preparing an ambush from the kitchen"
           }
         ],
         "appearances": [
           38,
           69,
-          101
+          101,
+          106
         ],
         "questions": []
       },
@@ -9203,7 +9227,8 @@
           24,
           39,
           42,
-          96
+          96,
+          106
         ],
         "questions": []
       },
@@ -11415,7 +11440,8 @@
           92,
           93,
           99,
-          101
+          101,
+          106
         ],
         "questions": []
       },
@@ -11575,6 +11601,14 @@
           {
             "key": "power note",
             "value": "Needs time to foresee ripples of Ryan's large actions"
+          },
+          {
+            "key": "gambit",
+            "value": "Let the assassination possibility stand so Narcinia sees her family's true nature"
+          },
+          {
+            "key": "peaceful future",
+            "value": "Requires Augustus's retirement + Enrique Manada leading Dynamis"
           }
         ],
         "ties": [
@@ -11645,6 +11679,18 @@
           {
             "to": "ryan-romano",
             "rel": "compromises with him on sparing Augustus"
+          },
+          {
+            "to": "mr-see-through",
+            "rel": "the assassination target she warns Ryan to save"
+          },
+          {
+            "to": "narcinia",
+            "rel": "must witness the hit to open her eyes"
+          },
+          {
+            "to": "cancel",
+            "rel": "sent by Augustus to blind her precognition; she distracts her"
           }
         ],
         "appearances": [
@@ -11662,7 +11708,8 @@
           99,
           101,
           102,
-          105
+          105,
+          106
         ],
         "questions": []
       },
@@ -13029,7 +13076,8 @@
           97,
           102,
           103,
-          104
+          104,
+          106
         ],
         "questions": []
       },
@@ -13683,7 +13731,8 @@
           }
         ],
         "appearances": [
-          96
+          96,
+          106
         ],
         "questions": []
       },
@@ -16303,6 +16352,10 @@
           {
             "chapter": 105,
             "summary": "CH105 'Miracle Cure': in the raid's aftermath Augustus decimates his own guards. The Psycho Cure is proven on Knockoff Psychos (Mongrel and Mosquito revert to healthy Genomes) but fails on two-true-Elixir Psychos like Frank, so Ryan launches an Antarctica expedition (Stitch joining) to research Elixir bonding via the Alchemist. Len, healing and shedding her red iconography, resolves to euthanize her father Bloodstream herself if uncurable. Ryan uses Incognito as a decoy alibi, then confesses to Livia that his Black Flux could neutralize Augustus. After her ultimatum, he swears not to KILL her father but to break and imprison him decisively - a fraught compromise between saving the world and sparing her family."
+          },
+          {
+            "chapter": 106,
+            "summary": "CH106 'Mice Trap': the Veran manor dinner is Augustus's assassination trap. Suspecting the Bliss raid was an inside job (Ryan slipped 'Dynamis' fighting Geist), Augustus sends Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop, and orders Mars to kill Mathias/Shroud once a chimney assassin is in place. Ryan silently unnerves Night Terror into abandoning his post. Livia reveals she deliberately let this possibility stand so Narcinia would witness her family's murderousness (the price of the rare peaceful future where Augustus retires and Enrique Manada takes Dynamis), warns Ryan of the assassin, sets a Sorrento rendezvous, and distracts Cancel. The trap springs when Atom Kitty/Felix - come to smuggle Narcinia out - tumbles down the chimney into the room."
           }
         ],
         "entities": [
@@ -16373,7 +16426,8 @@
           "black-flux",
           "the-yellow-world",
           "the-psycho-cure",
-          "incognito"
+          "incognito",
+          "ki-jung"
         ]
       }
     ]

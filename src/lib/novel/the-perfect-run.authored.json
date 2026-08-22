@@ -15168,6 +15168,62 @@
         }
       ],
       "chapter": 105
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH106 'Mice Trap': at the Veran manor dinner Livia realizes it's an assassination trap - Augustus, now certain the Bliss Factory hit was an inside job (Ryan let 'Dynamis' slip fighting Geist), sent Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop while ordering Mars to lure and kill Mathias/Shroud. Crucially, Livia CHOSE not to prevent this unlikely possibility: she needs Narcinia to witness her family's murderousness firsthand or the rare peaceful future (Augustus retires, Enrique Manada takes Dynamis, her organization goes legit and rebuilds Rust Town/Europe) can never come to pass. She warns Ryan of the chimney-shaft assassin, sets a Sorrento rendezvous, then distracts Cancel by asking for a bathroom escort, placing all her hope in Ryan to save Mathias and turn Narcinia.",
+      "facts": [
+        {
+          "key": "gambit",
+          "value": "Let the assassination possibility stand so Narcinia sees her family's true nature"
+        },
+        {
+          "key": "peaceful future",
+          "value": "Requires Augustus's retirement + Enrique Manada leading Dynamis"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mr. See-Through",
+          "rel": "the assassination target she warns Ryan to save"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "must witness the hit to open her eyes"
+        },
+        {
+          "to": "Cancel",
+          "rel": "sent by Augustus to blind her precognition; she distracts her"
+        }
+      ],
+      "chapter": 106
+    },
+    {
+      "name": "Mars",
+      "kind": "character",
+      "summary": "CH106: hosts the trap dinner with a warm, paternal mask over a predatory, calculating core (Ryan reads him as Jamie a generation apart, minus the conscience). He fishes Mathias for information (marriage plans, sponsors, offering money), positions the Killer Seven to guard windows/doors against an outside attack while the real threat waits within, and is set to phone Augustus to trigger the hit the moment the chimney assassin is in place. His teleport-objects power has a ~10-meter range. His manor is decaying pre-war opulence riddled with asbestos that sickens the non-Genome staff he won't protect.",
+      "facts": [
+        {
+          "key": "power range",
+          "value": "Teleports objects within ~10 meters"
+        },
+        {
+          "key": "role",
+          "value": "Springs Augustus's trap; his call is the kill signal"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "executes his assassination order on Mathias"
+        },
+        {
+          "to": "Venus",
+          "rel": "his wife, preparing an ambush from the kitchen"
+        }
+      ],
+      "chapter": 106
     }
   ],
   "plotObservations": [
@@ -16966,6 +17022,26 @@
         "Black Flux"
       ],
       "chapter": 105
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH106 'Mice Trap': the Veran manor dinner is Augustus's assassination trap. Suspecting the Bliss raid was an inside job (Ryan slipped 'Dynamis' fighting Geist), Augustus sends Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop, and orders Mars to kill Mathias/Shroud once a chimney assassin is in place. Ryan silently unnerves Night Terror into abandoning his post. Livia reveals she deliberately let this possibility stand so Narcinia would witness her family's murderousness (the price of the rare peaceful future where Augustus retires and Enrique Manada takes Dynamis), warns Ryan of the assassin, sets a Sorrento rendezvous, and distracts Cancel. The trap springs when Atom Kitty/Felix - come to smuggle Narcinia out - tumbles down the chimney into the room.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Mars",
+        "Mr. See-Through",
+        "Mathias Martel",
+        "Narcinia",
+        "Cancel",
+        "Night Terror",
+        "Felix",
+        "Fortuna",
+        "Augustus",
+        "Jamie",
+        "Ki-jung"
+      ],
+      "chapter": 106
     }
   ]
 }
