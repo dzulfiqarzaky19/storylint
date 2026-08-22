@@ -11926,6 +11926,206 @@
         }
       ],
       "chapter": 84
+    },
+    {
+      "name": "The Saturn Armor",
+      "kind": "item",
+      "summary": "CH85: the magnum-opus power armor Vulcan (Jasmine) finally builds, fulfilling a promise she and Ryan made loops ago to make a suit that could destroy Dynamis's HQ. A lightweight purple exoskeleton refined across many loops: servo-enhanced strength, hidden switchblades, gauntlet laser turrets, and 'the Chernobyl' nuclear-powered chest blaster. Its reinforced backpack holds a miniaturized Chronoradio (artificial brain included) meant to transfer a mind across time, though it still can only carry ONE person. Its rabbit-eared helmet antennae streamline Ryan's connection to the Violet Flux dimension and feed him data on how his power works. Vulcan names it Saturn (over Ryan's 'Rabbinator'/'White Rabbit'); it needs Mechron's matter replicator to rebuild.",
+      "facts": [
+        {
+          "key": "weapons",
+          "value": "Switchblades, gauntlet lasers, 'the Chernobyl' nuclear chest blaster"
+        },
+        {
+          "key": "function",
+          "value": "Miniature Chronoradio backpack transfers one mind across time"
+        },
+        {
+          "key": "helmet",
+          "value": "Rabbit-ear antennae streamline Violet Flux connection, feed power data"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "builder and namer"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "its wearer"
+        },
+        {
+          "to": "The Chronoradio",
+          "rel": "miniaturized inside it"
+        },
+        {
+          "to": "Mechron",
+          "rel": "needs his matter replicator to build"
+        }
+      ],
+      "chapter": 85
+    },
+    {
+      "name": "Darkling",
+      "kind": "character",
+      "summary": "CH85: goes home. Via the bunker's particle collider (the same room Mechron's AI once summoned it in) Ryan opens the gate to the Black World and Darkling crosses over, reverting from slime to its true impossible form (a prismatic sphere of recursive eyes and impossible geometries) and leaving a pile of corroded human bones behind. It reveals it has been studied 'far longer than you can imagine' (years/decades trapped across Ryan's loops) and tempts Ryan to ascend and abandon Earth. When Ryan refuses, Darkling is not angry ('Black is paradox, freedom from all laws, the ability to say no') and promises to wait for him at the end: 'When you are satisfied... I will wait for you here.'",
+      "facts": [
+        {
+          "key": "arc",
+          "value": "Returns home to the Black World through Ryan's gate"
+        },
+        {
+          "key": "form",
+          "value": "Reverts to true form: prismatic sphere, recursive eyes, impossible geometry"
+        },
+        {
+          "key": "vow",
+          "value": "Will wait for Ryan at world's end when he chooses to end it all"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "friend who opens its gate home"
+        },
+        {
+          "to": "The Black World",
+          "rel": "its home dimension"
+        },
+        {
+          "to": "The Black Ultimate One",
+          "rel": "the god of its realm"
+        }
+      ],
+      "chapter": 85
+    },
+    {
+      "name": "The Black World",
+      "kind": "location",
+      "summary": "CH85: the color dimension Darkling/the Black Elixir comes from, the source of the Black Flux, reached through Ryan's gate. A realm darker than any abyss that exists BEYOND time, space, and reason, where Ryan glimpses living equations, an ouroboros devouring itself without losing mass, and stillborn realities. Its nature is paradox: 'nothing is forbidden,' 'freedom from all laws, the ability to say no to everything, even to itself.' It tempts visitors to ascend and shed their flesh; entering it, Ryan's own hands flicker in and out of existence. It could recreate the dead Ryan erased, but only as agonized paradoxes, so his Elixir warns him to let the dead rest.",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "Beyond time/space/reason; the realm of paradox and pure freedom"
+        },
+        {
+          "key": "danger",
+          "value": "Dissolves physical form; ascension means never returning"
+        },
+        {
+          "key": "note",
+          "value": "Can recreate the erased dead, but only as suffering paradoxes"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Darkling",
+          "rel": "its native, returned home"
+        },
+        {
+          "to": "The Black Elixir",
+          "rel": "its Flux is the Black Elixir's source"
+        },
+        {
+          "to": "The Black Ultimate One",
+          "rel": "the god that dwells in it"
+        }
+      ],
+      "chapter": 85
+    },
+    {
+      "name": "The Black Ultimate One",
+      "kind": "faction",
+      "summary": "CH85: the divine entity dwelling at the heart of the Black World, a black hole so vast it makes the Milky Way's central one look like a speck, whose mere attention could erase Ryan unless it consciously holds back. Like the Violet Ultimate One, it beckons humans toward its dimension (this drew Geist, Bacchus, and Mechron to obsess over higher dimensions). It heard Ryan's wish and communicated by borrowing the voices of his dead (Jasmine, Simon, Felix) 'the way a human might mimic an ant's language,' offering to free his spirit from flesh and causality. Ryan refuses its ascension.",
+      "facts": [
+        {
+          "key": "scale",
+          "value": "A black hole dwarfing the Milky Way's; could erase Ryan by mere attention"
+        },
+        {
+          "key": "note",
+          "value": "Spoke through the voices of Ryan's dead to lure him to ascend"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Black World",
+          "rel": "dwells at its heart"
+        },
+        {
+          "to": "The Ultimate Ones",
+          "rel": "one of the color-dimension gods"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "tries to draw him into ascension"
+        }
+      ],
+      "chapter": 85
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH85: his most profound crossroads. After sending Darkling home, Ryan crosses into the Black World and is tempted by the Black Ultimate One to ascend, shed his flesh, and escape immortality's curse forever, lured by the voices of Jasmine, Simon, and Felix, the promise of reuniting with everyone he ever erased. He almost stays, but chooses the living (Len, Livia, Felix, Sarin, all who trust him) over the dead, refusing to recreate the erased as suffering paradoxes. He returns changed, now radiating BLACK particles alongside violet. He confirms he cannot break the loop himself: his power is the wish he made at bonding and his Elixir cannot undo it.",
+      "facts": [
+        {
+          "key": "choice",
+          "value": "Refuses to ascend into the Black World; chooses the living over the dead"
+        },
+        {
+          "key": "change",
+          "value": "Returns radiating Black particles alongside Violet Flux"
+        },
+        {
+          "key": "origin",
+          "value": "His time-loop is the unbreakable wish he made when his Elixir bonded to him"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Black World",
+          "rel": "resists its call to ascend"
+        },
+        {
+          "to": "Darkling",
+          "rel": "sends home, then parts ways"
+        },
+        {
+          "to": "Reload",
+          "rel": "confronts his own Elixir/save-point"
+        }
+      ],
+      "chapter": 85
+    },
+    {
+      "name": "Reload",
+      "kind": "character",
+      "summary": "CH85: the origin and mechanics of Ryan's power are finally revealed by the power itself. In the Black World his save-point manifests as the violet phantom that always chases him, and speaks: it is his Elixir, his 'other half,' the Violet-Flux power slumbering in him. When they bonded it looked into him and granted his deepest wish (to return to the past to change the present), which is why it revives him even from old age, believing this makes him happy. It CANNOT undo or re-parameter that wish, so it cannot stop the loop; only Ryan choosing to stop can end it. In normal time the phantom cannot speak (that needed the Black World's interference); catching it forms a new save point.",
+      "facts": [
+        {
+          "key": "identity",
+          "value": "Ryan's save-point IS his Elixir, his violet-Flux other half"
+        },
+        {
+          "key": "origin",
+          "value": "Grants his wish to return to the past, made at bonding; cannot be undone"
+        },
+        {
+          "key": "mechanic",
+          "value": "Phantom catching Ryan forms a save point; it can only speak via the Black World"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "is his bonded Elixir and power"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "the dimension its Violet Flux is drawn from"
+        }
+      ],
+      "chapter": 85
     }
   ],
   "plotObservations": [
@@ -13269,6 +13469,34 @@
         "Darkling"
       ],
       "chapter": 84
+    },
+    {
+      "title": "R&D",
+      "beat": "CH85: Vulcan completes the magnum-opus power armor she and Jasmine once dreamed of, naming it the Saturn Armor: a purple exoskeleton with a 'Chernobyl' nuclear chest blaster, gauntlet lasers, and a miniaturized Chronoradio backpack to carry one mind across time, its rabbit-ear helmet streamlining Ryan's Violet Flux connection. Meanwhile Livia safely records brainmaps at her father's, Len evacuates the children by bathysphere, and Alchemo backs up the Doll and struggles to record Sarin (whose memories are molecular, not neural). Then it's raiding time.",
+      "entities": [
+        "Vulcan",
+        "Ryan Romano",
+        "The Saturn Armor",
+        "Livia Augusti",
+        "Len",
+        "Alchemo",
+        "Sarin",
+        "The Brain-Copying Machine"
+      ],
+      "chapter": 85
+    },
+    {
+      "title": "The Light Beyond",
+      "beat": "CH85: Ryan uses the bunker's particle collider to open a gate to the Black World and send Darkling home; the shoggoth reverts to its true impossible form. The Black Ultimate One tempts Ryan to ascend and shed his flesh forever, luring him with the voices of his dead (Jasmine, Simon, Felix) and the promise of undoing every erasure. In the abyss his own violet phantom speaks and reveals it is his Elixir, his other half, granting the unbreakable wish he made at bonding (to return to the past). Ryan chooses the living over the dead, refuses ascension, and returns radiating Black particles alongside violet. Darkling vows to wait for him at the end.",
+      "entities": [
+        "Ryan Romano",
+        "Darkling",
+        "The Black World",
+        "The Black Ultimate One",
+        "Reload",
+        "The Purple World"
+      ],
+      "chapter": 85
     }
   ]
 }
