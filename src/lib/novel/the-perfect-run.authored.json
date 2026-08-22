@@ -4172,6 +4172,192 @@
         }
       ],
       "chapter": 43
+    },
+    {
+      "name": "Windsweep",
+      "kind": "character",
+      "summary": "A Genome of Il Migliore's elite team, part of Dynamis's assault force on Ischia; a man in a fabulous crimson-and-green hawk costume of feathers who flies borne on the winds, a small tornado swirling at his waist. His power is the template from which the Tempest knockoff Elixirs were derived.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Elite Genome fighting for Dynamis / Il Migliore"
+        },
+        {
+          "key": "note",
+          "value": "Hawk-costumed aerokinetic; flies on the wind"
+        },
+        {
+          "key": "note",
+          "value": "The template for the Tempest knockoff Elixirs"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "fights for"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "team member"
+        }
+      ],
+      "chapter": 44
+    },
+    {
+      "name": "Devilry",
+      "kind": "character",
+      "summary": "A Genome of Il Migliore's elite team on the Ischia assault: a red-skinned, muscled amazon in a biker-style leather suit with a devilish tail and curved horns, who flies by unleashing streams of flame from her feet. Her pyrokinesis is the template that inspired the Firebrand knockoff Elixir type.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Elite Genome fighting for Dynamis / Il Migliore"
+        },
+        {
+          "key": "note",
+          "value": "Red-skinned horned pyrokinetic amazon; flies on flame jets"
+        },
+        {
+          "key": "note",
+          "value": "The template for the Firebrand knockoff Elixirs"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "fights for"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "team member"
+        }
+      ],
+      "chapter": 44
+    },
+    {
+      "name": "Blackthorn",
+      "kind": "character",
+      "summary": "Enrique Manada, called Blackthorn and 'Poison Rosy,' a Dynamis corporate mastermind and Ryan's self-styled archenemy who runs the company's hard line against the Augusti alongside his brother, against his more conciliatory father Don Hector's wish for detente. Ideologically driven, he frames the Augusti as feudal warlords who can't be coexisted with and casts Dynamis as the ones who at least try to rebuild a functioning society; he personally orders the retaliatory assault on Ischia, warning Ryan by phone via the parable of Giorgio Rosa's sunk Rose Island.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Enrique Manada; 'Blackthorn' / 'Poison Rosy'"
+        },
+        {
+          "key": "note",
+          "value": "Dynamis corporate hardliner; Ryan's archenemy"
+        },
+        {
+          "key": "note",
+          "value": "Rejects his father Hector's push for detente"
+        },
+        {
+          "key": "note",
+          "value": "Ordered the retaliatory assault on Ischia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "executive"
+        },
+        {
+          "to": "Hector Dynamis",
+          "rel": "son"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "archenemy"
+        }
+      ],
+      "chapter": 44
+    },
+    {
+      "name": "Bliss",
+      "kind": "lore",
+      "summary": "The Augusti's flagship narcotic, cooked at the Ischia superlab from flower strains grown by Ceres/Narcinia, the family's sole drug cook (Father Torque holds enough strains to continue at lower quality if she leaves). A powerful psychotropic, it is also a long-term endocrine disruptor acting at the genetic level: Genomes shrug it off via enhanced metabolism, but ordinary users become sterile after about a year, a side-effect Dynamis publicizes and the Augusti dismiss as propaganda. Father Torque, who saw God on his Elixir, believes overdosing on Bliss could grant a divine revelation.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "The Augusti's flagship psychotropic drug"
+        },
+        {
+          "key": "note",
+          "value": "Cooked at Ischia from Narcinia/Ceres's flower strains"
+        },
+        {
+          "key": "note",
+          "value": "Long-term endocrine disruptor; sterilizes non-Genomes in ~1 year"
+        },
+        {
+          "key": "note",
+          "value": "Father Torque believes it could induce divine revelation"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "produced by"
+        },
+        {
+          "to": "Narcinia Veran",
+          "rel": "cooked by"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "used by"
+        }
+      ],
+      "chapter": 44
+    },
+    {
+      "name": "Mr. Geist",
+      "kind": "character",
+      "summary": "François 'Geist' (Ryan's 'Casper'), a Yellow Genome existing as a house-sized ectoplasmic skull. He drank a Yellow Elixir last Easter thinking he got no power, until Mechron's nanoplague turned his body to dust: he glimpsed a golden afterlife, then was yanked back and bound to his scattered mortal remains. He can't travel far (his remains are spread across the island), is effectively immortal (Cancel only stops him manifesting; Pluto's power needs a living target), and wields unlimited ectoplasmic telekinesis. Resigned, he plays games and keeps the Ischia gardens while awaiting exorcism into Heaven.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Drank a Yellow Elixir; killed by Mechron's nanoplague"
+        },
+        {
+          "key": "note",
+          "value": "Bound to his scattered remains; can't leave the island"
+        },
+        {
+          "key": "note",
+          "value": "Immortal: Cancel only blocks manifestation, Pluto needs the living"
+        },
+        {
+          "key": "note",
+          "value": "Wields ectoplasmic telekinesis; awaits exorcism"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ischia Island",
+          "rel": "bound to"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "seeks exorcism from"
+        }
+      ],
+      "chapter": 44
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "Laura, a heroine of Il Migliore who leads Dynamis's Ischia drug-bust as an excuse she has craved for two years; she publicly demands Quicksave and Jasmine surrender for the HQ attack, then transforms into an enormous dragon to level the Bliss facility.",
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "leads raid for"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        }
+      ],
+      "chapter": 44
     }
   ],
   "plotObservations": [
@@ -4705,6 +4891,19 @@
         "The Immortality Project"
       ],
       "chapter": 43
+    },
+    {
+      "title": "Return of the Corpo",
+      "beat": "Locked out of the Ischia facility's secrets, Ryan passes the inspection playing knucklebones with Geist and Mortimer, learning Geist's origin, that Ceres is the sole Bliss cook, and that Bliss sterilizes ordinary users. Len calls with alarm, tremors from Rust Town and flying objects inbound on Ischia, then Blackthorn calls to gloat: as retaliation for the HQ raid, Don Hector has finally chosen war. Thirty Dynamis war helicopters and Il Migliore's elite (Wyvern, Windsweep, Devilry) descend on the island, demanding Quicksave and Jasmine surrender. Vulcan refuses, Wyvern transforms into a dragon, and the drug-lab battle erupts, exactly the destruction Ryan owes Shroud, so he sits back to watch.",
+      "entities": [
+        "Ryan Romano",
+        "Mr. Geist",
+        "Blackthorn",
+        "Wyvern",
+        "Windsweep",
+        "Vulcan"
+      ],
+      "chapter": 44
     }
   ]
 }
