@@ -17886,6 +17886,140 @@
         }
       ],
       "chapter": 129
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH130 (the happy ending): Ryan spends his last authored day quietly touring New Rome, then meets Livia at the Tete-de-chien promontory where his adventure began. He chooses to stay - not drive off into new adventures - because what he wants above the vast cosmos is to spend life with those he love and no longer be alone. He proposes for real; Livia agrees to a two-year betrothal before becoming Mrs. Romano, and they plan children (his Elixir Magenta will keep them from inheriting his powers). He seals a final kiss by freezing time and spending the last Black particles in his body on one last save (safely ascending them out of him), during which the Ultimate One shows him a montage of everyone's futures: 'THIS IS THE FUTURE YOU FOUGHT FOR... IT IS ALL UP TO YOU.' Ryan Romano has completed his Perfect Run - and he is happy at last.",
+      "facts": [
+        {
+          "key": "stays and proposes",
+          "value": "Chooses to settle in New Rome instead of wandering; proposes to Livia (two-year betrothal, then Mrs. Romano) and plans children"
+        },
+        {
+          "key": "final save",
+          "value": "Spends the last Black particles in his body on one last time-save, safely purging his destabilizing Black; the Ultimate One shows him everyone's futures"
+        },
+        {
+          "key": "arc complete",
+          "value": "The 800+ year immortal gamer finds meaning, family, and love; 'completed his Perfect Run... happy at last'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "proposes to her at the promontory; they will marry and start a family"
+        },
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "its parting montage frames the future Ryan fought for as his own to make real"
+        }
+      ],
+      "chapter": 130
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH130 (Queen Crimson's peace): as head of the new order she co-signs the fifty-page treaty founding the New European Republic (Dynamis and the Augusti empire both dissolved), funds Rust Town's renovation and a Genius Think Tank to heal the Earth with her father's ill-gotten wealth, and puts Len in charge of Rust Town. She cares for her broken, catatonic father (whom she foresees dying of cancer within two years) without pity. She finds Ryan at the promontory, accepts his real proposal (a two-year betrothal before becoming Mrs. Romano), and agrees to have children she'll love whether her foresight can see them or not. The final kiss 'tasted of home.' She has lived to see the bittersweet, peaceful future she dreamed of.",
+      "facts": [
+        {
+          "key": "founder",
+          "value": "Co-signs the treaty creating the New European Republic; redirects her father's drug wealth to heal the Earth and rebuild Rust Town"
+        },
+        {
+          "key": "accepts Ryan",
+          "value": "Says yes to a two-year betrothal before becoming Mrs. Romano; will have and love their children"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "accepts his marriage proposal; the kiss that 'tasted of home'"
+        },
+        {
+          "to": "The New European Republic",
+          "rel": "co-founds and leads the new pan-European government"
+        }
+      ],
+      "chapter": 130
+    },
+    {
+      "name": "The New European Republic",
+      "kind": "faction",
+      "summary": "CH130 (founded): the successor state born from a fifty-page treaty signed on the Augusti villa terrace by Enrique Manada (last Dynamis chairman), Livia, Vulcan, Neptune, Wyvern, Leo Hargraves, and Len - dissolving both Dynamis and the Augusti crime empire into one government. Livia foresees it unifying Western Europe within two years (the French will grumble but join), with Bavaria and Denmark as new northern republics and Hargraves as go-between. Its programs: Rust Town renovation under Len (funded 70% by Livia's inherited drug wealth), a Genius Think Tank to heal the Earth (the Architect's self-sustaining cities, Dr. Tyrano's healthcare, Vulcan's peacekeeping force), and eventually safe Mechron Elixir-knockoffs for all. Its heroes serve 'the Republic and its people instead of the almighty Dollar.'",
+      "facts": [
+        {
+          "key": "founding",
+          "value": "A fifty-page treaty dissolves Dynamis and the Augusti empire into one government; Livia foresees Western European unification within two years"
+        },
+        {
+          "key": "mission",
+          "value": "Rebuild Rust Town, heal the Earth via a Genius Think Tank, field public-good heroes serving people over profit"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "co-founder who funds and steers its restorative programs"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "signs it into being as the last Dynamis chairman; leads its new hero team"
+        }
+      ],
+      "chapter": 130
+    },
+    {
+      "name": "Janus Augusti",
+      "kind": "character",
+      "summary": "CH130 (confirmed = Augustus; final fate): the finale explicitly names the defeated god-emperor 'Janus Augusti' - confirming Augustus and Janus Augusti are ONE man (Livia's father, Neptune's brother). Returned from the Purple World armless, catatonic, and broken, he sits in a wheelchair at the villa, sometimes apologizing to Livia and the world, mostly silent or sobbing - 'his ghost trapped in a broken, indestructible body.' Livia foresees he will die of cancer within two years, the death he'd have preferred to this half-life. She will care for him without pity until then. His lieutenants (Venus, Mars, Pluto, the Killer Seven, Hector Manada) rot in an undersea prison; his sister (Livia's aunt) is jailed and estranged for refusing rescue.",
+      "facts": [
+        {
+          "key": "identity confirmed",
+          "value": "The finale names him 'Janus Augusti' as Augustus - resolving the long-open question that Augustus and Janus Augusti are the same man"
+        },
+        {
+          "key": "final fate",
+          "value": "Broken and catatonic in a wheelchair; foreseen to die of cancer within two years, the death he would have preferred"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "confirmed to be the same man - his god-emperor persona"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "his daughter, who cares for his broken remnant without pity until his foreseen death"
+        }
+      ],
+      "chapter": 130
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH130 (confirmed identity + final fate): the finale explicitly names him 'Janus Augusti,' confirming the long-open question that Augustus IS Janus Augusti - Livia's father and Neptune's brother, one man behind the god-emperor mask. Returned broken and armless from the Purple World, he lives out his days catatonic in a wheelchair at the villa, apologizing or sobbing, 'his ghost trapped in a broken, indestructible body.' Livia foresees cancer will kill him within two years - the death he'd have preferred to this powerless half-life - and cares for him without pity. In the epilogue montage his fallen Olympians (Venus, Mars, Pluto, the Killer Seven, Hector Manada) waste away in an undersea prison.",
+      "facts": [
+        {
+          "key": "= Janus Augusti",
+          "value": "The finale names him Janus Augusti, confirming Augustus and Janus Augusti are the same man (Livia's father, Neptune's brother)"
+        },
+        {
+          "key": "final fate",
+          "value": "Catatonic and armless in a wheelchair; foreseen to die of cancer within two years"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Janus Augusti",
+          "rel": "confirmed to be the same man - his civilian family name"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "his daughter, who tends his broken remnant without pity"
+        }
+      ],
+      "chapter": 130
     }
   ],
   "plotObservations": [
@@ -20186,6 +20320,29 @@
         "Vulcan"
       ],
       "chapter": 129
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH130 'Farewell, New Rome' (ENDING): the happy ending. A fifty-page treaty founds the New European Republic, dissolving Dynamis and the Augusti empire; Livia funds Rust Town's renovation (Len in charge) and a Genius Think Tank to heal the Earth with her father's drug wealth. Augustus - confirmed to be Janus Augusti, Livia's father - lives broken and catatonic, foreseen to die of cancer within two years. Ryan chooses to stay rather than wander, meets Livia at the promontory where his journey began, and proposes for real; she accepts a two-year betrothal before becoming Mrs. Romano, and they plan children. Sealing the kiss, Ryan spends the last Black particles in his body on one final time-save, safely purging his destabilizing power while the Ultimate One shows him a montage of everyone's hopeful futures ('THIS IS THE FUTURE YOU FOUGHT FOR... IT IS ALL UP TO YOU'). Ryan Romano has completed his Perfect Run, and he is happy at last. THE END.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Augustus",
+        "Janus Augusti",
+        "The New European Republic",
+        "Len",
+        "Enrique Manada",
+        "Neptune",
+        "Vulcan",
+        "Wyvern",
+        "Leo Hargraves",
+        "The Architect",
+        "The Violet Ultimate One",
+        "Felix",
+        "Fortuna",
+        "Narcinia"
+      ],
+      "chapter": 130
     }
   ]
 }

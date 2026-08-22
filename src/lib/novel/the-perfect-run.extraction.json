@@ -525,6 +525,18 @@
           {
             "key": "earned",
             "value": "The Ultimate One deems he has earned ascension 'for learning to wield your power with wisdom,' and removes his Black connection so it won't destabilize reality"
+          },
+          {
+            "key": "stays and proposes",
+            "value": "Chooses to settle in New Rome instead of wandering; proposes to Livia (two-year betrothal, then Mrs. Romano) and plans children"
+          },
+          {
+            "key": "final save",
+            "value": "Spends the last Black particles in his body on one last time-save, safely purging his destabilizing Black; the Ultimate One shows him everyone's futures"
+          },
+          {
+            "key": "arc complete",
+            "value": "The 800+ year immortal gamer finds meaning, family, and love; 'completed his Perfect Run... happy at last'"
           }
         ],
         "ties": [
@@ -891,6 +903,14 @@
           {
             "to": "augustus",
             "rel": "severs both his arms in the Purple World, then carries him back broken"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "proposes to her at the promontory; they will marry and start a family"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "its parting montage frames the future Ryan fought for as his own to make real"
           }
         ],
         "appearances": [
@@ -1017,7 +1037,8 @@
           126,
           127,
           128,
-          129
+          129,
+          130
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1473,7 +1494,8 @@
           123,
           124,
           126,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -1989,7 +2011,8 @@
           122,
           124,
           125,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -2200,7 +2223,8 @@
           104,
           126,
           127,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -2405,6 +2429,14 @@
           {
             "key": "the man beneath",
             "value": "Without his halo, just a feeble bitter old man who murdered thousands out of terror of death"
+          },
+          {
+            "key": "= Janus Augusti",
+            "value": "The finale names him Janus Augusti, confirming Augustus and Janus Augusti are the same man (Livia's father, Neptune's brother)"
+          },
+          {
+            "key": "final fate",
+            "value": "Catatonic and armless in a wheelchair; foreseen to die of cancer within two years"
           }
         ],
         "ties": [
@@ -2523,6 +2555,14 @@
           {
             "to": "ryan-romano",
             "rel": "disarmed and defeated by him, then carried back to face captivity"
+          },
+          {
+            "to": "janus-augusti",
+            "rel": "confirmed to be the same man - his civilian family name"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "his daughter, who tends his broken remnant without pity"
           }
         ],
         "appearances": [
@@ -2556,7 +2596,8 @@
           126,
           127,
           128,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -2691,7 +2732,8 @@
           117,
           118,
           119,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -4465,7 +4507,8 @@
           38,
           69,
           109,
-          118
+          118,
+          130
         ],
         "questions": []
       },
@@ -5189,7 +5232,8 @@
           124,
           125,
           126,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -6734,7 +6778,8 @@
           120,
           122,
           124,
-          127
+          127,
+          130
         ],
         "questions": []
       },
@@ -7525,7 +7570,8 @@
           108,
           118,
           120,
-          127
+          127,
+          130
         ],
         "questions": []
       },
@@ -9072,6 +9118,14 @@
           {
             "key": "why hurt",
             "value": "Could have fled but stayed in the blast radius to ensure Ryan survived"
+          },
+          {
+            "key": "founder",
+            "value": "Co-signs the treaty creating the New European Republic; redirects her father's drug wealth to heal the Earth and rebuild Rust Town"
+          },
+          {
+            "key": "accepts Ryan",
+            "value": "Says yes to a two-year betrothal before becoming Mrs. Romano; will have and love their children"
           }
         ],
         "ties": [
@@ -9230,6 +9284,14 @@
           {
             "to": "fallout",
             "rel": "cripples his launchers before his self-destruct nearly kills her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "accepts his marriage proposal; the kiss that 'tasted of home'"
+          },
+          {
+            "to": "the-new-european-republic",
+            "rel": "co-founds and leads the new pan-European government"
           }
         ],
         "appearances": [
@@ -9262,7 +9324,8 @@
           126,
           127,
           128,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -12780,7 +12843,8 @@
           107,
           114,
           118,
-          127
+          127,
+          130
         ],
         "questions": []
       },
@@ -13813,7 +13877,8 @@
           78,
           113,
           119,
-          129
+          129,
+          130
         ],
         "questions": []
       },
@@ -14960,7 +15025,8 @@
         ],
         "appearances": [
           88,
-          126
+          126,
+          130
         ],
         "questions": []
       },
@@ -15575,6 +15641,14 @@
           {
             "key": "product",
             "value": "Introduces the colored-crystal mind-opening drug"
+          },
+          {
+            "key": "identity confirmed",
+            "value": "The finale names him 'Janus Augusti' as Augustus - resolving the long-open question that Augustus and Janus Augusti are the same man"
+          },
+          {
+            "key": "final fate",
+            "value": "Broken and catatonic in a wheelchair; foreseen to die of cancer within two years, the death he would have preferred"
           }
         ],
         "ties": [
@@ -15585,10 +15659,19 @@
           {
             "to": "andreas-torque",
             "rel": "his money-launderer; gives him the crystal drug"
+          },
+          {
+            "to": "augustus",
+            "rel": "confirmed to be the same man - his god-emperor persona"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "his daughter, who cares for his broken remnant without pity until his foreseen death"
           }
         ],
         "appearances": [
-          100
+          100,
+          130
         ],
         "questions": []
       },
@@ -16303,6 +16386,36 @@
         ],
         "appearances": [
           129
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-new-european-republic",
+        "kind": "faction",
+        "name": "The New European Republic",
+        "summary": "CH130 (founded): the successor state born from a fifty-page treaty signed on the Augusti villa terrace by Enrique Manada (last Dynamis chairman), Livia, Vulcan, Neptune, Wyvern, Leo Hargraves, and Len - dissolving both Dynamis and the Augusti crime empire into one government. Livia foresees it unifying Western Europe within two years (the French will grumble but join), with Bavaria and Denmark as new northern republics and Hargraves as go-between. Its programs: Rust Town renovation under Len (funded 70% by Livia's inherited drug wealth), a Genius Think Tank to heal the Earth (the Architect's self-sustaining cities, Dr. Tyrano's healthcare, Vulcan's peacekeeping force), and eventually safe Mechron Elixir-knockoffs for all. Its heroes serve 'the Republic and its people instead of the almighty Dollar.'",
+        "facts": [
+          {
+            "key": "founding",
+            "value": "A fifty-page treaty dissolves Dynamis and the Augusti empire into one government; Livia foresees Western European unification within two years"
+          },
+          {
+            "key": "mission",
+            "value": "Rebuild Rust Town, heal the Earth via a Genius Think Tank, field public-good heroes serving people over profit"
+          }
+        ],
+        "ties": [
+          {
+            "to": "livia-augusti",
+            "rel": "co-founder who funds and steers its restorative programs"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "signs it into being as the last Dynamis chairman; leads its new hero team"
+          }
+        ],
+        "appearances": [
+          130
         ],
         "questions": []
       }
@@ -18578,6 +18691,10 @@
           {
             "chapter": 129,
             "summary": "CH129 'The Gate & The Key': the Purple World reckoning. On his home turf Ryan reaches full Black power ('I am the gate, and the key'), severs both of Augustus's arms (the hands that killed Julie Costa) while the powerless god can't summon lightning. The Violet Ultimate One descends - a triangular spiral of universe-eyes - shatters Augustus's godhood delusion ('YOU ARE NOTHING'), heals Ryan fully, and reveals his nature as an 'observer' who alone decides which possibility becomes true history. It shows extinguished forks he discarded (the malevolent Clockstopper, a Livia-war, a hollow harem ending), explains causality and free will, and offers ascension. Ryan defers it to return to Earth for 'a happy life with friends who remember me'; the door stays open forever and his destabilizing Black connection is removed. He returns beside Leo Hargraves carrying the broken Augustus Pieta-style; the surviving Olympians surrender at the sight. The war is over."
+          },
+          {
+            "chapter": 130,
+            "summary": "CH130 'Farewell, New Rome' (ENDING): the happy ending. A fifty-page treaty founds the New European Republic, dissolving Dynamis and the Augusti empire; Livia funds Rust Town's renovation (Len in charge) and a Genius Think Tank to heal the Earth with her father's drug wealth. Augustus - confirmed to be Janus Augusti, Livia's father - lives broken and catatonic, foreseen to die of cancer within two years. Ryan chooses to stay rather than wander, meets Livia at the promontory where his journey began, and proposes for real; she accepts a two-year betrothal before becoming Mrs. Romano, and they plan children. Sealing the kiss, Ryan spends the last Black particles in his body on one final time-save, safely purging his destabilizing power while the Ultimate One shows him a montage of everyone's hopeful futures ('THIS IS THE FUTURE YOU FOUGHT FOR... IT IS ALL UP TO YOU'). Ryan Romano has completed his Perfect Run, and he is happy at last. THE END."
           }
         ],
         "entities": [
@@ -18702,13 +18819,14 @@
           "mercury",
           "the-killer-seven",
           "the-purple-world",
-          "the-clockstopper"
+          "the-clockstopper",
+          "the-new-european-republic"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 249,
+    "entities": 250,
     "plotlines": 104,
     "books": 1
   }
