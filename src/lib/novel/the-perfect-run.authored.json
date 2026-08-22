@@ -13182,6 +13182,236 @@
         }
       ],
       "chapter": 90
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "CH91: Dynamis has held him since 2016 (cloned from warehouse-raid samples), chemically neutered and reduced to <50% human DNA, a non-sentient 'company asset' (Tyrano's Monster Girl Project folder hints at worse). But Len's proximity re-triggers the dormant infection her father implanted in her blood; when her converted tendrils touch the aquarium, Bloodstream detonates free and mutates far past his old self: house-sized ooze with fanged maws, TV-screen eyes, Green Flux geysers spawning alien moss, generating mass from nowhere. He devours Len and Tyrano, and every Knockoff across New Rome reverts at once, an unlimited-range extinction plague. He can now use the powers of Genomes he infects (he takes Acid Rain's raindrop-swap). This is the doomsday the Carnival always feared.",
+      "facts": [
+        {
+          "key": "custody",
+          "value": "Held by Dynamis since 2016, neutered, <50% human DNA, non-sentient"
+        },
+        {
+          "key": "doomsday",
+          "value": "Freed via infected Len; becomes rangeless world-virus, uses infected Genomes' powers"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "her infection frees and merges with him"
+        },
+        {
+          "to": "The Knockoff Elixir",
+          "rel": "all revert to him at once"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH91: her tragic end this loop. Bloodstream long ago implanted a foreign agent in her blood (which is why Knockoffs react violently to her, and why Tyrano wanted to study her). Confronted with the truth that her father is <50% human and unsavable, she goes silent and, standing before the aquarium, shoots the glass, her proximity having already let the infection take her over (black blood behind her visor). Her converted body merges with Bloodstream, freeing and empowering him; the monster devours his own daughter. Her death is literally the trigger the Carnival prophesied.",
+      "facts": [
+        {
+          "key": "reveal",
+          "value": "Bloodstream implanted a foreign agent in her blood years ago"
+        },
+        {
+          "key": "death",
+          "value": "Infected and absorbed into Bloodstream, freeing the world-plague"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "infected by and merged into him"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Dr. Tyrano",
+      "kind": "character",
+      "summary": "CH91: reveals the Knockoff cure exists, an injection-based neutralizing agent that repairs a host's genetic code to its pre-consumption state (a stronger variant floods the aquarium on breach), effective on Bloodstream-based Knockoffs but not true Alchemist Elixirs. He insists mass-reversion risk is 'nonexistent' (fatally wrong). Ryan 'nationalizes' him and the cure, planning to take him to a Mechron base (Area 51) to make safe Knockoffs and keep his promise to Bianca. Tyrano cheerfully agrees to be 'abducted' for a Mechron lab, but drowns in Bloodstream's flood before escape; Ryan keeps his encrypted-email codes and the vaccine data for the next loop.",
+      "facts": [
+        {
+          "key": "cure",
+          "value": "Injectable agent repairs Knockoff genetic code; useless once Bloodstream goes rangeless"
+        },
+        {
+          "key": "fate",
+          "value": "Nationalized by Ryan, then drowned in the Bloodstream flood"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "nationalized/abducted by him"
+        },
+        {
+          "to": "The Knockoff Elixir",
+          "rel": "created its cure"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Enrique Manada",
+      "kind": "character",
+      "summary": "CH91: 'Blackthorn' finally breaks with his father, arriving at Lab 66 with Fallout and a security troop, vine-and-moss armor, no firearm, disgusted by the aquarium. He admits 'none of this would have happened if you and father didn't lie to me,' says Wyvern was right and their father will be 'out of the picture,' one way or another. He tries and fails to save Tyrano with his vines; Alphonse shields them both from the blood flood. His long-held veto against studying Len (raising Ryan's respect for him) is now moot.",
+      "facts": [
+        {
+          "key": "turn",
+          "value": "Breaks with Hector; sides with Wyvern's stance against the Knockoffs"
+        },
+        {
+          "key": "power",
+          "value": "Vine/moss armor (Blackthorn); unarmed"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alphonse Manada",
+          "rel": "arrives with him, is shielded by him"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "turns against his father"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH91: descends on the burning New Rome having won the Lepiromachia (holding a destroyed rabbit-plushie's charred half). He shrugs off Ryan's time-stop entirely (neither he nor his lightning slow), vaporizes Mr. See-Through with crimson lightning, and cares only for killing Leo Hargraves ('a world where your sun has set') over the world ending. But when Ryan's Saturn armor absorbs a bolt and he punches Augustus, black-and-violet particles swirling, the tyrant recoils: 'I felt that', the first blow that ever reached him, a flash of fear beneath the god-mask. Augustus counters harder than anyone Ryan's fought, breaching his armor, then duels Leo (whose burning core is his one weakness).",
+      "facts": [
+        {
+          "key": "lepiromachia",
+          "value": "Won the plushie-gods' war; killed the rabbit deity"
+        },
+        {
+          "key": "vulnerability",
+          "value": "Ryan's Black-particle punch is the first thing to ever hurt him ('I felt that')"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "first person to hurt him"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "his obsession; duels him"
+        },
+        {
+          "to": "Mr. See-Through",
+          "rel": "vaporizes him"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Mr. See-Through",
+      "kind": "character",
+      "summary": "CH91: the glass-armor vigilante (Shroud/Safelite operative) surveys the Bloodstream apocalypse alongside Leo Hargraves, urging Leo to unleash his full supernova to buy the rest of the world time even at the cost of millions in New Rome. Before they can act, Augustus descends and vaporizes him with a crimson lightning bolt through the chest, his organs cooked inside his own glass armor. His death underlines that even the loop's antagonists are helpless before the plague and Augustus.",
+      "facts": [
+        {
+          "key": "stance",
+          "value": "Urged Leo's supernova to contain the plague"
+        },
+        {
+          "key": "death",
+          "value": "Vaporized by Augustus's crimson lightning"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "killed by him"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "his ally in the crisis"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH91: this raid-loop ends in total disaster, but it's the one where his endgame crystallizes. He nationalizes Tyrano and the Knockoff cure, downloads the vaccine data and Tyrano's encrypted-email codes for the next loop, and watches Bloodstream's world-plague consume Len, New Rome, and the planet. Fleeing to Livia in Sorrento for the memory transfer, he confronts Augustus and, for the first time ever, hurts him with a Black-particle punch ('I felt that'), realizing the Black Ultimate One's wish granted him a paradox: a power that can kill immortals. He completes Livia's brainmap transfer as Augustus closes in and resets, uncertain his power is even the same now that the Black World courses through him.",
+      "facts": [
+        {
+          "key": "gains",
+          "value": "Knockoff vaccine data + Tyrano's email codes for the next run"
+        },
+        {
+          "key": "revelation",
+          "value": "His Black power is a paradox that can hurt/kill immortals like Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Black Ultimate One",
+          "rel": "granted him the immortal-killing paradox"
+        },
+        {
+          "to": "Livia",
+          "rel": "completes her memory transfer before resetting"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "The Black Ultimate One",
+      "kind": "concept",
+      "summary": "CH91: its granted wish is finally understood. When Ryan's punch actually hurt the invulnerable Augustus ('I felt that'), he realizes what the Black Ultimate One gave him: a paradox, a power that can kill immortals. Combined with the Black World's energy now coursing through his veins, this reset is a dive into the unknown, his looping power may not even work the same way anymore.",
+      "facts": [
+        {
+          "key": "wish",
+          "value": "A paradox: the power to hurt and kill the immortal (proven on Augustus)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "granted him the paradox power"
+        },
+        {
+          "to": "Augustus",
+          "rel": "the immortal Ryan's paradox can hurt"
+        }
+      ],
+      "chapter": 91
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH91: waits for Ryan on a Sorrento rooftop ringed by hundreds of Vulcan-built turrets vaporizing every Bloodstream clone, her precognition showing the blood-rain apocalypse. Despite Ryan's warning she gently touches his acid/Augustus wounds. She receives the loop's data and the brainmap memory transfer via the Saturn armor's Chronoradio helmet, vowing that next loop Ryan 'won't carry this cross alone' and that they'll find a painless transfer so he needn't die for their mistakes. Her surviving memory is the anchor that makes the next run different from every loop before.",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Receives the memory transfer; her mind carries across the reset"
+        },
+        {
+          "key": "vow",
+          "value": "Next loop Ryan won't loop alone; find a painless transfer"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "carries his memories forward"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "protected by her turret perimeter"
+        }
+      ],
+      "chapter": 91
     }
   ],
   "plotObservations": [
@@ -14685,6 +14915,37 @@
         "The Carnival"
       ],
       "chapter": 90
+    },
+    {
+      "title": "The End Times",
+      "beat": "CH91 (loop climax): In Lab 66 Ryan confirms Dynamis has held a neutered Bloodstream since 2016, nationalizes Dr. Tyrano and the Knockoff cure, and downloads the vaccine + email codes for next loop. But Len, infected by proximity, shoots the aquarium and merges with her father; Bloodstream detonates into a rangeless world-plague, devouring Len and Tyrano and reverting every Knockoff in New Rome. Enrique (breaking with Hector) and Fallout are engulfed. Ryan flees as the city, then the planet, turns red.",
+      "entities": [
+        "Ryan Romano",
+        "Bloodstream",
+        "Len",
+        "Dr. Tyrano",
+        "Enrique Manada",
+        "Alphonse Manada",
+        "The Knockoff Elixir",
+        "Lab Sixty-Six"
+      ],
+      "chapter": 91
+    },
+    {
+      "title": "Paradox: The Reset",
+      "beat": "CH91: fleeing the apocalypse, Ryan meets Augustus, who won the Lepiromachia and vaporizes Mr. See-Through while ignoring the world's end to hunt Leo Hargraves. Ryan's Saturn armor absorbs a lightning bolt and he punches Augustus with Black-and-violet particles, the tyrant recoils ('I felt that'), the first blow to ever reach him. Ryan realizes the Black Ultimate One's wish is a paradox: the power to kill immortals. He reaches Livia's turret-ringed Sorrento safehouse, completes her brainmap memory transfer via the Chronoradio as Augustus closes in, and resets, unsure his power is even the same now the Black World runs through him.",
+      "entities": [
+        "Ryan Romano",
+        "Augustus",
+        "Leo Hargraves",
+        "Mr. See-Through",
+        "Livia",
+        "The Black Ultimate One",
+        "The Black World",
+        "The Saturn Armor",
+        "Vulcan"
+      ],
+      "chapter": 91
     }
   ]
 }
