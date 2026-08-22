@@ -3001,7 +3001,8 @@
           103,
           105,
           109,
-          110
+          110,
+          111
         ],
         "questions": []
       },
@@ -12483,6 +12484,14 @@
           {
             "key": "note",
             "value": "Can restore the erased, but at a reality-damaging price"
+          },
+          {
+            "key": "role",
+            "value": "Gods of the colored realms; grant Flux/knowledge via formless messengers, and punish those who defy them"
+          },
+          {
+            "key": "punishment",
+            "value": "Freed the Hegemony's robots, loosed Black Flux rot, raised the dead against the Lords"
           }
         ],
         "ties": [
@@ -12497,10 +12506,19 @@
           {
             "to": "the-alchemist",
             "rel": "goal tied to (mortal ascension)"
+          },
+          {
+            "to": "the-hegemony",
+            "rel": "their benefactors turned defiers, whom they destroyed"
+          },
+          {
+            "to": "black-flux",
+            "rel": "the chaotic rot they loosed as punishment"
           }
         ],
         "appearances": [
-          74
+          74,
+          111
         ],
         "questions": []
       },
@@ -13564,7 +13582,8 @@
           86,
           88,
           104,
-          105
+          105,
+          111
         ],
         "questions": []
       },
@@ -14061,7 +14080,8 @@
         ],
         "appearances": [
           98,
-          110
+          110,
+          111
         ],
         "questions": []
       },
@@ -14129,6 +14149,14 @@
           {
             "key": "origin",
             "value": "Ex-lead geneticist of Station Orpheon (Antarctica, 1992)"
+          },
+          {
+            "key": "true nature",
+            "value": "A quantum-echo collective (Eva-One + copies) born of a blue-Flux alien ooze"
+          },
+          {
+            "key": "resolve",
+            "value": "Uplift humanity herself with the ship's tech rather than trust governments"
           }
         ],
         "ties": [
@@ -14139,10 +14167,19 @@
           {
             "to": "andreas-torque",
             "rel": "hunts then experiments on him"
+          },
+          {
+            "to": "station-orpheon",
+            "rel": "her station, then the crashed ship she inherited"
+          },
+          {
+            "to": "the-hegemony",
+            "rel": "learned its history through the ship's overmind"
           }
         ],
         "appearances": [
-          100
+          100,
+          111
         ],
         "questions": []
       },
@@ -14346,7 +14383,8 @@
           102,
           103,
           109,
-          110
+          110,
+          111
         ],
         "questions": []
       },
@@ -14428,6 +14466,104 @@
         ],
         "appearances": [
           104
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-hegemony",
+        "kind": "faction",
+        "name": "The Hegemony",
+        "summary": "CH111 (Eva Fabre's origin): a vanished interstellar empire from an ALTERNATE reality, ruled by the scaled 'Lords of Science.' On their Day of Enlightenment they contacted the Ultimate Ones through formless messengers and were gifted knowledge, building Flux-harvesting towers to power a fleet ten-thousand strong. They conquered their entire universe (bombing worlds to dust, collapsing stars, enslaving survivors as cybernetic soldiers - including a past Earth's 'apes'), turning the last star into a metal sphere. Growing arrogant, the Lords stopped honoring the Ultimate Ones, then tried to enslave the messengers outright to make weapons of them. The Ultimate Ones' punishment: a blue flash granting the robot slaves free will/emotion, plagues, and the chaotic Black Flux rotting the Flux grid - collapsing the empire in years. The last Lord of Science fled via a Reality-Drive into Earth's reality with captive messengers, crashing his ship (the future Station Orpheon) in Antarctica.",
+        "facts": [
+          {
+            "key": "rulers",
+            "value": "The scaled Lords of Science, who deemed themselves the universe's true guides"
+          },
+          {
+            "key": "fall",
+            "value": "Enslaving the messengers drew the Ultimate Ones' punishment (free-willed robots, Black Flux rot)"
+          },
+          {
+            "key": "legacy",
+            "value": "Its crashed ship + Flux tech is the true source of Earth's Elixirs/Genomes"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-ultimate-ones",
+            "rel": "were their benefactors, then their punishers"
+          },
+          {
+            "to": "station-orpheon",
+            "rel": "the Hegemony's last ship, crashed in Antarctica"
+          },
+          {
+            "to": "eva-fabre",
+            "rel": "discovered its wreck and inherited its secrets"
+          }
+        ],
+        "appearances": [
+          111
+        ],
+        "questions": []
+      },
+      {
+        "id": "reality-drive",
+        "kind": "item",
+        "name": "Reality-Drive",
+        "summary": "CH111: the alien engine the last Lord of Science had his crew modify to escape the barriers BETWEEN realities, fleeing the Ultimate Ones' gaze to rebuild the Hegemony in Earth's universe. Under rebel attack the pilot was killed mid-jump, the space-folding calculations went wrong, and the ship crash-landed in Antarctica sealed inside an artificial Thin Place (a folded pocket of space where two days pass inside per two hours outside). Its residual power still lets a bearer teleport in and out of the distortion field via violet portals.",
+        "facts": [
+          {
+            "key": "purpose",
+            "value": "Cross the barriers between realities/universes"
+          },
+          {
+            "key": "malfunction",
+            "value": "A botched emergency jump folded space and crashed the ship, trapping it in a Thin Place"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-hegemony",
+            "rel": "its last ship's escape engine"
+          },
+          {
+            "to": "station-orpheon",
+            "rel": "the crashed vessel it drove"
+          }
+        ],
+        "appearances": [
+          111
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-flux",
+        "kind": "concept",
+        "name": "The Flux",
+        "summary": "CH111: the fundamental energy the Hegemony harvested from the Ultimate Ones' colored higher realms via great towers, the true physics behind Earth's Elixirs and Genome powers. Each color does one thing: Red Flux fuels reactors (power), Blue Flux sharpens the mind (and carries knowledge/quantum-echo duplication - the ooze that made Eva), Orange Flux repairs matter/hulls, Green Flux heals the living, Yellow Flux raises the dead, Violet Flux teleports across distances, and White Flux binds them all together. Black Flux alone was SHUNNED - the chaotic rot the Ultimate Ones loosed as punishment, which spread through the Flux grid and shattered the towers. The towers were only a crude artificial copy of the formless messengers' native power.",
+        "facts": [
+          {
+            "key": "colors",
+            "value": "Red=power, Blue=mind/knowledge, Orange=repair, Green=heal, Yellow=raise dead, Violet=teleport, White=bind, Black=chaotic rot"
+          },
+          {
+            "key": "source",
+            "value": "Harvested from the Ultimate Ones' colored realms; the basis of all Elixir powers"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-ultimate-ones",
+            "rel": "the colored realms the Flux is drawn from"
+          },
+          {
+            "to": "the-hegemony",
+            "rel": "harvested it via towers to power their empire"
+          }
+        ],
+        "appearances": [
+          111
         ],
         "questions": []
       }
@@ -16627,6 +16763,10 @@
           {
             "chapter": 110,
             "summary": "CH110 'The Truth Beneath the Ice': the expedition reaches Antarctica. Flying recon with Leo Hargraves, Ryan detects the Alchemist's base is sealed inside an artificial Thin Place - a Monaco-like pocket dimension that traps prisoners in as well as intruders out. Sunshine apologizes to Len for the Carnival's attempt on Bloodstream (they'd predicted he would kill his children and cause disaster) and swears to try a cure now. At found Station Orpheon, Panda fanboys over Sunshine (who invites him to the Carnival). Ryan freezes time, tears the pocket dimension open with his hands, and holds it with Resonators (Stitch + Atom Cat guard the exit). Inside, under a black sky, they find the base breached from within, sinking, defenses dead, and a huge dead non-Mechron cyborg killed by claws bearing an M/omega sigil. Ryan's armor reveals the dome is only the tip of a kilometers-long buried spaceship."
+          },
+          {
+            "chapter": 111,
+            "summary": "CH111 'Past Fragment: Origins of the Species' (Eva Fabre flashback, the setting's origin): stargazing near Station Orpheon, Eva witnesses a purple Thin-Place rift tear open and a kilometers-long Hegemony starship - fleeing a battle with rebel robot-ships - crash into Antarctica, sealing her inside its artificial pocket dimension. Inside the corpse-choked wreck (a civil war of scaled aliens vs their own freed robots, both marked with an M/omega sigil), a blue-Flux ooze engulfs her and splits her into ~10 quantum-echo copies (Eva-One the original). Jacking into the ship's biological overmind, she learns the whole cosmology: the Hegemony harvested Flux (Red/Blue/Orange/Green/Yellow/Violet/White; Black shunned) from the Ultimate Ones' colored realms via towers, conquered its universe enslaving worlds (a past Earth included), then tried to enslave the Ultimate Ones' formless messengers - drawing the punishment (free-willed robots, Black Flux rot) that collapsed it. The last Lord of Science fled via a Reality-Drive into Earth's reality and crashed here. Eva resolves to keep the tech from all governments and uplift humanity into a 'master race' herself - the birth of the Alchemist."
           }
         ],
         "entities": [
@@ -16710,13 +16850,17 @@
           "little-sarah",
           "thin-places",
           "the-resonators",
-          "the-doll"
+          "the-doll",
+          "the-hegemony",
+          "the-ultimate-ones",
+          "the-flux",
+          "reality-drive"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 237,
+    "entities": 240,
     "plotlines": 104,
     "books": 1
   }
