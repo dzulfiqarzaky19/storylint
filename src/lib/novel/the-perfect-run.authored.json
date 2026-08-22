@@ -11072,6 +11072,164 @@
         }
       ],
       "chapter": 80
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH81: Ryan executes his 'Mr. President' villain plan, storming Dynamis's Star Studios with the Meta-Gang, seizing the live news set, and broadcasting to New Rome. He livestreams his edited confrontation with Hector Manada plus the Bloodstream-knockoff footage (revealing ~10% of New Rome unknowingly carries a Bloodstream clone), threatens the city with a mini A-bomb (the 'North Korea special'), performs a stop-motion figurine parody of Manada/Augustus/Adam/Psyshock, and demands a deliberately absurd 'one million dollars' ransom. The stunt is designed to make Dynamis tear itself apart rather than target Rust Town. Sarin keeps re-uploading the exposé faster than Dynamis can censor it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Hijacks Star Studios' live news set as 'Mr. President'"
+        },
+        {
+          "key": "note",
+          "value": "Airs the Bloodstream-knockoff exposé; ~10% of New Rome affected"
+        },
+        {
+          "key": "note",
+          "value": "Threatens the city with a mini A-bomb; demands $1 million ransom"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Star Studios",
+          "rel": "seizes"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "exposes"
+        },
+        {
+          "to": "Queen Crimson",
+          "rel": "debuts as his sidekick"
+        }
+      ],
+      "chapter": 81
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH81: Livia's first field outing as 'Queen Crimson', in a black lounge suit with red shirt/tie and a Daft-Punk-style helmet (an androgynous, stylish look Tea adores). Shy and inexperienced with fieldwork, she stays in the background of the news-set takeover, gasps at the knockoff footage, and warms to the gang's gallows humor, giggling at Ryan's antics. Ryan lends her the Fisty Brothers gauntlets. Her foresight underpins Ryan's confidence that the raid unfolds exactly as planned.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Debuts as 'Queen Crimson' in a Daft-Punk-style helmet"
+        },
+        {
+          "key": "note",
+          "value": "Shy and inexperienced with field work; stays background"
+        },
+        {
+          "key": "note",
+          "value": "Lent the Fisty Brothers gauntlets"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Queen Crimson",
+          "rel": "as"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "sidekick to"
+        },
+        {
+          "to": "The Doll",
+          "rel": "befriended by"
+        }
+      ],
+      "chapter": 81
+    },
+    {
+      "name": "Mosquito",
+      "kind": "character",
+      "summary": "CH81: over-fed on Alchemo's high-nutrient synthesized blood, Mosquito nearly doubles in size for the raid, his under-exoskeleton flesh turning from crimson to green and his muscles swelling grotesquely, prompting Ryan to nickname him 'Beefcake'. He serves as aerial guard over Star Studios, watching for flying reinforcements.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Doubled in size on synthesized blood; Ryan nicknames him 'Beefcake'"
+        },
+        {
+          "key": "note",
+          "value": "Flesh turns green, muscles grotesquely swollen"
+        },
+        {
+          "key": "note",
+          "value": "Acts as aerial lookout during the raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "enhanced by"
+        },
+        {
+          "to": "Star Studios",
+          "rel": "guards during raid"
+        }
+      ],
+      "chapter": 81
+    },
+    {
+      "name": "The Knockoff Elixir",
+      "kind": "item",
+      "summary": "CH81 quantifies the horror: Ryan estimates Knockoff Elixirs (made from Bloodstream) are in roughly 10% of New Rome's population, since both Dynamis and Augustus used them heavily to bolster forces, meaning one in ten people could turn into a Bloodstream clone. Ryan broadcasts the exposé live to force Dynamis into crisis.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "~10% of New Rome has consumed a Knockoff Elixir"
+        },
+        {
+          "key": "note",
+          "value": "Used heavily by both Dynamis and Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Any consumer could become a Bloodstream clone"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "source of"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "exposed by"
+        }
+      ],
+      "chapter": 81
+    },
+    {
+      "name": "Star Studios",
+      "kind": "location",
+      "summary": "CH81: Dynamis's film-and-broadcast complex, controlling the Dynanet and airwaves, is raided by the Meta-Gang. Lightly guarded (Dynamis never expected an attack), the crew crashes the checkpoint, seizes the circular News Studio set (half its walls a 3D screen, staffed by underpaid workers), and commandeers the live morning broadcast. Ryan takes over the anchor desk to deliver his ransom message and knockoff exposé.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis's broadcast complex controlling Dynanet and airwaves"
+        },
+        {
+          "key": "note",
+          "value": "Lightly guarded; Meta-Gang crashes the checkpoint"
+        },
+        {
+          "key": "note",
+          "value": "Its live News Studio is hijacked for Ryan\\u2019s broadcast"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Hector Manada",
+          "rel": "owned by Dynamis"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "seized by"
+        }
+      ],
+      "chapter": 81
     }
   ],
   "plotObservations": [
@@ -12309,6 +12467,27 @@
         "Hector Manada"
       ],
       "chapter": 80
+    },
+    {
+      "title": "Good Morning New Rome",
+      "beat": "As Hector Manada's ultimatum expires, Ryan launches his 'full supervillain' plan: the Meta-Gang (Ryan as Mr. President, Livia debuting as Queen Crimson, the Doll, Sarin, Frank, and a 'Beefcake'-enhanced Mosquito) crashes Dynamis's Star Studios and seizes the live news set. On air Ryan broadcasts his edited confrontation with Manada and the Bloodstream-knockoff footage (exposing that ~10% of New Rome carries a Bloodstream clone), threatens the city with a mini A-bomb, performs a stop-motion figurine parody, and demands a ludicrous one-million-dollar ransom. Len, shattered by the knockoff test, refuses to come. Wyvern races toward the studio just as Eugène-Henry the cat bats the A-bomb's button and starts the countdown.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Queen Crimson",
+        "The Doll",
+        "Sarin",
+        "Frank the Mad",
+        "Mosquito",
+        "Star Studios",
+        "Hector Manada",
+        "The Knockoff Elixir",
+        "Bloodstream",
+        "Wyvern",
+        "Eugène-Henry",
+        "Len"
+      ],
+      "chapter": 81
     }
   ]
 }
