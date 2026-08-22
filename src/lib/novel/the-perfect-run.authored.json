@@ -7739,6 +7739,174 @@
         }
       ],
       "chapter": 66
+    },
+    {
+      "name": "Night Terror",
+      "kind": "character",
+      "summary": "A Blue Genome of the Killer Seven, a gaunt masculine figure entirely encased in a black bodysuit, who rides a motorcycle escorting Aunt Pluto's car. His power activates in darkness: it conjures a target's worst fear as an illusion capable of inflicting real, psychosomatic harm. In the chase, after nightfall, he makes Ryan hallucinate his dead adoptive father Bloodstream choking him in the back seat, causing Ryan to lose control and crash the Pandamobile off the highway. A coward in a pinch, he halts his bike at the collapsed-road gap rather than jump it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Blue Genome of the Killer Seven"
+        },
+        {
+          "key": "note",
+          "value": "Power activates in darkness (night)"
+        },
+        {
+          "key": "note",
+          "value": "Conjures a target's worst fear as a harming illusion"
+        },
+        {
+          "key": "note",
+          "value": "Made Ryan hallucinate a strangling Bloodstream"
+        },
+        {
+          "key": "note",
+          "value": "Rides a motorcycle; balks at the road-gap jump"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Killer Seven",
+          "rel": "member"
+        },
+        {
+          "to": "Aunt Pluto",
+          "rel": "escorts"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "terrorized with illusion"
+        }
+      ],
+      "chapter": 67
+    },
+    {
+      "name": "The Vamp",
+      "kind": "character",
+      "summary": "An assassin escorting Aunt Pluto (called Sparrow), a woman in a red leather jacket with crimson hair flowing from her biker helmet, armed with a submachine gun and able to fire a crimson energy beam. Her Genome power works through pheromones and touch: she can make people do stupid things and kill them on direct contact, making her the one enemy Felix (Atom Cat) can't safely blow up at range. She rides on Night Terror's motorcycle and hunts Felix and Ryan alongside Pluto.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Assassin escorting Pluto, in red leather; called Sparrow"
+        },
+        {
+          "key": "note",
+          "value": "Wields a submachine gun and a crimson beam"
+        },
+        {
+          "key": "note",
+          "value": "Pheromone power: manipulates and kills on touch"
+        },
+        {
+          "key": "note",
+          "value": "The one foe Felix can't safely detonate at range"
+        },
+        {
+          "key": "note",
+          "value": "Hunts Felix and Ryan through the woods"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Aunt Pluto",
+          "rel": "escorts"
+        },
+        {
+          "to": "Killer Seven",
+          "rel": "associated"
+        },
+        {
+          "to": "Felix",
+          "rel": "hunts"
+        }
+      ],
+      "chapter": 67
+    },
+    {
+      "name": "Aunt Pluto",
+      "kind": "character",
+      "summary": "Refined: in the highway chase, Pluto's death-curse is shown in action. Once she marks a target and activates the curse, it forms a sympathetic link; the closer she gets, the stronger the effect, escalating from small malfunctions (failing brakes) to environmental calamities (collapsing highway pillars) to, within ~10 meters, a fatal heart attack. She can only target one person at a time and does not directly control the calamities. Ryan recognizes her as Fortuna's evil counterpart, a Violet/Yellow-tier manipulator of causality he can partly resist by selectively stopping time (the Purple World belongs to the Violet Genome). She drives a bulletproof Lamborghini Gallardo.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Curse forms a sympathetic link; strengthens with proximity"
+        },
+        {
+          "key": "note",
+          "value": "Escalates: brake failure to calamities to heart attack (~10m)"
+        },
+        {
+          "key": "note",
+          "value": "Can only target one person at a time"
+        },
+        {
+          "key": "note",
+          "value": "Fortuna's evil counterpart; a causality manipulator"
+        },
+        {
+          "key": "note",
+          "value": "Ryan resists her by selectively stopping time"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fortuna",
+          "rel": "evil counterpart"
+        },
+        {
+          "to": "Felix",
+          "rel": "hunting"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "resisted by time-stop"
+        }
+      ],
+      "chapter": 67
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "Refined: during the chase, Ryan reasons out how to resist Pluto: her death-certainty is a Yellow-Genome causality warp, but the Purple World belongs to the Violet Genome, so selectively stopping time lets him break her hold on causality (as he ignores Fortuna's luck). Under Night Terror's darkness illusion he relives his deepest trauma, his adoptive father Bloodstream ('Cesare') choking him and blaming him for his death, which makes him crash. His time-stop instinct saves both him and Felix from the exploding Pandamobile; they flee into the woods, the hunt continuing.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Resists Yellow-Genome causality warps via selective time-stop"
+        },
+        {
+          "key": "note",
+          "value": "His worst fear is Bloodstream ('Cesare'), who called him son"
+        },
+        {
+          "key": "note",
+          "value": "Night Terror's illusion makes him crash the Pandamobile"
+        },
+        {
+          "key": "note",
+          "value": "Time-stop instinct saves him and Felix from the explosion"
+        },
+        {
+          "key": "note",
+          "value": "Flees into the woods, still hunted"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "deepest trauma"
+        },
+        {
+          "to": "Aunt Pluto",
+          "rel": "resists"
+        },
+        {
+          "to": "Felix",
+          "rel": "protects"
+        }
+      ],
+      "chapter": 67
     }
   ],
   "plotObservations": [
@@ -8625,6 +8793,22 @@
         "The Augusti"
       ],
       "chapter": 66
+    },
+    {
+      "title": "Murphy's Law",
+      "beat": "Ryan and Felix flee New Rome in the fur-covered Pandamobile toward a rendezvous with Len near the Amalfi Coast. Fortuna calls, her luck power inexplicably connecting her to Ryan instead of Felix. The Augusti catch up: Aunt Pluto in a bulletproof Lamborghini, escorted by Killer Seven assassins the Vamp (pheromone/touch-kill) and Night Terror (Blue Genome whose darkness power conjures illusions). A running highway chase ensues, Pluto's death-curse escalating from failing brakes to collapsing highway pillars as she closes in, while Felix hurls explosive darts. Ryan works out he can resist her causality warp by selectively stopping time. He jumps the Pandamobile across a collapsed section, but after nightfall Night Terror unleashes an illusion of Ryan's dead father Bloodstream ('Cesare') choking him, making him crash off the highway. Ryan's time-stop instinct saves both from the exploding wreck, and the pair escape into the dark woods as Pluto and the Vamp give chase, the hunt only beginning.",
+      "entities": [
+        "Ryan Romano",
+        "Felix",
+        "Fortuna",
+        "Aunt Pluto",
+        "The Vamp",
+        "Night Terror",
+        "Killer Seven",
+        "Bloodstream",
+        "Len"
+      ],
+      "chapter": 67
     }
   ]
 }
