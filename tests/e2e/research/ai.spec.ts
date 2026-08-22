@@ -26,6 +26,72 @@ function askButton(page: Page): Locator {
   return page.getByRole("button", { name: /^(Ask|Thinking)/ });
 }
 
+// ---------------------------------------------------------------------------
+// CARD FIXTURE — the deterministic precondition the acceptance-truth tests name.
+// The card render path (readStream → RECONCILE_TURN → PropositionCard) is fully
+// wired; these tests only lacked a card-bearing answer. Following the suite's
+// blessed inline-stub pattern (chat.spec.ts:35 faults the same route), each card
+// test stubs POST /api/research/stream to emit a single NDJSON `done` frame whose
+// collaborator turn carries the cards, then drives a real ask so askQuestion
+// fetches the stub. No live gateway, no shared beforeEach — each test owns its
+// own card STATE (kept/inWiki) so the four states stay independent.
+// ---------------------------------------------------------------------------
+
+interface CardState {
+  kept?: boolean;
+  inWiki?: boolean;
+}
+
+function stubCard(id: string, state: CardState = {}) {
+  return {
+    id,
+    turnId: "them-turn",
+    kind: "Character",
+    title: `Card ${id}`,
+    body: `Body for card ${id}.`,
+    asKind: "lore",
+    sortOrder: Number(id.replace(/\D/g, "")) || 0,
+    kept: state.kept ?? false,
+    inWiki: state.inWiki ?? false,
+  };
+}
+
+/** Stub the research stream with a `done` frame carrying the given cards on the
+ *  collaborator turn (the you-turn carries none). One NDJSON line, no deltas. */
+async function stubCards(
+  page: Page,
+  cards: Array<{ id: string; state?: CardState }>,
+): Promise<void> {
+  const done = {
+    type: "done",
+    turns: [
+      { id: "you-turn", threadId: "thread-ashkeld-1", ordinal: 0, side: "you", who: "You", text: "q", cards: [] },
+      {
+        id: "them-turn",
+        threadId: "thread-ashkeld-1",
+        ordinal: 1,
+        side: "them",
+        who: "Collaborator",
+        text: "Here are some propositions.",
+        cards: cards.map((c) => stubCard(c.id, c.state)),
+      },
+    ],
+  };
+  await page.route("**/api/research/stream", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/x-ndjson",
+      body: JSON.stringify(done) + "\n",
+    });
+  });
+}
+
+/** Drive a real ask so askQuestion POSTs to the (stubbed) stream route. */
+async function ask(page: Page): Promise<void> {
+  await askInput(page).fill("what are the propositions?");
+  await askButton(page).click();
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto("/research");
 });
@@ -110,9 +176,8 @@ test("ai gate: a failed stream surfaces the error alert (client failure seam)", 
 test(
   "ai cards: an answer renders three proposition cards",
   async ({ page }) => {
-    // Precondition (future fixture): stub POST /api/research/stream to emit a
-    // `done` frame carrying a collaborator turn whose text embeds 3 cards, so
-    // ResearchScreen renders three PropositionCards deterministically.
+    await stubCards(page, [{ id: "c1" }, { id: "c2" }, { id: "c3" }]);
+    await ask(page);
     const cards = page.locator('[class*="cardActions"]');
     await expect(cards).toHaveCount(3);
   },
@@ -125,6 +190,8 @@ test(
 test(
   "ai cards: Keep toggles the card and pushes it onto the Kept board",
   async ({ page }) => {
+    await stubCards(page, [{ id: "c1" }, { id: "c2" }, { id: "c3" }]);
+    await ask(page);
     const keep = page.getByRole("button", { name: "Keep" }).first();
     await keep.click();
     await expect(
@@ -143,6 +210,8 @@ test(
 test(
   "ai cards: 'Make it an entry' opens the Add-to-Wiki modal",
   async ({ page }) => {
+    await stubCards(page, [{ id: "c1" }, { id: "c2" }, { id: "c3" }]);
+    await ask(page);
     await page.getByRole("button", { name: "Make it an entry" }).first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
   },
@@ -154,7 +223,10 @@ test(
 test(
   "ai cards: a written card shows 'In the wiki' and locks Keep",
   async ({ page }) => {
-    // Precondition (future fixture): a card already written into the wiki.
+    await stubCards(page, [
+      { id: "c1", state: { kept: true, inWiki: true } },
+    ]);
+    await ask(page);
     await expect(page.getByText("In the wiki", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Make it an entry" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Kept" }).first()).toBeDisabled();
