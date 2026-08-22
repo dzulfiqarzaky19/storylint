@@ -6,6 +6,12 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  /* Cap the content column so a short book (few chapter columns) does not strand
+     a whitespace lake on wide (2K/4K) viewports. Left-anchored, not centered: a
+     data grid reads from the left edge like the wiki index, so the surplus sits
+     to the right. width:100% keeps it fluid below the cap. */
+  width: 100%;
+  max-width: 1120px;
   --lane-col: 240px;
   --beat-col: 46px;
 }
@@ -346,11 +352,3 @@
   }
 }
 
-/* Wide desktop (2K/4K): a touch more air in the lane column and beat cells so
-   the grid doesn't strand a lake of whitespace at the right on 1440p+. */
-@media (min-width: 1920px) {
-  .screen {
-    --lane-col: 280px;
-    --beat-col: 54px;
-  }
-}

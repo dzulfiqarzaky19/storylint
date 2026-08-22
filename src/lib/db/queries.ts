@@ -202,11 +202,18 @@ export async function getTiesForEntry(entryId: string): Promise<ResolvedTie[]> {
  * Replaces the fixed Kind enum + category_labels reads: the 4 built-ins plus any
  * user-created categories. Soft-deleted categories are excluded (mirrors the
  * entries read-filter) so a deleted category vanishes from every live surface.
+ * Excludes the 'plots' shelf: a plotline is a /plot-only category outside the
+ * wiki four-shelf model (people|places|orders|lore); every consumer here is a
+ * wiki-family surface (wiki snapshot, research + write pages, entry category
+ * picker) that must not show a plot shelf or offer 'plotline' as an entry kind.
+ * /plot reads plotlines straight from entries (kind='plotline'), never via this
+ * function, so the filter contains the plot category without touching a
+ * wiki/research/write surface.
  */
 export async function getCategories(): Promise<CategoryRow[]> {
   return rows<CategoryRow>(
     `SELECT ${CATEGORY_COLS} FROM categories
-      WHERE deleted_at IS NULL
+      WHERE deleted_at IS NULL AND shelf <> 'plots'
       ORDER BY sort_order, id`,
   );
 }
