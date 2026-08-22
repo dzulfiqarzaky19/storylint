@@ -3692,6 +3692,348 @@
         }
       ],
       "chapter": 37
+    },
+    {
+      "name": "Mechron",
+      "kind": "character",
+      "summary": "The rogue Genius who started the Genome Wars: a survivor of the Bosnian genocide and Siege of Sarajevo, an elderly electric engineer whose sons were murdered at Srebrenica. His Elixir gives him mastery over multi-agent systems (AIs, nanotech, robot hive-minds) and, most dangerously, the ability to build AIs that invent new tech, letting him breach specialties far beyond his own, even the secret of Elixirs (he made a gravity-controlling Red dragon). He waged a decade of machine warfare from his Sarajevo fortress until Leo Hargraves killed him for good, when his Akashic-Records gate instead opened onto the Darkness Beyond and devoured him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Started the Genome Wars; survivor of Srebrenica/Siege of Sarajevo"
+        },
+        {
+          "key": "note",
+          "value": "Genius over AI/nanotech/robot hive-minds; builds tech-inventing AIs"
+        },
+        {
+          "key": "note",
+          "value": "Ruled Sarajevo behind a bioplague and red forcefield"
+        },
+        {
+          "key": "note",
+          "value": "Killed for good at Sarajevo; erased by the Darkness Beyond"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Genome Wars",
+          "rel": "instigator"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "killed by"
+        }
+      ],
+      "chapter": 40
+    },
+    {
+      "name": "The Genome Wars",
+      "kind": "lore",
+      "summary": "The decade-long apocalyptic war Mechron ignited nine years before the story, escalating from a terror attack on the Yugoslav war-crimes tribunal into a European then nuclear conflict that ended the old world. Mechron bunkered in Sarajevo behind a machine army while the Anti-Mechron Front, led effectively by Pythia and figuring the Carnival, Shining Knight's Bavarians and the villain Nidhogg, ground down his bases over six years. It ended at the final battle of Sarajevo with Mechron's death and Leo's near-fatal supernova.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Decade-long war started by Mechron, ~9 years before story"
+        },
+        {
+          "key": "note",
+          "value": "Escalated to a nuclear exchange; ended the old world"
+        },
+        {
+          "key": "note",
+          "value": "Fought by the Anti-Mechron Front / Carnival alliance"
+        },
+        {
+          "key": "note",
+          "value": "Ended at the Battle of Sarajevo with Mechron's death"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "started by"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "fought in"
+        }
+      ],
+      "chapter": 40
+    },
+    {
+      "name": "Pythia",
+      "kind": "character",
+      "summary": "Alice Martel, the blonde seer who co-founded the Carnival with Leo Hargraves and was the strategic mind behind the Anti-Mechron Front. Her power creates telepathic links ('networking') between people she touches, letting them work as a free-willed hive mind and granting her precognition that scales with the number networked. She married and had a son, Mathias (the Shroud). Networking hundreds at once at Sarajevo left her with catastrophic brain damage, lifeless and sedated; she leaves Leo a USB of precognitive threat analysis naming Bloodstream and Augustus.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alice Martel; co-founded the Carnival with Leo"
+        },
+        {
+          "key": "note",
+          "value": "Networks people telepathically; precognition scales with links"
+        },
+        {
+          "key": "note",
+          "value": "Shroud/Mathias's mother; married with a son"
+        },
+        {
+          "key": "note",
+          "value": "Brain-damaged after networking hundreds at Sarajevo"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "co-founder"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "ally"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "mother"
+        }
+      ],
+      "chapter": 40
+    },
+    {
+      "name": "The Blue World",
+      "kind": "lore",
+      "summary": "The Akashic Records: a dimension of pure intellect and information, the universal compendium of all data, knowledge, intent and emotion, and the source of Blue powers and every Genius's knowledge. Mechron's particle-accelerator fortress tore a gate toward it, but the breach instead opened onto the Darkness Beyond. It is the Blue-colored parallel to the Purple World (Violet) and Red Dimension (Red).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Akashic Records; dimension of pure information/intellect"
+        },
+        {
+          "key": "note",
+          "value": "Source of Blue powers and Genius knowledge"
+        },
+        {
+          "key": "note",
+          "value": "Mechron tried to open a gate to it"
+        },
+        {
+          "key": "note",
+          "value": "Blue parallel to the Purple World and Red Dimension"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Purple World",
+          "rel": "parallels"
+        },
+        {
+          "to": "The Red Flux",
+          "rel": "parallels"
+        }
+      ],
+      "chapter": 41
+    },
+    {
+      "name": "The Darkness Beyond",
+      "kind": "lore",
+      "summary": "A colossal, almost omnipotent entity of living void that Mechron's gate accidentally opened onto instead of the Blue World. Vaguely eye-shaped, wreathed in empty space, it erases reality merely by gazing at it, peeling matter atom by atom; it annihilated Mechron and would have consumed Sarajevo had Leo not collapsed the fortress. Neither malicious nor kind, only curious, it looked through the breach 'like a child through a keyhole,' hinting at godlike cosmic horrors beyond known reality.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Living-void entity behind Mechron's failed gate"
+        },
+        {
+          "key": "note",
+          "value": "Erases matter by gazing at it; annihilated Mechron"
+        },
+        {
+          "key": "note",
+          "value": "Would have consumed Sarajevo; stopped by Leo's supernova"
+        },
+        {
+          "key": "note",
+          "value": "Not malicious, merely curious"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "destroyed"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "nearly killed"
+        }
+      ],
+      "chapter": 41
+    },
+    {
+      "name": "The Bahamut and Kujata",
+      "kind": "lore",
+      "summary": "Mechron's twin orbital super-weapons: skyscraper-sized satellites with solar sails and country-devastating laser cannons, designed to fly into deep space beyond reach. At Sarajevo the Cossack destroyed the Kujata, but the Bahamut escaped into high orbit and remains there, an unfired doomsday weapon that Stitch fears someone could one day hack.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Mechron's twin orbital laser satellites"
+        },
+        {
+          "key": "note",
+          "value": "Can devastate whole countries; fly beyond reach"
+        },
+        {
+          "key": "note",
+          "value": "Kujata downed by the Cossack at Sarajevo"
+        },
+        {
+          "key": "note",
+          "value": "Bahamut escaped to orbit; still active and unmanned"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "built by"
+        }
+      ],
+      "chapter": 40
+    },
+    {
+      "name": "The Bloodstream Prophecy",
+      "kind": "lore",
+      "summary": "Pythia and Calculator's precognitive threat database, left to Leo on a USB, names the Psycho Bloodstream, not Augustus, as the single greatest danger to humanity: a high chance he triggers an extinction event in 2017, apparently linked to his daughter dying. This time-limited prophecy is what sends the Carnival to kill Bloodstream before that date, four years before the story.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Pythia/Calculator database of civilization-level threats"
+        },
+        {
+          "key": "note",
+          "value": "Names Bloodstream as the top threat, above Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Predicts a 2017 extinction event tied to his daughter's death"
+        },
+        {
+          "key": "note",
+          "value": "Drives the Carnival to hunt and kill Bloodstream"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "names"
+        },
+        {
+          "to": "Pythia",
+          "rel": "compiled by"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "acted on by"
+        }
+      ],
+      "chapter": 41
+    },
+    {
+      "name": "The Cossack",
+      "kind": "character",
+      "summary": "A stoic hero-vigilante at Sarajevo in white knight-themed power armor (shoulder cannon, forcefield shield, back propellers); a man of action over words who caught and destroyed the Kujata satellite mid-launch, breaking half his bones to the g-force.",
+      "ties": [
+        {
+          "to": "The Genome Wars",
+          "rel": "fought in"
+        }
+      ],
+      "chapter": 40
+    },
+    {
+      "name": "Nidhogg",
+      "kind": "character",
+      "summary": "A villainous Green Genome who allied with the Anti-Mechron Front out of self-preservation; his followers hold much of Denmark and run questionable Genius medical experiments. He transforms into a kilometers-long, skull-scaled serpent that melts stone with venom and absorbs corpses to regenerate. He later offers to heal the brain-damaged Pythia by his own dark methods.",
+      "ties": [
+        {
+          "to": "The Genome Wars",
+          "rel": "allied combatant"
+        }
+      ],
+      "chapter": 40
+    },
+    {
+      "name": "The Consciousness-Transfer Plan",
+      "kind": "lore",
+      "summary": "Len's proposed breakthrough: since Ryan's time-stop makes two time periods interact for ten seconds and can send information (not matter) to the past, and since Psyshock overwrites minds by altering neural signals rather than physical brains, a person's consciousness could be 'snapshotted' and sent back to their own past nervous system, just as Ryan's mind loops. Len can design only the signal-navigation through the anomaly and upgrade the Chronoradio to target a receiver; completing it needs far more processing power, likely from Mechron's bunker.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Send a mind's snapshot back to its own past self via time-stop"
+        },
+        {
+          "key": "note",
+          "value": "Builds on Psyshock's signal-based mind overwriting"
+        },
+        {
+          "key": "note",
+          "value": "Len designs the anomaly navigation and Chronoradio upgrade"
+        },
+        {
+          "key": "note",
+          "value": "Full build needs Mechron's bunker tech"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len Sabino",
+          "rel": "designed by"
+        },
+        {
+          "to": "The Chronoradio",
+          "rel": "upgrades"
+        },
+        {
+          "to": "Ryan's Power",
+          "rel": "extends"
+        }
+      ],
+      "chapter": 42
+    },
+    {
+      "name": "Jamie",
+      "kind": "character",
+      "summary": "Jamie 'Zanbato' Cutter, a former orphan raised by Mercury into a loyal, competent Augusti swordsman, now promoted to the new Mercury/Caporegime with a division's billions at his command. In this loop he proposes to Ki-jung and, prodded by Ryan, plans to reinvest his division's wealth into Rust Town, orphanages, hospitals and slum soccer, so long as it doesn't cross Bacchus's Bliss business.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "'Zanbato' Cutter; ex-orphan raised by Mercury"
+        },
+        {
+          "key": "note",
+          "value": "Promoted to the new Mercury Caporegime"
+        },
+        {
+          "key": "note",
+          "value": "Proposes to Ki-jung this loop"
+        },
+        {
+          "key": "note",
+          "value": "Plans charity/Rust Town reinvestment"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Olympians",
+          "rel": "new member"
+        },
+        {
+          "to": "Mercury",
+          "rel": "successor"
+        },
+        {
+          "to": "Ki-jung",
+          "rel": "fiance"
+        }
+      ],
+      "chapter": 42
     }
   ],
   "plotObservations": [
@@ -4179,6 +4521,39 @@
         "Pluto"
       ],
       "chapter": 39
+    },
+    {
+      "title": "Mechron's Last Stand",
+      "beat": "Flashback: at the final battle of Sarajevo, Leo Hargraves rallies 500+ Genomes of the Anti-Mechron Front, networked by Pythia, and drops Mechron's forcefield with a supernova beam. Amid the machine war Mechron launches his twin orbital weapons; the Cossack downs the Kujata but a Mechron-made gravity-controlling Red dragon delays Leo and the Bahamut escapes to orbit. Pythia redirects Leo to the fortress, warning something worse than the satellite waits inside: 'It's all black.'",
+      "entities": [
+        "Leo Hargraves",
+        "Mechron",
+        "Pythia",
+        "The Bahamut and Kujata"
+      ],
+      "chapter": 40
+    },
+    {
+      "title": "The Darkness Beyond",
+      "beat": "Inside the fortress-collider Leo confronts a broken, hateful Mechron, who refuses surrender and opens a gate meant for the Blue World / Akashic Records. It instead breaches onto the Darkness Beyond, an eye-like void entity that erases Mechron atom by atom and begins consuming reality. Leo collapses the fortress by going supernova, sealing the gate at the cost of near-death. He wakes days later: the war is won, but Pythia is brain-damaged, the Bahamut lost, and her USB names Bloodstream as humanity's top threat.",
+      "entities": [
+        "Leo Hargraves",
+        "Mechron",
+        "The Darkness Beyond",
+        "The Bloodstream Prophecy"
+      ],
+      "chapter": 41
+    },
+    {
+      "title": "Progress Made",
+      "beat": "Back in the present, Ryan cleans up the party wreck and learns Jamie proposed to Ki-jung and will reinvest his new Mercury division into Rust Town charity. Over the Chronoradio, Len (warming toward him, hinting he could visit the orphans) proposes the consciousness-transfer plan to let someone else remember across loops, but it needs Mechron's bunker tech. Ryan refuses to give the Augusti bunker access and accepts this good loop still won't be perfect.",
+      "entities": [
+        "Ryan Romano",
+        "Len Sabino",
+        "Jamie",
+        "The Consciousness-Transfer Plan"
+      ],
+      "chapter": 42
     }
   ]
 }
