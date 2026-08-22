@@ -851,7 +851,8 @@
           112,
           113,
           114,
-          115
+          115,
+          116
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1251,7 +1252,8 @@
           112,
           113,
           114,
-          115
+          115,
+          116
         ],
         "questions": []
       },
@@ -2699,6 +2701,14 @@
           {
             "key": "hook",
             "value": "Ryan promises a cure to restore her humanity"
+          },
+          {
+            "key": "true name / new body",
+            "value": "Bianca - a small ~30yo woman, green-orange hair, gray eyes; Psycho cured"
+          },
+          {
+            "key": "psycho mechanism",
+            "value": "Two rival Elixirs (Red + Orange) unaware she was a 'twin'; separating them cures her"
           }
         ],
         "ties": [
@@ -2773,6 +2783,14 @@
           {
             "to": "ryan-romano",
             "rel": "won over by his offer of a cure"
+          },
+          {
+            "to": "the-psycho-cure",
+            "rel": "first successful subject"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "kept his promise to cure and remember her"
           }
         ],
         "appearances": [
@@ -2800,7 +2818,8 @@
           112,
           113,
           114,
-          115
+          115,
+          116
         ],
         "questions": []
       },
@@ -3147,6 +3166,14 @@
           {
             "key": "purpose",
             "value": "Meant to connect lifeforms to the Ultimate Ones for ascension"
+          },
+          {
+            "key": "nature",
+            "value": "Childlike Flux intelligences, one per color, that translate a host's wishes into Flux"
+          },
+          {
+            "key": "psycho error",
+            "value": "Two Elixirs unknowingly shared one 'twinned' host and fought over it"
           }
         ],
         "ties": [
@@ -3161,6 +3188,14 @@
           {
             "to": "the-psycho-cure",
             "rel": "their misbinding is the cure's basis"
+          },
+          {
+            "to": "ascension",
+            "rel": "the immaterial half of a Genome that grows and ascends"
+          },
+          {
+            "to": "the-psycho-cure",
+            "rel": "un-fuse on command to cure the host"
           }
         ],
         "appearances": [
@@ -3168,7 +3203,8 @@
           83,
           112,
           114,
-          115
+          115,
+          116
         ],
         "questions": []
       },
@@ -4195,7 +4231,8 @@
           112,
           113,
           114,
-          115
+          115,
+          116
         ],
         "questions": []
       },
@@ -4752,7 +4789,8 @@
           }
         ],
         "appearances": [
-          11
+          11,
+          116
         ],
         "questions": []
       },
@@ -5544,7 +5582,8 @@
           91,
           92,
           93,
-          97
+          97,
+          116
         ],
         "questions": []
       },
@@ -12065,7 +12104,8 @@
           106,
           107,
           108,
-          109
+          109,
+          116
         ],
         "questions": []
       },
@@ -12289,6 +12329,14 @@
           {
             "key": "limit",
             "value": "Works via Flux-guided gene therapy, but not on Psychos degraded past a threshold (e.g. Bloodstream)"
+          },
+          {
+            "key": "mechanism",
+            "value": "Chronoradio Flux signal tells the Elixirs to un-fuse; a saved molecular sample restores body+memory"
+          },
+          {
+            "key": "cause of Psychos",
+            "value": "Two rival Elixirs unaware they share a 'twinned' host - incompetence, not malice"
           }
         ],
         "ties": [
@@ -12339,13 +12387,22 @@
           {
             "to": "sarin",
             "rel": "her rage at the withheld cure"
+          },
+          {
+            "to": "sarin",
+            "rel": "first cured Psycho"
+          },
+          {
+            "to": "elixirs",
+            "rel": "the agents that rewrite the host on command"
           }
         ],
         "appearances": [
           71,
           83,
           105,
-          114
+          114,
+          116
         ],
         "questions": []
       },
@@ -12706,7 +12763,8 @@
         ],
         "appearances": [
           74,
-          111
+          111,
+          116
         ],
         "questions": []
       },
@@ -14940,6 +14998,36 @@
           114
         ],
         "questions": []
+      },
+      {
+        "id": "ascension",
+        "kind": "concept",
+        "name": "Ascension",
+        "summary": "CH116 (defined): the cosmology's central promise, threaded since CH100 (Torque/Bacchus) and CH111-115. True Genomes exist on two levels - the biological body and an immaterial consciousness partly living in Flux form (the bonded Elixir). Over time that ethereal consciousness grows in power, wisdom, and strength until it becomes too great for flesh to contain, and it ascends into a higher form of existence - ultimately toward becoming an Ultimate One. This explains hosts like Mr. Wave, Sunshine, Geist, and Sarin. Ryan is uniquely poised for it: he alone already exists in two places/eras at once, a single consciousness split across the timestream, so his neurons are not the full seat of his mind. Darkling's CH115 moral: ascension is every living thing's right but cannot be FORCED (the Alchemist's fatal error).",
+        "facts": [
+          {
+            "key": "path",
+            "value": "Immaterial Flux consciousness grows beyond the body, then ascends toward becoming an Ultimate One"
+          },
+          {
+            "key": "rule",
+            "value": "It is every being's right but cannot be forced - the Alchemist's error"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-ultimate-ones",
+            "rel": "the end-state of ascension"
+          },
+          {
+            "to": "elixirs",
+            "rel": "the immaterial half of a Genome that can ascend"
+          }
+        ],
+        "appearances": [
+          116
+        ],
+        "questions": []
       }
     ]
   },
@@ -17157,6 +17245,10 @@
           {
             "chapter": 115,
             "summary": "CH115 'The Clone War': the battle for the command gate rages - Eva's clones swarm endlessly with shields, suicide belts, and Green-Flux revert-rifles, while awakened Hegemony Soldiers (including a winged nine-eyed dragon) crash the fight. Mr. Wave's crew hold the line so Ryan and Len can slip through the blue gate into the command center. There they find the real Eva Fabre: a human head on a biomechanical body fused into the ship's overmind, remorseless and consequence-free. Ryan can't pilot the ship (a Violet, not a Blue), so he infects the overmind brain with Black Flux, tearing open black-hole rifts and summoning the Black Ultimate One, which devours Eva, her clones, and the aliens, and sends the captive Elixirs home. In the Black World, Darkling confirms the ship will vanish from Ryan's timeline on reload, warns that Black is self-reinforcing and could consume Ryan himself, and affirms Elixirs will walk with humanity to the stars. The team is expelled safely; Station Orpheon and the Alchemist are gone. Ryan now wants to live to see mankind reach the cosmos."
+          },
+          {
+            "chapter": 116,
+            "summary": "CH116 'Couple Therapy': in the refurbished, warm Station Orpheon lab, Ryan's Geniuses (Shortie/Len, Alchemo, Stitch) plus the Panda attempt the Psycho cure on Sarin using copied Alchemist data and a Chronoradio-based Flux signal - no guarantee, since they lack the alien tech. Ryan coaxes the wary Sarin into the vat with a heart-to-heart on vulnerability (recalling his own fear of Livia). The loudspeakered Elixir debate exposes the Psycho mechanism: two rival Elixirs (Red + Orange) each thought they had the sole host, unaware she was a 'twin' - incompetence, not malice. Instructed, they 'divorce,' each taking a DNA share; her gas cloud condenses into flesh. Sarin's true self, Bianca - a small ~30yo woman with green-orange hair, memories intact from the saved Meta-Gang-loop sample - is restored, weeping and embracing Ryan. Lore: True Genomes exist biologically + immaterially, and that immaterial consciousness can grow beyond the body and ASCEND. The Psycho scourge finally has a cure."
           }
         ],
         "entities": [
@@ -17255,13 +17347,15 @@
           "the-violet-elixir",
           "the-founders-of-homo-novus",
           "homo-novus",
-          "the-black-ultimate-one"
+          "the-black-ultimate-one",
+          "ascension",
+          "chronoradio"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 244,
+    "entities": 245,
     "plotlines": 104,
     "books": 1
   }

@@ -16084,6 +16084,110 @@
         }
       ],
       "chapter": 115
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH116 (CURED / true name Bianca): the refurbished Station Orpheon team uses copied Alchemist data + a Chronoradio-based Flux signal to guide Sarin's Elixirs into cleanly separating her powers. The reveal of the Psycho mechanism: her condition was two competing Elixirs (a Red and an Orange) each believing it served the sole host, unaware humans can 'twin' - Hanlon's razor, incompetence not malice. Told there are 'two Homo Sapiens in one flesh vessel,' the Elixirs 'divorce,' each taking custody of a DNA share. Her gas cloud condenses into flesh: Bianca is a thin, small (~1.5m), ~30-year-old woman with messy green-and-orange hair and gray eyes, memories intact (the molecular sample Ryan saved from the Meta-Gang loop restored her). She weeps, embraces Ryan for keeping his promise, and rejoins his circle - the same Bianca who once sacrificed herself to delay Fallout.",
+      "facts": [
+        {
+          "key": "true name / new body",
+          "value": "Bianca - a small ~30yo woman, green-orange hair, gray eyes; Psycho cured"
+        },
+        {
+          "key": "psycho mechanism",
+          "value": "Two rival Elixirs (Red + Orange) unaware she was a 'twin'; separating them cures her"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Psycho Cure",
+          "rel": "first successful subject"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "kept his promise to cure and remember her"
+        }
+      ],
+      "chapter": 116
+    },
+    {
+      "name": "The Psycho Cure",
+      "kind": "concept",
+      "summary": "CH116 (PROVEN): the cure works on Sarin/Bianca. Method: send Chronoradio-based Flux signals (the Panda translated the Elixir 'Flux language' from Alchemist notes) to the host's Elixirs, guiding them to rewrite DNA on Livia's clean Homo-Sapiens/Neanderthal ratio, separating the fused powers. Root cause revealed: a Psycho is two rival Elixirs sharing one body, each thinking it has the sole host and ruining the other's 'ascension' out of ignorance, not malice (Hanlon's razor). A saved pre-Psycho molecular sample lets the Elixirs restore the original body and memories. The team lacks the Alchemist's alien tech, so success wasn't guaranteed - but it worked, ending fifteen years of the Psycho scourge in principle.",
+      "facts": [
+        {
+          "key": "mechanism",
+          "value": "Chronoradio Flux signal tells the Elixirs to un-fuse; a saved molecular sample restores body+memory"
+        },
+        {
+          "key": "cause of Psychos",
+          "value": "Two rival Elixirs unaware they share a 'twinned' host - incompetence, not malice"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Sarin",
+          "rel": "first cured Psycho"
+        },
+        {
+          "to": "Elixirs",
+          "rel": "the agents that rewrite the host on command"
+        }
+      ],
+      "chapter": 116
+    },
+    {
+      "name": "Ascension",
+      "kind": "concept",
+      "summary": "CH116 (defined): the cosmology's central promise, threaded since CH100 (Torque/Bacchus) and CH111-115. True Genomes exist on two levels - the biological body and an immaterial consciousness partly living in Flux form (the bonded Elixir). Over time that ethereal consciousness grows in power, wisdom, and strength until it becomes too great for flesh to contain, and it ascends into a higher form of existence - ultimately toward becoming an Ultimate One. This explains hosts like Mr. Wave, Sunshine, Geist, and Sarin. Ryan is uniquely poised for it: he alone already exists in two places/eras at once, a single consciousness split across the timestream, so his neurons are not the full seat of his mind. Darkling's CH115 moral: ascension is every living thing's right but cannot be FORCED (the Alchemist's fatal error).",
+      "facts": [
+        {
+          "key": "path",
+          "value": "Immaterial Flux consciousness grows beyond the body, then ascends toward becoming an Ultimate One"
+        },
+        {
+          "key": "rule",
+          "value": "It is every being's right but cannot be forced - the Alchemist's error"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Ultimate Ones",
+          "rel": "the end-state of ascension"
+        },
+        {
+          "to": "Elixirs",
+          "rel": "the immaterial half of a Genome that can ascend"
+        }
+      ],
+      "chapter": 116
+    },
+    {
+      "name": "Elixirs",
+      "kind": "faction",
+      "summary": "CH116: heard debating aloud for the first time (loudspeakered from Sarin's vat). They sound like hyperactive children with a poor grasp of human biology - a Red one obsessed with energy/power, an Orange one obsessed with repair/freedom - each convinced it alone serves the host, arguing over her 'ascension.' They cannot read their host's thoughts well (unlike Ryan's own Elixir) and only realized she was a 'twin' when the team transmitted an instruction. They 'divorce' on command, each taking a DNA share, curing the Psycho. Confirmed: an Elixir is the immaterial half of a Genome, sees the host's thoughts/wishes and translates them into Flux, and grows toward ascension; Eva/the Ultimate Ones are their ultimate authority ('The Ultimate Ones won't be happy').",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "Childlike Flux intelligences, one per color, that translate a host's wishes into Flux"
+        },
+        {
+          "key": "psycho error",
+          "value": "Two Elixirs unknowingly shared one 'twinned' host and fought over it"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ascension",
+          "rel": "the immaterial half of a Genome that grows and ascends"
+        },
+        {
+          "to": "The Psycho Cure",
+          "rel": "un-fuse on command to cure the host"
+        }
+      ],
+      "chapter": 116
     }
   ],
   "plotObservations": [
@@ -18099,6 +18203,24 @@
         "Elixirs"
       ],
       "chapter": 115
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH116 'Couple Therapy': in the refurbished, warm Station Orpheon lab, Ryan's Geniuses (Shortie/Len, Alchemo, Stitch) plus the Panda attempt the Psycho cure on Sarin using copied Alchemist data and a Chronoradio-based Flux signal - no guarantee, since they lack the alien tech. Ryan coaxes the wary Sarin into the vat with a heart-to-heart on vulnerability (recalling his own fear of Livia). The loudspeakered Elixir debate exposes the Psycho mechanism: two rival Elixirs (Red + Orange) each thought they had the sole host, unaware she was a 'twin' - incompetence, not malice. Instructed, they 'divorce,' each taking a DNA share; her gas cloud condenses into flesh. Sarin's true self, Bianca - a small ~30yo woman with green-orange hair, memories intact from the saved Meta-Gang-loop sample - is restored, weeping and embracing Ryan. Lore: True Genomes exist biologically + immaterially, and that immaterial consciousness can grow beyond the body and ASCEND. The Psycho scourge finally has a cure.",
+      "entities": [
+        "Ryan Romano",
+        "Sarin",
+        "The Psycho Cure",
+        "Elixirs",
+        "Ascension",
+        "Len",
+        "The Panda",
+        "Chronoradio",
+        "Livia",
+        "The Ultimate Ones",
+        "Alphonse Manada"
+      ],
+      "chapter": 116
     }
   ]
 }
