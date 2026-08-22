@@ -6111,6 +6111,174 @@
         }
       ],
       "chapter": 59
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "Fortuna 'Lucky Girl' Costa, Felix's spoiled narcissist younger sister and Augusti Olympian (Killer Seven), whose date with Ryan reveals unexpected depth. Beneath the golden-dress vanity she is a genuinely kind, honest, sensitive soul: a secret Renaissance-style sculptor studying applied arts at Juventas University, whose masterpiece is a statue of Livia as Athena. She hides her art because her mother Venus reshapes faces (even Fortuna's and Felix's own faces are Venus's work), so sculpting is 'the only thing that's really hers' that her power can't touch, and she dreads being commodified as 'like mother, like daughter.' She joined the Killer Seven mainly to protect her best friend Livia, and is smothered by her parents' Olympian expectations. Her busted luck literally locks Ryan's car doors to keep him from leaving; she 'forgives' him, foiling his plan to repel her.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Felix's sister; Augusti Olympian in the Killer Seven"
+        },
+        {
+          "key": "note",
+          "value": "Secret Renaissance sculptor at Juventas University"
+        },
+        {
+          "key": "note",
+          "value": "Hides art to avoid comparison to her mother Venus"
+        },
+        {
+          "key": "note",
+          "value": "Joined the Killer Seven to protect best friend Livia"
+        },
+        {
+          "key": "note",
+          "value": "Luck locks Ryan's car to keep him from leaving"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Atom Cat",
+          "rel": "brother"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "best friend / protector"
+        },
+        {
+          "to": "Venus",
+          "rel": "daughter"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "pursues romantically"
+        }
+      ],
+      "chapter": 60
+    },
+    {
+      "name": "Venus",
+      "kind": "character",
+      "summary": "The mother of Fortuna and Felix (an Augusti matriarch, styled 'Diana'/an Olympian), a Genome whose power reshapes faces, hence her alias Venus. She literally sculpted her own children's faces (both Fortuna's and Felix's) as her 'masterpieces,' which is why Fortuna refuses to make her own sculpture public. She pressures Fortuna to take over her business and 'become the new Diana,' comparing her unfavorably to an already-'Olympian' sibling.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Mother of Fortuna and Felix; an Augusti Olympian"
+        },
+        {
+          "key": "note",
+          "value": "Power reshapes faces (alias Venus)"
+        },
+        {
+          "key": "note",
+          "value": "Sculpted her children's faces as 'masterpieces'"
+        },
+        {
+          "key": "note",
+          "value": "Pressures Fortuna to inherit her business/mantle"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fortuna",
+          "rel": "mother"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "mother"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "Olympian"
+        }
+      ],
+      "chapter": 60
+    },
+    {
+      "name": "Juno",
+      "kind": "character",
+      "summary": "Augustus's late wife and Livia's mother, killed in the crossfire when an early incarnation of the Carnival attacked Augustus. The story (per Felix and Shroud): Leo Hargraves returned to the Costa farm for Narcinia's birthday to find it in ruins, and the Carnival struck Augustus in retaliation, suffering terrible losses and getting pushed back, with Juno caught in the crossfire. Livia holds the Carnival (and by extension Ryan, who brought them to New Rome) responsible for her mother's death, though Ryan's sources call it an accident.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augustus's wife; Livia's mother"
+        },
+        {
+          "key": "note",
+          "value": "Killed in Carnival–Augustus crossfire during his rise"
+        },
+        {
+          "key": "note",
+          "value": "Death drives Livia's grievance against the Carnival"
+        },
+        {
+          "key": "note",
+          "value": "Called an accident by Ryan's sources; Livia disputes it"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "wife"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "mother"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "killed by (crossfire)"
+        }
+      ],
+      "chapter": 60
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "Augusti princess and heir, refined and steel-willed, who engineers a public restaurant meeting (via Fortuna) to confront Ryan about the Carnival. She reveals she can't see Ryan's actions but reads their 'ripples,' has identified the Carnival as the force he brought to fight the Meta, and blames them for her mother Juno's death. She warns Ryan not to break Fortuna's heart (her best friend, who joined the Killer Seven to protect her) or harm the Augusti, promising she 'will not forget' across loops. Ryan blindsides her with the brain-tumor secret and the theory that Narcinia's real father (a man who could cut anything) could have removed it before Augustus killed him, explaining why Livia won't confront her father: a tumor-maddened invincible lightning god would be catastrophic. She leaves shaken, calling for Sparrow to drive her home.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Reads the 'ripples' of Ryan's invisible actions"
+        },
+        {
+          "key": "note",
+          "value": "Blames the Carnival for her mother Juno's death"
+        },
+        {
+          "key": "note",
+          "value": "Warns Ryan not to hurt Fortuna or the Augusti"
+        },
+        {
+          "key": "note",
+          "value": "Won't confront her tumor-stricken, invincible father"
+        },
+        {
+          "key": "note",
+          "value": "Shaken by Ryan's blunt honesty; leaves early"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "daughter"
+        },
+        {
+          "to": "Juno",
+          "rel": "daughter"
+        },
+        {
+          "to": "Fortuna",
+          "rel": "best friend"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "grieves / opposes"
+        }
+      ],
+      "chapter": 60
     }
   ],
   "plotObservations": [
@@ -6863,6 +7031,22 @@
         "Psyshock"
       ],
       "chapter": 59
+    },
+    {
+      "title": "Lucky Break",
+      "beat": "After the war council, Ryan consoles a devastated Felix (who learned Augustus murdered Narcinia's parents), then calls Len: he suspects the Manada are after her over Dynamis's own buried secrets, and proposes she slip into the Meta's sea-access bunker during tomorrow's siege to steal the brain-duplicating tech (which Hector lent Psyshock). Len agrees and invites Ryan to move into a room she set up in her undersea base, sounding steadier as she paces her treatment. Ryan then keeps a smokescreen date with Fortuna at Le Parisien, intending to be so perfectly affectionate she loses interest, but Fortuna brings Livia along. Fortuna reveals hidden depth (secret sculptor, insecure about her face-shaping mother Venus, joined the Killer Seven to shield Livia), raising Ryan's esteem. Livia engineers a private moment to confront Ryan: she blames the Carnival for her mother Juno's death and warns him off her family and Fortuna. Ryan counters with hard truths, Augustus's brain tumor and that Narcinia's father could have cut it out, explaining Livia's paralysis before her invincible, ailing father; she leaves shaken. Ryan's plan backfires: Fortuna 'forgives' him and uses her busted luck to lock him in the car.",
+      "entities": [
+        "Ryan Romano",
+        "Atom Cat",
+        "Len",
+        "Fortuna",
+        "Livia Augusti",
+        "Venus",
+        "Juno",
+        "Augustus",
+        "Psyshock"
+      ],
+      "chapter": 60
     }
   ]
 }
