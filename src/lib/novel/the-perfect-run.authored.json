@@ -4358,6 +4358,82 @@
         }
       ],
       "chapter": 44
+    },
+    {
+      "name": "Reload",
+      "kind": "character",
+      "summary": "A Violet Genome hero of Il Migliore, styled like a Mad Max apocalypse punk (rusted steel armor, red scarf, black goggles, explosive suicide belt). His power is a limited time-rewind on his own body and objects in contact with it: whenever he dies he reforms unharmed at the spot of death in a flash of violet light, so he fights as a fearless suicide bomber and wields violet/crimson laser blades. Cheerful about dying repeatedly, he is an amateur duelist, hopelessly outmatched by Ryan's mastery, and Mortimer loathes that he 'just won't die.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Violet Genome hero of Il Migliore"
+        },
+        {
+          "key": "note",
+          "value": "Self-resurrects at his point of death in violet light"
+        },
+        {
+          "key": "note",
+          "value": "Fights as a suicide bomber with laser blades"
+        },
+        {
+          "key": "note",
+          "value": "Amateur duelist, easily outclassed by Ryan"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        },
+        {
+          "to": "Dynamis Corporation",
+          "rel": "fights for"
+        },
+        {
+          "to": "Wardrobe",
+          "rel": "teammate"
+        }
+      ],
+      "chapter": 45
+    },
+    {
+      "name": "Wardrobe",
+      "kind": "character",
+      "summary": "A cheerful young Yellow Genome hero of Il Migliore (K-pop-idol looks) whose costume shifts to grant her the abilities of whatever it depicts, but only public-domain figures (intellectual property is her 'Kryptonite'). She cycles rapidly through forms (werewolf, witch, mummy, Moses parting water) because a persona is only briefly stable. Her ultimate is a Greek-god 'Augustus' guise granting a weak movie-logic imitation of his lightning that can strike inside Ryan's stopped time, though she can't hold the unstable persona. She befriends Ryan mid-fight and recruits him as her 'archenemy' for the ratings, before Mortimer shoots her dead.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Yellow Genome hero of Il Migliore"
+        },
+        {
+          "key": "note",
+          "value": "Costume-mimicry: gains powers of public-domain figures only"
+        },
+        {
+          "key": "note",
+          "value": "Rapidly cycles forms; each persona is only briefly stable"
+        },
+        {
+          "key": "note",
+          "value": "Her 'Augustus' guise strikes with lightning inside stopped time"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        },
+        {
+          "to": "Dynamis Corporation",
+          "rel": "fights for"
+        },
+        {
+          "to": "Reload",
+          "rel": "teammate"
+        }
+      ],
+      "chapter": 45
     }
   ],
   "plotObservations": [
@@ -4904,6 +4980,19 @@
         "Vulcan"
       ],
       "chapter": 44
+    },
+    {
+      "title": "Blood in the Water",
+      "beat": "The Ischia battle erupts into chaos: Geist swats helicopters, Vulcan grapples the dragon-form Wyvern out to sea, and Ryan duels the newly-arrived Il Migliore pair, Reload and Wardrobe. He steals Reload's violet lightsaber and toys with the self-resurrecting hero, but Wardrobe's shifting costumes escalate until her unstable 'Augustus' guise blasts Ryan with imitation lightning that reaches him even inside stopped time, the exact threat Chitter once warned him about. As she readies a deadly 'Apocalypse Suit,' Len arrives in her underwater armor with skyscraper-sized water arms (mistaken for Neptune) and Augusti reinforcements race in on jet skis. Before Wardrobe can transform, Mortimer phases up and shoots her dead, winning his kill-count bet.",
+      "entities": [
+        "Ryan Romano",
+        "Reload",
+        "Wardrobe",
+        "Len Sabino",
+        "Mortimer",
+        "Vulcan"
+      ],
+      "chapter": 45
     }
   ]
 }
