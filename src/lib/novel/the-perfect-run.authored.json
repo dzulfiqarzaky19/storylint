@@ -5733,6 +5733,182 @@
         }
       ],
       "chapter": 57
+    },
+    {
+      "name": "Chitter",
+      "kind": "character",
+      "summary": "An Augusti-adjacent Genome who controls swarms of intelligent rats, once close to Zanbato and Felix. Her origin is a tragedy of Bliss: her rats stole Bliss batches from Mercury's casino division, and when Felix and Zanbato tracked them to her, they found her squatting in a rat-infested apartment, dying of a Bliss overdose (bleeding from nose and eyes, mold on her skin) though Genomes were thought immune. Saved at a hospital, the first thing she asked for was more Bliss, body and soul enslaved. She now perpetually surveils Felix from a distance.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Genome who commands intelligent rat swarms"
+        },
+        {
+          "key": "note",
+          "value": "Her rats stole Bliss from Mercury's casino division"
+        },
+        {
+          "key": "note",
+          "value": "Nearly died of a Bliss overdose (Genomes aren't immune)"
+        },
+        {
+          "key": "note",
+          "value": "Enslaved to Bliss; begged for more after being saved"
+        },
+        {
+          "key": "note",
+          "value": "Constantly watches Felix"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "affiliated"
+        },
+        {
+          "to": "Bliss",
+          "rel": "enslaved by"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "watches"
+        },
+        {
+          "to": "Zanbato",
+          "rel": "formerly close"
+        }
+      ],
+      "chapter": 58
+    },
+    {
+      "name": "Leo Hargraves",
+      "kind": "character",
+      "summary": "Leonard 'Leo' Hargraves, the Carnival's leader (the 'Living Sun' Shroud answers to), who murdered Livia and Felix's mother. Four years after first crossing paths with Ryan, and on a Carnival member's recommendation, he personally phones Ryan to propose that the Menagerie and the Carnival join forces against the 'cancers' infecting New Rome (the Augusti and the Meta). Augustus once held Narcinia hostage against him by killing her parents.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Leonard 'Leo' Hargraves; Carnival leader, the 'Living Sun'"
+        },
+        {
+          "key": "note",
+          "value": "Murdered Livia and Felix's mother"
+        },
+        {
+          "key": "note",
+          "value": "Recruits Ryan and Atom Cat to fight New Rome's 'cancers'"
+        },
+        {
+          "key": "note",
+          "value": "Augustus held Narcinia hostage against him"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "leader"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "commands"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "proposes alliance"
+        }
+      ],
+      "chapter": 58
+    },
+    {
+      "name": "Atom Cat",
+      "kind": "character",
+      "summary": "Felix, the Augusti-rebel hero 'Atom Cat,' son of Mars and Venus and brother to Narcinia, Ki-jung, Fortuna, and Livia; handsome (a masculine mirror of Livia). His power charges solid matter (pebbles) with a unique energy to detonate on command, and he learned to modulate the blasts, charge and delay them. He left the family over Bliss: he watched his friend Chitter nearly die of a Bliss overdose and beg for more, learned Narcinia is guilt-tripped into making the drug and Ki-jung was steered into the Killer Seven, and could no longer stay. He joined Dynamis hoping to change things but finds it 'just as bad,' and Enrique sidelines him as a potential hostage/intel source. He once flatshared with his best friend Zanbato (whom he now scorns as a willing Augusti servant).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Felix 'Atom Cat'; son of Mars and Venus"
+        },
+        {
+          "key": "note",
+          "value": "Siblings: Narcinia, Ki-jung, Fortuna, Livia"
+        },
+        {
+          "key": "note",
+          "value": "Power: charges matter to detonate, can modulate/delay blasts"
+        },
+        {
+          "key": "note",
+          "value": "Left the Augusti over Bliss (Chitter's overdose)"
+        },
+        {
+          "key": "note",
+          "value": "Ex-flatmate and estranged from Zanbato"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fortuna",
+          "rel": "brother"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "brother"
+        },
+        {
+          "to": "Zanbato",
+          "rel": "estranged friend"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "teammate"
+        }
+      ],
+      "chapter": 58
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "An Augusti daughter (sister to Felix, Livia, Narcinia, Ki-jung) and Killer Seven assassin, whose luck power makes everything go her way (she gets passes, poaching offers, and dials Ryan's number 'at random'). Vain, entitled, and self-proclaimed 'most beautiful woman in the world,' she becomes obsessed with Ryan after he rejects her, spamming him with dozens of messages. She barges into Star Studios to drag Felix home, insisting the Killer Seven are merely 'preemptive' bodyguards, and clashes bitterly with him over the family, revealing she and Narcinia miss him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti daughter; Killer Seven assassin"
+        },
+        {
+          "key": "note",
+          "value": "Luck power: everything goes her way"
+        },
+        {
+          "key": "note",
+          "value": "Vain, entitled; obsessed with Ryan after rejection"
+        },
+        {
+          "key": "note",
+          "value": "Sister to Felix, Livia, Narcinia, Ki-jung"
+        },
+        {
+          "key": "note",
+          "value": "Tries to drag Felix back to the family"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "The Killer Seven",
+          "rel": "member"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "sister"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "obsessed with"
+        }
+      ],
+      "chapter": 58
     }
   ],
   "plotObservations": [
@@ -6451,6 +6627,22 @@
         "The Menagerie"
       ],
       "chapter": 57
+    },
+    {
+      "title": "Family Business",
+      "beat": "Between Dynamis film-studio nonsense (screenwriters wanting to rewrite the Panda as an uplifted mascot), Ryan and Felix take a coffee break and open up. Ryan reveals he knows Felix is the son of Mars and Venus; Felix explains he abandoned the Augusti over Bliss, recounting how his friend Chitter nearly died of a Bliss overdose and begged for more, how Narcinia is guilt-tripped into making the drug, and how Ki-jung was drawn into the Killer Seven. Ryan admits he arranged Bloodstream's death and commiserates over toxic families. Fortuna crashes the studio (via her luck power) to drag Felix home, and the siblings quarrel bitterly over the Killer Seven and the family. Then Ryan gets a call from Leonard Hargraves, the Carnival's leader who killed Felix and Livia's mother: his team has arrived in New Rome, and he invites Ryan and Atom Cat to ally against the city's 'cancers.' Ryan accepts.",
+      "entities": [
+        "Ryan Romano",
+        "Atom Cat",
+        "The Panda",
+        "Wardrobe",
+        "Fortuna",
+        "Chitter",
+        "Leo Hargraves",
+        "Dr. Tyrano",
+        "Narcinia"
+      ],
+      "chapter": 58
     }
   ]
 }
