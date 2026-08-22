@@ -3422,6 +3422,276 @@
         }
       ],
       "chapter": 36
+    },
+    {
+      "name": "Vulcan",
+      "kind": "character",
+      "summary": "Jasmine Sharif, the Augusti's weapons-trafficking Capo and Genius armorer; a short, foul-mouthed, hard-drinking woman with pitch-black humor who becomes Ryan's employer, lover and 'summer fling' this arc. A former Dynamis employee, she reverse-engineers knockoff-Elixir tech and lives inside her own steampunk foundry. Sharp enough to see through Ryan's power bluff without calling it, and to theorize the Red Flux dimension.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Jasmine Sharif; Augusti weapons-trafficking Capo"
+        },
+        {
+          "key": "note",
+          "value": "Genius armorer; ex-Dynamis; builds power armor and mechs"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's employer and lover ('exclusive contract' summer fling)"
+        },
+        {
+          "key": "note",
+          "value": "Theorizes Red Flux comes from a Red Dimension"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "Capo"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "lover/employer"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "former employee"
+        }
+      ],
+      "chapter": 37
+    },
+    {
+      "name": "The Red Flux",
+      "kind": "lore",
+      "summary": "Vulcan's theory that real Red Genomes emit an ambient energy field ('Red Flux') drawn from a hypothetical Red Dimension beyond space-time. This flux can be captured, stockpiled and refined into batteries, which is how Dynamis makes laser weapons and how Vulcan's Fireman armor supercharges knockoff pyrokinetics. It parallels the Purple World that feeds Violet powers; Dynamis has failed to build a stable bridge to the Red Dimension.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ambient energy real Red Genomes emit, from a Red Dimension"
+        },
+        {
+          "key": "note",
+          "value": "Refined into batteries for lasers and Vulcan's armor"
+        },
+        {
+          "key": "note",
+          "value": "Dynamis can't yet bridge to the Red Dimension"
+        },
+        {
+          "key": "note",
+          "value": "Parallels the Purple World behind Violet powers"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "theorized by"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "exploited by"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "parallels"
+        }
+      ],
+      "chapter": 38
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Real name Janus, the lightning-emperor overlord of the Augusti (New Rome's dominant crime family); an aging man in a toga wrapped in a crimson electric halo so bright it hurts to look at him, radiating booming, thunderous power. Near-invulnerable, with most powers failing against him. A brutal warlord, not an administrator: he cares only for his family's authority and killing those who challenge it, leaving logistics to his heir Livia. Orders the entire Meta-Gang exterminated ('No man, no problem').",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Janus; lightning-emperor head of the Augusti"
+        },
+        {
+          "key": "note",
+          "value": "Crimson electric halo; near-invulnerable, most powers fail on him"
+        },
+        {
+          "key": "note",
+          "value": "A warlord who leaves logistics to heir Livia"
+        },
+        {
+          "key": "note",
+          "value": "Orders the Meta wiped out to the last man"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "leader"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "father"
+        },
+        {
+          "to": "Pluto",
+          "rel": "brother"
+        },
+        {
+          "to": "Neptune",
+          "rel": "brother"
+        }
+      ],
+      "chapter": 38
+    },
+    {
+      "name": "The Olympians",
+      "kind": "organization",
+      "summary": "The Augusti high command, code-named for Roman gods and divided into moderate (business) and warmonger factions. Members: Augustus/Janus (Zeus, leader), Livia/Minerva (heir, reality-seer), Pluto (hits/assassinations), Neptune/Silvio (macro-hydrokinetic Orange, legit fronts, moderate), Mars/Luca (armored centurion, prostitution wing, Felix's father figure), Venus (Fortuna & Narcinia's mother, Mars's wife), Mercury/Marco (a paranoid necromancer speaking through a mummified head, gambling/laundering, retiring), and Bacchus (Bliss drug division).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti high command, named for Roman gods"
+        },
+        {
+          "key": "note",
+          "value": "Split into moderate business and warmonger factions"
+        },
+        {
+          "key": "note",
+          "value": "Each Capo runs a criminal division"
+        },
+        {
+          "key": "note",
+          "value": "Grants Elixirs to worthy foot soldiers from a war chest"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "leadership of"
+        }
+      ],
+      "chapter": 39
+    },
+    {
+      "name": "Neptune",
+      "kind": "character",
+      "summary": "Silvio, Augustus's brother and an Orange macro-hydrokinetic (control scales with water volume, but organic matter interferes). The Augusti's moderate voice, overseeing legitimate front businesses; hot-tempered but war-averse, fearing that provoking Dynamis will bring the ruthless Alphonse Manada back to New Rome.",
+      "ties": [
+        {
+          "to": "The Olympians",
+          "rel": "member"
+        },
+        {
+          "to": "Augustus",
+          "rel": "brother"
+        }
+      ],
+      "chapter": 38
+    },
+    {
+      "name": "Mars",
+      "kind": "character",
+      "summary": "Luca, an armored Roman-centurion Capo running the Augusti's prostitution/pornography wing; Venus's husband, Fortuna and Narcinia's father, and Felix's godfather-figure. Uniquely relaxed around Augustus, trusted enough to use his real name Janus; laid-back but a formidable old soldier.",
+      "ties": [
+        {
+          "to": "The Olympians",
+          "rel": "member"
+        },
+        {
+          "to": "Venus",
+          "rel": "husband"
+        },
+        {
+          "to": "Narcinia Veran",
+          "rel": "adoptive father"
+        }
+      ],
+      "chapter": 38
+    },
+    {
+      "name": "Venus",
+      "kind": "character",
+      "summary": "A masked, Rome-styled blonde Capo, Mars's wife and mother to Fortuna and adopted Narcinia; runs the prostitution wing with her husband. Fiercely protective of her children, still furious that Dynamis 'took' her son Felix, and skeptical of Bacchus's Bliss obsession overworking Narcinia.",
+      "ties": [
+        {
+          "to": "The Olympians",
+          "rel": "member"
+        },
+        {
+          "to": "Mars",
+          "rel": "wife"
+        },
+        {
+          "to": "Fortuna",
+          "rel": "mother"
+        }
+      ],
+      "chapter": 38
+    },
+    {
+      "name": "Mercury",
+      "kind": "character",
+      "summary": "Marco, the oldest Augusti Capo: a paranoid necromancer who never leaves home and instead acts through a reanimated mummified head (and other corpses he commands remotely). Ran gambling, casinos and money-laundering across three generations of the Camorra; now retiring to a private island, he names Jamie/Zanbato his successor.",
+      "ties": [
+        {
+          "to": "The Olympians",
+          "rel": "member (retiring)"
+        },
+        {
+          "to": "Jamie",
+          "rel": "successor"
+        }
+      ],
+      "chapter": 39
+    },
+    {
+      "name": "Ryan's True Name",
+      "kind": "lore",
+      "summary": "The Augusti necromancer Mercury exposes Ryan's civilian identity: 'Cesare Sabino,' the supposed son of Freddie Sabino / Bloodstream, a body-jacking blood-controlling Psycho killed by the Carnival four years ago. Ryan loathes the name, a lie Bloodstream forced on him as his 'pet.' The reveal makes Livia soften toward Ryan (recognizing shared pain) and lets Vulcan realize the woman Ryan hunted, Pluto/'his sister,' ties back to Bloodstream.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Civilian name Cesare Sabino, 'son' of Bloodstream"
+        },
+        {
+          "key": "note",
+          "value": "Bloodstream was a body-jacking Psycho killed by the Carnival"
+        },
+        {
+          "key": "note",
+          "value": "A hated identity forced on Ryan as Bloodstream's pet"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "about"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "forced identity from"
+        }
+      ],
+      "chapter": 39
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "Hector Manada's ruthless son, 'everything his brother Enrique isn't.' A feared enforcer Dynamis keeps out of New Rome; the Augusti dread that pushing Dynamis too far will see him recalled, bringing open bloodshed to the streets.",
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "enforcer"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "son"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "brother"
+        }
+      ],
+      "chapter": 37
     }
   ],
   "plotObservations": [
@@ -3874,6 +4144,41 @@
         "Enrique Manada"
       ],
       "chapter": 36
+    },
+    {
+      "title": "The War of the Suit",
+      "beat": "Vulcan crashes her stealth mech into the twentieth floor of Dynamis HQ so Ryan can steal a purple cashmere suit. Confronted by Enrique/Blackthorn and his squad, Ryan calmly strips and dresses in the suit mid-standoff, short-circuiting Enrique's mind with the sheer stupidity of it. A running gunfight erupts (Enrique revealed as a growth-boosting plant-controller) before the pair escape by sea, winning Livia's bet. Vulcan takes Ryan home as her lover.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Enrique Manada",
+        "Livia Augusti"
+      ],
+      "chapter": 37
+    },
+    {
+      "title": "The Olympians",
+      "beat": "After a night with Vulcan (real name Jasmine Sharif), who probes the haunted plushie and shares her Red Flux/Red Dimension theory, the pair fly to Mount Augustus. Ryan meets the Augusti high command, the Olympians, and their brutal lightning-emperor leader Augustus/Janus, summoned by Livia. He sees Narcinia among Augustus's family and the priest Bacchus, who claims to have seen God through Bliss.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Augustus",
+        "Livia Augusti",
+        "Bacchus"
+      ],
+      "chapter": 38
+    },
+    {
+      "title": "Court of the Lightning King",
+      "beat": "Augustus's court convenes. Mercury's necromancer exposes Ryan's true name (Cesare Sabino, Bloodstream's 'son'); Livia vouches for him and Pluto keeps her mark on him, sparing his life. Augustus orders the whole Meta-Gang exterminated, promotes Jamie/Zanbato to replace the retiring Mercury, and tasks Vulcan to harden Ischia's Bliss sanctuary. Livia privately admits Ryan is the one blind spot in her reality-sight, and warns him off her own ambitions ('Here be dragons').",
+      "entities": [
+        "Ryan Romano",
+        "Augustus",
+        "Livia Augusti",
+        "Jamie",
+        "Pluto"
+      ],
+      "chapter": 39
     }
   ]
 }
