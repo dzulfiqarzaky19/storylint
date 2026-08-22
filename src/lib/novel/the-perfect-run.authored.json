@@ -8929,6 +8929,246 @@
         }
       ],
       "chapter": 72
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "Refined: defeated in the bunker civil war. He hops between hosts as Ryan snipes each (reshaping the nearest engineer/thrall into a new vessel), tries to reach Mechron's scorpion mech to use against Frank, and takes Len hostage, forcing her to hold a drill to her own temple. Ryan time-stops and strikes Len's carotid/aorta to knock her out before she can act, then, since Psyshock's mutated brain-tissue body is uniquely vulnerable to brain-altering chemicals (as Enrique guessed), Ryan applies a full Bliss inhaler to his face, paralyzing him. Captured and kept in a drugged haze, Ryan plans to throw him at Cancel to end him permanently.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Hops hosts as Ryan snipes each vessel"
+        },
+        {
+          "key": "note",
+          "value": "Tries to reach Mechron's mech to use against Frank"
+        },
+        {
+          "key": "note",
+          "value": "Takes Len hostage with a drill to her temple"
+        },
+        {
+          "key": "note",
+          "value": "Defeated by a full Bliss dose (brain-tissue vulnerability)"
+        },
+        {
+          "key": "note",
+          "value": "Captured, drugged, to be thrown at Cancel"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "defeated by"
+        },
+        {
+          "to": "Len",
+          "rel": "held hostage / enthralled"
+        },
+        {
+          "to": "Cancel",
+          "rel": "to be destroyed by"
+        }
+      ],
+      "chapter": 73
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Refined: as Psyshock's soulless thrall she's used as a human shield, made to hold a drill to her own temple. Rather than let Psyshock force her suicide, Ryan (who has never raised a hand against Len in any loop and is enraged at being made to) time-stops and strikes her carotid and aorta to block blood to her brain, knocking her out and dropping the drill, a dangerous technique but the only way to stop her. He catches her gently. She survives, is heavily sedated with the other thralls until he can undo the brainwashing, and he vows to eliminate Psyshock as early as possible in his true Perfect Run.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Used as Psyshock's soulless human-shield thrall"
+        },
+        {
+          "key": "note",
+          "value": "Forced to hold a drill to her own temple"
+        },
+        {
+          "key": "note",
+          "value": "Ryan strikes her carotid/aorta to save her, dropping her"
+        },
+        {
+          "key": "note",
+          "value": "Survives; heavily sedated pending a de-brainwashing"
+        },
+        {
+          "key": "note",
+          "value": "Ryan vows to kill Psyshock early in the real Perfect Run"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "saved by (struck unconscious)"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "enthralled/weaponized by"
+        }
+      ],
+      "chapter": 73
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "Refined: after Ryan cons him, Frank rampages through the bunker's recreational atrium, slaughtering Psyshock's thralls (hurling an arcade game that kills three) and shrugging off laser fire, deluded ranting about McCarthy, the 'red menace,' and 'precious bodily fluids.' None of the Meta-Gang can kill him, so his rampage collapses Psyshock's position and hands Ryan the civil war. Ryan installs him in his mock-government as the enforcer who 'ensures the people respect the government's will,' Frank fixating next on 'the Mexicans' and agreeing 'women can't be president.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Rampages through the bunker's recreation atrium"
+        },
+        {
+          "key": "note",
+          "value": "Kills thralls; immune to their laser fire"
+        },
+        {
+          "key": "note",
+          "value": "Deluded Cold-War rants (McCarthy, bodily fluids)"
+        },
+        {
+          "key": "note",
+          "value": "No one in the Meta-Gang can kill him"
+        },
+        {
+          "key": "note",
+          "value": "Becomes Ryan's enforcer in his mock-government"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "unwitting enforcer for"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "routs his forces"
+        }
+      ],
+      "chapter": 73
+    },
+    {
+      "name": "The Meta-Gang",
+      "kind": "faction",
+      "summary": "Refined: bound by fear and Elixir-dependence, not loyalty, so it implodes the moment Adam dies. In the bunker civil war the surviving Psychos (Mosquito the winged one, Rakshasa the tiger-like gremlin-summoner, Ink Machine the ink-woman, The Reptilian the lizard, Acid Rain the teleporting poison-rain user) switch to Ryan's winning side against Psyshock. About twenty survive and submit to Ryan as 'President,' still assholes but now his minions. He controls them through the Elixir supply ('Elixicare'): whoever obeys gets knockoff Elixirs, and only he now promises to keep 'the juice' flowing after Psyshock's death cut the old supplier connection.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Bound by fear and Elixir-dependence, not loyalty"
+        },
+        {
+          "key": "note",
+          "value": "Implodes when Adam dies"
+        },
+        {
+          "key": "note",
+          "value": "~20 survive and submit to Ryan as 'President'"
+        },
+        {
+          "key": "note",
+          "value": "Members: Mosquito, Rakshasa, Ink Machine, Reptilian, Acid Rain"
+        },
+        {
+          "key": "note",
+          "value": "Ryan controls them via the Elixir supply ('Elixicare')"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "conquered/led by"
+        },
+        {
+          "to": "Big Fat Adam",
+          "rel": "formerly unified by"
+        },
+        {
+          "to": "Elixicare",
+          "rel": "controlled through"
+        }
+      ],
+      "chapter": 73
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "Refined: after conquering Mechron's bunker, Ryan crowns himself its 'President' with unlimited emergency powers and decides that, since the run is doomed anyway, he'll throw safety out the window and 'go full Bond Villain', ham it up, call in risky favors, and aim the bunker's doomsday weapon at 'the woooooorld.' He runs the Meta-Gang through mock-democracy and the Elixir supply, forms a cabinet (Sarin VP, the shoggoth secretary of state, Frank enforcer, Rakshasa gremlin-supplier for the plushies), and sends the Reptilian to fetch his white-furred blue-eyed Persian cat for the villain aesthetic. He notes the plushie duplication is a ticking 'plushipocalypse' he can only delay a few days.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Crowns himself 'President' of the conquered bunker"
+        },
+        {
+          "key": "note",
+          "value": "Decides to 'go full Bond Villain' since the run is doomed"
+        },
+        {
+          "key": "note",
+          "value": "Runs the Meta-Gang via mock-democracy and Elixir supply"
+        },
+        {
+          "key": "note",
+          "value": "Forms a cabinet; fetches a Persian cat for the aesthetic"
+        },
+        {
+          "key": "note",
+          "value": "Notes the plushie duplication is a looming 'plushipocalypse'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron's Bunker",
+          "rel": "seizes control of"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "rules"
+        },
+        {
+          "to": "Sarin",
+          "rel": "names vice-president"
+        }
+      ],
+      "chapter": 73
+    },
+    {
+      "name": "Elixicare",
+      "kind": "concept",
+      "summary": "Ryan's satirical name for controlling the Meta-Gang through the Elixir supply after seizing the bunker. The Psychos crave Elixirs (even Sarin and Frank, whose biology can't consume them, feel a psychological craving), so Ryan doles out Dynamis knockoff Elixirs as rewards for obedience ('Obey the government, pay your taxes, and everyone will benefit from our Elixicare'). Psyshock's death cut the old supplier connection, so the gang's continued loyalty hinges on Ryan's promise to keep 'the juice' flowing, which he plans to secure via Dynamis.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ryan's leverage: reward obedience with knockoff Elixirs"
+        },
+        {
+          "key": "note",
+          "value": "Psychos crave Elixirs, even those who can't consume them"
+        },
+        {
+          "key": "note",
+          "value": "Psyshock's death severed the old supplier connection"
+        },
+        {
+          "key": "note",
+          "value": "Loyalty hinges on Ryan keeping 'the juice' flowing"
+        },
+        {
+          "key": "note",
+          "value": "Ryan plans to secure supply via Dynamis"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "leverage of"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "controls"
+        }
+      ],
+      "chapter": 73
     }
   ],
   "plotObservations": [
@@ -9910,6 +10150,16 @@
       "title": "Conning Frank the Mad",
       "summary": "Armed with a hammer, laser gun, and Bliss and joined by the defected Sarin, Ryan sets out to free the caged orphanage children and implode the leaderless Meta-Gang. Cornered by the metal-immune schizophrenic giant Frank the Mad and a surviving Psyshock host, Ryan exploits Frank's Cold-War delusions: posing as 'CIA agent Romano,' he frames Psyshock as a communist traitor who murdered 'President Adam,' planting the bloody hammer in his tentacles. When Psyshock contradicts Frank's delusion, the enraged giant punches his head apart and storms off to hunt the new host. Ryan reaches the infirmary, arms up, and, as child-obsessed plushies mass toward the caged kids, his first Meta Run begins 'with chaos and madness.'",
       "chapter": 72
+    },
+    {
+      "title": "The Bunker Civil War",
+      "summary": "Ryan, Sarin, the plushies, and the Black Elixir shoggoth storm the bunker's upper levels, where Frank's rampage has already routed Psyshock's forces. The leaderless Meta-Gang implodes: Mosquito, Rakshasa, Ink Machine and others switch to Ryan's winning side against Psyshock. Ryan chases the fleeing brainjacker through the hangars (past his engine-stripped Plymouth), sniping each host as Psyshock hops bodies. Psyshock takes the enthralled Len hostage with a drill to her temple; Ryan time-stops and strikes her carotid to knock her out safely, then paralyzes Psyshock's brain-tissue body with a full Bliss dose and captures him.",
+      "chapter": 73
+    },
+    {
+      "title": "President Ryan Goes Full Bond Villain",
+      "summary": "After an hour of one-sided slaughter, the bunker belongs to Ryan. Standing atop Mechron's mech, he crowns himself 'President' of the ~20 surviving Psychos, ruling through mock-democracy, the Elixir supply ('Elixicare'), and the threat of his shoggoth. He forms a cabinet (Sarin VP, the Black Elixir secretary of state, Frank enforcer, Rakshasa feeding gremlins to the child-bonded plushies), keeps Len and the thralls sedated for later de-brainwashing, holds Psyshock for Cancel, and reassures Little Sarah he'll cure her mother. Since the run is doomed, he decides to throw caution aside, call in favors, seize the bunker's doomsday weapon, and aim for 'the woooooorld', sending for his white Persian cat to complete the villain aesthetic.",
+      "chapter": 73
     }
   ]
 }
