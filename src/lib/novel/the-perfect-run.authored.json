@@ -4034,6 +4034,144 @@
         }
       ],
       "chapter": 42
+    },
+    {
+      "name": "Ischia Island",
+      "kind": "place",
+      "summary": "A former paradise resort island in the Bay of Naples, bombed by Mechron during the Genome Wars and left a graveyard: a toxic, radioactive purple miasma killed all life, and iron walls with wind turbines ring the coast to keep the plague from the mainland. Its one living spot is the Castello Aragonese, a pre-Christian volcanic-islet fortress now overgrown with crimson alien flowers, which the Augusti have turned into their top-secret Ischia superlab, home to Narcinia's gardens and defended by turrets, anti-air, and power-armored mooks.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ex-resort island in Naples' bay, bombed by Mechron"
+        },
+        {
+          "key": "note",
+          "value": "Covered in toxic radioactive purple miasma; all life dead"
+        },
+        {
+          "key": "note",
+          "value": "Ringed by iron walls and wind turbines"
+        },
+        {
+          "key": "note",
+          "value": "Castello Aragonese fortress houses the Augusti superlab"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "controlled by"
+        },
+        {
+          "to": "Narcinia Veran",
+          "rel": "works at"
+        },
+        {
+          "to": "Mechron",
+          "rel": "bombed by"
+        }
+      ],
+      "chapter": 43
+    },
+    {
+      "name": "Mr. Geist",
+      "kind": "character",
+      "summary": "François, nicknamed Geist (and dubbed 'Casper' by Ryan), a Yellow Genome who exists as a house-sized yellow ectoplasmic skull wreathed in eldritch dust, with a small casual voice at odds with his sinister form. His existence implies a literal afterlife: he glimpsed a golden Heaven whose gates are now barred to him, has tried and failed to die by every method (never nuclear, which Livia forbids), and hopes Father Torque can exorcise him into peace. Livia keeps him as a sentry over the Ischia superlab.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "François / 'Geist' / 'Casper'; a Yellow Genome"
+        },
+        {
+          "key": "note",
+          "value": "Exists as a house-sized ectoplasmic yellow skull"
+        },
+        {
+          "key": "note",
+          "value": "Glimpsed a golden Heaven; its gates now barred to him"
+        },
+        {
+          "key": "note",
+          "value": "Cannot die; seeks exorcism by Father Torque"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ischia Island",
+          "rel": "guards"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "serves"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "seeks exorcism from"
+        }
+      ],
+      "chapter": 43
+    },
+    {
+      "name": "The Immortality Project",
+      "kind": "lore",
+      "summary": "Dynamis Corporation's decade-long mind-uploading program, driven by CEO Hector Dynamis to achieve immortality (and to delay his sons' inheritance): scan an entire brain and transfer it into another body. It requires cloned bodies, supplied by Dr. Tyrano, because a Genome brain is doubly complex, and its milestone breakthrough is a machine-human brain interface. Jasmine/Vulcan worked on it before defecting and rebuilt the neural interface from memory; Ryan eyes stealing a Dynamis brain-scan to combine with Len's and Jasmine's tech and end his isolation across loops.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis's decade-long mind-uploading immortality program"
+        },
+        {
+          "key": "note",
+          "value": "Scan a whole brain, transfer it into a cloned body"
+        },
+        {
+          "key": "note",
+          "value": "Needs Dr. Tyrano's cloned bodies (Genome brains doubly complex)"
+        },
+        {
+          "key": "note",
+          "value": "Milestone: a machine-human brain interface"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "run by"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "supplies bodies for"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "formerly worked on"
+        }
+      ],
+      "chapter": 43
+    },
+    {
+      "name": "Sparrow",
+      "kind": "character",
+      "summary": "One of Livia Augusti's personal bodyguards, stationed with her at the Ischia superlab; the level-headed foil to the morbid Mortimer, chastising him for encouraging dark talk.",
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "bodyguard"
+        }
+      ],
+      "chapter": 43
+    },
+    {
+      "name": "Mortimer",
+      "kind": "character",
+      "summary": "One of Livia Augusti's bodyguards, a man of grim, morbid humor who speaks of himself in the third person and dwells on suicide statistics; paired with the steadier Sparrow.",
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "bodyguard"
+        }
+      ],
+      "chapter": 43
     }
   ],
   "plotObservations": [
@@ -4554,6 +4692,19 @@
         "The Consciousness-Transfer Plan"
       ],
       "chapter": 42
+    },
+    {
+      "title": "The Ghost of Drug Island",
+      "beat": "Laying low on Vulcan's orders, Ryan spends the weekend with Jasmine designing his power armor and a scheme to trap his own 'Violet Flux' to boost his power. She reveals Dynamis's decade-long mind-uploading immortality project (brain scans into Tyrano's cloned bodies), and Ryan realizes combining it with Len's and Jasmine's tech could let him carry a companion across loops, giving him hope. They fly to the miasma-choked Ischia superlab for Livia's defense inspection, where Livia introduces the ghost Geist as a sentry and warns that many alternate realities now end in her own sudden death. Ryan, planning to blow up the island to settle his debt with Shroud, sizes up how to bring the fortress down.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Livia Augusti",
+        "Mr. Geist",
+        "Ischia Island",
+        "The Immortality Project"
+      ],
+      "chapter": 43
     }
   ]
 }
