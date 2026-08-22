@@ -405,6 +405,14 @@
           {
             "key": "vow",
             "value": "Accepts 'Be happy too'; agrees to stop suicide-reloads and drugs"
+          },
+          {
+            "key": "plan",
+            "value": "Delay Dynamis raid; head for Antarctica (via Monaco) for the Psycho cure"
+          },
+          {
+            "key": "growth",
+            "value": "No longer wants to die; wants lasting lifetimes with loved ones"
           }
         ],
         "ties": [
@@ -655,6 +663,14 @@
           {
             "to": "venus",
             "rel": "heals his burns; he clocks her as a deadlier enemy"
+          },
+          {
+            "to": "len",
+            "rel": "delays the raid on her father until she's ready"
+          },
+          {
+            "to": "stitch",
+            "rel": "develops the vaccine and Bliss cure with him"
           }
         ],
         "appearances": [
@@ -754,7 +770,8 @@
           97,
           98,
           99,
-          101
+          101,
+          102
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -945,6 +962,14 @@
           {
             "key": "arc",
             "value": "Makes peace with Ryan's bond with Livia; stays family"
+          },
+          {
+            "key": "memory",
+            "value": "Now carries both loops via Alchemo's coexisting-memory method"
+          },
+          {
+            "key": "arc",
+            "value": "Accepts Ryan+Livia; resolves to move on from the past"
           }
         ],
         "ties": [
@@ -1063,6 +1088,14 @@
           {
             "to": "livia",
             "rel": "reconciles herself to Ryan's relationship with her"
+          },
+          {
+            "to": "alchemo",
+            "rel": "completed her improved memory transfer"
+          },
+          {
+            "to": "livia",
+            "rel": "accepts her as Ryan's partner; 'family now'"
           }
         ],
         "appearances": [
@@ -1111,7 +1144,8 @@
           94,
           95,
           96,
-          97
+          97,
+          102
         ],
         "questions": []
       },
@@ -3886,7 +3920,8 @@
           94,
           95,
           96,
-          97
+          97,
+          102
         ],
         "questions": []
       },
@@ -6328,6 +6363,14 @@
           {
             "key": "romance",
             "value": "Boyfriend is a reluctant Mathias Martel; her Elixir steers it"
+          },
+          {
+            "key": "power detail",
+            "value": "Luck warps causality within <10 m; can't stop direct powers or long-range attacks"
+          },
+          {
+            "key": "state",
+            "value": "Estranged from Shroud; in denial about her family; dotes on Henriette"
           }
         ],
         "ties": [
@@ -6394,6 +6437,14 @@
           {
             "to": "the-land",
             "rel": "the one Meta foe who has killed her"
+          },
+          {
+            "to": "mr-see-through",
+            "rel": "estranged boyfriend she cold-shoulders"
+          },
+          {
+            "to": "henriette",
+            "rel": "adopts and dotes on the stray dog"
           }
         ],
         "appearances": [
@@ -6409,7 +6460,8 @@
           70,
           94,
           95,
-          96
+          96,
+          102
         ],
         "questions": []
       },
@@ -9726,7 +9778,8 @@
           83,
           84,
           85,
-          86
+          86,
+          102
         ],
         "questions": []
       },
@@ -11469,7 +11522,8 @@
           97,
           98,
           99,
-          101
+          101,
+          102
         ],
         "questions": []
       },
@@ -12757,6 +12811,14 @@
           {
             "key": "death",
             "value": "Vaporized by Augustus's crimson lightning"
+          },
+          {
+            "key": "rift",
+            "value": "Confessed his anti-Augusti mission to Fortuna, causing estrangement"
+          },
+          {
+            "key": "hope",
+            "value": "Gets Alchemo to attempt healing his mother's brain damage"
           }
         ],
         "ties": [
@@ -12783,6 +12845,14 @@
           {
             "to": "leo-hargraves",
             "rel": "his ally in the crisis"
+          },
+          {
+            "to": "fortuna",
+            "rel": "his straining girlfriend, now in denial about her family"
+          },
+          {
+            "to": "alchemo",
+            "rel": "agrees to try healing Shroud's mother"
           }
         ],
         "appearances": [
@@ -12792,7 +12862,8 @@
           94,
           95,
           96,
-          97
+          97,
+          102
         ],
         "questions": []
       },
@@ -13203,7 +13274,8 @@
           89,
           90,
           92,
-          97
+          97,
+          102
         ],
         "questions": []
       },
@@ -13775,7 +13847,8 @@
           }
         ],
         "appearances": [
-          101
+          101,
+          102
         ],
         "questions": []
       }
@@ -15939,6 +16012,10 @@
           {
             "chapter": 101,
             "summary": "CH101 'Lover's Breath': Ryan and Livia formalize their romance, she agrees to be his girlfriend on the condition it last until they choose to end it rather than until a reset. Reviewing Ryan's Perfect Run to-do list, Livia adds 'Be happy too' and bans his suicide-reloads and drugs, and crucially connects Ryan's Purple-World vision of an icebound Alchemist fortress to Station Orpheon, France's secret Antarctic base, revealing Bacchus was 'twisted' investigating the Alchemist before Last Easter. At the Augusti-owned Triton's Resort, Ryan meets Mars (Luca Veran) and is healed by Venus (Andrea Julani-Veran), learning the resort is a prostitution/Bliss-addiction front, and resolves to eventually bring down Augustus and the Veran clan to free Livia while reforming the empire."
+          },
+          {
+            "chapter": 102,
+            "summary": "CH102 'Moving On': after the successful Mechron-mainframe raid (won on Fortuna's luck), Ryan consolidates his gains. Alchemo completes Len's improved memory transfer (coexisting memories) and Stitch, aided by Dr. Tyrano, develops an airborne Psycho vaccine and a viral Bliss cure; the Panda's accelerated learning makes him a lab assistant. Ryan counsels Shroud through his rift with Fortuna, and Len, now recalling that Bloodstream killed her, asks to delay the Dynamis raid until she's certain her father is beyond saving. Ryan sets the next arc: hit the Bliss Factory, blow the bunker, and flee New Rome for Antarctica (Station Orpheon) via Monaco to find the source of the Psycho cure and rebuild the Saturn Armor. Len accepts Ryan's romance with Livia, and both resolve to stop living in the past and move on together."
           }
         ],
         "entities": [
@@ -16001,7 +16078,8 @@
           "bacchus",
           "triton-s-resort",
           "mars",
-          "venus"
+          "venus",
+          "alchemo"
         ]
       }
     ]

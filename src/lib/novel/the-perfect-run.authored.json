@@ -14728,6 +14728,110 @@
         }
       ],
       "chapter": 101
+    },
+    {
+      "name": "Mr. See-Through",
+      "kind": "character",
+      "summary": "CH102 'Moving On' (as Shroud): his relationship with Fortuna ruptures after he half-confessed on a date, that he came to New Rome to strike the Augusti and only ever 'protected' her from dangers he himself caused, but couldn't bring himself to sleep with her while lying. Fortuna, in denial about her family's crimes, gives him the cold shoulder. Ryan counsels him (with cat therapy) not to break it off, noting her luck-power still engineers romantic situations between them, a sign the relationship isn't dead. Shroud admits he's growing fond of her against his judgment, and secures Alchemo's agreement to try healing his brain-damaged mother (Pythia/Alice Martel).",
+      "facts": [
+        {
+          "key": "rift",
+          "value": "Confessed his anti-Augusti mission to Fortuna, causing estrangement"
+        },
+        {
+          "key": "hope",
+          "value": "Gets Alchemo to attempt healing his mother's brain damage"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fortuna",
+          "rel": "his straining girlfriend, now in denial about her family"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "agrees to try healing Shroud's mother"
+        }
+      ],
+      "chapter": 102
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "CH102: exhausted and foul-tempered after the Mechron raid (Ryan analyzes her luck-power: it warps this reality's causality in her favor within a <10 m radius, can't negate other Genomes' direct powers, so Mechron used long-range telekinetic machines against her). Estranged from Shroud after he confessed his anti-Augusti mission, she gives him the cold shoulder, defends her family, denies her father Mars's crimes, and transfers her affection to the adopted stray dog Henriette. Ryan believes her denial masks buried doubts about her parents' true nature.",
+      "facts": [
+        {
+          "key": "power detail",
+          "value": "Luck warps causality within <10 m; can't stop direct powers or long-range attacks"
+        },
+        {
+          "key": "state",
+          "value": "Estranged from Shroud; in denial about her family; dotes on Henriette"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mr. See-Through",
+          "rel": "estranged boyfriend she cold-shoulders"
+        },
+        {
+          "to": "Henriette",
+          "rel": "adopts and dotes on the stray dog"
+        }
+      ],
+      "chapter": 102
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH102: her memory transfer is completed by Alchemo using his improved method (memories now coexist rather than overriding), so she recalls both this loop and the last, remembering that her father Bloodstream killed her. Stitch removes the Bloodstream strain from her body. She can only agree to help destroy her father once she's certain he's truly beyond saving, so Ryan delays the Dynamis raid. Learning (via the chronoradio) that Ryan is now dating Livia, she accepts it gracefully: they're 'family now', Livia is good for him, and, inspired by his happiness, she resolves to stop living in the fearful past and look forward. Both agree it's time to move on, together.",
+      "facts": [
+        {
+          "key": "memory",
+          "value": "Now carries both loops via Alchemo's coexisting-memory method"
+        },
+        {
+          "key": "arc",
+          "value": "Accepts Ryan+Livia; resolves to move on from the past"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "completed her improved memory transfer"
+        },
+        {
+          "to": "Livia",
+          "rel": "accepts her as Ryan's partner; 'family now'"
+        }
+      ],
+      "chapter": 102
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH102: consolidates the post-raid gains, Mechron's mainframe lets him recreate the Saturn Armor and probe his new Black power. Stitch (with Dr. Tyrano's help) develops an airborne vaccine for the Psycho condition and a viral Bliss cure (endorphin blockers + nerve suppressant) from Ryan's own recipe; the Panda, via accelerated learning, has absorbed multiple doctorates to serve as lab assistant. Ryan counsels Shroud through his Fortuna rift, delays the Dynamis raid until Len is ready, and sets the next plan: after hitting the Bliss Factory, blow the bunker and flee New Rome for Antarctica (Station Orpheon) to find the Psycho cure's source, with a stop near Monaco. He affirms he no longer wants to die and wants lifetimes with Livia and Len.",
+      "facts": [
+        {
+          "key": "plan",
+          "value": "Delay Dynamis raid; head for Antarctica (via Monaco) for the Psycho cure"
+        },
+        {
+          "key": "growth",
+          "value": "No longer wants to die; wants lasting lifetimes with loved ones"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "delays the raid on her father until she's ready"
+        },
+        {
+          "to": "Stitch",
+          "rel": "develops the vaccine and Bliss cure with him"
+        }
+      ],
+      "chapter": 102
     }
   ],
   "plotObservations": [
@@ -16453,6 +16557,22 @@
         "Narcinia"
       ],
       "chapter": 101
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH102 'Moving On': after the successful Mechron-mainframe raid (won on Fortuna's luck), Ryan consolidates his gains. Alchemo completes Len's improved memory transfer (coexisting memories) and Stitch, aided by Dr. Tyrano, develops an airborne Psycho vaccine and a viral Bliss cure; the Panda's accelerated learning makes him a lab assistant. Ryan counsels Shroud through his rift with Fortuna, and Len, now recalling that Bloodstream killed her, asks to delay the Dynamis raid until she's certain her father is beyond saving. Ryan sets the next arc: hit the Bliss Factory, blow the bunker, and flee New Rome for Antarctica (Station Orpheon) via Monaco to find the source of the Psycho cure and rebuild the Saturn Armor. Len accepts Ryan's romance with Livia, and both resolve to stop living in the past and move on together.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Livia",
+        "Alchemo",
+        "Stitch",
+        "Fortuna",
+        "Mr. See-Through",
+        "Station Orpheon",
+        "The Panda"
+      ],
+      "chapter": 102
     }
   ]
 }
