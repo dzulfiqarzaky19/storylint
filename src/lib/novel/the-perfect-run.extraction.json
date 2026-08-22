@@ -2791,13 +2791,35 @@
           {
             "key": "note",
             "value": "Identity and fate unknown"
+          },
+          {
+            "key": "true name",
+            "value": "Eva Fabre, ex-lead geneticist of Station Orpheon (Antarctica, 1992)"
+          },
+          {
+            "key": "nature",
+            "value": "A legion of teleporting blue-particle self-copies"
+          },
+          {
+            "key": "motive",
+            "value": "Forced human evolution ('intelligent design') to face coming cosmic threats"
           }
         ],
-        "ties": [],
+        "ties": [
+          {
+            "to": "eva-fabre",
+            "rel": "is her original human identity"
+          },
+          {
+            "to": "andreas-torque",
+            "rel": "hunted and then experimented on him"
+          }
+        ],
         "appearances": [
           8,
           65,
-          74
+          74,
+          100
         ],
         "questions": []
       },
@@ -5846,7 +5868,8 @@
           }
         ],
         "appearances": [
-          20
+          20,
+          100
         ],
         "questions": []
       },
@@ -8691,7 +8714,8 @@
           }
         ],
         "appearances": [
-          41
+          41,
+          100
         ],
         "questions": []
       },
@@ -13439,6 +13463,198 @@
           98
         ],
         "questions": []
+      },
+      {
+        "id": "andreas-torque",
+        "kind": "character",
+        "name": "Andreas Torque",
+        "summary": "CH100 'Past Fragment: No Planet for Old Men' (~2005): Cardinal Andreas Torque, one of the youngest Cardinals and Inquisitor-General of the Malleus Maleficarum (the Vatican's secret service), investigates the escalating pre-Genome-age incidents (the Stanford Incident, Sarajevo's iron pillars, spontaneous combustions) and tracks the immortal teleporting geneticist Eva Fabre. He launders mafia money through Janus Augusti for a black budget. When Fabre's hive wipes out his order, they capture him and force Augustus's mind-opening crystal drug plus a Blue Elixir injection into him. His soul ascends into the Blue World and melds with the Ultimate One, an experience of divine rapture; cast back into his broken flesh he is left an addict craving only to return, indifferent as the old world burns. Strongly implied to be a proto-/origin story tied to the Blue-World Genius entity Alchemo.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Cardinal + Inquisitor-General of the Malleus Maleficarum"
+          },
+          {
+            "key": "fate",
+            "value": "Dosed with crystals + Blue Elixir; melds with the Ultimate One, left an addict of the Blue World"
+          },
+          {
+            "key": "era",
+            "value": "~2005, during the collapse of the old world (Last Easter)"
+          }
+        ],
+        "ties": [
+          {
+            "to": "eva-fabre",
+            "rel": "hunted her; she has him experimented on"
+          },
+          {
+            "to": "janus-augusti",
+            "rel": "launders his mafia money; given the crystal drug by him"
+          },
+          {
+            "to": "the-ultimate-one",
+            "rel": "melds with it in the Blue World"
+          }
+        ],
+        "appearances": [
+          100
+        ],
+        "questions": []
+      },
+      {
+        "id": "eva-fabre",
+        "kind": "identity",
+        "name": "Eva Fabre",
+        "summary": "CH100: the human origin of The Alchemist. Once the lead geneticist of France's secret Antarctic bacteriological-weapons base Station Orpheon, where on Dec 12 1992 a purple flash and crash preceded a lethal outbreak that killed 22 of 23 researchers; Fabre's body was never found. By ~2005 she reappears un-aged, able to teleport (be in two places at once), running worldwide human experiments via a shell-company vaccine network ('New H'). She is revealed to be a legion, dozens/hundreds of blue-particle copies of herself with slight variations, an 'organization of one', who collapse into blue particles when killed. She now goes by 'the Alchemist', preaching that mankind must evolve past natural selection into intelligent design ('Our design') to face demons 'above our heads, in space'.",
+        "facts": [
+          {
+            "key": "aka",
+            "value": "The human name/origin of The Alchemist"
+          },
+          {
+            "key": "nature",
+            "value": "A hive of blue-particle copies; immortal, teleporting"
+          },
+          {
+            "key": "origin",
+            "value": "Ex-lead geneticist of Station Orpheon (Antarctica, 1992)"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-alchemist",
+            "rel": "is the Alchemist's original human identity"
+          },
+          {
+            "to": "andreas-torque",
+            "rel": "hunts then experiments on him"
+          }
+        ],
+        "appearances": [
+          100
+        ],
+        "questions": []
+      },
+      {
+        "id": "janus-augusti",
+        "kind": "character",
+        "name": "Janus Augusti",
+        "summary": "CH100 (~2005): elder patriarch of the Augusti mob dynasty, a Neapolitan Camorra boss in a red suit and Augustus's forebear (father of young Livia in this era, so Livia's grandfather-era figure). A godless 'necessary evil' who launders his blood money through Cardinal Torque's Vatican channel and serves as a patron of the Malleus Maleficarum's black budget. Cold, shark-like, expansionist. He gifts Torque a bag of colored crystals ('our new product', a mind-opening drug), tempting the priest's curiosity about contacting higher realms. Dotes on his little daughter Livia (who asked for a pony).",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Camorra patriarch; launders money via the Vatican"
+          },
+          {
+            "key": "product",
+            "value": "Introduces the colored-crystal mind-opening drug"
+          }
+        ],
+        "ties": [
+          {
+            "to": "augustus",
+            "rel": "Augusti-dynasty forebear of the modern patriarch"
+          },
+          {
+            "to": "andreas-torque",
+            "rel": "his money-launderer; gives him the crystal drug"
+          }
+        ],
+        "appearances": [
+          100
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-ultimate-one",
+        "kind": "concept",
+        "name": "The Ultimate One",
+        "summary": "CH100: the divine intelligence at the center of the Blue World, glimpsed by Andreas Torque when the Blue Elixir + crystal drug sent his soul there. A bodiless psionic god of pure information, neither male nor female, ruling from a 'throne of information', all the universe's data focused into a singularity, the being an ascended mind melds into. It feels neither love nor hate, only curiosity: it disassembled Torque's mind to its molecules to understand him, then shared cosmic knowledge back (mathematics, chemistry, true history), an experience of unbearable rapture. The 'God' at the heart of the Akashic Records / Blue World that Blue-power ascension leads toward.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "Bodiless psionic god of pure information at the Blue World's center"
+          },
+          {
+            "key": "disposition",
+            "value": "Feels only curiosity; disassembles minds to understand them"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-blue-world",
+            "rel": "rules at its center"
+          },
+          {
+            "to": "andreas-torque",
+            "rel": "melds with and studies him"
+          }
+        ],
+        "appearances": [
+          100
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-malleus-maleficarum",
+        "kind": "faction",
+        "name": "The Malleus Maleficarum",
+        "summary": "CH100: the Vatican's officially-nonexistent secret service, whose purpose is to keep the Pope aware of all threats to the faith and advance Catholic interests through covert means. Historically fought communism and terrorism; by ~2005 it turned to the unnatural incidents of the pre-Genome age. Funded by a laundered mafia black budget, invested in facial-recognition tech. Led by Inquisitor-General Cardinal Andreas Torque, with senior Inquisitor Ambrosio as his agent. Eva Fabre's hive systematically wiped the order out in days, killing Ambrosio and finally capturing Torque.",
+        "facts": [
+          {
+            "key": "identity",
+            "value": "The Vatican's deniable secret service / inquisition"
+          },
+          {
+            "key": "fate",
+            "value": "Annihilated by Eva Fabre's hive in the old world's collapse"
+          }
+        ],
+        "ties": [
+          {
+            "to": "andreas-torque",
+            "rel": "its Inquisitor-General"
+          },
+          {
+            "to": "eva-fabre",
+            "rel": "destroyed by her"
+          }
+        ],
+        "appearances": [
+          100
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-stanford-incident",
+        "kind": "concept",
+        "name": "The Stanford Incident",
+        "summary": "CH100: a pre-Genome-age catastrophe (Nov 14, ~2004) in the dying mining town of Stanford, Nevada (pop. 202). Repairman James Poole, given a New H 'tetanus vaccine' (actually a bottled Elixir) by Eva Fabre's delivery network, burst from the clinic as a faceless six-meter white-skinned beast trailing blue mist that turned bystanders feral, killing or vanishing half the town before escaping into the Mojave. One of the escalating covert human-experiment tragedies (alongside Sarajevo's iron pillars, Utah's invisible reptilian, Tajikistan's burning woman) by which Torque pieced together the Alchemist's worldwide testing program.",
+        "facts": [
+          {
+            "key": "event",
+            "value": "A Elixir-vaccine test turned James Poole into a rampaging monster"
+          },
+          {
+            "key": "significance",
+            "value": "A key clue in Torque's investigation of Eva Fabre"
+          }
+        ],
+        "ties": [
+          {
+            "to": "eva-fabre",
+            "rel": "caused by her experiment / delivery network"
+          },
+          {
+            "to": "andreas-torque",
+            "rel": "the case that opens his investigation"
+          }
+        ],
+        "appearances": [
+          100
+        ],
+        "questions": []
       }
     ]
   },
@@ -15592,6 +15808,10 @@
           {
             "chapter": 99,
             "summary": "CH99 'How I Met Your Daughter': the morning after, Ryan is caught cooking breakfast in Augustus's villa. He taunts the tyrant with repeated time-stops before confirming he slept with Livia, and Augustus electrocutes him, confirming Ryan still needs the Saturn Armor to harm the invincible mob boss. Livia rushes in, uses her foresight power on her father to save Ryan, and openly claims him as her boyfriend, revealing she knows Augustus murdered Narcinia's parents. When she threatens to abandon the Augusti empire forever if he harms Ryan or Felix, the shaken tyrant relents and grudgingly tolerates Ryan under a triple death-threat, turning a would-be enemy into a reluctant father-in-law and further entrenching Ryan's alliance with Livia."
+          },
+          {
+            "chapter": 100,
+            "summary": "CH100 'Past Fragment: No Planet for Old Men' (a ~2005 flashback, origin lore): Cardinal Andreas Torque, Inquisitor-General of the Vatican's secret Malleus Maleficarum, investigates the pre-Genome-age incidents (the Stanford Incident and worldwide monster outbreaks) and tracks the immortal teleporting geneticist Eva Fabre, revealed to be a legion of blue-particle copies who calls herself the Alchemist and is seeding the Elixirs to force mankind's evolution. Her hive wipes out his order and captures him; dosed with Janus Augusti's mind-opening crystals and a Blue Elixir, Torque's soul ascends into the Blue World and melds with the Ultimate One, the psionic information-god at its center, an experience of divine rapture that leaves him a broken addict craving only to return as the old world burns. This exposes the true origin of the Genome age, the Alchemist, the Blue World deity, and the Augusti dynasty's complicity."
           }
         ],
         "entities": [
@@ -15640,13 +15860,22 @@
           "the-monster-girl-project",
           "the-midnight-road",
           "monaco",
-          "felix"
+          "felix",
+          "andreas-torque",
+          "eva-fabre",
+          "the-alchemist",
+          "janus-augusti",
+          "the-ultimate-one",
+          "the-malleus-maleficarum",
+          "the-blue-world",
+          "the-stanford-incident",
+          "the-blue-elixir"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 227,
+    "entities": 233,
     "plotlines": 104,
     "books": 1
   }
