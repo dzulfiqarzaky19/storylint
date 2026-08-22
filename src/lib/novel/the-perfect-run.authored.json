@@ -14832,6 +14832,122 @@
         }
       ],
       "chapter": 102
+    },
+    {
+      "name": "Bacchus",
+      "kind": "character",
+      "summary": "CH103 'Drug Bust': revealed to be Andreas Torque, the former Vatican Cardinal from CH100, now the Augusti Olympian who cooks Bliss at the Ischia superlab and is obsessed with returning to the Blue World's Ultimate One ('Heaven') he tasted via his Elixir. A gaunt, unblinking, corpse-like fanatic who reveres the Alchemist / Eva Fabre as a divine prophet (having tracked and met her once on Last Easter, when she 'enlightened' him). He mentors young Narcinia (whom he calls Ceres, after breaking her mind), endorses Bliss's sterilization as sorting God's 'chosen' from the unworthy, and gives Ryan the Station Orpheon coordinates while insisting the base was found empty after a violet flash. Recognizes a fellow seeker in Ryan and offers to draw him into the new Bliss test trials.",
+      "facts": [
+        {
+          "key": "true identity",
+          "value": "Andreas Torque, the ascended ex-Cardinal of CH100"
+        },
+        {
+          "key": "belief",
+          "value": "Reveres the Alchemist as a prophet; Bliss sorts the 'chosen'"
+        },
+        {
+          "key": "info",
+          "value": "Gives Ryan Station Orpheon's coordinates (believes it empty)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Andreas Torque",
+          "rel": "is his pre-Genome-age identity"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "reveres her as a divine prophet"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "his protege 'Ceres', whose mind he broke"
+        }
+      ],
+      "chapter": 103
+    },
+    {
+      "name": "Andreas Torque",
+      "kind": "character",
+      "summary": "CH103: confirmed to be the present-day Augusti Olympian Bacchus. The ex-Cardinal who ascended into the Blue World in CH100 survived Last Easter as a Bliss-obsessed fanatic, took the mantle 'Bacchus', and now cooks Bliss for Augustus at the Castello Aragonese while chasing a way back to the Ultimate One. He reveres Eva Fabre (the Alchemist), whom he tracked for years and met once, as the Lord's prophet rather than the devil he first took her for.",
+      "facts": [
+        {
+          "key": "present identity",
+          "value": "Now the Augusti Olympian Bacchus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bacchus",
+          "rel": "is his present-day identity"
+        }
+      ],
+      "chapter": 103
+    },
+    {
+      "name": "Castello Aragonese",
+      "kind": "location",
+      "summary": "CH103 'Drug Bust': the pre-Christian volcanic-islet fortress on Ischia Island that Augustus refitted into the Bliss Superlab, the sole living spot amid the island's radioactive purple miasma. Its stone walls oversee the Mediterranean atop a garden of alien plants; it is ringed by hidden shoreline turrets (which Vulcan's tech bars from firing on Ryan) and guarded above all by Geist, whose house-sized skull can manifest anywhere on the island and sense intruders. Bacchus/Torque cooks the new Bliss strain here. Ryan scouts it under cover of a security inspection, then stages a night-and-morning assault to destroy it while the Augusti high command is at the Olympians meeting.",
+      "facts": [
+        {
+          "key": "function",
+          "value": "Augustus's Bliss Superlab, run by Bacchus"
+        },
+        {
+          "key": "location",
+          "value": "Volcanic islet on Ischia Island"
+        },
+        {
+          "key": "defenses",
+          "value": "Geist, hidden turrets, power-armor soldiers, Genomes"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ischia Island",
+          "rel": "sits on this island"
+        },
+        {
+          "to": "Geist",
+          "rel": "its ultimate line of defense"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "runs the Bliss lab here"
+        }
+      ],
+      "chapter": 103
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH103: scouts Ischia's Bliss Superlab under cover of Vulcan's security inspection (racing jetpacks, trading jabs), then launches its destruction with Len, Sarin, and Shroud (plus surprise ally Mr. Wave), donning the improved Saturn armor (Adam's gravity rifle for the chest cannon, better flight, radiation/heat shielding vs Fallout). He notices his Black Flux power has grown markedly stronger between loops (the black particles now an 'oil spill on a violet sea' rather than faint spots), theorizing it feeds on destruction or each reset and ignores his time-travel rules, and wonders if it could harm even Geist. He extracts Station Orpheon's coordinates from Bacchus and cements his resolve to raze the lab after the priest endorses Bliss's mass sterilization.",
+      "facts": [
+        {
+          "key": "power growth",
+          "value": "Black Flux visibly stronger, may feed on destruction/resets"
+        },
+        {
+          "key": "gear",
+          "value": "Improved Saturn armor: gravity rifle, radiation/heat shielding"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bacchus",
+          "rel": "extracts Station Orpheon coordinates from him"
+        },
+        {
+          "to": "Mr. Wave",
+          "rel": "surprise ally joining the lab assault"
+        },
+        {
+          "to": "Castello Aragonese",
+          "rel": "targets it for destruction"
+        }
+      ],
+      "chapter": 103
     }
   ],
   "plotObservations": [
@@ -16573,6 +16689,25 @@
         "The Panda"
       ],
       "chapter": 102
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH103 'Drug Bust': scouting Ischia's Bliss Superlab during Vulcan's security inspection, Ryan discovers Bacchus is Andreas Torque, the ascended ex-Cardinal from CH100, a Bliss-cooking fanatic who reveres the Alchemist/Eva Fabre as a prophet and craves return to the Blue Ultimate One. Ryan extracts Station Orpheon's coordinates (Bacchus believes it emptied after a violet flash) and, sickened by the priest's endorsement of Bliss's mass sterilization, commits to razing the lab. Donning improved Saturn armor, he stages the assault with Len, Sarin, and Shroud while the Augusti high command attends the Olympians meeting, noticing his Black Flux power has grown stronger between loops. Mr. Wave arrives as a surprise ally.",
+      "entities": [
+        "Ryan Romano",
+        "Bacchus",
+        "Andreas Torque",
+        "The Alchemist",
+        "Castello Aragonese",
+        "Station Orpheon",
+        "Mr. Wave",
+        "Len",
+        "Sarin",
+        "Mr. See-Through",
+        "Vulcan",
+        "Geist"
+      ],
+      "chapter": 103
     }
   ]
 }

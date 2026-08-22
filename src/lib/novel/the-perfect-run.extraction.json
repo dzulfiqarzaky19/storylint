@@ -413,6 +413,14 @@
           {
             "key": "growth",
             "value": "No longer wants to die; wants lasting lifetimes with loved ones"
+          },
+          {
+            "key": "power growth",
+            "value": "Black Flux visibly stronger, may feed on destruction/resets"
+          },
+          {
+            "key": "gear",
+            "value": "Improved Saturn armor: gravity rifle, radiation/heat shielding"
           }
         ],
         "ties": [
@@ -671,6 +679,18 @@
           {
             "to": "stitch",
             "rel": "develops the vaccine and Bliss cure with him"
+          },
+          {
+            "to": "bacchus",
+            "rel": "extracts Station Orpheon coordinates from him"
+          },
+          {
+            "to": "mr-wave",
+            "rel": "surprise ally joining the lab assault"
+          },
+          {
+            "to": "castello-aragonese",
+            "rel": "targets it for destruction"
           }
         ],
         "appearances": [
@@ -771,7 +791,8 @@
           98,
           99,
           101,
-          102
+          102,
+          103
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1145,7 +1166,8 @@
           95,
           96,
           97,
-          102
+          102,
+          103
         ],
         "questions": []
       },
@@ -1825,7 +1847,8 @@
           91,
           92,
           96,
-          97
+          97,
+          103
         ],
         "questions": []
       },
@@ -2625,7 +2648,8 @@
           88,
           95,
           96,
-          97
+          97,
+          103
         ],
         "questions": []
       },
@@ -2871,7 +2895,8 @@
           65,
           74,
           100,
-          101
+          101,
+          103
         ],
         "questions": []
       },
@@ -3517,7 +3542,8 @@
         ],
         "ties": [],
         "appearances": [
-          9
+          9,
+          103
         ],
         "questions": []
       },
@@ -6143,6 +6169,18 @@
           {
             "key": "note",
             "value": "Tied to the Bliss Factory operation"
+          },
+          {
+            "key": "true identity",
+            "value": "Andreas Torque, the ascended ex-Cardinal of CH100"
+          },
+          {
+            "key": "belief",
+            "value": "Reveres the Alchemist as a prophet; Bliss sorts the 'chosen'"
+          },
+          {
+            "key": "info",
+            "value": "Gives Ryan Station Orpheon's coordinates (believes it empty)"
           }
         ],
         "ties": [
@@ -6161,6 +6199,18 @@
           {
             "to": "narcinia",
             "rel": "shattered her mind"
+          },
+          {
+            "to": "andreas-torque",
+            "rel": "is his pre-Genome-age identity"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "reveres her as a divine prophet"
+          },
+          {
+            "to": "narcinia",
+            "rel": "his protege 'Ceres', whose mind he broke"
           }
         ],
         "appearances": [
@@ -6168,7 +6218,8 @@
           36,
           38,
           66,
-          101
+          101,
+          103
         ],
         "questions": []
       },
@@ -12863,7 +12914,8 @@
           95,
           96,
           97,
-          102
+          102,
+          103
         ],
         "questions": []
       },
@@ -13241,7 +13293,8 @@
         ],
         "appearances": [
           89,
-          90
+          90,
+          103
         ],
         "questions": []
       },
@@ -13616,6 +13669,10 @@
           {
             "key": "era",
             "value": "~2005, during the collapse of the old world (Last Easter)"
+          },
+          {
+            "key": "present identity",
+            "value": "Now the Augusti Olympian Bacchus"
           }
         ],
         "ties": [
@@ -13630,10 +13687,15 @@
           {
             "to": "the-ultimate-one",
             "rel": "melds with it in the Blue World"
+          },
+          {
+            "to": "bacchus",
+            "rel": "is his present-day identity"
           }
         ],
         "appearances": [
-          100
+          100,
+          103
         ],
         "questions": []
       },
@@ -13848,7 +13910,46 @@
         ],
         "appearances": [
           101,
-          102
+          102,
+          103
+        ],
+        "questions": []
+      },
+      {
+        "id": "castello-aragonese",
+        "kind": "location",
+        "name": "Castello Aragonese",
+        "summary": "CH103 'Drug Bust': the pre-Christian volcanic-islet fortress on Ischia Island that Augustus refitted into the Bliss Superlab, the sole living spot amid the island's radioactive purple miasma. Its stone walls oversee the Mediterranean atop a garden of alien plants; it is ringed by hidden shoreline turrets (which Vulcan's tech bars from firing on Ryan) and guarded above all by Geist, whose house-sized skull can manifest anywhere on the island and sense intruders. Bacchus/Torque cooks the new Bliss strain here. Ryan scouts it under cover of a security inspection, then stages a night-and-morning assault to destroy it while the Augusti high command is at the Olympians meeting.",
+        "facts": [
+          {
+            "key": "function",
+            "value": "Augustus's Bliss Superlab, run by Bacchus"
+          },
+          {
+            "key": "location",
+            "value": "Volcanic islet on Ischia Island"
+          },
+          {
+            "key": "defenses",
+            "value": "Geist, hidden turrets, power-armor soldiers, Genomes"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ischia-island",
+            "rel": "sits on this island"
+          },
+          {
+            "to": "geist",
+            "rel": "its ultimate line of defense"
+          },
+          {
+            "to": "bacchus",
+            "rel": "runs the Bliss lab here"
+          }
+        ],
+        "appearances": [
+          103
         ],
         "questions": []
       }
@@ -16016,6 +16117,10 @@
           {
             "chapter": 102,
             "summary": "CH102 'Moving On': after the successful Mechron-mainframe raid (won on Fortuna's luck), Ryan consolidates his gains. Alchemo completes Len's improved memory transfer (coexisting memories) and Stitch, aided by Dr. Tyrano, develops an airborne Psycho vaccine and a viral Bliss cure; the Panda's accelerated learning makes him a lab assistant. Ryan counsels Shroud through his rift with Fortuna, and Len, now recalling that Bloodstream killed her, asks to delay the Dynamis raid until she's certain her father is beyond saving. Ryan sets the next arc: hit the Bliss Factory, blow the bunker, and flee New Rome for Antarctica (Station Orpheon) via Monaco to find the source of the Psycho cure and rebuild the Saturn Armor. Len accepts Ryan's romance with Livia, and both resolve to stop living in the past and move on together."
+          },
+          {
+            "chapter": 103,
+            "summary": "CH103 'Drug Bust': scouting Ischia's Bliss Superlab during Vulcan's security inspection, Ryan discovers Bacchus is Andreas Torque, the ascended ex-Cardinal from CH100, a Bliss-cooking fanatic who reveres the Alchemist/Eva Fabre as a prophet and craves return to the Blue Ultimate One. Ryan extracts Station Orpheon's coordinates (Bacchus believes it emptied after a violet flash) and, sickened by the priest's endorsement of Bliss's mass sterilization, commits to razing the lab. Donning improved Saturn armor, he stages the assault with Len, Sarin, and Shroud while the Augusti high command attends the Olympians meeting, noticing his Black Flux power has grown stronger between loops. Mr. Wave arrives as a surprise ally."
           }
         ],
         "entities": [
@@ -16079,13 +16184,16 @@
           "triton-s-resort",
           "mars",
           "venus",
-          "alchemo"
+          "alchemo",
+          "castello-aragonese",
+          "mr-wave",
+          "geist"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 235,
+    "entities": 236,
     "plotlines": 104,
     "books": 1
   }
