@@ -357,6 +357,14 @@
           {
             "key": "gambit",
             "value": "Fortuna's luck as a 'cheat code' vs Mechron's mainframe"
+          },
+          {
+            "key": "tactic",
+            "value": "Ghoul's foot masks the car from the Land's area-sense"
+          },
+          {
+            "key": "arc",
+            "value": "Accepts Len as family; senses Livia is his future"
           }
         ],
         "ties": [
@@ -559,6 +567,14 @@
           {
             "to": "livia",
             "rel": "forges the temporary anti-Mechron alliance"
+          },
+          {
+            "to": "livia",
+            "rel": "intuits she is key to his future"
+          },
+          {
+            "to": "len",
+            "rel": "reconciled as family, not lovers"
           }
         ],
         "appearances": [
@@ -652,7 +668,8 @@
           91,
           92,
           93,
-          94
+          94,
+          95
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -990,7 +1007,8 @@
           91,
           92,
           93,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -2435,7 +2453,8 @@
           85,
           86,
           87,
-          88
+          88,
+          95
         ],
         "questions": []
       },
@@ -3674,7 +3693,8 @@
           87,
           88,
           93,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -4470,7 +4490,8 @@
           74,
           75,
           76,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -5339,6 +5360,14 @@
           {
             "key": "note",
             "value": "Adam force-fed her the Elixir, making her a Psycho"
+          },
+          {
+            "key": "real name",
+            "value": "Helen"
+          },
+          {
+            "key": "defeat",
+            "value": "Water-bubbled after Livia predicts her teleport"
           }
         ],
         "ties": [
@@ -5381,6 +5410,10 @@
           {
             "to": "the-violet-ultimate-one",
             "rel": "glimpses in the Purple World"
+          },
+          {
+            "to": "livia",
+            "rel": "outpredicted and captured by her"
           }
         ],
         "appearances": [
@@ -5389,7 +5422,8 @@
           28,
           61,
           76,
-          78
+          78,
+          95
         ],
         "questions": []
       },
@@ -5609,7 +5643,8 @@
           55,
           56,
           75,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -6175,7 +6210,8 @@
           68,
           69,
           70,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -6291,7 +6327,8 @@
         "appearances": [
           26,
           47,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -6816,7 +6853,8 @@
           61,
           62,
           92,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -6963,7 +7001,8 @@
           78,
           81,
           86,
-          88
+          88,
+          95
         ],
         "questions": []
       },
@@ -7087,7 +7126,8 @@
         "appearances": [
           29,
           73,
-          77
+          77,
+          95
         ],
         "questions": []
       },
@@ -9555,7 +9595,8 @@
         "appearances": [
           54,
           55,
-          73
+          73,
+          95
         ],
         "questions": []
       },
@@ -11022,6 +11063,14 @@
           {
             "key": "role",
             "value": "Times the strike; brokers the Carnival alliance behind Augustus's back"
+          },
+          {
+            "key": "powers",
+            "value": "Blue foresight + Violet skip-forward; Ryan is uninteractable within it"
+          },
+          {
+            "key": "dynamic",
+            "value": "Flawless combat synergy with Ryan; mutual flirting"
           }
         ],
         "ties": [
@@ -11056,6 +11105,14 @@
           {
             "to": "mr-see-through",
             "rel": "knows Shroud's identity; uneasy allies"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "battle partner and growing romantic interest"
+          },
+          {
+            "to": "acid-rain",
+            "rel": "hard-counters and captures her"
           }
         ],
         "appearances": [
@@ -11065,7 +11122,8 @@
           91,
           92,
           93,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -12013,7 +12071,8 @@
           }
         ],
         "appearances": [
-          77
+          77,
+          95
         ],
         "questions": []
       },
@@ -12101,7 +12160,8 @@
           }
         ],
         "appearances": [
-          77
+          77,
+          95
         ],
         "questions": []
       },
@@ -12382,7 +12442,8 @@
           80,
           82,
           91,
-          94
+          94,
+          95
         ],
         "questions": []
       },
@@ -12949,6 +13010,50 @@
         ],
         "appearances": [
           93
+        ],
+        "questions": []
+      },
+      {
+        "id": "pale-guy",
+        "kind": "character",
+        "name": "Pale Guy",
+        "summary": "CH95: a minor Meta-Gang Psycho at the Junkyard bunker, glimpsed trapped in one of Len's water spheres during the raid (alongside Fuckface) as she assaults the base from its sea access. A background gang member, not a major combatant.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Minor Meta-Gang Psycho, bubbled by Len in the raid"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-meta-gang",
+            "rel": "member"
+          }
+        ],
+        "appearances": [
+          95
+        ],
+        "questions": []
+      },
+      {
+        "id": "fuckface",
+        "kind": "character",
+        "name": "Fuckface",
+        "summary": "CH95: a minor Meta-Gang Psycho at the Junkyard bunker, seen captured in one of Len's water spheres during the raid (alongside Pale Guy). A background gang member with a crude name, not a major combatant.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Minor Meta-Gang Psycho, bubbled by Len in the raid"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-meta-gang",
+            "rel": "member"
+          }
+        ],
+        "appearances": [
+          95
         ],
         "questions": []
       }
@@ -15084,6 +15189,10 @@
           {
             "chapter": 94,
             "summary": "CH94 'Cheat Code' (May 10th): Ryan executes the revised loop. He preempts Psyshock's Meta-Gang raid on the orphanage, freezing time to bubble Mosquito and Mongrel and huffing Psyshock full of Bliss in under a minute, then captures them for Len's crush-depth underwater asylum instead of killing them. His Avengers assemble (Len, the Panda, Shroud) and forge a temporary alliance with Livia's team (Queen Crimson, Fortuna, Cancel) to destroy the Meta-Gang's cache of Mechron weapons before Adam the Ogre can use it. Ryan's key gambit: deploy Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe. Livia (who reveals she knows Shroud's identity) times the strike from Ryan's intel, Cancel's execution of Psyshock to coincide with the Junkyard assault, and the team drives out to attack the bunker."
+          },
+          {
+            "chapter": 95,
+            "summary": "CH95 'Double Date': the Junkyard raid. Ryan masks the team's approach with Ghoul's severed foot so the Land mistakes the Plymouth Fury for her returning tenant. On Livia's cue Cancel executes Psyshock, freeing his thralls and sowing chaos. Ryan, Livia, the Panda, Shroud, Fortuna and Len blitz the base: Fortuna's luck bubbles the Reptilian, Livia's foresight hard-counters and captures Acid Rain (Helen), and Shroud flies Fortuna clear of the Land's terrakinesis. Ryan and Livia fight in flawless synergy (flirting mid-battle) to breach the blast door, which the Land seals behind them, trapping them inside. Len assaults from the sea access. The team reaches the recreational atrium and comes face-to-face with Adam the Ogre, Sarin and Frank the Mad, Adam wielding a salvaged Mechron cannon."
           }
         ],
         "entities": [
@@ -15118,13 +15227,20 @@
           "mongrel",
           "the-meta-gang",
           "mechron",
-          "the-land"
+          "the-land",
+          "acid-rain",
+          "the-reptilian",
+          "gemini",
+          "sarin",
+          "frank-the-mad",
+          "ink-machine",
+          "rakshasa"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 220,
+    "entities": 222,
     "plotlines": 104,
     "books": 1
   }

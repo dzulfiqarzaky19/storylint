@@ -13810,6 +13810,116 @@
         }
       ],
       "chapter": 94
+    },
+    {
+      "name": "Pale Guy",
+      "kind": "character",
+      "summary": "CH95: a minor Meta-Gang Psycho at the Junkyard bunker, glimpsed trapped in one of Len's water spheres during the raid (alongside Fuckface) as she assaults the base from its sea access. A background gang member, not a major combatant.",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Minor Meta-Gang Psycho, bubbled by Len in the raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 95
+    },
+    {
+      "name": "Fuckface",
+      "kind": "character",
+      "summary": "CH95: a minor Meta-Gang Psycho at the Junkyard bunker, seen captured in one of Len's water spheres during the raid (alongside Pale Guy). A background gang member with a crude name, not a major combatant.",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Minor Meta-Gang Psycho, bubbled by Len in the raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 95
+    },
+    {
+      "name": "Acid Rain",
+      "kind": "character",
+      "summary": "CH95: real name Helen. A Meta-Gang teleporter-assassin who conjures corrosive toxic clouds/raindrops and fights with knives, guarding the Junkyard bunker's tunnel. She flanks and nearly guts Ryan (whom she can't touch during Livia's skip since he phases out), holes his bowler hat with acid, and is finally caught when Livia, predicting her teleport with her Blue foresight, waits and bubbles her in a water sphere that follows her even as she rolls down a trash pile.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Helen"
+        },
+        {
+          "key": "defeat",
+          "value": "Water-bubbled after Livia predicts her teleport"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "outpredicted and captured by her"
+        }
+      ],
+      "chapter": 95
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH95 'Double Date': in the field for the Junkyard raid, Livia proves a devastating partner. Her Blue foresight lets her hard-counter Acid Rain (predicting each teleport) and aim borrowed weapons; her secondary Violet 'skip forward' power freezes everyone into sleepwalking predestined actions while she acts freely (Ryan alone is uninteractable in it, so Acid Rain's knife phased through him). She and Ryan fight in flawless synergy against drones and Psychos, flirting mid-battle ('Only if you conquer France for our honeymoon'), and float the idea of a vacation loop together. She warns the Land (a Yellow/Orange with area-dominion) hard-counters Fortuna's luck.",
+      "facts": [
+        {
+          "key": "powers",
+          "value": "Blue foresight + Violet skip-forward; Ryan is uninteractable within it"
+        },
+        {
+          "key": "dynamic",
+          "value": "Flawless combat synergy with Ryan; mutual flirting"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "battle partner and growing romantic interest"
+        },
+        {
+          "to": "Acid Rain",
+          "rel": "hard-counters and captures her"
+        }
+      ],
+      "chapter": 95
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH95: leads the Junkyard raid, masking their approach with Ghoul's severed foot (so the Land mistakes the car for her returning tenant), then blitzing the base with Livia, the Panda, Shroud, Fortuna and Len. Cancel's execution of Psyshock frees the thralls and sows chaos; the crew defeats the Reptilian, Acid Rain and the drones and breaches the blast door, trapped inside with Adam, Sarin and Frank waiting. Emotionally, Ryan settles that he and Len are now family (brother-sister), not romance, and for the first time in ages wonders what he wants from his life now that friends can remember him, sensing Livia is the key.",
+      "facts": [
+        {
+          "key": "tactic",
+          "value": "Ghoul's foot masks the car from the Land's area-sense"
+        },
+        {
+          "key": "arc",
+          "value": "Accepts Len as family; senses Livia is his future"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "intuits she is key to his future"
+        },
+        {
+          "to": "Len",
+          "rel": "reconciled as family, not lovers"
+        }
+      ],
+      "chapter": 95
     }
   ],
   "plotObservations": [
@@ -15411,6 +15521,30 @@
         "The Land"
       ],
       "chapter": 94
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH95 'Double Date': the Junkyard raid. Ryan masks the team's approach with Ghoul's severed foot so the Land mistakes the Plymouth Fury for her returning tenant. On Livia's cue Cancel executes Psyshock, freeing his thralls and sowing chaos. Ryan, Livia, the Panda, Shroud, Fortuna and Len blitz the base: Fortuna's luck bubbles the Reptilian, Livia's foresight hard-counters and captures Acid Rain (Helen), and Shroud flies Fortuna clear of the Land's terrakinesis. Ryan and Livia fight in flawless synergy (flirting mid-battle) to breach the blast door, which the Land seals behind them, trapping them inside. Len assaults from the sea access. The team reaches the recreational atrium and comes face-to-face with Adam the Ogre, Sarin and Frank the Mad, Adam wielding a salvaged Mechron cannon.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Fortuna",
+        "Mr. See-Through",
+        "The Panda",
+        "Len",
+        "Cancel",
+        "Psyshock",
+        "Acid Rain",
+        "The Reptilian",
+        "The Land",
+        "Gemini",
+        "Adam the Ogre",
+        "Sarin",
+        "Frank the Mad",
+        "Ink Machine",
+        "Rakshasa"
+      ],
+      "chapter": 95
     }
   ]
 }
