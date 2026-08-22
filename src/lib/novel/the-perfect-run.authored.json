@@ -4434,6 +4434,108 @@
         }
       ],
       "chapter": 45
+    },
+    {
+      "name": "The Bahamut and Kujata",
+      "kind": "lore",
+      "summary": "Mechron's twin orbital laser super-weapons. The Kujata was destroyed at Sarajevo, but the Bahamut escaped into high orbit as an unfired doomsday sword. This loop the Meta, having finally unlocked Mechron's bunker and reached its Orbital Communications Center, fire the Bahamut on New Rome: pillars of light incinerate the city, collapse Mount Augustus into a crater, and vaporize the Dynamis and Il Migliore towers, an apocalyptic strike Adam achieves by throwing his own desperate men into the meat-grinder.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Mechron's twin orbital laser satellites; Kujata downed at Sarajevo"
+        },
+        {
+          "key": "note",
+          "value": "Bahamut escaped to orbit as an unfired doomsday weapon"
+        },
+        {
+          "key": "note",
+          "value": "Fired on New Rome by the Meta via the bunker's Orbital Comms Center"
+        },
+        {
+          "key": "note",
+          "value": "Levels the city, Mount Augustus, and the Dynamis/Il Migliore towers"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "built by"
+        },
+        {
+          "to": "The Meta",
+          "rel": "fired by"
+        },
+        {
+          "to": "Mechron's Bunker",
+          "rel": "controlled from"
+        }
+      ],
+      "chapter": 46
+    },
+    {
+      "name": "The Land",
+      "kind": "character",
+      "summary": "A Psycho of the Meta-Gang whose rumored true form is revealed at the Junkyard: a misshapen, mouthless humanoid of solid dirt with baby-like short legs, a huge hairless head, and glowing yellow eyes, like a parody of an Area 51 alien. Her geokinesis lets her fuse with and animate an area of ground (raising stone spikes, flying platforms), but her power seems inversely proportional to range, so fusing with a large area costs precision. She sheds no blood and survives being cut in half, her upper half still crawling, until Ryan's rats swarm her.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Meta-Gang Psycho; true form a mouthless dirt humanoid"
+        },
+        {
+          "key": "note",
+          "value": "Geokinetic: fuses with and animates the ground"
+        },
+        {
+          "key": "note",
+          "value": "Power inversely proportional to range (area vs precision)"
+        },
+        {
+          "key": "note",
+          "value": "Bloodless; survives bisection, crawls on"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta",
+          "rel": "member"
+        }
+      ],
+      "chapter": 47
+    },
+    {
+      "name": "Big Fat Adam",
+      "kind": "character",
+      "summary": "Hannifat Lecter, the Meta-Gang's leader ('the Ogre'): a jovial, cannibalistic sociopath whose skin hardens into a diamond-scale carbon shell and who stores weapons (spiked chains, Elixirs) in his stomach. After ~15 years of Elixir abuse his cellular degeneration outpaces the cure and his powers are going haywire; he is dying. He raided Mechron's bunker seeking a cure but, thwarted by Ryan killing Psyshock (only partial mainframe control), he instead seized the orbital Bahamut and torched New Rome out of pure spite, a Jonestown-style sendoff: if he must die, no one gets to be happy without him. He blinds himself charging Ryan and tries to force-feed Ryan an Elixir ('like father, like son') before Vulcan's rescue.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Hannifat Lecter; Meta-Gang leader, 'the Ogre'"
+        },
+        {
+          "key": "note",
+          "value": "Diamond-carbon skin; stores weapons/Elixirs in his gut"
+        },
+        {
+          "key": "note",
+          "value": "Dying: 15 years of Elixir abuse, powers going haywire"
+        },
+        {
+          "key": "note",
+          "value": "Torched New Rome as a spiteful Jonestown sendoff"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta",
+          "rel": "leader"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "nemesis"
+        }
+      ],
+      "chapter": 47
     }
   ],
   "plotObservations": [
@@ -4993,6 +5095,18 @@
         "Vulcan"
       ],
       "chapter": 45
+    },
+    {
+      "title": "While Rome Burns",
+      "beat": "Ryan reaches the Junkyard, blaming himself for leaving Mechron's bunker for the Meta to seize. He finds the five surviving Psychos (Adam, Frank, Acid Rain, Sarin, and the dirt-formed Land) holding a rock concert beneath the risen orbital-control tower as New Rome burns. Adam gloats that he tracked the sabotage back to Ryan/'Cesare,' reveals he is dying as his Elixir-abused powers go haywire, and that, denied a cure by Psyshock's death, he fired the Bahamut out of pure Jonestown spite, then threatens Len's underwater orphanage. Ryan attacks, unleashing the plushie on Acid Rain, blinding Adam, and killing the Land and Sarin, but is caught between Adam's chain and the Land and nearly force-fed an Elixir, until Vulcan, Lanka and Jamie crash in to rescue him.",
+      "entities": [
+        "Ryan Romano",
+        "Big Fat Adam",
+        "The Land",
+        "Vulcan",
+        "The Meta"
+      ],
+      "chapter": 47
     }
   ]
 }
