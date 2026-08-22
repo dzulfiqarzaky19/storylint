@@ -69,6 +69,14 @@ export default function ResearchIndex({
   // The thread whose name is being edited inline (double-click a row), or null.
   // Only one row edits at a time; committing/cancelling clears it back to null.
   const [editingId, setEditingId] = useState<string | null>(null);
+  // Optimistic rename overrides {threadId: newTitle}. The rendered title comes
+  // from the server `threads` prop, refreshed via router.refresh() after the
+  // rename persists — but that refresh is a round-trip that lags (and under
+  // full-suite load can lag past a test's wait), so the row would briefly snap
+  // back to the stale prop title. Mirroring the new title here shows it the
+  // instant Enter commits, independent of refresh timing; once the refreshed
+  // prop carries the same title the override is simply equal and harmless.
+  const [renamed, setRenamed] = useState<Record<string, string>>({});
   // Thread pending deletion (title kept for the dialog copy), or null when the
   // danger ConfirmModal is closed. Replaces the raw window.confirm so the delete
   // reads as part of the app (matches the wiki's delete flows).
@@ -95,7 +103,9 @@ export default function ResearchIndex({
       </button>
 
       <ul id={panelId} className={styles.panel}>
-        {threads.map((t) => (
+        {threads.map((t) => {
+          const shownTitle = renamed[t.id] ?? t.title;
+          return (
           <li key={t.id}>
             <div
               className={
@@ -108,7 +118,7 @@ export default function ResearchIndex({
                 <input
                   className={styles.rename}
                   aria-label="thread name"
-                  defaultValue={t.title}
+                  defaultValue={shownTitle}
                   autoFocus
                   // Enter commits the rename; Escape abandons it. The row swaps
                   // back to a <button> either way (the spec's threadRows selector
@@ -116,7 +126,10 @@ export default function ResearchIndex({
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       const next = e.currentTarget.value.trim();
-                      if (next) onRename(t.id, next);
+                      if (next) {
+                        setRenamed((m) => ({ ...m, [t.id]: next }));
+                        onRename(t.id, next);
+                      }
                       setEditingId(null);
                     } else if (e.key === "Escape") {
                       setEditingId(null);
@@ -138,7 +151,7 @@ export default function ResearchIndex({
                   onClick={() => onSelect(t.id)}
                   onDoubleClick={onRename ? () => setEditingId(t.id) : undefined}
                 >
-                  <span className={styles.itemName}>{t.title}</span>
+                  <span className={styles.itemName}>{shownTitle}</span>
                   {t.subtitle ? (
                     <span className={styles.itemNote}>{t.subtitle}</span>
                   ) : null}
@@ -148,16 +161,19 @@ export default function ResearchIndex({
                 <button
                   type="button"
                   className={styles.trash}
-                  aria-label={`Delete thread "${t.title}"`}
+                  aria-label={`Delete thread "${shownTitle}"`}
                   title="Delete thread"
-                  onClick={() => setPendingDelete({ id: t.id, title: t.title })}
+                  onClick={() =>
+                    setPendingDelete({ id: t.id, title: shownTitle })
+                  }
                 >
                   <TrashIcon />
                 </button>
               ) : null}
             </div>
           </li>
-        ))}
+          );
+        })}
         {onCreate ? (
           <li className={styles.createRow}>
             <button
