@@ -429,6 +429,14 @@
           {
             "key": "alibi",
             "value": "Uses Incognito as a nanite-leashed decoy"
+          },
+          {
+            "key": "plan",
+            "value": "Perfect Run must dismantle Augustus's factory + org in quick succession"
+          },
+          {
+            "key": "recruits",
+            "value": "Leo Hargraves joins the Antarctica team; kids left with Simon"
           }
         ],
         "ties": [
@@ -707,6 +715,14 @@
           {
             "to": "augustus",
             "rel": "vows to break and imprison, not kill"
+          },
+          {
+            "to": "livia",
+            "rel": "keeps contact by burner phone; she teases an in-person secret"
+          },
+          {
+            "to": "leo-hargraves",
+            "rel": "recruited for the Antarctica expedition"
           }
         ],
         "appearances": [
@@ -813,7 +829,8 @@
           105,
           106,
           107,
-          108
+          108,
+          109
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1207,7 +1224,8 @@
           103,
           104,
           105,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -2263,7 +2281,8 @@
           90,
           91,
           92,
-          93
+          93,
+          109
         ],
         "questions": []
       },
@@ -2960,7 +2979,8 @@
           100,
           101,
           103,
-          105
+          105,
+          109
         ],
         "questions": []
       },
@@ -3705,7 +3725,8 @@
           21,
           22,
           39,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -3734,6 +3755,14 @@
           {
             "key": "note",
             "value": "Marches on Rust Town's junkyard"
+          },
+          {
+            "key": "real name",
+            "value": "Silvio, Augustus's brother and Livia's uncle"
+          },
+          {
+            "key": "disposition",
+            "value": "Wants to go legit; searched for Len's base but found nothing"
           }
         ],
         "ties": [
@@ -3760,12 +3789,21 @@
           {
             "to": "new-rome",
             "rel": "devastates in the war"
+          },
+          {
+            "to": "augustus",
+            "rel": "his brother, who tasked him against Len's base"
+          },
+          {
+            "to": "livia",
+            "rel": "her uncle, whom she'd spare"
           }
         ],
         "appearances": [
           10,
           38,
-          69
+          69,
+          109
         ],
         "questions": []
       },
@@ -5891,7 +5929,8 @@
           99,
           106,
           107,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -9310,6 +9349,10 @@
           {
             "key": "turning point",
             "value": "Defects: cuts Mars's chains to save Felix rather than kill him"
+          },
+          {
+            "key": "fate",
+            "value": "Killed with Ki-jung by Pluto for defecting (restorable by loop)"
           }
         ],
         "ties": [
@@ -9336,6 +9379,14 @@
           {
             "to": "mars",
             "rel": "cuts his chains, turning on the Olympian"
+          },
+          {
+            "to": "pluto",
+            "rel": "kills him and Ki-jung for the defection"
+          },
+          {
+            "to": "ki-jung",
+            "rel": "dies alongside her"
           }
         ],
         "appearances": [
@@ -9347,7 +9398,8 @@
           42,
           96,
           106,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -10927,6 +10979,14 @@
           {
             "key": "note",
             "value": "Gifts Ryan Nietzsche's 'Thus Spoke Zarathustra' (eternal recurrence)"
+          },
+          {
+            "key": "role",
+            "value": "Walls off Monaco; building a new French Sixth Republic on the coast"
+          },
+          {
+            "key": "insight",
+            "value": "Guessed Ryan's time-loop long ago (gave him Zarathustra)"
           }
         ],
         "ties": [
@@ -10953,11 +11013,24 @@
           {
             "to": "the-resonators",
             "rel": "escape opened in his tunnel"
+          },
+          {
+            "to": "leo-hargraves",
+            "rel": "the fiery Genome patrolling his fence"
+          },
+          {
+            "to": "martine",
+            "rel": "his candidate to lead the new France"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "old friend who intuited his secret"
           }
         ],
         "appearances": [
           64,
-          79
+          79,
+          109
         ],
         "questions": []
       },
@@ -11020,7 +11093,8 @@
         ],
         "appearances": [
           64,
-          79
+          79,
+          109
         ],
         "questions": []
       },
@@ -11831,7 +11905,8 @@
           105,
           106,
           107,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -12185,7 +12260,8 @@
           69,
           71,
           72,
-          77
+          77,
+          109
         ],
         "questions": []
       },
@@ -13200,7 +13276,8 @@
           103,
           104,
           106,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -13856,7 +13933,8 @@
         "appearances": [
           96,
           106,
-          108
+          108,
+          109
         ],
         "questions": []
       },
@@ -14215,7 +14293,8 @@
         "appearances": [
           101,
           102,
-          103
+          103,
+          109
         ],
         "questions": []
       },
@@ -16488,6 +16567,10 @@
           {
             "chapter": 108,
             "summary": "CH108 'Go Daddy Go': the Strip chase climaxes. Wyvern, Wardrobe (whistle freezes all traffic), and Private Security aid Ryan and Felix against Mars and Sparrow; Ryan wields the Killer Rabbit Plushie as a laser and downs Mortimer. Felix, realizing Livia foresaw and staged his rescue, is bitter but alive. At the decisive moment Jamie - torn between his light-sword and his conscience - cuts Mars's grappling chains instead of Felix, defecting from the Augusti; Mars crashes, breaks his leg, and is buried under a rat horde. The group escapes onto Len's submarine via a Fortuna-luck glass ramp, Shroud having gotten Fortuna to safety. The very public fight pushes Dynamis and the Augusti toward open war, with Pluto watching them flee."
+          },
+          {
+            "chapter": 109,
+            "summary": "CH109 'Carnival Town': the submarine reaches Monaco on the way to Antarctica. By burner phone Ryan learns the aftermath - Livia is grounded, Dynamis and the Augusti near open war (Hector Manada may recall Alphonse), and Pluto killed Jamie and Ki-jung for defecting (Ryan will restore them by loop but hides it from Felix for now). He reunites with Simon, who has walled off the Carnival and is building a new French republic with Martine, long ago guessed Ryan's time-loop, agrees to foster the expedition's children, and knows Station Orpheon's history. Leo 'Sunshine' Hargraves joins the team as a fire-Genome ally for the ice. Ryan resolves his Perfect Run must dismantle Augustus's factory and organization in quick succession to minimize casualties; Livia teases an in-person secret."
           }
         ],
         "entities": [
@@ -16564,7 +16647,11 @@
           "sparrow",
           "wyvern",
           "wardrobe",
-          "pluto"
+          "pluto",
+          "simon",
+          "neptune",
+          "martine",
+          "little-sarah"
         ]
       }
     ]

@@ -15380,6 +15380,110 @@
         }
       ],
       "chapter": 108
+    },
+    {
+      "name": "Jamie",
+      "kind": "character",
+      "summary": "CH109 'Carnival Town': the cost of his defection - Pluto, unable to reach Ryan and Felix on the open sea, hunts down Jamie and Ki-jung instead (they'd tried to flee with Sphere). They fight back but her death-power kills with certainty against any non-Yellow, non-causality-breaking Genome, and both die. Ryan will restore them next loop but grieves that they chose conscience over the organization knowing it was a death sentence. Livia begs him not to tell Felix yet.",
+      "facts": [
+        {
+          "key": "fate",
+          "value": "Killed with Ki-jung by Pluto for defecting (restorable by loop)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Pluto",
+          "rel": "kills him and Ki-jung for the defection"
+        },
+        {
+          "to": "Ki-jung",
+          "rel": "dies alongside her"
+        }
+      ],
+      "chapter": 109
+    },
+    {
+      "name": "Neptune",
+      "kind": "character",
+      "summary": "CH109: named as Silvio, Livia's uncle and Augustus's brother, the Augusti water-elemental. Unlike his violent siblings he wants to go legit and avoid trouble; Augustus sent him to destroy Len's underwater facility but he found nothing (the habitats had dispersed and followed the submarine). Livia would rather see him spared, as he isn't looking to cause harm.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Silvio, Augustus's brother and Livia's uncle"
+        },
+        {
+          "key": "disposition",
+          "value": "Wants to go legit; searched for Len's base but found nothing"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "his brother, who tasked him against Len's base"
+        },
+        {
+          "to": "Livia",
+          "rel": "her uncle, whom she'd spare"
+        }
+      ],
+      "chapter": 109
+    },
+    {
+      "name": "Simon",
+      "kind": "character",
+      "summary": "CH109: reunited on Monaco's shore three days after the New Rome chase. The Monaco survivor (ex-French Direction du Renseignement Militaire) has, as promised, walled the Carnival off with fences and spiked ditches (with Leo Hargraves patrolling as a fiery deterrent) and is knitting coastal settlements into a new Sixth Republic of France, with Martine running for president. A crack shot from a decade of gunning clowns, he greets Ryan warmly. He long ago intuited Ryan's time-loop secret (gifting him Nietzsche's 'Thus Spoke Zarathustra' for the 'Eternal Recurrence'). He agrees to run daycare for the expedition's children (Little Sarah) and knows Station Orpheon's story from his intelligence days.",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Walls off Monaco; building a new French Sixth Republic on the coast"
+        },
+        {
+          "key": "insight",
+          "value": "Guessed Ryan's time-loop long ago (gave him Zarathustra)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Leo Hargraves",
+          "rel": "the fiery Genome patrolling his fence"
+        },
+        {
+          "to": "Martine",
+          "rel": "his candidate to lead the new France"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "old friend who intuited his secret"
+        }
+      ],
+      "chapter": 109
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH109: on the three-day submarine voyage to Antarctica he keeps in touch with Livia by burner phone (she's grounded after his escape with Felix, tensions with Dynamis nearing open war, Hector Manada may recall Alphonse from Sicily). He learns Pluto killed Jamie and Ki-jung for defecting and resolves Felix must eventually know, but not yet. He and Livia backed up her mind-scan before the dinner as loop insurance. Reaching Monaco, he reunites with Simon, drops the children as Simon's wards, and gains Leo Hargraves as a fire-Genome ally for the icy expedition. He concludes his Perfect Run must topple Augustus's factory and organization fast to minimize casualties. Livia teases an important secret she'll only reveal in person.",
+      "facts": [
+        {
+          "key": "plan",
+          "value": "Perfect Run must dismantle Augustus's factory + org in quick succession"
+        },
+        {
+          "key": "recruits",
+          "value": "Leo Hargraves joins the Antarctica team; kids left with Simon"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "keeps contact by burner phone; she teases an in-person secret"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "recruited for the Antarctica expedition"
+        }
+      ],
+      "chapter": 109
     }
   ],
   "plotObservations": [
@@ -17240,6 +17344,28 @@
         "Livia"
       ],
       "chapter": 108
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH109 'Carnival Town': the submarine reaches Monaco on the way to Antarctica. By burner phone Ryan learns the aftermath - Livia is grounded, Dynamis and the Augusti near open war (Hector Manada may recall Alphonse), and Pluto killed Jamie and Ki-jung for defecting (Ryan will restore them by loop but hides it from Felix for now). He reunites with Simon, who has walled off the Carnival and is building a new French republic with Martine, long ago guessed Ryan's time-loop, agrees to foster the expedition's children, and knows Station Orpheon's history. Leo 'Sunshine' Hargraves joins the team as a fire-Genome ally for the ice. Ryan resolves his Perfect Run must dismantle Augustus's factory and organization in quick succession to minimize casualties; Livia teases an in-person secret.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Jamie",
+        "Ki-jung",
+        "Pluto",
+        "Felix",
+        "Simon",
+        "Leo Hargraves",
+        "Len",
+        "Mr. See-Through",
+        "Station Orpheon",
+        "The Alchemist",
+        "Neptune",
+        "Martine",
+        "Little Sarah"
+      ],
+      "chapter": 109
     }
   ]
 }
