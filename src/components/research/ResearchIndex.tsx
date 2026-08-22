@@ -36,6 +36,31 @@ function TrashIcon({ className }: { className?: string }) {
   );
 }
 
+// A visible rename affordance (double-click still works, but a phone has no
+// double-click and the gesture was undiscoverable). Same 16x16 stroke register
+// as TrashIcon so the two row buttons read as a pair; decorative, the button's
+// aria-label carries the meaning.
+function PencilIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M11 2.5 L13.5 5 L5.5 13 L2.5 13.5 L3 10.5 Z" />
+      <path d="M10 3.5 L12.5 6" />
+    </svg>
+  );
+}
+
 export interface ResearchIndexProps {
   threads: ResearchThreadRow[];
   selectedId: string;
@@ -148,6 +173,7 @@ export default function ResearchIndex({
                       : styles.item
                   }
                   aria-current={t.id === selectedId ? "true" : undefined}
+                  title={shownTitle}
                   onClick={() => onSelect(t.id)}
                   onDoubleClick={onRename ? () => setEditingId(t.id) : undefined}
                 >
@@ -157,10 +183,22 @@ export default function ResearchIndex({
                   ) : null}
                 </button>
               )}
+              {onRename && editingId !== t.id ? (
+                <button
+                  type="button"
+                  className={styles.rowAction}
+                  data-slot="rename"
+                  aria-label={`Rename thread "${shownTitle}"`}
+                  title="Rename thread"
+                  onClick={() => setEditingId(t.id)}
+                >
+                  <PencilIcon />
+                </button>
+              ) : null}
               {onDelete && threads.length > 1 && editingId !== t.id ? (
                 <button
                   type="button"
-                  className={styles.trash}
+                  className={`${styles.rowAction} ${styles.trash}`}
                   aria-label={`Delete thread "${t.title}"`}
                   title="Delete thread"
                   onClick={() =>

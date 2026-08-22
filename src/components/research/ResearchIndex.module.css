@@ -111,21 +111,21 @@
 }
 
 .itemRow .item {
-  padding-right: 44px;
+  padding-right: 80px;
 }
 
-/* Trash: hidden until the row is hovered or the button is focused, so the list
+/* Row actions (rename + delete) share one absolutely-placed cluster at the row's
+   right edge. Hidden until the row is hovered or a button is focused so the list
    stays calm; always shown on the active row and on touch (no hover). */
-.trash {
+.rowAction {
   position: absolute;
   top: 50%;
-  right: 4px;
   transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   background: none;
   border: none;
@@ -138,23 +138,32 @@
   transition: opacity 120ms ease;
 }
 
-.itemRow:hover .trash,
-.trash:focus-visible,
-.itemRowActive .trash {
+/* Rename sits left of delete; delete pins to the edge. */
+.rowAction[data-slot="rename"] {
+  right: 40px;
+}
+
+.trash {
+  right: 4px;
+}
+
+.itemRow:hover .rowAction,
+.rowAction:focus-visible,
+.itemRowActive .rowAction {
   opacity: 1;
 }
 
-.itemRowActive .trash {
+.itemRowActive .rowAction {
   color: var(--on-ink-muted);
 }
 
-.trash:hover {
+.rowAction:hover {
   background: rgba(0, 0, 0, 0.08);
   color: var(--accent-deep, var(--accent));
 }
 
 @media (hover: none) {
-  .trash {
+  .rowAction {
     opacity: 1;
   }
 }

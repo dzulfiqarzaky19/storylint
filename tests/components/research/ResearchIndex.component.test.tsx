@@ -44,7 +44,10 @@ describe("ResearchIndex optimistic rename override", () => {
       />,
     );
 
-    const row = screen.getByRole("button", { name: /new thread/i });
+    // Exact name: the row's select button is "New thread"; the sibling rename
+    // affordance is 'Rename thread "New thread"', so a loose /new thread/ would
+    // match both. The row is the exact-name button.
+    const row = screen.getByRole("button", { name: /^new thread$/i });
     await user.dblClick(row);
     const input = screen.getByRole("textbox", { name: /thread name/i });
     await user.clear(input);
@@ -55,7 +58,7 @@ describe("ResearchIndex optimistic rename override", () => {
     expect(onRename).toHaveBeenCalledWith("t1", "Water magic notes");
     // ...and the row shows the new title immediately, with NO prop refresh.
     expect(
-      screen.getByRole("button", { name: /water magic notes/i }),
+      screen.getByRole("button", { name: /^water magic notes$/i }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: /^new thread$/i }),
