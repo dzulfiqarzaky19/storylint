@@ -7907,6 +7907,174 @@
         }
       ],
       "chapter": 67
+    },
+    {
+      "name": "Aunt Pluto",
+      "kind": "character",
+      "summary": "Refined: revealed as an Augusti Underboss and the godmother of Felix and Fortuna (and Livia's aunt), widowed, coldly professional. Her curse is confirmed as a Yellow-Genome reality warp: at close range it makes the world itself want the target dead (noose-branches, self-moving knives, exploding guns, collapsing ground, even priming Ryan's A-bomb over collateral damage), and she can also wield it DEFENSIVELY, raining wooden spears to guard herself. Studying Ryan's marker, she deduces it links to a second universe her curse cannot touch, meaning she can kill him repeatedly but never permanently. Fortuna's luck and Eugène-Henry's presence flicker yellow energy that challenges and neutralizes her power. She corners and nearly executes Felix until Fortuna turns on her at gunpoint.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti Underboss; godmother of Felix and Fortuna"
+        },
+        {
+          "key": "note",
+          "value": "Widowed; kills 'to spare' the family the guilt"
+        },
+        {
+          "key": "note",
+          "value": "Close-range curse makes reality itself kill the target"
+        },
+        {
+          "key": "note",
+          "value": "Can use the curse defensively (spears to shield herself)"
+        },
+        {
+          "key": "note",
+          "value": "Deduces Ryan's marker ties to an untouchable second universe"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "Underboss"
+        },
+        {
+          "to": "Felix",
+          "rel": "godmother/executioner"
+        },
+        {
+          "to": "Fortuna",
+          "rel": "godmother, betrayed by"
+        },
+        {
+          "to": "Livia",
+          "rel": "aunt"
+        }
+      ],
+      "chapter": 68
+    },
+    {
+      "name": "The Vamp",
+      "kind": "character",
+      "summary": "Refined: real name Karen Ricci. Her pheromone power conjures overwhelming desire (a 'perfect waifu' illusion) and lethal touch, but Ryan resists thanks to a lifetime tolerance to mind-altering substances. After a comedic seduction standoff, gunfights, and Night Terror's illusions, Ryan shoots her dead at the waterfall (feigning surrender to lure his gun down). She was killed after Night Terror, her body dragged down the falls.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Karen Ricci"
+        },
+        {
+          "key": "note",
+          "value": "Pheromone illusion of overwhelming desire; lethal touch"
+        },
+        {
+          "key": "note",
+          "value": "Ryan resists via drug-built tolerance"
+        },
+        {
+          "key": "note",
+          "value": "Feigns surrender; Ryan shoots her in the head"
+        },
+        {
+          "key": "note",
+          "value": "Killed at the waterfall alongside Night Terror"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Aunt Pluto",
+          "rel": "escort, slain apart from"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "killed by"
+        }
+      ],
+      "chapter": 68
+    },
+    {
+      "name": "Night Terror",
+      "kind": "character",
+      "summary": "Refined: real name Richard Pinkman ('Richie'). His darkness-illusion power conjures a target's worst fears with real harming force; against Ryan he summons the Monaco croupier-clowns, then a blood-drenched Len who taunts (in Ryan's OWN voice) that he never left Monaco and this is all a dying dream, the cruelest possible blow. The illusions die like their originals and vanish under time-stop, but reform when time resumes (unlike a mere ghost). Ryan finally pins him with a time-stop and shoots him twice in the head at the waterfall.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Richard Pinkman ('Richie')"
+        },
+        {
+          "key": "note",
+          "value": "Conjures worst-fear illusions with real harming force"
+        },
+        {
+          "key": "note",
+          "value": "Summoned Monaco clowns and a blood-drenched Len"
+        },
+        {
+          "key": "note",
+          "value": "Illusions reform after time-stop resumes"
+        },
+        {
+          "key": "note",
+          "value": "Killed by Ryan (two shots to the head)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Aunt Pluto",
+          "rel": "escort"
+        },
+        {
+          "to": "The Vamp",
+          "rel": "partner"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "killed by"
+        }
+      ],
+      "chapter": 68
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "Refined: Lucky Girl arrives at the waterfall, led by Eugène-Henry, in the pivotal moment. Her luck power flickers yellow energy that interferes with and neutralizes Pluto's death-curse, wrapping her in a golden halo that shields the wounded Felix by proximity. Confronted with the truth, that her own parents authorized godmother Pluto to execute Felix, she turns traitor, stepping between them and aiming her gold-plated gun at Pluto's head to defend her brother. The standoff ends on a cliffhanger of two gunshots.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Led to the scene by Eugène-Henry"
+        },
+        {
+          "key": "note",
+          "value": "Her luck neutralizes Pluto's death-curse (yellow interference)"
+        },
+        {
+          "key": "note",
+          "value": "Golden halo shields Felix by proximity"
+        },
+        {
+          "key": "note",
+          "value": "Learns her parents authorized Felix's execution"
+        },
+        {
+          "key": "note",
+          "value": "Turns traitor, aims her gun at godmother Pluto"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Felix",
+          "rel": "protects brother"
+        },
+        {
+          "to": "Aunt Pluto",
+          "rel": "turns against godmother"
+        },
+        {
+          "to": "Eugène-Henry",
+          "rel": "led by"
+        }
+      ],
+      "chapter": 68
     }
   ],
   "plotObservations": [
@@ -8809,6 +8977,23 @@
         "Len"
       ],
       "chapter": 67
+    },
+    {
+      "title": "Death Stranding",
+      "beat": "In the Valle Delle Ferriere woods, Ryan splits off from Felix to draw the single-target Pluto onto himself. He confronts the Vamp (Karen Ricci), resisting her seductive pheromones via drug tolerance, and Night Terror (Richard Pinkman), who conjures Monaco clowns and a horrifying blood-drenched Len taunting that Ryan never escaped Monaco. Ryan kills both at a waterfall. Pluto arrives and, studying his marker, realizes it links to a second universe her curse can't reach, she can kill him but never permanently. She unleashes her full curse: reality itself turns lethal (noose-branches, self-moving knife, exploding gun, his own primed A-bomb), collapsing the ground and burying Ryan in rubble. As she moves to execute him, Felix returns and is impaled by defensive spears; Pluto reveals their own parents authorized the hit. Eugène-Henry then appears, and Fortuna arrives, her luck flickering yellow energy that neutralizes Pluto's curse and shields Felix. Learning the truth, Fortuna turns traitor, aiming her gun at her godmother to defend her brother, and the chapter ends on two gunshots.",
+      "entities": [
+        "Ryan Romano",
+        "Felix",
+        "Fortuna",
+        "Aunt Pluto",
+        "The Vamp",
+        "Night Terror",
+        "Eugène-Henry",
+        "Len",
+        "Monaco",
+        "The Augusti"
+      ],
+      "chapter": 68
     }
   ]
 }
