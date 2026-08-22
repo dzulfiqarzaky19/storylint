@@ -831,7 +831,8 @@
           107,
           108,
           109,
-          110
+          110,
+          112
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1227,7 +1228,8 @@
           105,
           108,
           109,
-          110
+          110,
+          112
         ],
         "questions": []
       },
@@ -2076,6 +2078,14 @@
           {
             "key": "name hint",
             "value": "Called 'Janus' by Mars, possibly = Janus Augusti (unconfirmed)"
+          },
+          {
+            "key": "true nature",
+            "value": "An 'Orange' - his body has the properties of Adamantine (Orange World ur-metal)"
+          },
+          {
+            "key": "counters",
+            "value": "Conceptual/time powers bypass the metal (Frank, Livia's skip, Ryan's Black)"
           }
         ],
         "ties": [
@@ -2166,6 +2176,14 @@
           {
             "to": "janus-augusti",
             "rel": "shares the name 'Janus'; possibly the same man"
+          },
+          {
+            "to": "adamantine",
+            "rel": "his body's metal"
+          },
+          {
+            "to": "the-colored-worlds",
+            "rel": "an 'Orange' by power-source"
           }
         ],
         "appearances": [
@@ -2190,7 +2208,8 @@
           99,
           105,
           106,
-          107
+          107,
+          112
         ],
         "questions": []
       },
@@ -2301,7 +2320,8 @@
           92,
           93,
           109,
-          110
+          110,
+          112
         ],
         "questions": []
       },
@@ -2751,7 +2771,8 @@
           97,
           103,
           104,
-          110
+          110,
+          112
         ],
         "questions": []
       },
@@ -3002,7 +3023,8 @@
           105,
           109,
           110,
-          111
+          111,
+          112
         ],
         "questions": []
       },
@@ -3028,7 +3050,8 @@
           }
         ],
         "appearances": [
-          8
+          8,
+          112
         ],
         "questions": []
       },
@@ -3079,7 +3102,8 @@
         ],
         "appearances": [
           8,
-          83
+          83,
+          112
         ],
         "questions": []
       },
@@ -4101,7 +4125,8 @@
           96,
           97,
           102,
-          110
+          110,
+          112
         ],
         "questions": []
       },
@@ -6121,17 +6146,34 @@
           {
             "key": "note",
             "value": "Causes a manic creative fugue on first use"
+          },
+          {
+            "key": "nature",
+            "value": "A sapient, telepathic, child-like being that wants to possess a human host"
+          },
+          {
+            "key": "insight",
+            "value": "Elixir muteness is likely an intentional Alchemist control feature"
           }
         ],
         "ties": [
           {
             "to": "elixirs",
             "rel": "Blue variant"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "engineered/captured it in her lab"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "it fixates on him, begging to bond"
           }
         ],
         "appearances": [
           20,
-          100
+          100,
+          112
         ],
         "questions": []
       },
@@ -7529,7 +7571,8 @@
           88,
           95,
           96,
-          105
+          105,
+          112
         ],
         "questions": []
       },
@@ -13323,7 +13366,8 @@
           106,
           108,
           109,
-          110
+          110,
+          112
         ],
         "questions": []
       },
@@ -13583,7 +13627,8 @@
           88,
           104,
           105,
-          111
+          111,
+          112
         ],
         "questions": []
       },
@@ -13720,7 +13765,8 @@
           90,
           103,
           104,
-          110
+          110,
+          112
         ],
         "questions": []
       },
@@ -13914,7 +13960,8 @@
           }
         ],
         "appearances": [
-          93
+          93,
+          112
         ],
         "questions": []
       },
@@ -14564,6 +14611,70 @@
         ],
         "appearances": [
           111
+        ],
+        "questions": []
+      },
+      {
+        "id": "adamantine",
+        "kind": "concept",
+        "name": "Adamantine",
+        "summary": "CH112: Ryan's name (after the Greek myth-metal) for the ur-substance of the Orange World - the source-realm of all inorganic matter, a place without energy, life, time, or death. Augustus's power gives his body the properties of this alien metal, which finally explains him: it is why frozen time and Livia's time-skip can still touch him (adamantine ignores time, so a time-anomaly registers against it), why Frank the Mad's metal-absorption affected the 'invincible' warlord, and why Julie Costa's life-altering touch failed (his body doesn't register as 'alive'). It isn't a perfect defense - conceptual abilities (Frank, Ryan's Black power that killed Geist) bypass it, and reality slowly rejecting the foreign metal may be behind Augustus's imperceptible aging and tumor.",
+        "facts": [
+          {
+            "key": "origin",
+            "value": "The ur-metal of the Orange World (all inorganic matter, no time/life/death)"
+          },
+          {
+            "key": "weakness",
+            "value": "Conceptual powers (Frank, Ryan's Black, Livia's time-skip) still bypass it"
+          }
+        ],
+        "ties": [
+          {
+            "to": "augustus",
+            "rel": "his body has this metal's properties"
+          },
+          {
+            "to": "the-colored-worlds",
+            "rel": "the Orange World is its source realm"
+          }
+        ],
+        "appearances": [
+          112
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-colored-worlds",
+        "kind": "concept",
+        "name": "The Colored Worlds",
+        "summary": "CH112: the seven higher realms (the Ultimate Ones' domains) the Flux is drawn from, seen as holograms in the crashed ship. White = a shapeless immaculate dream-cloud where fleeting colored images (a red star, a green bird) appear and dissolve. Red = a vibrating nuclear storm around the first and greatest sun, itself shaped like a watching eye. Orange = a Rubik's cube of every substance (all metals, liquids, and unknown matters), source of all inorganic material, with Adamantine at a face's core. Yellow = a golden carnival of things that exist only in human dreams and imagination (cubic angels, many-legged demons, 2D worlds). Green = a living planet-cell of green slime, teeth-mountains, and blood-vessel forests. Blue = a sphere of all data/knowledge overseen by a supreme godmind. Violet/Purple = compressed space and mirrors under an inverted pyramid (death and time do not exist here). The Black is conspicuously absent from the display.",
+        "facts": [
+          {
+            "key": "count",
+            "value": "Seven displayed (White/Red/Orange/Yellow/Green/Blue/Violet); Black is missing"
+          },
+          {
+            "key": "nature",
+            "value": "The Ultimate Ones' realms; the source of Flux and all Elixir powers"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-flux",
+            "rel": "each realm's energy"
+          },
+          {
+            "to": "the-ultimate-ones",
+            "rel": "their domains"
+          },
+          {
+            "to": "adamantine",
+            "rel": "the Orange World's ur-metal"
+          }
+        ],
+        "appearances": [
+          112
         ],
         "questions": []
       }
@@ -16767,6 +16878,10 @@
           {
             "chapter": 111,
             "summary": "CH111 'Past Fragment: Origins of the Species' (Eva Fabre flashback, the setting's origin): stargazing near Station Orpheon, Eva witnesses a purple Thin-Place rift tear open and a kilometers-long Hegemony starship - fleeing a battle with rebel robot-ships - crash into Antarctica, sealing her inside its artificial pocket dimension. Inside the corpse-choked wreck (a civil war of scaled aliens vs their own freed robots, both marked with an M/omega sigil), a blue-Flux ooze engulfs her and splits her into ~10 quantum-echo copies (Eva-One the original). Jacking into the ship's biological overmind, she learns the whole cosmology: the Hegemony harvested Flux (Red/Blue/Orange/Green/Yellow/Violet/White; Black shunned) from the Ultimate Ones' colored realms via towers, conquered its universe enslaving worlds (a past Earth included), then tried to enslave the Ultimate Ones' formless messengers - drawing the punishment (free-willed robots, Black Flux rot) that collapsed it. The last Lord of Science fled via a Reality-Drive into Earth's reality and crashed here. Eva resolves to keep the tech from all governments and uplift humanity into a 'master race' herself - the birth of the Alchemist."
+          },
+          {
+            "chapter": 112,
+            "summary": "CH112 'The Thing': the team enters the crashed Hegemony ship. Ryan confirms it is alien ('Reptilians') and notices his Black Flux now cracks the fabric of this Thin Place - hinting his Black power might even kill energy or Elixirs. In the dome they find holograms of the seven Colored Worlds (Black missing) and, crucially, recognize Augustus's body-metal in the Orange World's substance-cube: Augustus is 'an Orange,' his flesh made of Adamantine, the ur-metal of a realm without time/life/death - which explains why time-stop, Livia's skip, and Frank can touch the 'invincible' warlord while Julie Costa's life-touch never registered him. In the Elixir lab (the likely birthplace of Elixirs) they find seven vats and Wonderboxes; the Panda cracks the Alchemist's password by psych-profiling her; the Blue Elixir turns out to be a sapient, telepathic, possession-hungry being (muteness is the Alchemist's deliberate control feature). Then the captive Elixirs flood with fear as an alien with a green visor approaches from the dark corridor."
           }
         ],
         "entities": [
@@ -16854,13 +16969,17 @@
           "the-hegemony",
           "the-ultimate-ones",
           "the-flux",
-          "reality-drive"
+          "reality-drive",
+          "adamantine",
+          "the-colored-worlds",
+          "wonderbox",
+          "elixirs"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 240,
+    "entities": 242,
     "plotlines": 104,
     "books": 1
   }

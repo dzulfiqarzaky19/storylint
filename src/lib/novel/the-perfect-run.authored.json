@@ -15678,6 +15678,114 @@
         }
       ],
       "chapter": 111
+    },
+    {
+      "name": "Adamantine",
+      "kind": "concept",
+      "summary": "CH112: Ryan's name (after the Greek myth-metal) for the ur-substance of the Orange World - the source-realm of all inorganic matter, a place without energy, life, time, or death. Augustus's power gives his body the properties of this alien metal, which finally explains him: it is why frozen time and Livia's time-skip can still touch him (adamantine ignores time, so a time-anomaly registers against it), why Frank the Mad's metal-absorption affected the 'invincible' warlord, and why Julie Costa's life-altering touch failed (his body doesn't register as 'alive'). It isn't a perfect defense - conceptual abilities (Frank, Ryan's Black power that killed Geist) bypass it, and reality slowly rejecting the foreign metal may be behind Augustus's imperceptible aging and tumor.",
+      "facts": [
+        {
+          "key": "origin",
+          "value": "The ur-metal of the Orange World (all inorganic matter, no time/life/death)"
+        },
+        {
+          "key": "weakness",
+          "value": "Conceptual powers (Frank, Ryan's Black, Livia's time-skip) still bypass it"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "his body has this metal's properties"
+        },
+        {
+          "to": "The Colored Worlds",
+          "rel": "the Orange World is its source realm"
+        }
+      ],
+      "chapter": 112
+    },
+    {
+      "name": "The Colored Worlds",
+      "kind": "concept",
+      "summary": "CH112: the seven higher realms (the Ultimate Ones' domains) the Flux is drawn from, seen as holograms in the crashed ship. White = a shapeless immaculate dream-cloud where fleeting colored images (a red star, a green bird) appear and dissolve. Red = a vibrating nuclear storm around the first and greatest sun, itself shaped like a watching eye. Orange = a Rubik's cube of every substance (all metals, liquids, and unknown matters), source of all inorganic material, with Adamantine at a face's core. Yellow = a golden carnival of things that exist only in human dreams and imagination (cubic angels, many-legged demons, 2D worlds). Green = a living planet-cell of green slime, teeth-mountains, and blood-vessel forests. Blue = a sphere of all data/knowledge overseen by a supreme godmind. Violet/Purple = compressed space and mirrors under an inverted pyramid (death and time do not exist here). The Black is conspicuously absent from the display.",
+      "facts": [
+        {
+          "key": "count",
+          "value": "Seven displayed (White/Red/Orange/Yellow/Green/Blue/Violet); Black is missing"
+        },
+        {
+          "key": "nature",
+          "value": "The Ultimate Ones' realms; the source of Flux and all Elixir powers"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Flux",
+          "rel": "each realm's energy"
+        },
+        {
+          "to": "The Ultimate Ones",
+          "rel": "their domains"
+        },
+        {
+          "to": "Adamantine",
+          "rel": "the Orange World's ur-metal"
+        }
+      ],
+      "chapter": 112
+    },
+    {
+      "name": "The Blue Elixir",
+      "kind": "item",
+      "summary": "CH112: found alive and sapient in a vat in the ship's Elixir lab. It is a blue ooze that speaks telepathically in French (the Alchemist's tongue), with the eager, boundary-blind tone of an overactive child, desperate to 'bond' - i.e. flood a homo sapiens' cells and possess/merge with them, promising to make its host smarter and happier. It cannot tell one human from another (hinting the captive Elixirs are still being conditioned) and turns cold when refused. Ryan deduces that Elixirs being MUTE in normal use is likely the Alchemist's deliberate design feature, not a bug - a talking, willful Elixir is far harder to control. The Elixirs share fear of 'them' when alien footsteps approach.",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "A sapient, telepathic, child-like being that wants to possess a human host"
+        },
+        {
+          "key": "insight",
+          "value": "Elixir muteness is likely an intentional Alchemist control feature"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "engineered/captured it in her lab"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "it fixates on him, begging to bond"
+        }
+      ],
+      "chapter": 112
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH112: his nature is finally explained. The team finds Augustus's body-metal matches a substance on the Orange World hologram - his power gives his flesh the properties of Adamantine, the ur-metal of a realm without time, life, or death (Sunshine calls him 'an Orange'). This resolves every anomaly: why time-stop and Livia's time-skip can still affect the 'invincible' warlord, why Frank the Mad's metal-absorption harmed him, why he neither eats nor breathes yet sleeps and ages, and why Julie Costa's life-touch never registered him as alive. Conceptual powers (Frank, Ryan's Geist-killing Black) remain his only known counters.",
+      "facts": [
+        {
+          "key": "true nature",
+          "value": "An 'Orange' - his body has the properties of Adamantine (Orange World ur-metal)"
+        },
+        {
+          "key": "counters",
+          "value": "Conceptual/time powers bypass the metal (Frank, Livia's skip, Ryan's Black)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adamantine",
+          "rel": "his body's metal"
+        },
+        {
+          "to": "The Colored Worlds",
+          "rel": "an 'Orange' by power-source"
+        }
+      ],
+      "chapter": 112
     }
   ],
   "plotObservations": [
@@ -17599,6 +17707,30 @@
         "Thin Places"
       ],
       "chapter": 111
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH112 'The Thing': the team enters the crashed Hegemony ship. Ryan confirms it is alien ('Reptilians') and notices his Black Flux now cracks the fabric of this Thin Place - hinting his Black power might even kill energy or Elixirs. In the dome they find holograms of the seven Colored Worlds (Black missing) and, crucially, recognize Augustus's body-metal in the Orange World's substance-cube: Augustus is 'an Orange,' his flesh made of Adamantine, the ur-metal of a realm without time/life/death - which explains why time-stop, Livia's skip, and Frank can touch the 'invincible' warlord while Julie Costa's life-touch never registered him. In the Elixir lab (the likely birthplace of Elixirs) they find seven vats and Wonderboxes; the Panda cracks the Alchemist's password by psych-profiling her; the Blue Elixir turns out to be a sapient, telepathic, possession-hungry being (muteness is the Alchemist's deliberate control feature). Then the captive Elixirs flood with fear as an alien with a green visor approaches from the dark corridor.",
+      "entities": [
+        "Ryan Romano",
+        "The Alchemist",
+        "Augustus",
+        "Adamantine",
+        "The Colored Worlds",
+        "The Blue Elixir",
+        "The Panda",
+        "Len",
+        "Sarin",
+        "Mr. See-Through",
+        "Leo Hargraves",
+        "Mr. Wave",
+        "Black Flux",
+        "Julie Costa",
+        "Frank the Mad",
+        "Wonderbox",
+        "Elixirs"
+      ],
+      "chapter": 112
     }
   ]
 }
