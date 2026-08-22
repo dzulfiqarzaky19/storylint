@@ -10774,6 +10774,304 @@
         }
       ],
       "chapter": 79
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH80 deepens Livia: on the Rust Town pier she confides in Ryan as the one person her foresight can't 'watch', so their moments feel genuine. She reveals her power shows up to six switchable futures reacting to her emotions/desires, sees ~a month ahead (unreliable further out, she couldn't foresee her father's cancer in time), and that processing all those realities at accelerated rate makes her feel like an outside observer of her own life, she knows everyone but never truly lived with them (the same loneliness as Ryan). She confirms Felix will never return to her by free will, so 'there was nothing between us'. She agrees to Ryan's plan: preserve memories via her time-leap (she won't overwrite her own mind with Dynamis tech, so Len's past self must be the one convinced), co-develop the Psycho cure (on condition she's involved at every step), and gleefully joins the Star Studios raid as the supervillain Ryan dubs 'Queen Crimson'. She asks Ryan to destroy Ischia's Bliss Factory on his way out and foresees Leo Hargraves and Dynamis attacking Rust Town.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Sees up to 6 switchable futures ~a month out; feels like an outside observer of her own life"
+        },
+        {
+          "key": "note",
+          "value": "Confirms Felix will never return by free will"
+        },
+        {
+          "key": "note",
+          "value": "Agrees to memory-preservation, Psycho cure (if involved throughout), and the raid"
+        },
+        {
+          "key": "note",
+          "value": "Foresees Leo Hargraves and Dynamis attacking Rust Town"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "kindred lonely ally"
+        },
+        {
+          "to": "Queen Crimson",
+          "rel": "adopts as raid alias"
+        },
+        {
+          "to": "Felix",
+          "rel": "unrequited"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Queen Crimson",
+      "kind": "identity",
+      "summary": "The supervillain alias Ryan coins for Livia Augusti when she insists on joining the Star Studios raid: a name he deems perfectly styled for her inexplicable time-leap power (she pitched 'Timestamp / Timezone / Time-Out / O'Clock' and he vetoed them all). To hide her identity from her father she'll wear a mask and use only her time-leap ability (her family alone knows its details). It debuts as her disguise for Ryan's planned takeover of Dynamis's Star Studios.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alias Ryan coins for Livia for the Star Studios raid"
+        },
+        {
+          "key": "note",
+          "value": "She keeps her face masked and uses only her time-leap ability"
+        },
+        {
+          "key": "note",
+          "value": "Ryan rejected her pitches (Timestamp, Time-Out, O'Clock)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "alias of"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "named by"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH80 shows Ryan's softened, matured worldview. He accepts Len as a friend rather than lover ('all I wished for was someone to remember me'), and declines Livia's suggestion to recreate his lost Jasmine across loops, fearing he'd obsess over his idea of her rather than the person (as he once did with Len). He commits to making the Psycho cure part of his final loop, 'I gave them hope; I don't want to disappoint it', extending mercy to Acid Rain, Mongrel, Frank, and Sarin as victims of their own powers, while still wanting Bloodstream dead. He plans to take Dynamis by going 'full supervillain': seize Star Studios, livestream Hector Manada's crimes, and recruit Vulcan's tech (bought with cooperation, not coercion) to boost his power and carry more minds across time.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Accepts friendship over romance with Len; refuses to recreate Jasmine across loops"
+        },
+        {
+          "key": "note",
+          "value": "Vows to fold the Psycho cure into his final loop"
+        },
+        {
+          "key": "note",
+          "value": "Plans a 'full supervillain' Star Studios takeover to expose Hector Manada"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "raid co-conspirator"
+        },
+        {
+          "to": "Len",
+          "rel": "friend, not lover"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "recruits for power-boost tech"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH80: to get closure, Len insists on the Lab Sixty-Six knockoff test despite Ryan's fears. Her theory: Dynamis didn't just capture her father, they 'packaged him, turned him into a product' -- inhuman and unforgivable even if it isn't truly him. When a droplet of her blood hits the Dynamis knockoff Elixir it SCREAMS, turns bloody red, and bloats into a twisted parody of Bloodstream's face reaching for its 'lost daughter'. Len relives her four-year-old trauma in raw terror, screaming and clawing her own cheeks bloody until Alchemo's flamethrowers incinerate the slime; Ryan holds her as she sobs. She still cannot answer what she'll do if her father is really alive in the lab.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Insists on the knockoff test for closure despite the risk"
+        },
+        {
+          "key": "note",
+          "value": "Frames Dynamis 'packaging' her father as inhuman"
+        },
+        {
+          "key": "note",
+          "value": "Relives her trauma when the knockoff reforms into Bloodstream"
+        },
+        {
+          "key": "note",
+          "value": "Can't yet decide what to do if her father lives"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "her father, packaged by Dynamis"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "comforted by"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "target of the raid"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "CH80 reveals Bloodstream's fate: Dynamis has kept Len's father in storage in Lab Sixty-Six for ~4 years and uses him as the raw material to mass-produce their knockoff Elixirs. A drop of Len's (his daughter's) blood makes a knockoff scream, turn red, bloat like Darkling devouring Adam, and form Bloodstream's screaming face, confirming he is the source. Whether anything curable remains after four years of Dr. Tyrano's exploitation is unknown; Ryan wants him dead and buried regardless.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Held in Lab Sixty-Six ~4 years as knockoff-Elixir raw material"
+        },
+        {
+          "key": "note",
+          "value": "Reacts to Len's blood by reforming his screaming face"
+        },
+        {
+          "key": "note",
+          "value": "Ryan wants him dead regardless of any cure"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "father of"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "stored in"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "exploited by Dynamis"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "The Knockoff Elixir",
+      "kind": "item",
+      "summary": "Dynamis's mass-produced counterfeit power Elixirs, achieving the same effect as Mechron's knockoffs by a different method. The 'Hercules' variant (green liquid, templated on Wyvern) is shown to be made from Bloodstream: exposed to Len's blood it screams and reforms into his face. Implication that horrifies Ryan: unknown numbers of New Romans have unknowingly drunk Elixirs made from a packaged human being, the scale of Hector Manada's crimes.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis counterfeit Elixirs; 'Hercules' variant templated on Wyvern"
+        },
+        {
+          "key": "note",
+          "value": "Made from Bloodstream; reacts to Len-blood by reforming his face"
+        },
+        {
+          "key": "note",
+          "value": "Many New Romans may have unknowingly consumed them"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "made from"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "produced by Dynamis"
+        },
+        {
+          "to": "Wyvern",
+          "rel": "power template"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Leo Hargraves",
+      "kind": "character",
+      "summary": "CH80: Livia's foresight increasingly places Leo Hargraves ('Sunshine') in Rust Town intending to attack Ryan, odds rising with time -- which would only happen if he learned of the bunker. Ryan links this to the glass-manipulator Mr. See-Through's ('Safelite') recent activity, suspecting Shroud pieced together the bunker's existence via former Psyshock thralls or Ryan's own presence among the Meta-Gang.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Foreseen coming to Rust Town to attack Ryan (only if he learns of the bunker)"
+        },
+        {
+          "key": "note",
+          "value": "Linked to Mr. See-Through/Shroud investigating Rust Town"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "foreseen attacker"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "may act on their intel"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Mr. See-Through",
+      "kind": "character",
+      "summary": "A glass-manipulating Shroud/Safelite operative ('Mr. See-Through') making increasingly frequent forays into Rust Town, though the Land's interference keeps his visits short. Ryan suspects he has been investigating the bunker -- possibly interrogating former Psyshock thralls -- and that his intel is why Leo Hargraves may soon strike Rust Town.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Glass-manipulating Shroud/Safelite operative"
+        },
+        {
+          "key": "note",
+          "value": "The Land's interference limits his time in Rust Town"
+        },
+        {
+          "key": "note",
+          "value": "Suspected of uncovering the bunker"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Shroud",
+          "rel": "operative of"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "feeds intel that may bring him"
+        }
+      ],
+      "chapter": 80
+    },
+    {
+      "name": "Alchemo",
+      "kind": "character",
+      "summary": "CH80: Alchemo runs the bunker's cure/enhancement lab, confirming Mosquito's nutrient-rich synthesized blood boosts his strength for ~an hour. Ready with ceiling flamethrowers as a failsafe, Alchemo incinerates the Bloodstream knockoff the instant it threatens Len, and chides Ryan for dragging the gentle Doll (Tea) into the raid.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Runs bunker cure/enhancement research"
+        },
+        {
+          "key": "note",
+          "value": "Confirms synthesized blood boosts Mosquito's strength ~1 hour"
+        },
+        {
+          "key": "note",
+          "value": "Torches the Bloodstream knockoff to protect Len"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "protects with flamethrowers"
+        },
+        {
+          "to": "Mosquito",
+          "rel": "enhances"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "bunker ally"
+        }
+      ],
+      "chapter": 80
     }
   ],
   "plotObservations": [
@@ -11983,6 +12281,34 @@
         "The Resonators"
       ],
       "chapter": 79
+    },
+    {
+      "title": "Lonely Together",
+      "beat": "On the Rust Town pier, Ryan and Livia bond over their mirrored isolation -- both know everyone around them yet are truly known by no one. Livia, having confirmed Felix will never love her back, agrees to Ryan's endgame: use her time-leap to preserve memories, co-develop a cure for the Psycho condition (on condition she's involved throughout), and disguise herself as the supervillain 'Queen Crimson' to join tomorrow's Star Studios raid. She warns that Leo Hargraves and Dynamis are converging on Rust Town in her visions.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Queen Crimson",
+        "Len",
+        "Leo Hargraves",
+        "Felix",
+        "Vulcan"
+      ],
+      "chapter": 80
+    },
+    {
+      "title": "The Screaming Knockoff",
+      "beat": "In the bunker lab, Len insists on testing whether Dynamis's knockoff Elixirs are made from her father. A drop of her blood makes the green 'Hercules' knockoff scream, turn bloody red, and bloat into Bloodstream's face reaching for its 'lost daughter'. Alchemo's flamethrowers incinerate it as Len relives her trauma, clawing her cheeks bloody, and Ryan holds her. The horror confirmed: Dynamis packaged Bloodstream into a product, and unknown numbers of New Romans have unknowingly drunk Elixirs made from a human being.",
+      "entities": [
+        "Len",
+        "Ryan Romano",
+        "Bloodstream",
+        "The Knockoff Elixir",
+        "Alchemo",
+        "Lab Sixty-Six",
+        "Hector Manada"
+      ],
+      "chapter": 80
     }
   ]
 }
