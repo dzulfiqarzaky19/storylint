@@ -4672,6 +4672,116 @@
         }
       ],
       "chapter": 48
+    },
+    {
+      "name": "Ryan's Armor",
+      "kind": "lore",
+      "summary": "The purple power armor Vulcan builds to focus and amplify Ryan's spacetime power, a 25kg servo-assisted exoskeleton (orange helmet lenses, urine-recycler) matching her own suit's design; Ryan memorizes its schematics to rebuild in future loops. Its purpose is to harvest the theoretical 'violet flux radiation' powering spacetime manipulators, letting Ryan attempt to physically open a rift to the Purple World rather than merely stop time. In the attempt, violet particles multiply exponentially inside the anomaly and pull Ryan bodily into the Purple World, but the armor keeps working inside stopped time even as the plan otherwise fails.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Vulcan-built purple exoskeleton to amplify Ryan's power"
+        },
+        {
+          "key": "note",
+          "value": "Harvests theoretical 'violet flux radiation'"
+        },
+        {
+          "key": "note",
+          "value": "Meant to open a physical rift to the Purple World"
+        },
+        {
+          "key": "note",
+          "value": "Ryan memorizes its schematics for future loops"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "built by"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "accesses"
+        },
+        {
+          "to": "Ryan's Power",
+          "rel": "amplifies"
+        }
+      ],
+      "chapter": 49
+    },
+    {
+      "name": "The Founders of Homo Novus",
+      "kind": "lore",
+      "summary": "Three near-identical figures (seemingly one actor voicing all) glimpsed by Ryan in his Purple World vision, phantoms of blue particles in a dark Antarctic dome. They speak of a crashed craft that 'warned' them, of mastering higher dimensions as mankind's destiny, and of ascending humanity from homo sapiens to 'homo novus' through genetic engineering, deliberately unleashing world-crumbling chaos 'well within our budget.' They are the apparent architects behind Elixirs and the Genome age, foreshadowing the true origin of powers.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Three blue-particle figures in an Antarctic dome"
+        },
+        {
+          "key": "note",
+          "value": "Speak of a crashed craft that 'warned' them"
+        },
+        {
+          "key": "note",
+          "value": "Aim to ascend humanity to 'homo novus' via genetic engineering"
+        },
+        {
+          "key": "note",
+          "value": "Apparent architects of Elixirs and the Genome age"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Blue World",
+          "rel": "channel"
+        },
+        {
+          "to": "Ryan's Power",
+          "rel": "revealed to"
+        }
+      ],
+      "chapter": 49
+    },
+    {
+      "name": "The Purple World",
+      "kind": "lore",
+      "summary": "The Violet dimension of spacetime, source of Ryan's looping power and the plushie's realm, a crossroads of impossible geometries, shifting spaces, and doors to other alien worlds. When Ryan physically enters it he sees a planet-sized living entity like an inverted pyramid covered in eye-shaped spheres, an 'ultimate one' that governs the Violet color, alongside a meadow of blood-soaked plushies that wave at him across time. Cosmology glimpsed here: each color-dimension has such a compassionate but narrow-minded 'ultimate' being, and Black alone cannot be safely harnessed because its paradox-creatures tear lower reality apart.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "The Violet dimension of spacetime; source of Ryan's power"
+        },
+        {
+          "key": "note",
+          "value": "A crossroads of impossible geometries and alien doors"
+        },
+        {
+          "key": "note",
+          "value": "Ruled by a planet-sized eye-covered 'ultimate one'"
+        },
+        {
+          "key": "note",
+          "value": "Home of the plushies; Black alone can't be safely harnessed"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan's Power",
+          "rel": "source of"
+        },
+        {
+          "to": "The Plushie",
+          "rel": "origin of"
+        },
+        {
+          "to": "The Darkness Beyond",
+          "rel": "parallels"
+        }
+      ],
+      "chapter": 49
     }
   ],
   "plotObservations": [
@@ -5256,6 +5366,19 @@
         "Alphonse Manada"
       ],
       "chapter": 48
+    },
+    {
+      "title": "Time and Again",
+      "beat": "In Vulcan's makeshift lab, Jasmine seals Ryan into the purple power armor for a desperate gambit: using it to open a physical rift to the Purple World so she can time-travel with him rather than be erased by the reset. They share a last kiss and pop-culture banter, and she makes him promise never to replace her or forget her. Ryan activates his power; violet particles multiply uncontrollably and pull him bodily into the Purple World, where he witnesses a vision of the homo-novus founders and their crashed craft, the color-dimension cosmology, a plushie meadow, and a planet-sized god-entity. Then the loop resets to May 8, 2020, in his restored car. Jasmine didn't make it through, but a haunting recording of his rooftop talk with Len plays over the Chronoradio. Ryan vows to keep his promise and complete the Perfect Run.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Ryan's Armor",
+        "The Purple World",
+        "The Founders of Homo Novus",
+        "Len Sabino"
+      ],
+      "chapter": 49
     }
   ]
 }
