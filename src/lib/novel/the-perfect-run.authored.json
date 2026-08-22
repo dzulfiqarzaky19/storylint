@@ -6755,6 +6755,258 @@
         }
       ],
       "chapter": 62
+    },
+    {
+      "name": "Hector Manada",
+      "kind": "character",
+      "summary": "Don Hector Manada, CEO of Dynamis, a pudgy gray-haired man resembling Pablo Escobar who lives modestly (a three-floor yellow-stone manor of Mesoamerican artifacts) and is found peacefully gardening when his sons come to depose him. A pragmatist, not a fanatic, he defends his 'outlast Augustus' strategy ('Augustus is just a gangster with cancer... let nature do its work'), scorns Alphonse's faith in miracle weapons (the Gravity Gun), and reveals he genuinely didn't know the Meta had a Mechron base. Faced with his sons' shares, proof, and army, and abandoned by his own guards, he surrenders with grim dignity ('After me, the flood') rather than die for nothing, choosing forced retirement over bloodshed. He is to be stripped of assets and confined Napoleon-style.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis CEO; pragmatic, Escobar-like, modest manor"
+        },
+        {
+          "key": "note",
+          "value": "Strategy: outlast the tumor-stricken Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Scorns miracle weapons; didn't know of the Mechron base"
+        },
+        {
+          "key": "note",
+          "value": "Surrenders to sons' coup rather than die pointlessly"
+        },
+        {
+          "key": "note",
+          "value": "Confined and stripped of power ('After me, the flood')"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "deposed CEO"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "father"
+        },
+        {
+          "to": "Blackthorn",
+          "rel": "father"
+        }
+      ],
+      "chapter": 63
+    },
+    {
+      "name": "Lab Sixty-Six",
+      "kind": "concept",
+      "summary": "A secret Dynamis facility that becomes the chapter's chilling revelation. Piecing together clues (Dynamis's knockoff Elixirs are a 'synthesized resource mimicking a true Elixir' that flooded the market only ~3 years ago; Dynamis force-took Len's blood and DNA and keeps her under surveillance; Enrique toured Lab Sixty-Six for two hours then immediately requested a transfer; a wish to 'compare samples from various Genome relatives'), Ryan and Len conclude Dynamis's knockoff Elixirs and their fixation on Len may stem from a surviving CLONE of Bloodstream, Len's father, harvested for genetic material. Len insists on going to Lab Sixty-Six for closure; Ryan dreads that the nightmare he thought ended (Sunshine burned Bloodstream to ash) may live on.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Secret Dynamis facility Enrique fled after two hours"
+        },
+        {
+          "key": "note",
+          "value": "Linked to knockoff Elixirs (synth resource mimicking Elixirs)"
+        },
+        {
+          "key": "note",
+          "value": "Knockoffs flooded the market only ~3 years ago"
+        },
+        {
+          "key": "note",
+          "value": "Ryan/Len suspect a surviving Bloodstream clone as the source"
+        },
+        {
+          "key": "note",
+          "value": "Explains Dynamis's obsession with Len's blood/DNA"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "secret facility of"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "suspected clone source"
+        },
+        {
+          "to": "Len",
+          "rel": "target of investigation"
+        }
+      ],
+      "chapter": 63
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "Ryan and Len's late adoptive/biological father, a violent Elixir addict who terrorized their childhood (Ryan feared returning to find Len dead) and was ultimately killed by Leo Hargraves, burned to ash in front of Ryan. In CH63 his ghost resurfaces horrifyingly: Ryan and Len suspect Dynamis's knockoff Elixirs, a 'synthesized resource mimicking a true Elixir' that appeared ~3 years ago, and Dynamis's obsession with Len's blood/DNA, point to a surviving CLONE of Bloodstream at Lab Sixty-Six being harvested for genetic material. Len (who 'never truly woke up' from his shadow) demands they investigate for closure; Ryan is terrified the nightmare he watched end may live on.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ryan and Len's abusive Elixir-addict father"
+        },
+        {
+          "key": "note",
+          "value": "Killed and burned to ash by Leo Hargraves"
+        },
+        {
+          "key": "note",
+          "value": "May survive as a Dynamis clone at Lab Sixty-Six"
+        },
+        {
+          "key": "note",
+          "value": "His blood may be the source of the knockoff Elixirs"
+        },
+        {
+          "key": "note",
+          "value": "Still haunts Len, holding her back"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "adoptive father"
+        },
+        {
+          "to": "Len",
+          "rel": "father"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "suspected clone site"
+        }
+      ],
+      "chapter": 63
+    },
+    {
+      "name": "Blackthorn",
+      "kind": "character",
+      "summary": "Enrique 'Blackthorn' Manada, now Dynamis VP under his brother, escorts Ryan out after the peaceful coup and delivers a pointed warning rather than a threat: he knows Len infiltrated the bunker and stole the braintech (a Meta member found bubbled, Psyshock's quarters ransacked), suspects Ryan's true allegiances (the Fortuna dinner, Mortimer's rescue), yet chooses to 'look the other way this once' because Ryan saved Dynamis. He fires Ryan from Il Migliore over his Augusti ties and urges him to flee New Rome with Len before the more ruthless Alphonse, who knows Len's base location, hunts them down. He once toured Lab Sixty-Six for two hours and immediately requested a transfer, a clue to its horror. He respects Ryan's potential but calls him the most dangerous man he's met short of Augustus.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Now Dynamis VP; escorts and warns (not threatens) Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Knows Len stole the braintech; looks the other way once"
+        },
+        {
+          "key": "note",
+          "value": "Fires Ryan from Il Migliore over Augusti ties"
+        },
+        {
+          "key": "note",
+          "value": "Urges Ryan and Len to flee before Alphonse hunts them"
+        },
+        {
+          "key": "note",
+          "value": "Toured Lab Sixty-Six, then immediately sought a transfer"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "VP"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "warns / respects"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "visited, fled"
+        }
+      ],
+      "chapter": 63
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Len Sabino, Ryan's Genius adoptive sister, who delivers the stolen braintech (a gray helmet with pylons, only a small part; the rest moved to Ryan's new room in her undersea base) and warmly insists Ryan is no longer homeless. Growing more optimistic and hopeful the braintech might let Ryan carry a consciousness across loops, she nonetheless spirals when the clues converge: recalling Dynamis force-took her blood and DNA, she and Ryan realize the knockoff Elixirs and Dynamis's fixation on her may trace to a surviving clone of her father Bloodstream at Lab Sixty-Six. With an iron gaze ('Not Riri, Ryan'), she refuses to flee without investigating for closure, unable to move on while his ghost may still live. Ryan likens her to a caged songbird too afraid to fly through the open door.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Delivers the stolen braintech; welcomes Ryan to her base"
+        },
+        {
+          "key": "note",
+          "value": "Hopes braintech can carry a mind across loops"
+        },
+        {
+          "key": "note",
+          "value": "Realizes Dynamis took her blood/DNA for a reason"
+        },
+        {
+          "key": "note",
+          "value": "Demands they check Lab Sixty-Six for closure on Bloodstream"
+        },
+        {
+          "key": "note",
+          "value": "A 'caged songbird' afraid to fly through the open door"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "adoptive sister"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "daughter / haunted by"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "insists on investigating"
+        }
+      ],
+      "chapter": 63
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "Augusti princess who phones Ryan after the raid, worried for the wounded Felix (whom she still loves though he's cut her off). She confirms she sent Mortimer to protect Ryan's group, tentatively trusting his 'we aren't enemies' claim, and offers Ryan the Killer Seven's vacant Violet slot (he declines). She confides raw grief, asking if Ryan has ever loved someone he can't let go, and hears the parallel in the Manada coup: the brothers freed themselves from their father, but her own father 'won't surrender with dignity.' She agrees to return Ryan's teleporting cat.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Sent Mortimer to protect Ryan's team"
+        },
+        {
+          "key": "note",
+          "value": "Offers Ryan the Killer Seven's open Violet slot (declined)"
+        },
+        {
+          "key": "note",
+          "value": "Still loves the estranged Felix"
+        },
+        {
+          "key": "note",
+          "value": "Grieves; sees the Manada coup mirror her own trap"
+        },
+        {
+          "key": "note",
+          "value": "Her father won't step down peacefully like Hector"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Atom Cat",
+          "rel": "loves (estranged)"
+        },
+        {
+          "to": "Mortimer",
+          "rel": "dispatched"
+        },
+        {
+          "to": "Augustus",
+          "rel": "trapped daughter"
+        }
+      ],
+      "chapter": 63
     }
   ],
   "plotObservations": [
@@ -7565,6 +7817,23 @@
         "Hector Manada"
       ],
       "chapter": 62
+    },
+    {
+      "title": "End of Disc One",
+      "beat": "At Don Hector's modest manor, the Manada brothers and Leo Hargraves confront the CEO, found gardening. Enrique bluffs that Psyshock confessed everything (the Meta deal, the mind-transfer clone project), and Hector's flicker of surprise confirms he never knew about the Mechron base. Abandoned by his own guards and outgunned by his sons' shares, proof, and army, Hector surrenders with grim dignity rather than die pointlessly, choosing forced retirement; Alphonse and Enrique will reform Dynamis and finally move on Augustus. Ryan is fired from Il Migliore but spared; Enrique privately warns him to flee New Rome with Len before the ruthless Alphonse (who knows Len's base) hunts them, since Dynamis fixates on Len for reasons Enrique won't name. Livia calls, worried for Felix, offers Ryan the Killer Seven's Violet slot (declined), and grieves that her own father won't step down like Hector. Reunited with Len and the braintech, Ryan pieces the horror together: the knockoff Elixirs (a synth resource mimicking Elixirs, only ~3 years old), Dynamis's theft of Len's blood/DNA, and Enrique fleeing Lab Sixty-Six all point to a surviving clone of Bloodstream. Len, refusing to flee, insists they investigate Lab Sixty-Six for closure.",
+      "entities": [
+        "Ryan Romano",
+        "Hector Manada",
+        "Alphonse Manada",
+        "Blackthorn",
+        "Leo Hargraves",
+        "Livia Augusti",
+        "Len",
+        "Bloodstream",
+        "Lab Sixty-Six",
+        "The Braintech"
+      ],
+      "chapter": 63
     }
   ]
 }
