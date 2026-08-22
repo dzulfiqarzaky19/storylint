@@ -8467,6 +8467,216 @@
         }
       ],
       "chapter": 70
+    },
+    {
+      "name": "Big Fat Adam",
+      "kind": "character",
+      "summary": "Refined (Hannifat Lecter): master manipulator. Throughout Ryan's interrogation he only pretends to weigh his lieutenants' input, gaslighting them toward conclusions he reached long ago. His true objective was never the lab or mainframe but the bunker's ORBITAL COMMUNICATIONS TOWER (Ryan deduces it from his room-by-room conquest path); he doesn't want to cure the Psycho condition or even save himself, he wants to kill everyone. He'd Psyshock booby-trap the Dynamis brain-tech so any mind overwritten by it becomes Psyshock's thrall (his insurance if Dynamis betrayed him). Recognizing Ryan as an untameable 'hurricane' who wins if he ever plays, Adam resolves to remove him from the board permanently, not by killing him but by CORRUPTING his power: force-feeding him the Black Elixir to make him a Psycho, reasoning Ryan never dared take a second Elixir precisely because it would wreck his save point.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Manipulator: gaslights his own lieutenants to his agenda"
+        },
+        {
+          "key": "note",
+          "value": "Real target is the bunker's Orbital Communications Tower"
+        },
+        {
+          "key": "note",
+          "value": "Wants to kill everyone, not cure or save Psychos"
+        },
+        {
+          "key": "note",
+          "value": "Had Psyshock booby-trap the transfer tech (thrall trap)"
+        },
+        {
+          "key": "note",
+          "value": "Plans to force-feed Ryan the Black Elixir to corrupt his power"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "leader"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "commands"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "captor"
+        },
+        {
+          "to": "The Black Elixir",
+          "rel": "weaponizes against Ryan"
+        }
+      ],
+      "chapter": 71
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "Refined: revealed as the force controlling Len. His power is compatible with Dynamis's brain-tech, so on Adam's order he booby-trapped it: anyone whose mind is overwritten by the tech becomes his host, this triggers only during the OVERWRITE step, not memory-map creation, meaning Livia's stored backup of Len's mind is uncorrupted. Having ridden Len's transfer back through time, he now enthralls her (and others) in the bunker and cruelly taunts Ryan with Len's deepest private memories (her first time, her buried love for him). He is eager to overwrite Ryan's mind too, though he can't be sure his power will work on a consciousness split across two times.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "His power is compatible with Dynamis's brain-tech"
+        },
+        {
+          "key": "note",
+          "value": "Booby-trapped the tech: overwrite victims become his hosts"
+        },
+        {
+          "key": "note",
+          "value": "Trap triggers on overwrite only, not memory-map creation"
+        },
+        {
+          "key": "note",
+          "value": "Now controls Len; taunts Ryan with her private memories"
+        },
+        {
+          "key": "note",
+          "value": "Uncertain he can overwrite Ryan's two-time-split mind"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Big Fat Adam",
+          "rel": "lieutenant"
+        },
+        {
+          "to": "Len",
+          "rel": "enthralls"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "wants to overwrite"
+        }
+      ],
+      "chapter": 71
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "Refined (Hazmat Girl): a Meta-Gang Psycho, a gas cloud trapped in a hazmat suit. She is the only one visibly troubled by Adam's cruelty. Ryan's revelation, that Adam isn't seeking a cure for the Psycho condition (which is what recruited them) and doesn't even want to save himself, shakes her loyalty. When explosions rock the bunker and the others are distracted, she secretly whispers to Ryan asking if he can find a cure, then rusts his chair's restraints with her gas power to help him, seizing the chance to jump ship.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Meta-Gang Psycho; a gas cloud in a hazmat suit"
+        },
+        {
+          "key": "note",
+          "value": "The only one uneasy at Adam's cruelty"
+        },
+        {
+          "key": "note",
+          "value": "Joined the gang for a promised Psycho cure"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's words shake her faith in Adam"
+        },
+        {
+          "key": "note",
+          "value": "Secretly asks Ryan for a cure and rusts his restraints"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "defecting member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "secretly aids"
+        },
+        {
+          "to": "Big Fat Adam",
+          "rel": "loses faith in"
+        }
+      ],
+      "chapter": 71
+    },
+    {
+      "name": "The Bahamut",
+      "kind": "character",
+      "summary": "Refined: the possessed dragon-rabbit plushie returns as Ryan's terrifying 'savior.' When Ryan, captured and about to be force-fed the Black Elixir with Little Sarah held hostage, silently prays for salvation within reach of the child, the Bahamut answers, cutting through the Meta-Gang. It leaves the corridor painted in blood, two of Psyshock's thralls hanged from the ceiling by their own intestines, then greets Ryan with its single glowing blue eye and the cheerful declaration 'I will always be your friend!' A 'greater evil' summoned against a lesser one.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "The possessed dragon-rabbit plushie, Ryan's dark ally"
+        },
+        {
+          "key": "note",
+          "value": "Answers Ryan's silent prayer for rescue"
+        },
+        {
+          "key": "note",
+          "value": "Slaughters through the Meta-Gang in the bunker"
+        },
+        {
+          "key": "note",
+          "value": "Hangs thralls by their own intestines"
+        },
+        {
+          "key": "note",
+          "value": "Greets Ryan: 'I will always be your friend!'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "friend/protector"
+        },
+        {
+          "to": "Meta-Gang",
+          "rel": "slaughters"
+        }
+      ],
+      "chapter": 71
+    },
+    {
+      "name": "The Psycho Cure",
+      "kind": "concept",
+      "summary": "A hypothetical cure for the Psycho condition, the promise Big Fat Adam used to recruit his Meta-Gang (Sarin a gas cloud, Mongrel an animal unable to use his collected powers, etc.). Ryan reveals Adam was never actually pursuing it, he wants to kill everyone, not heal anyone. This shatters Sarin's loyalty. Ryan has never found such a cure across his loops, but wonders if this run could differ, given his unprecedented access to Mechron's bunker and figures like Dr. Tyrano.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Hypothetical cure for the Psycho condition"
+        },
+        {
+          "key": "note",
+          "value": "Adam's false recruiting promise to the Meta-Gang"
+        },
+        {
+          "key": "note",
+          "value": "Adam never actually pursued it; wants to kill everyone"
+        },
+        {
+          "key": "note",
+          "value": "Its exposure shakes Sarin's loyalty"
+        },
+        {
+          "key": "note",
+          "value": "Ryan never found one, but bunker access may change that"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Big Fat Adam",
+          "rel": "false promise of"
+        },
+        {
+          "to": "Sarin",
+          "rel": "sought by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "asked to find"
+        }
+      ],
+      "chapter": 71
     }
   ],
   "plotObservations": [
@@ -9428,6 +9638,16 @@
         "Eugène-Henry"
       ],
       "chapter": 70
+    },
+    {
+      "title": "Captured in Mechron's Bunker",
+      "summary": "Ryan wakes naked and thoroughly restrained in a Mechron torture chair inside the bunker, held by the Meta-Gang: Big Fat Adam, Psyshock, Ghoul, and Sarin. The chair keeps him alive against his will, blocking his suicide-reload escape. Adam reveals Len is now Psyshock's thrall: he had Psyshock booby-trap the Dynamis brain-tech so any overwritten mind becomes a host, this triggers only on the overwrite step, so Livia still holds a clean backup of Len's mind in the Blue World. Psyshock taunts Ryan with Len's private memories while Adam debates whether to overwrite Ryan or take another route.",
+      "chapter": 71
+    },
+    {
+      "title": "Adam's Real Plan and the Black Elixir Gambit",
+      "summary": "Ryan deduces Adam's manipulations: Adam gaslights his own lieutenants and his true goal is the bunker's Orbital Communications Tower, not a Psycho cure, he wants to kill everyone. Adam reveals a horror dessert: Little Sarah bound on a plate. Rather than risk Psyshock's uncertain overwrite, Adam produces the Black Elixir, planning to force Ryan to become a Psycho and corrupt his save-point power (Ryan never dared take a second Elixir for that reason). The Elixir wriggles, remembering Ryan. Explosions rock the bunker; Sarin, her faith in Adam broken, secretly asks Ryan for a cure and rusts his restraints. Ghoul opens the door to reveal the corridor slaughtered and Ryan's savior: the possessed Bahamut plushie, declaring 'I will always be your friend!'",
+      "chapter": 71
     }
   ]
 }
