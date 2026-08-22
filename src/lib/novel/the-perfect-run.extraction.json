@@ -445,6 +445,14 @@
           {
             "key": "resolve",
             "value": "Now wants to live to see mankind explore the universe"
+          },
+          {
+            "key": "can't save",
+            "value": "His power won't freeze past 10 seconds; his Elixir blocks the save as it did in Monaco"
+          },
+          {
+            "key": "retroactive Black",
+            "value": "Two loops made his Black power act retroactively; Geist erased from existence without a direct kill"
           }
         ],
         "ties": [
@@ -739,6 +747,14 @@
           {
             "to": "the-alchemist",
             "rel": "ends her via the Black Ultimate One"
+          },
+          {
+            "to": "geist",
+            "rel": "erased retroactively by Ryan's growing Black power"
+          },
+          {
+            "to": "black-flux",
+            "rel": "now bleeds into the timestream; feeds on deleted realities"
           }
         ],
         "appearances": [
@@ -854,7 +870,8 @@
           115,
           116,
           117,
-          118
+          118,
+          119
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1256,7 +1273,8 @@
           114,
           115,
           116,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -1342,7 +1360,8 @@
           28,
           71,
           72,
-          92
+          92,
+          119
         ],
         "questions": []
       },
@@ -2372,7 +2391,8 @@
           114,
           115,
           117,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -2845,7 +2865,8 @@
           115,
           116,
           117,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -3299,7 +3320,8 @@
           71,
           73,
           94,
-          96
+          96,
+          119
         ],
         "questions": []
       },
@@ -3789,6 +3811,14 @@
           {
             "key": "save trick",
             "value": "Save ~10s after sending minds back so memories survive a forced reload"
+          },
+          {
+            "key": "launched",
+            "value": "17th loop begun; all six travelers retain memories, but Ryan can't lock them with a save"
+          },
+          {
+            "key": "early wrinkle",
+            "value": "Geist already erased by retroactive Black power; save unavailable"
           }
         ],
         "ties": [
@@ -3811,12 +3841,21 @@
           {
             "to": "augustus",
             "rel": "the final target of the run"
+          },
+          {
+            "to": "elixir-mechanics",
+            "rel": "the save-block and retroactive Black limits now shaping the run"
+          },
+          {
+            "to": "geist",
+            "rel": "first casualty, showing the timeline risk"
           }
         ],
         "appearances": [
           7,
           117,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -3849,6 +3888,14 @@
           {
             "key": "binding",
             "value": "Bound 15 years to Ischia by Torque's exorcism promise"
+          },
+          {
+            "key": "status",
+            "value": "Erased from existence across the timeline; invisible even to Livia's precognition"
+          },
+          {
+            "key": "cause",
+            "value": "Ryan's retroactive Black power, strengthened over two loops"
           }
         ],
         "ties": [
@@ -3863,12 +3910,21 @@
           {
             "to": "castello-aragonese",
             "rel": "his haunting ground and the fortress he guarded"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "unintentionally erased him via retroactive Black Flux"
+          },
+          {
+            "to": "livia",
+            "rel": "can no longer perceive him with her power"
           }
         ],
         "appearances": [
           9,
           103,
-          104
+          104,
+          119
         ],
         "questions": []
       },
@@ -4299,7 +4355,8 @@
           114,
           115,
           116,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -6176,7 +6233,8 @@
           110,
           115,
           117,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -10402,7 +10460,8 @@
           86,
           102,
           110,
-          117
+          117,
+          119
         ],
         "questions": []
       },
@@ -10707,6 +10766,14 @@
           {
             "key": "first checkpoint",
             "value": "Locked just before the Porto Venere fireball, an unwinnable window"
+          },
+          {
+            "key": "save-block",
+            "value": "Elixir can prevent a save (won't freeze past 10s) though it cannot force a reload"
+          },
+          {
+            "key": "retroactive Black",
+            "value": "Accumulated Black power now deletes targets across the whole timeline, not just the moment"
           }
         ],
         "ties": [
@@ -10737,13 +10804,22 @@
           {
             "to": "ryan-romano",
             "rel": "his looping power"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "the host experiencing both new limits"
+          },
+          {
+            "to": "black-flux",
+            "rel": "the power whose retroactive reach is the new danger"
           }
         ],
         "appearances": [
           57,
           85,
           89,
-          90
+          90,
+          119
         ],
         "questions": []
       },
@@ -12250,7 +12326,8 @@
           109,
           116,
           117,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -12953,7 +13030,8 @@
         "appearances": [
           74,
           78,
-          113
+          113,
+          119
         ],
         "questions": []
       },
@@ -13721,7 +13799,8 @@
           114,
           115,
           117,
-          118
+          118,
+          119
         ],
         "questions": []
       },
@@ -13985,7 +14064,8 @@
           111,
           112,
           113,
-          115
+          115,
+          119
         ],
         "questions": []
       },
@@ -17418,6 +17498,10 @@
           {
             "chapter": 118,
             "summary": "CH118 'The Last Quest' (final loop begins): at a Sorrentos meeting (Neptune/Silvio cleared the guards), Ryan's group reunites with Livia, Fortuna, and Narcinia. Fortuna claims Shroud as her husband-to-be. Livia confirms Augustus launched war on Dynamis in Ryan's absence (Fallout given command of the corporate army) and finally drops every excuse for her father - 'it's all him, he will never change' - committing fully to bringing her family down. Leo Hargraves reveals Narcinia is Giulia Costa, daughter of his murdered hero friends Bruno (Yellow) and Julie (Green) Costa, whom Augustus killed before Bacchus erased her memory; Leo owns his accidental killing of Livia's mother Juno and vows to face trial. Privately Livia tells Ryan 'I love you' for the first time and he answers in kind. Together they lock the full endgame: send 5-6 minds back (Livia, Len, Bianca, Felix, Shroud, the Panda), hit Adam's bunker within hours to save Rust Town captives, build the Saturn armor, cure the Psychos, break Dynamis (seizing the Gravity Gun), then the Olympians, then Augustus - with Ryan saving ~10s after the mind-transfer so memories survive a forced reload. The true Perfect Run begins."
+          },
+          {
+            "chapter": 119,
+            "summary": "CH119 'The Last Save': aboard the submarine, six travelers (Livia, Len, Bianca, Felix, Shroud, and the Panda/Timmy) don helmets on Alchemo's throne machine. The Panda gets a heartfelt send-off (Ryan tells him he was never useless); Sunshine warns Ryan the Black World power annihilated Mechron and nearly all Sarajevo through careless curiosity, so use it sparingly - Augustus's death isn't worth the world. Ryan activates his power; during transfer the Illuminati/Violet Ultimate One pyramid watches through the Violet Flux window. All reload to May 8th (17th loop) with memories intact, confirmed by texts. Then two crises hit: Ryan CAN'T SAVE (his Elixir blocks freezing past 10 seconds, as in Monaco), so memories aren't locked; and his retroactive Black power - strengthened over two loops - has already ERASED Geist from existence (invisible even to Livia's precognition), proving lethal Black Flux could permanently scar the timeline. Chronoradio echoes urge him on. Ryan opens the run anyway: rams Ghoul, delivers the mail, and takes a comedic joyride tormenting Ghoul."
           }
         ],
         "entities": [
@@ -17524,7 +17608,8 @@
           "new-rome",
           "bruno-and-julie-costa",
           "the-gravity-gun",
-          "juno"
+          "juno",
+          "elixir-mechanics"
         ]
       }
     ]

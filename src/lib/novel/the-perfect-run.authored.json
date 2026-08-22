@@ -16396,6 +16396,110 @@
         }
       ],
       "chapter": 118
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH119 (final run launch, two power crises): the mind-transfer works - Livia, Len, Bianca, Felix, Shroud, and the Panda/Timmy all reload to May 8th (his 17th loop) with memories intact, confirmed by texts. But Ryan discovers he CAN'T SAVE: his power refuses to freeze time past ten seconds, his Elixir pushing back exactly as it did in Monaco (to stop him locking himself in a ruined run). Worse, Livia reports Geist has simply VANISHED from existence and from her precognition - Ryan's Black power, strengthened over two loops, now acts RETROACTIVELY, feeding on deleted realities and bleeding into the timestream; if he kills anyone with Black Flux (even Augustus) it may be permanent. Sunshine's warning (a Black-World entity annihilated Mechron and nearly all Sarajevo through careless curiosity) lands hard. Guided by Chronoradio echoes of past voices to persevere, Ryan proceeds - rams Ghoul, delivers the mail, and takes a comedic joyride tormenting Ghoul ('you're going to space, Ghoul!').",
+      "facts": [
+        {
+          "key": "can't save",
+          "value": "His power won't freeze past 10 seconds; his Elixir blocks the save as it did in Monaco"
+        },
+        {
+          "key": "retroactive Black",
+          "value": "Two loops made his Black power act retroactively; Geist erased from existence without a direct kill"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Geist",
+          "rel": "erased retroactively by Ryan's growing Black power"
+        },
+        {
+          "to": "Black Flux",
+          "rel": "now bleeds into the timestream; feeds on deleted realities"
+        }
+      ],
+      "chapter": 119
+    },
+    {
+      "name": "Elixir Mechanics",
+      "kind": "concept",
+      "summary": "CH119 (two new limits observed): (1) Ryan's Elixir can BLOCK a save even though it can't force a reload - his power now refuses to freeze time past ten seconds, replaying the Monaco intervention where the Elixir stopped him locking into an inescapable run. He can't set the past in stone this loop. (2) The Black half of his power, strengthened by consuming realities/paradoxes over two loops, has begun acting RETROACTIVELY across the timestream - it erased Geist from existence entirely (invisible even to Livia's precognition) without a direct kill. Together these mean using Black Flux risks permanent, timeline-wide deletions, and the save he relied on to lock in progress is (for now) unavailable.",
+      "facts": [
+        {
+          "key": "save-block",
+          "value": "Elixir can prevent a save (won't freeze past 10s) though it cannot force a reload"
+        },
+        {
+          "key": "retroactive Black",
+          "value": "Accumulated Black power now deletes targets across the whole timeline, not just the moment"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "the host experiencing both new limits"
+        },
+        {
+          "to": "Black Flux",
+          "rel": "the power whose retroactive reach is the new danger"
+        }
+      ],
+      "chapter": 119
+    },
+    {
+      "name": "Geist",
+      "kind": "character",
+      "summary": "CH119 (erased from existence): Geist has simply vanished - Bacchus can't reach him, and Livia cannot see him even with her precognition, as if he had 'passed on.' The cause is Ryan's retroactively-strengthened Black power: over two loops it grew potent enough to delete a being from the whole timestream. Fittingly, Geist (who could see across time, and once told Ryan 'ten seconds is surprisingly a lot') is the first casualty of the Black power bleeding into reality. His disappearance removes a major Augusti asset before the final run even begins - but demonstrates the terrifying, uncontrolled reach of Ryan's ability.",
+      "facts": [
+        {
+          "key": "status",
+          "value": "Erased from existence across the timeline; invisible even to Livia's precognition"
+        },
+        {
+          "key": "cause",
+          "value": "Ryan's retroactive Black power, strengthened over two loops"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "unintentionally erased him via retroactive Black Flux"
+        },
+        {
+          "to": "Livia",
+          "rel": "can no longer perceive him with her power"
+        }
+      ],
+      "chapter": 119
+    },
+    {
+      "name": "The Perfect Run",
+      "kind": "concept",
+      "summary": "CH119 (final run launched, plan already bending): the six-mind transfer succeeds and all reload to May 8th with memories (Ryan's 17th loop). But two surprises complicate the plan from second one: Ryan cannot save (his Elixir blocks freezing past 10 seconds, so Livia's 'save-after-transfer' trick fails and memories aren't locked against a forced reload), and his retroactive Black power has already erased Geist - proving lethal Black Flux use could permanently scar the timeline. Chronoradio echoes of past allies urge him to see the run through anyway. He opens the run on schedule (ram Ghoul, deliver the mail, rush the bunker), adjusting timing on the fly, resolved to reach the end and learn what awaits.",
+      "facts": [
+        {
+          "key": "launched",
+          "value": "17th loop begun; all six travelers retain memories, but Ryan can't lock them with a save"
+        },
+        {
+          "key": "early wrinkle",
+          "value": "Geist already erased by retroactive Black power; save unavailable"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Elixir Mechanics",
+          "rel": "the save-block and retroactive Black limits now shaping the run"
+        },
+        {
+          "to": "Geist",
+          "rel": "first casualty, showing the timeline risk"
+        }
+      ],
+      "chapter": 119
     }
   ],
   "plotObservations": [
@@ -18475,6 +18579,29 @@
         "Juno"
       ],
       "chapter": 118
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH119 'The Last Save': aboard the submarine, six travelers (Livia, Len, Bianca, Felix, Shroud, and the Panda/Timmy) don helmets on Alchemo's throne machine. The Panda gets a heartfelt send-off (Ryan tells him he was never useless); Sunshine warns Ryan the Black World power annihilated Mechron and nearly all Sarajevo through careless curiosity, so use it sparingly - Augustus's death isn't worth the world. Ryan activates his power; during transfer the Illuminati/Violet Ultimate One pyramid watches through the Violet Flux window. All reload to May 8th (17th loop) with memories intact, confirmed by texts. Then two crises hit: Ryan CAN'T SAVE (his Elixir blocks freezing past 10 seconds, as in Monaco), so memories aren't locked; and his retroactive Black power - strengthened over two loops - has already ERASED Geist from existence (invisible even to Livia's precognition), proving lethal Black Flux could permanently scar the timeline. Chronoradio echoes urge him on. Ryan opens the run anyway: rams Ghoul, delivers the mail, and takes a comedic joyride tormenting Ghoul.",
+      "entities": [
+        "Ryan Romano",
+        "The Perfect Run",
+        "Elixir Mechanics",
+        "Geist",
+        "Livia",
+        "Len",
+        "Sarin",
+        "Felix",
+        "Mr. See-Through",
+        "The Panda",
+        "Leo Hargraves",
+        "Black Flux",
+        "The Violet Ultimate One",
+        "Mechron",
+        "Ghoul",
+        "Alchemo"
+      ],
+      "chapter": 119
     }
   ]
 }
