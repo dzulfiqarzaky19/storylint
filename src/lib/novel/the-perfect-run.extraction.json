@@ -832,7 +832,8 @@
           108,
           109,
           110,
-          112
+          112,
+          113
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1229,7 +1230,8 @@
           108,
           109,
           110,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -2321,7 +2323,8 @@
           93,
           109,
           110,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -2772,7 +2775,8 @@
           103,
           104,
           110,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -3024,7 +3028,8 @@
           109,
           110,
           111,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -4126,7 +4131,8 @@
           97,
           102,
           110,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -6173,7 +6179,8 @@
         "appearances": [
           20,
           100,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -12463,6 +12470,14 @@
           {
             "key": "vow",
             "value": "Will wait for Ryan at world's end when he chooses to end it all"
+          },
+          {
+            "key": "revelation",
+            "value": "No invasion coming; the ghosts must be laid to rest, and the Violet Ultimate One sent Ryan to do it"
+          },
+          {
+            "key": "path",
+            "value": "Ryan can talk to Elixirs / interface with the ship's mind because he is nearest to ascension"
           }
         ],
         "ties": [
@@ -12489,6 +12504,18 @@
           {
             "to": "the-black-ultimate-one",
             "rel": "the god of its realm"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "guides him through the black hole"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "reveals it nudged Ryan here indirectly"
+          },
+          {
+            "to": "hegemony-soldiers",
+            "rel": "names them ghosts of a lost war"
           }
         ],
         "appearances": [
@@ -12498,7 +12525,8 @@
           75,
           77,
           84,
-          85
+          85,
+          113
         ],
         "questions": []
       },
@@ -12604,7 +12632,8 @@
         ],
         "appearances": [
           74,
-          78
+          78,
+          113
         ],
         "questions": []
       },
@@ -13367,7 +13396,8 @@
           108,
           109,
           110,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -13628,7 +13658,8 @@
           104,
           105,
           111,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -13766,7 +13797,8 @@
           103,
           104,
           110,
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -13882,7 +13914,8 @@
           }
         ],
         "appearances": [
-          89
+          89,
+          113
         ],
         "questions": []
       },
@@ -14226,7 +14259,8 @@
         ],
         "appearances": [
           100,
-          111
+          111,
+          113
         ],
         "questions": []
       },
@@ -14533,6 +14567,14 @@
           {
             "key": "legacy",
             "value": "Its crashed ship + Flux tech is the true source of Earth's Elixirs/Genomes"
+          },
+          {
+            "key": "status",
+            "value": "Fell decades ago; only this holdout ship survives, in Earth's reality"
+          },
+          {
+            "key": "lesson",
+            "value": "A cautionary tale Eva Fabre took as a blueprint, repeating its hubris"
           }
         ],
         "ties": [
@@ -14547,10 +14589,19 @@
           {
             "to": "eva-fabre",
             "rel": "discovered its wreck and inherited its secrets"
+          },
+          {
+            "to": "hegemony-soldiers",
+            "rel": "its last ghost-holdouts on the crashed ship"
+          },
+          {
+            "to": "eva-fabre",
+            "rel": "misread its fall as a template for uplifting humanity"
           }
         ],
         "appearances": [
-          111
+          111,
+          113
         ],
         "questions": []
       },
@@ -14640,7 +14691,8 @@
           }
         ],
         "appearances": [
-          112
+          112,
+          113
         ],
         "questions": []
       },
@@ -14675,6 +14727,40 @@
         ],
         "appearances": [
           112
+        ],
+        "questions": []
+      },
+      {
+        "id": "hegemony-soldiers",
+        "kind": "faction",
+        "name": "Hegemony Soldiers",
+        "summary": "CH113: the surviving alien crew of the crashed ship, biomechanical hybrid warriors (uplifted slave-soldiers of the fallen Hegemony). The one Ryan fights ('E.T.') is a 3m armored horror with reptilian eyes, an acid chest-maw, a seed-firing organic cannon, and access to every Flux color: teleport (Violet), phasing/solidifying (part-Orange), a White cancel-shield, and the ability to shift its whole armor to indestructible Adamantine - a stolen, bottled Flux supply that runs out like fuel. Crucially it CANNOT use Black; Ryan cracks its adamantine visor and lets Black Flux corrupt its seven-color balance, collapsing it into a black hole. Darkling reveals these are vengeful GHOSTS of a war lost decades ago (a 'Japanese holdout'), no invasion or rescue coming; the one Ryan killed was a mere grunt, and if the rest escape they will devastate Earth, able to replicate any power but Black.",
+        "facts": [
+          {
+            "key": "powers",
+            "value": "Wield every Flux color from a finite stolen reserve; can turn armor to Adamantine - but never Black"
+          },
+          {
+            "key": "truth",
+            "value": "Ghost-holdouts of a decades-dead empire; the killed one was only a grunt"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-hegemony",
+            "rel": "its last surviving soldiers"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "she woke/harvested them and lost control"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "he killed one with Black Flux and must end the rest"
+          }
+        ],
+        "appearances": [
+          113
         ],
         "questions": []
       }
@@ -16882,6 +16968,10 @@
           {
             "chapter": 112,
             "summary": "CH112 'The Thing': the team enters the crashed Hegemony ship. Ryan confirms it is alien ('Reptilians') and notices his Black Flux now cracks the fabric of this Thin Place - hinting his Black power might even kill energy or Elixirs. In the dome they find holograms of the seven Colored Worlds (Black missing) and, crucially, recognize Augustus's body-metal in the Orange World's substance-cube: Augustus is 'an Orange,' his flesh made of Adamantine, the ur-metal of a realm without time/life/death - which explains why time-stop, Livia's skip, and Frank can touch the 'invincible' warlord while Julie Costa's life-touch never registered him. In the Elixir lab (the likely birthplace of Elixirs) they find seven vats and Wonderboxes; the Panda cracks the Alchemist's password by psych-profiling her; the Blue Elixir turns out to be a sapient, telepathic, possession-hungry being (muteness is the Alchemist's deliberate control feature). Then the captive Elixirs flood with fear as an alien with a green visor approaches from the dark corridor."
+          },
+          {
+            "chapter": 113,
+            "summary": "CH113 'Final Contact': a surviving Hegemony Soldier ('E.T.') ambushes the team, wielding every Flux color from a finite stolen reserve - teleport, phasing, a White cancel-shield, seed-cannon, and an Adamantine armor-shift. The group can't safely use powers near the Elixir vats, but Ryan cracks its adamantine visor with Black Flux, corrupting its seven-color balance and collapsing it into a black hole. Inside that hole Darkling speaks: the Hegemony fell decades ago, no invasion or rescue is coming - the ship is just vengeful ghosts of a lost war, and the killed alien was a mere grunt. Eva Fabre read that history as a blueprint and repeated its hubris, birthing Genomes and Psychos. The Violet Ultimate One never acts directly; it sent Ryan via visions so a human could end a human-made disaster. Ryan, now able to speak Elixir and nearest to ascension, resolves to find the ship's control-mind and destroy the ship across all timelines - though the Alchemist will fight to keep it."
           }
         ],
         "entities": [
@@ -16973,13 +17063,17 @@
           "adamantine",
           "the-colored-worlds",
           "wonderbox",
-          "elixirs"
+          "elixirs",
+          "hegemony-soldiers",
+          "darkling",
+          "the-violet-ultimate-one",
+          "the-violet-elixir"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 242,
+    "entities": 243,
     "plotlines": 104,
     "books": 1
   }

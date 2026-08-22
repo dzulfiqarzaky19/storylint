@@ -15786,6 +15786,92 @@
         }
       ],
       "chapter": 112
+    },
+    {
+      "name": "Hegemony Soldiers",
+      "kind": "faction",
+      "summary": "CH113: the surviving alien crew of the crashed ship, biomechanical hybrid warriors (uplifted slave-soldiers of the fallen Hegemony). The one Ryan fights ('E.T.') is a 3m armored horror with reptilian eyes, an acid chest-maw, a seed-firing organic cannon, and access to every Flux color: teleport (Violet), phasing/solidifying (part-Orange), a White cancel-shield, and the ability to shift its whole armor to indestructible Adamantine - a stolen, bottled Flux supply that runs out like fuel. Crucially it CANNOT use Black; Ryan cracks its adamantine visor and lets Black Flux corrupt its seven-color balance, collapsing it into a black hole. Darkling reveals these are vengeful GHOSTS of a war lost decades ago (a 'Japanese holdout'), no invasion or rescue coming; the one Ryan killed was a mere grunt, and if the rest escape they will devastate Earth, able to replicate any power but Black.",
+      "facts": [
+        {
+          "key": "powers",
+          "value": "Wield every Flux color from a finite stolen reserve; can turn armor to Adamantine - but never Black"
+        },
+        {
+          "key": "truth",
+          "value": "Ghost-holdouts of a decades-dead empire; the killed one was only a grunt"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Hegemony",
+          "rel": "its last surviving soldiers"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "she woke/harvested them and lost control"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "he killed one with Black Flux and must end the rest"
+        }
+      ],
+      "chapter": 113
+    },
+    {
+      "name": "Darkling",
+      "kind": "identity",
+      "summary": "CH113: Ryan's Black Elixir/messenger speaks to him through the black hole that consumed the alien (opened easily because this metal prison's spacetime is thin, built to open doors to the higher realms). Watching from the timeless Black World, it has learned the whole truth and delivers the arc's thesis: the Hegemony fell decades ago, no invasion or rescue is coming, and the ship is just vengeful ghosts fighting a lost war. Eva Fabre treated that history as a blueprint rather than a warning and repeated their mistakes making Genomes. Most importantly, Darkling reveals the Violet Ultimate One never intervenes directly - it 'sent Ryan' via visions so a human could choose to end a human-made disaster. Ryan alone is closest to ascension, can now speak Elixir, and can interface with the ship's control-mind to destroy the ship across all timelines (the Alchemist will fight back).",
+      "facts": [
+        {
+          "key": "revelation",
+          "value": "No invasion coming; the ghosts must be laid to rest, and the Violet Ultimate One sent Ryan to do it"
+        },
+        {
+          "key": "path",
+          "value": "Ryan can talk to Elixirs / interface with the ship's mind because he is nearest to ascension"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "guides him through the black hole"
+        },
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "reveals it nudged Ryan here indirectly"
+        },
+        {
+          "to": "Hegemony Soldiers",
+          "rel": "names them ghosts of a lost war"
+        }
+      ],
+      "chapter": 113
+    },
+    {
+      "name": "The Hegemony",
+      "kind": "faction",
+      "summary": "CH113 (Darkling's confirmation): the Hegemony collapsed DECADES ago, overthrown by its own freed slaves; nothing remains of it in its home universe. The crashed Antarctic ship is all that is left - a 'Japanese holdout' whose surviving hybrid soldiers still fight a war they already lost, no invasion and no rescue coming. Its lingering danger is only local: if those last soldiers escape the pocket dimension they can replicate any Earth power except Black and devastate civilization. Its true significance for the story is as a CAUTIONARY tale Eva Fabre ignored - she read its history as a blueprint for uplifting humanity into a 'master race' and so repeated its mistakes, birthing Genomes, Psychos, and monsters like Mechron, Bloodstream, and Augustus.",
+      "facts": [
+        {
+          "key": "status",
+          "value": "Fell decades ago; only this holdout ship survives, in Earth's reality"
+        },
+        {
+          "key": "lesson",
+          "value": "A cautionary tale Eva Fabre took as a blueprint, repeating its hubris"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Hegemony Soldiers",
+          "rel": "its last ghost-holdouts on the crashed ship"
+        },
+        {
+          "to": "Eva Fabre",
+          "rel": "misread its fall as a template for uplifting humanity"
+        }
+      ],
+      "chapter": 113
     }
   ],
   "plotObservations": [
@@ -17731,6 +17817,30 @@
         "Elixirs"
       ],
       "chapter": 112
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH113 'Final Contact': a surviving Hegemony Soldier ('E.T.') ambushes the team, wielding every Flux color from a finite stolen reserve - teleport, phasing, a White cancel-shield, seed-cannon, and an Adamantine armor-shift. The group can't safely use powers near the Elixir vats, but Ryan cracks its adamantine visor with Black Flux, corrupting its seven-color balance and collapsing it into a black hole. Inside that hole Darkling speaks: the Hegemony fell decades ago, no invasion or rescue is coming - the ship is just vengeful ghosts of a lost war, and the killed alien was a mere grunt. Eva Fabre read that history as a blueprint and repeated its hubris, birthing Genomes and Psychos. The Violet Ultimate One never acts directly; it sent Ryan via visions so a human could end a human-made disaster. Ryan, now able to speak Elixir and nearest to ascension, resolves to find the ship's control-mind and destroy the ship across all timelines - though the Alchemist will fight to keep it.",
+      "entities": [
+        "Ryan Romano",
+        "Hegemony Soldiers",
+        "Darkling",
+        "The Hegemony",
+        "Eva Fabre",
+        "The Alchemist",
+        "The Violet Ultimate One",
+        "Adamantine",
+        "Black Flux",
+        "The Blue Elixir",
+        "The Violet Elixir",
+        "Len",
+        "Sarin",
+        "Leo Hargraves",
+        "Mr. Wave",
+        "Mr. See-Through",
+        "The Panda"
+      ],
+      "chapter": 113
     }
   ]
 }
