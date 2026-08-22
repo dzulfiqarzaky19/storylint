@@ -41,3 +41,6 @@ prototypes/
 # Scratch/probe files at repo root (agent throwaways: _dump.cjs, _engine.mts,
 # _srv2.log, verification output). Never source, never pushed.
 /_*
+
+# local-only test corpus (measured from copyrighted epub, never committed)
+dummy_novel/
