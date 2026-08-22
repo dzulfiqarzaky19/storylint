@@ -10242,6 +10242,254 @@
         }
       ],
       "chapter": 77
+    },
+    {
+      "name": "Acid Rain",
+      "kind": "character",
+      "summary": "Refined and humanized: Alchemo's treatment cures her madness, revealing her real self, Helen, a meek, guilt-ridden young woman horrified by the murderer she was. She reveals her power's mechanic: teleporting takes her through the Purple World, a corridor where everything goes violet and she sees a watching pyramid (the Violet Ultimate One) and hears voices; she perceives a 'pathway' inside Ryan that he keeps closed. Her tragic backstory: she lost her family to a mistake and sought a Violet Elixir to go back in time; when she found one meant for a friend, Adam caught her and force-fed it to her, shattering her into a Psycho. Ryan gently tells her he can't save her family but swears to help her. Her treatment is only temporary.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Cured; real name Helen, now meek and remorseful"
+        },
+        {
+          "key": "note",
+          "value": "Teleports through the Purple World, seeing the watching pyramid"
+        },
+        {
+          "key": "note",
+          "value": "Perceives a closed 'pathway' inside Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Sought a Violet Elixir to undo losing her family"
+        },
+        {
+          "key": "note",
+          "value": "Adam force-fed her the Elixir, making her a Psycho"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "cured by"
+        },
+        {
+          "to": "Big Fat Adam",
+          "rel": "broken by; force-fed Elixir"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "grateful to; sworn to help"
+        },
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "glimpses in the Purple World"
+        }
+      ],
+      "chapter": 78
+    },
+    {
+      "name": "Mongrel",
+      "kind": "character",
+      "summary": "Refined: a Meta-Gang Psycho whose true power is stockpiling multiple Elixirs (inert by itself). Cured by Alchemo, he can now speak (his brain hurts as grey matter fills the tumor-voids) and recounts his fall: he found a White Elixir in Old Rome's ruins but couldn't activate his power, assumed it faulty, and drank a knockoff believing himself powerless, turning Psycho. He was a trash-scavenging animal when Adam found him. Grateful and reformed, he swears off Elixirs forever and offers to help Ryan find a permanent cure. His treatment, like Helen's, is temporary; Genome metabolism builds tolerance.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Power: stockpiles multiple Elixirs (inert alone)"
+        },
+        {
+          "key": "note",
+          "value": "Cured by Alchemo; can now speak, brain aching"
+        },
+        {
+          "key": "note",
+          "value": "Drank a knockoff believing himself powerless, turned Psycho"
+        },
+        {
+          "key": "note",
+          "value": "Found by Adam scavenging trash"
+        },
+        {
+          "key": "note",
+          "value": "Swears off Elixirs; offers to help find a cure"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "cured by"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "reformed ally of"
+        }
+      ],
+      "chapter": 78
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Refined: recovered and clear-headed on Alchemo's superior antidepressants, Len sets up a Genius workshop in the bunker to maintain the brain-copying machine. She defines its key limit: it sends only one brain-map back per loop, requiring an unbroken rebuild-and-resend chain (one break and she forgets everything) unless memories are stored externally, which needs Livia. She warms to cooperating with Livia, who honored their bargain. When Ryan finally confesses he loves her and wants to settle down and have children, she gently declines romance ('I don't feel I'm ready... perhaps never') but insists he stay in her life, reframing them not as best friends but as family. She remains wary of the Meta-Gang Psychos.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Recovered on Alchemo's antidepressants; runs a bunker workshop"
+        },
+        {
+          "key": "note",
+          "value": "Machine sends one brain-map per loop; needs an unbroken chain"
+        },
+        {
+          "key": "note",
+          "value": "Warms to cooperating with Livia for memory storage"
+        },
+        {
+          "key": "note",
+          "value": "Gently rejects Ryan's love but calls him family"
+        },
+        {
+          "key": "note",
+          "value": "Still distrusts the reformed Meta-Gang members"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "loves as family; rejects romantically"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "treated by"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "reluctant ally"
+        }
+      ],
+      "chapter": 78
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "Refined: for the first time in centuries Ryan wakes genuinely happy and at peace, radiating uncharacteristic kindness (praising Frank, forgiving Acid Rain, sparing cruelty). Secure with his 'White House' and base, he plans to take New Rome before Manada's ultimatum expires, expecting a clash with Il Migliore and maybe the Carnival. He believes some Psychos are victims worth curing, not just monsters. He finally confesses his love to Len and asks to build a life with her; when she declines romance but offers family, he accepts it with hard-won dignity, having had centuries to process the feelings. All he ever truly wanted was to be remembered, and that wish is now fulfilled.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Wakes at peace and uncharacteristically kind"
+        },
+        {
+          "key": "note",
+          "value": "Plans to take New Rome before Manada's ultimatum"
+        },
+        {
+          "key": "note",
+          "value": "Believes reformed Psychos deserve a cure"
+        },
+        {
+          "key": "note",
+          "value": "Confesses love to Len; accepts her 'family' answer"
+        },
+        {
+          "key": "note",
+          "value": "Content: his wish to be remembered is fulfilled"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "loves; accepts as family"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "racing his ultimatum"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "would-be redeemer of"
+        }
+      ],
+      "chapter": 78
+    },
+    {
+      "name": "The Brain-Copying Machine",
+      "kind": "item",
+      "summary": "Refined: Len's rebuilt transfer machine, the device that ended Ryan's centuries of loneliness by looping a companion with him. Its hard constraints define the endgame: it can send only one brain-map back in time per loop, so preserving memories requires an unbroken chain of rebuild-and-resend (a single break wipes the traveler's memories), unless an external memory store is used, which requires Livia (Blue Genome backup). Len lacks the tech to rebuild the scanner at her own base; it needs Vulcan's or the bunker's resources. Psyshock corrupted the earlier prototype, so a fresh one must be built each time.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Sends only one brain-map back per loop"
+        },
+        {
+          "key": "note",
+          "value": "Needs an unbroken rebuild-and-resend chain to keep memories"
+        },
+        {
+          "key": "note",
+          "value": "External memory storage requires Livia"
+        },
+        {
+          "key": "note",
+          "value": "Requires Vulcan-grade or bunker tech to build"
+        },
+        {
+          "key": "note",
+          "value": "Prototype was corrupted by Psyshock"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "built and maintained by"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "needed for memory storage"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "ends his loneliness"
+        }
+      ],
+      "chapter": 78
+    },
+    {
+      "name": "Toasty",
+      "kind": "character",
+      "summary": "Refined: Ryan's sentient toaster robot continues his comic-relief antics, awkwardly flirting with the newly-cured Helen ('do you want me to toast your bread?... I've got butter'). He is eager for Ryan to install him into the big battle mech in the garage so he can finally 'show arms' and fight Wyvern, planned for the coming assault. His flirting is atrocious, as expected of a toaster.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Sentient toaster robot; comic relief"
+        },
+        {
+          "key": "note",
+          "value": "Awkwardly flirts with cured Helen"
+        },
+        {
+          "key": "note",
+          "value": "Wants to be installed into the garage battle mech"
+        },
+        {
+          "key": "note",
+          "value": "Eager to fight Wyvern once armed"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "loyal robot of"
+        },
+        {
+          "to": "Acid Rain",
+          "rel": "flirts with"
+        }
+      ],
+      "chapter": 78
     }
   ],
   "plotObservations": [
@@ -11404,6 +11652,38 @@
         "Big Fat Adam",
         "Mechron"
       ]
+    },
+    {
+      "title": "Happiness Overdose",
+      "beat": "Ryan wakes at peace for the first time in centuries, uncharacteristically kind to Frank and his minions, and declares a day off before tomorrow's assault on Dynamis, racing Manada's expiring ultimatum. Alchemo's cured Acid Rain (now the meek 'Helen') and Mongrel emerge; Helen reveals her teleport passes through the Purple World where she glimpses the watching pyramid and a closed 'pathway' inside Ryan, and recounts Adam force-feeding her a Violet Elixir. Ryan swears to help her though he can't restore her family.",
+      "entities": [
+        "Ryan Romano",
+        "Frank the Mad",
+        "Acid Rain",
+        "Mongrel",
+        "Alchemo",
+        "Big Fat Adam",
+        "The Purple World",
+        "The Violet Ultimate One",
+        "Toasty",
+        "Sarin",
+        "Mosquito",
+        "Hector Manada"
+      ],
+      "chapter": 78
+    },
+    {
+      "title": "Family, Not Lovers",
+      "beat": "In Len's new bunker workshop, Ryan confesses he loves her and wants to build a life together; Len, clear-headed on Alchemo's antidepressants, gently declines romance but insists he stay in her life, reframing them as family. They plan the endgame: the transfer machine sends only one brain-map per loop, so they'll need Livia for external memory storage and Vulcan's or the bunker's tech to rebuild the scanner. Next target: raiding Dynamis's Lab Sixty-Six.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Alchemo",
+        "Livia Augusti",
+        "The Brain-Copying Machine",
+        "Vulcan"
+      ],
+      "chapter": 78
     }
   ]
 }
