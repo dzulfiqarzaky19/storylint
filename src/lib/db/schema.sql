@@ -5,6 +5,8 @@
 
 DROP TABLE IF EXISTS chapter_check_cache CASCADE;
 DROP TABLE IF EXISTS phrase_mentions CASCADE;
+DROP TABLE IF EXISTS entry_plotlines CASCADE;
+DROP TABLE IF EXISTS chapter_plotlines CASCADE;
 DROP TABLE IF EXISTS world_entities CASCADE;
 DROP TABLE IF EXISTS dismissed_suggestions CASCADE;
 DROP TABLE IF EXISTS resolved_marks CASCADE;
@@ -85,6 +87,13 @@ INSERT INTO categories (id, label, shelf, sort_order, is_builtin) VALUES
   ('world',        'Places', 'places', 1, true),
   ('organization', 'Orders', 'orders', 2, true),
   ('lore',         'Lore',   'lore',   3, true);
+
+-- TCK-PLOT: the 'plotline' entry kind (reuse-wiki, Option A). A plotline is a wiki
+-- entry of this kind, so it inherits entry CRUD/cards/confirm-gate + soft-delete.
+-- shelf 'plots' is off the 4 wiki shelves (the Shelf union does not yet include it;
+-- see plot-plotlines-expand.mts follow-up). world_id NULL = global, like the 4 above.
+INSERT INTO categories (id, label, shelf, sort_order, is_builtin) VALUES
+  ('plotline',     'Plotlines', 'plots', 4, true);
 
 -- entries: id, kind, name, catalogueNo, note, summary, shelf, sortOrder.
 -- deleted_at: soft-delete marker (epoch millis). NULL = live; non-NULL = "deleted"
@@ -195,6 +204,30 @@ CREATE TABLE entry_facets (
   summary   text,
   note      text,
   PRIMARY KEY (entry_id, book_id)
+);
+
+-- TCK-PLOT (plotlines reuse-wiki, Option A): the two edge junctions. A plotline is
+-- an entries row of kind 'plotline'; the ONLY net-new storage is these edges. Both
+-- mirror the world_entities junction convention: text FKs, ON DELETE CASCADE, no
+-- soft-delete column (a junction is a pure edge that dies with either endpoint; the
+-- plotline entry's own soft-delete lives on entries.deleted_at). Created AFTER
+-- chapters + entries so both FKs resolve. Live-DB path: plot-plotlines-expand.mts.
+--
+-- chapter_plotlines: the per-chapter tag / neglect spine. `summary` = the per-beat
+-- note (what the chapter did to the arc); '' for a bare tag.
+CREATE TABLE chapter_plotlines (
+  chapter_id   text NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
+  plotline_id  text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  summary      text NOT NULL DEFAULT '',
+  PRIMARY KEY (chapter_id, plotline_id)
+);
+
+-- entry_plotlines: a character (or any entry) OWNS an arc; BOTH ends FK entries(id)
+-- (the one-graph model). No row for a plotline = a standalone world-level arc.
+CREATE TABLE entry_plotlines (
+  entry_id     text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  plotline_id  text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+  PRIMARY KEY (entry_id, plotline_id)
 );
 
 -- research_threads: id, title, subtitle, sortOrder, scope (Gemini-style thread
@@ -312,3 +345,7 @@ CREATE INDEX idx_categories_sort           ON categories (sort_order, id);
 -- lookup (which worlds is this entity in — W-3/W-4 read path).
 CREATE INDEX idx_worlds_universe           ON worlds (universe_id);
 CREATE INDEX idx_world_entities_entity     ON world_entities (entity_id);
+-- TCK-PLOT reverse lookups: PKs already index the leading column, so only the
+-- trailing plotline_id side is net-new ("which chapters/entries touch this arc").
+CREATE INDEX idx_chapter_plotlines_plotline ON chapter_plotlines (plotline_id);
+CREATE INDEX idx_entry_plotlines_plotline   ON entry_plotlines (plotline_id);
