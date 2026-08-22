@@ -812,7 +812,8 @@
           104,
           105,
           106,
-          107
+          107,
+          108
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1205,7 +1206,8 @@
           102,
           103,
           104,
-          105
+          105,
+          108
         ],
         "questions": []
       },
@@ -1680,7 +1682,8 @@
           82,
           83,
           88,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -3701,7 +3704,8 @@
           10,
           21,
           22,
-          39
+          39,
+          108
         ],
         "questions": []
       },
@@ -4171,7 +4175,8 @@
           66,
           69,
           82,
-          87
+          87,
+          108
         ],
         "questions": []
       },
@@ -5885,7 +5890,8 @@
           83,
           99,
           106,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -6162,7 +6168,8 @@
           22,
           25,
           43,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -6629,7 +6636,8 @@
           96,
           102,
           106,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -6698,7 +6706,8 @@
           61,
           65,
           75,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -7204,7 +7213,8 @@
           86,
           93,
           94,
-          97
+          97,
+          108
         ],
         "questions": []
       },
@@ -8800,6 +8810,14 @@
           {
             "key": "act",
             "value": "Kills his godson's rescue attempt; murders civilians in the chase"
+          },
+          {
+            "key": "mobility",
+            "value": "Shockwave-jumps via teleported pressurized air + summoned shields"
+          },
+          {
+            "key": "fate",
+            "value": "Breaks leg, buried under rats; the quarry escapes"
           }
         ],
         "ties": [
@@ -8846,6 +8864,14 @@
           {
             "to": "venus",
             "rel": "his wife, whose wounding hardens his resolve"
+          },
+          {
+            "to": "wyvern",
+            "rel": "wounds her but she survives the throat-bomb"
+          },
+          {
+            "to": "jamie",
+            "rel": "his chains cut by Jamie's defection"
           }
         ],
         "appearances": [
@@ -8853,7 +8879,8 @@
           69,
           101,
           106,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -9279,6 +9306,10 @@
           {
             "key": "note",
             "value": "Plans charity/Rust Town reinvestment"
+          },
+          {
+            "key": "turning point",
+            "value": "Defects: cuts Mars's chains to save Felix rather than kill him"
           }
         ],
         "ties": [
@@ -9293,6 +9324,18 @@
           {
             "to": "ki-jung",
             "rel": "fiance"
+          },
+          {
+            "to": "felix",
+            "rel": "spares and rescues him, breaking with the Augusti"
+          },
+          {
+            "to": "ki-jung",
+            "rel": "her word decides him to defect"
+          },
+          {
+            "to": "mars",
+            "rel": "cuts his chains, turning on the Olympian"
           }
         ],
         "appearances": [
@@ -9303,7 +9346,8 @@
           39,
           42,
           96,
-          106
+          106,
+          108
         ],
         "questions": []
       },
@@ -11786,7 +11830,8 @@
           102,
           105,
           106,
-          107
+          107,
+          108
         ],
         "questions": []
       },
@@ -13154,7 +13199,8 @@
           102,
           103,
           104,
-          106
+          106,
+          108
         ],
         "questions": []
       },
@@ -13809,7 +13855,8 @@
         ],
         "appearances": [
           96,
-          106
+          106,
+          108
         ],
         "questions": []
       },
@@ -16437,6 +16484,10 @@
           {
             "chapter": 107,
             "summary": "CH107 'Black Dinner': the trap springs. Felix arrives to extract Narcinia; Augustus (called 'Janus' by Mars) orders his godson executed as the presumed Ischia leak. Ryan freezes time to block Mortimer's assassination shot and hauls Felix out the window under Mars's glass storm. He downs Night Terror (whose fake-Augustus illusion nearly fools them) and exposes Venus impersonating Livia's face and voice, pinning her hand with a knife via the 'Master Ryan' passphrase. A car chase erupts through New Rome: Mars, revealed to wield a pocket-dimension armory of thousands of weapons hurled ~1km and self-repairing his motorcycle, pursues with Mortimer and Sparrow, callously killing civilians. Felix, crushed that his parents tried to kill him, reveals he brought backup - Wyvern and Private Security arrive as Livia sets a Sorrento rendezvous."
+          },
+          {
+            "chapter": 108,
+            "summary": "CH108 'Go Daddy Go': the Strip chase climaxes. Wyvern, Wardrobe (whistle freezes all traffic), and Private Security aid Ryan and Felix against Mars and Sparrow; Ryan wields the Killer Rabbit Plushie as a laser and downs Mortimer. Felix, realizing Livia foresaw and staged his rescue, is bitter but alive. At the decisive moment Jamie - torn between his light-sword and his conscience - cuts Mars's grappling chains instead of Felix, defecting from the Augusti; Mars crashes, breaks his leg, and is buried under a rat horde. The group escapes onto Len's submarine via a Fortuna-luck glass ramp, Shroud having gotten Fortuna to safety. The very public fight pushes Dynamis and the Augusti toward open war, with Pluto watching them flee."
           }
         ],
         "entities": [
@@ -16511,7 +16562,9 @@
           "ki-jung",
           "mortimer",
           "sparrow",
-          "wyvern"
+          "wyvern",
+          "wardrobe",
+          "pluto"
         ]
       }
     ]

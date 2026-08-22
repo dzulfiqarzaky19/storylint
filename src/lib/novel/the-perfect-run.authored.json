@@ -15328,6 +15328,58 @@
         }
       ],
       "chapter": 107
+    },
+    {
+      "name": "Jamie",
+      "kind": "character",
+      "summary": "CH108 'Go Daddy Go': the new Mercury faces the choice Livia foresaw. During the chase he catches the fleeing Plymouth with a red light-sword and raises it over Felix, but at Felix's plea and a word from Ki-jung, he instead cuts MARS'S grappling chains, saving Felix and defecting from the Augusti in the open. He then flees back into the city. This is the moment his conscience wins over his fear of Augustus, aligning him (and Ki-jung) with Ryan's cause.",
+      "facts": [
+        {
+          "key": "turning point",
+          "value": "Defects: cuts Mars's chains to save Felix rather than kill him"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Felix",
+          "rel": "spares and rescues him, breaking with the Augusti"
+        },
+        {
+          "to": "Ki-jung",
+          "rel": "her word decides him to defect"
+        },
+        {
+          "to": "Mars",
+          "rel": "cuts his chains, turning on the Olympian"
+        }
+      ],
+      "chapter": 108
+    },
+    {
+      "name": "Mars",
+      "kind": "character",
+      "summary": "CH108: pursues Ryan and Felix across the New Rome Strip, revealing more of his kit: he shockwave-'jumps' through the air by teleporting pressurized air beneath his boots and orienting on summoned shields, pulls targets in with 20m+ spiked grappling chains ('harpooning' the car), and endures a bomb detonated inside Wyvern's throat. He downs Wardrobe's helicopter and wounds Wyvern's eyes, but Jamie's defection snaps his chains mid-pull; he crashes, breaks his leg with an audible crack, and is buried alive under a horde of rats (Ryan's doing) as the group escapes by submarine.",
+      "facts": [
+        {
+          "key": "mobility",
+          "value": "Shockwave-jumps via teleported pressurized air + summoned shields"
+        },
+        {
+          "key": "fate",
+          "value": "Breaks leg, buried under rats; the quarry escapes"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Wyvern",
+          "rel": "wounds her but she survives the throat-bomb"
+        },
+        {
+          "to": "Jamie",
+          "rel": "his chains cut by Jamie's defection"
+        }
+      ],
+      "chapter": 108
     }
   ],
   "plotObservations": [
@@ -17166,6 +17218,28 @@
         "Fortuna"
       ],
       "chapter": 107
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH108 'Go Daddy Go': the Strip chase climaxes. Wyvern, Wardrobe (whistle freezes all traffic), and Private Security aid Ryan and Felix against Mars and Sparrow; Ryan wields the Killer Rabbit Plushie as a laser and downs Mortimer. Felix, realizing Livia foresaw and staged his rescue, is bitter but alive. At the decisive moment Jamie - torn between his light-sword and his conscience - cuts Mars's grappling chains instead of Felix, defecting from the Augusti; Mars crashes, breaks his leg, and is buried under a rat horde. The group escapes onto Len's submarine via a Fortuna-luck glass ramp, Shroud having gotten Fortuna to safety. The very public fight pushes Dynamis and the Augusti toward open war, with Pluto watching them flee.",
+      "entities": [
+        "Ryan Romano",
+        "Felix",
+        "Mars",
+        "Jamie",
+        "Ki-jung",
+        "Wyvern",
+        "Wardrobe",
+        "Sparrow",
+        "Mortimer",
+        "Len",
+        "Mr. See-Through",
+        "Fortuna",
+        "The Killer Rabbit Plushie",
+        "Pluto",
+        "Livia"
+      ],
+      "chapter": 108
     }
   ]
 }
