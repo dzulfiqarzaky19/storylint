@@ -833,7 +833,8 @@
           109,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1231,7 +1232,8 @@
           109,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -2324,7 +2326,8 @@
           109,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -2776,7 +2779,8 @@
           104,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -3005,6 +3009,14 @@
           {
             "key": "motive",
             "value": "Forced human evolution ('intelligent design') to face coming cosmic threats"
+          },
+          {
+            "key": "nature",
+            "value": "A remorseless quantum-clone collective in an echo chamber of yes-man copies"
+          },
+          {
+            "key": "crime",
+            "value": "Withheld a Psycho cure and released Psychos as a synergy experiment; apocalypse was 'acceptable'"
           }
         ],
         "ties": [
@@ -3015,6 +3027,14 @@
           {
             "to": "andreas-torque",
             "rel": "hunted and then experimented on him"
+          },
+          {
+            "to": "homo-novus",
+            "rel": "the master race she engineered the world's fall to create"
+          },
+          {
+            "to": "leo-hargraves",
+            "rel": "arrests her for genocide and crimes against humanity"
           }
         ],
         "appearances": [
@@ -3029,7 +3049,8 @@
           110,
           111,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -3108,7 +3129,8 @@
         "appearances": [
           8,
           83,
-          112
+          112,
+          114
         ],
         "questions": []
       },
@@ -3394,7 +3416,8 @@
           93,
           97,
           105,
-          110
+          110,
+          114
         ],
         "questions": []
       },
@@ -4132,7 +4155,8 @@
           102,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -9967,16 +9991,33 @@
           {
             "key": "note",
             "value": "Apparent architects of Elixirs and the Genome age"
+          },
+          {
+            "key": "identity",
+            "value": "Eva Fabre's quantum clones = the Purple-World-vision phantoms"
+          },
+          {
+            "key": "interest",
+            "value": "Covet Ryan's time-anomaly power for chronotech; tracked him since Mechron"
           }
         ],
         "ties": [
           {
             "to": "the-blue-world",
             "rel": "channel"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "are Eva Fabre's copies"
+          },
+          {
+            "to": "homo-novus",
+            "rel": "the species they engineered the apocalypse to birth"
           }
         ],
         "appearances": [
-          49
+          49,
+          114
         ],
         "questions": []
       },
@@ -11711,7 +11752,8 @@
           99,
           101,
           106,
-          107
+          107,
+          114
         ],
         "questions": []
       },
@@ -12198,6 +12240,14 @@
           {
             "key": "next step",
             "value": "Needs Elixir-bonding data from the Alchemist (Antarctica)"
+          },
+          {
+            "key": "revelation",
+            "value": "The Alchemist had the cure all along and withheld it deliberately"
+          },
+          {
+            "key": "limit",
+            "value": "Works via Flux-guided gene therapy, but not on Psychos degraded past a threshold (e.g. Bloodstream)"
           }
         ],
         "ties": [
@@ -12240,12 +12290,21 @@
           {
             "to": "the-alchemist",
             "rel": "her research needed to extend the cure"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "held the cure back to keep Psychos as an experiment"
+          },
+          {
+            "to": "sarin",
+            "rel": "her rage at the withheld cure"
           }
         ],
         "appearances": [
           71,
           83,
-          105
+          105,
+          114
         ],
         "questions": []
       },
@@ -13397,7 +13456,8 @@
           109,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -13798,7 +13858,8 @@
           104,
           110,
           112,
-          113
+          113,
+          114
         ],
         "questions": []
       },
@@ -14760,7 +14821,42 @@
           }
         ],
         "appearances": [
-          113
+          113,
+          114
+        ],
+        "questions": []
+      },
+      {
+        "id": "homo-novus",
+        "kind": "concept",
+        "name": "Homo Novus",
+        "summary": "CH114: the Alchemist's name for her intended successor species - superpowered humans meant to supplant Homo Sapiens the way sapiens replaced Neanderthals. Elixir genetics (decoded from the ship): Elixirs originate in the White World, reproduce asexually like jellyfish, and adapt to any colored dimension's Flux. A Genome+normie child inherits a duplicated, slightly adapted version of the parent's power; a Genome+Genome child gets ONE Elixir that blends both parents' colors (e.g. Narcinia = Green mother + Yellow father = 'create life by cutting herself'). Children of Genomes are ALWAYS stable Genomes, so by the Alchemist's own projection Homo Sapiens declines within ~200 years. Psychos (bicolored mutants) were a deliberate EXPERIMENT into multi-color Flux synergy - a hoped-for reality-overwriting Genome - not a bug; they are sterile (can't propagate) and target other Genomes.",
+        "facts": [
+          {
+            "key": "goal",
+            "value": "Replace Homo Sapiens with superpowered Homo Novus within ~200 years"
+          },
+          {
+            "key": "inheritance",
+            "value": "Genome+normie = adapted copy; Genome+Genome = one blended-color Elixir; always stable"
+          },
+          {
+            "key": "psychos",
+            "value": "A deliberate multi-color synergy experiment (seeking a reality-editing power), sterile by design"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-alchemist",
+            "rel": "her master plan and its genetics"
+          },
+          {
+            "to": "elixirs",
+            "rel": "the White-World beings whose reproduction drives it"
+          }
+        ],
+        "appearances": [
+          114
         ],
         "questions": []
       }
@@ -16972,6 +17068,10 @@
           {
             "chapter": 113,
             "summary": "CH113 'Final Contact': a surviving Hegemony Soldier ('E.T.') ambushes the team, wielding every Flux color from a finite stolen reserve - teleport, phasing, a White cancel-shield, seed-cannon, and an Adamantine armor-shift. The group can't safely use powers near the Elixir vats, but Ryan cracks its adamantine visor with Black Flux, corrupting its seven-color balance and collapsing it into a black hole. Inside that hole Darkling speaks: the Hegemony fell decades ago, no invasion or rescue is coming - the ship is just vengeful ghosts of a lost war, and the killed alien was a mere grunt. Eva Fabre read that history as a blueprint and repeated its hubris, birthing Genomes and Psychos. The Violet Ultimate One never acts directly; it sent Ryan via visions so a human could end a human-made disaster. Ryan, now able to speak Elixir and nearest to ascension, resolves to find the ship's control-mind and destroy the ship across all timelines - though the Alchemist will fight to keep it."
+          },
+          {
+            "chapter": 114,
+            "summary": "CH114 'Chemical Reaction': pushing through the plant-choked, corpse-strewn ship toward its command center, Len finishes decoding the Alchemist's data and drops two bombshells - Elixir genetics (Genome children are always stable Genomes, so Homo Novus will supplant Homo Sapiens in ~200 years; Psychos are a deliberate multi-color synergy experiment, sterile by design) and, worst of all, the Alchemist has had a working Psycho cure FROM THE START and withheld it. Sarin's grief turns to fury. They reach a checkpoint where quantum-duplicate Eva Fabre clones (the Purple-World-vision Founders) fight off Hegemony Soldiers before the blue command-center gate. The Evas admit, without remorse, that the apocalypse was 'an acceptable loss' for Homo Novus and mankind their lab rats. Ryan diagnoses her flaw: her Elixir gave her an echo chamber of adoring copies that eroded her conscience. Sunshine arrests her for genocide; battle erupts, and Ryan freezes time and locks onto the command-center gate."
           }
         ],
         "entities": [
@@ -17067,13 +17167,15 @@
           "hegemony-soldiers",
           "darkling",
           "the-violet-ultimate-one",
-          "the-violet-elixir"
+          "the-violet-elixir",
+          "the-founders-of-homo-novus",
+          "homo-novus"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 243,
+    "entities": 244,
     "plotlines": 104,
     "books": 1
   }

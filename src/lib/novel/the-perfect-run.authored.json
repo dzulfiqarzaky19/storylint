@@ -15872,6 +15872,114 @@
         }
       ],
       "chapter": 113
+    },
+    {
+      "name": "Homo Novus",
+      "kind": "concept",
+      "summary": "CH114: the Alchemist's name for her intended successor species - superpowered humans meant to supplant Homo Sapiens the way sapiens replaced Neanderthals. Elixir genetics (decoded from the ship): Elixirs originate in the White World, reproduce asexually like jellyfish, and adapt to any colored dimension's Flux. A Genome+normie child inherits a duplicated, slightly adapted version of the parent's power; a Genome+Genome child gets ONE Elixir that blends both parents' colors (e.g. Narcinia = Green mother + Yellow father = 'create life by cutting herself'). Children of Genomes are ALWAYS stable Genomes, so by the Alchemist's own projection Homo Sapiens declines within ~200 years. Psychos (bicolored mutants) were a deliberate EXPERIMENT into multi-color Flux synergy - a hoped-for reality-overwriting Genome - not a bug; they are sterile (can't propagate) and target other Genomes.",
+      "facts": [
+        {
+          "key": "goal",
+          "value": "Replace Homo Sapiens with superpowered Homo Novus within ~200 years"
+        },
+        {
+          "key": "inheritance",
+          "value": "Genome+normie = adapted copy; Genome+Genome = one blended-color Elixir; always stable"
+        },
+        {
+          "key": "psychos",
+          "value": "A deliberate multi-color synergy experiment (seeking a reality-editing power), sterile by design"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "her master plan and its genetics"
+        },
+        {
+          "to": "Elixirs",
+          "rel": "the White-World beings whose reproduction drives it"
+        }
+      ],
+      "chapter": 114
+    },
+    {
+      "name": "The Alchemist",
+      "kind": "character",
+      "summary": "CH114: confronted in the ship as a squad of quantum-duplicate Eva Fabre clones (like Livia's power, they collapse to Blue Flux when 'killed'). They reveal, without a flicker of remorse, that Psychos were an intentional experiment and that a Psycho cure existed from the start (Psychos being sterile 'features,' not bugs; she keeps other degraded Bloodstream-like Psychos in storage). She calls the apocalypse 'an acceptable loss' and 'a dirty job someone had to do' to forge Homo Novus. Ryan diagnoses her fatal flaw: her Elixir granted her deepest wish - an army of adoring copies - turning the ship into an echo chamber that eroded all self-reflection (her clones finish each other's sentences and none dissent), making her more narcissistic than Augustus. Sunshine formally arrests her for genocide; she is genuinely baffled ('We made you into gods!') and battle erupts.",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "A remorseless quantum-clone collective in an echo chamber of yes-man copies"
+        },
+        {
+          "key": "crime",
+          "value": "Withheld a Psycho cure and released Psychos as a synergy experiment; apocalypse was 'acceptable'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Homo Novus",
+          "rel": "the master race she engineered the world's fall to create"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "arrests her for genocide and crimes against humanity"
+        }
+      ],
+      "chapter": 114
+    },
+    {
+      "name": "The Founders of Homo Novus",
+      "kind": "faction",
+      "summary": "CH114: resolved. The three near-identical blue-particle phantoms Ryan saw in his Purple World vision are Eva Fabre's quantum-duplicate clones - the squad defending the ship's blue command-center gate against the awakened Hegemony Soldiers (concrete Orange-portal monsters, blue-bodysuit troopers with laser rifles and Violet-Flux rods). They share Eva's face, complete each other's sentences, and every one of them is remorseless: to them the world's death was an 'acceptable loss' and mankind their lab rats in the pursuit of Homo Novus. They tracked Ryan since he beat Mechron (Case-BiH-006) and covet his reality-affecting time power for their chronotech research.",
+      "facts": [
+        {
+          "key": "identity",
+          "value": "Eva Fabre's quantum clones = the Purple-World-vision phantoms"
+        },
+        {
+          "key": "interest",
+          "value": "Covet Ryan's time-anomaly power for chronotech; tracked him since Mechron"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "are Eva Fabre's copies"
+        },
+        {
+          "to": "Homo Novus",
+          "rel": "the species they engineered the apocalypse to birth"
+        }
+      ],
+      "chapter": 114
+    },
+    {
+      "name": "The Psycho Cure",
+      "kind": "concept",
+      "summary": "CH114: the devastating truth - the Alchemist had a working Psycho cure FROM THE START and simply never released it, because Psychos are a deliberate feature (a multi-color synergy experiment), not a bug. The mechanism, decoded from the ship: pairing gene therapy with the correct Flux 'message' teaches an Elixir to recognize the right DNA and patch out the instability, potentially curing even Sarin or Frank. But past a threshold the genetic damage is beyond any Elixir's correction (as with degraded Psychos like Bloodstream, of which the Alchemist keeps others in storage). Learning the cure was withheld turns Sarin from wanting answers to wanting revenge.",
+      "facts": [
+        {
+          "key": "revelation",
+          "value": "The Alchemist had the cure all along and withheld it deliberately"
+        },
+        {
+          "key": "limit",
+          "value": "Works via Flux-guided gene therapy, but not on Psychos degraded past a threshold (e.g. Bloodstream)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "held the cure back to keep Psychos as an experiment"
+        },
+        {
+          "to": "Sarin",
+          "rel": "her rage at the withheld cure"
+        }
+      ],
+      "chapter": 114
     }
   ],
   "plotObservations": [
@@ -17841,6 +17949,28 @@
         "The Panda"
       ],
       "chapter": 113
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH114 'Chemical Reaction': pushing through the plant-choked, corpse-strewn ship toward its command center, Len finishes decoding the Alchemist's data and drops two bombshells - Elixir genetics (Genome children are always stable Genomes, so Homo Novus will supplant Homo Sapiens in ~200 years; Psychos are a deliberate multi-color synergy experiment, sterile by design) and, worst of all, the Alchemist has had a working Psycho cure FROM THE START and withheld it. Sarin's grief turns to fury. They reach a checkpoint where quantum-duplicate Eva Fabre clones (the Purple-World-vision Founders) fight off Hegemony Soldiers before the blue command-center gate. The Evas admit, without remorse, that the apocalypse was 'an acceptable loss' for Homo Novus and mankind their lab rats. Ryan diagnoses her flaw: her Elixir gave her an echo chamber of adoring copies that eroded her conscience. Sunshine arrests her for genocide; battle erupts, and Ryan freezes time and locks onto the command-center gate.",
+      "entities": [
+        "Ryan Romano",
+        "The Alchemist",
+        "The Founders of Homo Novus",
+        "Homo Novus",
+        "The Psycho Cure",
+        "Hegemony Soldiers",
+        "Len",
+        "Sarin",
+        "Leo Hargraves",
+        "Mr. Wave",
+        "Mr. See-Through",
+        "The Panda",
+        "Narcinia",
+        "Elixirs",
+        "Bloodstream"
+      ],
+      "chapter": 114
     }
   ]
 }
