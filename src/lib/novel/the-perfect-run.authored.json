@@ -8307,6 +8307,166 @@
         }
       ],
       "chapter": 69
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "Refined (Fallout): the new Dynamis CEO relocates the company's HQ and labs by submarine after Augustus razes them, and tracks Len's underwater base to seize her, 'dead or alive,' threatening to flood the complex (with children inside) and harvest her genetic material. His true goal is revealed: he wants to DEMOCRATIZE Elixirs, mass-producing them so everyone becomes a Genome and no warlord can monopolize power ('if everyone is powerful, then no one is'), and Len is the key to refining Elixir processing. A genuine ideologue who believes he fights Augustus to save lives, he coldly weaponizes that belief to justify coercing Len. He neither confirms nor denies keeping Bloodstream in his labs.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Moves Dynamis HQ/labs by sub after Augustus destroys them"
+        },
+        {
+          "key": "note",
+          "value": "Hunts Len 'dead or alive,' threatens to flood her base"
+        },
+        {
+          "key": "note",
+          "value": "Goal: democratize Elixirs so everyone is a Genome"
+        },
+        {
+          "key": "note",
+          "value": "Believes Len is key to mass-producing Elixirs"
+        },
+        {
+          "key": "note",
+          "value": "Ideologue who justifies coercion as saving lives"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "CEO"
+        },
+        {
+          "to": "Len",
+          "rel": "tries to seize"
+        },
+        {
+          "to": "Augustus",
+          "rel": "sworn enemy"
+        }
+      ],
+      "chapter": 70
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "Refined: Ryan reflects that loops tend to reassert their shape (fate/causality), a stone in a river, until he masters one enough to derail it, but carrying more people across time could turn his pebble into a landslide. He tells Felix he is roughly 500-1000 years old (uncertain) and can only reset to just before his arrival in New Rome. Rather than die under Alphonse's bombardment, he triggers Len's consciousness-transfer, resetting the loop to May 8th 2020. In the new loop, the Chronoradio and Eugène-Henry are ordinary again (the guiding entity gone), it is 'all up to Ryan now.' Len's voice comes through the Chronoradio and confirms she REMEMBERS, the centuries-old curse of solitude finally broken.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Is roughly 500-1000 years old; resets to pre-New Rome"
+        },
+        {
+          "key": "note",
+          "value": "Fate/causality makes loops reassert their shape"
+        },
+        {
+          "key": "note",
+          "value": "Triggers the transfer, resetting to May 8th 2020"
+        },
+        {
+          "key": "note",
+          "value": "Guiding entity is gone; 'all up to Ryan now'"
+        },
+        {
+          "key": "note",
+          "value": "Len remembers across the loop: the transfer worked"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "carries across time"
+        },
+        {
+          "to": "Felix",
+          "rel": "friend, promises to save Fortuna"
+        }
+      ],
+      "chapter": 70
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Refined: Len completes the consciousness-transfer, sending her memories back to her past self even as Alphonse's Dynamis submarine bombards her base. In the new loop (May 8th 2020) she confirms via the Chronoradio that she REMEMBERS, the breakthrough Ryan spent centuries pursuing, finally ending his solitude. But something went catastrophically wrong: she urgently summons Ryan to the orphanage, nose bleeding, seemingly ill from the procedure, then shoots him and traps him in a water-sphere. Her eyes are cold and soulless: the transfer worked, but something ELSE hitched a ride back through time inside her body.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Completes the transfer; her past self now remembers"
+        },
+        {
+          "key": "note",
+          "value": "Confirms 'I do' remember via the Chronoradio"
+        },
+        {
+          "key": "note",
+          "value": "Bleeds from the nose; something went wrong"
+        },
+        {
+          "key": "note",
+          "value": "Shoots Ryan and traps him in a water-sphere"
+        },
+        {
+          "key": "note",
+          "value": "Her body now hosts a hostile hitchhiker entity"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "remembers, then attacks"
+        },
+        {
+          "to": "The Brain-Transfer Project",
+          "rel": "first success, corrupted"
+        }
+      ],
+      "chapter": 70
+    },
+    {
+      "name": "The Hitchhiker",
+      "kind": "concept",
+      "summary": "The catastrophic side-effect of the first successful consciousness-transfer: when Len sent her memories back through time, something ELSE rode along inside the signal and seized her body in the new loop. In the new timeline 'Len' summons Ryan under false pretenses, bleeds from the nose, and attacks him with cold, soulless eyes, revealing she is no longer herself. Its nature is unknown, but it turns Ryan's greatest triumph (breaking his solitude) into his newest threat.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Rode Len's memory-transfer signal back through time"
+        },
+        {
+          "key": "note",
+          "value": "Now controls Len's body in the new loop"
+        },
+        {
+          "key": "note",
+          "value": "Lured Ryan to the orphanage and attacked him"
+        },
+        {
+          "key": "note",
+          "value": "Marked by cold soulless eyes and a nosebleed"
+        },
+        {
+          "key": "note",
+          "value": "Nature and origin unknown"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "possesses"
+        },
+        {
+          "to": "The Brain-Transfer Project",
+          "rel": "unintended passenger of"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "threatens"
+        }
+      ],
+      "chapter": 70
     }
   ],
   "plotObservations": [
@@ -9250,6 +9410,24 @@
         "New Rome"
       ],
       "chapter": 69
+    },
+    {
+      "title": "Gotcha",
+      "beat": "As Len rigs the transfer armor onto Ryan in the flooding underwater base, a recovered Felix listens in and deduces Ryan's time-travel, making peace with the loss of Fortuna once he learns Ryan will save her. He asks Ryan to help him understand and reconcile with his sister next loop. Alphonse Manada's Dynamis submarine arrives and demands Len 'dead or alive,' revealing his goal to democratize Elixirs (make everyone a Genome to break warlord monopolies) with Len as the key; he threatens to flood the base and children to force her. Len refuses ('better dead than corpo') and, under bombardment, triggers the transfer. Ryan freezes time, Violet Flux builds, and the loop ends, resetting to May 8th 2020. In the fresh loop the guiding entity is gone (Chronoradio plays only music). Len's voice confirms she REMEMBERS, Ryan's centuries of solitude finally broken and the transfer a success. But she urgently, sickly summons him to the orphanage; when he arrives she is nosebleeding with cold soulless eyes, shoots him, and traps him in a water-sphere. The transfer worked, but something else hitched a ride back inside her.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Felix",
+        "Fortuna",
+        "Alphonse Manada",
+        "Dynamis",
+        "The Brain-Transfer Project",
+        "Violet Flux",
+        "The Hitchhiker",
+        "Livia",
+        "Eugène-Henry"
+      ],
+      "chapter": 70
     }
   ]
 }
