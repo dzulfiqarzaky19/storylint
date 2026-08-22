@@ -889,7 +889,8 @@
           118,
           119,
           120,
-          121
+          121,
+          122
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1096,6 +1097,14 @@
           {
             "key": "growth",
             "value": "Sheds red/communist iconography; re-engaging with life"
+          },
+          {
+            "key": "doomsday",
+            "value": "Her blood is the trigger that turns every Knockoff-drinker into a Bloodstream clone"
+          },
+          {
+            "key": "wish",
+            "value": "No revenge - cure her father if possible, else give him a peaceful end"
           }
         ],
         "ties": [
@@ -1230,6 +1239,14 @@
           {
             "to": "the-psycho-cure",
             "rel": "her father's last hope before euthanasia"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "confronts him; accepts his apology, not his hand"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "her father, whose fate she will decide"
           }
         ],
         "appearances": [
@@ -1292,7 +1309,8 @@
           115,
           116,
           118,
-          119
+          119,
+          122
         ],
         "questions": []
       },
@@ -1718,6 +1736,14 @@
           {
             "key": "note",
             "value": "Her defection shatters Dynamis's PR; Felix quits too"
+          },
+          {
+            "key": "resigns",
+            "value": "Quits Il Migliore over the Knockoff scandal; urges Enrique to reform too"
+          },
+          {
+            "key": "past",
+            "value": "Enrique's ex-lover ('Laura'); pain and a sliver of hope remain between them"
           }
         ],
         "ties": [
@@ -1752,6 +1778,14 @@
           {
             "to": "felix",
             "rel": "both quit Dynamis"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "estranged ex-lover she pleads with to do the right thing"
+          },
+          {
+            "to": "vulcan",
+            "rel": "Ryan nudges her to reconcile with Jasmine, who wants recognition"
           }
         ],
         "appearances": [
@@ -1771,7 +1805,8 @@
           83,
           88,
           107,
-          108
+          108,
+          122
         ],
         "questions": []
       },
@@ -3561,7 +3596,8 @@
           97,
           105,
           110,
-          114
+          114,
+          122
         ],
         "questions": []
       },
@@ -3693,7 +3729,8 @@
           9,
           10,
           11,
-          48
+          48,
+          122
         ],
         "questions": []
       },
@@ -4767,6 +4804,14 @@
           {
             "key": "power",
             "value": "Vine/moss armor (Blackthorn); unarmed"
+          },
+          {
+            "key": "turns",
+            "value": "Confirms the Knockoff/collusion scandal, agrees to help dismantle it and share the Gravity Gun data"
+          },
+          {
+            "key": "unmasked",
+            "value": "Lean Antonio-Banderas look; a sincere reformer who covered up out of fear of Augustus"
           }
         ],
         "ties": [
@@ -4801,6 +4846,14 @@
           {
             "to": "hector-manada",
             "rel": "turns against his father"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "won over as an ally against Dynamis's rot and Augustus"
+          },
+          {
+            "to": "alphonse-manada",
+            "rel": "brother who built the Knockoffs and will retaliate"
           }
         ],
         "appearances": [
@@ -4814,7 +4867,8 @@
           91,
           93,
           97,
-          117
+          117,
+          122
         ],
         "questions": []
       },
@@ -5785,7 +5839,8 @@
           93,
           97,
           116,
-          118
+          118,
+          122
         ],
         "questions": []
       },
@@ -6311,7 +6366,8 @@
           117,
           118,
           119,
-          120
+          120,
+          122
         ],
         "questions": []
       },
@@ -9812,6 +9868,14 @@
           {
             "key": "fate",
             "value": "Killed with Ki-jung by Pluto for defecting (restorable by loop)"
+          },
+          {
+            "key": "loyalty",
+            "value": "Stayed with the Augusti to protect Ki-jung (Bliss theft) and Lanka, not from belief"
+          },
+          {
+            "key": "choice",
+            "value": "Chooses Ki-jung over the family; will step aside if the Augusti are toppled"
           }
         ],
         "ties": [
@@ -9846,6 +9910,14 @@
           {
             "to": "ki-jung",
             "rel": "dies alongside her"
+          },
+          {
+            "to": "ki-jung",
+            "rel": "girlfriend he means to marry; chooses her over the Augusti"
+          },
+          {
+            "to": "felix",
+            "rel": "estranged friend who wins his conditional neutrality"
           }
         ],
         "appearances": [
@@ -9858,7 +9930,8 @@
           96,
           106,
           108,
-          109
+          109,
+          122
         ],
         "questions": []
       },
@@ -12079,7 +12152,8 @@
         ],
         "appearances": [
           66,
-          118
+          118,
+          122
         ],
         "questions": []
       },
@@ -13816,7 +13890,8 @@
           81,
           87,
           88,
-          91
+          91,
+          122
         ],
         "questions": []
       },
@@ -14644,7 +14719,8 @@
           96,
           106,
           108,
-          109
+          109,
+          122
         ],
         "questions": []
       },
@@ -17668,6 +17744,10 @@
           {
             "chapter": 121,
             "summary": "CH121 'Presidential Debate': Ryan duels Adam the Ogre alone in the vat chamber. Adam takes a Rust Town hostage boy; Ryan shoots him free and blinds Adam with depleted-uranium rounds. The fight exposes Adam's two powers: a Violet time-sense (he feels Ryan's freezes and shields his vitals, limiting Ryan to ~8-10 usable seconds) and a pocket dimension in his gullet (bleeds no blood; produces grenades, a flail, a crossbow, and a Blue Elixir syringe). Bolted in waist and leg, Ryan feeds Adam his own triggered A-bomb ('Filibuster!'); the pocket dimension contains most of the blast but flames cook Adam through the uranium bullet-holes, killing him. The Panda (whose prior-loop fight had revealed Adam's internal weakness) patches Ryan up as Livia holds his hand. The raid is a total success: zero casualties, every hostage saved, captive Psychos moved to underwater habitats. Psyshock is handed to Cancel; the bunker will be occupied and destroyed. Next: Dynamis, then the Augusti - after they celebrate."
+          },
+          {
+            "chapter": 122,
+            "summary": "CH122 'Second Chances': With the Meta-Gang crushed and Alchemo securing Adam's bunker, Ryan/Len/Felix bring the evidence dossier to Enrique Manada (Blackthorn) at Dynamis, Wyvern present. Enrique phone-checks and confirms every charge - Knockoffs made from Bloodstream slime, Len cloned at Lab Sixty-Six, Hector's collusion with Adam - and learns the doomsday risk: Len's blood would revert every Knockoff-drinker into a Bloodstream clone, killing millions. He unmasks, apologizes, and agrees to help dismantle the program and share the Gravity Gun data; Wyvern resigns in disgust and pleads with him to reform. Ryan nudges Wyvern to reconcile with Jasmine (Vulcan). Then Felix visits estranged friends Jamie, Ki-jung, and Lanka, winning their conditional neutrality: Ki-jung and Jamie will step aside once Augustus falls, Lanka stays silent. Next targets: Dynamis's Lab Sixty-Six / Alphonse, then the Augusti."
           }
         ],
         "entities": [
@@ -17778,7 +17858,9 @@
           "elixir-mechanics",
           "fuckface",
           "pale-guy",
-          "rust-town"
+          "rust-town",
+          "the-knockoff-elixir",
+          "lanka"
         ]
       }
     ]

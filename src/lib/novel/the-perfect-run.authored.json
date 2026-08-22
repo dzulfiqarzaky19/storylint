@@ -16708,6 +16708,110 @@
         }
       ],
       "chapter": 121
+    },
+    {
+      "name": "Enrique Manada",
+      "kind": "character",
+      "summary": "CH122 (turns / unmasked): confronted with Ryan, Len, and Felix's evidence dossier, Blackthorn fact-checks it by phone (firing staff mid-call) and confirms every charge: Knockoffs are made from Bloodstream slime, Len was cloned at Lab Sixty-Six, and his father Hector conspired with Adam/the Meta-Gang to weaken the Augusti. He unmasks (a lean Antonio-Banderas look) and admits he learned the horror too late (Fait Accompli), kept covering it because Dynamis is 'the last barrier' against Augustus. His brother Alphonse built the Knockoffs to dethrone the god-Genomes and wanted Len as a guinea pig (Enrique vetoed it). Moved by Wyvern and by the offered Psycho/Bloodstream cure, he agrees to analyze the epidemic risk and share the Gravity Gun data - a genuine reformer, Dynamis's own 'Livia.'",
+      "facts": [
+        {
+          "key": "turns",
+          "value": "Confirms the Knockoff/collusion scandal, agrees to help dismantle it and share the Gravity Gun data"
+        },
+        {
+          "key": "unmasked",
+          "value": "Lean Antonio-Banderas look; a sincere reformer who covered up out of fear of Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "won over as an ally against Dynamis's rot and Augustus"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "brother who built the Knockoffs and will retaliate"
+        }
+      ],
+      "chapter": 122
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH122: Len confronts Enrique Manada face-to-face, demanding to know why Dynamis did this to her father. She reveals the doomsday stakes: her own blood carries an agent that strips the safeguards off the Knockoffs - contact would revert every Knockoff-drinker into a Bloodstream clone, killing millions, and the core may soon do it unaided. She refuses Enrique's handshake but accepts his apology; she wants no revenge, only to try the cure on her father Bloodstream and, failing that, to end his suffering and give him peace. Still awkward with strangers (waits in the car during the Jamie visit), she is steadier and braver here, her anger at Dynamis giving her confidence.",
+      "facts": [
+        {
+          "key": "doomsday",
+          "value": "Her blood is the trigger that turns every Knockoff-drinker into a Bloodstream clone"
+        },
+        {
+          "key": "wish",
+          "value": "No revenge - cure her father if possible, else give him a peaceful end"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Enrique Manada",
+          "rel": "confronts him; accepts his apology, not his hand"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "her father, whose fate she will decide"
+        }
+      ],
+      "chapter": 122
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "CH122: present at the Dynamis confrontation as Enrique's guard. She reads the evidence dossier in denial, dismissing it as Lab-Sixty-Six conspiracy theory, until Enrique's phone-checks force the truth on her. Devastated - she was Enrique's ex-lover ('Laura'/'Enrique') - she snaps the mahogany desk in half, then resigns on the spot rather than stand by the Knockoff horror, and pleads with Enrique to do the same ('Someone has to try'). Ryan privately urges her to reconcile with Jasmine (Vulcan): all Jasmine wants is an apology and recognition for living in Wyvern's shadow, treated as an equal. Wyvern, shaken, seems willing to try - and to give Enrique another chance.",
+      "facts": [
+        {
+          "key": "resigns",
+          "value": "Quits Il Migliore over the Knockoff scandal; urges Enrique to reform too"
+        },
+        {
+          "key": "past",
+          "value": "Enrique's ex-lover ('Laura'); pain and a sliver of hope remain between them"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Enrique Manada",
+          "rel": "estranged ex-lover she pleads with to do the right thing"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "Ryan nudges her to reconcile with Jasmine, who wants recognition"
+        }
+      ],
+      "chapter": 122
+    },
+    {
+      "name": "Jamie",
+      "kind": "character",
+      "summary": "CH122: Felix visits his estranged Augusti friends (Jamie, Ki-jung, Lanka) to seek not their return but their neutrality if the Augusti fall. Jamie counters Felix's judgment: he stayed to keep Ki-jung and Lanka alive after Ki-jung stole Bliss and Pluto marked her for death - Felix only escaped because his parents and ex have Augustus's ear. Ki-jung firmly says she WOULD leave (she still fights the Bliss addiction and wants others freed of it), and Jamie, who means to marry her, chooses her: 'I would choose her, wherever that leads.' Lanka stays cynical but promises silence. A conditional alliance secured: they'll step aside when Augustus falls.",
+      "facts": [
+        {
+          "key": "loyalty",
+          "value": "Stayed with the Augusti to protect Ki-jung (Bliss theft) and Lanka, not from belief"
+        },
+        {
+          "key": "choice",
+          "value": "Chooses Ki-jung over the family; will step aside if the Augusti are toppled"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ki-jung",
+          "rel": "girlfriend he means to marry; chooses her over the Augusti"
+        },
+        {
+          "to": "Felix",
+          "rel": "estranged friend who wins his conditional neutrality"
+        }
+      ],
+      "chapter": 122
     }
   ],
   "plotObservations": [
@@ -18854,6 +18958,25 @@
         "Mechron"
       ],
       "chapter": 121
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH122 'Second Chances': With the Meta-Gang crushed and Alchemo securing Adam's bunker, Ryan/Len/Felix bring the evidence dossier to Enrique Manada (Blackthorn) at Dynamis, Wyvern present. Enrique phone-checks and confirms every charge - Knockoffs made from Bloodstream slime, Len cloned at Lab Sixty-Six, Hector's collusion with Adam - and learns the doomsday risk: Len's blood would revert every Knockoff-drinker into a Bloodstream clone, killing millions. He unmasks, apologizes, and agrees to help dismantle the program and share the Gravity Gun data; Wyvern resigns in disgust and pleads with him to reform. Ryan nudges Wyvern to reconcile with Jasmine (Vulcan). Then Felix visits estranged friends Jamie, Ki-jung, and Lanka, winning their conditional neutrality: Ki-jung and Jamie will step aside once Augustus falls, Lanka stays silent. Next targets: Dynamis's Lab Sixty-Six / Alphonse, then the Augusti.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Felix",
+        "Enrique Manada",
+        "Wyvern",
+        "Alphonse Manada",
+        "The Gravity Gun",
+        "The Knockoff Elixir",
+        "Bloodstream",
+        "Jamie",
+        "Ki-jung",
+        "Lanka"
+      ],
+      "chapter": 122
     }
   ]
 }
