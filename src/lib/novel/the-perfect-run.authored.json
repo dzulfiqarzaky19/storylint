@@ -17446,6 +17446,162 @@
         }
       ],
       "chapter": 126
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH127 (Ischia assault): as King Saturn he leads the counter-invasion of Augustus's Bliss fortress, having pre-arranged rock-paper-scissors power match-ups Livia mapped - Vladimir + Acid Rain neutralize Mars, Shroud + Fortuna tranq Pluto and Cancel, Vulcan's killswitch traps the Augusti in their own armors. He goes inside alone to face the telepath Bacchus (acting as bait so the brainless Sarin can creep up unseen) and the necromancer Mercury, enduring devastating hallucination-assaults (drowning, crucifixion, insanity) that tax but can't physically break his centuries-hardened mind. He unravels Bacchus with the Ascension-wisdom truth, knocks out Mercury, rescues the tortured Narcinia, and demolishes the factory. Then he rises alone into the storm to meet Augustus, who descends as an ivory lightning-god - the final duel begins.",
+      "facts": [
+        {
+          "key": "battle name",
+          "value": "Introduces himself to Augustus as 'King Saturn'; Augustus frames the fight as his 'Titanomachy'"
+        },
+        {
+          "key": "counters",
+          "value": "Pre-mapped power match-ups (Livia's intel) neutralize Mars, Pluto, Cancel, the Killer Seven, and the Augusti armors"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "faces him alone in the sky above Ischia to open the final duel"
+        },
+        {
+          "to": "Sarin",
+          "rel": "acts as bait for Bacchus so she can ambush the telepath unseen"
+        }
+      ],
+      "chapter": 127
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH127 (descends for the duel): the Augusti god-emperor finally takes the field, descending from a cumulonimbus as an ivory statue shrouded in crimson electric aura, riding ionized winds, red lightning coursing the skies. He looks down on Ryan with contempt, calls him 'the architect of all of this,' and frames the fight as his own Titanomachy - vowing to nail Ryan to a cross and make him watch his friends die. Indestructible metal vulnerable only to conceptual powers (per Magenta, Ryan's Black can beat him). The final battle opens on his word: 'Let's go.'",
+      "facts": [
+        {
+          "key": "form",
+          "value": "Ivory lightning-god: crimson electric aura, ionized winds for flight, gaze that burns to look at"
+        },
+        {
+          "key": "framing",
+          "value": "Calls the duel his 'Titanomachy'; contemptuous, unafraid, but fists clenched in anger"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "descends to duel him one-on-one above the ruined fortress"
+        }
+      ],
+      "chapter": 127
+    },
+    {
+      "name": "Bacchus",
+      "kind": "character",
+      "summary": "CH127 (defeated, spared): Andreas Torque, the fallen priest and Augusti telepath, defends the Bliss fortress with devastating hallucination-assaults - drowning Ryan in blood, crucifying him, degrading his sense of reality toward 'insanity' (peeling a mind away like an onion until identity is gone). It is revealed HE broke Giulia Costa/Narcinia's mind this way, torturing her until she forgot herself. Ryan endures as bait; the brainless Sarin, invisible to his telepathy, creeps up and fills his lungs with mist, choking him unconscious mid-rant ('I need to escape! I can't stand this reality!'). Ryan spares him - unlike Augustus, Bacchus didn't choose to become a monster (Eva Fabre wrecked his mind at awakening) and Alchemo may cure him as he cured Helen.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Blue-Flux telepathy: broadcasts hallucinations, degrades sanity/identity; can't inflict real physical harm but blinds and delays; briefly dispelled by time-stop"
+        },
+        {
+          "key": "crime",
+          "value": "Tortured Giulia Costa's mind until she forgot who she was, remaking her as the 'holy maiden' Narcinia"
+        },
+        {
+          "key": "defeated by",
+          "value": "Sarin's brainless mist (invisible to telepathy) choked him out; sedated and spared for a possible Alchemo cure"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Sarin",
+          "rel": "ambushed and choked unconscious by her mist while distracted by Ryan"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "the priest who tortured her mind and caged her"
+        }
+      ],
+      "chapter": 127
+    },
+    {
+      "name": "Mercury",
+      "kind": "character",
+      "summary": "CH127 (defeated, spared): the ancient hunchbacked Olympian necromancer - cashmere suit, bowler hat, wooden cane, tiny fearful eyes - who pilots the Augusti dead from afar (raising drowned corpses, skeletons, and dead test subjects with a yellow glow in their eyes). At Ischia he raised a legion of the dead led by Mars, and cloaked undead thralls in Bacchus's illusions to strike Ryan by surprise. Once Ryan shakes free of the hallucinations, he time-stops, charges, and punches the old man out ('Boo'), breaking his jaw - all his undead collapse at once as the yellow light dies. Sedated and spared alongside Bacchus.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Necromancy: infuses corpses with energy and pilots the undead from afar; a yellow glow marks his thralls"
+        },
+        {
+          "key": "defeated by",
+          "value": "Ryan's time-stopped charge and a single jaw-breaking punch; his whole undead legion dropped with him"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mars",
+          "rel": "raised and fielded the undead legion the war-god led at Ischia"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "knocked out cold by him after the hallucinations broke"
+        }
+      ],
+      "chapter": 127
+    },
+    {
+      "name": "Narcinia",
+      "kind": "character",
+      "summary": "CH127 (rescued): found caged among Bacchus's test subjects in the Bliss production center - fetal, terrified, a red slap-mark on her cheek. It is confirmed that when Geist vanished, Father Torque (Bacchus) confiscated her phone, forbade her to leave or see her father, and tortured her mind - the origin of her fractured 'holy maiden' identity (Giulia Costa remade). Ryan tears open the bars and coaxes her out, recalling how Len once found him in the wreckage. Reunited over the intercom with her sister Fortuna and with Felix ('For you, Narci, I came for you'), she is evacuated by Mr. Wave and folded into a tearful group hug.",
+      "facts": [
+        {
+          "key": "captivity",
+          "value": "Caged and mind-tortured by Bacchus after Geist's disappearance; phone confiscated, barred from leaving or seeing her father"
+        },
+        {
+          "key": "rescue",
+          "value": "Freed by Ryan, reunited with Fortuna and Felix, evacuated by Mr. Wave"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fortuna",
+          "rel": "her sister, who talks her out of the cage over the intercom"
+        },
+        {
+          "to": "Felix",
+          "rel": "returned to the fight specifically for her"
+        }
+      ],
+      "chapter": 127
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH127 (the Bacchus-killer play): Bianca, the sentient nerve-gas creature, is the linchpin of Ryan's plan against the telepath Bacchus - because she has no brain, his telepathy can't perceive her. While Ryan draws the priest's full attention with his mind, she creeps through the fortress, seeps into Bacchus's lungs as mist, and chokes him unconscious from within (offering to burst out 'Alien-style,' but Ryan wants him alive for a possible cure). She reforms beside her victim, worried at how harrowed Ryan looks, and later helps Vladimir level the fortress with shockwaves.",
+      "facts": [
+        {
+          "key": "why she works",
+          "value": "Brainless, so Bacchus's telepathy can't sense her - the perfect assassin for a mind-reader"
+        },
+        {
+          "key": "method",
+          "value": "Seeped into Bacchus's lungs as mist and choked him out from inside, non-lethally on Ryan's orders"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bacchus",
+          "rel": "ambushed and subdued the telepath he couldn't sense"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "his brainless secret weapon; worries over his hallucination-wracked state"
+        }
+      ],
+      "chapter": 127
     }
   ],
   "plotObservations": [
@@ -19684,6 +19840,31 @@
         "The Architect"
       ],
       "chapter": 126
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH127 'Theomachia': the assault on Augustus's Bliss fortress on Ischia Island. Ryan's pre-mapped rock-paper-scissors power match-ups (Livia's intel) dismantle the defense - Vladimir (steel giant) + Acid Rain neutralize Mars and his undead legion, Shroud + Fortuna tranq Pluto and Cancel, the Killer Seven fall (Vamp dies, the rest surrender/sedated), and Vulcan's hidden killswitch traps the Augusti in their own armors. Ryan goes inside alone as bait for the telepath Bacchus so the brainless Sarin can ambush and choke him unconscious; he knocks out the necromancer Mercury, spares both for a possible cure, and rescues the mind-tortured Narcinia (reunited with Fortuna and Felix). The factory is razed. Then Augustus finally descends as an ivory lightning-god, framing the duel as his Titanomachy, and the final one-on-one battle above the ruins begins.",
+      "entities": [
+        "Ryan Romano",
+        "Augustus",
+        "Bacchus",
+        "Mercury",
+        "Sarin",
+        "Narcinia",
+        "Fortuna",
+        "Felix",
+        "Mars",
+        "Frank the Mad",
+        "Acid Rain",
+        "Mr. See-Through",
+        "Vulcan",
+        "Pluto",
+        "Cancel",
+        "The Killer Seven",
+        "Mr. Wave",
+        "Livia Augusti"
+      ],
+      "chapter": 127
     }
   ]
 }

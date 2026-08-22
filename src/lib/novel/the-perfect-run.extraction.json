@@ -493,6 +493,14 @@
           {
             "key": "save still blocked",
             "value": "Magenta confirms the Ultimate One won't restore his save; he may Ascend instead"
+          },
+          {
+            "key": "battle name",
+            "value": "Introduces himself to Augustus as 'King Saturn'; Augustus frames the fight as his 'Titanomachy'"
+          },
+          {
+            "key": "counters",
+            "value": "Pre-mapped power match-ups (Livia's intel) neutralize Mars, Pluto, Cancel, the Killer Seven, and the Augusti armors"
           }
         ],
         "ties": [
@@ -835,6 +843,14 @@
           {
             "to": "augustus",
             "rel": "flies to Ischia to face him alone, with no reload safety net"
+          },
+          {
+            "to": "augustus",
+            "rel": "faces him alone in the sky above Ischia to open the final duel"
+          },
+          {
+            "to": "sarin",
+            "rel": "acts as bait for Bacchus so she can ambush the telepath unseen"
           }
         ],
         "appearances": [
@@ -958,7 +974,8 @@
           123,
           124,
           125,
-          126
+          126,
+          127
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -2137,7 +2154,8 @@
           97,
           103,
           104,
-          126
+          126,
+          127
         ],
         "questions": []
       },
@@ -2310,6 +2328,14 @@
           {
             "key": "counters",
             "value": "Conceptual/time powers bypass the metal (Frank, Livia's skip, Ryan's Black)"
+          },
+          {
+            "key": "form",
+            "value": "Ivory lightning-god: crimson electric aura, ionized winds for flight, gaze that burns to look at"
+          },
+          {
+            "key": "framing",
+            "value": "Calls the duel his 'Titanomachy'; contemptuous, unafraid, but fists clenched in anger"
           }
         ],
         "ties": [
@@ -2408,6 +2434,10 @@
           {
             "to": "the-colored-worlds",
             "rel": "an 'Orange' by power-source"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "descends to duel him one-on-one above the ruined fortress"
           }
         ],
         "appearances": [
@@ -2438,7 +2468,8 @@
           118,
           123,
           125,
-          126
+          126,
+          127
         ],
         "questions": []
       },
@@ -2934,6 +2965,14 @@
           {
             "key": "psycho mechanism",
             "value": "Two rival Elixirs (Red + Orange) unaware she was a 'twin'; separating them cures her"
+          },
+          {
+            "key": "why she works",
+            "value": "Brainless, so Bacchus's telepathy can't sense her - the perfect assassin for a mind-reader"
+          },
+          {
+            "key": "method",
+            "value": "Seeped into Bacchus's lungs as mist and choked him out from inside, non-lethally on Ryan's orders"
           }
         ],
         "ties": [
@@ -3016,6 +3055,14 @@
           {
             "to": "ryan-romano",
             "rel": "kept his promise to cure and remember her"
+          },
+          {
+            "to": "bacchus",
+            "rel": "ambushed and subdued the telepath he couldn't sense"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his brainless secret weapon; worries over his hallucination-wracked state"
           }
         ],
         "appearances": [
@@ -3049,7 +3096,8 @@
           118,
           119,
           120,
-          123
+          123,
+          127
         ],
         "questions": []
       },
@@ -3907,6 +3955,14 @@
           {
             "key": "note",
             "value": "Holds the full list of Augustus's silenced enemies"
+          },
+          {
+            "key": "power",
+            "value": "Necromancy: infuses corpses with energy and pilots the undead from afar; a yellow glow marks his thralls"
+          },
+          {
+            "key": "defeated by",
+            "value": "Ryan's time-stopped charge and a single jaw-breaking punch; his whole undead legion dropped with him"
           }
         ],
         "ties": [
@@ -3929,12 +3985,21 @@
           {
             "to": "augustus",
             "rel": "keeps his secrets"
+          },
+          {
+            "to": "mars",
+            "rel": "raised and fielded the undead legion the war-god led at Ischia"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "knocked out cold by him after the hallucinations broke"
           }
         ],
         "appearances": [
           9,
           39,
-          57
+          57,
+          127
         ],
         "questions": []
       },
@@ -4233,7 +4298,8 @@
           22,
           39,
           108,
-          109
+          109,
+          127
         ],
         "questions": []
       },
@@ -4364,7 +4430,8 @@
           10,
           21,
           25,
-          67
+          67,
+          127
         ],
         "questions": []
       },
@@ -6433,7 +6500,8 @@
           76,
           78,
           95,
-          123
+          123,
+          127
         ],
         "questions": []
       },
@@ -6576,7 +6644,8 @@
           119,
           120,
           122,
-          124
+          124,
+          127
         ],
         "questions": []
       },
@@ -6705,7 +6774,8 @@
           94,
           95,
           106,
-          121
+          121,
+          127
         ],
         "questions": []
       },
@@ -7006,6 +7076,18 @@
           {
             "key": "info",
             "value": "Gives Ryan Station Orpheon's coordinates (believes it empty)"
+          },
+          {
+            "key": "power",
+            "value": "Blue-Flux telepathy: broadcasts hallucinations, degrades sanity/identity; can't inflict real physical harm but blinds and delays; briefly dispelled by time-stop"
+          },
+          {
+            "key": "crime",
+            "value": "Tortured Giulia Costa's mind until she forgot who she was, remaking her as the 'holy maiden' Narcinia"
+          },
+          {
+            "key": "defeated by",
+            "value": "Sarin's brainless mist (invisible to telepathy) choked him out; sedated and spared for a possible Alchemo cure"
           }
         ],
         "ties": [
@@ -7036,6 +7118,14 @@
           {
             "to": "narcinia",
             "rel": "his protege 'Ceres', whose mind he broke"
+          },
+          {
+            "to": "sarin",
+            "rel": "ambushed and choked unconscious by her mist while distracted by Ryan"
+          },
+          {
+            "to": "narcinia",
+            "rel": "the priest who tortured her mind and caged her"
           }
         ],
         "appearances": [
@@ -7046,7 +7136,8 @@
           101,
           103,
           104,
-          118
+          118,
+          127
         ],
         "questions": []
       },
@@ -7344,7 +7435,8 @@
           107,
           108,
           118,
-          120
+          120,
+          127
         ],
         "questions": []
       },
@@ -8223,7 +8315,8 @@
           112,
           120,
           121,
-          123
+          123,
+          127
         ],
         "questions": []
       },
@@ -9059,7 +9152,8 @@
           123,
           124,
           125,
-          126
+          126,
+          127
         ],
         "questions": []
       },
@@ -9693,7 +9787,8 @@
           101,
           106,
           107,
-          108
+          108,
+          127
         ],
         "questions": []
       },
@@ -12485,6 +12580,14 @@
           {
             "key": "how taken",
             "value": "Augustus killed her parents; Bacchus shattered her memory; given to Mars and Venus"
+          },
+          {
+            "key": "captivity",
+            "value": "Caged and mind-tortured by Bacchus after Geist's disappearance; phone confiscated, barred from leaving or seeing her father"
+          },
+          {
+            "key": "rescue",
+            "value": "Freed by Ryan, reunited with Fortuna and Felix, evacuated by Mr. Wave"
           }
         ],
         "ties": [
@@ -12507,6 +12610,14 @@
           {
             "to": "leo-hargraves",
             "rel": "family friend who reveals her origin"
+          },
+          {
+            "to": "fortuna",
+            "rel": "her sister, who talks her out of the cage over the intercom"
+          },
+          {
+            "to": "felix",
+            "rel": "returned to the fight specifically for her"
           }
         ],
         "appearances": [
@@ -12523,7 +12634,8 @@
           106,
           107,
           114,
-          118
+          118,
+          127
         ],
         "questions": []
       },
@@ -14323,7 +14435,8 @@
           118,
           119,
           120,
-          125
+          125,
+          127
         ],
         "questions": []
       },
@@ -14778,7 +14891,8 @@
           113,
           114,
           115,
-          117
+          117,
+          127
         ],
         "questions": []
       },
@@ -18232,6 +18346,10 @@
           {
             "chapter": 126,
             "summary": "CH126 'The End is Nigh': aftermath and the eve of the final battle. Dynamis falls publicly, Enrique becomes acting Chairman and promises a public trial; no locals died in Fallout's blast, so the Perfect Run holds. Livia (recovering, saved by Braindead) shares intel - Vulcan has defected, Augustus ordered Wyvern's death, and his forces will invade Rust Town and find the bunker. After tender farewells with Livia and Len (who finds closure and will join The Architect to build cities worldwide), Ryan repairs his Saturn armor, installs Elixir-comms to name his Violet Elixir 'Magenta' (which explains the Ultimate One blocks his saves because his Black has grown dangerous, hints at Ascension, and confirms his Black can beat Augustus's conceptual-only metal), and takes the Plushie as an ally. He triggers the bunker self-destruct ('order Sixty-Six'), collapsing the Junkyard and destroying the Bahamut satellite - erasing Mechron's legacy - then flies to Ischia for the last battle."
+          },
+          {
+            "chapter": 127,
+            "summary": "CH127 'Theomachia': the assault on Augustus's Bliss fortress on Ischia Island. Ryan's pre-mapped rock-paper-scissors power match-ups (Livia's intel) dismantle the defense - Vladimir (steel giant) + Acid Rain neutralize Mars and his undead legion, Shroud + Fortuna tranq Pluto and Cancel, the Killer Seven fall (Vamp dies, the rest surrender/sedated), and Vulcan's hidden killswitch traps the Augusti in their own armors. Ryan goes inside alone as bait for the telepath Bacchus so the brainless Sarin can ambush and choke him unconscious; he knocks out the necromancer Mercury, spares both for a possible cure, and rescues the mind-tortured Narcinia (reunited with Fortuna and Felix). The factory is razed. Then Augustus finally descends as an ivory lightning-god, framing the duel as his Titanomachy, and the final one-on-one battle above the ruins begins."
           }
         ],
         "entities": [
@@ -18352,7 +18470,9 @@
           "magenta",
           "the-plushie",
           "the-bahamut",
-          "the-architect"
+          "the-architect",
+          "mercury",
+          "the-killer-seven"
         ]
       }
     ]
