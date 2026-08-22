@@ -13682,6 +13682,134 @@
         }
       ],
       "chapter": 93
+    },
+    {
+      "name": "The Killer Rabbit Plushie",
+      "kind": "item",
+      "summary": "CH94: the plushie's post-Leporimachia depression turns suicidal, it hangs itself with a rope in the orphanage kitchen and stages a bathtub-and-jumper-cable scene, terrifying the orphans. Ryan reads it as the monster (which never understood death) now trying to understand it by experiencing it, mirroring his own centuries-ago suicidal phase. It eyes Ryan's A-bomb with interest. Ryan also grasps in horror that it was never contained: it could always activate itself and had been silently watching him for centuries.",
+      "facts": [
+        {
+          "key": "phase",
+          "value": "Suicidal, stages hangings; eyes Ryan's A-bomb"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "haunts its maker; covets his bomb"
+        }
+      ],
+      "chapter": 94
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "CH94: Ryan's 'living cheat code' for the Mechron raid, her Yellow luck-Elixir (a guardian-angel power bending events her way) is his answer to breaking Mechron's mainframe without endless loops. Vain and oblivious, she joins Livia's mission out of pure loyalty ('if a friend needs help, you give it no questions asked') without even asking why, dons a useless golden domino mask, and gushes about her boyfriend, revealed (to Ryan's delight) to be a mortified Mathias Martel/Shroud, whom her Elixir seems to be steering toward her. Her one true threat on the Meta roster is the Land, who has killed her before.",
+      "facts": [
+        {
+          "key": "role",
+          "value": "The 'cheat code' whose luck-Elixir cracks Mechron's systems"
+        },
+        {
+          "key": "romance",
+          "value": "Boyfriend is a reluctant Mathias Martel; her Elixir steers it"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mathias Martel",
+          "rel": "her unwilling boyfriend"
+        },
+        {
+          "to": "The Land",
+          "rel": "the one Meta foe who has killed her"
+        }
+      ],
+      "chapter": 94
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH94 'Cheat Code' (May 10th): on the revised loop Ryan preempts Psyshock's orphanage raid, freezing time to bubble Mosquito and Mongrel with Len's water rifle and huffing Psyshock full of Bliss in under a minute. He assembles his 'Avengers' (Len, Panda, Shroud) and forges a temporary alliance with Livia's team (Livia, Fortuna, Cancel) to destroy the Meta-Gang's Mechron weapons cache. His plan: use Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe instead of grinding loops, jail Psychos in Len's crush-depth underwater asylum rather than killing them, and time Cancel's execution of Psyshock to coincide with the Junkyard assault for maximum chaos.",
+      "facts": [
+        {
+          "key": "raid",
+          "value": "One-minute takedown of Psyshock, Mosquito, Mongrel"
+        },
+        {
+          "key": "gambit",
+          "value": "Fortuna's luck as a 'cheat code' vs Mechron's mainframe"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fortuna",
+          "rel": "recruits her luck-Elixir as his cheat code"
+        },
+        {
+          "to": "Livia",
+          "rel": "forges the temporary anti-Mechron alliance"
+        }
+      ],
+      "chapter": 94
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH94: co-architect of the anti-Mechron operation, arriving as Queen Crimson with Fortuna and Cancel. She brokers the fragile alliance with the Carnival's Shroud (whose secret identity and relationship with her 'best friend' she calmly reveals she knows), insists her father Augustus stays ignorant, and frames the goal as destroying the Mechron cache because her visions show the tech harms whoever holds it. She has timed the whole strike from Ryan's intel but admits she still can't see Ryan himself: 'Surprise me, Quicksave.'",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Times the strike; brokers the Carnival alliance behind Augustus's back"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mr. See-Through",
+          "rel": "knows Shroud's identity; uneasy allies"
+        }
+      ],
+      "chapter": 94
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "CH94: Timmy joins Quicksave's Avengers, arriving on his 'fearsome bicycle' too eager to fight. Shroud, expecting to dismiss him, instead judges heroism by heart over skill and welcomes him. The Panda is invigorated by the honor of serving the Carnival but recoils at Cancel's casual talk of killing, and Ryan reassures his 'young Pandawan' they'll bring foes in 'by the book.' Names his transformation 'the most powerful creature on Earth.'",
+      "facts": [
+        {
+          "key": "arc",
+          "value": "Joins the Avengers; balks at lethal methods"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his 'Sifu'/mentor"
+        },
+        {
+          "to": "Mr. See-Through",
+          "rel": "welcomed into the Carnival by him"
+        }
+      ],
+      "chapter": 94
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "CH94: leads the Meta-Gang's orphanage raid (with Mosquito and Mongrel) on May 10th, taunting 'Little Cesare' and 'Little Len' about her dead father. Ryan, saving his cruelty for this one enemy, curbstomps him in half a minute, huffing his tentacled true form full of Bliss until he collapses drooling. Captured and handed to Cancel to be executed on Livia's signal, timed to coincide with the Junkyard assault.",
+      "facts": [
+        {
+          "key": "defeat",
+          "value": "Bliss-huffed unconscious in the orphanage raid; slated for execution"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Cancel",
+          "rel": "handed over to be executed"
+        }
+      ],
+      "chapter": 94
     }
   ],
   "plotObservations": [
@@ -15261,6 +15389,28 @@
         "Julie Costa"
       ],
       "chapter": 93
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH94 'Cheat Code' (May 10th): Ryan executes the revised loop. He preempts Psyshock's Meta-Gang raid on the orphanage, freezing time to bubble Mosquito and Mongrel and huffing Psyshock full of Bliss in under a minute, then captures them for Len's crush-depth underwater asylum instead of killing them. His Avengers assemble (Len, the Panda, Shroud) and forge a temporary alliance with Livia's team (Queen Crimson, Fortuna, Cancel) to destroy the Meta-Gang's cache of Mechron weapons before Adam the Ogre can use it. Ryan's key gambit: deploy Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe. Livia (who reveals she knows Shroud's identity) times the strike from Ryan's intel, Cancel's execution of Psyshock to coincide with the Junkyard assault, and the team drives out to attack the bunker.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Fortuna",
+        "The Panda",
+        "Mr. See-Through",
+        "Len",
+        "Cancel",
+        "Psyshock",
+        "Mosquito",
+        "Mongrel",
+        "Adam the Ogre",
+        "The Meta-Gang",
+        "Mechron",
+        "Mathias Martel",
+        "The Land"
+      ],
+      "chapter": 94
     }
   ]
 }

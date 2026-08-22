@@ -349,6 +349,14 @@
           {
             "key": "strategy",
             "value": "Sunshine hunts Mechron bases; flip Enrique; Augustus is Ryan's own"
+          },
+          {
+            "key": "raid",
+            "value": "One-minute takedown of Psyshock, Mosquito, Mongrel"
+          },
+          {
+            "key": "gambit",
+            "value": "Fortuna's luck as a 'cheat code' vs Mechron's mainframe"
           }
         ],
         "ties": [
@@ -543,6 +551,14 @@
           {
             "to": "the-panda",
             "rel": "recruits Timmy last"
+          },
+          {
+            "to": "fortuna",
+            "rel": "recruits her luck-Elixir as his cheat code"
+          },
+          {
+            "to": "livia",
+            "rel": "forges the temporary anti-Mechron alliance"
           }
         ],
         "appearances": [
@@ -635,7 +651,8 @@
           90,
           91,
           92,
-          93
+          93,
+          94
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -972,7 +989,8 @@
           90,
           91,
           92,
-          93
+          93,
+          94
         ],
         "questions": []
       },
@@ -2784,7 +2802,8 @@
           41,
           46,
           71,
-          73
+          73,
+          94
         ],
         "questions": []
       },
@@ -3576,6 +3595,10 @@
           {
             "key": "note",
             "value": "Grandiose but frightened; neutralized instantly by Len's water bubble"
+          },
+          {
+            "key": "arc",
+            "value": "Joins the Avengers; balks at lethal methods"
           }
         ],
         "ties": [
@@ -3626,6 +3649,14 @@
           {
             "to": "lab-sixty-six",
             "rel": "guards it for Dynamis"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his 'Sifu'/mentor"
+          },
+          {
+            "to": "mr-see-through",
+            "rel": "welcomed into the Carnival by him"
           }
         ],
         "appearances": [
@@ -3642,7 +3673,8 @@
           66,
           87,
           88,
-          93
+          93,
+          94
         ],
         "questions": []
       },
@@ -4343,6 +4375,10 @@
           {
             "key": "note",
             "value": "Forces Ryan to rely on Alchemo to restore Len"
+          },
+          {
+            "key": "defeat",
+            "value": "Bliss-huffed unconscious in the orphanage raid; slated for execution"
           }
         ],
         "ties": [
@@ -4409,6 +4445,10 @@
           {
             "to": "len",
             "rel": "leaves brain-damaged"
+          },
+          {
+            "to": "cancel",
+            "rel": "handed over to be executed"
           }
         ],
         "appearances": [
@@ -4429,7 +4469,8 @@
           73,
           74,
           75,
-          76
+          76,
+          94
         ],
         "questions": []
       },
@@ -4532,7 +4573,8 @@
           78,
           83,
           87,
-          88
+          88,
+          94
         ],
         "questions": []
       },
@@ -4654,7 +4696,8 @@
           78,
           81,
           82,
-          87
+          87,
+          94
         ],
         "questions": []
       },
@@ -5565,7 +5608,8 @@
           53,
           55,
           56,
-          75
+          75,
+          94
         ],
         "questions": []
       },
@@ -6044,6 +6088,14 @@
           {
             "key": "note",
             "value": "Ryan vows to save her in the next loop"
+          },
+          {
+            "key": "role",
+            "value": "The 'cheat code' whose luck-Elixir cracks Mechron's systems"
+          },
+          {
+            "key": "romance",
+            "value": "Boyfriend is a reluctant Mathias Martel; her Elixir steers it"
           }
         ],
         "ties": [
@@ -6102,6 +6154,14 @@
           {
             "to": "ryan-romano",
             "rel": "vows to save"
+          },
+          {
+            "to": "mathias-martel",
+            "rel": "her unwilling boyfriend"
+          },
+          {
+            "to": "the-land",
+            "rel": "the one Meta foe who has killed her"
           }
         ],
         "appearances": [
@@ -6114,7 +6174,8 @@
           67,
           68,
           69,
-          70
+          70,
+          94
         ],
         "questions": []
       },
@@ -6229,7 +6290,8 @@
         ],
         "appearances": [
           26,
-          47
+          47,
+          94
         ],
         "questions": []
       },
@@ -6642,6 +6704,10 @@
           {
             "key": "reveal",
             "value": "Was never truly bound; could always activate itself"
+          },
+          {
+            "key": "phase",
+            "value": "Suicidal, stages hangings; eyes Ryan's A-bomb"
           }
         ],
         "ties": [
@@ -6668,13 +6734,18 @@
           {
             "to": "augustus",
             "rel": "broke its will in the Leporimachia"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "haunts its maker; covets his bomb"
           }
         ],
         "appearances": [
           29,
           82,
           86,
-          93
+          93,
+          94
         ],
         "questions": []
       },
@@ -6744,7 +6815,8 @@
           34,
           61,
           62,
-          92
+          92,
+          94
         ],
         "questions": []
       },
@@ -7728,7 +7800,8 @@
         "appearances": [
           35,
           89,
-          93
+          93,
+          94
         ],
         "questions": []
       },
@@ -10945,6 +11018,10 @@
           {
             "key": "plan",
             "value": "Simulations date the calamities; maps the perfect-run sequence"
+          },
+          {
+            "key": "role",
+            "value": "Times the strike; brokers the Carnival alliance behind Augustus's back"
           }
         ],
         "ties": [
@@ -10975,6 +11052,10 @@
           {
             "to": "vulcan",
             "rel": "will introduce Ryan to rebuild the machine"
+          },
+          {
+            "to": "mr-see-through",
+            "rel": "knows Shroud's identity; uneasy allies"
           }
         ],
         "appearances": [
@@ -10983,7 +11064,8 @@
           70,
           91,
           92,
-          93
+          93,
+          94
         ],
         "questions": []
       },
@@ -11360,7 +11442,8 @@
         "appearances": [
           47,
           73,
-          74
+          74,
+          94
         ],
         "questions": []
       },
@@ -12298,7 +12381,8 @@
         "appearances": [
           80,
           82,
-          91
+          91,
+          94
         ],
         "questions": []
       },
@@ -14996,6 +15080,10 @@
           {
             "chapter": 93,
             "summary": "CH93 'Defenders of the Realm': Ryan recruits his alliance for the perfect run. On the orphanage roof he tells amnesiac Len the full truth (time travel, her death, her father as Bloodstream, her infection possibly shaping her feelings) and seeks her consent for the memory transfer; she wavers but believes him. He discovers the Killer Rabbit Plushie, so thoroughly beaten by Augustus in the Leporimachia, has lost its will to kill (given 'depression'), and realizes it was never truly bound. He recruits Shroud/Mathias Martel, proving the Knockoff-Bloodstream link with Len's blood and taking a leap of faith to confirm his chronokinetic looping; Mathias reveals his mother is the seer Pythia (Alice Martel, alive in Denmark) and that Augustus is fated to wage an all-out war to leave Livia 'queen of the ashes.' Ryan plans to sic Sunshine on Mechron's other bases (to self-detonate the Bahamut), flip Enrique/Blackthorn against Hector and Fallout, and reserve Augustus for himself. He recruits the Panda (Timmy) last."
+          },
+          {
+            "chapter": 94,
+            "summary": "CH94 'Cheat Code' (May 10th): Ryan executes the revised loop. He preempts Psyshock's Meta-Gang raid on the orphanage, freezing time to bubble Mosquito and Mongrel and huffing Psyshock full of Bliss in under a minute, then captures them for Len's crush-depth underwater asylum instead of killing them. His Avengers assemble (Len, the Panda, Shroud) and forge a temporary alliance with Livia's team (Queen Crimson, Fortuna, Cancel) to destroy the Meta-Gang's cache of Mechron weapons before Adam the Ogre can use it. Ryan's key gambit: deploy Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe. Livia (who reveals she knows Shroud's identity) times the strike from Ryan's intel, Cancel's execution of Psyshock to coincide with the Junkyard assault, and the team drives out to attack the bunker."
           }
         ],
         "entities": [
@@ -15021,7 +15109,16 @@
           "the-killer-rabbit-plushie",
           "enrique-manada",
           "hector-manada",
-          "julie-costa"
+          "julie-costa",
+          "fortuna",
+          "mr-see-through",
+          "cancel",
+          "psyshock",
+          "mosquito",
+          "mongrel",
+          "the-meta-gang",
+          "mechron",
+          "the-land"
         ]
       }
     ]
