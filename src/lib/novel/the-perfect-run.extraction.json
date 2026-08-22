@@ -373,6 +373,14 @@
           {
             "key": "milestone",
             "value": "Asks Livia on a date; near-flawless victory"
+          },
+          {
+            "key": "moves",
+            "value": "Recruits Tyrano/Vulcan; plans an upgraded Saturn armor vs Alphonse"
+          },
+          {
+            "key": "plan",
+            "value": "Destroy the bunker only after the crisis is solved"
           }
         ],
         "ties": [
@@ -591,6 +599,14 @@
           {
             "to": "sarin",
             "rel": "wins her defection"
+          },
+          {
+            "to": "vulcan",
+            "rel": "her assistant; gives her the A-bomb"
+          },
+          {
+            "to": "alphonse-manada",
+            "rel": "targets him as the hardest Dynamis obstacle"
           }
         ],
         "appearances": [
@@ -686,7 +702,8 @@
           93,
           94,
           95,
-          96
+          96,
+          97
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -869,6 +886,14 @@
           {
             "key": "conflict",
             "value": "Fears the memory transfer will change her; undecided"
+          },
+          {
+            "key": "decision",
+            "value": "Agrees to the memory transfer and to remove her blood tracker"
+          },
+          {
+            "key": "arc",
+            "value": "Makes peace with Ryan's bond with Livia; stays family"
           }
         ],
         "ties": [
@@ -979,6 +1004,14 @@
           {
             "to": "bloodstream",
             "rel": "her infection may be shaping her feelings for him"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "family; accepts his memory transfer"
+          },
+          {
+            "to": "livia",
+            "rel": "reconciles herself to Ryan's relationship with her"
           }
         ],
         "appearances": [
@@ -1026,7 +1059,8 @@
           93,
           94,
           95,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -1705,7 +1739,8 @@
           86,
           91,
           92,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -2486,7 +2521,8 @@
           87,
           88,
           95,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -3069,7 +3105,8 @@
           90,
           91,
           92,
-          93
+          93,
+          97
         ],
         "questions": []
       },
@@ -3659,6 +3696,14 @@
           {
             "key": "feat",
             "value": "Kills Adam the Ogre with the 'Soaring Panda' finisher"
+          },
+          {
+            "key": "second power",
+            "value": "Blue accelerated-learning: masters any human skill fast"
+          },
+          {
+            "key": "explains",
+            "value": "His flying kick came from learning Bruce Lee's move"
           }
         ],
         "ties": [
@@ -3725,6 +3770,10 @@
           {
             "to": "livia",
             "rel": "she foresaw he could safely take the Elixir"
+          },
+          {
+            "to": "len",
+            "rel": "she diagnoses his learning power"
           }
         ],
         "appearances": [
@@ -3744,7 +3793,8 @@
           93,
           94,
           95,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -4125,7 +4175,8 @@
           83,
           90,
           91,
-          93
+          93,
+          97
         ],
         "questions": []
       },
@@ -5088,7 +5139,8 @@
           90,
           91,
           92,
-          93
+          93,
+          97
         ],
         "questions": []
       },
@@ -6833,7 +6885,8 @@
           82,
           86,
           93,
-          94
+          94,
+          97
         ],
         "questions": []
       },
@@ -8061,6 +8114,14 @@
           {
             "key": "fate",
             "value": "Nationalized by Ryan, then drowned in the Bloodstream flood"
+          },
+          {
+            "key": "constraint",
+            "value": "Bound to Dynamis 200 years; won't sabotage Knockoffs"
+          },
+          {
+            "key": "recruited",
+            "value": "Joins the Psycho-cure team remotely for a dinosaur Knockoff"
           }
         ],
         "ties": [
@@ -8099,6 +8160,14 @@
           {
             "to": "the-knockoff-elixir",
             "rel": "created its cure"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "recruited into the cure research"
+          },
+          {
+            "to": "the-monster-girl-project",
+            "rel": "his depraved secret experiment"
           }
         ],
         "appearances": [
@@ -8110,7 +8179,8 @@
           87,
           88,
           91,
-          92
+          92,
+          97
         ],
         "questions": []
       },
@@ -11222,7 +11292,8 @@
           93,
           94,
           95,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -12544,7 +12615,8 @@
           91,
           94,
           95,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -12662,7 +12734,8 @@
           85,
           86,
           91,
-          96
+          96,
+          97
         ],
         "questions": []
       },
@@ -12953,7 +13026,8 @@
         "appearances": [
           89,
           90,
-          92
+          92,
+          97
         ],
         "questions": []
       },
@@ -13178,6 +13252,50 @@
         ],
         "appearances": [
           96
+        ],
+        "questions": []
+      },
+      {
+        "id": "origami",
+        "kind": "character",
+        "name": "Origami",
+        "summary": "CH97: a Carnival member on Shroud's team who can turn herself into paper sharp enough to slice throats, and, Shroud boasts, even cut through Sarin's hazmat suit. Mentioned in passing as Shroud spars verbally with Sarin, a point of comparison for the Panda's own new origami skill.",
+        "facts": [
+          {
+            "key": "power",
+            "value": "Transforms into razor-sharp paper"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-carnival",
+            "rel": "member of Shroud's team"
+          }
+        ],
+        "appearances": [
+          97
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-monster-girl-project",
+        "kind": "concept",
+        "name": "The Monster Girl Project",
+        "summary": "CH97: Dr. Tyrano's secret, deeply disturbing side project, a demented attempt to create a 'monster girl' out of a mink (he 'couldn't do that to a reptile'). Ryan gains access to the file as leverage and is so horrified by the shrieking abomination on the video that he nearly falls off his chair; the first specimen died but Tyrano has a spare. A running gag underscoring Tyrano's amoral genius.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "Tyrano's grotesque mink-based 'monster girl' experiment"
+          }
+        ],
+        "ties": [
+          {
+            "to": "dr-tyrano",
+            "rel": "his secret depraved side project"
+          }
+        ],
+        "appearances": [
+          97
         ],
         "questions": []
       }
@@ -15321,6 +15439,10 @@
           {
             "chapter": 96,
             "summary": "CH96 'Beast of the East': the bunker boss fight. Adam the Ogre wields a salvaged Mechron gravity gun and brainwashes Frank with a 'protect democracy' delusion. Ryan learns his Fisty punch can't focus Black Flux without the Saturn armor, and turns Sarin (Bianca) to his side by disarming and offering her a cure. Livia foresees the winning branch: she IDs Adam's skin-only defense (head trauma works), mentally shatters Frank by exposing his true name Vladimir Khabarov, and lets the Panda absorb Adam's Blue Elixir, gaining a second power and finishing Adam with a 'Soaring Panda' kick (Len later drowns him). The Meta-Gang is jailed underwater pending a cure. A near-flawless victory. Ryan then plots infiltrating Dynamis via Jamie/Ki-jung/Lanka and rebuilding the Saturn armor with Vulcan, and finally asks Livia on a date."
+          },
+          {
+            "chapter": 97,
+            "summary": "CH97 'A Breath of Fresh Air' (day after the raid): Ryan consolidates. He recruits Dr. Tyrano remotely for the Psycho-cure research (dangling a dinosaur Knockoff), though Tyrano is bound to Dynamis and can't sabotage the Knockoff supply, so Lab 66 must still be assaulted. He gives the real A-bomb to Vulcan (becoming her assistant) and a decoy to the suicidal plushie. With Shroud he maps the Dynamis endgame: flip Enrique, but Alphonse/Fallout won't surrender Bloodstream's power give-and-take monopoly, so Ryan will stop him with an upgraded Saturn armor. Len's tests reveal the Panda's second power is accelerated learning (mastering origami, French, and Bruce Lee's kick in half an hour). Ryan reassures Len she's family forever, and she finally consents to the memory transfer and to having her father's blood tracker removed, learning to 'let the dead rest.' Ryan leaves for his date with Livia."
           }
         ],
         "entities": [
@@ -15364,13 +15486,15 @@
           "ink-machine",
           "rakshasa",
           "the-saturn-armor",
-          "jamie"
+          "jamie",
+          "origami",
+          "the-monster-girl-project"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 223,
+    "entities": 225,
     "plotlines": 104,
     "books": 1
   }

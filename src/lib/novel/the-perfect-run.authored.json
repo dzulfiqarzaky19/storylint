@@ -14082,6 +14082,142 @@
         }
       ],
       "chapter": 96
+    },
+    {
+      "name": "Origami",
+      "kind": "character",
+      "summary": "CH97: a Carnival member on Shroud's team who can turn herself into paper sharp enough to slice throats, and, Shroud boasts, even cut through Sarin's hazmat suit. Mentioned in passing as Shroud spars verbally with Sarin, a point of comparison for the Panda's own new origami skill.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Transforms into razor-sharp paper"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "member of Shroud's team"
+        }
+      ],
+      "chapter": 97
+    },
+    {
+      "name": "The Monster Girl Project",
+      "kind": "concept",
+      "summary": "CH97: Dr. Tyrano's secret, deeply disturbing side project, a demented attempt to create a 'monster girl' out of a mink (he 'couldn't do that to a reptile'). Ryan gains access to the file as leverage and is so horrified by the shrieking abomination on the video that he nearly falls off his chair; the first specimen died but Tyrano has a spare. A running gag underscoring Tyrano's amoral genius.",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "Tyrano's grotesque mink-based 'monster girl' experiment"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dr. Tyrano",
+          "rel": "his secret depraved side project"
+        }
+      ],
+      "chapter": 97
+    },
+    {
+      "name": "Dr. Tyrano",
+      "kind": "character",
+      "summary": "CH97: Ryan recruits the saurian Genius by dangling the bunker's create-life lab, multi-power Genomes to study, and a Green Knockoff that could grant his dream of turning humans into dinosaurs. Tyrano is contractually bound to Dynamis for 200 years and can't leave HQ or sabotage the Knockoff supply, so Bloodstream still requires assaulting Lab 66 again. He signs on remotely for the Psycho-cure research (with Stitch), and Ryan extracts access to his files, including the horrifying 'Monster Girl Project.'",
+      "facts": [
+        {
+          "key": "constraint",
+          "value": "Bound to Dynamis 200 years; won't sabotage Knockoffs"
+        },
+        {
+          "key": "recruited",
+          "value": "Joins the Psycho-cure team remotely for a dinosaur Knockoff"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "recruited into the cure research"
+        },
+        {
+          "to": "The Monster Girl Project",
+          "rel": "his depraved secret experiment"
+        }
+      ],
+      "chapter": 97
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "CH97: Len's tests reveal the Panda's new Blue power is ACCELERATED LEARNING, he masters origami, learns French by page five of Descartes, and picks up kung-fu in half an hour, adapting human techniques (Bruce Lee's flying kick from The Green Hornet) to his massive bear body, which is how he learned to 'fly.' His martial-arts 'Genius' was really this osmosis power all along. Ryan realizes he could learn almost any human skill, even Genius tech given time to observe it.",
+      "facts": [
+        {
+          "key": "second power",
+          "value": "Blue accelerated-learning: masters any human skill fast"
+        },
+        {
+          "key": "explains",
+          "value": "His flying kick came from learning Bruce Lee's move"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "she diagnoses his learning power"
+        }
+      ],
+      "chapter": 97
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH97: Len, still adjusting, pulls Ryan aside about Livia. She wistfully floats running away together on the Mechron sub, but Ryan gently refuses, he has too many people to fight for now, and won't abandon them. He reassures her she is family forever, his sister and most important person, regardless of anything with Livia. Persuaded that one must 'let the dead rest' rather than cling to her father's blood tracker, she finally agrees to both the memory transfer (to recover her other self's memories) and having the Carnival remove her infection, choosing to offer Ryan her hand as he offered his.",
+      "facts": [
+        {
+          "key": "decision",
+          "value": "Agrees to the memory transfer and to remove her blood tracker"
+        },
+        {
+          "key": "arc",
+          "value": "Makes peace with Ryan's bond with Livia; stays family"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "family; accepts his memory transfer"
+        },
+        {
+          "to": "Livia",
+          "rel": "reconciles herself to Ryan's relationship with her"
+        }
+      ],
+      "chapter": 97
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH97 'A Breath of Fresh Air' (day after the raid): Ryan consolidates his gains, recruiting Tyrano remotely, gifting the real A-bomb to Vulcan (and becoming her reluctant assistant), and giving the suicidal plushie a decoy prop bomb (then the gravity cannon). With Shroud he maps the Dynamis endgame: flip Enrique, but Alphonse/Fallout won't surrender Bloodstream's power-give-and-take monopoly, so Ryan will stop him with the bunker's resources and a rebuilt Saturn armor (chest-blaster swapped for the gravity cannon). He plans to destroy the bunker only after it solves the crisis, wins Len's consent to the memory transfer, and heads off for his date with Livia.",
+      "facts": [
+        {
+          "key": "moves",
+          "value": "Recruits Tyrano/Vulcan; plans an upgraded Saturn armor vs Alphonse"
+        },
+        {
+          "key": "plan",
+          "value": "Destroy the bunker only after the crisis is solved"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "her assistant; gives her the A-bomb"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "targets him as the hardest Dynamis obstacle"
+        }
+      ],
+      "chapter": 97
     }
   ],
   "plotObservations": [
@@ -15728,6 +15864,29 @@
         "Jamie"
       ],
       "chapter": 96
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH97 'A Breath of Fresh Air' (day after the raid): Ryan consolidates. He recruits Dr. Tyrano remotely for the Psycho-cure research (dangling a dinosaur Knockoff), though Tyrano is bound to Dynamis and can't sabotage the Knockoff supply, so Lab 66 must still be assaulted. He gives the real A-bomb to Vulcan (becoming her assistant) and a decoy to the suicidal plushie. With Shroud he maps the Dynamis endgame: flip Enrique, but Alphonse/Fallout won't surrender Bloodstream's power give-and-take monopoly, so Ryan will stop him with an upgraded Saturn armor. Len's tests reveal the Panda's second power is accelerated learning (mastering origami, French, and Bruce Lee's kick in half an hour). Ryan reassures Len she's family forever, and she finally consents to the memory transfer and to having her father's blood tracker removed, learning to 'let the dead rest.' Ryan leaves for his date with Livia.",
+      "entities": [
+        "Ryan Romano",
+        "Dr. Tyrano",
+        "Vulcan",
+        "Mr. See-Through",
+        "The Panda",
+        "Len",
+        "Livia",
+        "Alphonse Manada",
+        "Enrique Manada",
+        "Sarin",
+        "Stitch",
+        "The Saturn Armor",
+        "The Killer Rabbit Plushie",
+        "Bloodstream",
+        "Origami",
+        "The Monster Girl Project"
+      ],
+      "chapter": 97
     }
   ]
 }
