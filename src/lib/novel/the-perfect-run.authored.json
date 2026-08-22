@@ -12528,6 +12528,196 @@
         }
       ],
       "chapter": 87
+    },
+    {
+      "name": "The Architect",
+      "kind": "character",
+      "summary": "CH88: Dynamis's designer of Lab Sixty-Six, mentioned as having engineered the facility to survive even the building's total collapse. She is not the same person as Chronoradio/Nora; here she is credited only as the structural genius behind the lab's fortress-grade construction (though it proved vulnerable to internal structural damage from Fallout's rockets).",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Designed Lab Sixty-Six to survive the building's collapse"
+        },
+        {
+          "key": "gap",
+          "value": "Did not account for internal structural damage"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "designed it"
+        }
+      ],
+      "chapter": 88
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "CH88 (as Fallout / 'Atom Smasher'): the raid's true boss fight. His minigun/rockets/particle shields nearly overwhelm Ryan's crew; a chest-blaster shot only staggers him. When Ryan traps him in Mechron nanomachine goo, Fallout overrides his own safeties, shedding armor and humanity to become a blackened flaming skeleton of pure Red Flux, a self-sustaining nuclear core as durable as Leo Hargraves, melting the ground he stands on. He kills Mongrel (bisected by a stray beam) and, with Frank and Sarin, is buried alive when the factory ceiling collapses. Notably, Ryan's Black Flux devours Fallout's Red Flux like a black hole eating light.",
+      "facts": [
+        {
+          "key": "true form",
+          "value": "Blackened flaming skeleton of Red Flux, a living nuclear core, Hargraves-durable"
+        },
+        {
+          "key": "kills",
+          "value": "Bisects Mongrel with a stray particle beam"
+        },
+        {
+          "key": "weakness",
+          "value": "His Red Flux is devoured by Ryan's Black Flux"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Black Flux",
+          "rel": "his Red Flux is consumed by it"
+        },
+        {
+          "to": "Mongrel",
+          "rel": "killed him"
+        },
+        {
+          "to": "Frank the Mad",
+          "rel": "buried alive together"
+        }
+      ],
+      "chapter": 88
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "CH88: the horror at the heart of Lab Sixty-Six. Len's father survives as a house-sized shoggoth, a dark-red protoplasmic blob with temporary eyes, suspended in a mechanical aquarium and wired into the whole Knockoff system. His mutated blood is the raw source: pumped into modified clones of Knockoff templates (Wyvern, Devilry, Windsweep, an embryonic Panda) housed in glass pods as living organ processors, then processed into Knockoff Elixirs. Len recognizes him instantly and rushes to the glass; his eyes find his daughter. Blood calls to blood.",
+      "facts": [
+        {
+          "key": "state",
+          "value": "House-sized red shoggoth in a mechanical aquarium, source of all Knockoffs"
+        },
+        {
+          "key": "reveal",
+          "value": "Len's father, reunited with her at last"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "her father"
+        },
+        {
+          "to": "The Knockoff Elixir",
+          "rel": "his blood is the raw material"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "kept and exploited by him"
+        }
+      ],
+      "chapter": 88
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH88: her sacrifice. Fighting Fallout with shockwaves despite her leaking, holed suit, she orders Ryan to grab the cure data and flee while she and Frank keep the nuclear Genome busy, judging the loop already lost now that Mongrel is dead. Ryan refuses to abandon her ('I'm not Adam'), and in that moment she finally gives him her real name: Bianca. She charges Fallout like a suicide bomber and is buried alive with him and Frank when the ceiling collapses. Ryan vows to save her next loop.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Bianca (revealed to Ryan at last)"
+        },
+        {
+          "key": "fate",
+          "value": "Sacrifices herself against Fallout; buried alive as the ceiling collapses"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "gives him her real name; he vows to save her next loop"
+        },
+        {
+          "to": "Fallout",
+          "rel": "charges him in a suicide attack"
+        }
+      ],
+      "chapter": 88
+    },
+    {
+      "name": "Dr. Tyrano",
+      "kind": "character",
+      "summary": "CH88: works unbothered through the boss fight, more worried about lab damage than the invaders. Ryan captures him at water-rifle-point to open the inner bioscanner door. His true endgame is revealed: he is refining Knockoffs not just to change a host's species but its entire biological class, mammal to reptile, so he can 'consensually' turn any human into a dinosaur ('a fundamental mammalian right'). He is a scaled mad-scientist furry, and even Ryan half-sympathizes.",
+      "facts": [
+        {
+          "key": "goal",
+          "value": "A Knockoff that turns humans into dinosaurs, consensually"
+        },
+        {
+          "key": "note",
+          "value": "Captured by Ryan to open the door to Bloodstream's chamber"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "captured by him"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "keeps and exploits him"
+        }
+      ],
+      "chapter": 88
+    },
+    {
+      "name": "Mongrel",
+      "kind": "character",
+      "summary": "CH88: fights hard in the Lab 66 battle (aerokinetic blasts, fireballs, flanking Fallout) despite taking chest wounds, but is cut clean in half at lightspeed by a stray particle beam when Fallout's nanomachine prison cracks. His death is the emotional pivot that makes Sarin declare the loop lost. His Elixir/possibilities are eyed even in death (mind-backups mean it need not be permanent across loops).",
+      "facts": [
+        {
+          "key": "death",
+          "value": "Bisected by a stray Fallout particle beam"
+        },
+        {
+          "key": "impact",
+          "value": "His death convinces Sarin the loop is lost"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "killed by him"
+        },
+        {
+          "to": "Sarin",
+          "rel": "his death breaks her resolve"
+        }
+      ],
+      "chapter": 88
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "CH88: climbs the elevator shaft into the lab (absorbing machinery on contact) and tackles the nuclear Fallout head-on like a football player, powering through radiation as a patriotic American badass ('A Soviet Mexican! I knew it was all connected!'). But his metal hands soften against Fallout's heat; Alphonse punches a hole in his chest, and Frank is buried alive with Sarin when the ceiling collapses.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Absorbs machinery on contact; tackles Fallout to buy Ryan time"
+        },
+        {
+          "key": "fate",
+          "value": "Chest melted through, buried alive as the factory collapses"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "grappled and buried with him"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "his bodyguard, buys him escape time"
+        }
+      ],
+      "chapter": 88
     }
   ],
   "plotObservations": [
@@ -13952,6 +14142,39 @@
         "Dr. Tyrano"
       ],
       "chapter": 87
+    },
+    {
+      "title": "The End Times",
+      "beat": "CH88: the Fallout boss fight. Ryan's crew battles Atom Smasher (Fallout) through the Knockoff factory, past cloning pods holding modified template clones (Wyvern, Devilry, Windsweep, an embryo Panda) used as living organ processors. Ryan traps Fallout in Mechron nanomachine goo, but the cyborg overrides his safeties and becomes a blackened flaming skeleton of pure Red Flux, Hargraves-durable, melting the floor. He bisects and kills Mongrel. Frank tackles him and Sarin (real name Bianca) charges him like a suicide bomber to buy Ryan time; the collapsing ceiling buries Frank, Sarin, and Fallout alive. Ryan notes his Black Flux devours Fallout's Red Flux, and vows to save Sarin next loop.",
+      "entities": [
+        "Ryan Romano",
+        "Fallout",
+        "Alphonse Manada",
+        "Sarin",
+        "Mongrel",
+        "Frank the Mad",
+        "Len",
+        "Black Flux",
+        "Wyvern",
+        "Devilry",
+        "Windsweep",
+        "The Panda",
+        "The Knockoff Elixir"
+      ],
+      "chapter": 88
+    },
+    {
+      "title": "Bloodstream Reunion",
+      "beat": "CH88: Ryan captures Dr. Tyrano at gunpoint to open the inner bioscanner door, learning Tyrano's true goal is a Knockoff that turns humans into dinosaurs. Behind the door, at the heart of Lab 66, is the source of all Knockoffs: Bloodstream, Len's father, survived as a house-sized red shoggoth in a mechanical aquarium wired into the whole system. Len drops her rifle and rushes to the glass; the blob's eyes find his daughter. Blood calls to blood.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Dr. Tyrano",
+        "Bloodstream",
+        "The Knockoff Elixir",
+        "Lab Sixty-Six"
+      ],
+      "chapter": 88
     }
   ]
 }

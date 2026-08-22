@@ -549,7 +549,8 @@
           84,
           85,
           86,
-          87
+          87,
+          88
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -836,7 +837,8 @@
           84,
           85,
           86,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -1308,7 +1310,8 @@
           69,
           81,
           82,
-          83
+          83,
+          88
         ],
         "questions": []
       },
@@ -2135,6 +2138,14 @@
           {
             "key": "note",
             "value": "Her speech re-motivates the demoralized gang for the raid"
+          },
+          {
+            "key": "real name",
+            "value": "Bianca (revealed to Ryan at last)"
+          },
+          {
+            "key": "fate",
+            "value": "Sacrifices herself against Fallout; buried alive as the ceiling collapses"
           }
         ],
         "ties": [
@@ -2197,6 +2208,14 @@
           {
             "to": "frank-the-mad",
             "rel": "his applause echoes her speech"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "gives him her real name; he vows to save her next loop"
+          },
+          {
+            "to": "fallout",
+            "rel": "charges him in a suicide attack"
           }
         ],
         "appearances": [
@@ -2213,7 +2232,8 @@
           84,
           85,
           86,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -2671,6 +2691,14 @@
           {
             "key": "note",
             "value": "Ryan wants him dead regardless of any cure"
+          },
+          {
+            "key": "state",
+            "value": "House-sized red shoggoth in a mechanical aquarium, source of all Knockoffs"
+          },
+          {
+            "key": "reveal",
+            "value": "Len's father, reunited with her at last"
           }
         ],
         "ties": [
@@ -2701,6 +2729,18 @@
           {
             "to": "hector-manada",
             "rel": "exploited by Dynamis"
+          },
+          {
+            "to": "len",
+            "rel": "her father"
+          },
+          {
+            "to": "the-knockoff-elixir",
+            "rel": "his blood is the raw material"
+          },
+          {
+            "to": "dr-tyrano",
+            "rel": "kept and exploited by him"
           }
         ],
         "appearances": [
@@ -2712,7 +2752,8 @@
           80,
           81,
           82,
-          84
+          84,
+          88
         ],
         "questions": []
       },
@@ -3335,7 +3376,8 @@
           62,
           65,
           66,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -4140,6 +4182,14 @@
           {
             "key": "note",
             "value": "Swears off Elixirs; offers to help find a cure"
+          },
+          {
+            "key": "death",
+            "value": "Bisected by a stray Fallout particle beam"
+          },
+          {
+            "key": "impact",
+            "value": "His death convinces Sarin the loop is lost"
           }
         ],
         "ties": [
@@ -4162,6 +4212,14 @@
           {
             "to": "ryan-romano",
             "rel": "reformed ally of"
+          },
+          {
+            "to": "fallout",
+            "rel": "killed by him"
+          },
+          {
+            "to": "sarin",
+            "rel": "his death breaks her resolve"
           }
         ],
         "appearances": [
@@ -4169,7 +4227,8 @@
           57,
           78,
           83,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -4505,6 +4564,18 @@
           {
             "key": "note",
             "value": "Ideologue who justifies coercion as saving lives"
+          },
+          {
+            "key": "true form",
+            "value": "Blackened flaming skeleton of Red Flux, a living nuclear core, Hargraves-durable"
+          },
+          {
+            "key": "kills",
+            "value": "Bisects Mongrel with a stray particle beam"
+          },
+          {
+            "key": "weakness",
+            "value": "His Red Flux is devoured by Ryan's Black Flux"
           }
         ],
         "ties": [
@@ -4555,6 +4626,18 @@
           {
             "to": "augustus",
             "rel": "sworn enemy"
+          },
+          {
+            "to": "black-flux",
+            "rel": "his Red Flux is consumed by it"
+          },
+          {
+            "to": "mongrel",
+            "rel": "killed him"
+          },
+          {
+            "to": "frank-the-mad",
+            "rel": "buried alive together"
           }
         ],
         "appearances": [
@@ -4565,7 +4648,8 @@
           61,
           62,
           63,
-          70
+          70,
+          88
         ],
         "questions": []
       },
@@ -6371,6 +6455,14 @@
           {
             "key": "note",
             "value": "Becomes Ryan's enforcer in his mock-government"
+          },
+          {
+            "key": "note",
+            "value": "Absorbs machinery on contact; tackles Fallout to buy Ryan time"
+          },
+          {
+            "key": "fate",
+            "value": "Chest melted through, buried alive as the factory collapses"
           }
         ],
         "ties": [
@@ -6405,6 +6497,14 @@
           {
             "to": "psyshock",
             "rel": "routs his forces"
+          },
+          {
+            "to": "fallout",
+            "rel": "grappled and buried with him"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his bodyguard, buys him escape time"
           }
         ],
         "appearances": [
@@ -6416,7 +6516,8 @@
           77,
           78,
           81,
-          86
+          86,
+          88
         ],
         "questions": []
       },
@@ -7327,7 +7428,8 @@
           80,
           84,
           86,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -7356,6 +7458,14 @@
           {
             "key": "note",
             "value": "Tried to vivisect the Panda; covets Violet DNA"
+          },
+          {
+            "key": "goal",
+            "value": "A Knockoff that turns humans into dinosaurs, consensually"
+          },
+          {
+            "key": "note",
+            "value": "Captured by Ryan to open the door to Bloodstream's chamber"
           }
         ],
         "ties": [
@@ -7378,6 +7488,14 @@
           {
             "to": "the-consciousness-transfer-plan",
             "rel": "runs brain-copy project"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "captured by him"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "keeps and exploits him"
           }
         ],
         "appearances": [
@@ -7386,7 +7504,8 @@
           58,
           83,
           86,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -8200,7 +8319,8 @@
           }
         ],
         "appearances": [
-          44
+          44,
+          88
         ],
         "questions": []
       },
@@ -8231,7 +8351,8 @@
         ],
         "appearances": [
           44,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -11625,7 +11746,8 @@
         "appearances": [
           80,
           81,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -11752,7 +11874,8 @@
         "appearances": [
           83,
           86,
-          87
+          87,
+          88
         ],
         "questions": []
       },
@@ -11906,7 +12029,8 @@
           }
         ],
         "appearances": [
-          86
+          86,
+          88
         ],
         "questions": []
       },
@@ -11937,6 +12061,32 @@
         ],
         "appearances": [
           87
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-architect",
+        "kind": "character",
+        "name": "The Architect",
+        "summary": "CH88: Dynamis's designer of Lab Sixty-Six, mentioned as having engineered the facility to survive even the building's total collapse. She is not the same person as Chronoradio/Nora; here she is credited only as the structural genius behind the lab's fortress-grade construction (though it proved vulnerable to internal structural damage from Fallout's rockets).",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Designed Lab Sixty-Six to survive the building's collapse"
+          },
+          {
+            "key": "gap",
+            "value": "Did not account for internal structural damage"
+          }
+        ],
+        "ties": [
+          {
+            "to": "lab-sixty-six",
+            "rel": "designed it"
+          }
+        ],
+        "appearances": [
+          88
         ],
         "questions": []
       }
@@ -13918,6 +14068,10 @@
           {
             "chapter": 87,
             "summary": "CH87: Ryan's crew crashes into Dynamis HQ and fights up to Lab 66. Incognito's earlier server infiltration lets them reprogram every keycard. Devilry is downed by Mosquito and Acid Rain; the final guardians (the terrified kung-fu Panda, the hero Reload, and Wardrobe) are trapped in Len's water bubbles. Ryan and Wardrobe have a costume duel he wins by cheating a time-stop, then he playfully proposes marriage and she refuses (Dynamis holds her girlfriend Nora hostage, so she only token-defends). Sarin blasts open Lab 66, revealing the automated Knockoff Elixir assembly line. But before they breach Dr. Tyrano's inner door, Fallout drills in early, having killed Mosquito on the roof: 'Time to die.'"
+          },
+          {
+            "chapter": 88,
+            "summary": "CH88: the Fallout boss fight. Ryan's crew battles Atom Smasher (Fallout) through the Knockoff factory, past cloning pods holding modified template clones (Wyvern, Devilry, Windsweep, an embryo Panda) used as living organ processors. Ryan traps Fallout in Mechron nanomachine goo, but the cyborg overrides his safeties and becomes a blackened flaming skeleton of pure Red Flux, Hargraves-durable, melting the floor. He bisects and kills Mongrel. Frank tackles him and Sarin (real name Bianca) charges him like a suicide bomber to buy Ryan time; the collapsing ceiling buries Frank, Sarin, and Fallout alive. Ryan notes his Black Flux devours Fallout's Red Flux, and vows to save Sarin next loop."
           }
         ],
         "entities": [
@@ -13940,14 +14094,37 @@
           "incognito",
           "mongrel",
           "mosquito",
-          "the-knockoff-elixir"
+          "the-knockoff-elixir",
+          "alphonse-manada",
+          "black-flux",
+          "wyvern",
+          "windsweep"
+        ]
+      },
+      {
+        "id": "bloodstream-reunion",
+        "title": "Bloodstream Reunion",
+        "summary": "CH88: Ryan captures Dr. Tyrano at gunpoint to open the inner bioscanner door, learning Tyrano's true goal is a Knockoff that turns humans into dinosaurs. Behind the door, at the heart of Lab 66, is the source of all Knockoffs: Bloodstream, Len's father, survived as a house-sized red shoggoth in a mechanical aquarium wired into the whole system. Len drops her rifle and rushes to the glass; the blob's eyes find his daughter. Blood calls to blood.",
+        "beats": [
+          {
+            "chapter": 88,
+            "summary": "CH88: Ryan captures Dr. Tyrano at gunpoint to open the inner bioscanner door, learning Tyrano's true goal is a Knockoff that turns humans into dinosaurs. Behind the door, at the heart of Lab 66, is the source of all Knockoffs: Bloodstream, Len's father, survived as a house-sized red shoggoth in a mechanical aquarium wired into the whole system. Len drops her rifle and rushes to the glass; the blob's eyes find his daughter. Blood calls to blood."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "len",
+          "dr-tyrano",
+          "bloodstream",
+          "the-knockoff-elixir",
+          "lab-sixty-six"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 210,
-    "plotlines": 99,
+    "entities": 211,
+    "plotlines": 100,
     "books": 1
   }
 }
