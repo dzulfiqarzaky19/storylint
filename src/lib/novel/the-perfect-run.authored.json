@@ -5233,6 +5233,158 @@
         }
       ],
       "chapter": 54
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "Livia Augusti, an Augusti princess and Atom Cat's sister, revealed here as the mystery 'Unknown' caller who sent Ryan his own private power-catchphrase ('the orange is in the hen house'). She retains memories across the time loops like Ryan, having a second power (like her father Augustus) beyond her Purple-World-linked sight that cannot perceive Ryan. She recognized his 'Quicksave' name from prior loops where they were casual acquaintances who called each other by first name, treating his catchphrase as a 'message in a bottle,' and summons him to Deadland Motel (guarded by Cancel and Mortimer) to compare notes on the loops.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti princess; Atom Cat's sister"
+        },
+        {
+          "key": "note",
+          "value": "Retains memories across time loops (a second power)"
+        },
+        {
+          "key": "note",
+          "value": "Purple-World sight cannot perceive Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Sent Ryan the 'orange is in the hen house' signal"
+        },
+        {
+          "key": "note",
+          "value": "Meets Ryan at Deadland Motel, guarded by Cancel"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "fellow loop-rememberer"
+        },
+        {
+          "to": "Cancel",
+          "rel": "guarded by"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "sister"
+        }
+      ],
+      "chapter": 55
+    },
+    {
+      "name": "Deadland Motel",
+      "kind": "location",
+      "summary": "A run-down motel in a slum south of New Rome near Mount Augustus, its pool drained and neon flickering; nicknamed 'Deadland' because many people disappear there, being isolated enough that the Private Security won't interfere. Livia Augusti uses one lit first-floor room (deceptively cozy and spacious inside, blue-walled, set with a chessboard and cookies) as a secure meeting place, guarded by Cancel and Mortimer, to speak with Ryan.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Run-down motel in a slum south of New Rome"
+        },
+        {
+          "key": "note",
+          "value": "Near Mount Augustus; beyond Private Security reach"
+        },
+        {
+          "key": "note",
+          "value": "Nicknamed for the many who vanish there"
+        },
+        {
+          "key": "note",
+          "value": "Livia's secret meeting spot with Ryan"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "meeting place of"
+        },
+        {
+          "to": "New Rome",
+          "rel": "located in"
+        }
+      ],
+      "chapter": 55
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "Timmy 'the Panda,' Ryan's endearing Green Genome sidekick who transforms into a 700-kilo bear bigger than a polar bear. Dismissed as incompetent, he proves genuinely formidable in the orphanage brawl, catching Mosquito's sting mid-flight and beating him senseless ('Bear Smash!'), and delights the orphans by letting them use his belly as a trampoline. Eager, pure-hearted, and desperate for fame, he makes his first proud on-camera arrest and vows to keep the Hector conspiracy secret.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Timmy 'the Panda'; transforms into a 700-kg bear"
+        },
+        {
+          "key": "note",
+          "value": "Genuinely strong: defeats Mosquito in the orphanage fight"
+        },
+        {
+          "key": "note",
+          "value": "Beloved by the orphans; entertains children"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's loyal, pure-hearted sidekick"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "sidekick"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        }
+      ],
+      "chapter": 55
+    },
+    {
+      "name": "Cancel",
+      "kind": "character",
+      "summary": "Greta 'Cancel,' the friendly, ever-cheerful power-nullifier who serves as Mortimer's and now Livia's security. She never remembers Ryan across loops ('I always remember masks and faces'), her constant amiable demeanor unchanged whether greeting or killing. Here she guards the Deadland Motel door for Livia's meeting with Ryan; her presence three meters away leaves Ryan defenseless (she can nullify his time-power), underscoring the danger of the parley.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Greta 'Cancel'; cheerful power-nullifier"
+        },
+        {
+          "key": "note",
+          "value": "Never remembers Ryan across loops"
+        },
+        {
+          "key": "note",
+          "value": "Guards Livia's Deadland Motel meeting"
+        },
+        {
+          "key": "note",
+          "value": "Can nullify Ryan's time-power at close range"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mortimer",
+          "rel": "associate"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "security for"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "threat to"
+        }
+      ],
+      "chapter": 55
     }
   ],
   "plotObservations": [
@@ -5901,6 +6053,24 @@
         "Livia Augusti"
       ],
       "chapter": 54
+    },
+    {
+      "title": "The Future Past",
+      "beat": "The orphanage ambush becomes a crushing victory: Shroud, Len, Wardrobe (in a Che Guevara costume), Atom Cat, and a surprisingly formidable Panda subdue the Meta mooks into Len's suspended-animation bubbles, and Rakshasa's cross-universe gremlins flee in terror on recognizing Ryan. But Psyshock again suicides to escape capture. Ryan plays the wiretapped confession for his team, turning Atom Cat and a murderous Len against Dynamis, and they agree to hand the recording to Enrique for a by-the-book arrest. Then Ryan and Len drive to the ominous Deadland Motel answering the 'Unknown' invitation, guarded by Cancel and Mortimer. Inside waits Livia Augusti, who reveals she remembers the loops too: his catchphrase was a 'message in a bottle' that reached her, and she invites Ryan to compare their memories.",
+      "entities": [
+        "Ryan Romano",
+        "Psyshock",
+        "The Panda",
+        "Wardrobe",
+        "Atom Cat",
+        "Len Sabino",
+        "The Shroud",
+        "Rakshasa",
+        "Livia Augusti",
+        "Cancel",
+        "Deadland Motel"
+      ],
+      "chapter": 55
     }
   ]
 }
