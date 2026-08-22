@@ -7007,6 +7007,242 @@
         }
       ],
       "chapter": 63
+    },
+    {
+      "name": "Monaco",
+      "kind": "location",
+      "summary": "A pocket dimension shaped like an endless replica of the pre-Wars Monte Carlo Casino, the 'place nobody comes back from,' and the site of Ryan's most formative death. Physically the microstate survived the apocalypse untouched and empty; anyone who enters is teleported into an entrance hallway and trapped. It suppresses Ryan's time-stop (an opposing force cancels it) but NOT his save point. A conceptual, illogical maze of eight recurring room-types (kitchen, roulette hall, lobby, slots, shop, card arena, storage, theater) covering 8+ square kilometers and expanding infinitely, restocked with food during 'closed hours,' policed by murderous croupier-clowns. Ryan spent nearly a century trapped here across one long loop, dying of old age, the run so bad he swore never to do a long loop again. Presumed the work of a Yellow Genome (Jean-Stéphanie).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Pocket dimension mimicking the Monte Carlo Casino"
+        },
+        {
+          "key": "note",
+          "value": "Suppresses time-stop but not Ryan's save point"
+        },
+        {
+          "key": "note",
+          "value": "Infinite conceptual maze of 8 recurring room-types"
+        },
+        {
+          "key": "note",
+          "value": "Restocks food during 'closed hours'; clowns hunt then"
+        },
+        {
+          "key": "note",
+          "value": "Ryan spent ~a century here and died of old age"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Jean-Stéphanie",
+          "rel": "suspected creator"
+        },
+        {
+          "to": "The Croupiers",
+          "rel": "guardians"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "trapped for a century"
+        }
+      ],
+      "chapter": 64
+    },
+    {
+      "name": "The Croupiers",
+      "kind": "faction",
+      "summary": "The clown-staff of Monaco's Monte Carlo pocket dimension: humanoid creatures with unnaturally white skin and solid bronze, silver, or gold masks for faces (oozing darkness from eye and mouth holes), dressed as croupiers. During 'opening hours' they are cheerfully, creepily servile ('we exist to serve man'); when the casino 'closes' (often early, at a whim) they turn into a murderous, cannibalistic pack wielding cutlery, hunting anyone outside a locked suite. They bleed white liquid, shrug off bullets, ignore Ryan's suppressed time-stop, and endlessly worship 'His Highness Jean-Stéphanie.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "White-skinned clowns with metal croupier masks"
+        },
+        {
+          "key": "note",
+          "value": "Servile during 'opening hours,' cannibal killers when 'closed'"
+        },
+        {
+          "key": "note",
+          "value": "Bleed white liquid; shrug off gunfire"
+        },
+        {
+          "key": "note",
+          "value": "Can't enter a locked suite; hunt in the maze"
+        },
+        {
+          "key": "note",
+          "value": "Endlessly praise Jean-Stéphanie"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Monaco",
+          "rel": "guardians of"
+        },
+        {
+          "to": "Jean-Stéphanie",
+          "rel": "serve"
+        }
+      ],
+      "chapter": 64
+    },
+    {
+      "name": "Simon",
+      "kind": "character",
+      "summary": "The old French 'sheriff of Suitestown,' a bald, sixty-something ex-survivor built like Conan who was trapped in Monaco's pocket dimension for over a decade (arriving months after the Genome Wars began). He saved Ryan on arrival and taught him to survive: the croupiers only kill during 'closed hours,' locked suites are the only safe zones, and forcing the clowns through the elevator creates a manageable bottleneck. A cheerfully unhinged puppy-eater, he obsessively digs an endless tunnel and preaches Camus's 'The Myth of Sisyphus', that accepting a meaningless, futile struggle is the only freedom ('the boulder is your only friend'). He eventually commits harakiri on a suicide run (his heart fails mid-battle) and is buried under his beloved bar counter. His philosophy becomes the seed of Ryan's entire outlook.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Bald ~60 Frenchman; 'sheriff of Suitestown'"
+        },
+        {
+          "key": "note",
+          "value": "Taught Ryan Monaco's survival rules (locked suites, bottleneck)"
+        },
+        {
+          "key": "note",
+          "value": "Digs an endless tunnel; a cheerful puppy-eater"
+        },
+        {
+          "key": "note",
+          "value": "Preaches Camus: accept the absurd, 'love the boulder'"
+        },
+        {
+          "key": "note",
+          "value": "Dies on a suicide run; heart fails; buried under his bar"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Monaco",
+          "rel": "trapped in"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "mentor"
+        },
+        {
+          "to": "Martine",
+          "rel": "community co-leader"
+        }
+      ],
+      "chapter": 64
+    },
+    {
+      "name": "Martine",
+      "kind": "character",
+      "summary": "A twenty-eight-year-old blonde and the elected mayor of Suitestown, the ~forty-strong community of the powerless trapped on the fourth floor of Monaco's Monte Carlo pocket dimension. She organizes the town into task groups (explorers mapping the infinite maze, gatherers scavenging the clown-served food), briefs Ryan on the rules, and offers small human comforts (old movie cassettes) against the despair. She is one of the survivors Ryan vows to free once he grasps his immortality.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "28-year-old mayor of Suitestown (~40 trapped survivors)"
+        },
+        {
+          "key": "note",
+          "value": "Organizes explorer and gatherer task groups"
+        },
+        {
+          "key": "note",
+          "value": "Briefs Ryan; offers movies against the despair"
+        },
+        {
+          "key": "note",
+          "value": "Among those Ryan later vows to free"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Monaco",
+          "rel": "trapped in"
+        },
+        {
+          "to": "Simon",
+          "rel": "community co-leader"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "ally"
+        }
+      ],
+      "chapter": 64
+    },
+    {
+      "name": "Jean-Stéphanie",
+      "kind": "character",
+      "summary": "'His Highness Jean-Stéphanie the First, Sovereign Prince of Monaco, Conqueror of Liechtenstein and San Marino', the never-seen ruler the croupier-clowns endlessly worship as the creator/protector of the Monte Carlo pocket dimension. Loudspeaker propaganda credits him with rising to the throne in 2005 'by virtue of everyone else being dead' and waging endless rotating wars against Andorra, Luxembourg, Liechtenstein, and San Marino. Nobody, not even the clowns, has ever seen him. Ryan suspects he is (or was) a Yellow Genome whose power sustains the conceptual maze, possibly long dead while the dimension runs on without him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Never-seen 'Prince of Monaco' worshipped by the clowns"
+        },
+        {
+          "key": "note",
+          "value": "Credited with the endless-war propaganda"
+        },
+        {
+          "key": "note",
+          "value": "Suspected Yellow Genome who created the pocket dimension"
+        },
+        {
+          "key": "note",
+          "value": "May be dead while his dimension persists"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Monaco",
+          "rel": "creator/ruler"
+        },
+        {
+          "to": "The Croupiers",
+          "rel": "worshipped by"
+        }
+      ],
+      "chapter": 64
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "In the Monaco flashback, Ryan's defining transformation. Searching the Mediterranean for the lost Len after Bloodstream's death, he enters Monaco (the place no one returns from), is trapped in its time-stop-suppressing pocket dimension, and spends nearly a CENTURY there, first as Simon's deputy, then the last sheriff, then the last man alive, digging Simon's endless tunnel and finally dying of OLD AGE alone in bed. His save point revives him young at the promontory: he realizes he is truly immortal, that even old age can't end him. After hysterical laughter he feels not horror but liberation, embracing Camus's absurd, resolving to live to the fullest, fear nothing, and treat life as an endless game whose first quest is to free everyone trapped in Monaco. This is the death that 'made him stop caring and taught him to enjoy life,' the long loop he never repeats.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Sought lost Len; entered Monaco, the inescapable place"
+        },
+        {
+          "key": "note",
+          "value": "Trapped ~a century; died of old age alone"
+        },
+        {
+          "key": "note",
+          "value": "Save point revived him young: he is truly immortal"
+        },
+        {
+          "key": "note",
+          "value": "Embraced Camus's absurd; lost his fear of death"
+        },
+        {
+          "key": "note",
+          "value": "Vowed to free Monaco's captives; his origin philosophy"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Monaco",
+          "rel": "trapped and died in"
+        },
+        {
+          "to": "Simon",
+          "rel": "student of"
+        },
+        {
+          "to": "Len",
+          "rel": "searched for"
+        }
+      ],
+      "chapter": 64
     }
   ],
   "plotObservations": [
@@ -7834,6 +8070,21 @@
         "The Braintech"
       ],
       "chapter": 63
+    },
+    {
+      "title": "A Death in Monaco",
+      "beat": "A past fragment revealing Ryan's defining death. Years after Bloodstream's death, a lonely Ryan scours the Mediterranean for the vanished Len and finally enters Monaco, the microstate 'nobody returns from.' He is teleported into the Monte Carlo Casino, a pocket dimension that suppresses his time-stop (but not his save point) and is patrolled by cannibalistic croupier-clowns who worship an unseen 'Prince Jean-Stéphanie.' The old French sheriff Simon rescues him and teaches him to survive among Suitestown's ~40 trapped powerless, along with Camus's philosophy of embracing the absurd ('the boulder is your only friend'). Ryan spends nearly a century there as the community dwindles, digs Simon's endless tunnel after the old man dies on a suicide run, and finally, as the last man alive, dies of OLD AGE in bed. His save point revives him young at the promontory: he realizes even old age can't kill him, that he is truly immortal. After hysterical laughter, horror gives way to liberation; he embraces the absurd, vowing to live fearlessly to the fullest, treating life as an endless game whose first quest is to free everyone trapped in Monaco.",
+      "entities": [
+        "Ryan Romano",
+        "Monaco",
+        "The Croupiers",
+        "Simon",
+        "Martine",
+        "Jean-Stéphanie",
+        "Len",
+        "Bloodstream"
+      ],
+      "chapter": 64
     }
   ]
 }
