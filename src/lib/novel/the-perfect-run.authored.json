@@ -13512,6 +13512,176 @@
         }
       ],
       "chapter": 92
+    },
+    {
+      "name": "Eugene-Henry",
+      "kind": "character",
+      "summary": "CH93: Ryan's aristocratic pet cat, an aloof, noble-mannered feline who treats the newly-adopted stray dog Henriette like a peasant, ignoring her nuzzling entirely. Part of the menagerie Ryan keeps at the Rust Town orphanage and in his Plymouth Fury (alongside Henriette and the sulking plushie).",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Ryan's noble-mannered pet cat; snubs the dog Henriette"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his pet cat"
+        },
+        {
+          "to": "Henriette",
+          "rel": "aloofly ignores the dog"
+        }
+      ],
+      "chapter": 93
+    },
+    {
+      "name": "Julie Costa",
+      "kind": "character",
+      "summary": "CH93: mother of Narcinia (the Costa daughter). Ryan promises Shroud he will destroy the Bliss Factory and return 'Julie Costa's daughter' to the Carnival, framing Narcinia's rescue from Augustus's exploitation as returning her to the Costa family. Referenced as the wronged parent behind Narcinia's captivity.",
+      "facts": [
+        {
+          "key": "relation",
+          "value": "Narcinia's mother; the wronged 'Costa' parent"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Narcinia",
+          "rel": "her daughter, held by Augustus"
+        }
+      ],
+      "chapter": 93
+    },
+    {
+      "name": "Pythia",
+      "kind": "character",
+      "summary": "CH93: real name Alice Martel, the Carnival's seer and Mathias Martel's (Shroud's) mother. Her precognition drove the Carnival's whole strategy: she ranked the world's threats, placing Bloodstream at the very top, foreseeing he would cause an extinction event if Len (Bloodstream's daughter) died. Revealed to be still alive, gravely wounded fighting Mechron but recovering in Denmark with her husband. After she fell ill, Mathias tried to fill her role but cannot see the future, which is why he values Quicksave's foreknowledge.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Alice Martel"
+        },
+        {
+          "key": "status",
+          "value": "Alive; wounded vs Mechron, recovering in Denmark"
+        },
+        {
+          "key": "prophecy",
+          "value": "Ranked Bloodstream top threat; extinction if Len dies"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mathias Martel",
+          "rel": "her son (Shroud)"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "foresaw him as the extinction-level threat"
+        }
+      ],
+      "chapter": 93
+    },
+    {
+      "name": "Mathias Martel",
+      "kind": "character",
+      "summary": "CH93: as Shroud, Ryan's first recruit for the perfect-run alliance. Ryan tells him almost everything (minus, at first, the time travel), gives him a sample of Len's blood to prove the Knockoffs are made from Bloodstream, and wins him over. Mathias reveals his mother is the seer Pythia (Alice Martel), which is why the Carnival's plans were so effective, and that Augustus is fated to eventually attack Dynamis and conquer Europe by force to leave Livia queen of the ashes. Too sharp to fool, he deduces Ryan is not just a time-freezer but a true chronokinetic who loops time; Ryan takes a leap of faith and all-but-confirms it. Mathias commits fully.",
+      "facts": [
+        {
+          "key": "arc",
+          "value": "First recruited Avenger; deduces Ryan is a chronokinetic looper"
+        },
+        {
+          "key": "reveal",
+          "value": "Son of the seer Pythia; warns of Augustus's coming all-out war"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Pythia",
+          "rel": "her son"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "recruited ally who learns his time-loop secret"
+        }
+      ],
+      "chapter": 93
+    },
+    {
+      "name": "The Killer Rabbit Plushie",
+      "kind": "item",
+      "summary": "CH93: darkly comic aftermath of the Leporimachia, having been beaten so thoroughly by Augustus, the eldritch murder-plushie has lost its will to kill. Now permanently switchable-on yet inert: it sits sulking, its shadow shrunk by half, the alien whispers silent, refusing to enter cute mode, fire lasers, or kill even when a preteen (Little Sarah) is present. Ryan realizes it could always step outside his 'pentagram' and was only ever pretending to be bound. Augustus effectively gave the demon depression; it now just glares south at Mount Augustus.",
+      "facts": [
+        {
+          "key": "state",
+          "value": "Post-Leporimachia: inert, will-to-kill broken by Augustus"
+        },
+        {
+          "key": "reveal",
+          "value": "Was never truly bound; could always activate itself"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "broke its will in the Leporimachia"
+        }
+      ],
+      "chapter": 93
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH93: amnesiac Len, atop the orphanage roof, hears Ryan's full tale (time travel, downloadable memories, her father alive as Bloodstream, her own death). She believes her oldest friend despite the insanity, and asks how she died: Ryan explains the blood sleeper-agent turned her into her father, and warns her feelings for him may not be her own while the infection remains. She wavers on the memory transfer, fearing it will change her, but has not refused. Backstory filled in: after the origin she was carried by the Laika to the Canary Islands, wandered years finding she couldn't fix a broken world, and admits she waited for Ryan and her father to the last second before letting the sub take her. Ryan vows not to abandon her.",
+      "facts": [
+        {
+          "key": "post-origin",
+          "value": "Laika carried her to the Canary Islands; wandered years"
+        },
+        {
+          "key": "conflict",
+          "value": "Fears the memory transfer will change her; undecided"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "he seeks her consent for the memory transfer"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "her infection may be shaping her feelings for him"
+        }
+      ],
+      "chapter": 93
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH93 'Defenders of the Realm': Ryan builds his alliance for the perfect run. He counsels amnesiac Len and seeks her consent for the memory transfer, then recruits Shroud/Mathias (proving the Knockoff-Bloodstream link with Len's blood, and taking a leap of faith to all-but-confirm his chronokinetic looping), and finally cold-calls the Panda (Timmy). He plans to sic Sunshine on Mechron's other bases (hoping to self-detonate the Bahamut satellite), turn Enrique/Blackthorn against Hector and Fallout, and reserve Augustus for himself, admitting he only has a 'maybe' for defeating the emperor. Learns Augustus is fated to wage an all-out war to leave Livia queen of the ashes.",
+      "facts": [
+        {
+          "key": "recruits",
+          "value": "Shroud/Mathias and the Panda into his 'Avengers'"
+        },
+        {
+          "key": "strategy",
+          "value": "Sunshine hunts Mechron bases; flip Enrique; Augustus is Ryan's own"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mathias Martel",
+          "rel": "recruits him, reveals the loop"
+        },
+        {
+          "to": "The Panda",
+          "rel": "recruits Timmy last"
+        }
+      ],
+      "chapter": 93
     }
   ],
   "plotObservations": [
@@ -15069,6 +15239,28 @@
         "Alphonse Manada"
       ],
       "chapter": 92
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH93 'Defenders of the Realm': Ryan recruits his alliance for the perfect run. On the orphanage roof he tells amnesiac Len the full truth (time travel, her death, her father as Bloodstream, her infection possibly shaping her feelings) and seeks her consent for the memory transfer; she wavers but believes him. He discovers the Killer Rabbit Plushie, so thoroughly beaten by Augustus in the Leporimachia, has lost its will to kill (given 'depression'), and realizes it was never truly bound. He recruits Shroud/Mathias Martel, proving the Knockoff-Bloodstream link with Len's blood and taking a leap of faith to confirm his chronokinetic looping; Mathias reveals his mother is the seer Pythia (Alice Martel, alive in Denmark) and that Augustus is fated to wage an all-out war to leave Livia 'queen of the ashes.' Ryan plans to sic Sunshine on Mechron's other bases (to self-detonate the Bahamut), flip Enrique/Blackthorn against Hector and Fallout, and reserve Augustus for himself. He recruits the Panda (Timmy) last.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Mathias Martel",
+        "Pythia",
+        "The Panda",
+        "The Killer Rabbit Plushie",
+        "Augustus",
+        "Livia",
+        "Bloodstream",
+        "Leo Hargraves",
+        "Enrique Manada",
+        "Hector Manada",
+        "Alphonse Manada",
+        "Narcinia",
+        "Julie Costa"
+      ],
+      "chapter": 93
     }
   ]
 }

@@ -42,6 +42,11 @@
         "shelf": "lore"
       },
       {
+        "id": "item",
+        "label": "Item",
+        "shelf": "lore"
+      },
+      {
         "id": "location",
         "label": "Location",
         "shelf": "places"
@@ -55,11 +60,6 @@
         "id": "faction",
         "label": "Faction",
         "shelf": "orders"
-      },
-      {
-        "id": "item",
-        "label": "Item",
-        "shelf": "lore"
       },
       {
         "id": "identity",
@@ -341,6 +341,14 @@
           {
             "key": "tools",
             "value": "Carnival double-agent, Vulcan's tech, a Knockoff 'vaccine plague'"
+          },
+          {
+            "key": "recruits",
+            "value": "Shroud/Mathias and the Panda into his 'Avengers'"
+          },
+          {
+            "key": "strategy",
+            "value": "Sunshine hunts Mechron bases; flip Enrique; Augustus is Ryan's own"
           }
         ],
         "ties": [
@@ -527,6 +535,14 @@
           {
             "to": "stitch",
             "rel": "wants him to weaponize the Knockoff vaccine"
+          },
+          {
+            "to": "mathias-martel",
+            "rel": "recruits him, reveals the loop"
+          },
+          {
+            "to": "the-panda",
+            "rel": "recruits Timmy last"
           }
         ],
         "appearances": [
@@ -618,7 +634,8 @@
           89,
           90,
           91,
-          92
+          92,
+          93
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -793,6 +810,14 @@
           {
             "key": "death",
             "value": "Infected and absorbed into Bloodstream, freeing the world-plague"
+          },
+          {
+            "key": "post-origin",
+            "value": "Laika carried her to the Canary Islands; wandered years"
+          },
+          {
+            "key": "conflict",
+            "value": "Fears the memory transfer will change her; undecided"
           }
         ],
         "ties": [
@@ -895,6 +920,14 @@
           {
             "to": "bloodstream",
             "rel": "infected by and merged into him"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "he seeks her consent for the memory transfer"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "her infection may be shaping her feelings for him"
           }
         ],
         "appearances": [
@@ -938,7 +971,8 @@
           89,
           90,
           91,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -1857,7 +1891,8 @@
           75,
           86,
           91,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -1949,7 +1984,8 @@
           89,
           90,
           91,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -2961,7 +2997,8 @@
           89,
           90,
           91,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -3604,7 +3641,8 @@
           65,
           66,
           87,
-          88
+          88,
+          93
         ],
         "questions": []
       },
@@ -3984,7 +4022,8 @@
           37,
           83,
           90,
-          91
+          91,
+          93
         ],
         "questions": []
       },
@@ -4740,7 +4779,8 @@
           76,
           78,
           80,
-          81
+          81,
+          93
         ],
         "questions": []
       },
@@ -4933,7 +4973,8 @@
           88,
           90,
           91,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -6434,6 +6475,18 @@
           {
             "key": "note",
             "value": "Brain-damaged after networking hundreds at Sarajevo"
+          },
+          {
+            "key": "real name",
+            "value": "Alice Martel"
+          },
+          {
+            "key": "status",
+            "value": "Alive; wounded vs Mechron, recovering in Denmark"
+          },
+          {
+            "key": "prophecy",
+            "value": "Ranked Bloodstream top threat; extinction if Len dies"
           }
         ],
         "ties": [
@@ -6452,12 +6505,21 @@
           {
             "to": "the-shroud",
             "rel": "mother"
+          },
+          {
+            "to": "mathias-martel",
+            "rel": "her son (Shroud)"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "foresaw him as the extinction-level threat"
           }
         ],
         "appearances": [
           27,
           40,
-          89
+          89,
+          93
         ],
         "questions": []
       },
@@ -6529,7 +6591,7 @@
       },
       {
         "id": "the-killer-rabbit-plushie",
-        "kind": "lore",
+        "kind": "item",
         "name": "The Killer Rabbit Plushie",
         "summary": "Ryan's most dangerous invention: an innocent-looking rabbit plushie hiding an eldritch, unkillable murder-entity that fires disintegrating laser eyes, wields claws and improvises garrotes, whispering loving phrases while slaughtering. Once switched on it can't be recalled; it imprints on the first preteen it finds. Ryan unleashes it inside the Meta bunker.",
         "facts": [
@@ -6572,6 +6634,14 @@
           {
             "key": "note",
             "value": "Ryan calls it the plushipocalypse / Leporimachia"
+          },
+          {
+            "key": "state",
+            "value": "Post-Leporimachia: inert, will-to-kill broken by Augustus"
+          },
+          {
+            "key": "reveal",
+            "value": "Was never truly bound; could always activate itself"
           }
         ],
         "ties": [
@@ -6594,12 +6664,17 @@
           {
             "to": "acid-rain",
             "rel": "prior loop hunt drives its grudge"
+          },
+          {
+            "to": "augustus",
+            "rel": "broke its will in the Leporimachia"
           }
         ],
         "appearances": [
           29,
           82,
-          86
+          86,
+          93
         ],
         "questions": []
       },
@@ -7622,6 +7697,14 @@
           {
             "key": "note",
             "value": "Fellow retro-gamer, bonds with Ryan"
+          },
+          {
+            "key": "arc",
+            "value": "First recruited Avenger; deduces Ryan is a chronokinetic looper"
+          },
+          {
+            "key": "reveal",
+            "value": "Son of the seer Pythia; warns of Augustus's coming all-out war"
           }
         ],
         "ties": [
@@ -7632,11 +7715,20 @@
           {
             "to": "narcinia-veran",
             "rel": "targeting"
+          },
+          {
+            "to": "pythia",
+            "rel": "her son"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "recruited ally who learns his time-loop secret"
           }
         ],
         "appearances": [
           35,
-          89
+          89,
+          93
         ],
         "questions": []
       },
@@ -10736,7 +10828,8 @@
           65,
           66,
           69,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -10889,7 +10982,8 @@
           69,
           70,
           91,
-          92
+          92,
+          93
         ],
         "questions": []
       },
@@ -12723,6 +12817,54 @@
         ],
         "appearances": [
           92
+        ],
+        "questions": []
+      },
+      {
+        "id": "eugene-henry",
+        "kind": "character",
+        "name": "Eugene-Henry",
+        "summary": "CH93: Ryan's aristocratic pet cat, an aloof, noble-mannered feline who treats the newly-adopted stray dog Henriette like a peasant, ignoring her nuzzling entirely. Part of the menagerie Ryan keeps at the Rust Town orphanage and in his Plymouth Fury (alongside Henriette and the sulking plushie).",
+        "facts": [
+          {
+            "key": "role",
+            "value": "Ryan's noble-mannered pet cat; snubs the dog Henriette"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "his pet cat"
+          },
+          {
+            "to": "henriette",
+            "rel": "aloofly ignores the dog"
+          }
+        ],
+        "appearances": [
+          93
+        ],
+        "questions": []
+      },
+      {
+        "id": "julie-costa",
+        "kind": "character",
+        "name": "Julie Costa",
+        "summary": "CH93: mother of Narcinia (the Costa daughter). Ryan promises Shroud he will destroy the Bliss Factory and return 'Julie Costa's daughter' to the Carnival, framing Narcinia's rescue from Augustus's exploitation as returning her to the Costa family. Referenced as the wronged parent behind Narcinia's captivity.",
+        "facts": [
+          {
+            "key": "relation",
+            "value": "Narcinia's mother; the wronged 'Costa' parent"
+          }
+        ],
+        "ties": [
+          {
+            "to": "narcinia",
+            "rel": "her daughter, held by Augustus"
+          }
+        ],
+        "appearances": [
+          93
         ],
         "questions": []
       }
@@ -14850,6 +14992,10 @@
           {
             "chapter": 92,
             "summary": "CH92: a new loop begins with Ryan's cathartic revenge rounds (Ghoul, Night Terror, adopting Henriette). Reunited with the now-memory-carrying Livia (who pranks him with a fake villain-betrayal speech), the two become co-strategists. Livia's simulations date the three overlapping calamities, the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and the Bloodstream pandemic (odds spike if Alphonse takes over Dynamis). They map the perfect-run sequence: Ryan joins Augustus's mob as a Carnival double-agent, rebuilds the mind-transfer machine via Vulcan, returns Narcinia to appease the Carnival, and has Stitch/Tyrano weaponize the Knockoff vaccine to erase Bloodstream. Ryan radios Len that her father lives; she answers with cold determination: 'Meet me at the orphanage.'"
+          },
+          {
+            "chapter": 93,
+            "summary": "CH93 'Defenders of the Realm': Ryan recruits his alliance for the perfect run. On the orphanage roof he tells amnesiac Len the full truth (time travel, her death, her father as Bloodstream, her infection possibly shaping her feelings) and seeks her consent for the memory transfer; she wavers but believes him. He discovers the Killer Rabbit Plushie, so thoroughly beaten by Augustus in the Leporimachia, has lost its will to kill (given 'depression'), and realizes it was never truly bound. He recruits Shroud/Mathias Martel, proving the Knockoff-Bloodstream link with Len's blood and taking a leap of faith to confirm his chronokinetic looping; Mathias reveals his mother is the seer Pythia (Alice Martel, alive in Denmark) and that Augustus is fated to wage an all-out war to leave Livia 'queen of the ashes.' Ryan plans to sic Sunshine on Mechron's other bases (to self-detonate the Bahamut), flip Enrique/Blackthorn against Hector and Fallout, and reserve Augustus for himself. He recruits the Panda (Timmy) last."
           }
         ],
         "entities": [
@@ -14868,13 +15014,20 @@
           "bloodstream",
           "narcinia",
           "vulcan",
-          "alphonse-manada"
+          "alphonse-manada",
+          "mathias-martel",
+          "pythia",
+          "the-panda",
+          "the-killer-rabbit-plushie",
+          "enrique-manada",
+          "hector-manada",
+          "julie-costa"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 218,
+    "entities": 220,
     "plotlines": 104,
     "books": 1
   }
