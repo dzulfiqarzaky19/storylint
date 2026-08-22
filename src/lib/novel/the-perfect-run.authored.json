@@ -9703,6 +9703,258 @@
         }
       ],
       "chapter": 75
+    },
+    {
+      "name": "Alchemo",
+      "kind": "character",
+      "summary": "Refined: a brass-and-steel cyborg Genius whose head is a brain-in-a-jar dome and whose fingers are syringes; an amoral mad scientist specialized in brain/neuro tech, kept ethical only by his daughter the Doll. He arrives in a 1986 Fleetwood Bounder RV loaded with his workshop. He can't repair Dynamis's booby-trapped transfer machine (the sabotage is in essential parts) but can reverse-engineer and build his own that works, if he gets a Genius workshop and matter replicator, which the bunker's mainframe (a 'Universal Brain,' a device he always wanted to build) could provide. He treats Acid Rain's brain tumors/mutant neurons with cancer treatment and mood stabilizers (a temporary fix) and agrees to help Mongrel and cure Mechron-plague tumors, only because the Doll nagged him and it saves his own neurocomputers. He confirms Len won't wake on her own.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Brass cyborg: brain-in-a-jar head, syringe fingers"
+        },
+        {
+          "key": "note",
+          "value": "Amoral neuro-genius, ethical only via the Doll"
+        },
+        {
+          "key": "note",
+          "value": "Can't fix Dynamis's machine but can build a working copy"
+        },
+        {
+          "key": "note",
+          "value": "Needs the bunker's Universal Brain / matter replicator"
+        },
+        {
+          "key": "note",
+          "value": "Treats Acid Rain's tumors; confirms Len won't wake alone"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "estranged former partner; owes a favor"
+        },
+        {
+          "to": "The Doll",
+          "rel": "father of"
+        },
+        {
+          "to": "Len",
+          "rel": "will build machine to restore her"
+        }
+      ],
+      "chapter": 76
+    },
+    {
+      "name": "The Doll",
+      "kind": "character",
+      "summary": "Tea: Alchemo's android daughter and Ryan's ex, a lifelike redhead gynoid dressed as a country-girl, now covered in synthetic skin. She slaps Ryan for two years of silence but can't hold a grudge, softening when he apologizes. From her view she and Ryan had a brief fling; from his (across erased loops) they were together for years, visited France, etc., a one-sided shared past that, with Alchemo's betrayal, drove Ryan to leave. She's the moral conscience ('Jiminy Cricket') who nags her amoral father into helping others (curing tumors from Mechron's plagues). She's gentle toward the comatose Len and grasps Ryan came to New Rome to find her.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alchemo's lifelike redhead android daughter; Ryan's ex"
+        },
+        {
+          "key": "note",
+          "value": "Slaps Ryan for two years of silence, then forgives"
+        },
+        {
+          "key": "note",
+          "value": "Shares a one-sided years-long erased past with Ryan"
+        },
+        {
+          "key": "note",
+          "value": "The moral conscience who makes Alchemo help others"
+        },
+        {
+          "key": "note",
+          "value": "Tender toward the comatose Len"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "daughter of / conscience"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "ex / still cares"
+        },
+        {
+          "to": "Toasty",
+          "rel": "installed his wheels"
+        }
+      ],
+      "chapter": 76
+    },
+    {
+      "name": "Toasty",
+      "kind": "character",
+      "summary": "Ryan's first sentient robot, an intelligent toaster on four little wheels with a vocalizer mimicking the Terminator's voice. Ryan built him during a 'robot-building phase' (before the Bahamut plushie), born of his anxiety about moving to France and waking to un-toastable bread. Unlike the others, Toasty bears Ryan no reproach and warmly missed him. He's crude and playful (jokes about 'toasting chicks'), lives on Alchemo's farm, and begs Ryan to upload his personality into Mechron's scorpion mech ('a giant robot is just a toaster with too much power'). Tea installed his wheels when he tired of watching TV.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ryan's first sentient robot: an intelligent toaster on wheels"
+        },
+        {
+          "key": "note",
+          "value": "Terminator-voiced vocalizer; crude and playful"
+        },
+        {
+          "key": "note",
+          "value": "Born of Ryan's fear of un-toastable French bread"
+        },
+        {
+          "key": "note",
+          "value": "Bears Ryan no grudge, unlike the others"
+        },
+        {
+          "key": "note",
+          "value": "Wants to be uploaded into Mechron's scorpion mech"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "creator"
+        },
+        {
+          "to": "The Doll",
+          "rel": "lives with; wheels installed by Tea"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "lives on his farm"
+        }
+      ],
+      "chapter": 76
+    },
+    {
+      "name": "Hector Manada",
+      "kind": "character",
+      "summary": "Refined: the Dynamis CEO (whom Ryan likens to a Colombian cartel boss, 'Mr. Escobar') refuses to renew the knockoff-Elixir deal now that Ryan's Meta-Gang killed Psyshock. Revelation: the old alliance didn't collapse from the failed brain project, Psyshock had been secretly, insidiously taking over Dynamis by brainwashing staff and executives one by one, and his death exposed that treachery. Manada resists Ryan's blackmail (recordings, and Ryan's hint the knockoffs are 'Psycho-in-a-can' linked to Bloodstream/Lab Sixty-Six), calling his bluff. He offers one deal: Ryan keeps the knockoffs, releases the technicians, returns the tech, and leaves town in 48 hours, or he unleashes Il Migliore (Enrique and Wyvern are already pushing for it).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis CEO; refuses to renew the knockoff deal"
+        },
+        {
+          "key": "note",
+          "value": "Psyshock had been secretly taking over Dynamis staff"
+        },
+        {
+          "key": "note",
+          "value": "His death exposed the Meta-Gang's true intentions"
+        },
+        {
+          "key": "note",
+          "value": "Calls Ryan's Bloodstream/Lab 66 blackmail bluff"
+        },
+        {
+          "key": "note",
+          "value": "Gives Ryan 48 hours to leave or faces Il Migliore"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "adversary / failed deal"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "CEO of"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "threatens to deploy"
+        }
+      ],
+      "chapter": 76
+    },
+    {
+      "name": "Acid Rain",
+      "kind": "character",
+      "summary": "Refined: the captured Augusti-hunting Meta-Gang teleporter, strapped to an operating table in Ryan's infirmary, raving and building tolerance to sedation. Alchemo's scan reveals her head is full of tumors and mutant neurons from her Psycho condition, yet she still functions. She obsessively raves about 'the gate' and going 'all the way back', blaming Ryan for keeping 'them' away from her. Alchemo treats her with brain-cancer treatment and mood stabilizers, a temporary fix that stabilizes her mind while her condition keeps mutating. Ryan keeps her for questioning.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Captured teleporter, restrained in Ryan's infirmary"
+        },
+        {
+          "key": "note",
+          "value": "Head full of tumors and mutant neurons; still functions"
+        },
+        {
+          "key": "note",
+          "value": "Building tolerance to sedation"
+        },
+        {
+          "key": "note",
+          "value": "Obsessively raves about 'the gate' and going 'back'"
+        },
+        {
+          "key": "note",
+          "value": "Temporarily stabilized by Alchemo's cancer treatment"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "captive of / enemy"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "treated by"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 76
+    },
+    {
+      "name": "Universal Brain",
+      "kind": "concept",
+      "summary": "The bunker's central control system, a biomechanical blue brain (a 'U.B.,' Universal Brain), which Alchemo identifies as the ultimate biomechanical data-storage device, something he always wanted to build but never had the resources for. It runs the bunker, continues Mechron's Elixir research posthumously, and whoever seizes it can hijack the base's full capabilities (robots, weapons, matter replicator, the Bahamut). Ryan plans a frontal assault on the mainframe to capture it, guided by the Architect's structural analysis; Alchemo agrees to hijack it if given access.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "The bunker's central biomechanical blue-brain control"
+        },
+        {
+          "key": "note",
+          "value": "'U.B.', the ultimate biomechanical data-storage device"
+        },
+        {
+          "key": "note",
+          "value": "Runs the base and continues Mechron's Elixir research"
+        },
+        {
+          "key": "note",
+          "value": "Seizing it grants control of the bunker's full arsenal"
+        },
+        {
+          "key": "note",
+          "value": "Ryan plans a mainframe assault; Alchemo can hijack it"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "created by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "assault target"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "can hijack it"
+        }
+      ],
+      "chapter": 76
     }
   ],
   "plotObservations": [
@@ -10714,6 +10966,16 @@
       "title": "An Alliance and Its Limits",
       "summary": "Convinced, Livia freely gives Ryan Len's uncorrupted brain-map, no strings, honoring her past self's debt, and commits to partnership toward a 'perfect ending,' agreeing to consider helping cure Psychos via her two-power secret. Her limits: only a week or two before her family retakes Rust Town; she wants Augustus retired, not killed; and she's in denial over Felix, meaning to try to win him back this loop. She warns of mysterious Augusti assassinations, which Ryan recognizes as the Shroud, now on a lone spree, believing Ryan turned Psycho. Returning, Ryan learns Psyshock scrambled Len's brain into a vegetable on his way out, forcing him to rely on Alchemo, and turns to cracking the bunker with the Architect's 35-page report.",
       "chapter": 75
+    },
+    {
+      "title": "Manada's Ultimatum",
+      "summary": "In a tense video call, Dynamis CEO Hector Manada refuses to renew the knockoff-Elixir supply, revealing Psyshock had been secretly taking over Dynamis by brainwashing his staff, treachery his death exposed. Manada calls Ryan's blackmail bluffs (recordings; the knockoffs' Bloodstream/Lab 66 link) and gives him 48 hours to release the technicians, return the tech, and leave town, or face Il Migliore. Ryan, unable to keep the juice flowing, resolves instead to storm the bunker's mainframe, using Manada's 48-hour window as cover.",
+      "chapter": 76
+    },
+    {
+      "title": "Alchemo, the Doll, and Diagnosing Len",
+      "summary": "Alchemo arrives with his android daughter Tea (the Doll, Ryan's ex, who slaps then forgives him) and Ryan's old toaster-robot Toasty. Amid the awkward reunion, Alchemo treats the captive Acid Rain's brain tumors and agrees, at the Doll's urging, to help cure Psychos and Mechron-plague tumors. Examining the comatose Len, he confirms Psyshock's repeated overwrites nearly shut down her brain and she won't wake on her own; he can't repair Dynamis's booby-trapped machine but can build a working copy, if he can access the bunker's central Universal Brain and matter replicator. Ryan commits to assaulting the mainframe, with Frank guarding the non-combatant Genius.",
+      "chapter": 76
     }
   ]
 }
