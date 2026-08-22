@@ -461,6 +461,14 @@
           {
             "key": "learned",
             "value": "Adam could sense his freezes; his usable time-stop is only ~8-10 seconds"
+          },
+          {
+            "key": "solo resolve",
+            "value": "Will fight Augustus alone with a miniaturized Gravity Gun in his armor; can reload if killed"
+          },
+          {
+            "key": "Black secret told",
+            "value": "Confesses to Livia he got the power by wishing to die - the reason his saves are now blocked"
           }
         ],
         "ties": [
@@ -771,6 +779,14 @@
           {
             "to": "livia",
             "rel": "at his bedside; steers him to celebrate before the next target"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "confides his Black power; vows to imprison, not kill, her father"
+          },
+          {
+            "to": "augustus",
+            "rel": "resolves to face him alone as the final and deadliest foe"
           }
         ],
         "appearances": [
@@ -890,7 +906,8 @@
           119,
           120,
           121,
-          122
+          122,
+          123
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1310,7 +1327,8 @@
           116,
           118,
           119,
-          122
+          122,
+          123
         ],
         "questions": []
       },
@@ -1369,6 +1387,14 @@
           {
             "key": "note",
             "value": "Locates enemies by temperature when blinded"
+          },
+          {
+            "key": "exiled",
+            "value": "Launched into Earth orbit aboard the 'SpaceZ' anti-grav rocket - immortal, so it is imprisonment not death"
+          },
+          {
+            "key": "why spared",
+            "value": "Too irredeemable to cure, but Ryan/Livia chose orbit over Black-power destruction"
           }
         ],
         "ties": [
@@ -1383,6 +1409,14 @@
           {
             "to": "ryan-romano",
             "rel": "nemesis"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "arranged his humane exile via a repurposed Wyvern-prison rocket"
+          },
+          {
+            "to": "vulcan",
+            "rel": "built the SpaceZ rocket (originally a prison meant for Wyvern)"
           }
         ],
         "appearances": [
@@ -1398,7 +1432,8 @@
           72,
           92,
           119,
-          120
+          120,
+          123
         ],
         "questions": []
       },
@@ -2312,7 +2347,8 @@
           107,
           112,
           117,
-          118
+          118,
+          123
         ],
         "questions": []
       },
@@ -2922,7 +2958,8 @@
           117,
           118,
           119,
-          120
+          120,
+          123
         ],
         "questions": []
       },
@@ -4467,7 +4504,8 @@
           118,
           119,
           120,
-          121
+          121,
+          123
         ],
         "questions": []
       },
@@ -4868,7 +4906,8 @@
           93,
           97,
           117,
-          122
+          122,
+          123
         ],
         "questions": []
       },
@@ -5352,6 +5391,14 @@
           {
             "key": "impact",
             "value": "His death convinces Sarin the loop is lost"
+          },
+          {
+            "key": "real name",
+            "value": "Jerome - sane again once the Knockoff Elixirs cleared his system"
+          },
+          {
+            "key": "terms",
+            "value": "Pays his life-debt to Ryan, then wants out of Elixirs and fighting forever"
           }
         ],
         "ties": [
@@ -5382,6 +5429,10 @@
           {
             "to": "sarin",
             "rel": "his death breaks her resolve"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "owes him a life debt; will help then retire to normal life"
           }
         ],
         "appearances": [
@@ -5392,7 +5443,8 @@
           87,
           88,
           94,
-          105
+          105,
+          123
         ],
         "questions": []
       },
@@ -6170,6 +6222,14 @@
           {
             "key": "defeat",
             "value": "Water-bubbled after Livia predicts her teleport"
+          },
+          {
+            "key": "real name",
+            "value": "Helen - restored to a shy, gentle woman by the Psycho cure"
+          },
+          {
+            "key": "power after cure",
+            "value": "Swaps positions of near-equal-mass items (including herself); teleport-by-exchange"
           }
         ],
         "ties": [
@@ -6216,6 +6276,10 @@
           {
             "to": "livia",
             "rel": "outpredicted and captured by her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "grateful to him for the cure; volunteers to help his cause"
           }
         ],
         "appearances": [
@@ -6225,7 +6289,8 @@
           61,
           76,
           78,
-          95
+          95,
+          123
         ],
         "questions": []
       },
@@ -7937,6 +8002,14 @@
           {
             "key": "defeat",
             "value": "Livia breaks his delusion; goes catatonic"
+          },
+          {
+            "key": "real self",
+            "value": "Vladimir ('Vlad') - a humorless Russian Trotskyist; 'Agent Frank' was Knockoff brainwashing"
+          },
+          {
+            "key": "bond",
+            "value": "Instantly becomes Len's ideological kindred spirit"
           }
         ],
         "ties": [
@@ -7983,6 +8056,10 @@
           {
             "to": "livia",
             "rel": "mentally dismantled by her"
+          },
+          {
+            "to": "len",
+            "rel": "fellow communist she bonds with over political theory"
           }
         ],
         "appearances": [
@@ -8001,7 +8078,8 @@
           105,
           112,
           120,
-          121
+          121,
+          123
         ],
         "questions": []
       },
@@ -8634,6 +8712,14 @@
           {
             "key": "theme",
             "value": "'Hell is loneliness'; shares her Sicily memory of lost family happiness"
+          },
+          {
+            "key": "NER plan",
+            "value": "Merge a reformed Augusti with Dynamis into the New European Republic after the tyrants fall"
+          },
+          {
+            "key": "raid setup",
+            "value": "Plans to gather the corrupt Olympians (Mercury, Pluto, Mars, Vulcan, Venus, Killer Seven) so the purge can cut the rot at once"
           }
         ],
         "ties": [
@@ -8776,6 +8862,14 @@
           {
             "to": "the-brain-copying-machine",
             "rel": "will record the vetted brainmaps"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "receives his Black-power secret with trust; asks only that he spare her father"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "intended NER merger partner once both empires are reformed"
           }
         ],
         "appearances": [
@@ -8801,7 +8895,8 @@
           82,
           83,
           84,
-          85
+          85,
+          123
         ],
         "questions": []
       },
@@ -12153,7 +12248,8 @@
         "appearances": [
           66,
           118,
-          122
+          122,
+          123
         ],
         "questions": []
       },
@@ -15503,6 +15599,36 @@
           116
         ],
         "questions": []
+      },
+      {
+        "id": "the-opis-armor",
+        "kind": "item",
+        "name": "The Opis Armor",
+        "summary": "CH123: Ryan's secret gift to Livia - a power armor built on the Saturn model but leaner and tailored for her: blood-red plates, a night-black visor, a white spider symbol on the chest, and eight telescopic reinforced-steel tentacles replacing Saturn's ear-antennae. The spider theme suits her precognition: the extra-arm/drone system is unmasterable except by someone who can see the future, and she is 'scheming and sensible like a spider.' Ryan built it in a thin place so her precognition wouldn't spoil the surprise, intending it not for the Bliss Raid (where it would out her powers) but for the fight against Augustus.",
+        "facts": [
+          {
+            "key": "based on",
+            "value": "The Saturn Armor - leaner, female-fit, red/black with a white spider crest"
+          },
+          {
+            "key": "signature",
+            "value": "Eight telescopic steel tentacles + a drone system only a precog can pilot"
+          }
+        ],
+        "ties": [
+          {
+            "to": "livia-augusti",
+            "rel": "tailor-made for her; Ryan built it in a thin place to hide it from her precognition"
+          },
+          {
+            "to": "the-saturn-armor",
+            "rel": "the parent model it is derived from"
+          }
+        ],
+        "appearances": [
+          123
+        ],
+        "questions": []
       }
     ]
   },
@@ -17748,6 +17874,10 @@
           {
             "chapter": 122,
             "summary": "CH122 'Second Chances': With the Meta-Gang crushed and Alchemo securing Adam's bunker, Ryan/Len/Felix bring the evidence dossier to Enrique Manada (Blackthorn) at Dynamis, Wyvern present. Enrique phone-checks and confirms every charge - Knockoffs made from Bloodstream slime, Len cloned at Lab Sixty-Six, Hector's collusion with Adam - and learns the doomsday risk: Len's blood would revert every Knockoff-drinker into a Bloodstream clone, killing millions. He unmasks, apologizes, and agrees to help dismantle the program and share the Gravity Gun data; Wyvern resigns in disgust and pleads with him to reform. Ryan nudges Wyvern to reconcile with Jasmine (Vulcan). Then Felix visits estranged friends Jamie, Ki-jung, and Lanka, winning their conditional neutrality: Ki-jung and Jamie will step aside once Augustus falls, Lanka stays silent. Next targets: Dynamis's Lab Sixty-Six / Alphonse, then the Augusti."
+          },
+          {
+            "chapter": 123,
+            "summary": "CH123 'The Last Break': Enrique delivers the Gravity Gun schematics; Ryan plans to miniaturize it into his armor to fling Augustus out of the atmosphere ('Kars Augustus') and insists on fighting him ALONE. At Livia's rented Dostoevski gathering the war-party assembles - the cured ex-Psychos Bianca, Helen (ex-Acid Rain), Jerome (ex-Mongrel), and Vlad/Vladimir (ex-Frank), plus Alchemo, the Doll, Toasty, Mathias, Fortuna, Felix, the Panda, and Len. Ryan confesses the full Black-power secret to Livia (he wished to die); she takes it calmly and asks only that he spare - imprison, not kill - her father, sharing her New European Republic endgame (merge a reformed Augusti with Dynamis). She gifts him the Opis armor (spider-themed, precog-piloted) and they exile the incurable Ghoul to Earth orbit aboard the SpaceZ rocket. Next in the gauntlet: Lab Sixty-Six, the Bliss Factory, then Augustus."
           }
         ],
         "entities": [
@@ -17860,13 +17990,15 @@
           "pale-guy",
           "rust-town",
           "the-knockoff-elixir",
-          "lanka"
+          "lanka",
+          "livia-augusti",
+          "the-opis-armor"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 245,
+    "entities": 246,
     "plotlines": 104,
     "books": 1
   }

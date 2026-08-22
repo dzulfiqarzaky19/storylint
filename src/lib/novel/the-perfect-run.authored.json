@@ -16812,6 +16812,176 @@
         }
       ],
       "chapter": 122
+    },
+    {
+      "name": "The Opis Armor",
+      "kind": "item",
+      "summary": "CH123: Ryan's secret gift to Livia - a power armor built on the Saturn model but leaner and tailored for her: blood-red plates, a night-black visor, a white spider symbol on the chest, and eight telescopic reinforced-steel tentacles replacing Saturn's ear-antennae. The spider theme suits her precognition: the extra-arm/drone system is unmasterable except by someone who can see the future, and she is 'scheming and sensible like a spider.' Ryan built it in a thin place so her precognition wouldn't spoil the surprise, intending it not for the Bliss Raid (where it would out her powers) but for the fight against Augustus.",
+      "facts": [
+        {
+          "key": "based on",
+          "value": "The Saturn Armor - leaner, female-fit, red/black with a white spider crest"
+        },
+        {
+          "key": "signature",
+          "value": "Eight telescopic steel tentacles + a drone system only a precog can pilot"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "tailor-made for her; Ryan built it in a thin place to hide it from her precognition"
+        },
+        {
+          "to": "The Saturn Armor",
+          "rel": "the parent model it is derived from"
+        }
+      ],
+      "chapter": 123
+    },
+    {
+      "name": "Ghoul",
+      "kind": "character",
+      "summary": "CH123 (exiled to orbit): the skeletal, sociopathic Meta-Gang Psycho Livia predicted would keep murdering even if cured - the one captive too irredeemable to rehabilitate. Rather than destroy him with Black Flux, Ryan and Livia humanely exile him: they load him (powers heat-suppressed) into 'SpaceZ,' an anti-gravity Red-Flux rocket Vulcan had originally built a year ago as a prison for Wyvern, and launch him into Earth orbit. Being immortal, he'll drift gazing at Earth for decades - a jail, not an execution, kept in orbit in case he's ever needed back.",
+      "facts": [
+        {
+          "key": "exiled",
+          "value": "Launched into Earth orbit aboard the 'SpaceZ' anti-grav rocket - immortal, so it is imprisonment not death"
+        },
+        {
+          "key": "why spared",
+          "value": "Too irredeemable to cure, but Ryan/Livia chose orbit over Black-power destruction"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "arranged his humane exile via a repurposed Wyvern-prison rocket"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "built the SpaceZ rocket (originally a prison meant for Wyvern)"
+        }
+      ],
+      "chapter": 123
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH123: hosts the Dostoevski gathering, plays the Rains of Castamere to needle the suspicious Mathias, and shares her endgame with Ryan. Geist's disappearance has roused Augustus from inaction - he suspects the Meta-Gang, reinforced Ischia, and authorized Vulcan's Rust Town retaking; she'll shield Wyvern if a kill order issues. Her grand plan: once Augustus, Hector, and Alphonse fall and both empires are weakened, she'll merge a reformed Augusti with Enrique's Dynamis into the New European Republic (NER), with Ryan at her side ('the Albert to my Victoria'). She takes the news of Ryan's Black power calmly - it's why they met - and only asks that he spare (imprison, not kill) her father. She gifts him the SpaceZ exile-rocket for Ghoul.",
+      "facts": [
+        {
+          "key": "NER plan",
+          "value": "Merge a reformed Augusti with Dynamis into the New European Republic after the tyrants fall"
+        },
+        {
+          "key": "raid setup",
+          "value": "Plans to gather the corrupt Olympians (Mercury, Pluto, Mars, Vulcan, Venus, Killer Seven) so the purge can cut the rot at once"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "receives his Black-power secret with trust; asks only that he spare her father"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "intended NER merger partner once both empires are reformed"
+        }
+      ],
+      "chapter": 123
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH123: reviews the Gravity Gun plans with Timmy - a projectile that makes a gravity anomaly to fling Augustus out of the atmosphere ('Kars Augustus') - and insists on miniaturizing it into his own armor and facing Mob Zeus ALONE, since only he can harm the tyrant and survive death via reload. He finally tells Livia the full Black-power secret: he gained it by wishing to die, which is why the Violet Ultimate One now blocks his saves; she reframes it as past-tense, since now he wants to live. He surveys the allies he has gathered/cured (Bianca, Helen, Jerome, Vlad, the Panda, Len) and feels he has something to fight for again. He vows to imprison Augustus, not slay him. Next: Lab Sixty-Six, then the Bliss Factory, then Augustus - the gauntlet.",
+      "facts": [
+        {
+          "key": "solo resolve",
+          "value": "Will fight Augustus alone with a miniaturized Gravity Gun in his armor; can reload if killed"
+        },
+        {
+          "key": "Black secret told",
+          "value": "Confesses to Livia he got the power by wishing to die - the reason his saves are now blocked"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "confides his Black power; vows to imprison, not kill, her father"
+        },
+        {
+          "to": "Augustus",
+          "rel": "resolves to face him alone as the final and deadliest foe"
+        }
+      ],
+      "chapter": 123
+    },
+    {
+      "name": "Acid Rain",
+      "kind": "character",
+      "summary": "CH123 (cured, real name Helen): the once-deranged Psycho now restored to a shy, gentle woman named Helen. The cure separated her two rival Elixir powers, leaving her able to swap the positions of items of near-equivalent mass (including herself) - a teleport-by-exchange. Deeply grateful to Ryan for freeing her, she bows and volunteers to take up arms again if it helps, though she's far happier at peace.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Helen - restored to a shy, gentle woman by the Psycho cure"
+        },
+        {
+          "key": "power after cure",
+          "value": "Swaps positions of near-equal-mass items (including herself); teleport-by-exchange"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "grateful to him for the cure; volunteers to help his cause"
+        }
+      ],
+      "chapter": 123
+    },
+    {
+      "name": "Mongrel",
+      "kind": "character",
+      "summary": "CH123 (cured, real name Jerome): with the Knockoff Elixirs out of his system the feral Psycho is healthy and sane again, insisting on the name Jerome and refusing any supervillain nickname. He owes Ryan a life debt and will help improve the cure and even fight if needed, but wants nothing more to do with Elixirs or violence afterward - years as a savage animal left him craving an ordinary nine-to-five life.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Jerome - sane again once the Knockoff Elixirs cleared his system"
+        },
+        {
+          "key": "terms",
+          "value": "Pays his life-debt to Ryan, then wants out of Elixirs and fighting forever"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "owes him a life debt; will help then retire to normal life"
+        }
+      ],
+      "chapter": 123
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "CH123 (cured, real self Vladimir 'Vlad'): the loyal, funny American-patriot persona was Knockoff brainwashing; his true self is Vladimir, a blunt, humorless Russian Trotskyist giant (Marshal-Zhukov looks) who preaches permanent revolution. Ryan finds him a total killjoy, but Len instantly bonds with him as a fellow communist - they talk political theory for hours. He owes Ryan and is eager to 'burn down the establishment.'",
+      "facts": [
+        {
+          "key": "real self",
+          "value": "Vladimir ('Vlad') - a humorless Russian Trotskyist; 'Agent Frank' was Knockoff brainwashing"
+        },
+        {
+          "key": "bond",
+          "value": "Instantly becomes Len's ideological kindred spirit"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "fellow communist she bonds with over political theory"
+        }
+      ],
+      "chapter": 123
     }
   ],
   "plotObservations": [
@@ -18977,6 +19147,26 @@
         "Lanka"
       ],
       "chapter": 122
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH123 'The Last Break': Enrique delivers the Gravity Gun schematics; Ryan plans to miniaturize it into his armor to fling Augustus out of the atmosphere ('Kars Augustus') and insists on fighting him ALONE. At Livia's rented Dostoevski gathering the war-party assembles - the cured ex-Psychos Bianca, Helen (ex-Acid Rain), Jerome (ex-Mongrel), and Vlad/Vladimir (ex-Frank), plus Alchemo, the Doll, Toasty, Mathias, Fortuna, Felix, the Panda, and Len. Ryan confesses the full Black-power secret to Livia (he wished to die); she takes it calmly and asks only that he spare - imprison, not kill - her father, sharing her New European Republic endgame (merge a reformed Augusti with Dynamis). She gifts him the Opis armor (spider-themed, precog-piloted) and they exile the incurable Ghoul to Earth orbit aboard the SpaceZ rocket. Next in the gauntlet: Lab Sixty-Six, the Bliss Factory, then Augustus.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "The Gravity Gun",
+        "The Opis Armor",
+        "Augustus",
+        "Ghoul",
+        "Acid Rain",
+        "Mongrel",
+        "Frank the Mad",
+        "Sarin",
+        "The Panda",
+        "Len",
+        "Enrique Manada"
+      ],
+      "chapter": 123
     }
   ]
 }
