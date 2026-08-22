@@ -15224,6 +15224,110 @@
         }
       ],
       "chapter": 106
+    },
+    {
+      "name": "Mars",
+      "kind": "character",
+      "summary": "CH107 'Black Dinner': his power fully shown - he summons and stores items in a pocket-dimension armory holding thousands of weapons (swords, spears, arrows, tridents), materializing them in purple rifts to teleport within ~10 meters but HURLING them as fast as arrows across ~100x that range, hard enough to cut a man in half. He also instantly swaps damaged parts of his own vehicle with spares (a violet flash repairs his motorcycle mid-chase) and materializes Roman centurion armor over his skin. Ordered by Augustus to kill his godson Felix, he pleads by phone for mercy but complies when refused, then pursues the fleeing Ryan and Felix through New Rome, callously impaling civilians (a prostitute cut in half, a drunkard staked Vlad-style). Fortuna briefly restrains him; he shows a flash of guilt but presses on once Venus is wounded.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Pocket-dimension armory; teleport ~10m, throw ~1km; self-repairs vehicles"
+        },
+        {
+          "key": "act",
+          "value": "Kills his godson's rescue attempt; murders civilians in the chase"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Felix",
+          "rel": "his son, whom he lets Augustus mark for death"
+        },
+        {
+          "to": "Venus",
+          "rel": "his wife, whose wounding hardens his resolve"
+        }
+      ],
+      "chapter": 107
+    },
+    {
+      "name": "Venus",
+      "kind": "character",
+      "summary": "CH107: her aesthetic power goes beyond skin - she can fully impersonate someone, altering her own face, clothes appearance, AND vocal cords to perfectly mimic Livia (right down to voice) to lure Felix into a car for the kill. Ryan foils her with a passphrase trick ('Livia always calls me Master Ryan') and pins her hand to the wheel with a knife. She reverts to her true form, snarling that she knew Felix was a traitor on sight; her wounding is what finally decides Mars to skewer the escaping duo.",
+      "facts": [
+        {
+          "key": "power extent",
+          "value": "Full impersonation including voice; mimicked Livia to trap Felix"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Felix",
+          "rel": "her adopted son, whom she tries to lure to his death"
+        },
+        {
+          "to": "Livia",
+          "rel": "impersonated her to deceive Ryan and Felix"
+        }
+      ],
+      "chapter": 107
+    },
+    {
+      "name": "Felix",
+      "kind": "character",
+      "summary": "CH107: recklessly infiltrates the Veran dinner via the chimney to smuggle Narcinia away from drug-making now that the factory's gone, walking into Augustus's trap. Augustus (whom Mars calls 'Janus' on the phone) orders him killed as the presumed inside source of the Ischia raid, despite being his godson - 'No traitor shall survive.' Ryan blocks Mortimer's assassination shot and hauls Felix out the window. Devastated rather than angry that his own parents tried to kill him ('they're my parents, I thought that counted for something'), Felix flees with Ryan through New Rome. He didn't come alone - he brought Wyvern and (co-opted) Private Security as backup.",
+      "facts": [
+        {
+          "key": "motive",
+          "value": "Came to extract Narcinia; walked into the assassination trap"
+        },
+        {
+          "key": "backup",
+          "value": "Brought Wyvern and Private Security"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Narcinia",
+          "rel": "tried to smuggle her out of the family"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "saved from Mortimer's shot and the chase"
+        },
+        {
+          "to": "Wyvern",
+          "rel": "his backup at the rescue"
+        }
+      ],
+      "chapter": 107
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH107: orders the public execution of his own godson Felix ('No traitor shall survive, not even my godson') to protect the myth of Augusti invincibility after the Ischia raid, believing Felix leaked the intel. Notably, Mars addresses him by phone as 'Janus' - the same name as the CH100 patriarch Janus Augusti - hinting the immortal, ageless Augustus may BE Janus Augusti rather than merely his descendant (unconfirmed). He deploys Night Terror's illusions (a fake red-lightning Augustus) as part of the ambush.",
+      "facts": [
+        {
+          "key": "order",
+          "value": "Public execution of godson Felix to preserve the invincibility myth"
+        },
+        {
+          "key": "name hint",
+          "value": "Called 'Janus' by Mars, possibly = Janus Augusti (unconfirmed)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Felix",
+          "rel": "his godson, whom he orders killed"
+        },
+        {
+          "to": "Janus Augusti",
+          "rel": "shares the name 'Janus'; possibly the same man"
+        }
+      ],
+      "chapter": 107
     }
   ],
   "plotObservations": [
@@ -17042,6 +17146,26 @@
         "Ki-jung"
       ],
       "chapter": 106
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH107 'Black Dinner': the trap springs. Felix arrives to extract Narcinia; Augustus (called 'Janus' by Mars) orders his godson executed as the presumed Ischia leak. Ryan freezes time to block Mortimer's assassination shot and hauls Felix out the window under Mars's glass storm. He downs Night Terror (whose fake-Augustus illusion nearly fools them) and exposes Venus impersonating Livia's face and voice, pinning her hand with a knife via the 'Master Ryan' passphrase. A car chase erupts through New Rome: Mars, revealed to wield a pocket-dimension armory of thousands of weapons hurled ~1km and self-repairing his motorcycle, pursues with Mortimer and Sparrow, callously killing civilians. Felix, crushed that his parents tried to kill him, reveals he brought backup - Wyvern and Private Security arrive as Livia sets a Sorrento rendezvous.",
+      "entities": [
+        "Ryan Romano",
+        "Felix",
+        "Mars",
+        "Venus",
+        "Mortimer",
+        "Night Terror",
+        "Sparrow",
+        "Narcinia",
+        "Augustus",
+        "Livia",
+        "Wyvern",
+        "Mathias Martel",
+        "Fortuna"
+      ],
+      "chapter": 107
     }
   ]
 }

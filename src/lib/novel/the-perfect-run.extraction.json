@@ -811,7 +811,8 @@
           103,
           104,
           105,
-          106
+          106,
+          107
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1678,7 +1679,8 @@
           81,
           82,
           83,
-          88
+          88,
+          107
         ],
         "questions": []
       },
@@ -2043,6 +2045,14 @@
           {
             "key": "acceptance",
             "value": "Grudgingly tolerates Ryan under a triple death-threat"
+          },
+          {
+            "key": "order",
+            "value": "Public execution of godson Felix to preserve the invincibility myth"
+          },
+          {
+            "key": "name hint",
+            "value": "Called 'Janus' by Mars, possibly = Janus Augusti (unconfirmed)"
           }
         ],
         "ties": [
@@ -2125,6 +2135,14 @@
           {
             "to": "ryan-romano",
             "rel": "electrocutes then reluctantly tolerates him"
+          },
+          {
+            "to": "felix",
+            "rel": "his godson, whom he orders killed"
+          },
+          {
+            "to": "janus-augusti",
+            "rel": "shares the name 'Janus'; possibly the same man"
           }
         ],
         "appearances": [
@@ -2148,7 +2166,8 @@
           98,
           99,
           105,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -5811,6 +5830,14 @@
           {
             "key": "note",
             "value": "Marked for death by Aunt Pluto; flees with Ryan"
+          },
+          {
+            "key": "motive",
+            "value": "Came to extract Narcinia; walked into the assassination trap"
+          },
+          {
+            "key": "backup",
+            "value": "Brought Wyvern and Private Security"
           }
         ],
         "ties": [
@@ -5833,6 +5860,18 @@
           {
             "to": "ryan-romano",
             "rel": "flees with"
+          },
+          {
+            "to": "narcinia",
+            "rel": "tried to smuggle her out of the family"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "saved from Mortimer's shot and the chase"
+          },
+          {
+            "to": "wyvern",
+            "rel": "his backup at the rescue"
           }
         ],
         "appearances": [
@@ -5845,7 +5884,8 @@
           80,
           83,
           99,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -6121,7 +6161,8 @@
         "appearances": [
           22,
           25,
-          43
+          43,
+          107
         ],
         "questions": []
       },
@@ -6587,7 +6628,8 @@
           95,
           96,
           102,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -6655,7 +6697,8 @@
           46,
           61,
           65,
-          75
+          75,
+          107
         ],
         "questions": []
       },
@@ -6798,7 +6841,8 @@
           67,
           68,
           92,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -8251,7 +8295,8 @@
           89,
           93,
           94,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -8747,6 +8792,14 @@
           {
             "key": "role",
             "value": "Springs Augustus's trap; his call is the kill signal"
+          },
+          {
+            "key": "power",
+            "value": "Pocket-dimension armory; teleport ~10m, throw ~1km; self-repairs vehicles"
+          },
+          {
+            "key": "act",
+            "value": "Kills his godson's rescue attempt; murders civilians in the chase"
           }
         ],
         "ties": [
@@ -8785,13 +8838,22 @@
           {
             "to": "venus",
             "rel": "his wife, preparing an ambush from the kitchen"
+          },
+          {
+            "to": "felix",
+            "rel": "his son, whom he lets Augustus mark for death"
+          },
+          {
+            "to": "venus",
+            "rel": "his wife, whose wounding hardens his resolve"
           }
         ],
         "appearances": [
           38,
           69,
           101,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -8828,6 +8890,10 @@
           {
             "key": "operation",
             "value": "Runs the resort's brothel + Bliss-addiction/blackmail racket"
+          },
+          {
+            "key": "power extent",
+            "value": "Full impersonation including voice; mimicked Livia to trap Felix"
           }
         ],
         "ties": [
@@ -8858,12 +8924,21 @@
           {
             "to": "fortuna",
             "rel": "her daughter"
+          },
+          {
+            "to": "felix",
+            "rel": "her adopted son, whom she tries to lure to his death"
+          },
+          {
+            "to": "livia",
+            "rel": "impersonated her to deceive Ryan and Felix"
           }
         ],
         "appearances": [
           38,
           60,
-          101
+          101,
+          107
         ],
         "questions": []
       },
@@ -11441,7 +11516,8 @@
           93,
           99,
           101,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -11709,7 +11785,8 @@
           101,
           102,
           105,
-          106
+          106,
+          107
         ],
         "questions": []
       },
@@ -16356,6 +16433,10 @@
           {
             "chapter": 106,
             "summary": "CH106 'Mice Trap': the Veran manor dinner is Augustus's assassination trap. Suspecting the Bliss raid was an inside job (Ryan slipped 'Dynamis' fighting Geist), Augustus sends Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop, and orders Mars to kill Mathias/Shroud once a chimney assassin is in place. Ryan silently unnerves Night Terror into abandoning his post. Livia reveals she deliberately let this possibility stand so Narcinia would witness her family's murderousness (the price of the rare peaceful future where Augustus retires and Enrique Manada takes Dynamis), warns Ryan of the assassin, sets a Sorrento rendezvous, and distracts Cancel. The trap springs when Atom Kitty/Felix - come to smuggle Narcinia out - tumbles down the chimney into the room."
+          },
+          {
+            "chapter": 107,
+            "summary": "CH107 'Black Dinner': the trap springs. Felix arrives to extract Narcinia; Augustus (called 'Janus' by Mars) orders his godson executed as the presumed Ischia leak. Ryan freezes time to block Mortimer's assassination shot and hauls Felix out the window under Mars's glass storm. He downs Night Terror (whose fake-Augustus illusion nearly fools them) and exposes Venus impersonating Livia's face and voice, pinning her hand with a knife via the 'Master Ryan' passphrase. A car chase erupts through New Rome: Mars, revealed to wield a pocket-dimension armory of thousands of weapons hurled ~1km and self-repairing his motorcycle, pursues with Mortimer and Sparrow, callously killing civilians. Felix, crushed that his parents tried to kill him, reveals he brought backup - Wyvern and Private Security arrive as Livia sets a Sorrento rendezvous."
           }
         ],
         "entities": [
@@ -16427,7 +16508,10 @@
           "the-yellow-world",
           "the-psycho-cure",
           "incognito",
-          "ki-jung"
+          "ki-jung",
+          "mortimer",
+          "sparrow",
+          "wyvern"
         ]
       }
     ]
