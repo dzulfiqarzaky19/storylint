@@ -17138,6 +17138,162 @@
         }
       ],
       "chapter": 124
+    },
+    {
+      "name": "Fallout",
+      "kind": "character",
+      "summary": "CH125 (death): battles Ryan and Livia over the Gulf of Naples; their combo (her timeskip makes him intangible/invincible) cracks his suit and drops him into the sea, where he sheds his cyborg armor into a radioactive charred skeleton with fire for flesh and runs along the ocean floor to the ship graveyard. He detonates like a nuke - the blast nearly kills Livia and buckles Ryan's armor. Ryan Black-Fluxes off BOTH his arms (which crumble to harmless red particles), but Fallout refuses Enrique's offered reconciliation ('All for the dream') and moves to self-destruct again. Shroud, invisible, blasts him into space with the full Dynamis Gravity Gun - the weapon Alphonse himself funded to kill Augustus becomes his own executioner. He vanishes beyond the clouds in a trail of fading red explosions.",
+      "facts": [
+        {
+          "key": "death",
+          "value": "Blasted into space by Shroud with the Gravity Gun he funded, after Ryan severed both his arms"
+        },
+        {
+          "key": "true form",
+          "value": "Sheds his suit into a charred radioactive skeleton; a walking meltdown that destroyed a city on his first Elixir"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mr. See-Through",
+          "rel": "Shroud, who fires the fatal Gravity-Gun shot"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "brother whose reconciliation he refuses, choosing the dream over family"
+        }
+      ],
+      "chapter": 125
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH125: fights Fallout with Livia's combo; his upgraded gauntlets (Red shockwaves, Green self-heal, Orange emergency shielding) let him trade blows, but Fallout's nuke-blast burns through, hurts Livia, and forces Ryan to escalate. Enraged for Livia and by Fallout's threat to dissect Len, he wields Black Flux to disintegrate both the corpo's arms ('Give me an inch, I'll take the arm... I destroyed time'), swearing to peel him until he finds his core rather than kill (his vow to Livia). He arms his hidden Gravity Gun but Shroud fires first. He then rushes to the wounded Livia's side - one poison purged from New Rome, but Augustus still waits on Ischia.",
+      "facts": [
+        {
+          "key": "Black amputation",
+          "value": "Uses Black Flux to disintegrate both of Fallout's arms without killing him (per his vow)"
+        },
+        {
+          "key": "priority",
+          "value": "Abandons the finishing blow to give first aid to the gravely wounded Livia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "cripples him with Black Flux but leaves the kill to Shroud"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "her near-death drives his fury; he chooses her over finishing Fallout"
+        }
+      ],
+      "chapter": 125
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH125 (gravely wounded): fights beautifully in her Opis armor - her eight telescopic tentacles rip off Fallout's missile launchers - and her precognition steers Ryan's shockwaves and their combo. When Fallout goes nuclear she could have escaped the blast, but she stayed because she couldn't see Ryan and had to be sure he survived: she takes the explosion, buried in molten glass at the crater's edge. Ryan (and Enrique's roots) dig her out - concussed and dazed but alive, saved by her Genome metabolism and top-notch armor. She'll need real rest to recover. A pointed proof that she loves Ryan more than her own safety.",
+      "facts": [
+        {
+          "key": "wounded",
+          "value": "Concussed and buried in molten glass by Fallout's nuke-blast; survives via Genome metabolism + armor"
+        },
+        {
+          "key": "why hurt",
+          "value": "Could have fled but stayed in the blast radius to ensure Ryan survived"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "risks death to protect him; he gives her first aid over finishing Fallout"
+        },
+        {
+          "to": "Fallout",
+          "rel": "cripples his launchers before his self-destruct nearly kills her"
+        }
+      ],
+      "chapter": 125
+    },
+    {
+      "name": "Enrique Manada",
+      "kind": "character",
+      "summary": "CH125 (sets his foot down): arrives with Wyvern after Lab Sixty-Six is blown, excavates Livia with his plant roots, and confronts his brother Alphonse. He confesses his own guilt (never blowing the whistle) but refuses to let the Knockoff madness continue - offering Fallout reconciliation and even pressing a finger to his own forehead, daring his brother to kill him rather than budge ('you will have to step over my corpse'). He genuinely loves Al ('us against the world') and grieves when Shroud is forced to Gravity-Gun him into space - 'It had to be done.' The reformer finally acts, at the cost of his own brother.",
+      "facts": [
+        {
+          "key": "stand",
+          "value": "Dares Alphonse to kill him rather than allow the Knockoffs to resume; loses his brother anyway"
+        },
+        {
+          "key": "grief",
+          "value": "Mourns Fallout even as he accepts the Gravity-Gun kill was necessary"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "brother he tries and fails to redeem, then loses to the Gravity Gun"
+        },
+        {
+          "to": "Wyvern",
+          "rel": "stands with him; earns her renewed respect"
+        }
+      ],
+      "chapter": 125
+    },
+    {
+      "name": "Mr. See-Through",
+      "kind": "character",
+      "summary": "CH125: Shroud is the one who ends the Fallout fight. Present at the Dynamis raid, he waits invisible with the full Dynamis Gravity Gun rifle (glass-shrouded) and, when the cornered Alphonse begins another self-destruct, fires the fatal shot - a black gravity sphere clamps to Fallout's spine and rockets him into space, forcing Wyvern to hold Enrique back from being pulled along. He calmly drops his invisibility afterward and checks on the wounded Livia, having already called Stitch for reinforcement. The decisive, quiet executioner of the raid.",
+      "facts": [
+        {
+          "key": "killshot",
+          "value": "Fires the full Gravity Gun that launches Fallout into space, ending the battle"
+        },
+        {
+          "key": "role",
+          "value": "Waited invisible as the raid's failsafe; also summoned Stitch for Livia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "the target he launches into space with the Gravity Gun"
+        },
+        {
+          "to": "The Gravity Gun",
+          "rel": "wields the full Dynamis rifle to lethal effect"
+        }
+      ],
+      "chapter": 125
+    },
+    {
+      "name": "The Gravity Gun",
+      "kind": "item",
+      "summary": "CH125 (proven lethal): the Dynamis anti-gravity weapon is field-tested for the first time. Shroud fires the full rifle at Fallout; the black gravity sphere clamps to his spine, drags nearby glass shards in, and rockets him up out of the atmosphere to vanish beyond the clouds - so strong it nearly pulls in bystanders (Wyvern must grip Enrique). Confirmed to work exactly as designed: it flings a target into space with no escape. Bitter irony that Alphonse funded it to kill Augustus and became its first victim - and it validates Ryan's own miniaturized chest version as a real trump for the Augustus fight.",
+      "facts": [
+        {
+          "key": "proven",
+          "value": "First live use: launches Fallout out of the atmosphere; works exactly as designed"
+        },
+        {
+          "key": "irony",
+          "value": "Alphonse funded it to kill Augustus; it becomes his own executioner"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "its funder and first fatal target"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "validates the miniaturized version hidden in his armor for Augustus"
+        }
+      ],
+      "chapter": 125
     }
   ],
   "plotObservations": [
@@ -19343,6 +19499,21 @@
         "The Opis Armor"
       ],
       "chapter": 124
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH125 'Fusion & Fission': Ryan and Livia battle Fallout over the Gulf of Naples - her timeskip makes Ryan intangible/invincible, cracking his suit and dropping him into the sea, where he sheds his cyborg armor into a radioactive skeleton and self-detonates like a nuke, gravely wounding Livia (who stayed in the blast to be sure Ryan survived). Ryan Black-Fluxes off both Fallout's arms rather than kill him. Enrique arrives, excavates Livia with his roots, and begs his brother to reconcile, daring Alphonse to kill him instead; Fallout refuses ('All for the dream') and moves to self-destruct again - so Shroud fires the full Dynamis Gravity Gun and launches Fallout into space, killing him with the weapon he funded. Livia survives concussed. New Rome is cured of one poison; only Augustus remains, on Ischia.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Fallout",
+        "Enrique Manada",
+        "Mr. See-Through",
+        "The Gravity Gun",
+        "Wyvern",
+        "Augustus"
+      ],
+      "chapter": 125
     }
   ]
 }
