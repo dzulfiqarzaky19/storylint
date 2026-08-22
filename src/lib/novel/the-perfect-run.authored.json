@@ -5385,6 +5385,148 @@
         }
       ],
       "chapter": 55
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "Livia Augusti, Augustus's daughter, who wields TWO powers via a genetic quirk shared only with her father (they can drink two Elixirs with no ill effect; a third would turn either monstrous; her aunt and uncle lack the genes and go Psycho on a second). Her Blue Elixir grants alternate-timeline sight: she watches up to six 'screens' of alternate selves from a 'blue room' hub outside spacetime, where she can record notes and voices as an archive (she found notes on Ryan an alternate self couldn't have written). Her consciousness doesn't carry across Ryan's resets, only archived information, which is why she loses memories but can leave loop-to-loop messages. Her second power creates a localized temporal anomaly: within it only she can act and remember, rendering her invulnerable/intangible, though unlike her father she is NOT immune to Ryan's time-stop. She loves and shields her family (father, uncle, aunt) and Felix, Fortuna, Narcinia despite hating the Bliss weapon; she deduced Ryan time-travels by looking up his name, and strikes a fragile mutual-honesty truce with him. Her mother was murdered by Leo Hargraves.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Two powers via a genetic quirk shared with Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Blue Elixir: sees six alternate-self 'screens' from a blue-room hub"
+        },
+        {
+          "key": "note",
+          "value": "Archives notes outside spacetime; loses memory but keeps records"
+        },
+        {
+          "key": "note",
+          "value": "Second power: a localized temporal anomaly (invulnerable within it)"
+        },
+        {
+          "key": "note",
+          "value": "NOT immune to Ryan's time-stop (unlike Augustus)"
+        },
+        {
+          "key": "note",
+          "value": "Her mother was murdered by Leo Hargraves"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "daughter"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "honesty truce with"
+        },
+        {
+          "to": "The Blue World",
+          "rel": "power drawn from"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "killed her mother"
+        }
+      ],
+      "chapter": 56
+    },
+    {
+      "name": "The Higher-Dimension Power Theory",
+      "kind": "concept",
+      "summary": "Ryan's refined cosmology: every true Genome draws power from a higher dimension embodying its color's essence, and a piece of the wielder (a psychic presence) exists there. Red = a dimension of energy; Violet/Purple = the crossroads of all spacetime (Ryan's own realm, and Augustus's); Blue = a universe of thoughts and information (the Blue World / Akashic Records, source of Livia's archive-sight). Applied to Livia: her alternate 'timelines' are not physically real universes but simulations her Blue-World presence creates and sustains, collapsing when unobserved; Ryan is invisible in them because he is 'the controller' whose Purple-World power decides whether the current reality and its branches exist at all, trumping hers.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "True Genomes draw power from a color-essence higher dimension"
+        },
+        {
+          "key": "note",
+          "value": "Red = energy; Violet = crossroads of spacetime; Blue = thoughts/information"
+        },
+        {
+          "key": "note",
+          "value": "A psychic presence of the wielder exists in that dimension"
+        },
+        {
+          "key": "note",
+          "value": "Livia's timelines are simulations she sustains, not real universes"
+        },
+        {
+          "key": "note",
+          "value": "Ryan is 'the controller'; his Purple power trumps Livia's"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Blue World",
+          "rel": "Blue essence"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "Violet essence"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "theorized by"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "explains her power"
+        }
+      ],
+      "chapter": 56
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Augustus ('Lightning Dad'), the god-wannabe patriarch of the Augusti, whose Bliss drug Ryan reframes as a deliberate weapon: it sterilizes unpowered humans by design (Narcinia could fix it but Augustus won't), part of his contempt for 'normies' as cattle whom he would rather rule as 'king of a cemetery.' He shares his daughter Livia's genetic quirk allowing two Elixirs safely, and like Ryan he is immune to Ryan's time-stop, moving through frozen time; his family has quietly noticed him stutter or repeat himself mid-sentence (unknowingly Ryan's time-stops interrupting him). He murdered Narcinia's parents (branding them raiders) to hold her hostage against Leo Hargraves. His invulnerability's mechanics remain unknown to Ryan.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Bliss is a deliberate anti-'normie' sterility weapon"
+        },
+        {
+          "key": "note",
+          "value": "Would be 'king of a cemetery'; despises unpowered humans"
+        },
+        {
+          "key": "note",
+          "value": "Shares Livia's two-Elixir genetic quirk"
+        },
+        {
+          "key": "note",
+          "value": "Immune to Ryan's time-stop; his 'stutters' are Ryan's stops"
+        },
+        {
+          "key": "note",
+          "value": "Killed Narcinia's parents to hostage her against Hargraves"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "patriarch"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "father"
+        },
+        {
+          "to": "Bliss",
+          "rel": "creator/weaponizer"
+        },
+        {
+          "to": "Narcinia",
+          "rel": "killed her parents"
+        }
+      ],
+      "chapter": 56
     }
   ],
   "plotObservations": [
@@ -6071,6 +6213,22 @@
         "Deadland Motel"
       ],
       "chapter": 55
+    },
+    {
+      "title": "Heartfelt Talk",
+      "beat": "At Deadland Motel, Ryan and Livia trade their full truths in a tense, chess-framed parley. Livia demands honesty and threatens to expose Ryan to her father unless he proves no threat to her family; Ryan counters by exposing Bliss as Augustus's deliberate sterility weapon, cracking Livia's regal mask to reveal a daughter crushed by trying to protect a family she cannot reform. They strike a fragile mutual-honesty truce. Ryan explains his time-loop; Livia admits her two powers (Blue-Elixir six-screen alternate-sight archived in a 'blue room,' plus a localized temporal anomaly) and the genetic quirk she shares with Augustus. They test their powers against each other over the chessboard: Ryan acts as an untouchable 'ghost' inside her anomaly and freezes her (she, unlike Augustus, is not immune), confirming Ryan's higher-dimension theory that he is 'the controller' whose Purple power sustains or collapses her simulated timelines. Ryan withholds Shroud/the Carnival and Mechron's bunker; the talk breaks down over mutual mistrust, ending with dueling protect-lists and Livia's promise to call again. Driving home, Ryan tells Len he confided in Livia because he's 'seen it before' and it ended badly.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Augustus",
+        "Bliss",
+        "Narcinia",
+        "Len Sabino",
+        "Cancel",
+        "The Higher-Dimension Power Theory",
+        "Leo Hargraves"
+      ],
+      "chapter": 56
     }
   ]
 }
