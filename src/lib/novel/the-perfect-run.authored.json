@@ -5190,7 +5190,8 @@
           "to": "Blackthorn",
           "rel": "relative"
         }
-      ]
+      ],
+      "chapter": 63
     },
     {
       "name": "Psyshock",
@@ -10350,7 +10351,7 @@
       "beat": "Ryan re-runs the loop cleanly, keeps the Augusti path, and detects an invisible flying watcher (possibly Geist). Jamie insists Ryan stay with his Made Men crew, introducing Ki-jung (Chitter) and Lanka, and promises to introduce him to Vulcan to locate Len.",
       "entities": [
         "Ryan Romano",
-        "Jamie Cutter",
+        "Jamie",
         "Hyun Ki-jung",
         "Lanka",
         "Vulcan",
@@ -10366,7 +10367,7 @@
         "Ryan Romano",
         "Vulcan",
         "Pluto",
-        "Jamie Cutter",
+        "Jamie",
         "Len",
         "The Killer Seven"
       ],
@@ -10377,7 +10378,7 @@
       "beat": "The crew floods Star Studios with Chitter's rats and flees without a fight. Back home, the invisible glass-controlling assassin detonates the house, killing Ki-jung and Lanka, then beheads Ryan with a storm of glass shards, resetting the loop. Ryan resolves to hunt the killer before Len.",
       "entities": [
         "Ryan Romano",
-        "Jamie Cutter",
+        "Jamie",
         "Hyun Ki-jung",
         "Lanka",
         "Atom Cat"
@@ -10809,7 +10810,7 @@
         "Big Fat Adam",
         "The Land",
         "Vulcan",
-        "The Meta"
+        "The Meta-Gang"
       ],
       "chapter": 47
     },
@@ -11065,7 +11066,7 @@
         "Len",
         "Bloodstream",
         "Lab Sixty-Six",
-        "The Braintech"
+        "The Brain-Transfer Project"
       ],
       "chapter": 63
     },
@@ -11092,7 +11093,7 @@
         "Len",
         "The Ark",
         "The Brain-Transfer Project",
-        "Violet Flux",
+        "The Purple World",
         "The Blood Beacon",
         "Eugène-Henry",
         "The Alchemist",
@@ -11138,7 +11139,7 @@
         "Aunt Pluto",
         "The Vamp",
         "Night Terror",
-        "Killer Seven",
+        "The Killer Seven",
         "Bloodstream",
         "Len"
       ],
@@ -11196,7 +11197,7 @@
         "Alphonse Manada",
         "Dynamis",
         "The Brain-Transfer Project",
-        "Violet Flux",
+        "The Purple World",
         "The Hitchhiker",
         "Livia",
         "Eugène-Henry"
@@ -11205,78 +11206,204 @@
     },
     {
       "title": "Captured in Mechron's Bunker",
-      "summary": "Ryan wakes naked and thoroughly restrained in a Mechron torture chair inside the bunker, held by the Meta-Gang: Big Fat Adam, Psyshock, Ghoul, and Sarin. The chair keeps him alive against his will, blocking his suicide-reload escape. Adam reveals Len is now Psyshock's thrall: he had Psyshock booby-trap the Dynamis brain-tech so any overwritten mind becomes a host, this triggers only on the overwrite step, so Livia still holds a clean backup of Len's mind in the Blue World. Psyshock taunts Ryan with Len's private memories while Adam debates whether to overwrite Ryan or take another route.",
-      "chapter": 71
+      "chapter": 71,
+      "beat": "Ryan wakes naked and thoroughly restrained in a Mechron torture chair inside the bunker, held by the Meta-Gang: Big Fat Adam, Psyshock, Ghoul, and Sarin. The chair keeps him alive against his will, blocking his suicide-reload escape. Adam reveals Len is now Psyshock's thrall: he had Psyshock booby-trap the Dynamis brain-tech so any overwritten mind becomes a host, this triggers only on the overwrite step, so Livia still holds a clean backup of Len's mind in the Blue World. Psyshock taunts Ryan with Len's private memories while Adam debates whether to overwrite Ryan or take another route.",
+      "entities": [
+        "Ryan Romano",
+        "Big Fat Adam",
+        "Psyshock",
+        "Ghoul",
+        "Sarin",
+        "Mechron"
+      ]
     },
     {
       "title": "Adam's Real Plan and the Black Elixir Gambit",
-      "summary": "Ryan deduces Adam's manipulations: Adam gaslights his own lieutenants and his true goal is the bunker's Orbital Communications Tower, not a Psycho cure, he wants to kill everyone. Adam reveals a horror dessert: Little Sarah bound on a plate. Rather than risk Psyshock's uncertain overwrite, Adam produces the Black Elixir, planning to force Ryan to become a Psycho and corrupt his save-point power (Ryan never dared take a second Elixir for that reason). The Elixir wriggles, remembering Ryan. Explosions rock the bunker; Sarin, her faith in Adam broken, secretly asks Ryan for a cure and rusts his restraints. Ghoul opens the door to reveal the corridor slaughtered and Ryan's savior: the possessed Bahamut plushie, declaring 'I will always be your friend!'",
-      "chapter": 71
+      "chapter": 71,
+      "beat": "Ryan deduces Adam's manipulations: Adam gaslights his own lieutenants and his true goal is the bunker's Orbital Communications Tower, not a Psycho cure, he wants to kill everyone. Adam reveals a horror dessert: Little Sarah bound on a plate. Rather than risk Psyshock's uncertain overwrite, Adam produces the Black Elixir, planning to force Ryan to become a Psycho and corrupt his save-point power (Ryan never dared take a second Elixir for that reason). The Elixir wriggles, remembering Ryan. Explosions rock the bunker; Sarin, her faith in Adam broken, secretly asks Ryan for a cure and rusts his restraints. Ghoul opens the door to reveal the corridor slaughtered and Ryan's savior: the possessed Bahamut plushie, declaring 'I will always be your friend!'",
+      "entities": [
+        "Ryan Romano",
+        "Big Fat Adam",
+        "Little Sarah",
+        "The Black Elixir",
+        "Psyshock"
+      ]
     },
     {
       "title": "The Bahamut's Rampage and the Shoggoth Bargain",
-      "summary": "The possessed Bahamut plushie tears through the Meta-Gang: it vaporizes Psyshock and, when Adam raises the Black Elixir to corrupt Ryan, Sarin betrays and air-blasts Adam into the shattered bottle. Adam and the immortal Ghoul are both devoured, and the paradox stabilizes the Black Elixir into a sentient shoggoth pleading to be sent 'back to the Black.' Ryan bargains help-for-help; the shoggoth clears the bunker of thralls. The Bahamut duplicates, freeing Little Sarah, ruining the run beyond repair. Rather than reset, Ryan resolves on a 'Meta Run': take over the bunker, free the children, and build a Psycho cure.",
-      "chapter": 72
+      "chapter": 72,
+      "beat": "The possessed Bahamut plushie tears through the Meta-Gang: it vaporizes Psyshock and, when Adam raises the Black Elixir to corrupt Ryan, Sarin betrays and air-blasts Adam into the shattered bottle. Adam and the immortal Ghoul are both devoured, and the paradox stabilizes the Black Elixir into a sentient shoggoth pleading to be sent 'back to the Black.' Ryan bargains help-for-help; the shoggoth clears the bunker of thralls. The Bahamut duplicates, freeing Little Sarah, ruining the run beyond repair. Rather than reset, Ryan resolves on a 'Meta Run': take over the bunker, free the children, and build a Psycho cure.",
+      "entities": [
+        "Ryan Romano",
+        "The Bahamut",
+        "Psyshock",
+        "Big Fat Adam",
+        "Sarin",
+        "The Black Elixir",
+        "Ghoul",
+        "Darkling"
+      ]
     },
     {
       "title": "Conning Frank the Mad",
-      "summary": "Armed with a hammer, laser gun, and Bliss and joined by the defected Sarin, Ryan sets out to free the caged orphanage children and implode the leaderless Meta-Gang. Cornered by the metal-immune schizophrenic giant Frank the Mad and a surviving Psyshock host, Ryan exploits Frank's Cold-War delusions: posing as 'CIA agent Romano,' he frames Psyshock as a communist traitor who murdered 'President Adam,' planting the bloody hammer in his tentacles. When Psyshock contradicts Frank's delusion, the enraged giant punches his head apart and storms off to hunt the new host. Ryan reaches the infirmary, arms up, and, as child-obsessed plushies mass toward the caged kids, his first Meta Run begins 'with chaos and madness.'",
-      "chapter": 72
+      "chapter": 72,
+      "beat": "Armed with a hammer, laser gun, and Bliss and joined by the defected Sarin, Ryan sets out to free the caged orphanage children and implode the leaderless Meta-Gang. Cornered by the metal-immune schizophrenic giant Frank the Mad and a surviving Psyshock host, Ryan exploits Frank's Cold-War delusions: posing as 'CIA agent Romano,' he frames Psyshock as a communist traitor who murdered 'President Adam,' planting the bloody hammer in his tentacles. When Psyshock contradicts Frank's delusion, the enraged giant punches his head apart and storms off to hunt the new host. Ryan reaches the infirmary, arms up, and, as child-obsessed plushies mass toward the caged kids, his first Meta Run begins 'with chaos and madness.'",
+      "entities": [
+        "Ryan Romano",
+        "Sarin",
+        "Frank the Mad",
+        "Little Sarah",
+        "Psyshock"
+      ]
     },
     {
       "title": "The Bunker Civil War",
-      "summary": "Ryan, Sarin, the plushies, and the Black Elixir shoggoth storm the bunker's upper levels, where Frank's rampage has already routed Psyshock's forces. The leaderless Meta-Gang implodes: Mosquito, Rakshasa, Ink Machine and others switch to Ryan's winning side against Psyshock. Ryan chases the fleeing brainjacker through the hangars (past his engine-stripped Plymouth), sniping each host as Psyshock hops bodies. Psyshock takes the enthralled Len hostage with a drill to her temple; Ryan time-stops and strikes her carotid to knock her out safely, then paralyzes Psyshock's brain-tissue body with a full Bliss dose and captures him.",
-      "chapter": 73
+      "chapter": 73,
+      "beat": "Ryan, Sarin, the plushies, and the Black Elixir shoggoth storm the bunker's upper levels, where Frank's rampage has already routed Psyshock's forces. The leaderless Meta-Gang implodes: Mosquito, Rakshasa, Ink Machine and others switch to Ryan's winning side against Psyshock. Ryan chases the fleeing brainjacker through the hangars (past his engine-stripped Plymouth), sniping each host as Psyshock hops bodies. Psyshock takes the enthralled Len hostage with a drill to her temple; Ryan time-stops and strikes her carotid to knock her out safely, then paralyzes Psyshock's brain-tissue body with a full Bliss dose and captures him.",
+      "entities": [
+        "Ryan Romano",
+        "Sarin",
+        "Frank the Mad",
+        "Darkling",
+        "Psyshock",
+        "Len",
+        "The Meta-Gang",
+        "Mosquito",
+        "Rakshasa",
+        "Ink Machine"
+      ]
     },
     {
       "title": "President Ryan Goes Full Bond Villain",
-      "summary": "After an hour of one-sided slaughter, the bunker belongs to Ryan. Standing atop Mechron's mech, he crowns himself 'President' of the ~20 surviving Psychos, ruling through mock-democracy, the Elixir supply ('Elixicare'), and the threat of his shoggoth. He forms a cabinet (Sarin VP, the Black Elixir secretary of state, Frank enforcer, Rakshasa feeding gremlins to the child-bonded plushies), keeps Len and the thralls sedated for later de-brainwashing, holds Psyshock for Cancel, and reassures Little Sarah he'll cure her mother. Since the run is doomed, he decides to throw caution aside, call in favors, seize the bunker's doomsday weapon, and aim for 'the woooooorld', sending for his white Persian cat to complete the villain aesthetic.",
-      "chapter": 73
+      "chapter": 73,
+      "beat": "After an hour of one-sided slaughter, the bunker belongs to Ryan. Standing atop Mechron's mech, he crowns himself 'President' of the ~20 surviving Psychos, ruling through mock-democracy, the Elixir supply ('Elixicare'), and the threat of his shoggoth. He forms a cabinet (Sarin VP, the Black Elixir secretary of state, Frank enforcer, Rakshasa feeding gremlins to the child-bonded plushies), keeps Len and the thralls sedated for later de-brainwashing, holds Psyshock for Cancel, and reassures Little Sarah he'll cure her mother. Since the run is doomed, he decides to throw caution aside, call in favors, seize the bunker's doomsday weapon, and aim for 'the woooooorld', sending for his white Persian cat to complete the villain aesthetic.",
+      "entities": [
+        "Ryan Romano",
+        "The Meta-Gang",
+        "Elixicare",
+        "Mechron"
+      ]
     },
     {
       "title": "President Ryan Assembles His Scheme",
-      "summary": "Ruling the bunker as 'Mr. President,' Ryan cracks Adam and Psyshock's files, learning the Meta-Gang found the bunker by tracing a research probe's signal to New Rome, and grasping that whoever unlocks the central mainframe could dominate the world. He recruits Geniuses by phone: the Architect (Nora Moore) to stress-test the bunker's tech and line up a cashmere costume from Wardrobe; Vulcan (Jasmine) to arm a war on Dynamis, on the condition he first trashes the Wyvern movie at Star Studio; and, swallowing old betrayal, Alchemo/Braindead to fix the memory-transfer machine for Len (Alchemo insisting on bringing 'the Doll'). Livia agrees to a neutral meeting, and Minerva accepts a live peace offering to the Augusti. Cure theory forms: pair Mongrel and a two-color survivor with Dr. Tyrano.",
-      "chapter": 74
+      "chapter": 74,
+      "beat": "Ruling the bunker as 'Mr. President,' Ryan cracks Adam and Psyshock's files, learning the Meta-Gang found the bunker by tracing a research probe's signal to New Rome, and grasping that whoever unlocks the central mainframe could dominate the world. He recruits Geniuses by phone: the Architect (Nora Moore) to stress-test the bunker's tech and line up a cashmere costume from Wardrobe; Vulcan (Jasmine) to arm a war on Dynamis, on the condition he first trashes the Wyvern movie at Star Studio; and, swallowing old betrayal, Alchemo/Braindead to fix the memory-transfer machine for Len (Alchemo insisting on bringing 'the Doll'). Livia agrees to a neutral meeting, and Minerva accepts a live peace offering to the Augusti. Cure theory forms: pair Mongrel and a two-color survivor with Dr. Tyrano.",
+      "entities": [
+        "Ryan Romano",
+        "Big Fat Adam",
+        "Psyshock",
+        "The Meta-Gang"
+      ]
     },
     {
       "title": "Darkling and the Cosmology of the Ultimate Ones",
-      "summary": "Ryan visits the Black Elixir, learning it is an eighth-color Elixir of pure paradox that cannot be bound and finds our causal universe a maddening 'molecule-shaped prison.' It reveals the cosmology: Ultimate Ones, one per colored higher dimension, are supreme beings the Elixirs serve as priest-conduits so mortals may ascend (the Alchemist's true goal, Augustus its warning). It wants to return through a bunker portal to the Black World and ask the Black Ultimate One to erase its arrival. It confirms Ryan's power comes from the Violet Ultimate One, making Ryan the timeline's Observer, and that this god 'nudges' rather than controls, no longer actively interfering, leaving Ryan free and alone. It hints an Ultimate One could even restore the erased (Jasmine), but at a reality-damaging price. Ryan names it 'Darkling,' which it sulkily accepts.",
-      "chapter": 74
+      "chapter": 74,
+      "beat": "Ryan visits the Black Elixir, learning it is an eighth-color Elixir of pure paradox that cannot be bound and finds our causal universe a maddening 'molecule-shaped prison.' It reveals the cosmology: Ultimate Ones, one per colored higher dimension, are supreme beings the Elixirs serve as priest-conduits so mortals may ascend (the Alchemist's true goal, Augustus its warning). It wants to return through a bunker portal to the Black World and ask the Black Ultimate One to erase its arrival. It confirms Ryan's power comes from the Violet Ultimate One, making Ryan the timeline's Observer, and that this god 'nudges' rather than controls, no longer actively interfering, leaving Ryan free and alone. It hints an Ultimate One could even restore the erased (Jasmine), but at a reality-damaging price. Ryan names it 'Darkling,' which it sulkily accepts.",
+      "entities": [
+        "Ryan Romano",
+        "Darkling",
+        "The Black Elixir",
+        "The Ultimate Ones",
+        "The Violet Ultimate One",
+        "The Alchemist"
+      ]
     },
     {
       "title": "Peace Offering to the Augusti",
-      "summary": "Ryan meets Livia at Deadland Motel and gifts her the drugged Psyshock; Cancel negates his power and Mortimer executes him, freeing his thralls. Under the truth-teller Luigi, Ryan spitefully rants his entire history (time travel, Monaco, Darkling, the doomed loop), triggering Luigi's existential crisis; Livia pays Luigi 20M euros to leave the city forever. Ryan confirms Cancel's true mechanic (severing the Elixir-dimension link, lethal to his Purple-dependent power) and theorizes Augustus's invulnerability is an anomalous metal-mimicking Orange mutation.",
-      "chapter": 75
+      "chapter": 75,
+      "beat": "Ryan meets Livia at Deadland Motel and gifts her the drugged Psyshock; Cancel negates his power and Mortimer executes him, freeing his thralls. Under the truth-teller Luigi, Ryan spitefully rants his entire history (time travel, Monaco, Darkling, the doomed loop), triggering Luigi's existential crisis; Livia pays Luigi 20M euros to leave the city forever. Ryan confirms Cancel's true mechanic (severing the Elixir-dimension link, lethal to his Purple-dependent power) and theorizes Augustus's invulnerability is an anomalous metal-mimicking Orange mutation.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Psyshock",
+        "Cancel",
+        "Mortimer",
+        "Luigi",
+        "Darkling"
+      ]
     },
     {
       "title": "An Alliance and Its Limits",
-      "summary": "Convinced, Livia freely gives Ryan Len's uncorrupted brain-map, no strings, honoring her past self's debt, and commits to partnership toward a 'perfect ending,' agreeing to consider helping cure Psychos via her two-power secret. Her limits: only a week or two before her family retakes Rust Town; she wants Augustus retired, not killed; and she's in denial over Felix, meaning to try to win him back this loop. She warns of mysterious Augusti assassinations, which Ryan recognizes as the Shroud, now on a lone spree, believing Ryan turned Psycho. Returning, Ryan learns Psyshock scrambled Len's brain into a vegetable on his way out, forcing him to rely on Alchemo, and turns to cracking the bunker with the Architect's 35-page report.",
-      "chapter": 75
+      "chapter": 75,
+      "beat": "Convinced, Livia freely gives Ryan Len's uncorrupted brain-map, no strings, honoring her past self's debt, and commits to partnership toward a 'perfect ending,' agreeing to consider helping cure Psychos via her two-power secret. Her limits: only a week or two before her family retakes Rust Town; she wants Augustus retired, not killed; and she's in denial over Felix, meaning to try to win him back this loop. She warns of mysterious Augusti assassinations, which Ryan recognizes as the Shroud, now on a lone spree, believing Ryan turned Psycho. Returning, Ryan learns Psyshock scrambled Len's brain into a vegetable on his way out, forcing him to rely on Alchemo, and turns to cracking the bunker with the Architect's 35-page report.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Len",
+        "Augustus"
+      ]
     },
     {
       "title": "Manada's Ultimatum",
-      "summary": "In a tense video call, Dynamis CEO Hector Manada refuses to renew the knockoff-Elixir supply, revealing Psyshock had been secretly taking over Dynamis by brainwashing his staff, treachery his death exposed. Manada calls Ryan's blackmail bluffs (recordings; the knockoffs' Bloodstream/Lab 66 link) and gives him 48 hours to release the technicians, return the tech, and leave town, or face Il Migliore. Ryan, unable to keep the juice flowing, resolves instead to storm the bunker's mainframe, using Manada's 48-hour window as cover.",
-      "chapter": 76
+      "chapter": 76,
+      "beat": "In a tense video call, Dynamis CEO Hector Manada refuses to renew the knockoff-Elixir supply, revealing Psyshock had been secretly taking over Dynamis by brainwashing his staff, treachery his death exposed. Manada calls Ryan's blackmail bluffs (recordings; the knockoffs' Bloodstream/Lab 66 link) and gives him 48 hours to release the technicians, return the tech, and leave town, or face Il Migliore. Ryan, unable to keep the juice flowing, resolves instead to storm the bunker's mainframe, using Manada's 48-hour window as cover.",
+      "entities": [
+        "Ryan Romano",
+        "Hector Manada",
+        "Psyshock",
+        "Il Migliore"
+      ]
     },
     {
       "title": "Alchemo, the Doll, and Diagnosing Len",
-      "summary": "Alchemo arrives with his android daughter Tea (the Doll, Ryan's ex, who slaps then forgives him) and Ryan's old toaster-robot Toasty. Amid the awkward reunion, Alchemo treats the captive Acid Rain's brain tumors and agrees, at the Doll's urging, to help cure Psychos and Mechron-plague tumors. Examining the comatose Len, he confirms Psyshock's repeated overwrites nearly shut down her brain and she won't wake on her own; he can't repair Dynamis's booby-trapped machine but can build a working copy, if he can access the bunker's central Universal Brain and matter replicator. Ryan commits to assaulting the mainframe, with Frank guarding the non-combatant Genius.",
-      "chapter": 76
+      "chapter": 76,
+      "beat": "Alchemo arrives with his android daughter Tea (the Doll, Ryan's ex, who slaps then forgives him) and Ryan's old toaster-robot Toasty. Amid the awkward reunion, Alchemo treats the captive Acid Rain's brain tumors and agrees, at the Doll's urging, to help cure Psychos and Mechron-plague tumors. Examining the comatose Len, he confirms Psyshock's repeated overwrites nearly shut down her brain and she won't wake on her own; he can't repair Dynamis's booby-trapped machine but can build a working copy, if he can access the bunker's central Universal Brain and matter replicator. Ryan commits to assaulting the mainframe, with Frank guarding the non-combatant Genius.",
+      "entities": [
+        "Ryan Romano",
+        "Alchemo",
+        "The Doll",
+        "Toasty",
+        "Acid Rain",
+        "Len",
+        "Universal Brain"
+      ]
     },
     {
       "title": "Storming the Mainframe",
-      "summary": "Clad in Wardrobe's new black-and-red presidential war-suit, Ryan leads a strike team (Sarin, Alchemo, Darkling, Frank, and expendable Psychos) through Nora's shortcut into the bunker to seize the mainframe and let Alchemo interface with it. They face Mechron's learning hivemind: cyclopean androids, drones, and turrets that adapt within minutes and kill Gemini, Ink Machine, and the Reptilian. Frank and Darkling hold the rear while Sarin rusts through walls; Darkling devours a telekinetic vat-boss and its Red Elixir. In the command room Alchemo hijacks the Universal Brain, registers the team as 'staff,' shuts down the defenses, and unlocks Mechron's entire research database.",
-      "chapter": 77
+      "chapter": 77,
+      "beat": "Clad in Wardrobe's new black-and-red presidential war-suit, Ryan leads a strike team (Sarin, Alchemo, Darkling, Frank, and expendable Psychos) through Nora's shortcut into the bunker to seize the mainframe and let Alchemo interface with it. They face Mechron's learning hivemind: cyclopean androids, drones, and turrets that adapt within minutes and kill Gemini, Ink Machine, and the Reptilian. Frank and Darkling hold the rear while Sarin rusts through walls; Darkling devours a telekinetic vat-boss and its Red Elixir. In the command room Alchemo hijacks the Universal Brain, registers the team as 'staff,' shuts down the defenses, and unlocks Mechron's entire research database.",
+      "entities": [
+        "Ryan Romano",
+        "Sarin",
+        "Alchemo",
+        "Darkling",
+        "Frank the Mad",
+        "The Bunker Hivemind",
+        "Gemini",
+        "Ink Machine",
+        "The Reptilian",
+        "Universal Brain"
+      ]
     },
     {
       "title": "Len Wakes, and Ryan Breaks",
-      "summary": "Using the bunker's replicator, Alchemo builds a working transfer machine and restores Len with Livia's clean brain-map, repairing the overuse damage. After Tea gently ushers Little Sarah out, Ryan sits alone with Len as she wakes with full recognition, rejoicing that the transfer worked. The centuries of buried loneliness finally crash down and Ryan collapses in tears, unable to speak. Len holds him as she did in childhood and tells him he's not alone, and for the first time since he began looping, he isn't.",
-      "chapter": 77
+      "chapter": 77,
+      "beat": "Using the bunker's replicator, Alchemo builds a working transfer machine and restores Len with Livia's clean brain-map, repairing the overuse damage. After Tea gently ushers Little Sarah out, Ryan sits alone with Len as she wakes with full recognition, rejoicing that the transfer worked. The centuries of buried loneliness finally crash down and Ryan collapses in tears, unable to speak. Len holds him as she did in childhood and tells him he's not alone, and for the first time since he began looping, he isn't.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Alchemo",
+        "The Doll",
+        "Little Sarah",
+        "Livia Augusti"
+      ]
     },
     {
       "title": "Chekhov's Gun Falls on New Rome",
-      "summary": "After Mortimer coldly executes Wardrobe, Len bubbles the enraged Reload and, grieving, begs Ryan to leave the doomed city with her, finally admitting she wants him back in her life. As Livia's people evacuate by bathysphere, the Shroud abducts Narcinia mid-loading on Felix's behalf, and Livia senses her alternate selves dying to an incoming secret weapon. A pillar of light falls from orbit; Ryan blacks out and wakes alone in the rerouted escape pod beneath the sea. Surfacing, he sees New Rome ablaze, Mount Augustus a crater, and Dynamis's towers annihilated by repeated orbital strikes. He realizes Big Fat Adam has thrown his own men into the meat-grinder, unlocked Mechron's bunker, and seized its Orbital Communications Center weapon. Ryan waited too long.",
-      "chapter": 46
+      "chapter": 46,
+      "beat": "After Mortimer coldly executes Wardrobe, Len bubbles the enraged Reload and, grieving, begs Ryan to leave the doomed city with her, finally admitting she wants him back in her life. As Livia's people evacuate by bathysphere, the Shroud abducts Narcinia mid-loading on Felix's behalf, and Livia senses her alternate selves dying to an incoming secret weapon. A pillar of light falls from orbit; Ryan blacks out and wakes alone in the rerouted escape pod beneath the sea. Surfacing, he sees New Rome ablaze, Mount Augustus a crater, and Dynamis's towers annihilated by repeated orbital strikes. He realizes Big Fat Adam has thrown his own men into the meat-grinder, unlocked Mechron's bunker, and seized its Orbital Communications Center weapon. Ryan waited too long.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Mortimer",
+        "Wardrobe",
+        "Reload",
+        "Livia Augusti",
+        "Narcinia",
+        "The Shroud",
+        "Big Fat Adam",
+        "Mechron"
+      ]
     }
   ]
 }
