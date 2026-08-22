@@ -9955,6 +9955,292 @@
         }
       ],
       "chapter": 76
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Refined, the emotional payoff: Alchemo's rebuilt machine overwrites Len's brain with Livia's clean backup map and repairs the overuse damage. She wakes with full recognition, the elusive look Ryan waited centuries for, and rejoices 'Riri, it worked! The transfer worked!' She is herself again, remembering. Seeing Ryan collapse into tears under the lifted weight of his centuries of loneliness, she hugs him as she did in childhood and repeats the words he once gave her: 'You're not alone. You're not alone.' For the first time in his endless looping he is truly not alone.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Restored via Alchemo's machine and Livia's clean map"
+        },
+        {
+          "key": "note",
+          "value": "Wakes with full recognition: 'Riri, it worked!'"
+        },
+        {
+          "key": "note",
+          "value": "Herself again, memories and love intact"
+        },
+        {
+          "key": "note",
+          "value": "Comforts a sobbing Ryan, mirroring their childhood"
+        },
+        {
+          "key": "note",
+          "value": "Tells him 'You're not alone,' his own past words to her"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "reunited with; comforts"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "restored by"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "clean brain-map provided by"
+        }
+      ],
+      "chapter": 77
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "Refined, catharsis: after Len wakes restored and recognizes him, Ryan, who has carried centuries of buried loneliness, pain, and denial across Monaco and countless loops, finally breaks. He collapses to his knees and sobs uncontrollably, the crushing weight of time lifting, his 'shining armor' falling away to reveal the raw sadness beneath. Len holds him and tells him he's not alone, and for the first time since he began looping he believes it. Earlier he tells Little Sarah he and Len were teenage lovers. This run is his first true 'one-shot': its enabling flukes (Psyshock time-travel, Sarin's aid, Darkling) can never repeat.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Breaks down sobbing when Len wakes and knows him"
+        },
+        {
+          "key": "note",
+          "value": "Centuries of buried loneliness finally surface"
+        },
+        {
+          "key": "note",
+          "value": "His knightly 'armor' falls away to raw grief"
+        },
+        {
+          "key": "note",
+          "value": "Believes 'you're not alone' for the first time"
+        },
+        {
+          "key": "note",
+          "value": "This unrepeatable run is his first true one-shot"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "reunited with; comforted by"
+        },
+        {
+          "to": "Little Sarah",
+          "rel": "tells of his past with Len"
+        }
+      ],
+      "chapter": 77
+    },
+    {
+      "name": "The Bunker Hivemind",
+      "kind": "faction",
+      "summary": "The mainframe's automated defense: swarms of cyclopean androids (single laser eyes), wall-mounted miniguns, eye-shaped submachine-gun drones, and gatling turrets, all pieces of a single learning hivemind rather than individual units. They coordinate flawlessly, avoid friendly fire, and adapt within minutes, countering Gemini's shadow-power with light manipulation and switching from dogpiling Frank (who absorbs metal) to laser volleys. They identify and prioritize key targets (Alchemo, then Ryan). The final guardian is a telekinetic Genome boss: a crimson-Elixir vat on six spider legs with a speck-sized Red portal, a true telekinetic that flattens the Reptilian.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Cyclopean androids, drones, and turrets as one hivemind"
+        },
+        {
+          "key": "note",
+          "value": "Learns and counters powers within minutes"
+        },
+        {
+          "key": "note",
+          "value": "Coordinates without friendly fire; prioritizes key targets"
+        },
+        {
+          "key": "note",
+          "value": "Guarded by a telekinetic vat-boss on spider legs"
+        },
+        {
+          "key": "note",
+          "value": "Runs on Mechron's automated defense system"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "created by"
+        },
+        {
+          "to": "Universal Brain",
+          "rel": "defends"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "opposes"
+        }
+      ],
+      "chapter": 77
+    },
+    {
+      "name": "Gemini",
+      "kind": "character",
+      "summary": "A Meta-Gang Psycho who appears as an ethereal woman of shining light, but whose true self is her tentacled shadow, an illusion masking the real killer. Her shadow can damage enemies by striking their shadows, inflicting the same wounds on their bodies. Deployed on Ryan's mainframe assault, she is countered by the learning hivemind, which brightens the lights and grabs her shadow with robot shadows; eight machines pin and dismember her shadow, and her light-body flickers out. Killed in the raid.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ethereal light-woman is illusion; tentacled shadow is real"
+        },
+        {
+          "key": "note",
+          "value": "Damages enemies by striking their shadows"
+        },
+        {
+          "key": "note",
+          "value": "Recruited into Ryan's Meta-Gang assault force"
+        },
+        {
+          "key": "note",
+          "value": "Countered and pinned by the hivemind's light/shadow trick"
+        },
+        {
+          "key": "note",
+          "value": "Dismembered and killed in the mainframe raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "The Bunker Hivemind",
+          "rel": "killed by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "served under"
+        }
+      ],
+      "chapter": 77
+    },
+    {
+      "name": "Wardrobe's Presidential Costume",
+      "kind": "item",
+      "summary": "A war-fashioned suit made by Wardrobe and delivered to Ryan in a black briefcase (the 'Nuclear Football'), pure black and red, unlike his earlier playful outfits. Cashmere red shirt and black Lagerfeld-style suit, leather boots with skull socks, velvet gloves, flowing jacket, a red-and-silver mask baring only the eyes, and a bowler hat. Ryan dons it ceremonially to establish 'stylish dominance' over his minions before the raid. Durable enough to survive his acrobatics without rupturing; a laser hole in its bowler hat infuriates him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "War-suit by Wardrobe, delivered as the 'Nuclear Football'"
+        },
+        {
+          "key": "note",
+          "value": "Pure black and red; mask bares only the eyes"
+        },
+        {
+          "key": "note",
+          "value": "Worn to assert dominance before the mainframe raid"
+        },
+        {
+          "key": "note",
+          "value": "Durable, survives combat acrobatics"
+        },
+        {
+          "key": "note",
+          "value": "Its bowler hat is holed by a laser"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "worn by"
+        },
+        {
+          "to": "Wardrobe",
+          "rel": "made by"
+        }
+      ],
+      "chapter": 77
+    },
+    {
+      "name": "Alchemo",
+      "kind": "character",
+      "summary": "Refined: in the mainframe raid Alchemo is the mission-critical non-combatant, escorted through the hivemind gauntlet. Reaching the command room, he intertwines with the alien biomechanical brain exactly as Psyshock once did, nailing it with his syringe-fingers so blue lightning races through his exposed brain, and hijacks the Universal Brain, changing admin privileges to register the group as 'staff.' He gains access to Mechron's full database (Psychos, power-enhancement, Elixir mechanics) and is giddy: 'We're going to change the world, meatbag!' He then uses the bunker's replicator to build a working copy of the transfer machine, restores Len with Livia's map, and repairs her brain damage, calling it repayment of his favor.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Escorted non-combatant through the raid"
+        },
+        {
+          "key": "note",
+          "value": "Interfaces with the Universal Brain via syringe-fingers"
+        },
+        {
+          "key": "note",
+          "value": "Registers the group as 'staff'; unlocks Mechron's database"
+        },
+        {
+          "key": "note",
+          "value": "Builds a working transfer machine from the replicator"
+        },
+        {
+          "key": "note",
+          "value": "Restores Len and repairs her brain, repaying his favor"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Universal Brain",
+          "rel": "hijacks"
+        },
+        {
+          "to": "Len",
+          "rel": "restores"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "allied with; repays favor"
+        }
+      ],
+      "chapter": 77
+    },
+    {
+      "name": "The Reptilian",
+      "kind": "character",
+      "summary": "Refined: a cowardly, dim Meta-Gang mook with enhanced senses (can feel ground vibrations) whom Ryan repeatedly cows with choking gestures to 'rediscover his patriotism.' In the mainframe raid he survives the first rooms by staying near Darkling, but when Ryan orders him to hold the line against the telekinetic vat-boss, the true-telekinetic machine lifts and slams him into the ceiling with crushing force, flattening him like a mosquito under a flyswatter. Killed in the raid.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Cowardly mook with vibration-sensing senses"
+        },
+        {
+          "key": "note",
+          "value": "Cowed by Ryan's choking gestures"
+        },
+        {
+          "key": "note",
+          "value": "Survives early rooms by hiding near Darkling"
+        },
+        {
+          "key": "note",
+          "value": "Flattened against the ceiling by the telekinetic boss"
+        },
+        {
+          "key": "note",
+          "value": "Killed in the mainframe raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "bullied minion of"
+        },
+        {
+          "to": "The Bunker Hivemind",
+          "rel": "killed by"
+        }
+      ],
+      "chapter": 77
     }
   ],
   "plotObservations": [
@@ -10976,6 +11262,16 @@
       "title": "Alchemo, the Doll, and Diagnosing Len",
       "summary": "Alchemo arrives with his android daughter Tea (the Doll, Ryan's ex, who slaps then forgives him) and Ryan's old toaster-robot Toasty. Amid the awkward reunion, Alchemo treats the captive Acid Rain's brain tumors and agrees, at the Doll's urging, to help cure Psychos and Mechron-plague tumors. Examining the comatose Len, he confirms Psyshock's repeated overwrites nearly shut down her brain and she won't wake on her own; he can't repair Dynamis's booby-trapped machine but can build a working copy, if he can access the bunker's central Universal Brain and matter replicator. Ryan commits to assaulting the mainframe, with Frank guarding the non-combatant Genius.",
       "chapter": 76
+    },
+    {
+      "title": "Storming the Mainframe",
+      "summary": "Clad in Wardrobe's new black-and-red presidential war-suit, Ryan leads a strike team (Sarin, Alchemo, Darkling, Frank, and expendable Psychos) through Nora's shortcut into the bunker to seize the mainframe and let Alchemo interface with it. They face Mechron's learning hivemind: cyclopean androids, drones, and turrets that adapt within minutes and kill Gemini, Ink Machine, and the Reptilian. Frank and Darkling hold the rear while Sarin rusts through walls; Darkling devours a telekinetic vat-boss and its Red Elixir. In the command room Alchemo hijacks the Universal Brain, registers the team as 'staff,' shuts down the defenses, and unlocks Mechron's entire research database.",
+      "chapter": 77
+    },
+    {
+      "title": "Len Wakes, and Ryan Breaks",
+      "summary": "Using the bunker's replicator, Alchemo builds a working transfer machine and restores Len with Livia's clean brain-map, repairing the overuse damage. After Tea gently ushers Little Sarah out, Ryan sits alone with Len as she wakes with full recognition, rejoicing that the transfer worked. The centuries of buried loneliness finally crash down and Ryan collapses in tears, unable to speak. Len holds him as she did in childhood and tells him he's not alone, and for the first time since he began looping, he isn't.",
+      "chapter": 77
     }
   ]
 }
