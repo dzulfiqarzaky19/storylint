@@ -6279,6 +6279,242 @@
         }
       ],
       "chapter": 60
+    },
+    {
+      "name": "Adam the Ogre",
+      "kind": "character",
+      "summary": "Adam Fontaine, alias Adam the Ogre, alias the Brooklyn Cannibal, boss of the Meta-Gang: a cannibalistic serial killer wanted for four Brooklyn murders who fled to Europe on the eve of the Genome Wars, then took Elixirs to become Orange/Violet. His power turns his skin into a highly resistant carbon alloy (enhanced strength, tank-like resilience) and makes his stomach a pocket dimension that stores almost anything, nearly the same power set as Mars/Augustus but far weaker and short-ranged. He can barely keep his own men (Adam's mooks) under control; without his unifying presence they rampage. His impulsive-seeming order to fire the Bahamut prompts Ryan to reconsider whether it was truly impulsive.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Adam Fontaine; 'Brooklyn Cannibal' serial killer pre-powers"
+        },
+        {
+          "key": "note",
+          "value": "Orange/Violet; carbon-alloy skin + pocket-dimension stomach"
+        },
+        {
+          "key": "note",
+          "value": "Power mirrors Mars/Augustus but weaker, short-ranged"
+        },
+        {
+          "key": "note",
+          "value": "Barely controls his own gang"
+        },
+        {
+          "key": "note",
+          "value": "Ordered the Bahamut fired"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "boss"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "co-leader / manipulated by"
+        },
+        {
+          "to": "Mars",
+          "rel": "similar power"
+        }
+      ],
+      "chapter": 61
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "Adam the Ogre's bodyguard, a schizophrenic Genome (identity unknown) whose delusions cast him variously as a WWII commando, Vietnam vet, Secret Service agent, and Area 51 super-soldier, turning aggressive when the contradictions are pointed out. Orange/Red: his body is made of metal that grows larger by consuming more metal (only metal, not stone or ivory), and he absorbs kinetic energy. In the raid he grows into a ten-meter giant and battles a transformed Wyvern kaiju-style. His power once automatically tried and failed to absorb Augustus, proving Augustus's body registers as metal, a clue Ryan uses to rule out the temporal-stasis theory of Augustus's invulnerability.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Adam's bodyguard; schizophrenic false war-hero delusions"
+        },
+        {
+          "key": "note",
+          "value": "Orange/Red; metal body grows by eating metal (only metal)"
+        },
+        {
+          "key": "note",
+          "value": "Absorbs kinetic energy; grows to a 10m giant"
+        },
+        {
+          "key": "note",
+          "value": "His power once failed to absorb Augustus"
+        },
+        {
+          "key": "note",
+          "value": "That failure proves Augustus registers as metal"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam the Ogre",
+          "rel": "bodyguard"
+        },
+        {
+          "to": "Augustus",
+          "rel": "clue to his nature"
+        },
+        {
+          "to": "Wyvern",
+          "rel": "fought in the raid"
+        }
+      ],
+      "chapter": 61
+    },
+    {
+      "name": "Acid Rain",
+      "kind": "character",
+      "summary": "A Meta-Gang Psycho and teleporter (also called Sarin's ally 'Rain Woman'), a maddened blonde who fights with knives, guns, and steel pipes at inhuman speed, her teleportation paired with enhanced spatial awareness (mirroring Ryan's timing sense). She is obsessed with 'the Ultimate One' and the Purple World, raving that Ryan is a 'thief' barring the gates and keeping 'her family' away, begging to be 'sent back there.' Pure savagery without skill, she out-speeds even Ryan but he out-skills her, wearing her down by hammering a bullet wound. In the Rust Town raid she maims Shroud (blows off his arm), stabs Felix, and eviscerates the Panda before Mortimer, sent by Livia, shoots her dead from behind, ending her acid downpour that threatened thousands.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Meta-Gang teleporter with enhanced spatial awareness"
+        },
+        {
+          "key": "note",
+          "value": "Obsessed with 'the Ultimate One' / the Purple World"
+        },
+        {
+          "key": "note",
+          "value": "Savage and skill-less, out-speeds but is out-skilled by Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Maims Shroud, stabs Felix, kills the Panda"
+        },
+        {
+          "key": "note",
+          "value": "Killed by Mortimer, sent by Livia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Mortimer",
+          "rel": "killed by"
+        },
+        {
+          "to": "The Panda",
+          "rel": "killed"
+        }
+      ],
+      "chapter": 61
+    },
+    {
+      "name": "Mortimer",
+      "kind": "character",
+      "summary": "An Augusti assassin and self-described supervillain, a laconic old killer ('poor old Mortimer') who sinks through solid ground and snipes with a rifle. He appears at the climax of the Rust Town raid to shoot Acid Rain dead from behind, saving Ryan's team, and pointedly refuses to fight them, joking that Fortuna would whine if he did and admiring Ryan's self-control for not strangling her. He is not there on Augustus's orders: 'Miss Livia sends her regards,' revealing Livia quietly dispatched him to protect Ryan's group.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti assassin; sinks through the ground, rifleman"
+        },
+        {
+          "key": "note",
+          "value": "Kills Acid Rain to save Ryan's team"
+        },
+        {
+          "key": "note",
+          "value": "Refuses to fight Ryan; sent by Livia, not Augustus"
+        },
+        {
+          "key": "note",
+          "value": "'Lady Death's got no owner, only dealers'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "assassin"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "sent by"
+        },
+        {
+          "to": "Acid Rain",
+          "rel": "killed"
+        }
+      ],
+      "chapter": 61
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "Timmy, Ryan's shapeshifting sidekick and student ('young apprentice,' who calls Ryan 'Sifu'), a 700kg bear-form Meta whose shapeshifting fully heals his wounds each time he transforms (as Dr. Tyrano guessed). In the Rust Town raid he fights valiantly ('Panda Roll,' bear-paw strikes that crack Acid Rain's ribs) but Acid Rain eviscerates him mid-transformation; he survives and heals by shifting again, revealing his regeneration is tied to the transformation itself.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Timmy; Ryan's shapeshifting bear-form apprentice"
+        },
+        {
+          "key": "note",
+          "value": "Calls Ryan 'Sifu'; 700kg bear form"
+        },
+        {
+          "key": "note",
+          "value": "Shapeshifting fully heals his wounds"
+        },
+        {
+          "key": "note",
+          "value": "Eviscerated by Acid Rain, then heals by shifting"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "apprentice / sidekick"
+        },
+        {
+          "to": "Acid Rain",
+          "rel": "wounded by"
+        },
+        {
+          "to": "The Menagerie",
+          "rel": "member"
+        }
+      ],
+      "chapter": 61
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Augustus ('Lightning Butt'), whose true nature Ryan pieces further together during the raid. Frank the Mad's power once automatically tried and failed to absorb Augustus, proving his body registers as METAL, which rules out the temporal-stasis theory (that would also stop his aging and the tumor). Ryan narrows it to a Yellow or Orange Elixir hypothesis: perhaps Augustus consumed a Yellow Elixir turning him into a Roman-deity metal statue, or already had the tumor before powers so it is now as invulnerable as he is. He feels he has all the puzzle pieces but hasn't assembled them right yet.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Body registers as metal (Frank's power failed to absorb him)"
+        },
+        {
+          "key": "note",
+          "value": "Metal-body rules out temporal stasis (he ages, has a tumor)"
+        },
+        {
+          "key": "note",
+          "value": "Ryan suspects a Yellow/Orange Elixir 'living statue' effect"
+        },
+        {
+          "key": "note",
+          "value": "Tumor may predate his powers and be invulnerable too"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Frank the Mad",
+          "rel": "revealed his metal nature"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "patriarch"
+        }
+      ],
+      "chapter": 61
     }
   ],
   "plotObservations": [
@@ -7047,6 +7283,27 @@
         "Psyshock"
       ],
       "chapter": 60
+    },
+    {
+      "title": "Death Warrant",
+      "beat": "May 12th: Team Quicksave (Ryan, Atom Cat, the Panda, Wardrobe) drives to Rust Town for the coordinated raid, Wardrobe deducing (via a Sherlock costume) Ryan's chaste Fortuna date. Felix briefs them on the Meta leadership: Adam the Ogre (Brooklyn Cannibal, carbon-skin + pocket-stomach) and Frank the Mad (schizophrenic metal giant), while Ryan privately advances his Augustus theory (Frank's power proving Augustus registers as metal). Leo Hargraves strikes the Junkyard like a missile as Alphonse's helicopters swarm from the west; the Meta answer with missiles, a Frank-caused earthquake, and Sarin's acid clouds. Ryan's team battles Sarin (beheaded by Shroud) and the teleporting Acid Rain, who raves about 'the Ultimate One'/Purple World and calls Ryan a thief. The fight goes badly: Acid Rain blows off Shroud's arm, stabs Felix, and eviscerates the Panda (who heals by shapeshifting). Ryan out-skills her, but she readies a grenade begging to be 'sent there', until Mortimer, an Augusti assassin, snipes her dead. He refuses to fight Ryan, revealing Livia sent him: 'Miss Livia sends her regards.'",
+      "entities": [
+        "Ryan Romano",
+        "Atom Cat",
+        "The Panda",
+        "Wardrobe",
+        "Adam the Ogre",
+        "Frank the Mad",
+        "Acid Rain",
+        "Sarin",
+        "The Shroud",
+        "Leo Hargraves",
+        "Alphonse Manada",
+        "Wyvern",
+        "Mortimer",
+        "Livia Augusti"
+      ],
+      "chapter": 61
     }
   ]
 }
