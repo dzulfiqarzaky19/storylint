@@ -80,6 +80,28 @@
   background: var(--surface);
 }
 
+/* Inline rename input: occupies the same box as the select button while editing
+   a thread name, so the row does not jump. Inherits the app font/colour tokens
+   rather than the browser default input chrome. */
+.rename {
+  width: 100%;
+  padding: 9px 8px;
+  border: none;
+  border-left: 2px solid var(--accent);
+  border-top: var(--rule-row);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 40px;
+}
+
+.rename:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
 /* Row wrapper: the select button + a hover-revealed trash affordance sit side
    by side. `position: relative` anchors the absolutely-placed trash. */
 .itemRow {

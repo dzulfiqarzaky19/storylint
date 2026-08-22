@@ -18,6 +18,7 @@ import {
   confirmCard,
   createThread,
   deleteThread,
+  renameThread,
 } from "@/lib/actions/research";
 import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
@@ -479,6 +480,20 @@ export default function ResearchScreen({
     });
   };
 
+  // Rename a thread from the rail. The title lives in the server-rendered
+  // snapshot, so refresh after the write to re-render the row with the new name
+  // (mirrors removeThread's non-active refresh path).
+  const renameThreadTitle = (id: string, title: string) => {
+    startTransition(async () => {
+      const res = await renameThread({ threadId: id, title });
+      if (res.ok) {
+        router.refresh();
+      } else {
+        dispatch({ type: "SET_ERROR", error: res.error });
+      }
+    });
+  };
+
   // ---- Drag-to-board (drop equals Keep) -----------------------------------
 
   const onBoardDragOver = (ev: DragEvent<HTMLDivElement>) => {
@@ -508,6 +523,7 @@ export default function ResearchScreen({
           onSelect={selectThread}
           onCreate={addThread}
           onDelete={removeThread}
+          onRename={renameThreadTitle}
         />
         <main className={styles.body}>
           {visibleTurns.length === 0 ? (

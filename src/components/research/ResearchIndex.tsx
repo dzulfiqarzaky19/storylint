@@ -45,6 +45,8 @@ export interface ResearchIndexProps {
   onCreate?: () => void;
   /** Delete a thread (the screen confirms + handles active-thread navigation). */
   onDelete?: (id: string) => void;
+  /** Commit an inline rename of a thread (double-click a row to edit its name). */
+  onRename?: (id: string, title: string) => void;
 }
 
 /**
@@ -61,8 +63,12 @@ export default function ResearchIndex({
   onSelect,
   onCreate,
   onDelete,
+  onRename,
 }: ResearchIndexProps) {
   const [open, setOpen] = useState(false);
+  // The thread whose name is being edited inline (double-click a row), or null.
+  // Only one row edits at a time; committing/cancelling clears it back to null.
+  const [editingId, setEditingId] = useState<string | null>(null);
   // Thread pending deletion (title kept for the dialog copy), or null when the
   // danger ConfirmModal is closed. Replaces the raw window.confirm so the delete
   // reads as part of the app (matches the wiki's delete flows).
@@ -98,22 +104,47 @@ export default function ResearchIndex({
                   : styles.itemRow
               }
             >
-              <button
-                type="button"
-                className={
-                  t.id === selectedId
-                    ? `${styles.item} ${styles.itemActive}`
-                    : styles.item
-                }
-                aria-current={t.id === selectedId ? "true" : undefined}
-                onClick={() => onSelect(t.id)}
-              >
-                <span className={styles.itemName}>{t.title}</span>
-                {t.subtitle ? (
-                  <span className={styles.itemNote}>{t.subtitle}</span>
-                ) : null}
-              </button>
-              {onDelete && threads.length > 1 ? (
+              {onRename && editingId === t.id ? (
+                <input
+                  className={styles.rename}
+                  aria-label="thread name"
+                  defaultValue={t.title}
+                  autoFocus
+                  // Enter commits the rename; Escape abandons it. The row swaps
+                  // back to a <button> either way (the spec's threadRows selector
+                  // requires the committed row's first child to be a button).
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      const next = e.currentTarget.value.trim();
+                      if (next) onRename(t.id, next);
+                      setEditingId(null);
+                    } else if (e.key === "Escape") {
+                      setEditingId(null);
+                    }
+                  }}
+                  // Blur cancels rather than commits, so clicking away never
+                  // silently overwrites the title with a half-typed value.
+                  onBlur={() => setEditingId(null)}
+                />
+              ) : (
+                <button
+                  type="button"
+                  className={
+                    t.id === selectedId
+                      ? `${styles.item} ${styles.itemActive}`
+                      : styles.item
+                  }
+                  aria-current={t.id === selectedId ? "true" : undefined}
+                  onClick={() => onSelect(t.id)}
+                  onDoubleClick={onRename ? () => setEditingId(t.id) : undefined}
+                >
+                  <span className={styles.itemName}>{t.title}</span>
+                  {t.subtitle ? (
+                    <span className={styles.itemNote}>{t.subtitle}</span>
+                  ) : null}
+                </button>
+              )}
+              {onDelete && threads.length > 1 && editingId !== t.id ? (
                 <button
                   type="button"
                   className={styles.trash}

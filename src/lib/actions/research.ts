@@ -33,6 +33,7 @@ import {
   getNextResearchThreadSortOrder,
   insertResearchTurnPair,
   deleteLastThreadGuarded,
+  updateThreadTitle,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import type { Kind, Shelf, ResearchScope } from "../domain/types";
@@ -495,6 +496,27 @@ export async function deleteThread(input: {
       return { ok: false, error: "Can't delete a world's last thread." };
     }
     return { ok: true, data: { threadId } };
+  } catch (err) {
+    return { ok: false, error: errMessage(err) };
+  }
+}
+
+// Rename a thread from the rail (user step 1a: a thread's name is editable for
+// cataloguing). A blank title is rejected: an empty title would re-arm the
+// auto-title UPDATE (guarded WHERE title='' OR title='New thread'), silently
+// clobbering the writer's rename on the next AI answer — the opposite of the
+// manual-wins rule. Not a wiki write; needs no confirmation token.
+export async function renameThread(input: {
+  threadId: string;
+  title: string;
+}): Promise<ActionResult<{ threadId: string; title: string }>> {
+  const threadId = (input.threadId ?? "").trim();
+  if (!threadId) return { ok: false, error: "No thread to rename." };
+  const title = (input.title ?? "").trim();
+  if (!title) return { ok: false, error: "A thread name can't be empty." };
+  try {
+    await updateThreadTitle({ threadId, title });
+    return { ok: true, data: { threadId, title } };
   } catch (err) {
     return { ok: false, error: errMessage(err) };
   }
