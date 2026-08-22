@@ -15980,6 +15980,110 @@
         }
       ],
       "chapter": 114
+    },
+    {
+      "name": "The Alchemist",
+      "kind": "character",
+      "summary": "CH115 (fate): Ryan and Len breach the command center and find the real Eva Fabre - a wrinkled human head grafted onto a biomechanical body, permanently plugged into the ship's overmind, living in a consequence-free 'snowglobe' that only deepened her narcissism. She can spawn endless human clones and hack Earth tech (she jams Ryan's suit) but cannot pilot the ship past her own Blue nature, and is stunned Ryan wields Black Flux. Unable to pilot it himself (a Violet), Ryan instead infects the overmind brain with Black Flux, rotting it and tearing open black-hole rifts. He 'calls for help': the Black Ultimate One manifests and devours her and the aliens. She dies screaming that this destroys eons of knowledge (cloning, mind-transfer, immortality). With her end, the whole Station Orpheon lair vanishes.",
+      "facts": [
+        {
+          "key": "form",
+          "value": "A human head on a biomechanical body fused into the ship's overmind"
+        },
+        {
+          "key": "death",
+          "value": "Consumed by the Black Ultimate One after Ryan Black-Flux-rotted the ship's brain"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Black Ultimate One",
+          "rel": "devoured her when Ryan opened a Black rift"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "her killer via Black Flux"
+        }
+      ],
+      "chapter": 115
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH115: at the Antarctic climax Ryan cannot pilot the alien ship (only Blues can; he is a Violet), so he corrupts its overmind with Black Flux and summons the Black Ultimate One, which devours Eva Fabre and the Hegemony Soldiers and will send the captive Elixirs home. Darkling delivers a crucial warning about his growing power: BLACK CONSUMES and is self-reinforcing - every reality and color it devours makes it stronger, and if unchecked it will consume Ryan himself, dissolving his human shape. Darkling also reframes his purpose warmly: ascension can't be forced (the Alchemist's error), humanity is young, and the Elixirs will walk beside mankind to the stars. Ryan, who first came to this loop to die, now wants to live to see humanity reach the cosmos. The ship, the Alchemist, and the aliens are erased from his timeline.",
+      "facts": [
+        {
+          "key": "warning",
+          "value": "Black Flux grows with every reality/color consumed and could consume Ryan himself"
+        },
+        {
+          "key": "resolve",
+          "value": "Now wants to live to see mankind explore the universe"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Darkling",
+          "rel": "warns him about Black's self-reinforcing hunger"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "ends her via the Black Ultimate One"
+        }
+      ],
+      "chapter": 115
+    },
+    {
+      "name": "Darkling",
+      "kind": "identity",
+      "summary": "CH115: as the Black Ultimate One's manifestation devours the ship, Darkling meets Ryan in the Black World and confirms the aftermath: the Ultimate One will return the captive Elixirs home, and the whole starship will vanish from Ryan's timeline when he reloads (the rest of his dimension untouched); the Alchemist and reptilians 'will not trouble you ever again.' It voices this arc's moral - ascension is every living thing's right but cannot be FORCED (the Alchemist's fatal error); humanity is young, and the Elixirs will walk beside mankind to the stars. Its warmest words yet, and it now understands Ryan's jokes. Crucially it warns that Ryan's Black power is self-reinforcing and could consume him.",
+      "facts": [
+        {
+          "key": "aftermath",
+          "value": "Sends the Elixirs home; the ship vanishes from Ryan's timeline on reload"
+        },
+        {
+          "key": "moral",
+          "value": "Ascension can't be forced; Elixirs will accompany humanity to the stars"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Black Ultimate One",
+          "rel": "its manifestation that devoured the ship"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "friend and guide, warns of Black's hunger"
+        }
+      ],
+      "chapter": 115
+    },
+    {
+      "name": "Station Orpheon",
+      "kind": "location",
+      "summary": "CH115 (destroyed): after Ryan Black-Flux-rots the ship's overmind, the Black Ultimate One's rift devours the entire vessel - the Alchemist, her clones, the Hegemony Soldiers, the Elixir factory, labs, and eons of accumulated alien knowledge (cloning, mind-transfer, unlimited energy, immortality research). The team is expelled safely to the Antarctic surface; the Resonator goes inactive and the rift closes. Of the Alchemist's lair, nothing remains, and it will be erased from Ryan's timeline entirely once he reloads.",
+      "facts": [
+        {
+          "key": "end",
+          "value": "Consumed whole by the Black Ultimate One; all its alien knowledge lost with it"
+        },
+        {
+          "key": "status",
+          "value": "Gone; will vanish from the timeline on Ryan's next reload"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Black Ultimate One",
+          "rel": "the force that devoured it"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "perished with her lair"
+        }
+      ],
+      "chapter": 115
     }
   ],
   "plotObservations": [
@@ -17971,6 +18075,30 @@
         "Bloodstream"
       ],
       "chapter": 114
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH115 'The Clone War': the battle for the command gate rages - Eva's clones swarm endlessly with shields, suicide belts, and Green-Flux revert-rifles, while awakened Hegemony Soldiers (including a winged nine-eyed dragon) crash the fight. Mr. Wave's crew hold the line so Ryan and Len can slip through the blue gate into the command center. There they find the real Eva Fabre: a human head on a biomechanical body fused into the ship's overmind, remorseless and consequence-free. Ryan can't pilot the ship (a Violet, not a Blue), so he infects the overmind brain with Black Flux, tearing open black-hole rifts and summoning the Black Ultimate One, which devours Eva, her clones, and the aliens, and sends the captive Elixirs home. In the Black World, Darkling confirms the ship will vanish from Ryan's timeline on reload, warns that Black is self-reinforcing and could consume Ryan himself, and affirms Elixirs will walk with humanity to the stars. The team is expelled safely; Station Orpheon and the Alchemist are gone. Ryan now wants to live to see mankind reach the cosmos.",
+      "entities": [
+        "Ryan Romano",
+        "The Alchemist",
+        "The Founders of Homo Novus",
+        "Hegemony Soldiers",
+        "Darkling",
+        "The Black Ultimate One",
+        "Station Orpheon",
+        "Black Flux",
+        "Len",
+        "Sarin",
+        "Leo Hargraves",
+        "Mr. Wave",
+        "Mr. See-Through",
+        "The Panda",
+        "Felix",
+        "Stitch",
+        "Elixirs"
+      ],
+      "chapter": 115
     }
   ]
 }

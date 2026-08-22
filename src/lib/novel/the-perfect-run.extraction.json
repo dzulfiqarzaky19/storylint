@@ -437,6 +437,14 @@
           {
             "key": "recruits",
             "value": "Leo Hargraves joins the Antarctica team; kids left with Simon"
+          },
+          {
+            "key": "warning",
+            "value": "Black Flux grows with every reality/color consumed and could consume Ryan himself"
+          },
+          {
+            "key": "resolve",
+            "value": "Now wants to live to see mankind explore the universe"
           }
         ],
         "ties": [
@@ -723,6 +731,14 @@
           {
             "to": "leo-hargraves",
             "rel": "recruited for the Antarctica expedition"
+          },
+          {
+            "to": "darkling",
+            "rel": "warns him about Black's self-reinforcing hunger"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "ends her via the Black Ultimate One"
           }
         ],
         "appearances": [
@@ -834,7 +850,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1233,7 +1250,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -2327,7 +2345,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -2780,7 +2799,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -3017,6 +3037,14 @@
           {
             "key": "crime",
             "value": "Withheld a Psycho cure and released Psychos as a synergy experiment; apocalypse was 'acceptable'"
+          },
+          {
+            "key": "form",
+            "value": "A human head on a biomechanical body fused into the ship's overmind"
+          },
+          {
+            "key": "death",
+            "value": "Consumed by the Black Ultimate One after Ryan Black-Flux-rotted the ship's brain"
           }
         ],
         "ties": [
@@ -3035,6 +3063,14 @@
           {
             "to": "leo-hargraves",
             "rel": "arrests her for genocide and crimes against humanity"
+          },
+          {
+            "to": "the-black-ultimate-one",
+            "rel": "devoured her when Ryan opened a Black rift"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "her killer via Black Flux"
           }
         ],
         "appearances": [
@@ -3050,7 +3086,8 @@
           111,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -3130,7 +3167,8 @@
           8,
           83,
           112,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -4156,7 +4194,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -6010,7 +6049,8 @@
           107,
           108,
           109,
-          110
+          110,
+          115
         ],
         "questions": []
       },
@@ -10017,7 +10057,8 @@
         ],
         "appearances": [
           49,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -12537,6 +12578,14 @@
           {
             "key": "path",
             "value": "Ryan can talk to Elixirs / interface with the ship's mind because he is nearest to ascension"
+          },
+          {
+            "key": "aftermath",
+            "value": "Sends the Elixirs home; the ship vanishes from Ryan's timeline on reload"
+          },
+          {
+            "key": "moral",
+            "value": "Ascension can't be forced; Elixirs will accompany humanity to the stars"
           }
         ],
         "ties": [
@@ -12575,6 +12624,14 @@
           {
             "to": "hegemony-soldiers",
             "rel": "names them ghosts of a lost war"
+          },
+          {
+            "to": "the-black-ultimate-one",
+            "rel": "its manifestation that devoured the ship"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "friend and guide, warns of Black's hunger"
           }
         ],
         "appearances": [
@@ -12585,7 +12642,8 @@
           77,
           84,
           85,
-          113
+          113,
+          115
         ],
         "questions": []
       },
@@ -13457,7 +13515,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -13663,7 +13722,8 @@
         ],
         "appearances": [
           85,
-          91
+          91,
+          115
         ],
         "questions": []
       },
@@ -13719,7 +13779,8 @@
           105,
           111,
           112,
-          113
+          113,
+          115
         ],
         "questions": []
       },
@@ -13859,7 +13920,8 @@
           110,
           112,
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -13895,7 +13957,8 @@
           97,
           102,
           105,
-          110
+          110,
+          115
         ],
         "questions": []
       },
@@ -14500,6 +14563,14 @@
           {
             "key": "anomaly",
             "value": "Dead non-Mechron cyborg monster killed by claws, marked with an M/omega sigil"
+          },
+          {
+            "key": "end",
+            "value": "Consumed whole by the Black Ultimate One; all its alien knowledge lost with it"
+          },
+          {
+            "key": "status",
+            "value": "Gone; will vanish from the timeline on Ryan's next reload"
           }
         ],
         "ties": [
@@ -14518,6 +14589,14 @@
           {
             "to": "thin-places",
             "rel": "sealed inside an artificial one"
+          },
+          {
+            "to": "the-black-ultimate-one",
+            "rel": "the force that devoured it"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "perished with her lair"
           }
         ],
         "appearances": [
@@ -14526,7 +14605,8 @@
           103,
           109,
           110,
-          111
+          111,
+          115
         ],
         "questions": []
       },
@@ -14822,7 +14902,8 @@
         ],
         "appearances": [
           113,
-          114
+          114,
+          115
         ],
         "questions": []
       },
@@ -17072,6 +17153,10 @@
           {
             "chapter": 114,
             "summary": "CH114 'Chemical Reaction': pushing through the plant-choked, corpse-strewn ship toward its command center, Len finishes decoding the Alchemist's data and drops two bombshells - Elixir genetics (Genome children are always stable Genomes, so Homo Novus will supplant Homo Sapiens in ~200 years; Psychos are a deliberate multi-color synergy experiment, sterile by design) and, worst of all, the Alchemist has had a working Psycho cure FROM THE START and withheld it. Sarin's grief turns to fury. They reach a checkpoint where quantum-duplicate Eva Fabre clones (the Purple-World-vision Founders) fight off Hegemony Soldiers before the blue command-center gate. The Evas admit, without remorse, that the apocalypse was 'an acceptable loss' for Homo Novus and mankind their lab rats. Ryan diagnoses her flaw: her Elixir gave her an echo chamber of adoring copies that eroded her conscience. Sunshine arrests her for genocide; battle erupts, and Ryan freezes time and locks onto the command-center gate."
+          },
+          {
+            "chapter": 115,
+            "summary": "CH115 'The Clone War': the battle for the command gate rages - Eva's clones swarm endlessly with shields, suicide belts, and Green-Flux revert-rifles, while awakened Hegemony Soldiers (including a winged nine-eyed dragon) crash the fight. Mr. Wave's crew hold the line so Ryan and Len can slip through the blue gate into the command center. There they find the real Eva Fabre: a human head on a biomechanical body fused into the ship's overmind, remorseless and consequence-free. Ryan can't pilot the ship (a Violet, not a Blue), so he infects the overmind brain with Black Flux, tearing open black-hole rifts and summoning the Black Ultimate One, which devours Eva, her clones, and the aliens, and sends the captive Elixirs home. In the Black World, Darkling confirms the ship will vanish from Ryan's timeline on reload, warns that Black is self-reinforcing and could consume Ryan himself, and affirms Elixirs will walk with humanity to the stars. The team is expelled safely; Station Orpheon and the Alchemist are gone. Ryan now wants to live to see mankind reach the cosmos."
           }
         ],
         "entities": [
@@ -17169,7 +17254,8 @@
           "the-violet-ultimate-one",
           "the-violet-elixir",
           "the-founders-of-homo-novus",
-          "homo-novus"
+          "homo-novus",
+          "the-black-ultimate-one"
         ]
       }
     ]
