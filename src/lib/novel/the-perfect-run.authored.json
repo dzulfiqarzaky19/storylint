@@ -5120,6 +5120,119 @@
         }
       ],
       "chapter": 53
+    },
+    {
+      "name": "Rakshasa",
+      "kind": "character",
+      "summary": "A bipedal-jaguar Meta-Gang Psycho who summons gremlins/goblins as combat support, arriving with a reptilian humanoid ally as reinforcements for Psyshock's raid on the Rust Town orphanage. Ryan recalls both from his earlier suicide run (he ran the lizard-man over en route to the bunker).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Bipedal-jaguar Meta-Gang Psycho"
+        },
+        {
+          "key": "note",
+          "value": "Summons gremlins/goblins as soldiers"
+        },
+        {
+          "key": "note",
+          "value": "Arrives as orphanage-raid reinforcement"
+        },
+        {
+          "key": "note",
+          "value": "Paired with a reptilian humanoid Meta"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "backs"
+        }
+      ],
+      "chapter": 54
+    },
+    {
+      "name": "Hector Manada",
+      "kind": "character",
+      "summary": "Don Hector Manada, the high-placed Dynamis figure (Enrique 'Blackthorn' Manada's relative) who secretly bankrolls the Meta-Gang: Adam approached him for a knockoff-Elixir supply and drones, promising to strike the Augusti on Dynamis's behalf. Unbeknownst to Hector, the Meta never intended to deliver, using the deal only to fund their addicts while they quietly unearth Mechron's bunker, planning to betray him. Ryan exploits Hector's name to bluff Psyshock into confessing the whole arrangement.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Don Hector Manada; secret Dynamis sponsor of the Meta-Gang"
+        },
+        {
+          "key": "note",
+          "value": "Supplied the Meta knockoff Elixirs and drones"
+        },
+        {
+          "key": "note",
+          "value": "Believes the Meta will hit the Augusti for him"
+        },
+        {
+          "key": "note",
+          "value": "Being betrayed; unaware of Mechron's bunker"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "executive"
+        },
+        {
+          "to": "The Meta-Gang",
+          "rel": "secretly funds"
+        },
+        {
+          "to": "Blackthorn",
+          "rel": "relative"
+        }
+      ]
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "Psyshock ('Psypsy'), the Meta-Gang's mind-manipulating second-in-command who bodyjacks hosts and alters memories, obsessively possessive of 'Little Cesare' (Ryan) and Len. His secret 'second project' for Dynamis is a brain-scan mind-transfer: using Len's primitive scanning tech, his power can copy a mind from one brain to another so long as the two are closely related, best with clones, workable with siblings, children, or even Genomes. Ryan bluffs him (posing as Hector Manada's envoy) into confessing that the Meta approached Hector first, never meant to deliver against the Augusti, and are secretly unearthing Mechron's bunker, all while Shroud wiretaps invisibly, before Ryan sucker-punches him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Meta-Gang second-in-command; bodyjacker and memory-editor"
+        },
+        {
+          "key": "note",
+          "value": "'Second project': mind-transfer via brain-scan tech"
+        },
+        {
+          "key": "note",
+          "value": "Transfer works only between closely related brains (clones best)"
+        },
+        {
+          "key": "note",
+          "value": "Obsessively possessive of Ryan and Len"
+        },
+        {
+          "key": "note",
+          "value": "Bluffed into confessing the Hector/bunker conspiracy"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "second-in-command"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "secret client"
+        },
+        {
+          "to": "Len Sabino",
+          "rel": "exploits her tech"
+        }
+      ],
+      "chapter": 54
     }
   ],
   "plotObservations": [
@@ -5771,6 +5884,23 @@
         "Cancel"
       ],
       "chapter": 53
+    },
+    {
+      "title": "A Gambling Man",
+      "beat": "Ryan brings his patrol team (Wardrobe, Atom Cat, the Panda) plus Len to defend the Rust Town orphanage from Psyshock's raid. Rattled that someone sent him his private power-catchphrase ('the orange is in the hen house'), Ryan suspects Livia may retain loop memories. When Psyshock arrives with reinforcements (Rakshasa and a lizard-man), Ryan runs an audacious poker bluff, posing as Hector Manada's envoy, and extracts the full conspiracy: the Meta approached Don Hector for a knockoff supply, never intended to hit the Augusti, are secretly unearthing Mechron's bunker, and Psyshock's 'second project' is a mind-transfer brain-scan (workable only between closely related brains). Shroud records it all invisibly. His trap sprung, Ryan sucker-punches Psyshock as every window in the area shatters, launching the ambush.",
+      "entities": [
+        "Ryan Romano",
+        "Psyshock",
+        "Len Sabino",
+        "Wardrobe",
+        "Atom Cat",
+        "The Panda",
+        "Hector Manada",
+        "The Shroud",
+        "Rakshasa",
+        "Livia Augusti"
+      ],
+      "chapter": 54
     }
   ]
 }
