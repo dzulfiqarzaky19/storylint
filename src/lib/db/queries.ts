@@ -733,6 +733,43 @@ export async function getResearchThreadWorldId(
   return row?.worldId ?? null;
 }
 
+/**
+ * T-RES-E2E-KEPT: every kept card in ONE world, with its source thread — the
+ * data behind the WORLD-WIDE Kept board. The board aggregates kept propositions
+ * across ALL threads in the active world (not just the open thread), so this
+ * walks kept_cards -> propositions -> research_turns -> research_threads and
+ * filters on the thread's world_id.
+ *
+ * The `WHERE th.world_id = $1` is the load-bearing scope: dropping it bleeds
+ * sibling-world kept cards onto the board. Filtering in SQL (not in JS after an
+ * unfiltered read) is what makes that scope mutation-provable. threadTitle rides
+ * along for the "from <thread>" attribution; threadId for click-to-open. In-wiki
+ * cards are excluded here — a card written into the wiki leaves the Kept board
+ * (Kept is the holding area for propositions NOT yet in the wiki), matching the
+ * client-side keptItems filter, so the board never shows an in-wiki row. Ordered
+ * newest-kept first.
+ */
+export async function getWorldKeptCards(
+  worldId: string,
+): Promise<import("../domain/types").WorldKeptCardRow[]> {
+  return rows<import("../domain/types").WorldKeptCardRow>(
+    `SELECT p.id       AS "propositionId",
+            p.kind     AS "kind",
+            p.title    AS "title",
+            p.body     AS "body",
+            kc.in_wiki AS "inWiki",
+            th.id      AS "threadId",
+            th.title   AS "threadTitle"
+     FROM kept_cards kc
+     JOIN propositions p      ON p.id = kc.proposition_id
+     JOIN research_turns t    ON t.id = p.turn_id
+     JOIN research_threads th ON th.id = t.thread_id
+     WHERE th.world_id = $1 AND kc.in_wiki = FALSE
+     ORDER BY kc.kept_at DESC`,
+    [worldId],
+  );
+}
+
 // ---- World tree (F7 S5 switcher) ------------------------------------------
 //
 // The top-bar picker needs the whole world SKELETON: every universe, its worlds,

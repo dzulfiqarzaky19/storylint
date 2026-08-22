@@ -8,6 +8,9 @@ export interface PropositionCardProps {
   card: ResearchProposition;
   kept: boolean;
   inWiki: boolean;
+  /** True when a Kept-board click-through targeted this card — marks it so the
+   *  opened thread visibly focuses the origin proposition. */
+  focused?: boolean;
   onKeep: (id: string, next: boolean) => void;
   onPropose: (id: string) => void;
   onDragStart: (id: string) => void;
@@ -24,6 +27,7 @@ export default function PropositionCard({
   card,
   kept,
   inWiki,
+  focused = false,
   onKeep,
   onPropose,
   onDragStart,
@@ -42,7 +46,8 @@ export default function PropositionCard({
 
   return (
     <div
-      className={styles.card}
+      className={`${styles.card}${focused ? ` ${styles.cardFocused}` : ""}`}
+      data-card-focused={focused ? "true" : undefined}
       draggable
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}

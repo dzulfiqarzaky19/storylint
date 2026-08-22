@@ -79,6 +79,8 @@ export default function ResearchScreen({
   entries = [],
   categories = [],
   activeWorldId,
+  worldKept = [],
+  focusPropositionId,
 }: {
   snapshot: ResearchSnapshot;
   /** Live wiki entries (deleted-filtered) for enrich-vs-duplicate. */
@@ -90,6 +92,18 @@ export default function ResearchScreen({
    * newly-minted entry is linked into this world (else it is invisible on /wiki).
    */
   activeWorldId: string;
+  /**
+   * T-RES-E2E-KEPT: every kept card in the ACTIVE world, with its source thread.
+   * The Kept board is WORLD-WIDE — it aggregates kept propositions across every
+   * thread in the world, not just the open thread — so it seeds from this
+   * server-loaded list rather than from the open thread's cards alone.
+   */
+  worldKept?: import("@/lib/domain/types").WorldKeptCardRow[];
+  /**
+   * A Kept-board click-through targets one card by id (via ?focus=). The matching
+   * proposition in the opened thread renders data-card-focused="true".
+   */
+  focusPropositionId?: string;
 }) {
   const router = useRouter();
   const [state, dispatch] = useReducer(
@@ -137,15 +151,37 @@ export default function ResearchScreen({
   // A card written INTO the wiki leaves the Kept board — Kept is the holding
   // area for propositions NOT yet in the wiki, so once one lands (inWiki) it
   // drops off rather than lingering with an "in the wiki" badge.
-  const keptItems: KeptEntry[] = state.keptIds
-    .filter((id) => !inWikiSet.has(id))
+  //
+  // The board is WORLD-WIDE: it seeds from `worldKept` (every kept card in the
+  // active world, with source-thread attribution) so a card kept in thread A is
+  // still on the board while thread B is open. Session keeps made in THIS thread
+  // (optimistic, not yet in the server-loaded list) are merged in on top and
+  // attributed to the active thread, so a fresh Keep shows immediately without a
+  // round-trip. A card written into the wiki (inWiki) drops off either source.
+  const activeThreadTitle =
+    snapshot.threads.find((t) => t.id === snapshot.threadId)?.title ?? "this thread";
+  const worldEntries: KeptEntry[] = worldKept
+    .filter((c) => !c.inWiki && !inWikiSet.has(c.propositionId))
+    .map((c) => ({
+      id: c.propositionId,
+      kind: c.kind,
+      title: c.title,
+      threadId: c.threadId,
+      threadTitle: c.threadTitle,
+    }));
+  const worldKeptIds = new Set(worldEntries.map((e) => e.id));
+  const sessionEntries: KeptEntry[] = state.keptIds
+    .filter((id) => !inWikiSet.has(id) && !worldKeptIds.has(id))
     .map((id) => cardById.get(id))
     .filter((c): c is ResearchProposition => Boolean(c))
     .map((c) => ({
       id: c.id,
       kind: c.kind,
       title: c.title,
+      threadId: snapshot.threadId,
+      threadTitle: activeThreadTitle,
     }));
+  const keptItems: KeptEntry[] = [...worldEntries, ...sessionEntries];
 
   const pendingCard = state.pendingPropositionId
     ? cardById.get(state.pendingPropositionId)
@@ -426,6 +462,15 @@ export default function ResearchScreen({
     if (id === snapshot.threadId) return;
     router.push(`/research?thread=${encodeURIComponent(id)}`);
   };
+
+  // Kept click-through: open the item's SOURCE thread and focus its origin card.
+  // The focus target rides the URL (?focus=) so it survives the navigation and
+  // re-render — the opened thread's matching card renders data-card-focused.
+  const openKeptItem = (item: KeptEntry) => {
+    router.push(
+      `/research?thread=${encodeURIComponent(item.threadId)}&focus=${encodeURIComponent(item.id)}`,
+    );
+  };
   const addThread = () => {
     startTransition(async () => {
       // T-RESEARCH-2: stamp the new thread with the world the writer is viewing,
@@ -545,6 +590,7 @@ export default function ResearchScreen({
                     card={card}
                     kept={keptSet.has(card.id)}
                     inWiki={inWikiSet.has(card.id)}
+                    focused={card.id === focusPropositionId}
                     onKeep={handleKeep}
                     onPropose={handlePropose}
                     onDragStart={setDraggingId}
@@ -609,6 +655,7 @@ export default function ResearchScreen({
           onDragOver={onBoardDragOver}
           onDragLeave={onBoardDragLeave}
           onDrop={onBoardDrop}
+          onOpenItem={openKeptItem}
         />
       </div>
     </div>

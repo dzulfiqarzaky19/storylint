@@ -167,6 +167,13 @@
   cursor: grabbing;
 }
 
+/* A Kept-board click-through lands on the origin card and focuses it — an accent
+   outline so the writer sees which proposition the kept row came from. */
+.cardFocused {
+  outline: 2px solid var(--accent, currentColor);
+  outline-offset: 2px;
+}
+
 .cardKicker {
   font-size: 11px;
   font-weight: 800;
@@ -527,6 +534,21 @@
   border-bottom: var(--rule-row);
 }
 
+/* The row is a real button (world-wide board: clicking routes to its source
+   thread + focuses the origin card), so strip the native button chrome and let
+   it read as the flush-left card row it was as a div. */
+button.keptItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: var(--rule-row);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
 .keptKind {
   font-size: 11px;
   font-weight: 800;
@@ -542,6 +564,15 @@
   margin-top: 4px;
 }
 
+/* "from <thread>" source-thread attribution — the board aggregates every thread
+   in the world, so each row names its origin. */
+.keptFrom {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-2);
+  margin-top: 4px;
+}
+
 .keptState {
   font-size: 12px;
   font-weight: 600;
@@ -550,6 +581,33 @@
 
 .keptStateBoard {
   color: var(--muted-2);
+}
+
+/* Kept filter tabs (Wiki / Plot / Write). Wiki is the populated surface; the
+   other two are built-but-empty. A thin underline row under the board head. */
+.boardTabs {
+  display: flex;
+  gap: 4px;
+  margin: 4px 0 8px;
+  border-bottom: var(--rule-row);
+}
+
+.boardTab {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted-2);
+  cursor: pointer;
+}
+
+.boardTabActive {
+  color: inherit;
+  border-bottom-color: currentColor;
 }
 
 

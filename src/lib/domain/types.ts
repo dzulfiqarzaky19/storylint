@@ -175,6 +175,23 @@ export interface KeptCardRow {
   inWiki: boolean;
 }
 
+/**
+ * A kept card resolved to the fields the WORLD-WIDE Kept board renders: the
+ * proposition's display fields plus its source thread (threadId for
+ * click-to-open, threadTitle for the "from <thread>" attribution line). The
+ * net-new world-scoped loader returns this shape because the board aggregates
+ * every thread in the world, so a row would otherwise be un-attributable.
+ */
+export interface WorldKeptCardRow {
+  propositionId: string;
+  kind: string;
+  title: string;
+  body: string;
+  inWiki: boolean;
+  threadId: string;
+  threadTitle: string;
+}
+
 export interface ResolvedMarkRow {
   markKey: string;
   resolution: string;

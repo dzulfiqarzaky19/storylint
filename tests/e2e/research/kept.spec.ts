@@ -1,4 +1,6 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
+import { withDb } from "../_helpers/db";
+import { reseed } from "../_helpers/seed";
 
 // =============================================================================
 // KEPT — the /research RIGHT sidebar (per-surface e2e).
@@ -25,9 +27,58 @@ function board(page: Page): Locator {
   return page.locator('[aria-label="Kept"]');
 }
 
+// The default /research view opens on world-universe-1 (Ashkeld) — world A. To
+// exercise the WORLD-WIDE board and its scope we seed a kept card there AND a
+// sibling in world-vosk (world B): world A's card must show, world B's must not,
+// and B must BLEED in only if the loader's `WHERE th.world_id` is dropped
+// (mutation target). Research seeds empty (no turns/props/kept), so these rows
+// are the only kept cards in play; afterAll reseeds to leave the DB pristine.
+const A = {
+  thread: "thread-ashkeld-1", // world-universe-1 (the world /research opens on)
+  turn: "kept-e2e-turn-a",
+  prop: "kept-e2e-prop-a",
+  title: "Ashkeld kept proposition",
+};
+const B = {
+  thread: "thread-vosk-1", // world-vosk (a sibling world, must stay off the board)
+  turn: "kept-e2e-turn-b",
+  prop: "kept-e2e-prop-b",
+  title: "Vosk kept proposition",
+};
+
+async function seedKept(): Promise<void> {
+  await withDb(async (client) => {
+    for (const c of [A, B]) {
+      await client.query(
+        `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text)
+         VALUES ($1, $2, 0, 'them', 'Collaborator', 'seed turn')
+         ON CONFLICT (id) DO NOTHING`,
+        [c.turn, c.thread],
+      );
+      await client.query(
+        `INSERT INTO propositions (id, turn_id, kind, title, body, as_kind, sort_order)
+         VALUES ($1, $2, 'Character', $3, 'seed body', 'lore', 0)
+         ON CONFLICT (id) DO NOTHING`,
+        [c.prop, c.turn, c.title],
+      );
+      await client.query(
+        `INSERT INTO kept_cards (proposition_id, kept_at, in_wiki)
+         VALUES ($1, 1000, false)
+         ON CONFLICT (proposition_id) DO NOTHING`,
+        [c.prop],
+      );
+    }
+  });
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto("/research");
 });
+
+// This spec PERSISTS kept_cards (only the acceptance tests below seed them — the
+// GREEN empty-state tests must see a pristine, empty board), so it reseeds after
+// the file to leave the shared test DB pristine for later-sorting specs.
+test.afterAll(reseed);
 
 // ---------------------------------------------------------------------------
 // GREEN — the board is present with the "Kept" header.
@@ -82,6 +133,11 @@ test("kept: the board toggle collapses the body on the phone tier", async ({
 test(
   "kept: the board aggregates kept items across all threads in the world",
   async ({ page }) => {
+    // ARRANGE: kept cards seeded in world A (Ashkeld, the open world) and world B
+    // (Vosk). The board is world-wide, so world A's card is present on the open
+    // thread; re-goto so the server renders the freshly-seeded data.
+    await seedKept();
+    await page.goto("/research");
     // A kept card must be present on the board regardless of which thread is
     // active (world-wide aggregation). Fails today: Kept is thread-scoped, so a
     // fresh thread's board is empty.
@@ -95,6 +151,8 @@ test(
 test(
   "kept: each kept item shows its source-thread attribution",
   async ({ page }) => {
+    await seedKept();
+    await page.goto("/research");
     const firstItem = board(page).locator('[class*="keptItem"]').first();
     await expect(firstItem).toContainText(/from .*thread/i);
   },
@@ -105,6 +163,8 @@ test(
 test(
   "kept: clicking a kept item opens its source thread and focuses the card",
   async ({ page }) => {
+    await seedKept();
+    await page.goto("/research");
     const firstItem = board(page).locator('[class*="keptItem"]').first();
     await firstItem.click();
     // The source thread becomes active and its card is scrolled into view /
@@ -119,6 +179,8 @@ test(
 test(
   "kept: Wiki / Plot / Write filter tabs switch the board body",
   async ({ page }) => {
+    await seedKept();
+    await page.goto("/research");
     const tabs = board(page).getByRole("tab");
     await expect(tabs).toHaveCount(3);
     await expect(board(page).getByRole("tab", { name: /Wiki/i })).toBeVisible();

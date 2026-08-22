@@ -3,7 +3,7 @@
 // sort_order. No mutations here — writes happen via the server actions the
 // client invokes (research.ts). Product rule 1: the only wiki write is confirmCard.
 import { loadResearchSnapshot } from "@/lib/db/research";
-import { getWorldEntries, getCategories, getWorldTree } from "@/lib/db/queries";
+import { getWorldEntries, getCategories, getWorldTree, getWorldKeptCards } from "@/lib/db/queries";
 import { resolveWikiScope } from "@/app/wiki/scope";
 import ResearchScreen from "@/components/research/ResearchScreen";
 
@@ -12,14 +12,18 @@ export const dynamic = "force-dynamic";
 export default async function ResearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ thread?: string; u?: string; w?: string }>;
+  searchParams: Promise<{ thread?: string; u?: string; w?: string; focus?: string }>;
 }) {
-  const { thread, u, w } = await searchParams;
+  const { thread, u, w, focus } = await searchParams;
   // T-RESEARCH-2: resolve the ACTIVE world from ?u=/?w= (same resolver /wiki
   // uses) and scope the thread list + selected thread to it, so switching worlds
   // in the header shows THAT world's threads.
   const { activeWorldId } = resolveWikiScope(await getWorldTree(), u, w);
   const snapshot = await loadResearchSnapshot(thread, activeWorldId);
+  // T-RES-E2E-KEPT: the Kept board is WORLD-WIDE, so it seeds from every kept
+  // card in the active world (with its source thread for attribution + click-
+  // through), not just the open thread's cards.
+  const worldKept = await getWorldKeptCards(activeWorldId);
   // Live wiki entries scoped to the ACTIVE world (getWorldEntries joins
   // world_entities, same membership /wiki shows, soft-delete-filtered) so the
   // wiki-target picker recommends/lists only THIS world's entries, never a
@@ -48,6 +52,8 @@ export default async function ResearchPage({
       entries={entries}
       categories={categories}
       activeWorldId={activeWorldId}
+      worldKept={worldKept}
+      focusPropositionId={focus}
     />
   );
 }
