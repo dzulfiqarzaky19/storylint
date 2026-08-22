@@ -11482,6 +11482,228 @@
         }
       ],
       "chapter": 82
+    },
+    {
+      "name": "Vulcan",
+      "kind": "character",
+      "summary": "CH83: Vulcan (Jasmine's alternate loop-self) flies past Dynamis's blockade, which she designed, to honor her deal with Ryan, delighted that he humiliated 'that bitch Wyvern'. Ryan, still in love and aching over the promise his own Jasmine made him ('don't replace me with another Jasmine'), keeps things playful but won't rekindle romance. She agrees to build his magnum opus using the bunker's Mechron tech and matter replicator: a power-boosting cashmere-poncho armor incorporating Len's signal tech, meant to let Ryan carry multiple people back through time. The armor still needs Len's help, and Len won't leave her room.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Bypasses her own Dynamis blockade to join Ryan per their deal"
+        },
+        {
+          "key": "note",
+          "value": "Agrees to build a power-boosting cashmere armor with Len's signal tech"
+        },
+        {
+          "key": "note",
+          "value": "Ryan keeps his promise to Jasmine and won't rekindle romance"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "ex-flame, ally"
+        },
+        {
+          "to": "Len",
+          "rel": "needs her signal tech"
+        },
+        {
+          "to": "Mechron",
+          "rel": "builds with his tech"
+        }
+      ],
+      "chapter": 83
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "CH83: at Dynamis's damage-control press conference, Wyvern goes off-script and publicly confirms the Knockoff Elixir horror is real ('I have checked'), then resigns as Il Migliore's leader on principle, refusing to stay with an organization capable of it (she'll still cooperate against the Meta-Gang). Her defection detonates Dynamis's PR; Enrique Manada stays silent (as if he'd long wanted to say it) and Felix walks out of Dynamis entirely. Ryan's exposure gambit ('all according to keikaku') pays off.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Publicly confirms the Knockoff Elixir crime live on air"
+        },
+        {
+          "key": "note",
+          "value": "Resigns as Il Migliore leader on principle"
+        },
+        {
+          "key": "note",
+          "value": "Her defection shatters Dynamis's PR; Felix quits too"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "vindicates his exposé"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "resigns as leader"
+        },
+        {
+          "to": "Felix",
+          "rel": "both quit Dynamis"
+        }
+      ],
+      "chapter": 83
+    },
+    {
+      "name": "The Psycho Cure",
+      "kind": "item",
+      "summary": "CH83: Alchemo's bio-scans crack the Psycho puzzle. Helen's two Elixirs each rewrote ~50% of her DNA and conflict daily (51/49% flux) causing tumors; Livia's blue Elixir dominates while ~2.5% violet coexists WITHOUT overwriting. Alchemo's theory: Livia's genome (Neanderthal-inherited DNA, chimerism, or a rare quirk) fools her Elixirs into believing they bonded to two different people sharing one body, so they share rather than fight. The cure would reproduce Mongrel's Elixir-control power via gene therapy to force conflicting Elixirs into that same equilibrium (or strip the extra one to make a stable monocolor Genome). Building it needs Mongrel, Livia's data, the bunker, and Dr. Tyrano (the only gene-therapy Genius); Alchemo's AI alone would take months.",
+      "facts": [
+        {
+          "key": "science",
+          "value": "Livia's stable dual-power = Elixirs think they bonded to two people"
+        },
+        {
+          "key": "science",
+          "value": "Cure mimics Mongrel's Elixir-control + gene therapy to force equilibrium"
+        },
+        {
+          "key": "blocker",
+          "value": "Needs Dr. Tyrano, who rarely leaves Dynamis HQ and is protected by Fallout"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "her biology is the template"
+        },
+        {
+          "to": "Mongrel",
+          "rel": "his power is the mechanism"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "needed to design it"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "theorizes it"
+        }
+      ],
+      "chapter": 83
+    },
+    {
+      "name": "Elixirs",
+      "kind": "item",
+      "summary": "CH83: deeper lore. Elixirs are alien lifeforms that don't even use DNA; per Darkling they were 'taught' (probably by the Alchemist) to bond with humans, so the bonding is not natural to them. They know the words but not the music: they connect lower lifeforms to the Ultimate Ones to let them ascend, but their grasp of human biology is only superficial. This explains why they only bond with Homo Sapiens (all attempts with animals, even 99%-shared chimpanzees, failed) and why a genome close enough to two templates (Neanderthal-tinged) can fool them into a dual bond.",
+      "facts": [
+        {
+          "key": "nature",
+          "value": "Alien lifeforms that don't use DNA, taught to bond with humans"
+        },
+        {
+          "key": "nature",
+          "value": "Only bond with Homo Sapiens; animal bonding always fails"
+        },
+        {
+          "key": "purpose",
+          "value": "Meant to connect lifeforms to the Ultimate Ones for ascension"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Darkling",
+          "rel": "source of the lore"
+        },
+        {
+          "to": "The Psycho Cure",
+          "rel": "their misbinding is the cure's basis"
+        }
+      ],
+      "chapter": 83
+    },
+    {
+      "name": "Fallout",
+      "kind": "character",
+      "summary": "CH83: named as the guarantor that keeps Dr. Tyrano untouchable. Augustus never had Tyrano assassinated because 'then Fallout gets involved' and Livia (who has foreseen it) implies the outcome is catastrophic. A Dynamis-aligned power tied to protecting the Knockoff operation's cornerstone.",
+      "facts": [
+        {
+          "key": "role",
+          "value": "Deterrent protecting Dr. Tyrano; retaliates if he is killed"
+        },
+        {
+          "key": "note",
+          "value": "Livia foresees his involvement ending very badly"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dr. Tyrano",
+          "rel": "protects him"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "aligned with"
+        }
+      ],
+      "chapter": 83
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH83: lets Alchemo draw her blood for the cure research despite fearing the data could cause an arms race (a no-side-effect power cure could mint warlords like her father). Her bio-scan reveals ~97.5% blue / 2.5% violet Elixir coexisting without conflict, the stable template for the Psycho Cure. She warns kidnapping Tyrano triggers Fallout, foresees Sarin listening at the door ('you can come in, this does not have to end in violence'), and must return to a meeting Augustus called about how to deal with Ryan.",
+      "facts": [
+        {
+          "key": "biology",
+          "value": "Bio-scan: ~97.5% blue, 2.5% violet Elixir, stable and non-conflicting"
+        },
+        {
+          "key": "note",
+          "value": "Consents to blood draw despite arms-race fears"
+        },
+        {
+          "key": "foresight",
+          "value": "Predicts Sarin eavesdropping; defuses it before violence"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "gives blood to"
+        },
+        {
+          "to": "The Psycho Cure",
+          "rel": "is its biological template"
+        },
+        {
+          "to": "Augustus",
+          "rel": "summoned back by her father"
+        }
+      ],
+      "chapter": 83
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH83: eavesdrops on Ryan and Livia's cure/endgame discussion and turns on Ryan, leveling her vibrating gauntlet at him ('Better luck next time, eh? Not gonna work for me.'). Livia foresaw it and coaxes her out of hiding, hoping to avoid violence. A betrayal beat that closes the chapter.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Turns on Ryan after overhearing the cure/endgame talk"
+        },
+        {
+          "key": "power",
+          "value": "Vibrating gauntlet, fingers charged with power"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "turns on him"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "foreseen and coaxed out by her"
+        }
+      ],
+      "chapter": 83
     }
   ],
   "plotObservations": [
@@ -12769,6 +12991,37 @@
         "Private Security"
       ],
       "chapter": 82
+    },
+    {
+      "beat": "CH83: With Rust Town under siege (but its underwater bunker access secretly edited out of the plans Ryan sent Nora), Vulcan flies in past her own blockade and agrees to build Ryan's magnum opus: a power-boosting cashmere armor using Mechron's tech, the matter replicator, and Len's signal tech, meant to let him carry multiple people back in time. Alchemo's bio-scans then crack the Psycho puzzle: Livia's two Elixirs coexist because her genome (Neanderthal DNA/chimerism) fools them into thinking they bonded to two people. The cure would reproduce Mongrel's Elixir-control power via gene therapy, but needs Dr. Tyrano, who is shielded by Fallout.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Alchemo",
+        "Livia Augusti",
+        "The Psycho Cure",
+        "Elixirs",
+        "Mongrel",
+        "Dr. Tyrano",
+        "Fallout",
+        "Len"
+      ],
+      "chapter": 83,
+      "title": "R&D"
+    },
+    {
+      "beat": "CH83: Dynamis's damage-control press conference backfires spectacularly. Wyvern goes off-script, confirms the Knockoff Elixir crime is real ('I have checked'), and resigns as Il Migliore's leader on principle. Felix walks out of Dynamis; Enrique Manada stays silent as if he'd long wanted to say it. Ryan's exposure gambit lands: 'all according to keikaku.' The chapter closes on betrayal: Sarin eavesdrops on the cure/endgame talk and levels her vibrating gauntlet at Ryan, a turn Livia foresaw.",
+      "entities": [
+        "Wyvern",
+        "Ryan Romano",
+        "Il Migliore",
+        "Felix",
+        "Enrique Manada",
+        "Sarin",
+        "Livia Augusti"
+      ],
+      "chapter": 83,
+      "title": "The Public Defection"
     }
   ]
 }
