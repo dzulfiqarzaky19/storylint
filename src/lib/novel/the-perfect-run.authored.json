@@ -9417,6 +9417,292 @@
         }
       ],
       "chapter": 74
+    },
+    {
+      "name": "Cancel",
+      "kind": "character",
+      "summary": "Refined (Greta): the peppy Augusti power-negator. Ryan confirms her true mechanic: she doesn't nullify powers outright, she DISRUPTS an Elixir's connection to its color dimension, cutting off that bottomless power source, but cannot affect physical mutations (Sarin stays gaseous, Augustus stays invulnerable, but neither can use their energy powers near her). This is why she once negated Mongrel's knockoff pyrokinesis but not his mutations: disrupting his balancing White Elixir made his other powers go haywire. Critically for Ryan: because his save-point relies on his connection to the Purple/Violet World, Cancel's power would kill him PERMANENTLY, leaving his other self trapped in the Purple World, unaware his future incarnation died. She negates Psyshock so his death sticks.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Disrupts an Elixir's link to its color dimension"
+        },
+        {
+          "key": "note",
+          "value": "Cannot affect physical mutations, only energy powers"
+        },
+        {
+          "key": "note",
+          "value": "Once negated Mongrel's pyrokinesis via his White Elixir"
+        },
+        {
+          "key": "note",
+          "value": "Would kill Ryan permanently (severs his Purple link)"
+        },
+        {
+          "key": "note",
+          "value": "Negates Psyshock so Mortimer's kill sticks"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "bodyguard"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "lethal counter to his power"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "negates for the kill"
+        }
+      ],
+      "chapter": 75
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Refined (theory): Ryan deduces the nature of his near-invincibility. Because Cancel can't negate his invulnerability, it must be a PHYSICAL mutation, his body mimicking the properties of a specific metal (a superior variant of Frank's power), likely an Orange Elixir, and a very strong one. But that alone doesn't explain how he moves in stopped time or resists most powers, so Ryan concludes the metal itself has unique, anomalous properties. Livia notes both she and her father can wield two powers with no side-effects, a secret Ryan wants for a Psycho cure and which Dynamis wanted for an army (she refused them).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Invulnerability is a physical mutation, not energy-based"
+        },
+        {
+          "key": "note",
+          "value": "Body likely mimics a metal (strong Orange), like Frank's power"
+        },
+        {
+          "key": "note",
+          "value": "The metal has anomalous properties (moves in stopped time)"
+        },
+        {
+          "key": "note",
+          "value": "He and Livia wield two powers without side-effects"
+        },
+        {
+          "key": "note",
+          "value": "Dynamis wanted that secret for an army; Livia refused"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Cancel",
+          "rel": "cannot be negated by"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "father of"
+        },
+        {
+          "to": "Frank the Mad",
+          "rel": "superior variant of his power"
+        }
+      ],
+      "chapter": 75
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "Refined: meets 'President' Ryan at Deadland Motel and, after Luigi confirms his time-traveler tale is true, hands over Len's uncorrupted brain-map FREELY, no fetch quest or blackmail, honoring her past self's debt ('I'm the one with a debt, and I'm clearing it off the books'). She fully commits to partnership toward a 'perfect ending,' offering to help investigate why she and her father wield two powers without side-effects (for a cure, though she refused Dynamis the same for an army). Her limits: she can only give Ryan a week or two before her family retakes Rust Town; she wants Augustus retired, not dead ('he's still my father'); and she's in denial over Felix's truth, planning to use this doomed loop to try to win him back. She warns Ryan that Augusti members are dying in mysterious assassinations (the Shroud).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Gives Ryan Len's clean brain-map freely, honoring a debt"
+        },
+        {
+          "key": "note",
+          "value": "Commits to partnership toward a 'perfect ending'"
+        },
+        {
+          "key": "note",
+          "value": "Will help probe the two-powers secret for a cure"
+        },
+        {
+          "key": "note",
+          "value": "Wants Augustus retired, not dead; in denial over Felix"
+        },
+        {
+          "key": "note",
+          "value": "Warns of mysterious Augusti assassinations (Shroud)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "ally/partner"
+        },
+        {
+          "to": "Len",
+          "rel": "provides her brain-map"
+        },
+        {
+          "to": "Augustus",
+          "rel": "conflicted daughter of"
+        }
+      ],
+      "chapter": 75
+    },
+    {
+      "name": "Luigi the Hockey Victim",
+      "kind": "character",
+      "summary": "An Augusti truth-teller whose power forces others to speak truth and detects lies. Livia has him verify Ryan's confession; Ryan, whose favorite pastime is beating Luigi with a hockey stick across loops, spitefully rants the whole truth at him (time travel, Darkling, the doomed loop, 'you don't matter'). The revelation triggers an existential crisis (Livia notes her power gave him a 1-in-3 chance of suicide). To contain the leak she pays him 20 million euros to leave New Rome immediately and never speak of it, even to Augustus, on pain of consequences. He flees the city.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti truth-teller: compels truth, detects lies"
+        },
+        {
+          "key": "note",
+          "value": "Verifies Ryan's confession for Livia"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's recurring hockey-stick victim across loops"
+        },
+        {
+          "key": "note",
+          "value": "Suffers an existential crisis from the revelation"
+        },
+        {
+          "key": "note",
+          "value": "Paid 20M euros and exiled to keep the secret"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "serves; paid off/exiled by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "loathed by / beaten across loops"
+        }
+      ],
+      "chapter": 75
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "Refined: killed for good. 'President' Ryan delivers the drugged brainjacker to Livia as a peace gift; Cancel negates his power so his death sticks, and Mortimer shoots him twice in the head in the parking lot, freeing his thralls (who wake with no memory of their enslavement). His final cruelty: on his way out he deliberately scrambled Len's brain, leaving her an unresponsive vegetable even though Ryan beat him, so she can't recover without Alchemo's help.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Delivered drugged to Livia as a peace gift"
+        },
+        {
+          "key": "note",
+          "value": "Killed by Mortimer after Cancel negates his power"
+        },
+        {
+          "key": "note",
+          "value": "His death frees and restores his surviving thralls"
+        },
+        {
+          "key": "note",
+          "value": "Scrambled Len's brain on the way out, leaving her a vegetable"
+        },
+        {
+          "key": "note",
+          "value": "Forces Ryan to rely on Alchemo to restore Len"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mortimer",
+          "rel": "killed by"
+        },
+        {
+          "to": "Cancel",
+          "rel": "negated by"
+        },
+        {
+          "to": "Len",
+          "rel": "leaves brain-damaged"
+        }
+      ],
+      "chapter": 75
+    },
+    {
+      "name": "The Shroud",
+      "kind": "character",
+      "summary": "Refined: without Ryan to talk him out of it, the invisible Carnival assassin ('Mr. See-Through') has begun a lone assassination spree, killing Augusti members with bombs and hits, which is why Livia's people are dying mysteriously. He saw Ryan among the Meta-Gang and assumed he turned Psycho, so his harbor hideout nearly blows up in Ryan's face when Ryan tries to visit. This means the Carnival may now target Ryan too, and the Shroud is likely to bomb Jamie Cutter, Lanka, and Ki-jung's apartment again as he did in a prior loop.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Invisible Carnival assassin ('Mr. See-Through')"
+        },
+        {
+          "key": "note",
+          "value": "Begins a lone spree killing Augusti with bombs/hits"
+        },
+        {
+          "key": "note",
+          "value": "Thinks Ryan turned Psycho after seeing him with the Meta-Gang"
+        },
+        {
+          "key": "note",
+          "value": "Nearly blows up Ryan at his harbor hideout"
+        },
+        {
+          "key": "note",
+          "value": "Likely to bomb Cutter/Lanka/Ki-jung's apartment again"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "assassin of"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "now suspects/targets"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "assassinates"
+        }
+      ],
+      "chapter": 75
+    },
+    {
+      "name": "Mosquito",
+      "kind": "character",
+      "summary": "A Meta-Gang Psycho, a giant humanoid mosquito ('bugman') too big for a normal car. He foolishly drank a second Green Elixir (the Hercules super-strength knockoff), wrongly thinking a same-color Elixir would overwrite his first power; instead it stacked, and his super-strength only works once he's gorged on blood, weakening every minute after. After the takeover he serves 'President' Ryan as a wary minion, voicing doubts about war with Dynamis before Ryan cows him back into the 'silent majority.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Giant humanoid mosquito Meta-Gang Psycho"
+        },
+        {
+          "key": "note",
+          "value": "Drank a second Green (Hercules) hoping to overwrite the first"
+        },
+        {
+          "key": "note",
+          "value": "Super-strength only after gorging on blood, then fades"
+        },
+        {
+          "key": "note",
+          "value": "Serves President Ryan as a nervous minion"
+        },
+        {
+          "key": "note",
+          "value": "Cowed out of dissenting on the Dynamis war"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "minion of"
+        }
+      ],
+      "chapter": 75
     }
   ],
   "plotObservations": [
@@ -10418,6 +10704,16 @@
       "title": "Darkling and the Cosmology of the Ultimate Ones",
       "summary": "Ryan visits the Black Elixir, learning it is an eighth-color Elixir of pure paradox that cannot be bound and finds our causal universe a maddening 'molecule-shaped prison.' It reveals the cosmology: Ultimate Ones, one per colored higher dimension, are supreme beings the Elixirs serve as priest-conduits so mortals may ascend (the Alchemist's true goal, Augustus its warning). It wants to return through a bunker portal to the Black World and ask the Black Ultimate One to erase its arrival. It confirms Ryan's power comes from the Violet Ultimate One, making Ryan the timeline's Observer, and that this god 'nudges' rather than controls, no longer actively interfering, leaving Ryan free and alone. It hints an Ultimate One could even restore the erased (Jasmine), but at a reality-damaging price. Ryan names it 'Darkling,' which it sulkily accepts.",
       "chapter": 74
+    },
+    {
+      "title": "Peace Offering to the Augusti",
+      "summary": "Ryan meets Livia at Deadland Motel and gifts her the drugged Psyshock; Cancel negates his power and Mortimer executes him, freeing his thralls. Under the truth-teller Luigi, Ryan spitefully rants his entire history (time travel, Monaco, Darkling, the doomed loop), triggering Luigi's existential crisis; Livia pays Luigi 20M euros to leave the city forever. Ryan confirms Cancel's true mechanic (severing the Elixir-dimension link, lethal to his Purple-dependent power) and theorizes Augustus's invulnerability is an anomalous metal-mimicking Orange mutation.",
+      "chapter": 75
+    },
+    {
+      "title": "An Alliance and Its Limits",
+      "summary": "Convinced, Livia freely gives Ryan Len's uncorrupted brain-map, no strings, honoring her past self's debt, and commits to partnership toward a 'perfect ending,' agreeing to consider helping cure Psychos via her two-power secret. Her limits: only a week or two before her family retakes Rust Town; she wants Augustus retired, not killed; and she's in denial over Felix, meaning to try to win him back this loop. She warns of mysterious Augusti assassinations, which Ryan recognizes as the Shroud, now on a lone spree, believing Ryan turned Psycho. Returning, Ryan learns Psyshock scrambled Len's brain into a vegetable on his way out, forcing him to rely on Alchemo, and turns to cracking the bunker with the Architect's 35-page report.",
+      "chapter": 75
     }
   ]
 }
