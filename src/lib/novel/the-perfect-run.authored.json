@@ -17294,6 +17294,158 @@
         }
       ],
       "chapter": 125
+    },
+    {
+      "name": "Magenta",
+      "kind": "character",
+      "summary": "CH126 (named): Ryan's sentient Violet Elixir - the emissary he has been bonded to since age sixteen (~800+ years). Via his armor's new Elixir-comms system he finally names it 'Magenta' (over Coos / Color out of Time), and it warms to him like a proud teacher watching a graduating student. It explains that Elixirs are only 'priests' - they ask the Ultimate One for miracles, they don't grant them - so the Ultimate One, not Magenta, blocks Ryan's saves: his Black connection has grown dangerous ('a sword without a hilt' that feeds on deleted timelines and could destroy him), and the Ultimate One may want him to Ascend rather than die. It confirms Augustus is indestructible metal vulnerable only to conceptual powers, so Ryan's Black can beat him - hard, not easy. Deadpan-jealous, it forbids 'Elixir bigamy,' and sends him off with 'Onward.'",
+      "facts": [
+        {
+          "key": "identity",
+          "value": "Ryan's Violet Elixir, bonded since he was 16; a Darkling-parallel companion"
+        },
+        {
+          "key": "key reveal",
+          "value": "Elixirs are 'priests' - the Ultimate One (not Magenta) blocks Ryan's saves; his Black growth is the danger"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his ~800-year Elixir companion, now named and speaking with him"
+        },
+        {
+          "to": "Darkling",
+          "rel": "parallel sentient Elixir (Black); Magenta is jealous of it"
+        }
+      ],
+      "chapter": 126
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH126 (closure): fully at peace after euthanizing her father - grief without guilt, having let go of the childhood belief that his fall was her fault. She sees the world can change (if even Dynamis can), and resolves to join The Architect not just for Rust Town's children but to build cities and help children worldwide, giving them a better childhood than her own. She and Ryan reaffirm their bond ('more powerful than friendship'), and she makes him promise to come back from the Augustus fight. Ryan reflects that Len (unlike Mechron, the Alchemist, Fallout) has the kind heart that makes power matter - 'You will do great.'",
+      "facts": [
+        {
+          "key": "closure",
+          "value": "Grief without guilt; accepts she couldn't have changed her father's fate"
+        },
+        {
+          "key": "new purpose",
+          "value": "Will join The Architect to build cities and help children across the globe"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Architect",
+          "rel": "will join her to rebuild devastated countries and aid children worldwide"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "reaffirms their family bond; makes him promise to return"
+        }
+      ],
+      "chapter": 126
+    },
+    {
+      "name": "The Plushie",
+      "kind": "character",
+      "summary": "CH126 (rejoins as ally): the murderous Killer Rabbit that once slaughtered its way across loops appears in the bunker, briefly solemn and almost sad, before reverting to its cheerful malice ('Let's go to Disneyland!'). It wants payback against Augustus for its previous defeat and, having saved Ryan from Adam, is owed a favor - so Ryan lets it ride in his armor's backpack into the final battle, warning it against multiplication if it wants to keep disemboweling privileges. The nightmare has quietly become Ryan's friend, 'one rampage at a time.'",
+      "facts": [
+        {
+          "key": "allied",
+          "value": "Rides in Ryan's backpack to the Augustus fight, seeking payback for its prior defeat"
+        },
+        {
+          "key": "bond",
+          "value": "Now genuinely Ryan's friend; owed a favor for saving him from Adam"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "joins him for the final battle as a repaid ally"
+        },
+        {
+          "to": "Augustus",
+          "rel": "wants revenge for its earlier defeat by him"
+        }
+      ],
+      "chapter": 126
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH126: after tender farewells with Livia (who begs him to flee if he truly can't survive, since he can't save) and Len, he has his Saturn armor repaired in the bunker and installs an Elixir-comms system to finally talk with and name his Violet Elixir, Magenta. It confirms the Ultimate One blocks his saves because his Black has grown dangerous, hints he may Ascend, and confirms his Black can beat Augustus's conceptual-only-vulnerable metal. He takes the Plushie as an ally, then triggers the bunker self-destruct ('Execute order Sixty-Six') as the Augusti invade Rust Town - collapsing the Junkyard and detonating the Bahamut orbital satellite, erasing Mechron's legacy. He flies to Ischia for his last battle, having promised Livia and Len he'll return.",
+      "facts": [
+        {
+          "key": "bunker erased",
+          "value": "'Execute order Sixty-Six' collapses the Junkyard bunker and self-destructs the Bahamut satellite"
+        },
+        {
+          "key": "save still blocked",
+          "value": "Magenta confirms the Ultimate One won't restore his save; he may Ascend instead"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Magenta",
+          "rel": "names and consults his Violet Elixir before the final fight"
+        },
+        {
+          "to": "Augustus",
+          "rel": "flies to Ischia to face him alone, with no reload safety net"
+        }
+      ],
+      "chapter": 126
+    },
+    {
+      "name": "Ascension",
+      "kind": "concept",
+      "summary": "CH126 (deepened by Magenta): the process by which a lesser lifeform becomes a cosmic being of the higher realms - not an end but an open door, unique to each ascendant. Magenta reveals it is conditioned not only by power but by WISDOM: the small-eyed monsters on the Alchemist's ship were denied it, while Ryan (grown wise over centuries) and Leo Hargraves are unusually close. Hargraves is deliberately delaying his own ascension to stay on Earth but will eventually 'become a bright star in the sky' if he chooses. The Ultimate One may intend Ryan to Ascend rather than die - the meaning behind blocking his save and urging him to see 'what lies beyond victory.'",
+      "facts": [
+        {
+          "key": "condition",
+          "value": "Requires wisdom as much as power - why the Alchemist's small-eyed monsters were denied it"
+        },
+        {
+          "key": "near-ascendants",
+          "value": "Ryan and Leo Hargraves are both close; Hargraves delays his to stay on Earth"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "the Ultimate One may want him to Ascend instead of dying"
+        },
+        {
+          "to": "Magenta",
+          "rel": "the Elixir who explains the wisdom-gated process to Ryan"
+        }
+      ],
+      "chapter": 126
+    },
+    {
+      "name": "The Bahamut",
+      "kind": "item",
+      "summary": "CH126 (destroyed): the Mechron orbital laser satellite - the 'sword of Damocles' hanging over New Rome - is finally erased. When Ryan triggers the bunker self-destruct ('Execute order Sixty-Six'), the Bahamut and its orbital command center self-destruct in tandem, briefly glowing like a dying red star in the sky. With the Junkyard bunker collapsed and the satellite gone, Mechron's dangerous legacy 'would never haunt the world again' - one final loose end closed before the Augustus fight.",
+      "facts": [
+        {
+          "key": "destroyed",
+          "value": "Self-destructed alongside the bunker via 'order Sixty-Six'; a dying red star in the sky"
+        },
+        {
+          "key": "why",
+          "value": "Too dangerous to keep ('no right hands'); erased with the rest of Mechron's legacy"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "orders its destruction to close Mechron's last loose end"
+        }
+      ],
+      "chapter": 126
     }
   ],
   "plotObservations": [
@@ -19514,6 +19666,24 @@
         "Augustus"
       ],
       "chapter": 125
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH126 'The End is Nigh': aftermath and the eve of the final battle. Dynamis falls publicly, Enrique becomes acting Chairman and promises a public trial; no locals died in Fallout's blast, so the Perfect Run holds. Livia (recovering, saved by Braindead) shares intel - Vulcan has defected, Augustus ordered Wyvern's death, and his forces will invade Rust Town and find the bunker. After tender farewells with Livia and Len (who finds closure and will join The Architect to build cities worldwide), Ryan repairs his Saturn armor, installs Elixir-comms to name his Violet Elixir 'Magenta' (which explains the Ultimate One blocks his saves because his Black has grown dangerous, hints at Ascension, and confirms his Black can beat Augustus's conceptual-only metal), and takes the Plushie as an ally. He triggers the bunker self-destruct ('order Sixty-Six'), collapsing the Junkyard and destroying the Bahamut satellite - erasing Mechron's legacy - then flies to Ischia for the last battle.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Len",
+        "Magenta",
+        "The Plushie",
+        "Ascension",
+        "The Bahamut",
+        "Augustus",
+        "Enrique Manada",
+        "Vulcan",
+        "The Architect"
+      ],
+      "chapter": 126
     }
   ]
 }

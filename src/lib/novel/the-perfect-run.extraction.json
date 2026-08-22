@@ -485,6 +485,14 @@
           {
             "key": "priority",
             "value": "Abandons the finishing blow to give first aid to the gravely wounded Livia"
+          },
+          {
+            "key": "bunker erased",
+            "value": "'Execute order Sixty-Six' collapses the Junkyard bunker and self-destructs the Bahamut satellite"
+          },
+          {
+            "key": "save still blocked",
+            "value": "Magenta confirms the Ultimate One won't restore his save; he may Ascend instead"
           }
         ],
         "ties": [
@@ -819,6 +827,14 @@
           {
             "to": "livia-augusti",
             "rel": "her near-death drives his fury; he chooses her over finishing Fallout"
+          },
+          {
+            "to": "magenta",
+            "rel": "names and consults his Violet Elixir before the final fight"
+          },
+          {
+            "to": "augustus",
+            "rel": "flies to Ischia to face him alone, with no reload safety net"
           }
         ],
         "appearances": [
@@ -941,7 +957,8 @@
           122,
           123,
           124,
-          125
+          125,
+          126
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1164,6 +1181,14 @@
           {
             "key": "safe",
             "value": "Stitch removed the Bloodstream agent from her blood so she wouldn't transform near him"
+          },
+          {
+            "key": "closure",
+            "value": "Grief without guilt; accepts she couldn't have changed her father's fate"
+          },
+          {
+            "key": "new purpose",
+            "value": "Will join The Architect to build cities and help children across the globe"
           }
         ],
         "ties": [
@@ -1314,6 +1339,14 @@
           {
             "to": "enrique-manada",
             "rel": "stands with her, letting her decide her father's fate"
+          },
+          {
+            "to": "the-architect",
+            "rel": "will join her to rebuild devastated countries and aid children worldwide"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "reaffirms their family bond; makes him promise to return"
           }
         ],
         "appearances": [
@@ -1379,7 +1412,8 @@
           119,
           122,
           123,
-          124
+          124,
+          126
         ],
         "questions": []
       },
@@ -2102,7 +2136,8 @@
           96,
           97,
           103,
-          104
+          104,
+          126
         ],
         "questions": []
       },
@@ -2402,7 +2437,8 @@
           117,
           118,
           123,
-          125
+          125,
+          126
         ],
         "questions": []
       },
@@ -4996,7 +5032,8 @@
           122,
           123,
           124,
-          125
+          125,
+          126
         ],
         "questions": []
       },
@@ -9021,7 +9058,8 @@
           85,
           123,
           124,
-          125
+          125,
+          126
         ],
         "questions": []
       },
@@ -10935,6 +10973,14 @@
           {
             "key": "note",
             "value": "Multiplies exponentially when happy; kept as a last-resort weapon"
+          },
+          {
+            "key": "allied",
+            "value": "Rides in Ryan's backpack to the Augustus fight, seeking payback for its prior defeat"
+          },
+          {
+            "key": "bond",
+            "value": "Now genuinely Ryan's friend; owed a favor for saving him from Adam"
           }
         ],
         "ties": [
@@ -10949,10 +10995,19 @@
           {
             "to": "alchemo",
             "rel": "co-built by"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "joins him for the final battle as a repaid ally"
+          },
+          {
+            "to": "augustus",
+            "rel": "wants revenge for its earlier defeat by him"
           }
         ],
         "appearances": [
-          50
+          50,
+          126
         ],
         "questions": []
       },
@@ -12898,6 +12953,14 @@
           {
             "key": "note",
             "value": "Its duplication marks a run as unsalvageable"
+          },
+          {
+            "key": "destroyed",
+            "value": "Self-destructed alongside the bunker via 'order Sixty-Six'; a dying red star in the sky"
+          },
+          {
+            "key": "why",
+            "value": "Too dangerous to keep ('no right hands'); erased with the rest of Mechron's legacy"
           }
         ],
         "ties": [
@@ -12920,11 +12983,16 @@
           {
             "to": "psyshock",
             "rel": "kills"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "orders its destruction to close Mechron's last loose end"
           }
         ],
         "appearances": [
           71,
-          72
+          72,
+          126
         ],
         "questions": []
       },
@@ -14612,7 +14680,8 @@
           }
         ],
         "appearances": [
-          88
+          88,
+          126
         ],
         "questions": []
       },
@@ -15778,6 +15847,14 @@
           {
             "key": "rule",
             "value": "It is every being's right but cannot be forced - the Alchemist's error"
+          },
+          {
+            "key": "condition",
+            "value": "Requires wisdom as much as power - why the Alchemist's small-eyed monsters were denied it"
+          },
+          {
+            "key": "near-ascendants",
+            "value": "Ryan and Leo Hargraves are both close; Hargraves delays his to stay on Earth"
           }
         ],
         "ties": [
@@ -15788,10 +15865,19 @@
           {
             "to": "elixirs",
             "rel": "the immaterial half of a Genome that can ascend"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "the Ultimate One may want him to Ascend instead of dying"
+          },
+          {
+            "to": "magenta",
+            "rel": "the Elixir who explains the wisdom-gated process to Ryan"
           }
         ],
         "appearances": [
-          116
+          116,
+          126
         ],
         "questions": []
       },
@@ -15853,6 +15939,36 @@
         ],
         "appearances": [
           124
+        ],
+        "questions": []
+      },
+      {
+        "id": "magenta",
+        "kind": "character",
+        "name": "Magenta",
+        "summary": "CH126 (named): Ryan's sentient Violet Elixir - the emissary he has been bonded to since age sixteen (~800+ years). Via his armor's new Elixir-comms system he finally names it 'Magenta' (over Coos / Color out of Time), and it warms to him like a proud teacher watching a graduating student. It explains that Elixirs are only 'priests' - they ask the Ultimate One for miracles, they don't grant them - so the Ultimate One, not Magenta, blocks Ryan's saves: his Black connection has grown dangerous ('a sword without a hilt' that feeds on deleted timelines and could destroy him), and the Ultimate One may want him to Ascend rather than die. It confirms Augustus is indestructible metal vulnerable only to conceptual powers, so Ryan's Black can beat him - hard, not easy. Deadpan-jealous, it forbids 'Elixir bigamy,' and sends him off with 'Onward.'",
+        "facts": [
+          {
+            "key": "identity",
+            "value": "Ryan's Violet Elixir, bonded since he was 16; a Darkling-parallel companion"
+          },
+          {
+            "key": "key reveal",
+            "value": "Elixirs are 'priests' - the Ultimate One (not Magenta) blocks Ryan's saves; his Black growth is the danger"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "his ~800-year Elixir companion, now named and speaking with him"
+          },
+          {
+            "to": "darkling",
+            "rel": "parallel sentient Elixir (Black); Magenta is jealous of it"
+          }
+        ],
+        "appearances": [
+          126
         ],
         "questions": []
       }
@@ -18112,6 +18228,10 @@
           {
             "chapter": 125,
             "summary": "CH125 'Fusion & Fission': Ryan and Livia battle Fallout over the Gulf of Naples - her timeskip makes Ryan intangible/invincible, cracking his suit and dropping him into the sea, where he sheds his cyborg armor into a radioactive skeleton and self-detonates like a nuke, gravely wounding Livia (who stayed in the blast to be sure Ryan survived). Ryan Black-Fluxes off both Fallout's arms rather than kill him. Enrique arrives, excavates Livia with his roots, and begs his brother to reconcile, daring Alphonse to kill him instead; Fallout refuses ('All for the dream') and moves to self-destruct again - so Shroud fires the full Dynamis Gravity Gun and launches Fallout into space, killing him with the weapon he funded. Livia survives concussed. New Rome is cured of one poison; only Augustus remains, on Ischia."
+          },
+          {
+            "chapter": 126,
+            "summary": "CH126 'The End is Nigh': aftermath and the eve of the final battle. Dynamis falls publicly, Enrique becomes acting Chairman and promises a public trial; no locals died in Fallout's blast, so the Perfect Run holds. Livia (recovering, saved by Braindead) shares intel - Vulcan has defected, Augustus ordered Wyvern's death, and his forces will invade Rust Town and find the bunker. After tender farewells with Livia and Len (who finds closure and will join The Architect to build cities worldwide), Ryan repairs his Saturn armor, installs Elixir-comms to name his Violet Elixir 'Magenta' (which explains the Ultimate One blocks his saves because his Black has grown dangerous, hints at Ascension, and confirms his Black can beat Augustus's conceptual-only metal), and takes the Plushie as an ally. He triggers the bunker self-destruct ('order Sixty-Six'), collapsing the Junkyard and destroying the Bahamut satellite - erasing Mechron's legacy - then flies to Ischia for the last battle."
           }
         ],
         "entities": [
@@ -18228,13 +18348,17 @@
           "livia-augusti",
           "the-opis-armor",
           "fallout",
-          "the-cure-flu"
+          "the-cure-flu",
+          "magenta",
+          "the-plushie",
+          "the-bahamut",
+          "the-architect"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 247,
+    "entities": 248,
     "plotlines": 104,
     "books": 1
   }
