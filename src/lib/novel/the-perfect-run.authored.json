@@ -15484,6 +15484,62 @@
         }
       ],
       "chapter": 109
+    },
+    {
+      "name": "Station Orpheon",
+      "kind": "location",
+      "summary": "CH110 'The Truth Beneath the Ice': found. The abandoned French Antarctic station is only the surface marker; the Alchemist's true base sits inside an ARTIFICIAL Thin Place (a Monaco-like pocket dimension that traps both intruders out AND prisoners in), reached via Ryan's power + Resonators. Inside, under a black starless sky and purple lightning, stands a colossal black-metal dome that Ryan's armor reveals is merely the tip of a kilometers-long buried SPACESHIP with skyscraper-sized reactors and great wings. The base is breached from within (a 50m hole blown outward), sinking, dark, its camera-lens 'portholes' and turrets long dead. A dead 8m cyborg monster (not Mechron tech, killed by CLAWS, bearing an unsettling M/omega sigil) lies in the snow. Something went catastrophically wrong here; the place seems empty.",
+      "facts": [
+        {
+          "key": "true nature",
+          "value": "A kilometers-long buried spaceship inside an artificial Thin Place"
+        },
+        {
+          "key": "state",
+          "value": "Breached from inside, sinking, defenses dead, apparently abandoned"
+        },
+        {
+          "key": "anomaly",
+          "value": "Dead non-Mechron cyborg monster killed by claws, marked with an M/omega sigil"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "her base and center of power"
+        },
+        {
+          "to": "Thin Places",
+          "rel": "sealed inside an artificial one"
+        }
+      ],
+      "chapter": 110
+    },
+    {
+      "name": "Leo Hargraves",
+      "kind": "character",
+      "summary": "CH110: on the Antarctic expedition (immune to cold via self-controlled heat/gravity) the Living Sun apologizes to Len for the Carnival's attempt on Bloodstream, taking sole responsibility - they'd predicted Bloodstream would cause a disaster and kill both his children, and didn't think a cure possible. He swears to try to cure him now, but warns he'll still act if Bloodstream threatens millions. He's cleared Mechron's other robot-armory bases (only the New Rome bunker did R&D) and joined this quest partly to ask the Alchemist 'why.' He invites Panda/Timmy to the Carnival, provoking an ecstatic fanboy meltdown.",
+      "facts": [
+        {
+          "key": "confession",
+          "value": "Owns the call to hunt Bloodstream; vows to try curing him now"
+        },
+        {
+          "key": "recruits",
+          "value": "Invites Panda to the Carnival"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "apologizes to her for the attempt on her father"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "wants to ask her 'why'"
+        }
+      ],
+      "chapter": 110
     }
   ],
   "plotObservations": [
@@ -17366,6 +17422,29 @@
         "Little Sarah"
       ],
       "chapter": 109
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH110 'The Truth Beneath the Ice': the expedition reaches Antarctica. Flying recon with Leo Hargraves, Ryan detects the Alchemist's base is sealed inside an artificial Thin Place - a Monaco-like pocket dimension that traps prisoners in as well as intruders out. Sunshine apologizes to Len for the Carnival's attempt on Bloodstream (they'd predicted he would kill his children and cause disaster) and swears to try a cure now. At found Station Orpheon, Panda fanboys over Sunshine (who invites him to the Carnival). Ryan freezes time, tears the pocket dimension open with his hands, and holds it with Resonators (Stitch + Atom Cat guard the exit). Inside, under a black sky, they find the base breached from within, sinking, defenses dead, and a huge dead non-Mechron cyborg killed by claws bearing an M/omega sigil. Ryan's armor reveals the dome is only the tip of a kilometers-long buried spaceship.",
+      "entities": [
+        "Ryan Romano",
+        "Leo Hargraves",
+        "Len",
+        "The Alchemist",
+        "Station Orpheon",
+        "Thin Places",
+        "The Resonators",
+        "Bloodstream",
+        "Mr. Wave",
+        "The Panda",
+        "Sarin",
+        "Felix",
+        "Mr. See-Through",
+        "Stitch",
+        "The Doll",
+        "Alchemo"
+      ],
+      "chapter": 110
     }
   ]
 }

@@ -830,7 +830,8 @@
           106,
           107,
           108,
-          109
+          109,
+          110
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1225,7 +1226,8 @@
           104,
           105,
           108,
-          109
+          109,
+          110
         ],
         "questions": []
       },
@@ -2237,6 +2239,14 @@
           {
             "key": "note",
             "value": "Linked to Mr. See-Through/Shroud investigating Rust Town"
+          },
+          {
+            "key": "confession",
+            "value": "Owns the call to hunt Bloodstream; vows to try curing him now"
+          },
+          {
+            "key": "recruits",
+            "value": "Invites Panda to the Carnival"
           }
         ],
         "ties": [
@@ -2263,6 +2273,14 @@
           {
             "to": "the-shroud",
             "rel": "may act on their intel"
+          },
+          {
+            "to": "len",
+            "rel": "apologizes to her for the attempt on her father"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "wants to ask her 'why'"
           }
         ],
         "appearances": [
@@ -2282,7 +2300,8 @@
           91,
           92,
           93,
-          109
+          109,
+          110
         ],
         "questions": []
       },
@@ -2731,7 +2750,8 @@
           96,
           97,
           103,
-          104
+          104,
+          110
         ],
         "questions": []
       },
@@ -2980,7 +3000,8 @@
           101,
           103,
           105,
-          109
+          109,
+          110
         ],
         "questions": []
       },
@@ -3342,7 +3363,8 @@
           92,
           93,
           97,
-          105
+          105,
+          110
         ],
         "questions": []
       },
@@ -4077,7 +4099,8 @@
           95,
           96,
           97,
-          102
+          102,
+          110
         ],
         "questions": []
       },
@@ -5930,7 +5953,8 @@
           106,
           107,
           108,
-          109
+          109,
+          110
         ],
         "questions": []
       },
@@ -10097,7 +10121,8 @@
           84,
           85,
           86,
-          102
+          102,
+          110
         ],
         "questions": []
       },
@@ -12671,7 +12696,8 @@
           76,
           77,
           81,
-          84
+          84,
+          110
         ],
         "questions": []
       },
@@ -13081,7 +13107,8 @@
           }
         ],
         "appearances": [
-          79
+          79,
+          110
         ],
         "questions": []
       },
@@ -13277,7 +13304,8 @@
           104,
           106,
           108,
-          109
+          109,
+          110
         ],
         "questions": []
       },
@@ -13672,7 +13700,8 @@
           89,
           90,
           103,
-          104
+          104,
+          110
         ],
         "questions": []
       },
@@ -13707,7 +13736,8 @@
           92,
           97,
           102,
-          105
+          105,
+          110
         ],
         "questions": []
       },
@@ -14030,7 +14060,8 @@
           }
         ],
         "appearances": [
-          98
+          98,
+          110
         ],
         "questions": []
       },
@@ -14278,6 +14309,18 @@
           {
             "key": "lead",
             "value": "Ryan's Purple-World vision of an icebound fortress points here"
+          },
+          {
+            "key": "true nature",
+            "value": "A kilometers-long buried spaceship inside an artificial Thin Place"
+          },
+          {
+            "key": "state",
+            "value": "Breached from inside, sinking, defenses dead, apparently abandoned"
+          },
+          {
+            "key": "anomaly",
+            "value": "Dead non-Mechron cyborg monster killed by claws, marked with an M/omega sigil"
           }
         ],
         "ties": [
@@ -14288,13 +14331,22 @@
           {
             "to": "bacchus",
             "rel": "investigated her here and was 'twisted'"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "her base and center of power"
+          },
+          {
+            "to": "thin-places",
+            "rel": "sealed inside an artificial one"
           }
         ],
         "appearances": [
           101,
           102,
           103,
-          109
+          109,
+          110
         ],
         "questions": []
       },
@@ -16571,6 +16623,10 @@
           {
             "chapter": 109,
             "summary": "CH109 'Carnival Town': the submarine reaches Monaco on the way to Antarctica. By burner phone Ryan learns the aftermath - Livia is grounded, Dynamis and the Augusti near open war (Hector Manada may recall Alphonse), and Pluto killed Jamie and Ki-jung for defecting (Ryan will restore them by loop but hides it from Felix for now). He reunites with Simon, who has walled off the Carnival and is building a new French republic with Martine, long ago guessed Ryan's time-loop, agrees to foster the expedition's children, and knows Station Orpheon's history. Leo 'Sunshine' Hargraves joins the team as a fire-Genome ally for the ice. Ryan resolves his Perfect Run must dismantle Augustus's factory and organization in quick succession to minimize casualties; Livia teases an in-person secret."
+          },
+          {
+            "chapter": 110,
+            "summary": "CH110 'The Truth Beneath the Ice': the expedition reaches Antarctica. Flying recon with Leo Hargraves, Ryan detects the Alchemist's base is sealed inside an artificial Thin Place - a Monaco-like pocket dimension that traps prisoners in as well as intruders out. Sunshine apologizes to Len for the Carnival's attempt on Bloodstream (they'd predicted he would kill his children and cause disaster) and swears to try a cure now. At found Station Orpheon, Panda fanboys over Sunshine (who invites him to the Carnival). Ryan freezes time, tears the pocket dimension open with his hands, and holds it with Resonators (Stitch + Atom Cat guard the exit). Inside, under a black sky, they find the base breached from within, sinking, defenses dead, and a huge dead non-Mechron cyborg killed by claws bearing an M/omega sigil. Ryan's armor reveals the dome is only the tip of a kilometers-long buried spaceship."
           }
         ],
         "entities": [
@@ -16651,7 +16707,10 @@
           "simon",
           "neptune",
           "martine",
-          "little-sarah"
+          "little-sarah",
+          "thin-places",
+          "the-resonators",
+          "the-doll"
         ]
       }
     ]
