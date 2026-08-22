@@ -5527,6 +5527,212 @@
         }
       ],
       "chapter": 56
+    },
+    {
+      "name": "Dr. Tyrano",
+      "kind": "character",
+      "summary": "Dynamis's head science honcho: a Blue Genius specialized in cloning, splicing, and gene therapy who used an experimental (temporary) transformation serum to turn himself into a two-meter humanoid T-rex (black scales, crimson eyes, lab coat) purely because he wanted to be a dinosaur. Amoral and oblivious to cruelty, he tried to vivisect the Panda for its infinite-regenerating organs and covets Ryan's rare Violet DNA. He runs Lab 65/66 (birthplace of knockoff Elixirs), created the knockoffs by synthesizing Elixir-mimicking resources (the Hercules serum copied only Wyvern's strength), engineered Wardrobe's techno-organic costume symbiote and the dog-triceratops 'Tricerador,' and dreams of a dinosaur in every household. He and Ryan independently reached the same higher-dimension Elixir theory and delightedly compare notes; his brain-copy project requires Level-5 clearance.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Blue Genius; cloning, splicing, gene therapy"
+        },
+        {
+          "key": "note",
+          "value": "Self-transformed into a T-rex via temporary serum"
+        },
+        {
+          "key": "note",
+          "value": "Runs Lab 65/66; created knockoff Elixirs (Hercules serum)"
+        },
+        {
+          "key": "note",
+          "value": "Made Wardrobe's costume symbiote and 'Tricerador'"
+        },
+        {
+          "key": "note",
+          "value": "Tried to vivisect the Panda; covets Violet DNA"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "head scientist"
+        },
+        {
+          "to": "Wardrobe",
+          "rel": "made her costume"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "Elixir-theory peer"
+        },
+        {
+          "to": "The Consciousness-Transfer Plan",
+          "rel": "runs brain-copy project"
+        }
+      ],
+      "chapter": 57
+    },
+    {
+      "name": "Mercury",
+      "kind": "character",
+      "summary": "The Augusti's spymaster, a talking skull who runs the organization's gambling dens and money laundering, dubbed 'a submarine' by Felix: he funnels dirty money into 'legitimate' businesses that then take over companies, institutions, and farms across Europe to seed a criminal takeover, even infiltrating some of Dynamis's contractors. He alone holds the full list of everyone Augustus murdered to protect his invulnerability secret.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti spymaster; a talking skull"
+        },
+        {
+          "key": "note",
+          "value": "Runs gambling dens and money laundering ('a submarine')"
+        },
+        {
+          "key": "note",
+          "value": "Launders money into takeovers of European businesses"
+        },
+        {
+          "key": "note",
+          "value": "Holds the full list of Augustus's silenced enemies"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "spymaster"
+        },
+        {
+          "to": "Augustus",
+          "rel": "keeps his secrets"
+        }
+      ],
+      "chapter": 57
+    },
+    {
+      "name": "Elixir Mechanics",
+      "kind": "concept",
+      "summary": "The deep rules of Genome powers, worked out jointly by Ryan and Dr. Tyrano. Elixirs are alive, virus-like alien intelligences that carry information by unknown means (not RNA/DNA) yet manipulate human DNA: on use, an Alchemist Elixir bonds to a homo sapiens' cells and rewrites their genes to make them the vessel of a unique power, ignoring animals. The Elixir acts as an intermediary between host and the color-dimension that supplies the power, and subtly guides its host (or, in Psychos, pushes them to consume ever more Elixirs). No two powers are identical (only variants), implying the Elixir draws each ability from a collective database and locks it from new hosts; a divided dose still bonds to only one person. A host tolerates at most TWO powers: additional Elixirs edit the same genes and conflict ('two writers fighting over a script'), so the original pair cannibalizes newcomers, briefly repurposing them to stabilize the code before conflict resumes. Rare individuals (Augustus, Livia) hold two powers without side-effects via specific genes or non-overlapping edits. A White Elixir (Mongrel's) acts as a 'referee' forcing extra Elixirs to coexist, granting more than two powers but not sparing the host from conflict, mutation, or addiction.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Elixirs are alive, virus-like alien intelligences"
+        },
+        {
+          "key": "note",
+          "value": "On use they rewrite a human's DNA; they ignore animals"
+        },
+        {
+          "key": "note",
+          "value": "Act as intermediary to the color-dimension; guide the host"
+        },
+        {
+          "key": "note",
+          "value": "Each power is drawn from a collective database, then locked"
+        },
+        {
+          "key": "note",
+          "value": "Max two powers; more conflict ('writers over a script')"
+        },
+        {
+          "key": "note",
+          "value": "White Elixir referees extra powers (Mongrel)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "maker of Elixirs"
+        },
+        {
+          "to": "The Higher-Dimension Power Theory",
+          "rel": "extends"
+        },
+        {
+          "to": "Mongrel",
+          "rel": "White-Elixir case"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "co-theorist"
+        }
+      ],
+      "chapter": 57
+    },
+    {
+      "name": "The Menagerie",
+      "kind": "faction",
+      "summary": "The media nickname for Ryan's animal-themed Il Migliore hero team, hailed as 'the newest golden children' after the orphanage arrests: Quicksave (Ryan, rabbit-plushie), the Panda (Timmy), and Atom Cat (Felix), with Wardrobe attached as senior Pro-Hero 'leader.' Dynamis markets them as young and hip; Wardrobe schemes an elaborate branding arc from kid mascot to grim-and-gritty adult icon.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Media-named animal-themed Il Migliore team"
+        },
+        {
+          "key": "note",
+          "value": "Members: Quicksave, the Panda, Atom Cat, + Wardrobe"
+        },
+        {
+          "key": "note",
+          "value": "Famous after the Rust Town orphanage arrests"
+        },
+        {
+          "key": "note",
+          "value": "Marketed by Dynamis as young and hip"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "team within"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "member"
+        },
+        {
+          "to": "The Panda",
+          "rel": "member"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "member"
+        }
+      ],
+      "chapter": 57
+    },
+    {
+      "name": "Mongrel",
+      "kind": "character",
+      "summary": "A rabid Meta-Gang Psycho who wields more than two powers (pyrokinesis, compressed-air blasts, and more) because he drank an Alchemist White Elixir followed by nearly every knockoff on the market. Per Dr. Tyrano's analysis of his custody samples, the White Elixir acts as a 'referee' forcing the extra Elixirs to coexist rather than cannibalizing them, granting limitless potential, but it doesn't spare him from Elixir conflict, mutation, or addiction, and he has lost the mental faculties needed to use that potential, his tragedy.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Meta-Gang Psycho with more than two powers"
+        },
+        {
+          "key": "note",
+          "value": "Drank a White Elixir plus most market knockoffs"
+        },
+        {
+          "key": "note",
+          "value": "White Elixir 'referees' his stacked powers"
+        },
+        {
+          "key": "note",
+          "value": "Lost the sanity to use his limitless potential"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Elixir Mechanics",
+          "rel": "White-Elixir example"
+        }
+      ],
+      "chapter": 57
     }
   ],
   "plotObservations": [
@@ -6229,6 +6435,22 @@
         "Leo Hargraves"
       ],
       "chapter": 56
+    },
+    {
+      "title": "The Island of Dr. Tyrano",
+      "beat": "Ryan settles into a bribe-lavish Dynamis penthouse and reunites with his Menagerie teammates, now media darlings after the arrests. He gifts Wardrobe a homemade Playboy-bunny costume (a cultural kinship cemented), and probes Atom Cat for intel: Augustus's invulnerability secret is guarded by the spymaster Mercury, and Felix reports the patriarch has grown lethargic and forgetful, hiding a sick face behind an electric halo, hinting something is deeply wrong with him. Meeting Dr. Tyrano, the T-rex-transformed Blue Genius who makes knockoff Elixirs and creates dinosaur hybrids, Ryan rescues the Panda from vivisection and discovers a kindred theorist: the two lay out the full Elixir cosmology (living virus-like Elixirs, color-dimension power sources, the two-power limit and its conflicts, Mongrel's referee White Elixir). Ryan angles for access to Tyrano's brain-copy project (Level-5 clearance required) and Mechron's bunker as a possible cure for his own power's degeneration.",
+      "entities": [
+        "Ryan Romano",
+        "Wardrobe",
+        "Atom Cat",
+        "The Panda",
+        "Dr. Tyrano",
+        "Elixir Mechanics",
+        "Mercury",
+        "Augustus",
+        "The Menagerie"
+      ],
+      "chapter": 57
     }
   ]
 }
