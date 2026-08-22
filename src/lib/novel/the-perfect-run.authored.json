@@ -2860,6 +2860,568 @@
         }
       ],
       "chapter": 29
+    },
+    {
+      "name": "The Purple World",
+      "kind": "lore",
+      "summary": "Ryan's name for the observer dimension outside spacetime, existing between all moments in time and points in space, and (he theorizes) the true source of every Violet Genome's power. He pictures the universe as Schrodinger's box of all timelines; the Purple World is outside it. It is also a crossroads to other dimensions, from which Violets summon alien creatures. Ryan built the Chronoradio's particle accelerator trying, unsuccessfully, to reach a favorable alternate Earth through it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "The observer dimension outside space and time"
+        },
+        {
+          "key": "note",
+          "value": "Suspected true source of all Violet Genome powers"
+        },
+        {
+          "key": "note",
+          "value": "A crossroads to other dimensions Violets summon from"
+        },
+        {
+          "key": "note",
+          "value": "Ryan can affect the time axis but never physically enter it"
+        }
+      ],
+      "chapter": 31
+    },
+    {
+      "name": "Ryan's Power (mechanics)",
+      "kind": "lore",
+      "summary": "Ryan calls his power 'temporal bilocation': making a save point splits him into a copy trapped in the Purple World between two seconds and the self who continues, sharing one consciousness. On death he collapses the dead timeline and regenerates from the save point with the erased future's memories (undoing all events between). His save point can't move into the past, and a new one erases the old. His time-stop converges the two selves so only he can move; holding it past ten seconds fuses them and forces an early restart. Because saving requires dying, he calls himself Quicksave. A White negator like Cancel dying near him could unravel the power.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Temporal bilocation: one self trapped in the Purple World"
+        },
+        {
+          "key": "note",
+          "value": "Death collapses the dead timeline; regenerates from the save point"
+        },
+        {
+          "key": "note",
+          "value": "Save point can't move into the past; new one erases the old"
+        },
+        {
+          "key": "note",
+          "value": "Time-stop is convergence; over 10s forces a restart"
+        },
+        {
+          "key": "note",
+          "value": "Saving requires suicide, hence 'Quicksave'"
+        },
+        {
+          "key": "note",
+          "value": "Dying near a White negator could unravel it"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "power of"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "draws from"
+        }
+      ],
+      "chapter": 31
+    },
+    {
+      "name": "The Orphanage",
+      "kind": "place",
+      "summary": "A dilapidated former animal shelter in Rust Town that Len repurposed into a home for orphans, its bedrooms made from old animal cages. Reached secretly via a sewer bathysphere access in the basement. Home to Sarah, Giulia, Romain, Albus, Valeria and others, whom Len feeds, arms for self-defense, and plans to move to her undersea 'magical place.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Former animal shelter turned orphan home"
+        },
+        {
+          "key": "note",
+          "value": "Sewer bathysphere access in the basement"
+        },
+        {
+          "key": "note",
+          "value": "Children armed for self-defense; call Len 'Mama'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len Sabino",
+          "rel": "run by"
+        }
+      ],
+      "chapter": 31
+    },
+    {
+      "name": "Eugene-Henry von Schrodinger",
+      "kind": "character",
+      "summary": "A lazy, fat white Persian cat with blue eyes from the orphanage that Ryan adopts as his 'Bond villain cat' and companion; he jokes it doubles his power as a 'Schrodinger's cat.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Fat white Persian cat, blue eyes"
+        },
+        {
+          "key": "note",
+          "value": "Adopted by Ryan as a companion"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "pet"
+        }
+      ],
+      "chapter": 32
+    },
+    {
+      "name": "Sarah",
+      "kind": "character",
+      "summary": "A sharp-tongued little girl at the orphanage, one of the eldest, who acts as Len's lieutenant and door guard; Ryan gifts her a Desert Eagle. Devoted to 'Mama' Len.",
+      "ties": [
+        {
+          "to": "The Orphanage",
+          "rel": "resident"
+        },
+        {
+          "to": "Len Sabino",
+          "rel": "ward"
+        }
+      ],
+      "chapter": 31
+    },
+    {
+      "name": "Enrique Manada",
+      "kind": "character",
+      "summary": "Hector's son 'Blackthorn,' Dynamis Brand Manager over the Il Migliore heroes. Once groomed to be Dynamis vice-president, he was sacked by the board for openly pushing social reform and Rust Town's redevelopment; his brother Alphonse got the VP role instead. His post is prestigious but powerless. Shroud judges him clean, though Ryan insists he looks like a comic-book villain.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Blackthorn: Dynamis Brand Manager over Il Migliore"
+        },
+        {
+          "key": "note",
+          "value": "Groomed for VP, sacked for pushing Rust Town reform"
+        },
+        {
+          "key": "note",
+          "value": "Replaced as VP candidate by brother Alphonse"
+        },
+        {
+          "key": "note",
+          "value": "Judged clean by Shroud despite his villainous look"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "executive"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "son"
+        }
+      ],
+      "chapter": 32
+    },
+    {
+      "name": "Len's Mental-Health Crisis",
+      "kind": "lore",
+      "summary": "Len suffers severe, medication-dependent depression and trauma: without a heavy (dangerous, untreated) pill cocktail she can't interact with people or want anything but to use her power, and Ryan's presence worsens it. Despite this she fights to defend the orphans and, energized by studying his Chronoradio, believes her Genius navigation insight could help fix Ryan's power.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Medication-dependent; unmanaged pill cocktail"
+        },
+        {
+          "key": "note",
+          "value": "Can't interact or want anything without medication"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's presence worsens her trauma"
+        },
+        {
+          "key": "note",
+          "value": "Still fights for the orphans; works on helping Ryan's power"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len Sabino",
+          "rel": "afflicts"
+        }
+      ],
+      "chapter": 33
+    },
+    {
+      "name": "Mechron's Death",
+      "kind": "lore",
+      "summary": "Confirmed by Shroud: Mechron, the world's most powerful Genius warlord, is truly dead, witnessed by Leo Hargraves when he perished. The circumstances were disturbing enough to unsettle even the hardened Shroud, who defers the 'gory details' to Leo. His leftover technology (bunkers, robot armies) remains a masterless threat.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Mechron is confirmed dead; Leo witnessed it"
+        },
+        {
+          "key": "note",
+          "value": "The death was disturbing even to Shroud"
+        },
+        {
+          "key": "note",
+          "value": "His masterless tech and robot armies remain a threat"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "about"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "witnessed by"
+        }
+      ],
+      "chapter": 32
+    },
+    {
+      "name": "The Hunt for Giulia Costa",
+      "kind": "lore",
+      "summary": "Shroud's true mission: to find Giulia Costa, now about fifteen (light-brown hair, blue eyes), whom Augustus abducted as a toddler after murdering her parents to hold as a hostage against Leo. She is not the orphanage's young Giulia. Ryan promises to help look. This frames Shroud's grudge and the Augusti's cruelty.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Giulia Costa, ~15, abducted by Augustus as a hostage vs Leo"
+        },
+        {
+          "key": "note",
+          "value": "Not the orphanage's young Giulia"
+        },
+        {
+          "key": "note",
+          "value": "Ryan agrees to help Shroud find her"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Shroud",
+          "rel": "searched by"
+        },
+        {
+          "to": "Giulia",
+          "rel": "namesake of"
+        }
+      ],
+      "chapter": 33
+    },
+    {
+      "name": "Narcinia Veran",
+      "kind": "character",
+      "summary": "'Ceres,' a sweet ~14-year-old Green Genome adopted into the Augusti, given an Olympian name by Augustus; Atom Cat's adopted younger sister. Her power creates living things from her own blood, from goats and plants to chimeras. She works on Ischia island helping 'Father Torque' (Bacchus) 'open the path to heaven' (the Bliss drug operation). Ryan and Shroud both realize she is the lost Giulia Costa, whose raider 'birth parents' were really her true parents murdered by Augustus.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Green Genome; creates living animals/plants/chimeras from her blood"
+        },
+        {
+          "key": "note",
+          "value": "Adopted Augusti; Atom Cat's younger sister, named Ceres by Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Works Ischia's Bliss operation under Bacchus"
+        },
+        {
+          "key": "note",
+          "value": "Secretly the lost Giulia Costa"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "adopted sister"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "works for"
+        },
+        {
+          "to": "Giulia",
+          "rel": "is"
+        }
+      ],
+      "chapter": 35
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "'Minerva,' Augustus's daughter and Pluto's niece: a stoic, perpetually bored platinum-haired young woman who can see and interact with alternate realities, previewing how any situation will play out. Ryan is uniquely invisible to her power ('does not exist'), which fascinates her. Feared even among the Killer Seven, more for her father than herself. Once dated Felix (Atom Cat).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augustus's daughter, Pluto's niece"
+        },
+        {
+          "key": "note",
+          "value": "Sees and interacts with alternate realities"
+        },
+        {
+          "key": "note",
+          "value": "Ryan is invisible to her power, intriguing her"
+        },
+        {
+          "key": "note",
+          "value": "Once dated Felix / Atom Cat"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "core family"
+        },
+        {
+          "to": "Augustus",
+          "rel": "daughter"
+        },
+        {
+          "to": "Pluto",
+          "rel": "niece"
+        }
+      ],
+      "chapter": 36
+    },
+    {
+      "name": "Mathias Martel",
+      "kind": "character",
+      "summary": "The Shroud's civilian cover: a stoic indie game designer/programmer (RPGs, Metroidvanias) and fellow gamer who bonds with Ryan over retro games. He is dating Fortuna purely as a job, a backfiring ploy to get close to her adopted sister Narcinia, whom he has confirmed is the Giulia Costa he seeks.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Shroud's civilian identity; game designer cover"
+        },
+        {
+          "key": "note",
+          "value": "Dating Fortuna as a job to reach Narcinia"
+        },
+        {
+          "key": "note",
+          "value": "Confirms Narcinia is Giulia Costa"
+        },
+        {
+          "key": "note",
+          "value": "Fellow retro-gamer, bonds with Ryan"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Shroud",
+          "rel": "alias of"
+        },
+        {
+          "to": "Narcinia Veran",
+          "rel": "targeting"
+        }
+      ],
+      "chapter": 35
+    },
+    {
+      "name": "Lab Sixty-Six",
+      "kind": "place",
+      "summary": "Dynamis's most heavily defended room, on the sixty-sixth floor of its HQ, where knockoff Elixirs are manufactured. Run by Dr. Tyrano, a dinosaur-obsessed Genius who cloned the Colosseum's dinosaurs. Enrique quit overseeing the Elixir operation after a two-hour visit here, hinting at something sinister; even Augustus's scientists can't reverse-engineer the knockoffs. Vulcan suspects Dynamis tests them on the Meta as guinea pigs.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis's most defended room; 66th floor of HQ"
+        },
+        {
+          "key": "note",
+          "value": "Manufactures knockoff Elixirs"
+        },
+        {
+          "key": "note",
+          "value": "Run by dinosaur-cloning Genius Dr. Tyrano"
+        },
+        {
+          "key": "note",
+          "value": "Enrique fled overseeing it after one visit"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "facility of"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "run by"
+        }
+      ],
+      "chapter": 34
+    },
+    {
+      "name": "Dr. Tyrano",
+      "kind": "character",
+      "summary": "The creepy, four-eyed Genius head scientist of Dynamis's Lab Sixty-Six; obsessed with dinosaurs (he cloned those at the Colosseum Maximus) and only works for Dynamis because they let him breed more reptiles.",
+      "ties": [
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "head scientist"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "employee"
+        }
+      ],
+      "chapter": 34
+    },
+    {
+      "name": "The Malta Conflict",
+      "kind": "lore",
+      "summary": "A past clash that set the Dynamis-Augusti cold war: Dynamis nuked Malta trying to kill Augustus, who retaliated by sinking the island. Hector Manada and Augustus then negotiated a peace agreement, implying Dynamis holds some leverage over Augustus (likely a threat to his family or inner circle).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis nuked Malta to kill Augustus; he sank it in reply"
+        },
+        {
+          "key": "note",
+          "value": "Ended in a Hector-Augustus peace agreement"
+        },
+        {
+          "key": "note",
+          "value": "Implies Dynamis holds leverage over Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "combatant"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "combatant"
+        }
+      ],
+      "chapter": 34
+    },
+    {
+      "name": "Vamp",
+      "kind": "character",
+      "summary": "A foxlike redhead Killer Seven member (real name Livia's companion) who drains her partners dry; the reason she's not built for direct combat. Warned to be avoided.",
+      "ties": [
+        {
+          "to": "The Killer Seven",
+          "rel": "member"
+        }
+      ],
+      "chapter": 35
+    },
+    {
+      "name": "Bacchus",
+      "kind": "character",
+      "summary": "'Father Torque' (Andreas Torque), the Augusti drug-boss running the Bliss operation on Ischia island, framed to his workers (like Narcinia) as a religious mission 'opening the path to heaven.' Preaches that alcohol poisons the soul while manufacturing Bliss; ignorant of tech, he relies on the ghost Mr. Geist for the island's defense.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Andreas Torque, 'Father Torque'; Augusti drug-boss"
+        },
+        {
+          "key": "note",
+          "value": "Runs the Bliss operation on Ischia as a fake religion"
+        },
+        {
+          "key": "note",
+          "value": "Tech-illiterate; relies on Mr. Geist for defense"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Ischia",
+          "rel": "runs op on"
+        }
+      ],
+      "chapter": 36
+    },
+    {
+      "name": "Mr. Geist",
+      "kind": "character",
+      "summary": "A ghost Genome guarding the Augusti's Ischia island Bliss operation; complains he can't be everywhere at once and may 'ascend to Heaven' any time.",
+      "ties": [
+        {
+          "to": "Ischia",
+          "rel": "guards"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        }
+      ],
+      "chapter": 36
+    },
+    {
+      "name": "The Hockey Killer",
+      "kind": "lore",
+      "summary": "A phantom 'vigilante' terrorizing the truth-teller Luigi across loops (beating him with a hockey stick, force-feeding him salami) to keep him from exposing informants at parties. It is secretly Ryan himself, who hates truthsayers because Luigi tends to out his infiltration.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Serial attacker of the truth-teller Luigi"
+        },
+        {
+          "key": "note",
+          "value": "Uses a hockey stick and salami"
+        },
+        {
+          "key": "note",
+          "value": "Secretly Ryan, silencing Luigi across loops"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "is"
+        },
+        {
+          "to": "Luigi",
+          "rel": "targets"
+        }
+      ],
+      "chapter": 35
+    },
+    {
+      "name": "Ryan's Origin",
+      "kind": "lore",
+      "summary": "Ryan was orphaned at 11-12 when bandits wiped out his community for supplies; he was then adopted (partly badly). Over his centuries of loops he spent ~20 years sampling every drug and running a drug cartel, learning to cook meth, cocaine, heroin and more, a past that surfaces when the Ischia Bliss op comes up.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Orphaned at 11-12 by bandits who raided his community"
+        },
+        {
+          "key": "note",
+          "value": "Spent ~20 loop-years as a drug-cartel chemist"
+        },
+        {
+          "key": "note",
+          "value": "Knows how to make most narcotics"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "about"
+        }
+      ],
+      "chapter": 36
     }
   ],
   "plotObservations": [
@@ -3239,6 +3801,79 @@
         "The Chronoradio"
       ],
       "chapter": 30
+    },
+    {
+      "title": "Knight of Faith: Ryan bares his soul",
+      "beat": "At the orphanage, Ryan finally explains his power to Len in full: the Purple World, Schrodinger's-cat bilocation, that saving means suicide, that he may be 500-800 years old and has searched for her the whole time. Len, wracked with guilt, weeps for his loneliness but flinches from his touch, still unable to feel safe near him. She asks him to stay the night rather than keep to his old timing.",
+      "entities": [
+        "Ryan Romano",
+        "Len Sabino",
+        "The Purple World",
+        "Ryan's Power (mechanics)",
+        "The Orphanage"
+      ],
+      "chapter": 31
+    },
+    {
+      "title": "Change of plans and the Meta's true goal",
+      "beat": "Waking to the cat Eugene-Henry, Ryan reassures a frightened Len about the brain-car and hands over his A-bomb to earn her trust. He learns her origin (jailed by Dynamis for attacking a chemical plant, freed by Vulcan into drug-running) and briefs Shroud on the Mechron bunker. Shroud confirms Mechron is dead, begs him to keep the cache secret from the Augusti, and lets slip Leo is coming, meaning Ryan has ~3 weeks before Leo and Augustus clash.",
+      "entities": [
+        "Ryan Romano",
+        "Len Sabino",
+        "Eugene-Henry von Schrodinger",
+        "The Shroud",
+        "The Mechron Bunker",
+        "Mechron's Death"
+      ],
+      "chapter": 32
+    },
+    {
+      "title": "Black Swan: killing Psyshock for good",
+      "beat": "Ryan finds Len in a medicated near-catatonic state but she suits up to defend the orphans. When Psyshock attacks, Ryan reveals his trump: Cancel, whose negation lets her permanently kill the body-jumper (and Mongrel and Mosquito) before he can transfer. Ryan and Len evacuate the orphans via the sewers; Len hints her Chronoradio navigation insight might finally help his power, and Shroud reveals his search for the teenage Giulia Costa.",
+      "entities": [
+        "Ryan Romano",
+        "Len Sabino",
+        "Psyshock",
+        "Cancel",
+        "The Hunt for Giulia Costa"
+      ],
+      "chapter": 33
+    },
+    {
+      "title": "Hit and Run: the Meta vanish",
+      "beat": "With Psyshock dead for good (his death freed his brainwashed thralls citywide), Ryan's optimized Augusti loop sails smoothly until the Meta torch the Junkyard and flee north. Ryan alone grasps the trick: they're slipping away by the bunker's hidden sea route to keep the Mechron cache secret. Torn between committing to a Perfect Run (saving hundreds) and preserving his fragile real progress with Len, he's left agonizing over mutually exclusive consequences.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Adam the Ogre",
+        "The Mechron Bunker",
+        "Len Sabino"
+      ],
+      "chapter": 34
+    },
+    {
+      "title": "Pre-Party: the guests assemble",
+      "beat": "At Jamie's Genome house party Ryan meets Fortuna's new boyfriend Mathias Martel, whom he recognizes as the Shroud in civilian guise, and her sweet adopted sister Narcinia 'Ceres' Veran, who makes animals from her blood. Ryan and Shroud both realize Narcinia is the lost Giulia Costa, Augustus's stolen hostage; Shroud confirms 'it's her' with murder in his eyes. Talk surfaces Felix's estrangement and the mysterious 'Livia.'",
+      "entities": [
+        "Ryan Romano",
+        "Mathias Martel",
+        "Narcinia Veran",
+        "The Shroud",
+        "Giulia"
+      ],
+      "chapter": 35
+    },
+    {
+      "title": "Color Rave and the wager",
+      "beat": "Ryan DJs the rave (brain-in-a-jar, Narcinia's mushrooms, goat fights) as Vulcan reports the Meta escaped by Mechron submarine after Dynamis killstole them. He learns Narcinia works Bacchus's Ischia Bliss op, and meets Livia Augusti/Minerva, Augustus's reality-seeing daughter to whom he is uniquely invisible. On a bet to show her something no timeline predicts, Ryan and Vulcan raid Dynamis HQ, clashing with Enrique on the twentieth floor.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Livia Augusti",
+        "Narcinia Veran",
+        "Enrique Manada"
+      ],
+      "chapter": 36
     }
   ]
 }
