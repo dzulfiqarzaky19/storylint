@@ -297,6 +297,18 @@
           {
             "key": "origin",
             "value": "His time-loop is the unbreakable wish he made when his Elixir bonded to him"
+          },
+          {
+            "key": "note",
+            "value": "Forgives Alchemo, grants a final second chance"
+          },
+          {
+            "key": "confession",
+            "value": "This is his 12th time destroying the world; swears no 13th"
+          },
+          {
+            "key": "plan",
+            "value": "Aerial insertion, grab Tyrano, torch Lab 66, flee before Fallout arrives"
           }
         ],
         "ties": [
@@ -439,6 +451,18 @@
           {
             "to": "reload",
             "rel": "confronts his own Elixir/save-point"
+          },
+          {
+            "to": "alchemo",
+            "rel": "forgives and gives a second chance"
+          },
+          {
+            "to": "len",
+            "rel": "pinky-swears 'together till the end'"
+          },
+          {
+            "to": "black-flux",
+            "rel": "his mysterious new energy"
           }
         ],
         "appearances": [
@@ -523,7 +547,8 @@
           82,
           83,
           84,
-          85
+          85,
+          86
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -808,7 +833,8 @@
           82,
           83,
           84,
-          85
+          85,
+          86
         ],
         "questions": []
       },
@@ -1390,6 +1416,18 @@
           {
             "key": "note",
             "value": "Ryan keeps his promise to Jasmine and won't rekindle romance"
+          },
+          {
+            "key": "note",
+            "value": "Departs on Augustus's orders; scrambles Dynamis comms"
+          },
+          {
+            "key": "warning",
+            "value": "Detects Fallout's radiation inbound, ~1-2 hours out"
+          },
+          {
+            "key": "note",
+            "value": "Sees through Ryan's plushie lie; tells him to skip town"
           }
         ],
         "ties": [
@@ -1428,6 +1466,18 @@
           {
             "to": "mechron",
             "rel": "builds with his tech"
+          },
+          {
+            "to": "augustus",
+            "rel": "obeys her warlord's orders"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "parts as a friend, warns him off"
+          },
+          {
+            "to": "fallout",
+            "rel": "warns of his approach"
           }
         ],
         "appearances": [
@@ -1457,7 +1507,8 @@
           78,
           80,
           83,
-          85
+          85,
+          86
         ],
         "questions": []
       },
@@ -1675,7 +1726,8 @@
           61,
           66,
           69,
-          75
+          75,
+          86
         ],
         "questions": []
       },
@@ -2073,6 +2125,14 @@
           {
             "key": "note",
             "value": "Ryan won't absolve her complicity with Adam ('you're entirely lucid')"
+          },
+          {
+            "key": "arc",
+            "value": "Turns from mutineer to Ryan's loyal rallying voice"
+          },
+          {
+            "key": "note",
+            "value": "Her speech re-motivates the demoralized gang for the raid"
           }
         ],
         "ties": [
@@ -2127,6 +2187,14 @@
           {
             "to": "alchemo",
             "rel": "attempts to back up her memories"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "rallies the gang behind him"
+          },
+          {
+            "to": "frank-the-mad",
+            "rel": "his applause echoes her speech"
           }
         ],
         "appearances": [
@@ -2141,7 +2209,8 @@
           81,
           83,
           84,
-          85
+          85,
+          86
         ],
         "questions": []
       },
@@ -2273,7 +2342,8 @@
           }
         ],
         "appearances": [
-          6
+          6,
+          86
         ],
         "questions": []
       },
@@ -6037,6 +6107,18 @@
           {
             "key": "note",
             "value": "Pollutes Livia's foresight so she can't predict it; appears in Ryan's truck"
+          },
+          {
+            "key": "escalation",
+            "value": "Self-replicating swarm wars on Mount Augustus faster than Augustus can cull"
+          },
+          {
+            "key": "motive",
+            "value": "Wants to 'make a god bleed'; unfinished business with Augustus"
+          },
+          {
+            "key": "note",
+            "value": "Ryan calls it the plushipocalypse / Leporimachia"
           }
         ],
         "ties": [
@@ -6047,11 +6129,24 @@
           {
             "to": "livia-augusti",
             "rel": "blinds her foresight"
+          },
+          {
+            "to": "augustus",
+            "rel": "besieges his villa"
+          },
+          {
+            "to": "mount-augustus",
+            "rel": "overruns the hill"
+          },
+          {
+            "to": "acid-rain",
+            "rel": "prior loop hunt drives its grudge"
           }
         ],
         "appearances": [
           29,
-          82
+          82,
+          86
         ],
         "questions": []
       },
@@ -6249,7 +6344,8 @@
           73,
           77,
           78,
-          81
+          81,
+          86
         ],
         "questions": []
       },
@@ -7138,7 +7234,8 @@
           63,
           66,
           80,
-          84
+          84,
+          86
         ],
         "questions": []
       },
@@ -7195,7 +7292,8 @@
           34,
           57,
           58,
-          83
+          83,
+          86
         ],
         "questions": []
       },
@@ -8592,7 +8690,8 @@
           80,
           83,
           84,
-          85
+          85,
+          86
         ],
         "questions": []
       },
@@ -11482,6 +11581,14 @@
           {
             "key": "note",
             "value": "Livia foresees his involvement ending very badly"
+          },
+          {
+            "key": "note",
+            "value": "Recalled to stop Ryan's raid; ~1-2 hours out per Vulcan's radar"
+          },
+          {
+            "key": "power",
+            "value": "Radiation-based, detectable at long range"
           }
         ],
         "ties": [
@@ -11492,10 +11599,19 @@
           {
             "to": "dynamis",
             "rel": "aligned with"
+          },
+          {
+            "to": "dynamis",
+            "rel": "recalled to defend against Ryan"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "the threat racing to intercept his raid"
           }
         ],
         "appearances": [
-          83
+          83,
+          86
         ],
         "questions": []
       },
@@ -11537,7 +11653,8 @@
           }
         ],
         "appearances": [
-          85
+          85,
+          86
         ],
         "questions": []
       },
@@ -11575,7 +11692,8 @@
           }
         ],
         "appearances": [
-          85
+          85,
+          86
         ],
         "questions": []
       },
@@ -11610,6 +11728,44 @@
         ],
         "appearances": [
           85
+        ],
+        "questions": []
+      },
+      {
+        "id": "black-flux",
+        "kind": "item",
+        "name": "Black Flux",
+        "summary": "CH86: the new energy Ryan brought back from the Black World, detected by the Saturn Armor only when the suit is on and time is frozen. It is a paradox substance: its recorded readings keep CHANGING after being recorded (binary to trinary, numbers to symbols), actively refusing categorization and 'passively altering reality' when insisted upon. Alchemo's scans still read Ryan as an ordinary monocolor Violet Genome with no anomaly, so the Black Flux works on a level beyond physical reality (like the DNA-less ghosts Geist and Ghoul). Vulcan suspects Ryan gained a secondary power linked to the Black World, but he can't yet use it ('UNLIMITED POWAH' does nothing) and doesn't know what it does.",
+        "facts": [
+          {
+            "key": "property",
+            "value": "Readings self-alter after recording; refuses categorization, warps reality"
+          },
+          {
+            "key": "source",
+            "value": "Brought from the Black World; only appears with the Saturn Armor in frozen time"
+          },
+          {
+            "key": "status",
+            "value": "Possible dormant second power Ryan can't yet activate or understand"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "its host"
+          },
+          {
+            "to": "the-black-world",
+            "rel": "its source dimension"
+          },
+          {
+            "to": "the-saturn-armor",
+            "rel": "the only thing that detects it"
+          }
+        ],
+        "appearances": [
+          86
         ],
         "questions": []
       }
@@ -13559,12 +13715,56 @@
           "reload",
           "the-purple-world"
         ]
+      },
+      {
+        "id": "the-second-power",
+        "title": "The Second Power",
+        "summary": "CH86: Aboard the submarine, Ryan, Vulcan, and Alchemo study the Black Flux he brought back from the Black World. The Saturn Armor detects it only in frozen time; its readings self-alter after recording and refuse categorization, warping reality when insisted upon, yet Ryan's bioscan still reads as an ordinary Violet Genome. Vulcan suspects a dormant secondary power linked to the Black World, but Ryan cannot activate or understand it ('UNLIMITED POWAH' does nothing). Alchemo gives up theorizing.",
+        "beats": [
+          {
+            "chapter": 86,
+            "summary": "CH86: Aboard the submarine, Ryan, Vulcan, and Alchemo study the Black Flux he brought back from the Black World. The Saturn Armor detects it only in frozen time; its readings self-alter after recording and refuse categorization, warping reality when insisted upon, yet Ryan's bioscan still reads as an ordinary Violet Genome. Vulcan suspects a dormant secondary power linked to the Black World, but Ryan cannot activate or understand it ('UNLIMITED POWAH' does nothing). Alchemo gives up theorizing."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "black-flux",
+          "the-saturn-armor",
+          "vulcan",
+          "alchemo",
+          "the-black-world"
+        ]
+      },
+      {
+        "id": "the-end-times",
+        "title": "The End Times",
+        "summary": "CH86: The Lab Sixty-Six raid launches against a burning New Rome. Ryan forgives Alchemo (a final second chance, brainmap to Livia) and confesses to Len this is his TWELFTH world-ending, swearing no thirteenth ('together till the end'). The killer-plushie army has escalated into open war on Mount Augustus (the Leporimachia), overrunning Augustus's hill faster than he can cull it. Vulcan departs on Augustus's orders, scrambles Dynamis comms, and warns that Fallout is recalled and ~1-2 hours out. Sarin's rousing speech rallies the demoralized gang, and Ryan leads the assault on the Dynamis tower to grab Dr. Tyrano and torch Lab 66.",
+        "beats": [
+          {
+            "chapter": 86,
+            "summary": "CH86: The Lab Sixty-Six raid launches against a burning New Rome. Ryan forgives Alchemo (a final second chance, brainmap to Livia) and confesses to Len this is his TWELFTH world-ending, swearing no thirteenth ('together till the end'). The killer-plushie army has escalated into open war on Mount Augustus (the Leporimachia), overrunning Augustus's hill faster than he can cull it. Vulcan departs on Augustus's orders, scrambles Dynamis comms, and warns that Fallout is recalled and ~1-2 hours out. Sarin's rousing speech rallies the demoralized gang, and Ryan leads the assault on the Dynamis tower to grab Dr. Tyrano and torch Lab 66."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "len",
+          "alchemo",
+          "sarin",
+          "vulcan",
+          "fallout",
+          "the-killer-rabbit-plushie",
+          "augustus",
+          "mount-augustus",
+          "dr-tyrano",
+          "lab-sixty-six",
+          "frank-the-mad"
+        ]
       }
     ]
   },
   "counts": {
-    "entities": 208,
-    "plotlines": 97,
+    "entities": 209,
+    "plotlines": 99,
     "books": 1
   }
 }

@@ -12126,6 +12126,194 @@
         }
       ],
       "chapter": 85
+    },
+    {
+      "name": "Black Flux",
+      "kind": "item",
+      "summary": "CH86: the new energy Ryan brought back from the Black World, detected by the Saturn Armor only when the suit is on and time is frozen. It is a paradox substance: its recorded readings keep CHANGING after being recorded (binary to trinary, numbers to symbols), actively refusing categorization and 'passively altering reality' when insisted upon. Alchemo's scans still read Ryan as an ordinary monocolor Violet Genome with no anomaly, so the Black Flux works on a level beyond physical reality (like the DNA-less ghosts Geist and Ghoul). Vulcan suspects Ryan gained a secondary power linked to the Black World, but he can't yet use it ('UNLIMITED POWAH' does nothing) and doesn't know what it does.",
+      "facts": [
+        {
+          "key": "property",
+          "value": "Readings self-alter after recording; refuses categorization, warps reality"
+        },
+        {
+          "key": "source",
+          "value": "Brought from the Black World; only appears with the Saturn Armor in frozen time"
+        },
+        {
+          "key": "status",
+          "value": "Possible dormant second power Ryan can't yet activate or understand"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "its host"
+        },
+        {
+          "to": "The Black World",
+          "rel": "its source dimension"
+        },
+        {
+          "to": "The Saturn Armor",
+          "rel": "the only thing that detects it"
+        }
+      ],
+      "chapter": 86
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH86: launches the Lab Sixty-Six raid. He puzzles over his new Black Flux (a possible unusable second power), then formally forgives Alchemo, granting him a second chance (send his brainmap to Livia) with a hard 'no third chance' warning, embodying his new resolve to extend a hand rather than stay alone. He confesses to Len this will be his TWELFTH time destroying the world, swearing there won't be a thirteenth, and they pinky-swear 'together till the end.' The plan: Mosquito flies Ryan and Len up while minions and Toasty's robots storm the tower; grab Dr. Tyrano, torch Lab 66, flee before Dynamis mobilizes. Complication: Fallout is recalled, ~1-2 hours out.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Forgives Alchemo, grants a final second chance"
+        },
+        {
+          "key": "confession",
+          "value": "This is his 12th time destroying the world; swears no 13th"
+        },
+        {
+          "key": "plan",
+          "value": "Aerial insertion, grab Tyrano, torch Lab 66, flee before Fallout arrives"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "forgives and gives a second chance"
+        },
+        {
+          "to": "Len",
+          "rel": "pinky-swears 'together till the end'"
+        },
+        {
+          "to": "Black Flux",
+          "rel": "his mysterious new energy"
+        }
+      ],
+      "chapter": 86
+    },
+    {
+      "name": "The Killer Rabbit Plushie",
+      "kind": "character",
+      "summary": "CH86: its rampage escalates into open war on Mount Augustus, which Ryan dubs the plushipocalypse/Leporimachia. A self-replicating tide of white fur overwhelms the entire hill toward Augustus's villa, replicating faster than even Augustus can kill it (forcing Dynamis to mobilize everyone). Ryan reads its motive as unfinished business: it vanished after Augustus slew Acid Rain in a prior loop, and now it wants to hunt bigger game, 'to make a god bleed.' Its plushies also besiege New Rome (missing children, daycare attacks). Whoever wins the hill, the city is doomed.",
+      "facts": [
+        {
+          "key": "escalation",
+          "value": "Self-replicating swarm wars on Mount Augustus faster than Augustus can cull"
+        },
+        {
+          "key": "motive",
+          "value": "Wants to 'make a god bleed'; unfinished business with Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Ryan calls it the plushipocalypse / Leporimachia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "besieges his villa"
+        },
+        {
+          "to": "Mount Augustus",
+          "rel": "overruns the hill"
+        },
+        {
+          "to": "Acid Rain",
+          "rel": "prior loop hunt drives its grudge"
+        }
+      ],
+      "chapter": 86
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH86: fully redeemed from mutineer to Ryan's most fervent believer. When the demoralized gang wants to flee (Mongrel, Mosquito, Acid Rain all wavering), Sarin delivers a rousing, unexpectedly charismatic speech casting Ryan as an unbeatable cheating gambler who ran circles around Adam, Dynamis, Augustus, and the Carnival: 'This guy brings a nuclear bomb to a gunfight and wins his wars with a goddamn alien... Would you bet against a cheater? I say we burn [the house]!' Frank's applause turns the tide and rallies everyone. She reminds Ryan of his cure-promise ('I'll haunt you').",
+      "facts": [
+        {
+          "key": "arc",
+          "value": "Turns from mutineer to Ryan's loyal rallying voice"
+        },
+        {
+          "key": "note",
+          "value": "Her speech re-motivates the demoralized gang for the raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "rallies the gang behind him"
+        },
+        {
+          "to": "Frank the Mad",
+          "rel": "his applause echoes her speech"
+        }
+      ],
+      "chapter": 86
+    },
+    {
+      "name": "Vulcan",
+      "kind": "character",
+      "summary": "CH86: parts ways with Ryan before the raid on Augustus's orders (she won't disobey her father-figure warlord for Ryan's sake: 'that mofo is more lethal than Ebola'). She sees through his lie about the killer-plushie ('I'm a Genius, but I'm also a genius, so don't f--- with me') and tells him to skip town so they don't end up enemies. She scrambles Dynamis's comms on the way out and, crucially, warns Ryan her radars detected a radiation spike west: Fallout has been recalled, ~1-2 hours out. She warns Len not to hang around Ryan ('he's going to live fast and die young').",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Departs on Augustus's orders; scrambles Dynamis comms"
+        },
+        {
+          "key": "warning",
+          "value": "Detects Fallout's radiation inbound, ~1-2 hours out"
+        },
+        {
+          "key": "note",
+          "value": "Sees through Ryan's plushie lie; tells him to skip town"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "obeys her warlord's orders"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "parts as a friend, warns him off"
+        },
+        {
+          "to": "Fallout",
+          "rel": "warns of his approach"
+        }
+      ],
+      "chapter": 86
+    },
+    {
+      "name": "Fallout",
+      "kind": "character",
+      "summary": "CH86: recalled by Dynamis (with Hector's star fading) to defend against Ryan's raid, turning the mission into a race against a ticking clock. Vulcan's radars pick up his radiation signature approaching from the west, ~1-2 hours out. A radiation-based powerhouse fast enough that his arrival would make the Lab 66 raid extraordinarily more dangerous, prompting Ryan to joke about 'making a new Chernobyl.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Recalled to stop Ryan's raid; ~1-2 hours out per Vulcan's radar"
+        },
+        {
+          "key": "power",
+          "value": "Radiation-based, detectable at long range"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "recalled to defend against Ryan"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "the threat racing to intercept his raid"
+        }
+      ],
+      "chapter": 86
     }
   ],
   "plotObservations": [
@@ -13497,6 +13685,38 @@
         "The Purple World"
       ],
       "chapter": 85
+    },
+    {
+      "title": "The Second Power",
+      "beat": "CH86: Aboard the submarine, Ryan, Vulcan, and Alchemo study the Black Flux he brought back from the Black World. The Saturn Armor detects it only in frozen time; its readings self-alter after recording and refuse categorization, warping reality when insisted upon, yet Ryan's bioscan still reads as an ordinary Violet Genome. Vulcan suspects a dormant secondary power linked to the Black World, but Ryan cannot activate or understand it ('UNLIMITED POWAH' does nothing). Alchemo gives up theorizing.",
+      "entities": [
+        "Ryan Romano",
+        "Black Flux",
+        "The Saturn Armor",
+        "Vulcan",
+        "Alchemo",
+        "The Black World"
+      ],
+      "chapter": 86
+    },
+    {
+      "title": "The End Times",
+      "beat": "CH86: The Lab Sixty-Six raid launches against a burning New Rome. Ryan forgives Alchemo (a final second chance, brainmap to Livia) and confesses to Len this is his TWELFTH world-ending, swearing no thirteenth ('together till the end'). The killer-plushie army has escalated into open war on Mount Augustus (the Leporimachia), overrunning Augustus's hill faster than he can cull it. Vulcan departs on Augustus's orders, scrambles Dynamis comms, and warns that Fallout is recalled and ~1-2 hours out. Sarin's rousing speech rallies the demoralized gang, and Ryan leads the assault on the Dynamis tower to grab Dr. Tyrano and torch Lab 66.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Alchemo",
+        "Sarin",
+        "Vulcan",
+        "Fallout",
+        "The Killer Rabbit Plushie",
+        "Augustus",
+        "Mount Augustus",
+        "Dr. Tyrano",
+        "Lab Sixty-Six",
+        "Frank the Mad"
+      ],
+      "chapter": 86
     }
   ]
 }
