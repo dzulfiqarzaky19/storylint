@@ -14948,6 +14948,114 @@
         }
       ],
       "chapter": 103
+    },
+    {
+      "name": "Geist",
+      "kind": "character",
+      "summary": "CH104 'Return of the Cashmere': the Yellow Genome ghost guarding Ischia's Bliss Factory turns out to be a lazy, bored, phenomenally powerful telekinetic who can manifest a house-sized skull anywhere on his haunting ground, raise sand tsunamis, wall the fortress in Yellow-World tornado dust, and shapeshift into a golden bone colossus. He senses corporeal intruders (Sarin's gas) but not fliers who never touch his ground (a conceptual Yellow-Genome limit, like Monaco). Bound 15 years to the toxic island, unable to taste, touch, sleep, or dream, he has waited for Father Torque to exorcise him 'back to Heaven'; when Ryan's Black Flux fist finally cracks and then splits his ectoplasm, he weeps tears of JOY and begs for the killing blow. Ryan reluctantly grants it, dissipating Geist for good and stripping the factory of its true defense. Even Cancel and Pluto could never kill him before.",
+      "facts": [
+        {
+          "key": "fate",
+          "value": "Killed by Ryan's Black Flux at his own eager request (CH104)"
+        },
+        {
+          "key": "powers",
+          "value": "Telekinesis, sand-raising, Yellow-World dust walls, shapeshifting"
+        },
+        {
+          "key": "binding",
+          "value": "Bound 15 years to Ischia by Torque's exorcism promise"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Black Flux",
+          "rel": "the only force that could harm and end him"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "'Father Torque', who promised to exorcise him"
+        },
+        {
+          "to": "Castello Aragonese",
+          "rel": "his haunting ground and the fortress he guarded"
+        }
+      ],
+      "chapter": 104
+    },
+    {
+      "name": "Black Flux",
+      "kind": "concept",
+      "summary": "CH104: proven to be the gift the Black World's Ultimate One granted Ryan when he prayed for an end to his immortality: the power to harm the invulnerable and kill those who cannot die (including, potentially, himself). It works ONLY during a time-stop, because it aligns Earth's reality with the Purple World (the crossroads of all space and time) to draw Black-World energy. Ryan's ordinary attacks phase through the ghost Geist, but a Black-Flux-charged punch during a frozen instant tears through his intangible ectoplasm 'like a black hole with stardust' and cancels his immortality outright.",
+      "facts": [
+        {
+          "key": "true nature",
+          "value": "Power to kill the unkillable, granted by the Black Ultimate One"
+        },
+        {
+          "key": "condition",
+          "value": "Only functions during a time-stop (aligns Earth with Purple World)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Geist",
+          "rel": "used to cancel his immortality"
+        },
+        {
+          "to": "The Black World",
+          "rel": "its source dimension"
+        }
+      ],
+      "chapter": 104
+    },
+    {
+      "name": "The Yellow World",
+      "kind": "location",
+      "summary": "CH104: the yellow-colored higher dimension parallel to the Purple, Blue, and Black Worlds, source of the glittering supernatural dust Geist draws upon. Its Yellow Genomes reason in conceptual, abstract 'laws' rather than scientific rules (like Monaco's logic), which is why Geist can sense anyone technically standing on his haunting ground but not fliers who never touch it. Ryan speculates each colored World has its own Ultimate One exerting a moth-to-flame pull on the Genomes tied to it.",
+      "facts": [
+        {
+          "key": "domain",
+          "value": "Yellow Genomes; conceptual/abstract-law powers"
+        },
+        {
+          "key": "manifestation",
+          "value": "The glittering dust Geist shapes into skulls, walls, colossi"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Geist",
+          "rel": "a Yellow Genome drawing on its dust"
+        }
+      ],
+      "chapter": 104
+    },
+    {
+      "name": "Castello Aragonese",
+      "kind": "location",
+      "summary": "CH104: falls in the Carnival-route assault. After Ryan kills Geist, the fortress is defenseless; Shroud hacks a terminal (Livia's codes) to open the doors, scramble comms, and feed Vulcan a cover story (a repelled Psycho raid), while Mr. Wave piles 200 guards unconscious in minutes. Inside, the group finds the Bliss production core: a glass garden of blue-petal/yellow-core flowers harvested by hazmat workers, refined into blue Bliss powder at multi-ton-per-day scale, with an incinerator running full-time on the waste. Deeper still is Bacchus's secret horror: pig-sized pens holding ~23 living and one dead mind-scrambled human test subjects, blue-veined from Bliss overdoses, used to try to contact the Blue Ultimate One. Ryan photographs it, frees them, and orders the whole factory buried.",
+      "facts": [
+        {
+          "key": "event",
+          "value": "Bliss Factory destroyed; Bacchus's human-testing pens exposed"
+        },
+        {
+          "key": "scale",
+          "value": "Multi-ton/day Bliss output; incinerator disposing of dead test subjects"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Geist",
+          "rel": "its fall followed his death"
+        },
+        {
+          "to": "Bacchus",
+          "rel": "site of his secret human experiments"
+        }
+      ],
+      "chapter": 104
     }
   ],
   "plotObservations": [
@@ -16708,6 +16816,24 @@
         "Geist"
       ],
       "chapter": 103
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH104 'Return of the Cashmere': the Carnival-route assault razes Ischia's Bliss Factory. Sarin (gaseous) sabotages defenses overnight; then Len's Cthulhu-mech, Sarin's new rust-proof armor, Mr. Wave, and King Saturn (Ryan) storm the fortress while Shroud infiltrates on Livia's codes. Ryan discovers his Black Flux only works during time-stop and uses it to crack, then split, the immortal ghost Geist, who begs joyfully for the death he's craved for 15 years. With Geist gone the factory falls in minutes; Shroud downloads the production data, wipes footage, and feeds Vulcan a cover story. Deeper in they find Bacchus's secret pens of ~23 mind-scrambled human Bliss test subjects. Ryan photographs the atrocity, frees them, and vows to bury the factory with Bacchus inside on his Perfect Run.",
+      "entities": [
+        "Ryan Romano",
+        "Geist",
+        "Black Flux",
+        "Castello Aragonese",
+        "Mr. Wave",
+        "Sarin",
+        "Len",
+        "Mr. See-Through",
+        "Bacchus",
+        "Vulcan",
+        "The Yellow World"
+      ],
+      "chapter": 104
     }
   ]
 }

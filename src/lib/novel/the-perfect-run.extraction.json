@@ -792,7 +792,8 @@
           99,
           101,
           102,
-          103
+          103,
+          104
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1167,7 +1168,8 @@
           96,
           97,
           102,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -1848,7 +1850,8 @@
           92,
           96,
           97,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -2649,7 +2652,8 @@
           95,
           96,
           97,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -3538,12 +3542,38 @@
           {
             "key": "note",
             "value": "Can fly and turn invisible"
+          },
+          {
+            "key": "fate",
+            "value": "Killed by Ryan's Black Flux at his own eager request (CH104)"
+          },
+          {
+            "key": "powers",
+            "value": "Telekinesis, sand-raising, Yellow-World dust walls, shapeshifting"
+          },
+          {
+            "key": "binding",
+            "value": "Bound 15 years to Ischia by Torque's exorcism promise"
           }
         ],
-        "ties": [],
+        "ties": [
+          {
+            "to": "black-flux",
+            "rel": "the only force that could harm and end him"
+          },
+          {
+            "to": "bacchus",
+            "rel": "'Father Torque', who promised to exorcise him"
+          },
+          {
+            "to": "castello-aragonese",
+            "rel": "his haunting ground and the fortress he guarded"
+          }
+        ],
         "appearances": [
           9,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -6219,7 +6249,8 @@
           38,
           66,
           101,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -12915,7 +12946,8 @@
           96,
           97,
           102,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -13142,6 +13174,14 @@
           {
             "key": "status",
             "value": "Possible dormant second power Ryan can't yet activate or understand"
+          },
+          {
+            "key": "true nature",
+            "value": "Power to kill the unkillable, granted by the Black Ultimate One"
+          },
+          {
+            "key": "condition",
+            "value": "Only functions during a time-stop (aligns Earth with Purple World)"
           }
         ],
         "ties": [
@@ -13156,11 +13196,16 @@
           {
             "to": "the-saturn-armor",
             "rel": "the only thing that detects it"
+          },
+          {
+            "to": "geist",
+            "rel": "used to cancel his immortality"
           }
         ],
         "appearances": [
           86,
-          88
+          88,
+          104
         ],
         "questions": []
       },
@@ -13294,7 +13339,8 @@
         "appearances": [
           89,
           90,
-          103
+          103,
+          104
         ],
         "questions": []
       },
@@ -13932,6 +13978,14 @@
           {
             "key": "defenses",
             "value": "Geist, hidden turrets, power-armor soldiers, Genomes"
+          },
+          {
+            "key": "event",
+            "value": "Bliss Factory destroyed; Bacchus's human-testing pens exposed"
+          },
+          {
+            "key": "scale",
+            "value": "Multi-ton/day Bliss output; incinerator disposing of dead test subjects"
           }
         ],
         "ties": [
@@ -13946,10 +14000,45 @@
           {
             "to": "bacchus",
             "rel": "runs the Bliss lab here"
+          },
+          {
+            "to": "geist",
+            "rel": "its fall followed his death"
+          },
+          {
+            "to": "bacchus",
+            "rel": "site of his secret human experiments"
           }
         ],
         "appearances": [
-          103
+          103,
+          104
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-yellow-world",
+        "kind": "location",
+        "name": "The Yellow World",
+        "summary": "CH104: the yellow-colored higher dimension parallel to the Purple, Blue, and Black Worlds, source of the glittering supernatural dust Geist draws upon. Its Yellow Genomes reason in conceptual, abstract 'laws' rather than scientific rules (like Monaco's logic), which is why Geist can sense anyone technically standing on his haunting ground but not fliers who never touch it. Ryan speculates each colored World has its own Ultimate One exerting a moth-to-flame pull on the Genomes tied to it.",
+        "facts": [
+          {
+            "key": "domain",
+            "value": "Yellow Genomes; conceptual/abstract-law powers"
+          },
+          {
+            "key": "manifestation",
+            "value": "The glittering dust Geist shapes into skulls, walls, colossi"
+          }
+        ],
+        "ties": [
+          {
+            "to": "geist",
+            "rel": "a Yellow Genome drawing on its dust"
+          }
+        ],
+        "appearances": [
+          104
         ],
         "questions": []
       }
@@ -16121,6 +16210,10 @@
           {
             "chapter": 103,
             "summary": "CH103 'Drug Bust': scouting Ischia's Bliss Superlab during Vulcan's security inspection, Ryan discovers Bacchus is Andreas Torque, the ascended ex-Cardinal from CH100, a Bliss-cooking fanatic who reveres the Alchemist/Eva Fabre as a prophet and craves return to the Blue Ultimate One. Ryan extracts Station Orpheon's coordinates (Bacchus believes it emptied after a violet flash) and, sickened by the priest's endorsement of Bliss's mass sterilization, commits to razing the lab. Donning improved Saturn armor, he stages the assault with Len, Sarin, and Shroud while the Augusti high command attends the Olympians meeting, noticing his Black Flux power has grown stronger between loops. Mr. Wave arrives as a surprise ally."
+          },
+          {
+            "chapter": 104,
+            "summary": "CH104 'Return of the Cashmere': the Carnival-route assault razes Ischia's Bliss Factory. Sarin (gaseous) sabotages defenses overnight; then Len's Cthulhu-mech, Sarin's new rust-proof armor, Mr. Wave, and King Saturn (Ryan) storm the fortress while Shroud infiltrates on Livia's codes. Ryan discovers his Black Flux only works during time-stop and uses it to crack, then split, the immortal ghost Geist, who begs joyfully for the death he's craved for 15 years. With Geist gone the factory falls in minutes; Shroud downloads the production data, wipes footage, and feeds Vulcan a cover story. Deeper in they find Bacchus's secret pens of ~23 mind-scrambled human Bliss test subjects. Ryan photographs the atrocity, frees them, and vows to bury the factory with Bacchus inside on his Perfect Run."
           }
         ],
         "entities": [
@@ -16187,13 +16280,15 @@
           "alchemo",
           "castello-aragonese",
           "mr-wave",
-          "geist"
+          "geist",
+          "black-flux",
+          "the-yellow-world"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 236,
+    "entities": 237,
     "plotlines": 104,
     "books": 1
   }
