@@ -32,7 +32,7 @@ import {
   insertResearchThread,
   getNextResearchThreadSortOrder,
   insertResearchTurnPair,
-  deleteThread as deleteThreadRow,
+  deleteLastThreadGuarded,
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import type { Kind, Shelf, ResearchScope } from "../domain/types";
@@ -481,13 +481,19 @@ export async function createThread(input?: {
 // (schema.sql:93), so deleting the thread row does NOT cascade to its turns —
 // the mutation removes turns FIRST, then the thread row, in one txn (props and
 // kept_cards cascade from turns). Not a wiki write; needs no confirmation token.
+// R3 floor: refuses a world's LAST thread (deleteLastThreadGuarded) so a raw call
+// can't empty a live world's rail — the UI hides the trash at one thread (E13), but
+// a direct action call had no such guard.
 export async function deleteThread(input: {
   threadId: string;
 }): Promise<ActionResult<{ threadId: string }>> {
   const threadId = (input.threadId ?? "").trim();
   if (!threadId) return { ok: false, error: "No thread to delete." };
   try {
-    await deleteThreadRow(threadId);
+    const deleted = await deleteLastThreadGuarded(threadId);
+    if (!deleted) {
+      return { ok: false, error: "Can't delete a world's last thread." };
+    }
     return { ok: true, data: { threadId } };
   } catch (err) {
     return { ok: false, error: errMessage(err) };

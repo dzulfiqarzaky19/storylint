@@ -1104,6 +1104,39 @@ export async function deleteThread(threadId: string): Promise<void> {
   });
 }
 
+/**
+ * R3 last-thread floor: delete a thread ONLY if it is not the last one in its
+ * world, so a live world's /research rail never drops to zero (the UI's
+ * removeThread re-opens a fresh thread on the client, but a raw action call had
+ * no such guard - this closes that hole server-side).
+ *
+ * Race-safe by construction: the count and the delete share ONE transaction, and
+ * the count locks the world's thread rows with FOR UPDATE, so two concurrent
+ * deletes cannot both observe count > 1 and drive the world to zero. A thread with
+ * NULL world_id has no world floor to protect and is always deletable. Returns
+ * false (deleted nothing) when the thread is its world's last one, so the caller
+ * can surface a "can't delete the last thread" error instead of a silent no-op.
+ */
+export async function deleteLastThreadGuarded(threadId: string): Promise<boolean> {
+  return withTransaction(async (client) => {
+    const owner = await client.query<{ world_id: string | null }>(
+      `SELECT world_id FROM research_threads WHERE id = $1`,
+      [threadId],
+    );
+    const worldId = owner.rows[0]?.world_id ?? null;
+    if (worldId !== null) {
+      const siblings = await client.query(
+        `SELECT id FROM research_threads WHERE world_id = $1 FOR UPDATE`,
+        [worldId],
+      );
+      if (siblings.rowCount !== null && siblings.rowCount <= 1) return false;
+    }
+    await client.query(`DELETE FROM research_turns WHERE thread_id = $1`, [threadId]);
+    await client.query(`DELETE FROM research_threads WHERE id = $1`, [threadId]);
+    return true;
+  });
+}
+
 /** Update a research thread's title (F2a auto-title). Parameterized. */
 export async function updateThreadTitle(input: {
   threadId: string;
