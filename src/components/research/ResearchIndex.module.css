@@ -76,8 +76,16 @@
   min-height: 40px;
 }
 
-.item:hover {
+/* Hover tint only on non-active rows. The active row is dark ink with white
+   text, so painting it the light --surface on hover would put white text on a
+   white background (invisible). Keep the active row dark and darken it slightly
+   for hover feedback instead. */
+.item:not(.itemActive):hover {
   background: var(--surface);
+}
+
+.itemActive:hover {
+  background: color-mix(in srgb, var(--ink) 88%, #fff);
 }
 
 /* Inline rename input: occupies the same box as the select button while editing
@@ -112,6 +120,13 @@
 
 .itemRow .item {
   padding-right: 80px;
+}
+
+/* Wrapper around the rename+delete buttons. On desktop it is display:contents
+   so each button still positions absolutely against the .itemRow; on the touch
+   tier (media query) it becomes a real flex row that sits below the name. */
+.rowActions {
+  display: contents;
 }
 
 /* Row actions (rename + delete) share one absolutely-placed cluster at the row's
@@ -261,5 +276,36 @@
     overflow-y: auto;
     max-height: 50vh;
     padding: 0 var(--gutter, 24px) 20px;
+  }
+
+  /* Touch tier has no hover, so the rename/delete actions can't hide-until-hover.
+     Instead of floating them over the (untruncated, possibly wrapping) name where
+     they overlap the text, the row becomes two rows: the full-width select button
+     on top, the two smaller icon actions on their own bottom row, right-aligned.
+     Nothing overlaps and both stay comfortably tappable. */
+  .itemRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .itemRow .item {
+    padding-right: 8px;
+  }
+
+  .rowActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    padding: 2px 4px 6px;
+  }
+
+  .rowAction {
+    position: static;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 32px;
+    height: 32px;
+    opacity: 1;
   }
 }

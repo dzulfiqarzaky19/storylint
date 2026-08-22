@@ -183,30 +183,35 @@ export default function ResearchIndex({
                   ) : null}
                 </button>
               )}
-              {onRename && editingId !== t.id ? (
-                <button
-                  type="button"
-                  className={styles.rowAction}
-                  data-slot="rename"
-                  aria-label={`Rename thread "${shownTitle}"`}
-                  title="Rename thread"
-                  onClick={() => setEditingId(t.id)}
-                >
-                  <PencilIcon />
-                </button>
-              ) : null}
-              {onDelete && threads.length > 1 && editingId !== t.id ? (
-                <button
-                  type="button"
-                  className={`${styles.rowAction} ${styles.trash}`}
-                  aria-label={`Delete thread "${t.title}"`}
-                  title="Delete thread"
-                  onClick={() =>
-                    setPendingDelete({ id: t.id, title: shownTitle })
-                  }
-                >
-                  <TrashIcon />
-                </button>
+              {(onRename || (onDelete && threads.length > 1)) &&
+              editingId !== t.id ? (
+                <div className={styles.rowActions}>
+                  {onRename ? (
+                    <button
+                      type="button"
+                      className={styles.rowAction}
+                      data-slot="rename"
+                      aria-label={`Rename thread "${shownTitle}"`}
+                      title="Rename thread"
+                      onClick={() => setEditingId(t.id)}
+                    >
+                      <PencilIcon />
+                    </button>
+                  ) : null}
+                  {onDelete && threads.length > 1 ? (
+                    <button
+                      type="button"
+                      className={`${styles.rowAction} ${styles.trash}`}
+                      aria-label={`Delete thread "${t.title}"`}
+                      title="Delete thread"
+                      onClick={() =>
+                        setPendingDelete({ id: t.id, title: shownTitle })
+                      }
+                    >
+                      <TrashIcon />
+                    </button>
+                  ) : null}
+                </div>
               ) : null}
             </div>
           </li>
