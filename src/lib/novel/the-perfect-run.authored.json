@@ -16188,6 +16188,106 @@
         }
       ],
       "chapter": 116
+    },
+    {
+      "name": "Felix",
+      "kind": "character",
+      "summary": "CH117 (comes to believe / joins the mission): aboard the submarine Felix demands Ryan prove he is a time-traveler. Ryan can't reload on demand, so he recounts an unrepeatable private memory (Felix tracking rats to a Bliss-overdosed Ki-jung, and Narcinia's parents' 'greater good of the family' line) that only the real Felix ever knew - convincing him it's time-travel, not mind-reading. Ryan reveals this is his ~16th New Rome reload, that in a past loop they were close partners ('Quicksave the Pandas') and Felix's sister Livia died to save him, and that Jamie and Ki-jung died protecting Felix believing he hated them. Grief-stricken, Felix resolves to take the second chance and formally joins Ryan's endgame, accepting a 'boss rush' against his own parents and godfather. Then they sight the coast: New Rome is on fire again.",
+      "facts": [
+        {
+          "key": "believes now",
+          "value": "Convinced by an unrepeatable private memory; knows Ryan is a time-traveler on his ~16th loop"
+        },
+        {
+          "key": "commitment",
+          "value": "Joins the endgame to make amends to Jamie and Ki-jung, even fighting his own family"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "past partner ('Quicksave the Pandas'); now recruited again"
+        },
+        {
+          "to": "Livia",
+          "rel": "sister who died saving him in a prior loop"
+        }
+      ],
+      "chapter": 117
+    },
+    {
+      "name": "Mr. Wave",
+      "kind": "character",
+      "summary": "CH117 (father-figure reveal): Ryan comes clean to Mr. Wave that he's a time-traveler; Mr. Wave, unfazed ('only half of my boasts are exaggerations... I've seen crazier things than time travel'), reveals he already knew and is proud. Ryan confesses Mr. Wave is his hero - saved him from explosions 20+ times, sat at his bedside every death, once toured Italy's coast at 'lightspeed' to find Len - and that with his parents dead and Bloodstream no model, Ryan tried to become more like him. Mr. Wave, a comedian before becoming a 'living spotlight,' explains his relentless jokes: on the road one in four newbies dies, so he carries the show to keep his grieving teammates going. Paternal parting: 'Don't let her go, Ryan.'",
+      "facts": [
+        {
+          "key": "reveal",
+          "value": "Was a comedian first; jokes to keep grieving teammates going; knew Ryan time-travels and is proud"
+        },
+        {
+          "key": "to Ryan",
+          "value": "hero and surrogate father Ryan consciously modeled himself on"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "hero/father-figure who saved him 20+ times across loops"
+        }
+      ],
+      "chapter": 117
+    },
+    {
+      "name": "The Chronoradio",
+      "kind": "item",
+      "summary": "CH117 (multi-mind upgrade): confirming (via Bianca's cure) that a Genome's consciousness exists in intangible Flux form, Alchemo says he can refine the Underdiver's Chronoradio to send FIVE or SIX mindmaps back through time in one reload, not just Livia's - and brain matter is no longer mandatory, so anyone can be sent (though a few Geniuses are advised). This transforms the endgame plan: instead of arriving alone, reloading Livia's mind, rebuilding the scanner, and only then rallying allies (a delay during which Adam sends Rust Town captives to die at Mechron's bunker), Ryan can now bring a whole pre-briefed team - Livia, Shortie/Len, Shroud (already active, ending his assassin campaign), Bianca, and ideally a Dynamis insider - to hit the Meta-Gang immediately on reload.",
+      "facts": [
+        {
+          "key": "upgrade",
+          "value": "Refined to carry 5-6 mindmaps per reload; brain matter no longer required"
+        },
+        {
+          "key": "impact",
+          "value": "Enables an instant multi-person strike team on reload instead of a slow solo rebuild"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "the Genius refining it"
+        },
+        {
+          "to": "The Perfect Run",
+          "rel": "reshapes the endgame into a coordinated team reload"
+        }
+      ],
+      "chapter": 117
+    },
+    {
+      "name": "The Perfect Run",
+      "kind": "concept",
+      "summary": "CH117 (endgame reshaped): with the Chronoradio able to carry 5-6 minds back, Ryan's final plan crystallizes into a coordinated team-reload strike. Slots (approx): Livia and Shortie/Len locked in; Shroud (already active) a safe pick that also pre-empts his assassin campaign; Bianca to break Mechron's bunker; two-to-three flex spots, ideally including a Dynamis insider. Goal: on reload, immediately confront the Meta-Gang before Big Fat Adam can sacrifice more Rust Town captives at the bunker. Aftercare goals also set: mass-produce the Psycho cure across Europe (via Enrique Manada, not the rest), knowing Elixirs will vanish from circulation in ~10 years so future Genomes are born, not made. But the plan is upended on arrival: New Rome is on fire again - Augustus struck while Ryan was in Antarctica.",
+      "facts": [
+        {
+          "key": "final-plan",
+          "value": "Team-reload strike (Livia, Len, Shroud, Bianca, +Dynamis insider) to hit the Meta-Gang instantly"
+        },
+        {
+          "key": "complication",
+          "value": "New Rome is aflame on their return - Augustus acted in Ryan's absence"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Chronoradio",
+          "rel": "the multi-mind upgrade that enables the team reload"
+        },
+        {
+          "to": "New Rome",
+          "rel": "burning again on arrival, forcing the next crisis"
+        }
+      ],
+      "chapter": 117
     }
   ],
   "plotObservations": [
@@ -18221,6 +18321,27 @@
         "Alphonse Manada"
       ],
       "chapter": 116
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH117 'Making Waves': on the submarine home, Bianca demos her cleanly-separated powers (Orange gas no longer corrosive, Red intact) and pledges loyalty; the team debates mass-producing the Psycho cure across Europe (Enrique Manada as a possible partner) and Stitch projects Elixirs will vanish from circulation in ~10 years, so future Genomes will be born, not made. Ryan comes clean to Mr. Wave, his hero and surrogate father, who already knew and is proud. Alchemo reports a breakthrough: since a Genome's consciousness is intangible Flux, he can refine the Chronoradio to send 5-6 mindmaps back per reload (brain matter no longer required) - reshaping the endgame into a coordinated team-reload strike (Livia, Len, Shroud, Bianca, plus a Dynamis insider) to hit the Meta-Gang instantly. Ryan then convinces a skeptical Felix he's a time-traveler via an unrepeatable private memory; Felix, learning his sister died for him and that he condemned the now-dead Jamie and Ki-jung, commits to the mission. Arriving at the coast, they find New Rome ablaze again - Augustus struck in Ryan's absence.",
+      "entities": [
+        "Ryan Romano",
+        "Sarin",
+        "Mr. Wave",
+        "Alchemo",
+        "The Chronoradio",
+        "The Perfect Run",
+        "Felix",
+        "Livia",
+        "New Rome",
+        "Augustus",
+        "Leo Hargraves",
+        "Mr. See-Through",
+        "Enrique Manada",
+        "Stitch"
+      ],
+      "chapter": 117
     }
   ]
 }

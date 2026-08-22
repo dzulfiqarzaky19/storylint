@@ -852,7 +852,8 @@
           113,
           114,
           115,
-          116
+          116,
+          117
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1365,7 +1366,8 @@
         "ties": [],
         "appearances": [
           1,
-          69
+          69,
+          117
         ],
         "questions": []
       },
@@ -2233,7 +2235,8 @@
           105,
           106,
           107,
-          112
+          112,
+          117
         ],
         "questions": []
       },
@@ -2348,7 +2351,8 @@
           112,
           113,
           114,
-          115
+          115,
+          117
         ],
         "questions": []
       },
@@ -2819,7 +2823,8 @@
           113,
           114,
           115,
-          116
+          116,
+          117
         ],
         "questions": []
       },
@@ -3743,15 +3748,33 @@
         "kind": "lore",
         "name": "The Perfect Run",
         "summary": "Ryan's guiding philosophy: gather every scrap of information across countless loops, then spend one final loop engineering the optimal chain of events for the best possible outcome, and only then set a new save point and move on.",
-        "facts": [],
+        "facts": [
+          {
+            "key": "final-plan",
+            "value": "Team-reload strike (Livia, Len, Shroud, Bianca, +Dynamis insider) to hit the Meta-Gang instantly"
+          },
+          {
+            "key": "complication",
+            "value": "New Rome is aflame on their return - Augustus acted in Ryan's absence"
+          }
+        ],
         "ties": [
           {
             "to": "ryan-romano",
             "rel": "philosophy of"
+          },
+          {
+            "to": "the-chronoradio",
+            "rel": "the multi-mind upgrade that enables the team reload"
+          },
+          {
+            "to": "new-rome",
+            "rel": "burning again on arrival, forcing the next crisis"
           }
         ],
         "appearances": [
-          7
+          7,
+          117
         ],
         "questions": []
       },
@@ -4615,7 +4638,8 @@
           90,
           91,
           93,
-          97
+          97,
+          117
         ],
         "questions": []
       },
@@ -6038,6 +6062,14 @@
           {
             "key": "backup",
             "value": "Brought Wyvern and Private Security"
+          },
+          {
+            "key": "believes now",
+            "value": "Convinced by an unrepeatable private memory; knows Ryan is a time-traveler on his ~16th loop"
+          },
+          {
+            "key": "commitment",
+            "value": "Joins the endgame to make amends to Jamie and Ki-jung, even fighting his own family"
           }
         ],
         "ties": [
@@ -6072,6 +6104,14 @@
           {
             "to": "wyvern",
             "rel": "his backup at the rescue"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "past partner ('Quicksave the Pandas'); now recruited again"
+          },
+          {
+            "to": "livia",
+            "rel": "sister who died saving him in a prior loop"
           }
         ],
         "appearances": [
@@ -6089,7 +6129,8 @@
           108,
           109,
           110,
-          115
+          115,
+          117
         ],
         "questions": []
       },
@@ -7778,16 +7819,33 @@
           {
             "key": "note",
             "value": "Becomes his communication link to Len across the sea"
+          },
+          {
+            "key": "upgrade",
+            "value": "Refined to carry 5-6 mindmaps per reload; brain matter no longer required"
+          },
+          {
+            "key": "impact",
+            "value": "Enables an instant multi-person strike team on reload instead of a slow solo rebuild"
           }
         ],
         "ties": [
           {
             "to": "ryan-romano",
             "rel": "belongs to"
+          },
+          {
+            "to": "alchemo",
+            "rel": "the Genius refining it"
+          },
+          {
+            "to": "the-perfect-run",
+            "rel": "reshapes the endgame into a coordinated team reload"
           }
         ],
         "appearances": [
-          30
+          30,
+          117
         ],
         "questions": []
       },
@@ -10294,7 +10352,8 @@
           85,
           86,
           102,
-          110
+          110,
+          117
         ],
         "questions": []
       },
@@ -12105,7 +12164,8 @@
           107,
           108,
           109,
-          116
+          116,
+          117
         ],
         "questions": []
       },
@@ -13574,7 +13634,8 @@
           112,
           113,
           114,
-          115
+          115,
+          117
         ],
         "questions": []
       },
@@ -13954,6 +14015,14 @@
           {
             "key": "role",
             "value": "Repeatedly shields Ryan from the fireball; tends him in the infirmary"
+          },
+          {
+            "key": "reveal",
+            "value": "Was a comedian first; jokes to keep grieving teammates going; knew Ryan time-travels and is proud"
+          },
+          {
+            "key": "to Ryan",
+            "value": "hero and surrogate father Ryan consciously modeled himself on"
           }
         ],
         "ties": [
@@ -13968,6 +14037,10 @@
           {
             "to": "bloodstream",
             "rel": "keeps him from regenerating"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "hero/father-figure who saved him 20+ times across loops"
           }
         ],
         "appearances": [
@@ -13979,7 +14052,8 @@
           112,
           113,
           114,
-          115
+          115,
+          117
         ],
         "questions": []
       },
@@ -14016,7 +14090,8 @@
           102,
           105,
           110,
-          115
+          115,
+          117
         ],
         "questions": []
       },
@@ -17249,6 +17324,10 @@
           {
             "chapter": 116,
             "summary": "CH116 'Couple Therapy': in the refurbished, warm Station Orpheon lab, Ryan's Geniuses (Shortie/Len, Alchemo, Stitch) plus the Panda attempt the Psycho cure on Sarin using copied Alchemist data and a Chronoradio-based Flux signal - no guarantee, since they lack the alien tech. Ryan coaxes the wary Sarin into the vat with a heart-to-heart on vulnerability (recalling his own fear of Livia). The loudspeakered Elixir debate exposes the Psycho mechanism: two rival Elixirs (Red + Orange) each thought they had the sole host, unaware she was a 'twin' - incompetence, not malice. Instructed, they 'divorce,' each taking a DNA share; her gas cloud condenses into flesh. Sarin's true self, Bianca - a small ~30yo woman with green-orange hair, memories intact from the saved Meta-Gang-loop sample - is restored, weeping and embracing Ryan. Lore: True Genomes exist biologically + immaterially, and that immaterial consciousness can grow beyond the body and ASCEND. The Psycho scourge finally has a cure."
+          },
+          {
+            "chapter": 117,
+            "summary": "CH117 'Making Waves': on the submarine home, Bianca demos her cleanly-separated powers (Orange gas no longer corrosive, Red intact) and pledges loyalty; the team debates mass-producing the Psycho cure across Europe (Enrique Manada as a possible partner) and Stitch projects Elixirs will vanish from circulation in ~10 years, so future Genomes will be born, not made. Ryan comes clean to Mr. Wave, his hero and surrogate father, who already knew and is proud. Alchemo reports a breakthrough: since a Genome's consciousness is intangible Flux, he can refine the Chronoradio to send 5-6 mindmaps back per reload (brain matter no longer required) - reshaping the endgame into a coordinated team-reload strike (Livia, Len, Shroud, Bianca, plus a Dynamis insider) to hit the Meta-Gang instantly. Ryan then convinces a skeptical Felix he's a time-traveler via an unrepeatable private memory; Felix, learning his sister died for him and that he condemned the now-dead Jamie and Ki-jung, commits to the mission. Arriving at the coast, they find New Rome ablaze again - Augustus struck in Ryan's absence."
           }
         ],
         "entities": [
@@ -17349,7 +17428,10 @@
           "homo-novus",
           "the-black-ultimate-one",
           "ascension",
-          "chronoradio"
+          "chronoradio",
+          "the-chronoradio",
+          "the-perfect-run",
+          "new-rome"
         ]
       }
     ]
