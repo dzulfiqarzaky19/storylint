@@ -11704,6 +11704,228 @@
         }
       ],
       "chapter": 83
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH84: mutinies against Ryan, refusing to let him time-travel until he cures her, but her rebellion collapses into the chapter's most tragic backstory. Her real grief: when she first gained power the wind dispersed her; it took SIX MONTHS to pull herself together and find a container she wouldn't rust through, spent 'years' sealed in a cloth prison feeling nothing, terrified of any blade. Ryan refuses to absolve her for standing by Adam through his atrocities ('you're entirely lucid'). She fires a warning blast, then collapses sobbing: 'My name is not Sarin... I want my life back.' Ryan swears she'll get a happy ending but must wait her turn; Alchemo takes her to attempt a memory backup.",
+      "facts": [
+        {
+          "key": "backstory",
+          "value": "First manifested as dispersing wind; took 6 months to reform, years sealed in a cloth suit"
+        },
+        {
+          "key": "note",
+          "value": "Mutinies to force a cure, then breaks down; rejects the name 'Sarin'"
+        },
+        {
+          "key": "note",
+          "value": "Ryan won't absolve her complicity with Adam ('you're entirely lucid')"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "mutinies against, then yields"
+        },
+        {
+          "to": "Adam",
+          "rel": "former enabler she stood by"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "attempts to back up her memories"
+        }
+      ],
+      "chapter": 84
+    },
+    {
+      "name": "Alchemo",
+      "kind": "character",
+      "summary": "CH84: revealed to have read the Doll's memory-map (harvesting memories like Psyshock) to check for sabotage, which is how the group learned Ryan planned to abandon them. Ryan indicts him for the OTHER Alchemo who once went mad and tried to extract Ryan's brain to stop him reloading (Tea had to finish Ryan off mid-procedure). This Alchemo refuses the equivalence: 'That was another me... I am not the person he was.' He confesses he's a cynical old man who built a robot daughter because he drove everyone away, and offers to copy the Doll's, Sarin's, and others' minds so the loop-bonds can survive. A genuine redemption beat.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Can harvest and read others' memories, like Psyshock"
+        },
+        {
+          "key": "note",
+          "value": "Read the Doll's memory-map, exposing Ryan's plan to leave"
+        },
+        {
+          "key": "arc",
+          "value": "Rejects being judged by his other self's worst act; offers to back up minds"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Doll",
+          "rel": "his robot daughter"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "confronts and reconciles"
+        },
+        {
+          "to": "The Brain-Copying Machine",
+          "rel": "offers to copy minds with it"
+        }
+      ],
+      "chapter": 84
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH84: reaches a major turning point in his eternal-loop psychology. Confronted by Sarin's mutiny, Alchemo's plea, and Livia, he agrees for the first time to bring loop-companions FORWARD via memory backups rather than leaving everyone behind as he did in Monaco, Spain, France, Italy. He's terrified of bonds he can't take back, but recalls that trusting Jasmine taught him change must begin with himself. He won't take everyone (too many already know, risking another Adam/Psyshock capture) but lets Livia record vetted people's brainmaps. Livia names his true fear: 'You're not afraid of death, but you're afraid of other people.' He counters Sartre's 'hell is other people' with her 'hell is loneliness.'",
+      "facts": [
+        {
+          "key": "arc",
+          "value": "First agrees to carry loop-companions forward via memory backups"
+        },
+        {
+          "key": "note",
+          "value": "Won't take everyone; only Livia-recorded vetted brainmaps, to limit exposure"
+        },
+        {
+          "key": "theme",
+          "value": "Afraid of connections he can't take back, not of death"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "who talks him into it"
+        },
+        {
+          "to": "The Brain-Copying Machine",
+          "rel": "the means to carry bonds forward"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "Jasmine, the trust that taught him to change"
+        }
+      ],
+      "chapter": 84
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH84: the diplomat and moral center. She defuses Sarin's mutiny (having foreseen Sarin shooting her and Alchemo dead in other branches), then persuades Ryan to keep his loop-bonds by recording vetted brainmaps before the coming point of no return. She reads Ryan's soul precisely ('you're afraid of other people') and answers Sartre with 'hell is loneliness,' something only the two of them understand. She shares her own wound: childhood Sicily drives with her parents she can never return to, mirroring Len's paralysis. Ryan tells her she too can make new happy memories; she echoes his old words back: 'You are not alone, Ryan. Not anymore.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Foresaw Sarin killing her and Alchemo; defused it instead"
+        },
+        {
+          "key": "note",
+          "value": "Persuades Ryan to back up vetted minds before the point of no return"
+        },
+        {
+          "key": "theme",
+          "value": "'Hell is loneliness'; shares her Sicily memory of lost family happiness"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "talks him into keeping his bonds"
+        },
+        {
+          "to": "Sarin",
+          "rel": "de-escalates her mutiny"
+        },
+        {
+          "to": "The Brain-Copying Machine",
+          "rel": "will record the vetted brainmaps"
+        }
+      ],
+      "chapter": 84
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH84: found catatonic in Shortie's room, knees to chest, water rifle within reach as if Bloodstream might barge in like in her childhood. She has never moved on. Ryan tells her it's almost time to open Darkling's gate home and then raid Lab Sixty-Six to face what remains of Bloodstream. She dreads it and doubts her father can be cured or is even still alive (maybe just a harvested corpse for Knockoffs), but grabbing her water rifle she resolves to go: 'Let's go.' She stops hiding to face the raid.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Catatonic with childhood Bloodstream trauma; water rifle always in reach"
+        },
+        {
+          "key": "arc",
+          "value": "Resolves to raid Lab 66 to face what remains of Bloodstream"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "her father she must confront"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "who coaxes her out"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "the raid target"
+        }
+      ],
+      "chapter": 84
+    },
+    {
+      "name": "The Brain-Copying Machine",
+      "kind": "item",
+      "summary": "CH84: pressed into service to preserve loop-companions. Livia can store as many brainmaps as needed; Alchemo takes Sarin to attempt copying even her (a challenge, since she 'has air for a head' with no physical brain, though she still forms memories). Ryan agrees to let Livia record only vetted people before the coming point of no return, making it the tool that lets his loop-bonds survive a reload for the first time.",
+      "facts": [
+        {
+          "key": "use",
+          "value": "Livia records vetted brainmaps to carry companions across a reload"
+        },
+        {
+          "key": "limit",
+          "value": "Sarin has no physical brain (air-headed), so copying her is uncertain"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "operates it to store brainmaps"
+        },
+        {
+          "to": "Sarin",
+          "rel": "difficult copy subject (no brain)"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "enables his bonds to persist"
+        }
+      ],
+      "chapter": 84
+    },
+    {
+      "name": "The Doll",
+      "kind": "character",
+      "summary": "CH84: her love for Ryan is the lever that turns Alchemo toward redemption. Alchemo reveals he built her as a robot daughter because he'd driven everyone else away, and that her wish to help others made him try to do better. He fears that if Ryan leaves forever, the Doll will never find closure, only a gaping hole, so he offers to copy her memories for Ryan to carry.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Built by Alchemo as a daughter after he drove everyone away"
+        },
+        {
+          "key": "note",
+          "value": "Her love for Ryan drives Alchemo's redemption and memory-backup offer"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "her creator/father"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "loves him"
+        }
+      ],
+      "chapter": 84
     }
   ],
   "plotObservations": [
@@ -13022,6 +13244,31 @@
       ],
       "chapter": 83,
       "title": "The Public Defection"
+    },
+    {
+      "title": "Left Behind",
+      "beat": "CH84: Sarin's mutiny forces Ryan's biggest psychological turning point. She refuses to let him reload until he cures her, revealing her tragedy (six months to reform from dispersed wind, years sealed in a cloth prison, 'my name is not Sarin, I want my life back'), then breaks down after a warning shot. Alchemo, exposed for reading the Doll's memory-map, refuses to be judged by his other self's madness and offers to copy minds. Livia (who foresaw Sarin killing her and Alchemo) and the Doll's love push Ryan to finally keep his loop-bonds: for the first time he agrees to carry vetted companions forward via Livia's brainmap backups before the coming point of no return. 'Hell is loneliness,' not other people.",
+      "entities": [
+        "Ryan Romano",
+        "Sarin",
+        "Alchemo",
+        "Livia Augusti",
+        "The Doll",
+        "The Brain-Copying Machine"
+      ],
+      "chapter": 84
+    },
+    {
+      "title": "Bloodstream's Shadow",
+      "beat": "CH84: Ryan finds Len catatonic in her room, water rifle in reach against a childhood ghost, having never moved on from Bloodstream. He warns it is almost time to open Darkling's gate home and raid Lab Sixty-Six to face whatever remains of her father, who may be cured, dead, or a harvested Knockoff source. Len grabs her rifle and resolves to go: 'Let's go.'",
+      "entities": [
+        "Len",
+        "Bloodstream",
+        "Ryan Romano",
+        "Lab Sixty-Six",
+        "Darkling"
+      ],
+      "chapter": 84
     }
   ]
 }

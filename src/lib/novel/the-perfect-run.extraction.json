@@ -273,6 +273,18 @@
           {
             "key": "note",
             "value": "Spares Felix per his promise to Livia"
+          },
+          {
+            "key": "arc",
+            "value": "First agrees to carry loop-companions forward via memory backups"
+          },
+          {
+            "key": "note",
+            "value": "Won't take everyone; only Livia-recorded vetted brainmaps, to limit exposure"
+          },
+          {
+            "key": "theme",
+            "value": "Afraid of connections he can't take back, not of death"
           }
         ],
         "ties": [
@@ -391,6 +403,18 @@
           {
             "to": "livia-augusti",
             "rel": "protects Felix for"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "who talks him into it"
+          },
+          {
+            "to": "the-brain-copying-machine",
+            "rel": "the means to carry bonds forward"
+          },
+          {
+            "to": "vulcan",
+            "rel": "Jasmine, the trust that taught him to change"
           }
         ],
         "appearances": [
@@ -473,7 +497,8 @@
           80,
           81,
           82,
-          83
+          83,
+          84
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -624,6 +649,14 @@
           {
             "key": "note",
             "value": "Can't yet decide what to do if her father lives"
+          },
+          {
+            "key": "note",
+            "value": "Catatonic with childhood Bloodstream trauma; water rifle always in reach"
+          },
+          {
+            "key": "arc",
+            "value": "Resolves to raid Lab 66 to face what remains of Bloodstream"
           }
         ],
         "ties": [
@@ -702,6 +735,18 @@
           {
             "to": "lab-sixty-six",
             "rel": "target of the raid"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "her father she must confront"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "who coaxes her out"
+          },
+          {
+            "to": "lab-sixty-six",
+            "rel": "the raid target"
           }
         ],
         "appearances": [
@@ -736,7 +781,8 @@
           80,
           81,
           82,
-          83
+          83,
+          84
         ],
         "questions": []
       },
@@ -1988,6 +2034,18 @@
           {
             "key": "power",
             "value": "Vibrating gauntlet, fingers charged with power"
+          },
+          {
+            "key": "backstory",
+            "value": "First manifested as dispersing wind; took 6 months to reform, years sealed in a cloth suit"
+          },
+          {
+            "key": "note",
+            "value": "Mutinies to force a cure, then breaks down; rejects the name 'Sarin'"
+          },
+          {
+            "key": "note",
+            "value": "Ryan won't absolve her complicity with Adam ('you're entirely lucid')"
           }
         ],
         "ties": [
@@ -2030,6 +2088,18 @@
           {
             "to": "livia-augusti",
             "rel": "foreseen and coaxed out by her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "mutinies against, then yields"
+          },
+          {
+            "to": "adam",
+            "rel": "former enabler she stood by"
+          },
+          {
+            "to": "alchemo",
+            "rel": "attempts to back up her memories"
           }
         ],
         "appearances": [
@@ -2042,7 +2112,8 @@
           77,
           78,
           81,
-          83
+          83,
+          84
         ],
         "questions": []
       },
@@ -2539,7 +2610,8 @@
           67,
           80,
           81,
-          82
+          82,
+          84
         ],
         "questions": []
       },
@@ -6750,6 +6822,18 @@
           {
             "key": "foresight",
             "value": "Predicts Sarin eavesdropping; defuses it before violence"
+          },
+          {
+            "key": "note",
+            "value": "Foresaw Sarin killing her and Alchemo; defused it instead"
+          },
+          {
+            "key": "note",
+            "value": "Persuades Ryan to back up vetted minds before the point of no return"
+          },
+          {
+            "key": "theme",
+            "value": "'Hell is loneliness'; shares her Sicily memory of lost family happiness"
           }
         ],
         "ties": [
@@ -6880,6 +6964,18 @@
           {
             "to": "augustus",
             "rel": "summoned back by her father"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "talks him into keeping his bonds"
+          },
+          {
+            "to": "sarin",
+            "rel": "de-escalates her mutiny"
+          },
+          {
+            "to": "the-brain-copying-machine",
+            "rel": "will record the vetted brainmaps"
           }
         ],
         "appearances": [
@@ -6903,7 +6999,8 @@
           80,
           81,
           82,
-          83
+          83,
+          84
         ],
         "questions": []
       },
@@ -7010,7 +7107,8 @@
           34,
           63,
           66,
-          80
+          80,
+          84
         ],
         "questions": []
       },
@@ -8346,6 +8444,18 @@
           {
             "key": "note",
             "value": "Torches the Bloodstream knockoff to protect Len"
+          },
+          {
+            "key": "power",
+            "value": "Can harvest and read others' memories, like Psyshock"
+          },
+          {
+            "key": "note",
+            "value": "Read the Doll's memory-map, exposing Ryan's plan to leave"
+          },
+          {
+            "key": "arc",
+            "value": "Rejects being judged by his other self's worst act; offers to back up minds"
           }
         ],
         "ties": [
@@ -8408,6 +8518,18 @@
           {
             "to": "ryan-romano",
             "rel": "bunker ally"
+          },
+          {
+            "to": "the-doll",
+            "rel": "his robot daughter"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "confronts and reconciles"
+          },
+          {
+            "to": "the-brain-copying-machine",
+            "rel": "offers to copy minds with it"
           }
         ],
         "appearances": [
@@ -8417,7 +8539,8 @@
           77,
           78,
           80,
-          83
+          83,
+          84
         ],
         "questions": []
       },
@@ -10464,7 +10587,8 @@
           73,
           74,
           75,
-          77
+          77,
+          84
         ],
         "questions": []
       },
@@ -10670,6 +10794,14 @@
           {
             "key": "note",
             "value": "Tender toward the comatose Len"
+          },
+          {
+            "key": "note",
+            "value": "Built by Alchemo as a daughter after he drove everyone away"
+          },
+          {
+            "key": "note",
+            "value": "Her love for Ryan drives Alchemo's redemption and memory-backup offer"
           }
         ],
         "ties": [
@@ -10684,12 +10816,21 @@
           {
             "to": "toasty",
             "rel": "installed his wheels"
+          },
+          {
+            "to": "alchemo",
+            "rel": "her creator/father"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "loves him"
           }
         ],
         "appearances": [
           76,
           77,
-          81
+          81,
+          84
         ],
         "questions": []
       },
@@ -11016,6 +11157,14 @@
           {
             "key": "note",
             "value": "Prototype was corrupted by Psyshock"
+          },
+          {
+            "key": "use",
+            "value": "Livia records vetted brainmaps to carry companions across a reload"
+          },
+          {
+            "key": "limit",
+            "value": "Sarin has no physical brain (air-headed), so copying her is uncertain"
           }
         ],
         "ties": [
@@ -11030,10 +11179,23 @@
           {
             "to": "ryan-romano",
             "rel": "ends his loneliness"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "operates it to store brainmaps"
+          },
+          {
+            "to": "sarin",
+            "rel": "difficult copy subject (no brain)"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "enables his bonds to persist"
           }
         ],
         "appearances": [
-          78
+          78,
+          84
         ],
         "questions": []
       },
@@ -13142,12 +13304,49 @@
           "sarin",
           "livia-augusti"
         ]
+      },
+      {
+        "id": "left-behind",
+        "title": "Left Behind",
+        "summary": "CH84: Sarin's mutiny forces Ryan's biggest psychological turning point. She refuses to let him reload until he cures her, revealing her tragedy (six months to reform from dispersed wind, years sealed in a cloth prison, 'my name is not Sarin, I want my life back'), then breaks down after a warning shot. Alchemo, exposed for reading the Doll's memory-map, refuses to be judged by his other self's madness and offers to copy minds. Livia (who foresaw Sarin killing her and Alchemo) and the Doll's love push Ryan to finally keep his loop-bonds: for the first time he agrees to carry vetted companions forward via Livia's brainmap backups before the coming point of no return. 'Hell is loneliness,' not other people.",
+        "beats": [
+          {
+            "chapter": 84,
+            "summary": "CH84: Sarin's mutiny forces Ryan's biggest psychological turning point. She refuses to let him reload until he cures her, revealing her tragedy (six months to reform from dispersed wind, years sealed in a cloth prison, 'my name is not Sarin, I want my life back'), then breaks down after a warning shot. Alchemo, exposed for reading the Doll's memory-map, refuses to be judged by his other self's madness and offers to copy minds. Livia (who foresaw Sarin killing her and Alchemo) and the Doll's love push Ryan to finally keep his loop-bonds: for the first time he agrees to carry vetted companions forward via Livia's brainmap backups before the coming point of no return. 'Hell is loneliness,' not other people."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "sarin",
+          "alchemo",
+          "livia-augusti",
+          "the-doll",
+          "the-brain-copying-machine"
+        ]
+      },
+      {
+        "id": "bloodstream-s-shadow",
+        "title": "Bloodstream's Shadow",
+        "summary": "CH84: Ryan finds Len catatonic in her room, water rifle in reach against a childhood ghost, having never moved on from Bloodstream. He warns it is almost time to open Darkling's gate home and raid Lab Sixty-Six to face whatever remains of her father, who may be cured, dead, or a harvested Knockoff source. Len grabs her rifle and resolves to go: 'Let's go.'",
+        "beats": [
+          {
+            "chapter": 84,
+            "summary": "CH84: Ryan finds Len catatonic in her room, water rifle in reach against a childhood ghost, having never moved on from Bloodstream. He warns it is almost time to open Darkling's gate home and raid Lab Sixty-Six to face whatever remains of her father, who may be cured, dead, or a harvested Knockoff source. Len grabs her rifle and resolves to go: 'Let's go.'"
+          }
+        ],
+        "entities": [
+          "len",
+          "bloodstream",
+          "ryan-romano",
+          "lab-sixty-six",
+          "darkling"
+        ]
       }
     ]
   },
   "counts": {
     "entities": 205,
-    "plotlines": 94,
+    "plotlines": 96,
     "books": 1
   }
 }
