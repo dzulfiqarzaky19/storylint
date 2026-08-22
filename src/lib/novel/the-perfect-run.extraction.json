@@ -12,7 +12,11 @@
     {
       "id": "perfect-run-book-1",
       "name": "The Perfect Run",
-      "sources": [],
+      "sources": [
+        {
+          "chaptersJson": "the-perfect-run.chapters.json"
+        }
+      ],
       "range": [
         1,
         130
@@ -17064,8 +17068,8 @@
         ]
       },
       {
-        "id": "the-olympians",
-        "title": "The Olympians",
+        "id": "the-olympians-gauntlet",
+        "title": "The Olympians' Gauntlet",
         "summary": "After a night with Vulcan (real name Jasmine Sharif), who probes the haunted plushie and shares her Red Flux/Red Dimension theory, the pair fly to Mount Augustus. Ryan meets the Augusti high command, the Olympians, and their brutal lightning-emperor leader Augustus/Janus, summoned by Livia. He sees Narcinia among Augustus's family and the priest Bacchus, who claims to have seen God through Bliss.",
         "beats": [
           {
@@ -17117,8 +17121,8 @@
         ]
       },
       {
-        "id": "the-darkness-beyond",
-        "title": "The Darkness Beyond",
+        "id": "into-the-darkness-beyond",
+        "title": "Into the Darkness Beyond",
         "summary": "Inside the fortress-collider Leo confronts a broken, hateful Mechron, who refuses surrender and opens a gate meant for the Blue World / Akashic Records. It instead breaches onto the Darkness Beyond, an eye-like void entity that erases Mechron atom by atom and begins consuming reality. Leo collapses the fortress by going supernova, sealing the gate at the cost of near-death. He wakes days later: the war is won, but Pythia is brain-damaged, the Bahamut lost, and her USB names Bloodstream as humanity's top threat.",
         "beats": [
           {
