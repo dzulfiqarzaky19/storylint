@@ -4782,6 +4782,116 @@
         }
       ],
       "chapter": 49
+    },
+    {
+      "name": "Alchemo",
+      "kind": "character",
+      "summary": "'Braindead,' a cybernetic Genius specialized in neural technology (brain-machine interfaces, brains-in-jars, sensory drugs) whom Ryan roomed with for over two years across loops, learning Genius tech and once co-founding a Rampage drug cartel. A lanky cyborg with brass bones, steel-pump organs, glass veins, syringe fingers, and a brain floating in a glass-dome skull, he experiences movies as false memories hooked to artificial brains and abuses his own metaboost drug. He built the gynoid Doll for company. Cranky but open-minded, he helped Ryan hook the Chronoradio to a mini particle accelerator, and is repeatedly killed on sight by the plushie (five times).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "'Braindead'; cybernetic Genius of neural technology"
+        },
+        {
+          "key": "note",
+          "value": "Cyborg: brass bones, glass skull, brain in a jar, syringe fingers"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's longtime roommate/mentor in Genius tech"
+        },
+        {
+          "key": "note",
+          "value": "Built the gynoid Doll; killed on sight by the plushie"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "mentor/roommate"
+        },
+        {
+          "to": "Doll",
+          "rel": "creator"
+        },
+        {
+          "to": "The Chronoradio",
+          "rel": "helped build"
+        }
+      ],
+      "chapter": 50
+    },
+    {
+      "name": "Doll",
+      "kind": "character",
+      "summary": "'Tea,' a lifelike gynoid built by Alchemo and passing the Turing test, animated by an artificial brain; Alchemo claims she is a work assistant but really wants human company. He gave her only a face and featureless body, so Ryan finished making her humanlike and named her Tea. Gentle and affectionate, she is uniquely un-attacked by the murderous plushie, which switches to 'cute mode' and even gives her a rose, and she adopts it as a pet.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "'Tea'; a Turing-passing gynoid built by Alchemo"
+        },
+        {
+          "key": "note",
+          "value": "Animated by an artificial brain for company"
+        },
+        {
+          "key": "note",
+          "value": "Ryan finished her humanlike body and named her"
+        },
+        {
+          "key": "note",
+          "value": "The plushie spares her and behaves as her pet"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alchemo",
+          "rel": "created by"
+        },
+        {
+          "to": "The Plushie",
+          "rel": "adopts"
+        }
+      ],
+      "chapter": 50
+    },
+    {
+      "name": "The Plushie",
+      "kind": "character",
+      "summary": "Ryan's white rabbit plushie, originally built (with Alchemo's help) as a cute dimensional-exploration probe: a toy with a camera, AI, lasers, switchblade, and a subroutine to protect children under thirteen, meant to be sent through a mini particle accelerator into the Purple World. The accelerator instead worked in reverse, frying its hardware and anchoring an alien tentacled abomination inside it. The possessed plushie remembers Ryan's loops, murders humans on sight (stringing victims up with their own intestines) while sparing children and animals, and multiplies exponentially when happy, once doubling from a child's touch and overrunning Firenze. Ryan keeps it as a last-resort weapon, afraid destroying it would release what dwells within; it professes eternal friendship to him even as it watches him sleep.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Built as a cute Purple-World exploration probe with lasers/blade"
+        },
+        {
+          "key": "note",
+          "value": "Accelerator ran in reverse, anchoring an alien entity inside it"
+        },
+        {
+          "key": "note",
+          "value": "Remembers loops; murders humans, spares children and animals"
+        },
+        {
+          "key": "note",
+          "value": "Multiplies exponentially when happy; kept as a last-resort weapon"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "created by"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "anchors entity from"
+        },
+        {
+          "to": "Alchemo",
+          "rel": "co-built by"
+        }
+      ],
+      "chapter": 50
     }
   ],
   "plotObservations": [
@@ -5379,6 +5489,18 @@
         "Len Sabino"
       ],
       "chapter": 49
+    },
+    {
+      "title": "Past Fragment: How to Tame Your Plushie",
+      "beat": "A flashback to an earlier loop reveals the plushie's origin. A younger Ryan, learning Genius tech from his cyborg roommate Alchemo ('Braindead'), builds a cute rabbit plushie as a probe to send through a mini particle accelerator into the Purple World, hoping to enable his car's dimensional time-travel. The accelerator runs in reverse, frying the hardware and anchoring an alien tentacled entity inside the toy. The possessed plushie kills Alchemo on sight (repeatedly), spares the gynoid Doll/Tea and children, strings up human victims, and multiplies exponentially when happy, overrunning Firenze in one loop. Ryan resets each time and finally tames it by flipping its switch off on reload, keeping it as a last-resort weapon he dares not destroy lest he free what lives inside. It watches over his sleep, pledging eternal friendship.",
+      "entities": [
+        "Ryan Romano",
+        "Alchemo",
+        "Doll",
+        "The Plushie",
+        "The Purple World"
+      ],
+      "chapter": 50
     }
   ]
 }
