@@ -16288,6 +16288,114 @@
         }
       ],
       "chapter": 117
+    },
+    {
+      "name": "Narcinia",
+      "kind": "character",
+      "summary": "CH118 (told the truth / true name Giulia Costa): at the Sorrentos reunion Leo Hargraves shows Narcinia an old photo and reveals she is Giulia Costa, daughter of his hero friends Bruno Costa (a Yellow who could cut anything) and Julie (a Green who could alter life, growing crops to green the scorched planet). Augustus murdered them and fifty farm workers, burned Julie's famine-ending crops, had Bacchus shatter Giulia's mind to erase her family, and gave her to Mars and Venus as their 'third child.' Narcinia first refuses ('my parents were raiders, they deserved to die'), but Livia and Fortuna confirm it. Devastated, she asks Leo to tell her more about her real parents. Livia plans to mind-map her now and, with Felix's help, ask her to submit to the memory transfer next loop.",
+      "facts": [
+        {
+          "key": "true identity",
+          "value": "Giulia Costa - daughter of heroes Bruno (Yellow) and Julie (Green) Costa"
+        },
+        {
+          "key": "how taken",
+          "value": "Augustus killed her parents; Bacchus shattered her memory; given to Mars and Venus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bruno and Julie Costa",
+          "rel": "her murdered true parents"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "family friend who reveals her origin"
+        }
+      ],
+      "chapter": 118
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH118 (full commitment + love): Livia confirms Augustus launched the war on Dynamis in Ryan's absence (believing them allied), blames herself for helping destroy the Bliss Factory, but finally drops all excuses for her father: 'It's him. It's all him, and he will never change.' She agrees to help take him and the whole organization down, and even brokers this meeting via Uncle Silvio/Neptune (the only sensible Olympian). She cannot forgive Leo for accidentally killing her mother Juno but sets it aside for the greater cause. Privately she tells Ryan 'I love you' for the first time - having never said it to anyone but family - and he answers in kind. Together they lock the final endgame plan and its risks; she insists on fighting her own family beside him rather than staying safe.",
+      "facts": [
+        {
+          "key": "resolve",
+          "value": "Drops all excuses for Augustus; commits to bringing down her whole family"
+        },
+        {
+          "key": "milestone",
+          "value": "First 'I love you' to Ryan; brokered the meeting via Neptune/Silvio"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "declares her love; his equal partner in the endgame"
+        },
+        {
+          "to": "Augustus",
+          "rel": "her father, now her target"
+        }
+      ],
+      "chapter": 118
+    },
+    {
+      "name": "The Perfect Run",
+      "kind": "concept",
+      "summary": "CH118 (full endgame plan locked): the final loop is planned in detail with Livia. Team to send back (5-6 minds): Livia, Len, Bianca (to break Adam's bunker), Felix, Shroud (also pre-empts his assassin campaign), and the Panda; Fortuna and Narcinia can join without a mind-transfer. Sequence on reload: call Braindead immediately, finish deliveries, then hit Adam the Ogre's Meta-Gang bunker within hours to save all captured Rust Town denizens; take the bunker, build Ryan's Saturn armor, cure the Psychos, then break the Dynamis monopoly (expose Knockoffs, destroy the supply, remove Hector Manada and Fallout, leave Enrique to reform it) - targeting Dynamis first also to seize their anti-Zeus Gravity Gun. Only then decapitate the Olympians and finally bring down Augustus himself. Bloodstream's fate is Len's to decide. New trick (Livia's idea): Ryan will save ~10 seconds AFTER the mindmaps are sent back, so everyone keeps their memories even if he dies and reloads forcibly. Ryan foregoes his usual 'joyride' loop; the true Perfect Run begins.",
+      "facts": [
+        {
+          "key": "final team",
+          "value": "Livia, Len, Bianca, Felix, Shroud, the Panda (+ Fortuna/Narcinia without transfer)"
+        },
+        {
+          "key": "sequence",
+          "value": "Bunker -> Saturn armor + Psycho cure -> break Dynamis (grab Gravity Gun) -> Olympians -> Augustus"
+        },
+        {
+          "key": "save trick",
+          "value": "Save ~10s after sending minds back so memories survive a forced reload"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "co-architect of the plan and the save-after-transfer trick"
+        },
+        {
+          "to": "Augustus",
+          "rel": "the final target of the run"
+        }
+      ],
+      "chapter": 118
+    },
+    {
+      "name": "Leo Hargraves",
+      "kind": "character",
+      "summary": "CH118: increasingly drawn toward ascension - the longer he uses his power the less he wants to be human again, sometimes going weeks as a sun; the Alchemist's revelations quelled his doubts, and he may one day become a true sun and leave Earth. He reunites Narcinia with her true origin (daughter of his murdered friends the Costas), carrying their photo for years. He owns his gravest sin plainly: accidentally killing Livia's mother Juno was a mistake he will not excuse ('the ends never justify the means'), and he vows to submit to whatever trial Livia sets once Augustus is stopped. He notes Augustus likely suffers the same ascension-pull (wanting to become indestructible metal) but, unlike Leo, cannot revert to human.",
+      "facts": [
+        {
+          "key": "ascension",
+          "value": "Nearing it; may become a true sun and leave Earth; tries to stay human to stay grounded"
+        },
+        {
+          "key": "accountability",
+          "value": "Owns Juno's accidental death; vows to face Livia's trial after Augustus falls"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Narcinia",
+          "rel": "reveals her true parents were his murdered friends"
+        },
+        {
+          "to": "Ascension",
+          "rel": "one of the hosts closest to it"
+        }
+      ],
+      "chapter": 118
     }
   ],
   "plotObservations": [
@@ -18342,6 +18450,31 @@
         "Stitch"
       ],
       "chapter": 117
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH118 'The Last Quest' (final loop begins): at a Sorrentos meeting (Neptune/Silvio cleared the guards), Ryan's group reunites with Livia, Fortuna, and Narcinia. Fortuna claims Shroud as her husband-to-be. Livia confirms Augustus launched war on Dynamis in Ryan's absence (Fallout given command of the corporate army) and finally drops every excuse for her father - 'it's all him, he will never change' - committing fully to bringing her family down. Leo Hargraves reveals Narcinia is Giulia Costa, daughter of his murdered hero friends Bruno (Yellow) and Julie (Green) Costa, whom Augustus killed before Bacchus erased her memory; Leo owns his accidental killing of Livia's mother Juno and vows to face trial. Privately Livia tells Ryan 'I love you' for the first time and he answers in kind. Together they lock the full endgame: send 5-6 minds back (Livia, Len, Bianca, Felix, Shroud, the Panda), hit Adam's bunker within hours to save Rust Town captives, build the Saturn armor, cure the Psychos, break Dynamis (seizing the Gravity Gun), then the Olympians, then Augustus - with Ryan saving ~10s after the mind-transfer so memories survive a forced reload. The true Perfect Run begins.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "The Perfect Run",
+        "Narcinia",
+        "Leo Hargraves",
+        "Bruno and Julie Costa",
+        "Augustus",
+        "Fortuna",
+        "Mr. See-Through",
+        "Felix",
+        "Len",
+        "Sarin",
+        "The Panda",
+        "Bacchus",
+        "The Gravity Gun",
+        "Alphonse Manada",
+        "Neptune",
+        "Juno"
+      ],
+      "chapter": 118
     }
   ]
 }

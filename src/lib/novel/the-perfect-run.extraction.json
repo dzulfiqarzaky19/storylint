@@ -42,6 +42,11 @@
         "shelf": "lore"
       },
       {
+        "id": "concept",
+        "label": "Concept",
+        "shelf": "lore"
+      },
+      {
         "id": "item",
         "label": "Item",
         "shelf": "lore"
@@ -50,11 +55,6 @@
         "id": "location",
         "label": "Location",
         "shelf": "places"
-      },
-      {
-        "id": "concept",
-        "label": "Concept",
-        "shelf": "lore"
       },
       {
         "id": "faction",
@@ -853,7 +853,8 @@
           114,
           115,
           116,
-          117
+          117,
+          118
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1254,7 +1255,8 @@
           113,
           114,
           115,
-          116
+          116,
+          118
         ],
         "questions": []
       },
@@ -2236,7 +2238,8 @@
           106,
           107,
           112,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -2293,6 +2296,14 @@
           {
             "key": "recruits",
             "value": "Invites Panda to the Carnival"
+          },
+          {
+            "key": "ascension",
+            "value": "Nearing it; may become a true sun and leave Earth; tries to stay human to stay grounded"
+          },
+          {
+            "key": "accountability",
+            "value": "Owns Juno's accidental death; vows to face Livia's trial after Augustus falls"
           }
         ],
         "ties": [
@@ -2327,6 +2338,14 @@
           {
             "to": "the-alchemist",
             "rel": "wants to ask her 'why'"
+          },
+          {
+            "to": "narcinia",
+            "rel": "reveals her true parents were his murdered friends"
+          },
+          {
+            "to": "ascension",
+            "rel": "one of the hosts closest to it"
           }
         ],
         "appearances": [
@@ -2352,7 +2371,8 @@
           113,
           114,
           115,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -2824,7 +2844,8 @@
           114,
           115,
           116,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -3745,7 +3766,7 @@
       },
       {
         "id": "the-perfect-run",
-        "kind": "lore",
+        "kind": "concept",
         "name": "The Perfect Run",
         "summary": "Ryan's guiding philosophy: gather every scrap of information across countless loops, then spend one final loop engineering the optimal chain of events for the best possible outcome, and only then set a new save point and move on.",
         "facts": [
@@ -3756,6 +3777,18 @@
           {
             "key": "complication",
             "value": "New Rome is aflame on their return - Augustus acted in Ryan's absence"
+          },
+          {
+            "key": "final team",
+            "value": "Livia, Len, Bianca, Felix, Shroud, the Panda (+ Fortuna/Narcinia without transfer)"
+          },
+          {
+            "key": "sequence",
+            "value": "Bunker -> Saturn armor + Psycho cure -> break Dynamis (grab Gravity Gun) -> Olympians -> Augustus"
+          },
+          {
+            "key": "save trick",
+            "value": "Save ~10s after sending minds back so memories survive a forced reload"
           }
         ],
         "ties": [
@@ -3770,11 +3803,20 @@
           {
             "to": "new-rome",
             "rel": "burning again on arrival, forcing the next crisis"
+          },
+          {
+            "to": "livia",
+            "rel": "co-architect of the plan and the save-after-transfer trick"
+          },
+          {
+            "to": "augustus",
+            "rel": "the final target of the run"
           }
         ],
         "appearances": [
           7,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -3975,7 +4017,8 @@
           10,
           38,
           69,
-          109
+          109,
+          118
         ],
         "questions": []
       },
@@ -4255,7 +4298,8 @@
           113,
           114,
           115,
-          116
+          116,
+          118
         ],
         "questions": []
       },
@@ -5607,7 +5651,8 @@
           92,
           93,
           97,
-          116
+          116,
+          118
         ],
         "questions": []
       },
@@ -6130,7 +6175,8 @@
           109,
           110,
           115,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -6598,7 +6644,8 @@
           66,
           101,
           103,
-          104
+          104,
+          118
         ],
         "questions": []
       },
@@ -6894,7 +6941,8 @@
           102,
           106,
           107,
-          108
+          108,
+          118
         ],
         "questions": []
       },
@@ -7197,7 +7245,8 @@
           }
         ],
         "appearances": [
-          27
+          27,
+          118
         ],
         "questions": []
       },
@@ -10919,7 +10968,8 @@
           }
         ],
         "appearances": [
-          60
+          60,
+          118
         ],
         "questions": []
       },
@@ -11834,7 +11884,8 @@
           }
         ],
         "appearances": [
-          66
+          66,
+          118
         ],
         "questions": []
       },
@@ -11863,6 +11914,14 @@
           {
             "key": "note",
             "value": "Driven by Mortimer"
+          },
+          {
+            "key": "true identity",
+            "value": "Giulia Costa - daughter of heroes Bruno (Yellow) and Julie (Green) Costa"
+          },
+          {
+            "key": "how taken",
+            "value": "Augustus killed her parents; Bacchus shattered her memory; given to Mars and Venus"
           }
         ],
         "ties": [
@@ -11877,6 +11936,14 @@
           {
             "to": "felix",
             "rel": "adoptive sister"
+          },
+          {
+            "to": "bruno-and-julie-costa",
+            "rel": "her murdered true parents"
+          },
+          {
+            "to": "leo-hargraves",
+            "rel": "family friend who reveals her origin"
           }
         ],
         "appearances": [
@@ -11892,7 +11959,8 @@
           101,
           106,
           107,
-          114
+          114,
+          118
         ],
         "questions": []
       },
@@ -12060,6 +12128,14 @@
           {
             "key": "peaceful future",
             "value": "Requires Augustus's retirement + Enrique Manada leading Dynamis"
+          },
+          {
+            "key": "resolve",
+            "value": "Drops all excuses for Augustus; commits to bringing down her whole family"
+          },
+          {
+            "key": "milestone",
+            "value": "First 'I love you' to Ryan; brokered the meeting via Neptune/Silvio"
           }
         ],
         "ties": [
@@ -12142,6 +12218,14 @@
           {
             "to": "cancel",
             "rel": "sent by Augustus to blind her precognition; she distracts her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "declares her love; his equal partner in the endgame"
+          },
+          {
+            "to": "augustus",
+            "rel": "her father, now her target"
           }
         ],
         "appearances": [
@@ -12165,7 +12249,8 @@
           108,
           109,
           116,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -13635,7 +13720,8 @@
           113,
           114,
           115,
-          117
+          117,
+          118
         ],
         "questions": []
       },
@@ -17328,6 +17414,10 @@
           {
             "chapter": 117,
             "summary": "CH117 'Making Waves': on the submarine home, Bianca demos her cleanly-separated powers (Orange gas no longer corrosive, Red intact) and pledges loyalty; the team debates mass-producing the Psycho cure across Europe (Enrique Manada as a possible partner) and Stitch projects Elixirs will vanish from circulation in ~10 years, so future Genomes will be born, not made. Ryan comes clean to Mr. Wave, his hero and surrogate father, who already knew and is proud. Alchemo reports a breakthrough: since a Genome's consciousness is intangible Flux, he can refine the Chronoradio to send 5-6 mindmaps back per reload (brain matter no longer required) - reshaping the endgame into a coordinated team-reload strike (Livia, Len, Shroud, Bianca, plus a Dynamis insider) to hit the Meta-Gang instantly. Ryan then convinces a skeptical Felix he's a time-traveler via an unrepeatable private memory; Felix, learning his sister died for him and that he condemned the now-dead Jamie and Ki-jung, commits to the mission. Arriving at the coast, they find New Rome ablaze again - Augustus struck in Ryan's absence."
+          },
+          {
+            "chapter": 118,
+            "summary": "CH118 'The Last Quest' (final loop begins): at a Sorrentos meeting (Neptune/Silvio cleared the guards), Ryan's group reunites with Livia, Fortuna, and Narcinia. Fortuna claims Shroud as her husband-to-be. Livia confirms Augustus launched war on Dynamis in Ryan's absence (Fallout given command of the corporate army) and finally drops every excuse for her father - 'it's all him, he will never change' - committing fully to bringing her family down. Leo Hargraves reveals Narcinia is Giulia Costa, daughter of his murdered hero friends Bruno (Yellow) and Julie (Green) Costa, whom Augustus killed before Bacchus erased her memory; Leo owns his accidental killing of Livia's mother Juno and vows to face trial. Privately Livia tells Ryan 'I love you' for the first time and he answers in kind. Together they lock the full endgame: send 5-6 minds back (Livia, Len, Bianca, Felix, Shroud, the Panda), hit Adam's bunker within hours to save Rust Town captives, build the Saturn armor, cure the Psychos, break Dynamis (seizing the Gravity Gun), then the Olympians, then Augustus - with Ryan saving ~10s after the mind-transfer so memories survive a forced reload. The true Perfect Run begins."
           }
         ],
         "entities": [
@@ -17431,7 +17521,10 @@
           "chronoradio",
           "the-chronoradio",
           "the-perfect-run",
-          "new-rome"
+          "new-rome",
+          "bruno-and-julie-costa",
+          "the-gravity-gun",
+          "juno"
         ]
       }
     ]
