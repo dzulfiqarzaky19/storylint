@@ -365,6 +365,14 @@
           {
             "key": "arc",
             "value": "Accepts Len as family; senses Livia is his future"
+          },
+          {
+            "key": "lesson",
+            "value": "Needs the Saturn armor to focus his Black Flux"
+          },
+          {
+            "key": "milestone",
+            "value": "Asks Livia on a date; near-flawless victory"
           }
         ],
         "ties": [
@@ -575,6 +583,14 @@
           {
             "to": "len",
             "rel": "reconciled as family, not lovers"
+          },
+          {
+            "to": "livia",
+            "rel": "asks her out"
+          },
+          {
+            "to": "sarin",
+            "rel": "wins her defection"
           }
         ],
         "appearances": [
@@ -669,7 +685,8 @@
           92,
           93,
           94,
-          95
+          95,
+          96
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1008,7 +1025,8 @@
           92,
           93,
           94,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -1686,7 +1704,8 @@
           85,
           86,
           91,
-          92
+          92,
+          96
         ],
         "questions": []
       },
@@ -2366,6 +2385,14 @@
           {
             "key": "fate",
             "value": "Sacrifices herself against Fallout; buried alive as the ceiling collapses"
+          },
+          {
+            "key": "turn",
+            "value": "Defects to Ryan; joins subduing the Meta-Gang"
+          },
+          {
+            "key": "hook",
+            "value": "Ryan promises a cure to restore her humanity"
           }
         ],
         "ties": [
@@ -2436,6 +2463,10 @@
           {
             "to": "fallout",
             "rel": "charges him in a suicide attack"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "won over by his offer of a cure"
           }
         ],
         "appearances": [
@@ -2454,7 +2485,8 @@
           86,
           87,
           88,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -2822,7 +2854,8 @@
           46,
           71,
           73,
-          94
+          94,
+          96
         ],
         "questions": []
       },
@@ -3618,6 +3651,14 @@
           {
             "key": "arc",
             "value": "Joins the Avengers; balks at lethal methods"
+          },
+          {
+            "key": "power up",
+            "value": "Absorbs Adam's Blue Elixir to gain a second power"
+          },
+          {
+            "key": "feat",
+            "value": "Kills Adam the Ogre with the 'Soaring Panda' finisher"
           }
         ],
         "ties": [
@@ -3676,6 +3717,14 @@
           {
             "to": "mr-see-through",
             "rel": "welcomed into the Carnival by him"
+          },
+          {
+            "to": "adam-the-ogre",
+            "rel": "kills him"
+          },
+          {
+            "to": "livia",
+            "rel": "she foresaw he could safely take the Elixir"
           }
         ],
         "appearances": [
@@ -3694,7 +3743,8 @@
           88,
           93,
           94,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -6211,7 +6261,8 @@
           69,
           70,
           94,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -6827,6 +6878,14 @@
           {
             "key": "note",
             "value": "Ordered the Bahamut fired"
+          },
+          {
+            "key": "weapon",
+            "value": "A salvaged Mechron gravity gun (matter-pulling black shots)"
+          },
+          {
+            "key": "death",
+            "value": "KO'd by the Panda's kick, then drowned in Len's water bubble"
           }
         ],
         "ties": [
@@ -6845,6 +6904,14 @@
           {
             "to": "mars",
             "rel": "similar power"
+          },
+          {
+            "to": "the-panda",
+            "rel": "killed by his kick after failing to Elixir-convert him"
+          },
+          {
+            "to": "mechron",
+            "rel": "wields his salvaged gravity gun"
           }
         ],
         "appearances": [
@@ -6854,7 +6921,8 @@
           62,
           92,
           94,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -6947,6 +7015,14 @@
           {
             "key": "fate",
             "value": "Chest melted through, buried alive as the factory collapses"
+          },
+          {
+            "key": "real name",
+            "value": "Vladimir Khabarov, a Russian from Novgorod"
+          },
+          {
+            "key": "defeat",
+            "value": "Livia breaks his delusion; goes catatonic"
           }
         ],
         "ties": [
@@ -6989,6 +7065,10 @@
           {
             "to": "ryan-romano",
             "rel": "his bodyguard, buys him escape time"
+          },
+          {
+            "to": "livia",
+            "rel": "mentally dismantled by her"
           }
         ],
         "appearances": [
@@ -7002,7 +7082,8 @@
           81,
           86,
           88,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -8727,6 +8808,10 @@
           {
             "to": "mercury",
             "rel": "successor"
+          },
+          {
+            "to": "ki-jung",
+            "rel": "fiance"
           }
         ],
         "appearances": [
@@ -8735,7 +8820,8 @@
           11,
           24,
           39,
-          42
+          42,
+          96
         ],
         "questions": []
       },
@@ -11071,6 +11157,14 @@
           {
             "key": "dynamic",
             "value": "Flawless combat synergy with Ryan; mutual flirting"
+          },
+          {
+            "key": "tactics",
+            "value": "IDs Adam's weakness, unmasks Frank, greenlights Panda's Elixir"
+          },
+          {
+            "key": "romance",
+            "value": "Accepts Ryan's advance; can't foresee him, so it's a real surprise"
           }
         ],
         "ties": [
@@ -11113,6 +11207,10 @@
           {
             "to": "acid-rain",
             "rel": "hard-counters and captures her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "grows close; he asks her out"
           }
         ],
         "appearances": [
@@ -11123,7 +11221,8 @@
           92,
           93,
           94,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -11501,7 +11600,8 @@
           47,
           73,
           74,
-          94
+          94,
+          96
         ],
         "questions": []
       },
@@ -12443,7 +12543,8 @@
           82,
           91,
           94,
-          95
+          95,
+          96
         ],
         "questions": []
       },
@@ -12560,7 +12661,8 @@
         "appearances": [
           85,
           86,
-          91
+          91,
+          96
         ],
         "questions": []
       },
@@ -13054,6 +13156,28 @@
         ],
         "appearances": [
           95
+        ],
+        "questions": []
+      },
+      {
+        "id": "ki-jung",
+        "kind": "character",
+        "name": "Ki-jung",
+        "summary": "CH96: mentioned among Ryan's Rust Town street contacts (with Jamie and Lanka) he intends to reconnect with now that his loops can carry friends' memories. Part of the low-level crew Ryan uses to infiltrate Dynamis 'from the bottom.'",
+        "facts": [
+          {
+            "key": "role",
+            "value": "One of Ryan's Rust Town contacts for the Dynamis infiltration"
+          }
+        ],
+        "ties": [
+          {
+            "to": "jamie",
+            "rel": "part of the same street crew"
+          }
+        ],
+        "appearances": [
+          96
         ],
         "questions": []
       }
@@ -15193,6 +15317,10 @@
           {
             "chapter": 95,
             "summary": "CH95 'Double Date': the Junkyard raid. Ryan masks the team's approach with Ghoul's severed foot so the Land mistakes the Plymouth Fury for her returning tenant. On Livia's cue Cancel executes Psyshock, freeing his thralls and sowing chaos. Ryan, Livia, the Panda, Shroud, Fortuna and Len blitz the base: Fortuna's luck bubbles the Reptilian, Livia's foresight hard-counters and captures Acid Rain (Helen), and Shroud flies Fortuna clear of the Land's terrakinesis. Ryan and Livia fight in flawless synergy (flirting mid-battle) to breach the blast door, which the Land seals behind them, trapping them inside. Len assaults from the sea access. The team reaches the recreational atrium and comes face-to-face with Adam the Ogre, Sarin and Frank the Mad, Adam wielding a salvaged Mechron cannon."
+          },
+          {
+            "chapter": 96,
+            "summary": "CH96 'Beast of the East': the bunker boss fight. Adam the Ogre wields a salvaged Mechron gravity gun and brainwashes Frank with a 'protect democracy' delusion. Ryan learns his Fisty punch can't focus Black Flux without the Saturn armor, and turns Sarin (Bianca) to his side by disarming and offering her a cure. Livia foresees the winning branch: she IDs Adam's skin-only defense (head trauma works), mentally shatters Frank by exposing his true name Vladimir Khabarov, and lets the Panda absorb Adam's Blue Elixir, gaining a second power and finishing Adam with a 'Soaring Panda' kick (Len later drowns him). The Meta-Gang is jailed underwater pending a cure. A near-flawless victory. Ryan then plots infiltrating Dynamis via Jamie/Ki-jung/Lanka and rebuilding the Saturn armor with Vulcan, and finally asks Livia on a date."
           }
         ],
         "entities": [
@@ -15234,13 +15362,15 @@
           "sarin",
           "frank-the-mad",
           "ink-machine",
-          "rakshasa"
+          "rakshasa",
+          "the-saturn-armor",
+          "jamie"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 222,
+    "entities": 223,
     "plotlines": 104,
     "books": 1
   }

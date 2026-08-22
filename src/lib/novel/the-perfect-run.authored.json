@@ -13920,6 +13920,168 @@
         }
       ],
       "chapter": 95
+    },
+    {
+      "name": "Adam the Ogre",
+      "kind": "character",
+      "summary": "CH96 'Beast of the East': the Meta-Gang's cannibal leader makes his last stand in the Junkyard bunker, wielding a salvaged Mechron gravity gun (a slow black projectile that shreds metal by pulling matter inward). He brainwashes Frank with a 'CIA is staging a coup, protect democracy' delusion, and his carbon skin shrugs off Ryan's Fisty punch entirely, teaching Ryan he needs the Saturn armor to focus Black Flux. Livia deduces his skin protects only the surface, so head trauma still concussions him; blinded by coil-gun rounds, he tries to Elixir-convert the Panda but the Panda absorbs it and finishes him with a 'Soaring Panda' kick. Len bubbles him and he drowns to death.",
+      "facts": [
+        {
+          "key": "weapon",
+          "value": "A salvaged Mechron gravity gun (matter-pulling black shots)"
+        },
+        {
+          "key": "death",
+          "value": "KO'd by the Panda's kick, then drowned in Len's water bubble"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Panda",
+          "rel": "killed by his kick after failing to Elixir-convert him"
+        },
+        {
+          "to": "Mechron",
+          "rel": "wields his salvaged gravity gun"
+        }
+      ],
+      "chapter": 96
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "CH96: real name Vladimir Khabarov, a Russian (from Novgorod, not the Arkansas of his delusion) whose false-patriot identity is a coping fiction. Adam pre-brainwashes him into 'protecting democracy' so he attacks Ryan's crew, but Livia, unable to hurt the metal giant physically, dismantles his mind instead: naming him Vladimir, exposing his soviet origins, and finally telling him 'you are the communists,' which shatters him into a catatonic pile of scrap. Sarin collapses the floor to trap him.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Vladimir Khabarov, a Russian from Novgorod"
+        },
+        {
+          "key": "defeat",
+          "value": "Livia breaks his delusion; goes catatonic"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "mentally dismantled by her"
+        }
+      ],
+      "chapter": 96
+    },
+    {
+      "name": "Ki-jung",
+      "kind": "character",
+      "summary": "CH96: mentioned among Ryan's Rust Town street contacts (with Jamie and Lanka) he intends to reconnect with now that his loops can carry friends' memories. Part of the low-level crew Ryan uses to infiltrate Dynamis 'from the bottom.'",
+      "facts": [
+        {
+          "key": "role",
+          "value": "One of Ryan's Rust Town contacts for the Dynamis infiltration"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Jamie",
+          "rel": "part of the same street crew"
+        }
+      ],
+      "chapter": 96
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "CH96: the raid's MVP. When Adam tries to Elixir-convert him with a Blue Elixir (which normally can't bond to animals), the Panda's human-beneath lets him absorb it and, per Livia's foresight that he and her father could safely take two Elixirs, he gains a SECOND power, moving with focus instead of madness. He flies into a Bruce-Lee-style 'Soaring Panda' kick that caves in Big Fat Adam's skull, killing him. Timmy the disciple becomes a master.",
+      "facts": [
+        {
+          "key": "power up",
+          "value": "Absorbs Adam's Blue Elixir to gain a second power"
+        },
+        {
+          "key": "feat",
+          "value": "Kills Adam the Ogre with the 'Soaring Panda' finisher"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam the Ogre",
+          "rel": "kills him"
+        },
+        {
+          "to": "Livia",
+          "rel": "she foresaw he could safely take the Elixir"
+        }
+      ],
+      "chapter": 96
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "CH96: real name Bianca. Adam's Psycho enforcer (shockwave gauntlets, sealed hazmat suit) whom Ryan finally turns to his side: he refuses to fight her, disarms himself, and offers her his cure and a last chance at being human again. Her doubt seeded, she picks Ryan's side mid-battle, collapsing the floor to trap Frank and helping subdue the Meta-Gang, then aids Len in loading the captured Psychos into bathyspheres. Ryan tells the crew she 'will be very important later.'",
+      "facts": [
+        {
+          "key": "turn",
+          "value": "Defects to Ryan; joins subduing the Meta-Gang"
+        },
+        {
+          "key": "hook",
+          "value": "Ryan promises a cure to restore her humanity"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "won over by his offer of a cure"
+        }
+      ],
+      "chapter": 96
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH96: leads the bunker's final fight, learning his Fisty punch can't focus Black Flux without the Saturn armor. He turns Sarin/Bianca to his side, sets up Adam's death, and wins a near-flawless victory (his only loss the car). The Meta-Gang is jailed underwater pending a cure; Adam drowns. Afterward he plots his next phase, infiltrate Dynamis from the bottom via Jamie/Ki-jung/Lanka, brief Alchemo/Len/Sarin on the memory map, have Vulcan rebuild the Saturn armor, deal with the Carnival, Narcinia and the Bliss Factory. Emotionally freed by having friends who can remember him, he finally makes his move on Livia and asks her out.",
+      "facts": [
+        {
+          "key": "lesson",
+          "value": "Needs the Saturn armor to focus his Black Flux"
+        },
+        {
+          "key": "milestone",
+          "value": "Asks Livia on a date; near-flawless victory"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "asks her out"
+        },
+        {
+          "to": "Sarin",
+          "rel": "wins her defection"
+        }
+      ],
+      "chapter": 96
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH96: the battle's tactician, foreseeing the winning branch. She reveals Adam's carbon skin only protects the surface (head trauma still works), mentally destroys Frank by exposing his real identity (Vladimir Khabarov), and lets the Panda absorb Adam's Elixir because she predicted he could safely take two. Increasingly warm with Ryan (letting him rescue her repeatedly, 'you may rescue me as many times as you like'), she insists Shroud come clean to Fortuna. When Ryan finally makes his move and asks her out, she, unable to predict him, blushes and gasps in genuine surprise.",
+      "facts": [
+        {
+          "key": "tactics",
+          "value": "IDs Adam's weakness, unmasks Frank, greenlights Panda's Elixir"
+        },
+        {
+          "key": "romance",
+          "value": "Accepts Ryan's advance; can't foresee him, so it's a real surprise"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "grows close; he asks her out"
+        }
+      ],
+      "chapter": 96
     }
   ],
   "plotObservations": [
@@ -15545,6 +15707,27 @@
         "Rakshasa"
       ],
       "chapter": 95
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH96 'Beast of the East': the bunker boss fight. Adam the Ogre wields a salvaged Mechron gravity gun and brainwashes Frank with a 'protect democracy' delusion. Ryan learns his Fisty punch can't focus Black Flux without the Saturn armor, and turns Sarin (Bianca) to his side by disarming and offering her a cure. Livia foresees the winning branch: she IDs Adam's skin-only defense (head trauma works), mentally shatters Frank by exposing his true name Vladimir Khabarov, and lets the Panda absorb Adam's Blue Elixir, gaining a second power and finishing Adam with a 'Soaring Panda' kick (Len later drowns him). The Meta-Gang is jailed underwater pending a cure. A near-flawless victory. Ryan then plots infiltrating Dynamis via Jamie/Ki-jung/Lanka and rebuilding the Saturn armor with Vulcan, and finally asks Livia on a date.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Adam the Ogre",
+        "Frank the Mad",
+        "Sarin",
+        "The Panda",
+        "Len",
+        "Mr. See-Through",
+        "Fortuna",
+        "Mechron",
+        "The Meta-Gang",
+        "Vulcan",
+        "The Saturn Armor",
+        "Jamie"
+      ],
+      "chapter": 96
     }
   ]
 }
