@@ -17602,6 +17602,118 @@
         }
       ],
       "chapter": 127
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH128 (the Augustus duel): King Saturn duels the lightning-god above New Rome. His Black-Flux punches - fueled by every crime he witnessed - CRACK Augustus's 'invulnerable' ivory body, reversing the fight and drawing real fear. He out-boxes the god with centuries of martial experience, but Augustus refuses melee, harasses him from range with homing lightning that Monaco can't cage (the cursed dimension spits Augustus back out of spite), overloads the Saturn Armor's storage, and finally fries it - Ryan crashes crippled on a French beach, glass in his eye, facing death with no save left. The Plushie sacrifices itself, revealing it was always a living gate between universes and Ryan the key: Ryan grabs the tear it opens, forces it wide, drags Augustus in by the ankle, and both fall into the Purple World.",
+      "facts": [
+        {
+          "key": "breakthrough",
+          "value": "His Black-Flux fists crack Augustus's indestructible ivory flesh - the conceptual power that can finally wound the god"
+        },
+        {
+          "key": "defeat then gambit",
+          "value": "Armor fried and grounded; uses the Plushie's death-gate to drag Augustus into the Purple World"
+        },
+        {
+          "key": "creed",
+          "value": "Fights not for the world but to be happy and make others happy; 'my fists carry the weight of centuries and the hopes of thousands'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "cracks his invulnerability, is beaten at range, then pulls him into the Purple World"
+        },
+        {
+          "to": "The Plushie",
+          "rel": "its self-sacrifice as a living gate gives him the exit he needs"
+        }
+      ],
+      "chapter": 128
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH128 (invulnerability shattered): the lightning-god fights Ryan above New Rome, revealing his Red-Elixir lightning has NO upper limit - he detonates a nuclear-scale crimson supernova in the upper atmosphere (the power that sank Malta; enough to end civilization). But Ryan's Black-Flux punches crack his 'invulnerable' ivory body, glowing red rifts spreading like a damaged statue, and he tastes fear and pain for the first time in twenty years. His over-aggressive, defense-less style (never having needed to dodge) fails against Ryan's centuries of martial skill in melee, so he wins at range instead - homing lightning, overloading the Saturn Armor, immune to Monaco's grasp. Moments from vaporizing the grounded Ryan, he is grabbed by the ankle (his adamantine flesh now soft as butter) and dragged into the Purple World. Creed: 'There can only be one master of the world... they exist to serve us.'",
+      "facts": [
+        {
+          "key": "no limit",
+          "value": "Lightning generation has no ceiling; detonates a nuclear-scale crimson supernova, could destroy civilization alone"
+        },
+        {
+          "key": "cracked",
+          "value": "Ryan's Black-Flux fists split his indestructible ivory body; craters and red rifts spread like a moon-scarred statue"
+        },
+        {
+          "key": "weakness",
+          "value": "Never learned to defend (20 years untouchable); loses melee to Ryan's experience, so refuses it and fights at range"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "cracked by his Black, then dragged into the Purple World by the ankle"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "enraged at Ryan invoking his daughter; the one wound the punches couldn't match"
+        }
+      ],
+      "chapter": 128
+    },
+    {
+      "name": "The Plushie",
+      "kind": "character",
+      "summary": "CH128 (heroic sacrifice - true nature revealed): as Augustus prepares to vaporize the grounded, dying Ryan, the murderous Killer Rabbit crawls from the wrecked backpack with the same sorrowful blue eyes it wore in the bunker. Its pre-recorded 'I will always be your friend' morphs into an alien voice as it leaps between Ryan and the god's city-killing thunderbolt, its mechanical body disintegrating. The lightning focused into it opens a thumb-sized violet tear - a portal. The revelation: the Plushie always existed between two universes; it IS a living gate, and Ryan is the key. Its loops of subtle nudging and 'coincidences' were all to leave that door open at the right moment. Its death gives Ryan his one exit - the tear he forces wide to drag Augustus into the Purple World.",
+      "facts": [
+        {
+          "key": "true nature",
+          "value": "A living gate between two universes; its 'random' loop-nudges all engineered to open the portal at this exact moment, with Ryan as the key"
+        },
+        {
+          "key": "sacrifice",
+          "value": "Disintegrated taking Augustus's city-killing bolt for Ryan; its death opens the portal to the Purple World"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "dies shielding him; its death-gate is the key to trapping Augustus"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "the portal it opens leads there"
+        }
+      ],
+      "chapter": 128
+    },
+    {
+      "name": "The Purple World",
+      "kind": "location",
+      "summary": "CH128 (Ryan and Augustus enter): the Violet realm of the Colored Worlds, reached through the portal the dying Plushie's sacrifice tears open on a French beach. When Ryan forces the thumb-sized rift wide with Violet and Black particles, it consumes his own Black-fed lightning and grows a hungry appetite - sand, seawater, and air pour in, and even the flying Augustus is dragged down as the rift eats the air beneath his feet. Ryan grabs his ankle (the adamantine flesh soft as butter at the threshold) and pulls his nemesis through; the gate closes behind them, swallowing both Genomes into the Purple World for the final reckoning.",
+      "facts": [
+        {
+          "key": "entered via",
+          "value": "The Plushie's death-portal on the French coast, forced open by Ryan's Violet+Black particles"
+        },
+        {
+          "key": "the trap",
+          "value": "Ryan drags Augustus into it by the ankle as the rift devours the surrounding matter"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "enters it dragging his nemesis for the final confrontation"
+        },
+        {
+          "to": "Augustus",
+          "rel": "pulled into the realm against his will as the gate closes"
+        }
+      ],
+      "chapter": 128
     }
   ],
   "plotObservations": [
@@ -19865,6 +19977,21 @@
         "Livia Augusti"
       ],
       "chapter": 127
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH128 'Time & Thunder': the duel with Augustus. Ryan's Black-Flux punches crack the god's 'invulnerable' ivory body, drawing real fear and reversing the fight; Augustus reveals his lightning has no upper limit, detonating a nuclear-scale supernova. Ryan tries to trap him in cursed Monaco but the pocket-dimension spits Augustus back out of spite. Out-boxed in melee, Augustus refuses close combat and wins at range - homing lightning, overloaded and finally fried Saturn Armor - grounding Ryan crippled on a French beach with no save left. As the god moves to vaporize him, the Plushie sacrifices itself, revealing it was always a living gate between universes and Ryan the key. Ryan forces the death-portal wide, drags Augustus in by the ankle, and both fall into the Purple World for the final reckoning.",
+      "entities": [
+        "Ryan Romano",
+        "Augustus",
+        "The Plushie",
+        "The Purple World",
+        "Monaco",
+        "Livia Augusti",
+        "Simon",
+        "The Opis Armor"
+      ],
+      "chapter": 128
     }
   ]
 }

@@ -501,6 +501,18 @@
           {
             "key": "counters",
             "value": "Pre-mapped power match-ups (Livia's intel) neutralize Mars, Pluto, Cancel, the Killer Seven, and the Augusti armors"
+          },
+          {
+            "key": "breakthrough",
+            "value": "His Black-Flux fists crack Augustus's indestructible ivory flesh - the conceptual power that can finally wound the god"
+          },
+          {
+            "key": "defeat then gambit",
+            "value": "Armor fried and grounded; uses the Plushie's death-gate to drag Augustus into the Purple World"
+          },
+          {
+            "key": "creed",
+            "value": "Fights not for the world but to be happy and make others happy; 'my fists carry the weight of centuries and the hopes of thousands'"
           }
         ],
         "ties": [
@@ -851,6 +863,14 @@
           {
             "to": "sarin",
             "rel": "acts as bait for Bacchus so she can ambush the telepath unseen"
+          },
+          {
+            "to": "augustus",
+            "rel": "cracks his invulnerability, is beaten at range, then pulls him into the Purple World"
+          },
+          {
+            "to": "the-plushie",
+            "rel": "its self-sacrifice as a living gate gives him the exit he needs"
           }
         ],
         "appearances": [
@@ -975,7 +995,8 @@
           124,
           125,
           126,
-          127
+          127,
+          128
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -2336,6 +2357,18 @@
           {
             "key": "framing",
             "value": "Calls the duel his 'Titanomachy'; contemptuous, unafraid, but fists clenched in anger"
+          },
+          {
+            "key": "no limit",
+            "value": "Lightning generation has no ceiling; detonates a nuclear-scale crimson supernova, could destroy civilization alone"
+          },
+          {
+            "key": "cracked",
+            "value": "Ryan's Black-Flux fists split his indestructible ivory body; craters and red rifts spread like a moon-scarred statue"
+          },
+          {
+            "key": "weakness",
+            "value": "Never learned to defend (20 years untouchable); loses melee to Ryan's experience, so refuses it and fights at range"
           }
         ],
         "ties": [
@@ -2438,6 +2471,14 @@
           {
             "to": "ryan-romano",
             "rel": "descends to duel him one-on-one above the ruined fortress"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "cracked by his Black, then dragged into the Purple World by the ankle"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "enraged at Ryan invoking his daughter; the one wound the punches couldn't match"
           }
         ],
         "appearances": [
@@ -2469,7 +2510,8 @@
           123,
           125,
           126,
-          127
+          127,
+          128
         ],
         "questions": []
       },
@@ -8500,6 +8542,14 @@
           {
             "key": "note",
             "value": "Home of the plushies; Black alone can't be safely harnessed"
+          },
+          {
+            "key": "entered via",
+            "value": "The Plushie's death-portal on the French coast, forced open by Ryan's Violet+Black particles"
+          },
+          {
+            "key": "the trap",
+            "value": "Ryan drags Augustus into it by the ankle as the rift devours the surrounding matter"
           }
         ],
         "ties": [
@@ -8510,6 +8560,14 @@
           {
             "to": "the-darkness-beyond",
             "rel": "parallels"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "enters it dragging his nemesis for the final confrontation"
+          },
+          {
+            "to": "augustus",
+            "rel": "pulled into the realm against his will as the gate closes"
           }
         ],
         "appearances": [
@@ -8519,7 +8577,8 @@
           65,
           70,
           78,
-          85
+          85,
+          128
         ],
         "questions": []
       },
@@ -9153,7 +9212,8 @@
           124,
           125,
           126,
-          127
+          127,
+          128
         ],
         "questions": []
       },
@@ -11076,6 +11136,14 @@
           {
             "key": "bond",
             "value": "Now genuinely Ryan's friend; owed a favor for saving him from Adam"
+          },
+          {
+            "key": "true nature",
+            "value": "A living gate between two universes; its 'random' loop-nudges all engineered to open the portal at this exact moment, with Ryan as the key"
+          },
+          {
+            "key": "sacrifice",
+            "value": "Disintegrated taking Augustus's city-killing bolt for Ryan; its death opens the portal to the Purple World"
           }
         ],
         "ties": [
@@ -11098,11 +11166,20 @@
           {
             "to": "augustus",
             "rel": "wants revenge for its earlier defeat by him"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "dies shielding him; its death-gate is the key to trapping Augustus"
+          },
+          {
+            "to": "the-purple-world",
+            "rel": "the portal it opens leads there"
           }
         ],
         "appearances": [
           50,
-          126
+          126,
+          128
         ],
         "questions": []
       },
@@ -11811,7 +11888,8 @@
           64,
           68,
           79,
-          98
+          98,
+          128
         ],
         "questions": []
       },
@@ -11974,7 +12052,8 @@
         "appearances": [
           64,
           79,
-          109
+          109,
+          128
         ],
         "questions": []
       },
@@ -16022,7 +16101,8 @@
         ],
         "appearances": [
           123,
-          124
+          124,
+          128
         ],
         "questions": []
       },
@@ -18350,6 +18430,10 @@
           {
             "chapter": 127,
             "summary": "CH127 'Theomachia': the assault on Augustus's Bliss fortress on Ischia Island. Ryan's pre-mapped rock-paper-scissors power match-ups (Livia's intel) dismantle the defense - Vladimir (steel giant) + Acid Rain neutralize Mars and his undead legion, Shroud + Fortuna tranq Pluto and Cancel, the Killer Seven fall (Vamp dies, the rest surrender/sedated), and Vulcan's hidden killswitch traps the Augusti in their own armors. Ryan goes inside alone as bait for the telepath Bacchus so the brainless Sarin can ambush and choke him unconscious; he knocks out the necromancer Mercury, spares both for a possible cure, and rescues the mind-tortured Narcinia (reunited with Fortuna and Felix). The factory is razed. Then Augustus finally descends as an ivory lightning-god, framing the duel as his Titanomachy, and the final one-on-one battle above the ruins begins."
+          },
+          {
+            "chapter": 128,
+            "summary": "CH128 'Time & Thunder': the duel with Augustus. Ryan's Black-Flux punches crack the god's 'invulnerable' ivory body, drawing real fear and reversing the fight; Augustus reveals his lightning has no upper limit, detonating a nuclear-scale supernova. Ryan tries to trap him in cursed Monaco but the pocket-dimension spits Augustus back out of spite. Out-boxed in melee, Augustus refuses close combat and wins at range - homing lightning, overloaded and finally fried Saturn Armor - grounding Ryan crippled on a French beach with no save left. As the god moves to vaporize him, the Plushie sacrifices itself, revealing it was always a living gate between universes and Ryan the key. Ryan forces the death-portal wide, drags Augustus in by the ankle, and both fall into the Purple World for the final reckoning."
           }
         ],
         "entities": [
@@ -18472,7 +18556,8 @@
           "the-bahamut",
           "the-architect",
           "mercury",
-          "the-killer-seven"
+          "the-killer-seven",
+          "the-purple-world"
         ]
       }
     ]
