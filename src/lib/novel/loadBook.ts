@@ -13,6 +13,9 @@ import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
+import { DEFAULT_BOOK_SLUG } from "./bookSlug";
+export { DEFAULT_BOOK_SLUG };
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 export type Kind = "character" | "world" | "organization" | "lore";
@@ -215,7 +218,11 @@ export function loadBook(slug: string): LoadedBook {
     }
     return null;
   };
-  const plotState = (s: string): string => (s === "ongoing" ? "open" : s);
+  // Hand-authored extractions carry an explicit lifecycle state; assembler output
+  // (from raw observations) omits it. A missing/"ongoing" state means the arc is
+  // still open. Never return undefined: the seed writes this into a NOT NULL column.
+  const plotState = (s: string | undefined): string =>
+    !s || s === "ongoing" ? "open" : s;
 
   book.plotlines = ex.plot.plotlines.map((pl) => ({
     id: pl.id,
@@ -231,11 +238,6 @@ export function loadBook(slug: string): LoadedBook {
 
   return book;
 }
-
-// The book that owns the app's default scope (what /wiki, /plot ... resolve to
-// with no ?w= param). It seeds first and its ids back scope.ts. Any fully-authored
-// book can hold this slot; it is the one with a complete wiki + plot today.
-export const DEFAULT_BOOK_SLUG = "mother-of-learning";
 
 // Discover every book in this folder by its `<slug>.chapters.json` and load it.
 // The default book is placed first (it backs the default scope); the rest follow

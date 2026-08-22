@@ -30,7 +30,7 @@ const KIND_SHELF: Record<Kind, string> = {
 // Built-in categories. Their ids EQUAL the kind enum strings, so every seeded
 // entry's `kind` already points at a real category row. Mirrors schema.sql.
 const BUILTIN_CATEGORIES: Array<{
-  id: Kind;
+  id: Kind | "plotline";
   label: string;
   shelf: string;
   sortOrder: number;
@@ -39,6 +39,9 @@ const BUILTIN_CATEGORIES: Array<{
   { id: "world", label: "Places", shelf: "places", sortOrder: 1 },
   { id: "organization", label: "Orders", shelf: "orders", sortOrder: 2 },
   { id: "lore", label: "Lore", shelf: "lore", sortOrder: 3 },
+  // Plotlines are entries of kind 'plotline' on the off-wiki 'plots' shelf
+  // (schema.sql). The kind FK needs this category row before any plotline seeds.
+  { id: "plotline", label: "Plotlines", shelf: "plots", sortOrder: 4 },
 ];
 
 function bodyOf(paragraphs: string[]) {

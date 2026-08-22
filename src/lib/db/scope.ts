@@ -3,7 +3,7 @@
 // DERIVED from that slug the exact same way loadBook.ts mints them, so the runtime
 // default and the seed can never drift apart. loadBook namespaces every id by slug:
 // `universe-<slug>`, `world-<slug>`, `<slug>-1` (the first book).
-import { DEFAULT_BOOK_SLUG } from "../novel/loadBook";
+import { DEFAULT_BOOK_SLUG } from "../novel/bookSlug";
 
 export const DEFAULT_UNIVERSE_ID = `universe-${DEFAULT_BOOK_SLUG}`;
 export const DEFAULT_WORLD_ID = `world-${DEFAULT_BOOK_SLUG}`;
