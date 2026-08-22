@@ -8677,6 +8677,258 @@
         }
       ],
       "chapter": 71
+    },
+    {
+      "name": "The Black Elixir",
+      "kind": "concept",
+      "summary": "Refined into a paradoxical shoggoth. Sarin's air-blast shatters Adam's bottle, splattering him; the ooze devours Adam, then Ghoul falls in too. Because Ghoul cannot die but the Elixir devours its hosts, the contradiction lets the Black Elixir STABILIZE into a colossal oily shoggoth, its hosts' eyes and mouths floating on its surface but speaking with an alien third voice. It is sentient and pleads to be sent 'back to the Black,' begging Ryan to 'open the gate.' Ryan strikes a reciprocity bargain: it helps him survive and clears the bunker of thralls (devouring bullets and enemies unharmed) in exchange for his promise of help. It won't assimilate Ryan, needing him alive and functional.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Devours Adam and immortal Ghoul, creating a paradox"
+        },
+        {
+          "key": "note",
+          "value": "Stabilizes into a colossal sentient oily shoggoth"
+        },
+        {
+          "key": "note",
+          "value": "Hosts' eyes/mouths float on it; speaks in an alien voice"
+        },
+        {
+          "key": "note",
+          "value": "Pleads to be sent 'back to the Black'; wants Ryan to open the gate"
+        },
+        {
+          "key": "note",
+          "value": "Allies with Ryan by reciprocity; clears the bunker of thralls"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "reciprocity bargain with"
+        },
+        {
+          "to": "Big Fat Adam",
+          "rel": "devours"
+        },
+        {
+          "to": "Ghoul",
+          "rel": "devours (paradox host)"
+        }
+      ],
+      "chapter": 72
+    },
+    {
+      "name": "The Bahamut",
+      "kind": "character",
+      "summary": "Refined: the possessed plushie's full horror unleashed. It fixates on children ('Child detected!'), bonding obsessively ('Let's hug! We'll be together forever!', 'I will always be your friend!'). It vaporizes Psyshock's brain with an eye-laser, bounces Ghoul into the Black Elixir, and DUPLICATES (its 'duplication phase'), a clone cutting Sarah free with a switchblade then begging her to play. The twin plushies obsess over Sarah and any child, turning murderous toward adults (crimson eyes) but calming when Ryan invokes protecting a '13-year-old' (Sarin). Once it enters duplication the run is 'ruined beyond repair.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Fixates on children: 'Child detected!', bonds obsessively"
+        },
+        {
+          "key": "note",
+          "value": "Vaporizes Psyshock's brain with an eye-laser"
+        },
+        {
+          "key": "note",
+          "value": "Duplicates in a 'duplication phase'; clones free Sarah"
+        },
+        {
+          "key": "note",
+          "value": "Murderous toward adults, gentle toward children"
+        },
+        {
+          "key": "note",
+          "value": "Its duplication marks a run as unsalvageable"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "terrifying ally"
+        },
+        {
+          "to": "Little Sarah",
+          "rel": "obsessively bonds with"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "kills"
+        }
+      ],
+      "chapter": 72
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "Refined: fully defects to Ryan. She air-blasts Adam into the shattered Black Elixir (killing him), frees Ryan from the chair, and becomes his sardonic sidekick for his 'Meta Run,' motivated by his promise he has the resources to make a Psycho cure. She recognizes his manipulations aren't like Adam's ('friendly grass-eating time-traveler' vs sociopathic cannibal). She helps him con Frank into killing Psyshock, arms him with a laser gun and Bliss, and confirms she has no remorse about massacring her old comrades. Ryan stays wary: she stood with Adam to the end when he burned New Rome with the orbital laser.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Air-blasts Adam into the Black Elixir, killing him"
+        },
+        {
+          "key": "note",
+          "value": "Frees Ryan; becomes his sidekick for the Meta Run"
+        },
+        {
+          "key": "note",
+          "value": "Motivated by Ryan's promise of a Psycho cure"
+        },
+        {
+          "key": "note",
+          "value": "Helps con Frank into killing Psyshock; arms Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Ryan stays wary: she backed Adam's burning of New Rome"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "ally/sidekick"
+        },
+        {
+          "to": "Big Fat Adam",
+          "rel": "kills"
+        },
+        {
+          "to": "Frank the Mad",
+          "rel": "cons together with Ryan"
+        }
+      ],
+      "chapter": 72
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "A towering, metal-immune schizophrenic Meta-Gang giant who cannot be killed by his comrades and whom only Adam could manage. He lives in a delusion of being a Cold-War American agent fighting communists and Nazis. Ryan exploits this: stopping time to plant a bloody hammer ('a communist weapon') in Psyshock's tentacles, roleplaying as 'Ryan Romano, CIA' and claiming Psyshock ('a Viet Cong traitor') murdered 'President Adam' and Kennedy. Because Psyshock contradicts Frank's delusions ('you're not even Americ-'), the enraged giant punches Psyshock's head apart, then storms off to hunt his new host, 'Better dead than red!' Removing Adam and turning Frank is how Ryan begins imploding the Meta-Gang.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Metal-immune schizophrenic giant, unkillable by his gang"
+        },
+        {
+          "key": "note",
+          "value": "Only Adam could manage him"
+        },
+        {
+          "key": "note",
+          "value": "Deluded he's a Cold-War American agent vs communists"
+        },
+        {
+          "key": "note",
+          "value": "Ryan cons him via his delusions to kill Psyshock"
+        },
+        {
+          "key": "note",
+          "value": "Reacts violently to anyone contradicting his delusions"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "kills (conned by Ryan)"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "manipulated by"
+        }
+      ],
+      "chapter": 72
+    },
+    {
+      "name": "Ryan's Meta Run",
+      "kind": "concept",
+      "summary": "Ryan's audacious plan after the Bahamut's duplication ruins the loop beyond repair: instead of suiciding to reset, he seizes the once-in-many-lifetimes chance to TAKE OVER Mechron's bunker. With Adam and Psyshock dead, most of the Meta-Gang outside, and the Bahamut/shoggoth/Sarin as allies, he'll free the captive orphanage children, save 'Shortie,' study Mechron's tech up close, and try to build a Psycho cure. As Dynamis predicted, without Adam to unify them the Meta-Gang implodes with the right push. Only Psyshock and Acid Rain knew Ryan's true power, so eliminating Psyshock keeps his secret. He arms up with a laser gun, Bliss (brain-altering drug to paralyze the brain-based Psyshock), and a bloodied hammer.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ryan takes over the bunker instead of resetting the loop"
+        },
+        {
+          "key": "note",
+          "value": "Enabled by the Bahamut's run-ruining duplication"
+        },
+        {
+          "key": "note",
+          "value": "Goal: free children, study Mechron's tech, make a cure"
+        },
+        {
+          "key": "note",
+          "value": "Meta-Gang implodes without Adam to unify it"
+        },
+        {
+          "key": "note",
+          "value": "Only Psyshock and Acid Rain knew Ryan's true power"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "plan of"
+        },
+        {
+          "to": "Mechron's Bunker",
+          "rel": "target of takeover"
+        },
+        {
+          "to": "The Psycho Cure",
+          "rel": "goal of"
+        }
+      ],
+      "chapter": 72
+    },
+    {
+      "name": "Little Sarah",
+      "kind": "character",
+      "summary": "Refined: Len's young lookalike (bites her lip 'exactly like Len'), one of the orphanage children the Meta-Gang captured. Freed from Adam's plate by the Bahamut's clone, she's terrified and amnesiac to Ryan ('Who are you? How do you know my name?'), her mother taken and 'all strange' (enthralled). Ryan, in only boxers, reassures her he's her mom's friend and leaves her guarded by the child-obsessed plushies ('a baaaad influence') while he clears the bunker. The captive orphans are caged like rats beside crates of knockoff Elixirs.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Len's young lookalike; an orphanage child"
+        },
+        {
+          "key": "note",
+          "value": "Freed from Adam's plate by a Bahamut clone"
+        },
+        {
+          "key": "note",
+          "value": "Terrified and doesn't recognize Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Her mother was enthralled by Psyshock"
+        },
+        {
+          "key": "note",
+          "value": "Left guarded by the plushies while Ryan clears the bunker"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "protected by"
+        },
+        {
+          "to": "The Bahamut",
+          "rel": "obsessively bonded to by"
+        },
+        {
+          "to": "Len",
+          "rel": "resembles"
+        }
+      ],
+      "chapter": 72
     }
   ],
   "plotObservations": [
@@ -9648,6 +9900,16 @@
       "title": "Adam's Real Plan and the Black Elixir Gambit",
       "summary": "Ryan deduces Adam's manipulations: Adam gaslights his own lieutenants and his true goal is the bunker's Orbital Communications Tower, not a Psycho cure, he wants to kill everyone. Adam reveals a horror dessert: Little Sarah bound on a plate. Rather than risk Psyshock's uncertain overwrite, Adam produces the Black Elixir, planning to force Ryan to become a Psycho and corrupt his save-point power (Ryan never dared take a second Elixir for that reason). The Elixir wriggles, remembering Ryan. Explosions rock the bunker; Sarin, her faith in Adam broken, secretly asks Ryan for a cure and rusts his restraints. Ghoul opens the door to reveal the corridor slaughtered and Ryan's savior: the possessed Bahamut plushie, declaring 'I will always be your friend!'",
       "chapter": 71
+    },
+    {
+      "title": "The Bahamut's Rampage and the Shoggoth Bargain",
+      "summary": "The possessed Bahamut plushie tears through the Meta-Gang: it vaporizes Psyshock and, when Adam raises the Black Elixir to corrupt Ryan, Sarin betrays and air-blasts Adam into the shattered bottle. Adam and the immortal Ghoul are both devoured, and the paradox stabilizes the Black Elixir into a sentient shoggoth pleading to be sent 'back to the Black.' Ryan bargains help-for-help; the shoggoth clears the bunker of thralls. The Bahamut duplicates, freeing Little Sarah, ruining the run beyond repair. Rather than reset, Ryan resolves on a 'Meta Run': take over the bunker, free the children, and build a Psycho cure.",
+      "chapter": 72
+    },
+    {
+      "title": "Conning Frank the Mad",
+      "summary": "Armed with a hammer, laser gun, and Bliss and joined by the defected Sarin, Ryan sets out to free the caged orphanage children and implode the leaderless Meta-Gang. Cornered by the metal-immune schizophrenic giant Frank the Mad and a surviving Psyshock host, Ryan exploits Frank's Cold-War delusions: posing as 'CIA agent Romano,' he frames Psyshock as a communist traitor who murdered 'President Adam,' planting the bloody hammer in his tentacles. When Psyshock contradicts Frank's delusion, the enraged giant punches his head apart and storms off to hunt the new host. Ryan reaches the infirmary, arms up, and, as child-obsessed plushies mass toward the caged kids, his first Meta Run begins 'with chaos and madness.'",
+      "chapter": 72
     }
   ]
 }
