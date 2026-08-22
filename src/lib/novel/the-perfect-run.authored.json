@@ -7243,6 +7243,258 @@
         }
       ],
       "chapter": 64
+    },
+    {
+      "name": "Nora Moore",
+      "kind": "character",
+      "summary": "'The Architect,' a British Genius urban planner in her early twenties (shoulder-length brown hair, striking amber eyes, sharp corporate style) and Wardrobe's girlfriend/civil-union partner. An independent contractor rather than a costumed hero, her Genius power is specialized in cities and architecture: she designs arcology-like self-sustaining towns, flying cities, and underground bunker settlements that fully optimize space, energy, and materials at a fraction of expected cost. She designed the Dynamis HQ and the Optimates Tower early in her career, a fact Ryan files away for a 'sinister plan.' Ryan, who has a weakness for female Geniuses, immediately clicks with her and considers introducing her to Len for underwater-city work.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "British Genius urban planner, 'The Architect'"
+        },
+        {
+          "key": "note",
+          "value": "Wardrobe's girlfriend / civil-union partner"
+        },
+        {
+          "key": "note",
+          "value": "Power designs optimized self-sustaining cities and bunkers"
+        },
+        {
+          "key": "note",
+          "value": "Designed Dynamis HQ and the Optimates Tower"
+        },
+        {
+          "key": "note",
+          "value": "Ryan files her building knowledge away for a scheme"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Wardrobe",
+          "rel": "girlfriend"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "designed HQ/Optimates Tower"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "new contact"
+        }
+      ],
+      "chapter": 65
+    },
+    {
+      "name": "The Ark",
+      "kind": "location",
+      "summary": "Len's secret underwater base, an old Soviet-styled 'kremlin' habitat cluster on the floor of the Tyrrhenian Sea, nicknamed by Ryan the 'Commie-Cave.' Reached only by bathysphere, it houses the children she rescued, her steampunk-factory workshop (servers wired to Dynamis's stolen brainscan machine, workbenches of half-finished submarines and artificial fish), and the gutted husk of Ryan's Plymouth Fury after she stripped its Chronoradio, engine, and Genius tech for the cause. She commutes via the Meta-Gang submarine she stole during the bunker raid, which also means the Meta-Gang could reach the base, a vulnerability Ryan notes.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Len's secret Tyrrhenian-seafloor habitat ('Commie-Cave')"
+        },
+        {
+          "key": "note",
+          "value": "Reached by bathysphere; houses the rescued children"
+        },
+        {
+          "key": "note",
+          "value": "Workshop wired to Dynamis's stolen brainscan machine"
+        },
+        {
+          "key": "note",
+          "value": "Holds the gutted Plymouth Fury (parts stripped for the project)"
+        },
+        {
+          "key": "note",
+          "value": "Accessed via the stolen Meta-Gang submarine"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "home base of"
+        },
+        {
+          "to": "Plymouth Fury",
+          "rel": "stores"
+        },
+        {
+          "to": "Meta-Gang",
+          "rel": "potential vulnerability to"
+        }
+      ],
+      "chapter": 65
+    },
+    {
+      "name": "Eugène-Henry",
+      "kind": "character",
+      "summary": "Livia's placid cat, a Genome feline with an enormous-range teleportation power. In this chapter Ryan concludes the cat's 'random' teleports are anything but: Eugène-Henry gained powers across time, deliberately led Livia to Ryan, and appeared in the Ark exactly when Len considered studying Violet Flux, too many coincidences. Ryan theorizes the cat is being teleported by something else, a benevolent guiding entity (the Alchemist / the Purple-World pyramid entity / the 'Ultimate Ones'), the same force behind the Chronoradio signals and his visions, quietly showing them the path to success.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Genome cat with enormous-range teleportation"
+        },
+        {
+          "key": "note",
+          "value": "Teleports are not random, they guide Ryan's group"
+        },
+        {
+          "key": "note",
+          "value": "Led Livia to Ryan; appeared when Violet Flux came up"
+        },
+        {
+          "key": "note",
+          "value": "Ryan believes a guiding entity teleports him"
+        },
+        {
+          "key": "note",
+          "value": "Linked to the Chronoradio-signal mystery"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "pet of"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "suspected controller"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "guides"
+        }
+      ],
+      "chapter": 65
+    },
+    {
+      "name": "The Brain-Transfer Project",
+      "kind": "concept",
+      "summary": "Ryan and Len's central engineering goal: using Dynamis's stolen brainscan tech to make a computer map of Ryan's brain, then transmit that cognitive simulation back through time into his past self, letting him carry full memories across a save-point reset instead of relying on the Chronoradio. The tech works (brain-map to host overwrite), and sending it to one's own past self should be safe (a harmless concussion at worst), since the closer the host nervous system, the cleaner the transfer. The catch: wirelessly transmitting a brainmap back in time needs more power than any natural source, only Violet Flux (hooking the Chronoradio to Vulcan's armor) can supply it. This raises the unresolved mystery of who/what sent the ORIGINAL Chronoradio messages, since no such rig existed then.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Maps Ryan's brain and sends it back in time to his past self"
+        },
+        {
+          "key": "note",
+          "value": "Built from Dynamis's stolen brainscan machine"
+        },
+        {
+          "key": "note",
+          "value": "Transfer to one's own past self is near-harmless"
+        },
+        {
+          "key": "note",
+          "value": "Needs Violet Flux power to transmit wirelessly through time"
+        },
+        {
+          "key": "note",
+          "value": "Reopens the mystery of the original Chronoradio sender"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "engineer of"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "subject/goal"
+        },
+        {
+          "to": "Violet Flux",
+          "rel": "power requirement"
+        }
+      ],
+      "chapter": 65
+    },
+    {
+      "name": "The Blood Beacon",
+      "kind": "concept",
+      "summary": "Ryan's theory for what Dynamis is really hunting in Len's blood. When Len took her Elixir, her father Bloodstream instantly knew, and always found her when she wandered off. Ryan reasons Bloodstream may have left a trace of himself inside his cherished daughter, a 'blood beacon,' rather than merely sensing blood from afar. This ties to the Knockoff Elixirs: Ryan couldn't match them to Bloodstream before because the Carnival erased all trace of him to stop his return, but Len's blood may now provide the missing comparison, and a match would confirm a surviving Bloodstream clone. Ryan needs a blood sample and his car's tools to test it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Theory: Bloodstream left a trace inside Len ('blood beacon')"
+        },
+        {
+          "key": "note",
+          "value": "Explains how he always instantly found her"
+        },
+        {
+          "key": "note",
+          "value": "May be what Dynamis is really tracking in Len's blood"
+        },
+        {
+          "key": "note",
+          "value": "Len's blood could match the Knockoff Elixirs to Bloodstream"
+        },
+        {
+          "key": "note",
+          "value": "Ryan needs a sample and his car's tools to confirm"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "origin of trace"
+        },
+        {
+          "to": "Len",
+          "rel": "carries the beacon"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "hunting it"
+        }
+      ],
+      "chapter": 65
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "Refined: after his heroics against the Meta-Gang, the Panda becomes a viral Dynanet sensation, 'Pandamania,' with a meme site, best-selling merchandise (outselling all other new recruits combined), and photoshopped 'Panda OP please NERF' fan worship. Sweet and naive, he weeps with joy that everyone thinks he's amazing and calls Ryan (his 'Sifu') his friend. Still visiting the hospitalized in Felix's honor, bearing chocolate and flowers.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Became a viral meme, 'Pandamania,' after fighting the Meta-Gang"
+        },
+        {
+          "key": "note",
+          "value": "Best-selling merchandise; adored on the Dynanet"
+        },
+        {
+          "key": "note",
+          "value": "Naive and emotional; weeps with joy at fame"
+        },
+        {
+          "key": "note",
+          "value": "Calls Ryan 'Sifu' and his friend"
+        },
+        {
+          "key": "note",
+          "value": "Mourns Felix with chocolate and flowers at the hospital"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "disciple of ('Sifu')"
+        },
+        {
+          "to": "Wardrobe",
+          "rel": "friend"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "star recruit"
+        }
+      ],
+      "chapter": 65
     }
   ],
   "plotObservations": [
@@ -8085,6 +8337,27 @@
         "Bloodstream"
       ],
       "chapter": 64
+    },
+    {
+      "title": "In Mysterious Ways",
+      "beat": "At the Ark (his 'Commie-Cave'), Ryan reconnects with Len as she works on the brain-transfer project, sharing a rare warm, tender moment (she chuckles at his jokes; they touch on their long-past romance). They diagnose the project's roadblock: transmitting a brainmap back through time needs Violet Flux power (Chronoradio hooked to Vulcan's armor), which reopens the mystery of who sent the ORIGINAL Chronoradio messages. Ryan proposes a 'blood beacon': Bloodstream may have left a trace inside Len that Dynamis now tracks, and Len's blood could match the Knockoff Elixirs to her father, hinting at a surviving clone. Studying Eugène-Henry's too-convenient teleports, Ryan concludes a benevolent guiding entity (the Alchemist / Purple-World pyramid) is steering them, and they consider seeking its Antarctic base. Ryan then heads to a Dynamis hospital for the heist plan, glimpsing an upset Narcinia leaving with Mortimer, and meets Wardrobe's Genius girlfriend Nora Moore ('the Architect'), who designed the Dynamis HQ and Optimates Tower, priceless intel for Ryan's scheme. He comforts the newly meme-famous, tearful Panda before being summoned to see Mr. Veran.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "The Ark",
+        "The Brain-Transfer Project",
+        "Violet Flux",
+        "The Blood Beacon",
+        "Eugène-Henry",
+        "The Alchemist",
+        "Nora Moore",
+        "Wardrobe",
+        "The Panda",
+        "Narcinia",
+        "Mortimer",
+        "Dynamis"
+      ],
+      "chapter": 65
     }
   ]
 }
