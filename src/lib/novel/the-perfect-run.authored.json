@@ -16604,6 +16604,110 @@
         }
       ],
       "chapter": 120
+    },
+    {
+      "name": "Adam the Ogre",
+      "kind": "character",
+      "summary": "CH121 (KILLED): the duel reveals his two powers - a Violet time-sense (he FEELS Ryan's freezes like Acid Rain and shields his vitals whenever time stops, though he lacks the reflexes/teleport to fully exploit it) and a POCKET DIMENSION in his gullet/torso (wounds bleed no blood, only suck air; he pulls out grenades, a flail, a crossbow he spits bolts from, even a Blue Elixir syringe). His carbon skin resists most bullets; Ryan blinds both eyes with depleted-uranium rounds but is crossbow-bolted in the belly and leg. Cornered, Ryan throws his triggered A-bomb down Adam's throat mid-taunt ('Filibuster!'); the pocket dimension contains most of the blast, but flames erupt from his mouth, nostrils, and the uranium bullet-holes, cooking his organs and melting his skull. He dies. The Panda's prior-loop fight had taught Ryan Adam was vulnerable to internal damage.",
+      "facts": [
+        {
+          "key": "two powers",
+          "value": "Violet time-sense (feels/shields against freezes) + a pocket dimension in his gullet"
+        },
+        {
+          "key": "death",
+          "value": "Killed by his own swallowed A-bomb; flames cooked him through the uranium bullet-holes"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "killed by him in single combat"
+        },
+        {
+          "to": "The Panda",
+          "rel": "whose earlier fight exposed Adam's internal weakness"
+        }
+      ],
+      "chapter": 121
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH121: in a brutal solo duel Ryan kills Adam the Ogre - shooting a hostage boy free, blinding Adam with depleted-uranium rounds, and finally feeding him his own triggered A-bomb so the blast cooks him from inside. Ryan learns Adam is a fellow Violet who could SENSE his time-stops (giving him only 8-10 seconds of usable freeze that Adam reads), a reminder that even after 17 loops his enemies still surprise him. Wounded (crossbow bolts in waist and leg), he's patched up by the Panda in the infirmary with Livia at his side. The raid is a total success: zero casualties, every Rust Town hostage saved, captive Psychos moved to underwater habitats. He resolves to next break Dynamis, then the Augusti - but Livia tells him to celebrate this hard-won win first.",
+      "facts": [
+        {
+          "key": "victory",
+          "value": "Killed Adam the Ogre; Meta-Gang bunker taken with zero casualties, all hostages saved"
+        },
+        {
+          "key": "learned",
+          "value": "Adam could sense his freezes; his usable time-stop is only ~8-10 seconds"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam the Ogre",
+          "rel": "defeated and killed him"
+        },
+        {
+          "to": "Livia",
+          "rel": "at his bedside; steers him to celebrate before the next target"
+        }
+      ],
+      "chapter": 121
+    },
+    {
+      "name": "The Perfect Run",
+      "kind": "concept",
+      "summary": "CH121 (first endgame target cleared): Adam the Ogre dies and the Meta-Gang bunker falls with ZERO casualties - every captured Rust Town denizen saved, the goal Ryan chased for 10+ loops. Aftercare: captive Psychos moved to underwater habitats; Psyshock handed (via Livia's ruse to Frank) to Cancel/Greta; Alchemo and the Carnival will occupy the bunker, exploit its resources, and set up Mechron's ghost-tech for final destruction. The Panda lost his Elixir feeding it into the fight, but Livia foresees possibilities where it is extracted alive from Adam's pocket dimension (Elixirs are extra-dimensional and durable). Next legs of the plan: recover, then break Dynamis, then confront the Augusti - but tonight they celebrate.",
+      "facts": [
+        {
+          "key": "milestone",
+          "value": "Meta-Gang defeated, all Rust Town hostages saved with zero casualties"
+        },
+        {
+          "key": "next",
+          "value": "Occupy/destroy the bunker, then Dynamis, then the Augusti"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam the Ogre",
+          "rel": "the first major boss cleared"
+        },
+        {
+          "to": "Rust Town",
+          "rel": "its captives finally freed"
+        }
+      ],
+      "chapter": 121
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "CH121: reveals he retains full expertise (a doctorate in medicine, physics, philosophy) with perfect memory even after the mind-transfer, surgically extracting Ryan's crossbow bolt and patching him up in the bunker infirmary - though he 'doesn't learn quickly anymore.' Crucially, it was the Panda's fight with Adam the Ogre in the previous loop that revealed Adam's vulnerability to internal damage, directly giving Ryan the winning A-bomb-down-the-throat tactic. The transfer cost him his own Elixir (no second power this loop), but Livia foresees possibilities where it is recovered from Adam's pocket dimension.",
+      "facts": [
+        {
+          "key": "kept skills",
+          "value": "Retains medicine/physics/philosophy expertise and perfect memory post-transfer"
+        },
+        {
+          "key": "key assist",
+          "value": "His prior-loop fight exposed Adam's internal weakness, enabling the kill"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam the Ogre",
+          "rel": "his earlier fight revealed the winning weakness"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "field-medic who patched him after the duel"
+        }
+      ],
+      "chapter": 121
     }
   ],
   "plotObservations": [
@@ -18731,6 +18835,25 @@
         "Ghoul"
       ],
       "chapter": 120
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH121 'Presidential Debate': Ryan duels Adam the Ogre alone in the vat chamber. Adam takes a Rust Town hostage boy; Ryan shoots him free and blinds Adam with depleted-uranium rounds. The fight exposes Adam's two powers: a Violet time-sense (he feels Ryan's freezes and shields his vitals, limiting Ryan to ~8-10 usable seconds) and a pocket dimension in his gullet (bleeds no blood; produces grenades, a flail, a crossbow, and a Blue Elixir syringe). Bolted in waist and leg, Ryan feeds Adam his own triggered A-bomb ('Filibuster!'); the pocket dimension contains most of the blast but flames cook Adam through the uranium bullet-holes, killing him. The Panda (whose prior-loop fight had revealed Adam's internal weakness) patches Ryan up as Livia holds his hand. The raid is a total success: zero casualties, every hostage saved, captive Psychos moved to underwater habitats. Psyshock is handed to Cancel; the bunker will be occupied and destroyed. Next: Dynamis, then the Augusti - after they celebrate.",
+      "entities": [
+        "Ryan Romano",
+        "Adam the Ogre",
+        "The Perfect Run",
+        "The Panda",
+        "Livia",
+        "Rust Town",
+        "The Meta-Gang",
+        "Psyshock",
+        "Cancel",
+        "Frank the Mad",
+        "Alchemo",
+        "Mechron"
+      ],
+      "chapter": 121
     }
   ]
 }

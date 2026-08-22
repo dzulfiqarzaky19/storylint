@@ -453,6 +453,14 @@
           {
             "key": "retroactive Black",
             "value": "Two loops made his Black power act retroactively; Geist erased from existence without a direct kill"
+          },
+          {
+            "key": "victory",
+            "value": "Killed Adam the Ogre; Meta-Gang bunker taken with zero casualties, all hostages saved"
+          },
+          {
+            "key": "learned",
+            "value": "Adam could sense his freezes; his usable time-stop is only ~8-10 seconds"
           }
         ],
         "ties": [
@@ -755,6 +763,14 @@
           {
             "to": "black-flux",
             "rel": "now bleeds into the timestream; feeds on deleted realities"
+          },
+          {
+            "to": "adam-the-ogre",
+            "rel": "defeated and killed him"
+          },
+          {
+            "to": "livia",
+            "rel": "at his bedside; steers him to celebrate before the next target"
           }
         ],
         "appearances": [
@@ -872,7 +888,8 @@
           117,
           118,
           119,
-          120
+          120,
+          121
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -2478,7 +2495,8 @@
         ],
         "ties": [],
         "appearances": [
-          2
+          2,
+          121
         ],
         "questions": []
       },
@@ -3324,7 +3342,8 @@
           73,
           94,
           96,
-          119
+          119,
+          121
         ],
         "questions": []
       },
@@ -3830,6 +3849,14 @@
           {
             "key": "omen",
             "value": "The Plymouth Fury survives undamaged for the first time - 'Perfect Run confirmed'"
+          },
+          {
+            "key": "milestone",
+            "value": "Meta-Gang defeated, all Rust Town hostages saved with zero casualties"
+          },
+          {
+            "key": "next",
+            "value": "Occupy/destroy the bunker, then Dynamis, then the Augusti"
           }
         ],
         "ties": [
@@ -3868,6 +3895,14 @@
           {
             "to": "livia",
             "rel": "scripted the Frank ruse and fights at Ryan's side"
+          },
+          {
+            "to": "adam-the-ogre",
+            "rel": "the first major boss cleared"
+          },
+          {
+            "to": "rust-town",
+            "rel": "its captives finally freed"
           }
         ],
         "appearances": [
@@ -3875,7 +3910,8 @@
           117,
           118,
           119,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -4277,6 +4313,14 @@
           {
             "key": "explains",
             "value": "His flying kick came from learning Bruce Lee's move"
+          },
+          {
+            "key": "kept skills",
+            "value": "Retains medicine/physics/philosophy expertise and perfect memory post-transfer"
+          },
+          {
+            "key": "key assist",
+            "value": "His prior-loop fight exposed Adam's internal weakness, enabling the kill"
           }
         ],
         "ties": [
@@ -4347,6 +4391,14 @@
           {
             "to": "len",
             "rel": "she diagnoses his learning power"
+          },
+          {
+            "to": "adam-the-ogre",
+            "rel": "his earlier fight revealed the winning weakness"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "field-medic who patched him after the duel"
           }
         ],
         "appearances": [
@@ -4377,7 +4429,8 @@
           116,
           118,
           119,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -5179,7 +5232,8 @@
           76,
           94,
           95,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -6385,7 +6439,8 @@
           75,
           94,
           95,
-          106
+          106,
+          121
         ],
         "questions": []
       },
@@ -7663,6 +7718,14 @@
           {
             "key": "priority target",
             "value": "Shrewder and crueler than Augustus/Fallout; taken down first"
+          },
+          {
+            "key": "two powers",
+            "value": "Violet time-sense (feels/shields against freezes) + a pocket dimension in his gullet"
+          },
+          {
+            "key": "death",
+            "value": "Killed by his own swallowed A-bomb; flames cooked him through the uranium bullet-holes"
           }
         ],
         "ties": [
@@ -7697,6 +7760,14 @@
           {
             "to": "the-meta-gang",
             "rel": "its leader, cornered as his bunker falls"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "killed by him in single combat"
+          },
+          {
+            "to": "the-panda",
+            "rel": "whose earlier fight exposed Adam's internal weakness"
           }
         ],
         "appearances": [
@@ -7708,7 +7779,8 @@
           94,
           95,
           96,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -7872,7 +7944,8 @@
           96,
           105,
           112,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -10504,7 +10577,8 @@
           102,
           110,
           117,
-          119
+          119,
+          121
         ],
         "questions": []
       },
@@ -12372,7 +12446,8 @@
           117,
           118,
           119,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -12812,7 +12887,8 @@
           74,
           94,
           96,
-          120
+          120,
+          121
         ],
         "questions": []
       },
@@ -17588,6 +17664,10 @@
           {
             "chapter": 120,
             "summary": "CH120 'Speedrunners': Ryan runs the honed bunker assault with his memory-loaded team. He drives Livia and Fortuna to the Junkyard (Ghoul chained to the hood), air-drops Felix and the Panda/Timmy, and Shroud saves Fortuna from collapsing debris; the guards (Reptilian, Gemini, Acid Rain, Mosquito, Mongrel) are subdued non-lethally. Inside, Bianca (secret code confirmed) turns on her old Meta-Gang, and the recreational Psychos fall - Ink Machine, Rakshasa, Incognito, Catcher (aka 'Fuckface'), and Penanggalan (aka 'Pale Guy'). Ryan Bliss-overdoses Psyshock and cons Frank the Mad into guarding the infirmary via a fake 'Agent Frank/Pearl Harbor' script Livia authored. His Plymouth Fury takes no damage for the first time ever - a 'holy sign.' He reaches the deep chamber and confronts Adam the Ogre, who reveals he is a fellow VIOLET; the priority-kill duel begins."
+          },
+          {
+            "chapter": 121,
+            "summary": "CH121 'Presidential Debate': Ryan duels Adam the Ogre alone in the vat chamber. Adam takes a Rust Town hostage boy; Ryan shoots him free and blinds Adam with depleted-uranium rounds. The fight exposes Adam's two powers: a Violet time-sense (he feels Ryan's freezes and shields his vitals, limiting Ryan to ~8-10 usable seconds) and a pocket dimension in his gullet (bleeds no blood; produces grenades, a flail, a crossbow, and a Blue Elixir syringe). Bolted in waist and leg, Ryan feeds Adam his own triggered A-bomb ('Filibuster!'); the pocket dimension contains most of the blast but flames cook Adam through the uranium bullet-holes, killing him. The Panda (whose prior-loop fight had revealed Adam's internal weakness) patches Ryan up as Livia holds his hand. The raid is a total success: zero casualties, every hostage saved, captive Psychos moved to underwater habitats. Psyshock is handed to Cancel; the bunker will be occupied and destroyed. Next: Dynamis, then the Augusti - after they celebrate."
           }
         ],
         "entities": [
@@ -17697,7 +17777,8 @@
           "juno",
           "elixir-mechanics",
           "fuckface",
-          "pale-guy"
+          "pale-guy",
+          "rust-town"
         ]
       }
     ]
