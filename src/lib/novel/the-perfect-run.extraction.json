@@ -333,6 +333,14 @@
           {
             "key": "revelation",
             "value": "His Black power is a paradox that can hurt/kill immortals like Augustus"
+          },
+          {
+            "key": "loop plan",
+            "value": "Solve satellite + Carnival war + Bloodstream in one sequenced run"
+          },
+          {
+            "key": "tools",
+            "value": "Carnival double-agent, Vulcan's tech, a Knockoff 'vaccine plague'"
           }
         ],
         "ties": [
@@ -511,6 +519,14 @@
           {
             "to": "livia",
             "rel": "completes her memory transfer before resetting"
+          },
+          {
+            "to": "livia",
+            "rel": "co-plans the perfect run with her"
+          },
+          {
+            "to": "stitch",
+            "rel": "wants him to weaponize the Knockoff vaccine"
           }
         ],
         "appearances": [
@@ -601,7 +617,8 @@
           88,
           89,
           90,
-          91
+          91,
+          92
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -920,7 +937,8 @@
           88,
           89,
           90,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -1005,7 +1023,8 @@
           19,
           28,
           71,
-          72
+          72,
+          92
         ],
         "questions": []
       },
@@ -1596,7 +1615,8 @@
           83,
           85,
           86,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -1836,7 +1856,8 @@
           69,
           75,
           86,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -1927,7 +1948,8 @@
           80,
           89,
           90,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -1989,7 +2011,8 @@
           17,
           66,
           89,
-          90
+          90,
+          92
         ],
         "questions": []
       },
@@ -2937,7 +2960,8 @@
           88,
           89,
           90,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -4908,7 +4932,8 @@
           70,
           88,
           90,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -6212,6 +6237,14 @@
           {
             "key": "note",
             "value": "Killed by Ryan (two shots to the head)"
+          },
+          {
+            "key": "real name",
+            "value": "Richard Pinkman"
+          },
+          {
+            "key": "note",
+            "value": "KO'd by Ryan in a one-punch revenge visit"
           }
         ],
         "ties": [
@@ -6238,12 +6271,17 @@
           {
             "to": "ryan-romano",
             "rel": "killed by"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "knocked out by him in revenge"
           }
         ],
         "appearances": [
           25,
           67,
-          68
+          68,
+          92
         ],
         "questions": []
       },
@@ -6630,7 +6668,8 @@
           30,
           34,
           61,
-          62
+          62,
+          92
         ],
         "questions": []
       },
@@ -7784,7 +7823,8 @@
           86,
           87,
           88,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -10695,7 +10735,8 @@
           58,
           65,
           66,
-          69
+          69,
+          92
         ],
         "questions": []
       },
@@ -10803,6 +10844,14 @@
           {
             "key": "vow",
             "value": "Next loop Ryan won't loop alone; find a painless transfer"
+          },
+          {
+            "key": "milestone",
+            "value": "First to remember across a reset; Ryan's permanent co-strategist"
+          },
+          {
+            "key": "plan",
+            "value": "Simulations date the calamities; maps the perfect-run sequence"
           }
         ],
         "ties": [
@@ -10825,13 +10874,22 @@
           {
             "to": "vulcan",
             "rel": "protected by her turret perimeter"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his memory-carrying co-planner"
+          },
+          {
+            "to": "vulcan",
+            "rel": "will introduce Ryan to rebuild the machine"
           }
         ],
         "appearances": [
           66,
           69,
           70,
-          91
+          91,
+          92
         ],
         "questions": []
       },
@@ -12553,7 +12611,8 @@
         ],
         "appearances": [
           89,
-          90
+          90,
+          92
         ],
         "questions": []
       },
@@ -12634,6 +12693,36 @@
         ],
         "appearances": [
           89
+        ],
+        "questions": []
+      },
+      {
+        "id": "henriette",
+        "kind": "character",
+        "name": "Henriette",
+        "summary": "CH92: a filthy stray street dog (a mastiff-greyhound mongrel, flea-ridden, foul-smelling) Ryan adopts on his way to Renesco's bar, buying her loyalty with a ham. A cat person by preference, he uses her as a weapon against the skeletal Ghoul, siccing her to gnaw his bones (she proudly retrieves his femur). A recurring bit of Ryan's dark comedy; he keeps her in his Plymouth Fury with food on hand.",
+        "facts": [
+          {
+            "key": "breed",
+            "value": "Mastiff-greyhound mongrel stray, adopted with a ham"
+          },
+          {
+            "key": "role",
+            "value": "Ryan's comic anti-Ghoul weapon; chews his bones"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "his adopted dog"
+          },
+          {
+            "to": "ghoul",
+            "rel": "gnaws his bones"
+          }
+        ],
+        "appearances": [
+          92
         ],
         "questions": []
       }
@@ -14752,12 +14841,41 @@
           "the-saturn-armor",
           "vulcan"
         ]
+      },
+      {
+        "id": "the-perfect-run-plan",
+        "title": "The Perfect Run Plan",
+        "summary": "CH92: a new loop begins with Ryan's cathartic revenge rounds (Ghoul, Night Terror, adopting Henriette). Reunited with the now-memory-carrying Livia (who pranks him with a fake villain-betrayal speech), the two become co-strategists. Livia's simulations date the three overlapping calamities, the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and the Bloodstream pandemic (odds spike if Alphonse takes over Dynamis). They map the perfect-run sequence: Ryan joins Augustus's mob as a Carnival double-agent, rebuilds the mind-transfer machine via Vulcan, returns Narcinia to appease the Carnival, and has Stitch/Tyrano weaponize the Knockoff vaccine to erase Bloodstream. Ryan radios Len that her father lives; she answers with cold determination: 'Meet me at the orphanage.'",
+        "beats": [
+          {
+            "chapter": 92,
+            "summary": "CH92: a new loop begins with Ryan's cathartic revenge rounds (Ghoul, Night Terror, adopting Henriette). Reunited with the now-memory-carrying Livia (who pranks him with a fake villain-betrayal speech), the two become co-strategists. Livia's simulations date the three overlapping calamities, the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and the Bloodstream pandemic (odds spike if Alphonse takes over Dynamis). They map the perfect-run sequence: Ryan joins Augustus's mob as a Carnival double-agent, rebuilds the mind-transfer machine via Vulcan, returns Narcinia to appease the Carnival, and has Stitch/Tyrano weaponize the Knockoff vaccine to erase Bloodstream. Ryan radios Len that her father lives; she answers with cold determination: 'Meet me at the orphanage.'"
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "livia",
+          "ghoul",
+          "night-terror",
+          "henriette",
+          "len",
+          "augustus",
+          "adam-the-ogre",
+          "leo-hargraves",
+          "the-carnival",
+          "stitch",
+          "dr-tyrano",
+          "bloodstream",
+          "narcinia",
+          "vulcan",
+          "alphonse-manada"
+        ]
       }
     ]
   },
   "counts": {
-    "entities": 217,
-    "plotlines": 103,
+    "entities": 218,
+    "plotlines": 104,
     "books": 1
   }
 }

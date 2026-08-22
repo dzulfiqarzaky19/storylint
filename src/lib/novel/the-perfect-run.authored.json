@@ -13412,6 +13412,106 @@
         }
       ],
       "chapter": 91
+    },
+    {
+      "name": "Henriette",
+      "kind": "character",
+      "summary": "CH92: a filthy stray street dog (a mastiff-greyhound mongrel, flea-ridden, foul-smelling) Ryan adopts on his way to Renesco's bar, buying her loyalty with a ham. A cat person by preference, he uses her as a weapon against the skeletal Ghoul, siccing her to gnaw his bones (she proudly retrieves his femur). A recurring bit of Ryan's dark comedy; he keeps her in his Plymouth Fury with food on hand.",
+      "facts": [
+        {
+          "key": "breed",
+          "value": "Mastiff-greyhound mongrel stray, adopted with a ham"
+        },
+        {
+          "key": "role",
+          "value": "Ryan's comic anti-Ghoul weapon; chews his bones"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his adopted dog"
+        },
+        {
+          "to": "Ghoul",
+          "rel": "gnaws his bones"
+        }
+      ],
+      "chapter": 92
+    },
+    {
+      "name": "Night Terror",
+      "kind": "character",
+      "summary": "CH92: real name Richard Pinkman, a gaunt, pallid, sunlight-shunning hitman-telepath whose power (nightmares made real, functioning only in darkness) once tormented Ryan across loops. Ryan finally delivers his overdue 'package': a single punch that knocks him out cold, revenge for the childhood traumas Night Terror made real (and the therapy bills). Lives in a condemned-window bungalow near Jamie's house.",
+      "facts": [
+        {
+          "key": "real name",
+          "value": "Richard Pinkman"
+        },
+        {
+          "key": "note",
+          "value": "KO'd by Ryan in a one-punch revenge visit"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "knocked out by him in revenge"
+        }
+      ],
+      "chapter": 92
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH92: the first ally to fully carry her memories across a reset, and it delights her, she greets Ryan with a theatrical fake-betrayal 'villain speech' (claiming Cancel waits outside) purely because she always wanted to, then apologizes. Now Ryan's true co-strategist: she runs precognitive simulations (the Bloodstream pandemic's odds spike if Alphonse takes over Dynamis), sketches a May calendar of the three calamities, and plans the perfect run, Ryan joins Augustus's mob as a double-agent, rebuilds the mind-transfer machine via Vulcan, and returns Narcinia to make peace with the Carnival. She insists the resets be made painless and that Ryan stop martyring himself: 'a perfect ending for everyone includes you too.'",
+      "facts": [
+        {
+          "key": "milestone",
+          "value": "First to remember across a reset; Ryan's permanent co-strategist"
+        },
+        {
+          "key": "plan",
+          "value": "Simulations date the calamities; maps the perfect-run sequence"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his memory-carrying co-planner"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "will introduce Ryan to rebuild the machine"
+        }
+      ],
+      "chapter": 92
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH92 (new loop, 'Best Laid Plans'): Ryan opens with cathartic revenge rounds, ramming Ghoul again, feeding his bones to his new stray dog Henriette, and one-punching Night Terror (Richard Pinkman). Then he and the now-memory-carrying Livia plan the endgame around three overlapping calamities: the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and Bloodstream. His plan: play Carnival double-agent, rebuild the mind-transfer machine via Vulcan, have Stitch/Tyrano turn the Knockoff vaccine into a 'vaccine plague' to erase Bloodstream, and neutralize Len's implanted sample. He admits it's taken dozens of resets and isn't the final loop yet.",
+      "facts": [
+        {
+          "key": "loop plan",
+          "value": "Solve satellite + Carnival war + Bloodstream in one sequenced run"
+        },
+        {
+          "key": "tools",
+          "value": "Carnival double-agent, Vulcan's tech, a Knockoff 'vaccine plague'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "co-plans the perfect run with her"
+        },
+        {
+          "to": "Stitch",
+          "rel": "wants him to weaponize the Knockoff vaccine"
+        }
+      ],
+      "chapter": 92
     }
   ],
   "plotObservations": [
@@ -14946,6 +15046,29 @@
         "Vulcan"
       ],
       "chapter": 91
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH92: a new loop begins with Ryan's cathartic revenge rounds (Ghoul, Night Terror, adopting Henriette). Reunited with the now-memory-carrying Livia (who pranks him with a fake villain-betrayal speech), the two become co-strategists. Livia's simulations date the three overlapping calamities, the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and the Bloodstream pandemic (odds spike if Alphonse takes over Dynamis). They map the perfect-run sequence: Ryan joins Augustus's mob as a Carnival double-agent, rebuilds the mind-transfer machine via Vulcan, returns Narcinia to appease the Carnival, and has Stitch/Tyrano weaponize the Knockoff vaccine to erase Bloodstream. Ryan radios Len that her father lives; she answers with cold determination: 'Meet me at the orphanage.'",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Ghoul",
+        "Night Terror",
+        "Henriette",
+        "Len",
+        "Augustus",
+        "Adam the Ogre",
+        "Leo Hargraves",
+        "The Carnival",
+        "Stitch",
+        "Dr. Tyrano",
+        "Bloodstream",
+        "Narcinia",
+        "Vulcan",
+        "Alphonse Manada"
+      ],
+      "chapter": 92
     }
   ]
 }
