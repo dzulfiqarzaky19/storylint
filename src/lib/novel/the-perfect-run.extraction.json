@@ -389,6 +389,14 @@
           {
             "key": "milestone",
             "value": "Consummates his relationship with Livia"
+          },
+          {
+            "key": "growth",
+            "value": "For the first time fears a reset would make Livia forget him"
+          },
+          {
+            "key": "confirmed",
+            "value": "Still needs the Saturn Armor to harm Augustus"
           }
         ],
         "ties": [
@@ -623,6 +631,14 @@
           {
             "to": "the-midnight-road",
             "rel": "takes her there on the date"
+          },
+          {
+            "to": "augustus",
+            "rel": "electrocuted by then grudgingly accepted as boyfriend"
+          },
+          {
+            "to": "livia",
+            "rel": "his lover, who shields him from her father"
           }
         ],
         "appearances": [
@@ -720,7 +736,8 @@
           95,
           96,
           97,
-          98
+          98,
+          99
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1906,6 +1923,14 @@
           {
             "key": "vulnerability",
             "value": "Ryan's Black-particle punch is the first thing to ever hurt him ('I felt that')"
+          },
+          {
+            "key": "quirk",
+            "value": "Sleeps standing perfectly still, mistaken for a statue"
+          },
+          {
+            "key": "acceptance",
+            "value": "Grudgingly tolerates Ryan under a triple death-threat"
           }
         ],
         "ties": [
@@ -1980,6 +2005,14 @@
           {
             "to": "mr-see-through",
             "rel": "vaporizes him"
+          },
+          {
+            "to": "livia",
+            "rel": "his daughter, who defies him to keep Ryan"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "electrocutes then reluctantly tolerates him"
           }
         ],
         "appearances": [
@@ -2000,7 +2033,8 @@
           91,
           92,
           93,
-          98
+          98,
+          99
         ],
         "questions": []
       },
@@ -5637,7 +5671,8 @@
           69,
           70,
           80,
-          83
+          83,
+          99
         ],
         "questions": []
       },
@@ -11118,7 +11153,8 @@
           66,
           69,
           92,
-          93
+          93,
+          99
         ],
         "questions": []
       },
@@ -11262,6 +11298,14 @@
           {
             "key": "choice",
             "value": "Sleeps with Ryan in Augustus's villa as open rebellion"
+          },
+          {
+            "key": "stand",
+            "value": "Threatens to abandon the empire to protect Ryan and Felix"
+          },
+          {
+            "key": "knowledge",
+            "value": "Knows Augustus killed Narcinia's parents"
           }
         ],
         "ties": [
@@ -11316,6 +11360,14 @@
           {
             "to": "augustus",
             "rel": "defies him openly by choosing Ryan"
+          },
+          {
+            "to": "augustus",
+            "rel": "defies her father to keep Ryan"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "shields and claims him as boyfriend"
           }
         ],
         "appearances": [
@@ -11329,7 +11381,8 @@
           95,
           96,
           97,
-          98
+          98,
+          99
         ],
         "questions": []
       },
@@ -15535,6 +15588,10 @@
           {
             "chapter": 98,
             "summary": "CH98 'White Night': Ryan takes Livia on their date to the Midnight Road, a thin place he reaches via his car's particle accelerator. There he confides his deepest secret, that he once lived an entire full lifetime trapped in the Monaco anomaly and has never dared have a family, making Livia his sole confidant. Livia, freed of her foresight because she cannot predict him, vows to stop her father Augustus's coming war and to share Ryan's burden. She then brings Ryan into Augustus's villa on Mount Augustus and into her bed, an open act of rebellion, and they spend the night together, cementing their bond as partners."
+          },
+          {
+            "chapter": 99,
+            "summary": "CH99 'How I Met Your Daughter': the morning after, Ryan is caught cooking breakfast in Augustus's villa. He taunts the tyrant with repeated time-stops before confirming he slept with Livia, and Augustus electrocutes him, confirming Ryan still needs the Saturn Armor to harm the invincible mob boss. Livia rushes in, uses her foresight power on her father to save Ryan, and openly claims him as her boyfriend, revealing she knows Augustus murdered Narcinia's parents. When she threatens to abandon the Augusti empire forever if he harms Ryan or Felix, the shaken tyrant relents and grudgingly tolerates Ryan under a triple death-threat, turning a would-be enemy into a reluctant father-in-law and further entrenching Ryan's alliance with Livia."
           }
         ],
         "entities": [
@@ -15582,7 +15639,8 @@
           "origami",
           "the-monster-girl-project",
           "the-midnight-road",
-          "monaco"
+          "monaco",
+          "felix"
         ]
       }
     ]

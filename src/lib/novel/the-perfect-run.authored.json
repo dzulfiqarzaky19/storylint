@@ -14314,6 +14314,84 @@
         }
       ],
       "chapter": 98
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH99 'How I Met Your Daughter': catches Ryan the morning after in his villa kitchen (Augustus sleeps standing utterly still like his own Jupiter statue). Enraged, he electrocutes Ryan with low-current lightning, discerning via the electrons in Ryan's brain that Ryan is the source of the time-stops. He cannot be harmed by Ryan (who lacks the Saturn Armor to focus his Black power). When Livia intervenes with her power and threatens to leave forever if he harms Ryan or Felix, the tyrant relents, a rare crack showing the lonely, paranoid old man beneath. He half-accepts Ryan with a triple death-threat (disrespect / break her heart / break up = 'I will kill you'), still refusing to acknowledge him otherwise. Grieves being unable to protect his late wife.",
+      "facts": [
+        {
+          "key": "quirk",
+          "value": "Sleeps standing perfectly still, mistaken for a statue"
+        },
+        {
+          "key": "acceptance",
+          "value": "Grudgingly tolerates Ryan under a triple death-threat"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "his daughter, who defies him to keep Ryan"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "electrocutes then reluctantly tolerates him"
+        }
+      ],
+      "chapter": 99
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH99: wakes the morning after in Livia's bed feeling genuinely loved (she won't release him even asleep), and for the first time dreads a reset because he doesn't want Livia to forget him. Cooking her breakfast, he's caught by Augustus, taunts the tyrant with repeated time-stops, then confirms (defiantly) he slept with Livia and gets electrocuted. He confirms he still needs the Saturn Armor to harm Augustus. Saved by Livia, he weathers Augustus's triple death-threat and gives his real name ('Ryan Quicksave Romano, immortal'). Notes that lovemaking reveals character (Len hesitant, the Doll playful, Jasmine wild, Livia 'just right'). Agrees to be healed by Venus/Narcinia.",
+      "facts": [
+        {
+          "key": "growth",
+          "value": "For the first time fears a reset would make Livia forget him"
+        },
+        {
+          "key": "confirmed",
+          "value": "Still needs the Saturn Armor to harm Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "electrocuted by then grudgingly accepted as boyfriend"
+        },
+        {
+          "to": "Livia",
+          "rel": "his lover, who shields him from her father"
+        }
+      ],
+      "chapter": 99
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH99: paints alternate-universe cities in her spare time (a happier-realities hobby). Rushing into the kitchen when her father electrocutes Ryan, she uses her power on Augustus to save him and openly claims Ryan as her boyfriend, revealing to her father that she knows he murdered Narcinia's parents. She refuses to step aside and threatens to leave the Augusti empire forever if he harms Ryan or Felix, a threat that visibly shakes the tyrant into relenting. Insists on taking Ryan to Venus/Narcinia to heal his lightning burns.",
+      "facts": [
+        {
+          "key": "stand",
+          "value": "Threatens to abandon the empire to protect Ryan and Felix"
+        },
+        {
+          "key": "knowledge",
+          "value": "Knows Augustus killed Narcinia's parents"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "defies her father to keep Ryan"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "shields and claims him as boyfriend"
+        }
+      ],
+      "chapter": 99
     }
   ],
   "plotObservations": [
@@ -15995,6 +16073,18 @@
         "Monaco"
       ],
       "chapter": 98
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH99 'How I Met Your Daughter': the morning after, Ryan is caught cooking breakfast in Augustus's villa. He taunts the tyrant with repeated time-stops before confirming he slept with Livia, and Augustus electrocutes him, confirming Ryan still needs the Saturn Armor to harm the invincible mob boss. Livia rushes in, uses her foresight power on her father to save Ryan, and openly claims him as her boyfriend, revealing she knows Augustus murdered Narcinia's parents. When she threatens to abandon the Augusti empire forever if he harms Ryan or Felix, the shaken tyrant relents and grudgingly tolerates Ryan under a triple death-threat, turning a would-be enemy into a reluctant father-in-law and further entrenching Ryan's alliance with Livia.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Augustus",
+        "Felix",
+        "Narcinia"
+      ],
+      "chapter": 99
     }
   ]
 }
