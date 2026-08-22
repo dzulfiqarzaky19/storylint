@@ -5909,6 +5909,208 @@
         }
       ],
       "chapter": 58
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "Alphonse 'Fallout' Manada, Dynamis's Vice-President and Enrique's elder brother: a 2.5-meter warmonger more machine than man, crimson X-ray flesh glowing inside a heavily-armed black power armor (energy minigun, shoulder rockets), skull under a glass dome. The 'butcher of Malta,' he once BECAME a nuke in a failed bid to kill Augustus and was exiled to Sicily by Don Hector afterward. Ruthless and decisive (Felix admires him; Wyvern dreads him), he returns to purge his father's treachery, committing Dynamis's elite security to the coordinated strike on the Meta and pushing a coup to depose Don Hector, whose corruption he cannot forgive. His domineering manner unsettlingly reminds Ryan of Augustus.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alphonse 'Fallout' Manada; Dynamis VP, Enrique's elder brother"
+        },
+        {
+          "key": "note",
+          "value": "2.5m armored Genome; can become a living nuke"
+        },
+        {
+          "key": "note",
+          "value": "'Butcher of Malta'; nuked Augustus, was exiled to Sicily"
+        },
+        {
+          "key": "note",
+          "value": "Returns to purge the Meta and coup Don Hector"
+        },
+        {
+          "key": "note",
+          "value": "Ruthless; reminds Ryan of Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "Vice-President"
+        },
+        {
+          "to": "Blackthorn",
+          "rel": "elder brother"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "plots coup against"
+        }
+      ],
+      "chapter": 59
+    },
+    {
+      "name": "Ace",
+      "kind": "character",
+      "summary": "A roguish, freckled, auburn-haired Carnival member and its main teleporter, riding an American bike; she opens portals to shuttle allies around town (as she did against Mechron), though her range can't reach France. Confident and combat-ready, she joins the Pompei war council to plan surrounding and striking the Meta-Gang.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Carnival's main teleporter; rides an American bike"
+        },
+        {
+          "key": "note",
+          "value": "Freckled, auburn-haired, roguish"
+        },
+        {
+          "key": "note",
+          "value": "Portals shuttle allies mid-battle; limited range"
+        },
+        {
+          "key": "note",
+          "value": "Helps plan the anti-Meta strike"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "member"
+        },
+        {
+          "to": "Leo Hargraves",
+          "rel": "teammate"
+        }
+      ],
+      "chapter": 59
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Augustus ('Lightning Dad'), god-wannabe patriarch of the Augusti, revealed here to be dying of a brain TUMOR: the source of his years-long lethargy, forgetfulness, stuttering, and reclusiveness that Felix noticed. This reframes Don Hector's whole strategy, secretly funding the Meta to weaken the Augusti while waiting for the tumor to kill Augustus so Dynamis can strike unopposed. Augustus still despises 'normies,' weaponizes Bliss as a sterility tool, shares Livia's two-Elixir genetic quirk, and is immune to Ryan's time-stop (his 'stutters' are Ryan's stops). He murdered Narcinia's parents to hostage her against Leo Hargraves, and remains feared enough that his enemies expect him to descend from his mountain to hunt them if provoked.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dying of a brain tumor (cause of his lethargy/stutter)"
+        },
+        {
+          "key": "note",
+          "value": "Don Hector waits for the tumor to kill him"
+        },
+        {
+          "key": "note",
+          "value": "Weaponizes Bliss; despises unpowered humans"
+        },
+        {
+          "key": "note",
+          "value": "Shares Livia's two-Elixir quirk; immune to Ryan's time-stop"
+        },
+        {
+          "key": "note",
+          "value": "Killed Narcinia's parents to hostage her against Hargraves"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "patriarch"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "father"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "awaited by (his death)"
+        }
+      ],
+      "chapter": 59
+    },
+    {
+      "name": "Blackthorn",
+      "kind": "character",
+      "summary": "Enrique 'Blackthorn' Manada, Dynamis CBO and Il Migliore Head Manager, whose poison-plant office roses betray his hidden unease. Having recruited Ryan and received the wiretap of Hector's Meta conspiracy, he secretly contacted the Carnival (their two orgs once nearly allied against Augustus before Hector scrapped it) and, with his brother Alphonse, commits Il Migliore to the coordinated anti-Meta strike and to a coup deposing their father Don Hector. He is the more restrained, reluctant brother (spared Len, dreads Alphonse as CEO) but cast his lot with the coup, will act as liaison between all factions, and remains suspicious of Ryan's hidden agenda, vowing to make him explain once the dust settles. He knows Augustus is dying of a tumor.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis CBO; the reluctant, restrained Manada brother"
+        },
+        {
+          "key": "note",
+          "value": "Secretly contacted the Carnival for the anti-Meta strike"
+        },
+        {
+          "key": "note",
+          "value": "Backs Alphonse's coup to depose their father Don Hector"
+        },
+        {
+          "key": "note",
+          "value": "Faction liaison; suspicious of Ryan's hidden agenda"
+        },
+        {
+          "key": "note",
+          "value": "Knows Augustus has a brain tumor"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "CBO"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "younger brother"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "allies with"
+        },
+        {
+          "to": "Hector Manada",
+          "rel": "coups against"
+        }
+      ],
+      "chapter": 59
+    },
+    {
+      "name": "The Flux Tracker",
+      "kind": "concept",
+      "summary": "Ryan's insight (built on Jasmine's research) into how Dynamis's 'DNA tracker' actually works: it doesn't trace genes but the Flux radiation a Genome passively emits. To evade it while driving Felix to the Carnival meeting, Ryan modifies his Plymouth Fury to contain the Flux radiation within the car (a poor-man's version of Jasmine's power armor), making its passengers invisible to Dynamis's radars, though it won't open a gate to the Purple World.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis's 'DNA tracker' really tracks emitted Flux radiation"
+        },
+        {
+          "key": "note",
+          "value": "Ryan shielded his car to contain passengers' Flux"
+        },
+        {
+          "key": "note",
+          "value": "Renders occupants invisible to Dynamis radars"
+        },
+        {
+          "key": "note",
+          "value": "A poor-man's version of Jasmine's power armor"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Jasmine",
+          "rel": "pioneered the method"
+        },
+        {
+          "to": "Dynamis Corporation",
+          "rel": "defeats their tracker"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "built by"
+        }
+      ],
+      "chapter": 59
     }
   ],
   "plotObservations": [
@@ -6643,6 +6845,24 @@
         "Narcinia"
       ],
       "chapter": 58
+    },
+    {
+      "title": "Corpoalition",
+      "beat": "Ryan drives Felix (shielded from Dynamis's Flux tracker) to a Carnival war council at the Pompei ruins, where Leo Hargraves, Shroud, and Ace reveal a grand alliance is forming against the Meta and the Augusti. Enrique 'Blackthorn' and Wyvern arrive (Enrique secretly contacted the Carnival), then Dynamis VP Alphonse 'Fallout' Manada, the exiled nuke-Genome 'butcher of Malta,' descends by helicopter. The corroborated wiretap convinces the corpos of Don Hector's treachery. They agree a coordinated strike: the Carnival beheads the Meta's leadership (Psyshock, who mind-jumps and uses hostages) while Dynamis's force surrounds and contains Adam's men in Rust Town, without telling the corpos about Mechron's bunker. Alphonse further commits to a coup deposing their father Don Hector, dismaying Wyvern who dreads him as CEO. Leo pulls Felix aside about Narcinia. Finally Enrique lets slip the secret that reframes everything: Augustus is dying of a brain tumor, and Hector is simply waiting it out. Ryan freezes at the revelation.",
+      "entities": [
+        "Ryan Romano",
+        "Atom Cat",
+        "Leo Hargraves",
+        "The Shroud",
+        "Ace",
+        "Blackthorn",
+        "Wyvern",
+        "Alphonse Manada",
+        "Augustus",
+        "The Flux Tracker",
+        "Psyshock"
+      ],
+      "chapter": 59
     }
   ]
 }
