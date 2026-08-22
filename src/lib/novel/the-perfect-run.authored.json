@@ -17714,6 +17714,178 @@
         }
       ],
       "chapter": 128
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH129 (the Purple World reckoning and the choice): at full power on his 'home turf,' Ryan burns off the Saturn Armor into a living-void of Black Flux ('I am the gate, and the key') and severs both Augustus's arms - the hands that killed Julie Costa - though the Black eats his own body toward oblivion. The Violet Ultimate One descends, heals him fully (time-transplanting his Black-erased eye and limbs from an earlier possibility), and shatters Augustus's godhood delusion. It explains Ryan's nature: he is an 'observer,' a spacetime singularity granted the power to exist in both realities and DECIDE which possibility becomes true history - the true master of his universe, the only one who can grant second chances. Offered ascension (become an Ultimate One or enter the Black World), he chooses instead to return to Earth for 'a happy life, with friends who can remember me.' The Ultimate One leaves the door to ascension open forever and removes his destabilizing Black connection. He returns beside Leo Hargraves and carries the broken Augustus back Pieta-style; the war is over.",
+      "facts": [
+        {
+          "key": "observer",
+          "value": "A spacetime singularity granted observer status: exists in both his reality and the causality-transcending Purple World, and alone decides which possibility becomes true history"
+        },
+        {
+          "key": "the choice",
+          "value": "Refuses ascension for now, chooses to return to Earth to live a happy life with friends who remember him; the ascension door stays open forever"
+        },
+        {
+          "key": "earned",
+          "value": "The Ultimate One deems he has earned ascension 'for learning to wield your power with wisdom,' and removes his Black connection so it won't destabilize reality"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "receives its audience, healing, the truth of his nature, and the ascension offer"
+        },
+        {
+          "to": "Augustus",
+          "rel": "severs both his arms in the Purple World, then carries him back broken"
+        }
+      ],
+      "chapter": 129
+    },
+    {
+      "name": "The Violet Ultimate One",
+      "kind": "character",
+      "summary": "CH129 (revealed in full): the Purple World's cosmic deity descends as an impossible triangular violet spiral (larger than 100 billion solar masses if it entered our universe), covered in millions of eyes, each eye a universe. It speaks 'I AM THAT I AM... all of space and time,' seeing billions of years as a second and mankind as a bacteria colony beneath notice. It shatters Augustus ('YOU ARE NOT A GOD. YOU ARE NOTHING'), heals Ryan, and lays out its cosmology: free will exists as a fork where both paths coexist until chosen, after which history is 'ink dry' and unchangeable - except for observers like Ryan and those touched by the rebellious Black. It made this moment 'possible,' Ryan made it 'inevitable.' Neither good nor evil, it is a cold alien thing capable of selfless compassion - it helped Ryan simply 'because I chose to,' like one who adopts a wounded dog that crosses its path.",
+      "facts": [
+        {
+          "key": "scale",
+          "value": "A triangular spiral of millions of universe-eyes; sees eons as a second; humanity is a bacteria colony it doesn't normally notice"
+        },
+        {
+          "key": "causality law",
+          "value": "Choices fork realities that coexist until decided, then set as unchangeable history; only observers and the Black can rewrite a made choice"
+        },
+        {
+          "key": "motive",
+          "value": "Neither good nor evil; helped Ryan 'because I chose to' - selfless compassion for a suffering creature that crossed its path"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "grants him observer status, healing, and an open door to ascension"
+        },
+        {
+          "to": "The Plushie",
+          "rel": "the messenger-entity that inhabited the toy, now recalled to its cosmic duties"
+        }
+      ],
+      "chapter": 129
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "CH129 (broken utterly): dragged into the Purple World, Augustus is cut off from the Red World and can't summon lightning - a powerless intruder. Ryan's Black severs both his arms (the very hands that murdered Julie Costa; his adamantine flesh calcified into indestructible stumps but his nerves still scream). Stripped of his halo, he is revealed as a feeble, bitter old man - a petty miscreant who murdered thousands out of terror of his own death. The Violet Ultimate One forces on him the vision of his own insignificance and pronounces him 'NOT A GOD... NOTHING,' shattering the divine self-delusion around which he built his family and empire. Something inside him breaks forever. Returned to Earth armless and catatonic, carried Pieta-style by Ryan; when his loyal Olympians see him crushed, they lose all will to fight and surrender.",
+      "facts": [
+        {
+          "key": "disarmed",
+          "value": "Ryan's Black severs both arms in the Purple World - karmic loss of the hands that killed Julie Costa"
+        },
+        {
+          "key": "broken",
+          "value": "The Ultimate One's vision of his own insignificance ('YOU ARE NOTHING') shatters his godhood delusion permanently; left catatonic"
+        },
+        {
+          "key": "the man beneath",
+          "value": "Without his halo, just a feeble bitter old man who murdered thousands out of terror of death"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "has his godhood delusion shattered by its vision of his insignificance"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "disarmed and defeated by him, then carried back to face captivity"
+        }
+      ],
+      "chapter": 129
+    },
+    {
+      "name": "The Plushie",
+      "kind": "character",
+      "summary": "CH129 (true form and farewell): revealed as a messenger-entity of the Ultimate Ones - its real form a horse-sized eldritch horror of white skin, hundreds of red eyes, tentacle limbs, and porcelain antenna-ears, which chose the killer-rabbit toy as its shape. Its violent rampages across Earth were the equivalent of a holiday from cosmic duty ('no wonder it sowed mayhem'). It was a loyal friend to Ryan from day one; he scratches its 'ears' in gratitude and its red eyes turn blue. The Ultimate One recalls it to its duties. It parts fondly, promising through Magenta that Ryan is never alone - 'we are always with you, even if you cannot see us.'",
+      "facts": [
+        {
+          "key": "true form",
+          "value": "A messenger of the Ultimate Ones; a tentacled, hundred-eyed eldritch horror that chose the toy-rabbit shape"
+        },
+        {
+          "key": "the rampages",
+          "value": "Its Earthly killing sprees were a 'holiday' from its cosmic duties, to which it is now recalled"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "one of its messengers, recalled to duty after its Earth 'holiday'"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "a loyal friend from day one; parts promising he is never alone"
+        }
+      ],
+      "chapter": 129
+    },
+    {
+      "name": "The Clockstopper",
+      "kind": "identity",
+      "summary": "CH129 (revealed as an extinguished possibility): the malevolent Ryan-that-could-have-been, shown by the Violet Ultimate One as one of the paths Ryan discarded. In this timeline Ryan gambles and takes a SECOND Elixir (blue and purple eyes, tattered rags), becoming 'the bane of your kind' - freezing the human hive of New Rome into a snowglobe and moving on to ruin millions of lives. It is one of several extinguished branches the Ultimate One displays (a Livia-war timeline, an Augustus-killed-broken-bond timeline, a hollow 'harem ending' without Len or Livia); Ryan's purple double looks away in shame at the Clockstopper. None are happening in another reality - Ryan discarded them all in service of his perfect future, proof that this present exists only because he struggled to make it so.",
+      "facts": [
+        {
+          "key": "origin",
+          "value": "The Ryan who takes a second Elixir; blue-and-purple eyes, tattered rags - 'the bane of your kind'"
+        },
+        {
+          "key": "crime",
+          "value": "Freezes all of New Rome into a snowglobe, then ruins millions of lives across the world"
+        },
+        {
+          "key": "status",
+          "value": "An extinguished possibility, not a live parallel reality - discarded by Ryan in favor of his happy ending"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "the dark alternate self he could have become and chose against"
+        },
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "displayed by it as one of the extinguished forks of Ryan's fate"
+        }
+      ],
+      "chapter": 129
+    },
+    {
+      "name": "Ascension",
+      "kind": "concept",
+      "summary": "CH129 (offered to Ryan, deferred): the Violet Ultimate One formally offers Ryan ascension - to stay in the Purple World and become one of the Ultimate Ones (immense power, obligations, overseeing timestreams across realities), or to enter the Black World for greater freedom. Ryan declines for now, choosing to return to Earth for a happy life with friends who remember him. The Ultimate One rules he has EARNED ascension 'for learning to wield your power with wisdom, now and forever,' and leaves the door open permanently: if Ryan ever chooses to join rather than turn back time again, it will extirpate him from his timeline and welcome him. It also removes his innate Black-World connection, since the Black Ultimate One's careless generosity would otherwise destabilize his reality.",
+      "facts": [
+        {
+          "key": "the offer",
+          "value": "Become an Ultimate One overseeing timestreams, OR enter the Black World for freedom - Ryan defers both to return to Earth"
+        },
+        {
+          "key": "earned + open",
+          "value": "Deemed earned 'for learning to wield your power with wisdom'; the door stays open forever for Ryan to claim later"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "the one it is offered to; he defers it to live a mortal happy life first"
+        },
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "grants and keeps open the ascension door"
+        }
+      ],
+      "chapter": 129
     }
   ],
   "plotObservations": [
@@ -19992,6 +20164,28 @@
         "The Opis Armor"
       ],
       "chapter": 128
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH129 'The Gate & The Key': the Purple World reckoning. On his home turf Ryan reaches full Black power ('I am the gate, and the key'), severs both of Augustus's arms (the hands that killed Julie Costa) while the powerless god can't summon lightning. The Violet Ultimate One descends - a triangular spiral of universe-eyes - shatters Augustus's godhood delusion ('YOU ARE NOTHING'), heals Ryan fully, and reveals his nature as an 'observer' who alone decides which possibility becomes true history. It shows extinguished forks he discarded (the malevolent Clockstopper, a Livia-war, a hollow harem ending), explains causality and free will, and offers ascension. Ryan defers it to return to Earth for 'a happy life with friends who remember me'; the door stays open forever and his destabilizing Black connection is removed. He returns beside Leo Hargraves carrying the broken Augustus Pieta-style; the surviving Olympians surrender at the sight. The war is over.",
+      "entities": [
+        "Ryan Romano",
+        "Augustus",
+        "The Violet Ultimate One",
+        "Magenta",
+        "The Plushie",
+        "The Clockstopper",
+        "Ascension",
+        "The Purple World",
+        "Leo Hargraves",
+        "Julie Costa",
+        "Len",
+        "Livia Augusti",
+        "Enrique Manada",
+        "Wyvern",
+        "Vulcan"
+      ],
+      "chapter": 129
     }
   ]
 }

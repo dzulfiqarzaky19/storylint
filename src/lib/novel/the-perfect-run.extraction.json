@@ -513,6 +513,18 @@
           {
             "key": "creed",
             "value": "Fights not for the world but to be happy and make others happy; 'my fists carry the weight of centuries and the hopes of thousands'"
+          },
+          {
+            "key": "observer",
+            "value": "A spacetime singularity granted observer status: exists in both his reality and the causality-transcending Purple World, and alone decides which possibility becomes true history"
+          },
+          {
+            "key": "the choice",
+            "value": "Refuses ascension for now, chooses to return to Earth to live a happy life with friends who remember him; the ascension door stays open forever"
+          },
+          {
+            "key": "earned",
+            "value": "The Ultimate One deems he has earned ascension 'for learning to wield your power with wisdom,' and removes his Black connection so it won't destabilize reality"
           }
         ],
         "ties": [
@@ -871,6 +883,14 @@
           {
             "to": "the-plushie",
             "rel": "its self-sacrifice as a living gate gives him the exit he needs"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "receives its audience, healing, the truth of his nature, and the ascension offer"
+          },
+          {
+            "to": "augustus",
+            "rel": "severs both his arms in the Purple World, then carries him back broken"
           }
         ],
         "appearances": [
@@ -996,7 +1016,8 @@
           125,
           126,
           127,
-          128
+          128,
+          129
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1451,7 +1472,8 @@
           122,
           123,
           124,
-          126
+          126,
+          129
         ],
         "questions": []
       },
@@ -1966,7 +1988,8 @@
           108,
           122,
           124,
-          125
+          125,
+          129
         ],
         "questions": []
       },
@@ -2176,7 +2199,8 @@
           103,
           104,
           126,
-          127
+          127,
+          129
         ],
         "questions": []
       },
@@ -2369,6 +2393,18 @@
           {
             "key": "weakness",
             "value": "Never learned to defend (20 years untouchable); loses melee to Ryan's experience, so refuses it and fights at range"
+          },
+          {
+            "key": "disarmed",
+            "value": "Ryan's Black severs both arms in the Purple World - karmic loss of the hands that killed Julie Costa"
+          },
+          {
+            "key": "broken",
+            "value": "The Ultimate One's vision of his own insignificance ('YOU ARE NOTHING') shatters his godhood delusion permanently; left catatonic"
+          },
+          {
+            "key": "the man beneath",
+            "value": "Without his halo, just a feeble bitter old man who murdered thousands out of terror of death"
           }
         ],
         "ties": [
@@ -2479,6 +2515,14 @@
           {
             "to": "livia-augusti",
             "rel": "enraged at Ryan invoking his daughter; the one wound the punches couldn't match"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "has his godhood delusion shattered by its vision of his insignificance"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "disarmed and defeated by him, then carried back to face captivity"
           }
         ],
         "appearances": [
@@ -2511,7 +2555,8 @@
           125,
           126,
           127,
-          128
+          128,
+          129
         ],
         "questions": []
       },
@@ -2645,7 +2690,8 @@
           115,
           117,
           118,
-          119
+          119,
+          129
         ],
         "questions": []
       },
@@ -5142,7 +5188,8 @@
           123,
           124,
           125,
-          126
+          126,
+          129
         ],
         "questions": []
       },
@@ -8578,7 +8625,8 @@
           70,
           78,
           85,
-          128
+          128,
+          129
         ],
         "questions": []
       },
@@ -9213,7 +9261,8 @@
           125,
           126,
           127,
-          128
+          128,
+          129
         ],
         "questions": []
       },
@@ -11144,6 +11193,14 @@
           {
             "key": "sacrifice",
             "value": "Disintegrated taking Augustus's city-killing bolt for Ryan; its death opens the portal to the Purple World"
+          },
+          {
+            "key": "true form",
+            "value": "A messenger of the Ultimate Ones; a tentacled, hundred-eyed eldritch horror that chose the toy-rabbit shape"
+          },
+          {
+            "key": "the rampages",
+            "value": "Its Earthly killing sprees were a 'holiday' from its cosmic duties, to which it is now recalled"
           }
         ],
         "ties": [
@@ -11174,12 +11231,21 @@
           {
             "to": "the-purple-world",
             "rel": "the portal it opens leads there"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "one of its messengers, recalled to duty after its Earth 'holiday'"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "a loyal friend from day one; parts promising he is never alone"
           }
         ],
         "appearances": [
           50,
           126,
-          128
+          128,
+          129
         ],
         "questions": []
       },
@@ -13710,6 +13776,18 @@
           {
             "key": "note",
             "value": "No longer actively interferes; Ryan is on his own"
+          },
+          {
+            "key": "scale",
+            "value": "A triangular spiral of millions of universe-eyes; sees eons as a second; humanity is a bacteria colony it doesn't normally notice"
+          },
+          {
+            "key": "causality law",
+            "value": "Choices fork realities that coexist until decided, then set as unchangeable history; only observers and the Black can rewrite a made choice"
+          },
+          {
+            "key": "motive",
+            "value": "Neither good nor evil; helped Ryan 'because I chose to' - selfless compassion for a suffering creature that crossed its path"
           }
         ],
         "ties": [
@@ -13720,13 +13798,22 @@
           {
             "to": "the-ultimate-ones",
             "rel": "is the Violet one"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "grants him observer status, healing, and an open door to ascension"
+          },
+          {
+            "to": "the-plushie",
+            "rel": "the messenger-entity that inhabited the toy, now recalled to its cosmic duties"
           }
         ],
         "appearances": [
           74,
           78,
           113,
-          119
+          119,
+          129
         ],
         "questions": []
       },
@@ -15169,7 +15256,8 @@
         ],
         "appearances": [
           93,
-          112
+          112,
+          129
         ],
         "questions": []
       },
@@ -16048,6 +16136,14 @@
           {
             "key": "near-ascendants",
             "value": "Ryan and Leo Hargraves are both close; Hargraves delays his to stay on Earth"
+          },
+          {
+            "key": "the offer",
+            "value": "Become an Ultimate One overseeing timestreams, OR enter the Black World for freedom - Ryan defers both to return to Earth"
+          },
+          {
+            "key": "earned + open",
+            "value": "Deemed earned 'for learning to wield your power with wisdom'; the door stays open forever for Ryan to claim later"
           }
         ],
         "ties": [
@@ -16066,11 +16162,20 @@
           {
             "to": "magenta",
             "rel": "the Elixir who explains the wisdom-gated process to Ryan"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "the one it is offered to; he defers it to live a mortal happy life first"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "grants and keeps open the ascension door"
           }
         ],
         "appearances": [
           116,
-          126
+          126,
+          129
         ],
         "questions": []
       },
@@ -16162,7 +16267,42 @@
           }
         ],
         "appearances": [
-          126
+          126,
+          129
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-clockstopper",
+        "kind": "identity",
+        "name": "The Clockstopper",
+        "summary": "CH129 (revealed as an extinguished possibility): the malevolent Ryan-that-could-have-been, shown by the Violet Ultimate One as one of the paths Ryan discarded. In this timeline Ryan gambles and takes a SECOND Elixir (blue and purple eyes, tattered rags), becoming 'the bane of your kind' - freezing the human hive of New Rome into a snowglobe and moving on to ruin millions of lives. It is one of several extinguished branches the Ultimate One displays (a Livia-war timeline, an Augustus-killed-broken-bond timeline, a hollow 'harem ending' without Len or Livia); Ryan's purple double looks away in shame at the Clockstopper. None are happening in another reality - Ryan discarded them all in service of his perfect future, proof that this present exists only because he struggled to make it so.",
+        "facts": [
+          {
+            "key": "origin",
+            "value": "The Ryan who takes a second Elixir; blue-and-purple eyes, tattered rags - 'the bane of your kind'"
+          },
+          {
+            "key": "crime",
+            "value": "Freezes all of New Rome into a snowglobe, then ruins millions of lives across the world"
+          },
+          {
+            "key": "status",
+            "value": "An extinguished possibility, not a live parallel reality - discarded by Ryan in favor of his happy ending"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "the dark alternate self he could have become and chose against"
+          },
+          {
+            "to": "the-violet-ultimate-one",
+            "rel": "displayed by it as one of the extinguished forks of Ryan's fate"
+          }
+        ],
+        "appearances": [
+          129
         ],
         "questions": []
       }
@@ -18434,6 +18574,10 @@
           {
             "chapter": 128,
             "summary": "CH128 'Time & Thunder': the duel with Augustus. Ryan's Black-Flux punches crack the god's 'invulnerable' ivory body, drawing real fear and reversing the fight; Augustus reveals his lightning has no upper limit, detonating a nuclear-scale supernova. Ryan tries to trap him in cursed Monaco but the pocket-dimension spits Augustus back out of spite. Out-boxed in melee, Augustus refuses close combat and wins at range - homing lightning, overloaded and finally fried Saturn Armor - grounding Ryan crippled on a French beach with no save left. As the god moves to vaporize him, the Plushie sacrifices itself, revealing it was always a living gate between universes and Ryan the key. Ryan forces the death-portal wide, drags Augustus in by the ankle, and both fall into the Purple World for the final reckoning."
+          },
+          {
+            "chapter": 129,
+            "summary": "CH129 'The Gate & The Key': the Purple World reckoning. On his home turf Ryan reaches full Black power ('I am the gate, and the key'), severs both of Augustus's arms (the hands that killed Julie Costa) while the powerless god can't summon lightning. The Violet Ultimate One descends - a triangular spiral of universe-eyes - shatters Augustus's godhood delusion ('YOU ARE NOTHING'), heals Ryan fully, and reveals his nature as an 'observer' who alone decides which possibility becomes true history. It shows extinguished forks he discarded (the malevolent Clockstopper, a Livia-war, a hollow harem ending), explains causality and free will, and offers ascension. Ryan defers it to return to Earth for 'a happy life with friends who remember me'; the door stays open forever and his destabilizing Black connection is removed. He returns beside Leo Hargraves carrying the broken Augustus Pieta-style; the surviving Olympians surrender at the sight. The war is over."
           }
         ],
         "entities": [
@@ -18557,13 +18701,14 @@
           "the-architect",
           "mercury",
           "the-killer-seven",
-          "the-purple-world"
+          "the-purple-world",
+          "the-clockstopper"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 248,
+    "entities": 249,
     "plotlines": 104,
     "books": 1
   }
