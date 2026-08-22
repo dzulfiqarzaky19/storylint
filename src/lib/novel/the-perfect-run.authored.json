@@ -5040,6 +5040,86 @@
         }
       ],
       "chapter": 52
+    },
+    {
+      "name": "Wardrobe",
+      "kind": "character",
+      "summary": "Yukiko 'Yuki,' a bright, adorable Japanese hero-fashion designer at Dynamis with a whole Il Migliore floor of studios; she copies not people's actual powers but the idea ingrained in mankind's collective consciousness (so her Dracula burns in daylight though the novel's didn't, and she can't mimic obscure figures like Cancel or the Panda). The more defined and famous a persona, the better she masters it; worn too long she starts to *become* it (as Augustus she turns cold and statue-like). Her dreaded 'Apocalypse Suit' persona is so dangerous she believes prolonged use could destroy the world. She designs Ryan's signature costume (dark-purple cashmere suit, black turtleneck, bowler hat, clock-symbol violet scarf, silver-and-black mask) and 'Rambo Panda' for Timmy, and joins the Rust Town patrol before her imminent Pro League debut.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Yukiko 'Yuki'; Japanese Dynamis hero-fashion designer"
+        },
+        {
+          "key": "note",
+          "value": "Copies the collective *idea* of a persona, not real powers"
+        },
+        {
+          "key": "note",
+          "value": "Worn too long, she becomes the persona (Augustus = cold statue)"
+        },
+        {
+          "key": "note",
+          "value": "Owns a world-endangering 'Apocalypse Suit'"
+        },
+        {
+          "key": "note",
+          "value": "Designs Ryan's signature costume and Rambo Panda"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "employee"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "joining Pro League"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "designs costume for"
+        }
+      ],
+      "chapter": 53
+    },
+    {
+      "name": "Atom Cat",
+      "kind": "character",
+      "summary": "Felix, the Augusti-rebel hero 'Atom Cat,' practical over fancy (refuses Wardrobe's latex cat-suit). Revealed here as Livia Augusti's brother and her ex-boyfriend: he has broken with the Augusti, choosing 'what's right' over blood and refusing to compromise after what he's seen. Ryan recruits him for the Rust Town patrol by railing against corporate co-option; Felix, hating Augustus with venom, agrees.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Felix 'Atom Cat'; Augusti-rebel hero, practical style"
+        },
+        {
+          "key": "note",
+          "value": "Livia Augusti's brother, and her ex"
+        },
+        {
+          "key": "note",
+          "value": "Broke with the Augusti; chooses right over family"
+        },
+        {
+          "key": "note",
+          "value": "Joins Ryan's Rust Town patrol"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "brother/ex"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "rebel against"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "patrol ally"
+        }
+      ],
+      "chapter": 53
     }
   ],
   "plotObservations": [
@@ -5677,6 +5757,20 @@
         "Schrodinger"
       ],
       "chapter": 52
+    },
+    {
+      "title": "Fashion Disaster",
+      "beat": "At Wardrobe's Il Migliore atelier, Yukiko designs Ryan's signature costume (dark-purple cashmere suit, clock-symbol scarf, silver-and-black mask) and 'Rambo Panda' for Timmy, while the practical Atom Cat resists a latex cat-suit. Ryan rallies Wardrobe, the Panda, and Atom Cat into an unsanctioned Rust Town patrol to test the costumes. En route Wardrobe explains her power copies the collective *idea* of a persona (not real abilities), that she can become the persona if worn too long, and that her 'Apocalypse Suit' could destroy the world, but she cannot copy the obscure Cancel, spoiling Ryan's plan against Psyshock. Atom Cat is revealed as Livia Augusti's brother and ex who broke with his family. Fortuna, obsessed after Ryan's rejection, spams him with 41 messages. Then a cryptic 'Unknown' texts 'The orange is in the hen house'; Ryan slams the brakes and replies as 'PlushieTamer,' racing back toward the orphanage.",
+      "entities": [
+        "Ryan Romano",
+        "Wardrobe",
+        "The Panda",
+        "Atom Cat",
+        "Livia Augusti",
+        "Fortuna",
+        "Cancel"
+      ],
+      "chapter": 53
     }
   ]
 }
