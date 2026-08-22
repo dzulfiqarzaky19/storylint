@@ -469,6 +469,14 @@
           {
             "key": "Black secret told",
             "value": "Confesses to Livia he got the power by wishing to die - the reason his saves are now blocked"
+          },
+          {
+            "key": "armor maxed",
+            "value": "Five all-color Flux batteries + Fisty/Red-shockwave gauntlets, Blue-lag computer, Green heal, Yellow conceptual defense, White harmony"
+          },
+          {
+            "key": "hidden trump",
+            "value": "A miniaturized Gravity Gun built into his chest, kept secret for Augustus"
           }
         ],
         "ties": [
@@ -787,6 +795,14 @@
           {
             "to": "augustus",
             "rel": "resolves to face him alone as the final and deadliest foe"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "waltzes with her to spread the Cure Flu; teams to face Fallout"
+          },
+          {
+            "to": "fallout",
+            "rel": "confronts him again, this time not alone but with Livia"
           }
         ],
         "appearances": [
@@ -907,7 +923,8 @@
           120,
           121,
           122,
-          123
+          123,
+          124
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -1122,6 +1139,14 @@
           {
             "key": "wish",
             "value": "No revenge - cure her father if possible, else give him a peaceful end"
+          },
+          {
+            "key": "closure",
+            "value": "Euthanizes her father herself after the cure fails; grieves rather than rages"
+          },
+          {
+            "key": "safe",
+            "value": "Stitch removed the Bloodstream agent from her blood so she wouldn't transform near him"
           }
         ],
         "ties": [
@@ -1264,6 +1289,14 @@
           {
             "to": "bloodstream",
             "rel": "her father, whose fate she will decide"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "her father, whose suffering she chooses to end"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "stands with her, letting her decide her father's fate"
           }
         ],
         "appearances": [
@@ -1328,7 +1361,8 @@
           118,
           119,
           122,
-          123
+          123,
+          124
         ],
         "questions": []
       },
@@ -1841,7 +1875,8 @@
           88,
           107,
           108,
-          122
+          122,
+          124
         ],
         "questions": []
       },
@@ -3542,6 +3577,14 @@
           {
             "key": "doomsday",
             "value": "Freed via infected Len; becomes rangeless world-virus, uses infected Genomes' powers"
+          },
+          {
+            "key": "death",
+            "value": "Euthanized by Len via Tyrano's failsafe after the cure fails - mutated too far to restore"
+          },
+          {
+            "key": "final note",
+            "value": "Ryan pities him as a good man lost to madness, not a chosen monster like Adam"
           }
         ],
         "ties": [
@@ -3612,6 +3655,14 @@
           {
             "to": "the-knockoff-elixir",
             "rel": "all revert to him at once"
+          },
+          {
+            "to": "len",
+            "rel": "his daughter, who chooses to end his suffering herself"
+          },
+          {
+            "to": "dr-tyrano",
+            "rel": "whose containment failsafe destroys the mutated creature"
           }
         ],
         "appearances": [
@@ -3634,7 +3685,8 @@
           105,
           110,
           114,
-          122
+          122,
+          124
         ],
         "questions": []
       },
@@ -4907,7 +4959,8 @@
           97,
           117,
           122,
-          123
+          123,
+          124
         ],
         "questions": []
       },
@@ -5645,6 +5698,14 @@
           {
             "key": "note",
             "value": "Gives Ryan 48 hours to leave or faces Il Migliore"
+          },
+          {
+            "key": "arrested",
+            "value": "Taken by Wyvern/Felix/Il Migliore on Enrique's own mandate; surrenders without a fight"
+          },
+          {
+            "key": "parting threat",
+            "value": "'After me, the flood' - Alphonse will retaliate for the lab's closure"
           }
         ],
         "ties": [
@@ -5683,6 +5744,14 @@
           {
             "to": "il-migliore",
             "rel": "threatens to deploy"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "the son whose signature authorizes his arrest"
+          },
+          {
+            "to": "alphonse-manada",
+            "rel": "the elder son he predicts will bring blood to the streets"
           }
         ],
         "appearances": [
@@ -5694,7 +5763,8 @@
           78,
           80,
           81,
-          93
+          93,
+          124
         ],
         "questions": []
       },
@@ -6432,7 +6502,8 @@
           118,
           119,
           120,
-          122
+          122,
+          124
         ],
         "questions": []
       },
@@ -8896,7 +8967,8 @@
           83,
           84,
           85,
-          123
+          123,
+          124
         ],
         "questions": []
       },
@@ -9160,7 +9232,8 @@
           88,
           91,
           92,
-          97
+          97,
+          124
         ],
         "questions": []
       },
@@ -12249,7 +12322,8 @@
           66,
           118,
           122,
-          123
+          123,
+          124
         ],
         "questions": []
       },
@@ -14131,6 +14205,14 @@
           {
             "key": "arrival",
             "value": "Comes much faster than the 1-2 hour estimate"
+          },
+          {
+            "key": "arrival",
+            "value": "'Rides the atom' from Sicily on a Red-Flux wave - a black-metal titan, a bright red star in the sky"
+          },
+          {
+            "key": "stakes",
+            "value": "Killed Ryan's entire team in a prior loop; now faced by Ryan + Livia together"
           }
         ],
         "ties": [
@@ -14161,13 +14243,22 @@
           {
             "to": "dr-tyrano",
             "rel": "protects (his lab)"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "old nemesis who once wiped out his team; faces him again"
+          },
+          {
+            "to": "livia-augusti",
+            "rel": "confronts them both above New Rome"
           }
         ],
         "appearances": [
           83,
           86,
           87,
-          88
+          88,
+          124
         ],
         "questions": []
       },
@@ -15626,7 +15717,38 @@
           }
         ],
         "appearances": [
-          123
+          123,
+          124
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-cure-flu",
+        "kind": "concept",
+        "name": "The Cure Flu",
+        "summary": "CH124: a benign, self-spreading airborne virus Ryan's group engineers to erase Dynamis's Knockoff Elixirs from the population. Ryan and Livia release it as green pollen-like dust from their armor backpacks while dancing over New Rome; allies also seed it from high points and the city water system. It scrubs the Bloodstream-derived Knockoff agent from anyone's blood, making would-be Genomes more human again and defusing the Elixir-apocalypse threat - and it spreads with every breath, so within weeks all of Europe would 'catch the Cure Flu.' A cure disguised as a plague, immunizing the continent against Bloodstream's ghost.",
+        "facts": [
+          {
+            "key": "what",
+            "value": "A benign contagious virus that removes Knockoff Elixirs from the blood, spread breath-to-breath"
+          },
+          {
+            "key": "delivery",
+            "value": "Released as green dust from Ryan/Livia's armor over New Rome, plus water system and high points"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-knockoff-elixir",
+            "rel": "the threat it neutralizes across Europe's population"
+          },
+          {
+            "to": "the-psycho-cure",
+            "rel": "engineered from the same cure research (Mongrel's power + Psycho work)"
+          }
+        ],
+        "appearances": [
+          124
         ],
         "questions": []
       }
@@ -17878,6 +18000,10 @@
           {
             "chapter": 123,
             "summary": "CH123 'The Last Break': Enrique delivers the Gravity Gun schematics; Ryan plans to miniaturize it into his armor to fling Augustus out of the atmosphere ('Kars Augustus') and insists on fighting him ALONE. At Livia's rented Dostoevski gathering the war-party assembles - the cured ex-Psychos Bianca, Helen (ex-Acid Rain), Jerome (ex-Mongrel), and Vlad/Vladimir (ex-Frank), plus Alchemo, the Doll, Toasty, Mathias, Fortuna, Felix, the Panda, and Len. Ryan confesses the full Black-power secret to Livia (he wished to die); she takes it calmly and asks only that he spare - imprison, not kill - her father, sharing her New European Republic endgame (merge a reformed Augusti with Dynamis). She gifts him the Opis armor (spider-themed, precog-piloted) and they exile the incurable Ghoul to Earth orbit aboard the SpaceZ rocket. Next in the gauntlet: Lab Sixty-Six, the Bliss Factory, then Augustus."
+          },
+          {
+            "chapter": 124,
+            "summary": "CH124 'Lab Closure': the three-pronged strike on Dynamis. Enrique and Len raid Lab Sixty-Six - Dr. Tyrano is subdued, explosives set, and Len tries the cure on her father Bloodstream; it fails (he has mutated past saving), so she euthanizes him via Tyrano's failsafe and grieves. Simultaneously Wyvern, Felix, and Il Migliore arrest Hector Manada at his mansion on Enrique's own mandate; he surrenders warning of Alphonse's revenge. Ryan (Saturn armor, now maxed with five all-color Flux batteries + a hidden chest Gravity Gun) and Livia (Opis armor) waltz over New Rome releasing the green Cure Flu, a benign virus that scrubs the Knockoff Elixirs from all of Europe's blood. Then Fallout 'rides the atom' from Sicily to attack, and Ryan and Livia stand together to face him."
           }
         ],
         "entities": [
@@ -17992,13 +18118,15 @@
           "the-knockoff-elixir",
           "lanka",
           "livia-augusti",
-          "the-opis-armor"
+          "the-opis-armor",
+          "fallout",
+          "the-cure-flu"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 246,
+    "entities": 247,
     "plotlines": 104,
     "books": 1
   }

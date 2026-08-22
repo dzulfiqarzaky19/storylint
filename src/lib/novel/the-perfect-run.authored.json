@@ -16982,6 +16982,162 @@
         }
       ],
       "chapter": 123
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "CH124 (death / euthanized): held in a reinforced tank at Lab Sixty-Six, the red alien shoggoth Freddie Sabino became no longer recognizes his daughter Len. She tries the group's Psycho/Bloodstream cure one last time; it fails because he has mutated too far, half-transformed into a denizen of the higher colored dimensions. Accepting he is gone, Len activates Dr. Tyrano's failsafe - without her blood agent shielding him, the sprinkler chemicals grind his cells to formless white goo, a painless euthanasia. Ryan, who long hated him, feels only pity: a father lost to madness and the Alchemist's cruelty, who took two Elixirs to protect his daughter in a hostile world. He now lives only in Len's memory.",
+      "facts": [
+        {
+          "key": "death",
+          "value": "Euthanized by Len via Tyrano's failsafe after the cure fails - mutated too far to restore"
+        },
+        {
+          "key": "final note",
+          "value": "Ryan pities him as a good man lost to madness, not a chosen monster like Adam"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "his daughter, who chooses to end his suffering herself"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "whose containment failsafe destroys the mutated creature"
+        }
+      ],
+      "chapter": 124
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH124: insists on facing her father alone at Lab Sixty-Six (Stitch first removed the Bloodstream agent from her blood so she won't transform). She tries the cure on Bloodstream; when it fails she moves from denial through bargaining to acceptance, says 'Goodbye, Father,' and euthanizes him with Tyrano's failsafe - grief, not anger. She asks Ryan to leave her alone with the body a while. Her hardest, most adult moment: choosing to end the suffering of the father she loved rather than cling to a lost hope.",
+      "facts": [
+        {
+          "key": "closure",
+          "value": "Euthanizes her father herself after the cure fails; grieves rather than rages"
+        },
+        {
+          "key": "safe",
+          "value": "Stitch removed the Bloodstream agent from her blood so she wouldn't transform near him"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "her father, whose suffering she chooses to end"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "stands with her, letting her decide her father's fate"
+        }
+      ],
+      "chapter": 124
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH124: coordinates the three-pronged Lab Sixty-Six strike from the air in his Saturn armor, comforting Len through her father's euthanasia, then waltzes with Livia over New Rome to seed the sky with the green Cure Flu. His armor is now maxed out with data looted from the Alchemist's lab: five Flux batteries (every color but his own Violet, fueled by his allies) driving Fisty-brothers gauntlets with a Red-Flux shockwave (Bianca's power), a Blue-Flux computer that kills control lag, Orange emergency shielding, Green self-healing, Yellow conceptual defense, White harmony - plus a miniaturized Gravity Gun hidden in his chest as a secret trump against Augustus. He still feels only pity, not joy, at Bloodstream's death. Then Fallout arrives 'riding the atom' from Sicily, and Ryan and Livia stand together to fight him.",
+      "facts": [
+        {
+          "key": "armor maxed",
+          "value": "Five all-color Flux batteries + Fisty/Red-shockwave gauntlets, Blue-lag computer, Green heal, Yellow conceptual defense, White harmony"
+        },
+        {
+          "key": "hidden trump",
+          "value": "A miniaturized Gravity Gun built into his chest, kept secret for Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "waltzes with her to spread the Cure Flu; teams to face Fallout"
+        },
+        {
+          "to": "Fallout",
+          "rel": "confronts him again, this time not alone but with Livia"
+        }
+      ],
+      "chapter": 124
+    },
+    {
+      "name": "The Cure Flu",
+      "kind": "concept",
+      "summary": "CH124: a benign, self-spreading airborne virus Ryan's group engineers to erase Dynamis's Knockoff Elixirs from the population. Ryan and Livia release it as green pollen-like dust from their armor backpacks while dancing over New Rome; allies also seed it from high points and the city water system. It scrubs the Bloodstream-derived Knockoff agent from anyone's blood, making would-be Genomes more human again and defusing the Elixir-apocalypse threat - and it spreads with every breath, so within weeks all of Europe would 'catch the Cure Flu.' A cure disguised as a plague, immunizing the continent against Bloodstream's ghost.",
+      "facts": [
+        {
+          "key": "what",
+          "value": "A benign contagious virus that removes Knockoff Elixirs from the blood, spread breath-to-breath"
+        },
+        {
+          "key": "delivery",
+          "value": "Released as green dust from Ryan/Livia's armor over New Rome, plus water system and high points"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Knockoff Elixir",
+          "rel": "the threat it neutralizes across Europe's population"
+        },
+        {
+          "to": "The Psycho Cure",
+          "rel": "engineered from the same cure research (Mongrel's power + Psycho work)"
+        }
+      ],
+      "chapter": 124
+    },
+    {
+      "name": "Hector Manada",
+      "kind": "character",
+      "summary": "CH124 (arrested): while tending his roses, Dynamis's chairman is surrounded by Wyvern, Felix, and Il Migliore (Devilry, Reload, Wardrobe) and arrested on his own son Enrique's signed mandate for human experimentation, bioterrorism, funding the Meta-Gang, and more. Shattered that Enrique betrayed him, and abandoned by bodyguards unwilling to die for him, he surrenders 'to call my lawyers' - warning vindictively that his elder son Alphonse will now take over and drown the city in blood: 'After me, the flood.'",
+      "facts": [
+        {
+          "key": "arrested",
+          "value": "Taken by Wyvern/Felix/Il Migliore on Enrique's own mandate; surrenders without a fight"
+        },
+        {
+          "key": "parting threat",
+          "value": "'After me, the flood' - Alphonse will retaliate for the lab's closure"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Enrique Manada",
+          "rel": "the son whose signature authorizes his arrest"
+        },
+        {
+          "to": "Alphonse Manada",
+          "rel": "the elder son he predicts will bring blood to the streets"
+        }
+      ],
+      "chapter": 124
+    },
+    {
+      "name": "Fallout",
+      "kind": "character",
+      "summary": "CH124 (arrives for battle): Alphonse 'Fallout' Manada is warned the instant Enrique breaches Lab Sixty-Six (moles + a private alarm - the same speed that let him counter Ryan's Meta-Run raid). Rather than fly by plane from Sicily, he 'rides the atom,' appearing as a bright red star above the twilight sun - a titan of black metal propelled on a wave of Red Flux. He killed Ryan's whole team the last time they clashed. Now he descends on Ryan and Livia (in her new Opis armor), who stand together to face him: 'We're invincible.'",
+      "facts": [
+        {
+          "key": "arrival",
+          "value": "'Rides the atom' from Sicily on a Red-Flux wave - a black-metal titan, a bright red star in the sky"
+        },
+        {
+          "key": "stakes",
+          "value": "Killed Ryan's entire team in a prior loop; now faced by Ryan + Livia together"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "old nemesis who once wiped out his team; faces him again"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "confronts them both above New Rome"
+        }
+      ],
+      "chapter": 124
     }
   ],
   "plotObservations": [
@@ -19167,6 +19323,26 @@
         "Enrique Manada"
       ],
       "chapter": 123
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH124 'Lab Closure': the three-pronged strike on Dynamis. Enrique and Len raid Lab Sixty-Six - Dr. Tyrano is subdued, explosives set, and Len tries the cure on her father Bloodstream; it fails (he has mutated past saving), so she euthanizes him via Tyrano's failsafe and grieves. Simultaneously Wyvern, Felix, and Il Migliore arrest Hector Manada at his mansion on Enrique's own mandate; he surrenders warning of Alphonse's revenge. Ryan (Saturn armor, now maxed with five all-color Flux batteries + a hidden chest Gravity Gun) and Livia (Opis armor) waltz over New Rome releasing the green Cure Flu, a benign virus that scrubs the Knockoff Elixirs from all of Europe's blood. Then Fallout 'rides the atom' from Sicily to attack, and Ryan and Livia stand together to face him.",
+      "entities": [
+        "Ryan Romano",
+        "Livia Augusti",
+        "Len",
+        "Enrique Manada",
+        "Bloodstream",
+        "Dr. Tyrano",
+        "Hector Manada",
+        "Wyvern",
+        "Felix",
+        "Fallout",
+        "The Cure Flu",
+        "The Gravity Gun",
+        "The Opis Armor"
+      ],
+      "chapter": 124
     }
   ]
 }
