@@ -11230,6 +11230,258 @@
         }
       ],
       "chapter": 81
+    },
+    {
+      "name": "Wardrobe",
+      "kind": "character",
+      "summary": "CH82: Ryan finally meets his 'archenemy' Wardrobe in person during the Star Studios raid. She is the costume-Genome who unknowingly designed his 'Mr. President' ensemble (skull socks and all), and Ryan reveals she 'created' her own nemesis. Craving a flashy lifelong rivalry, she gleefully accepts his pitch to be his scheduled archenemy forever and build a billion-euro hero/villain merchandising franchise. Her power still lets her instantly re-costume: she cosplays an FBI negotiator, then Arsene Lupin to steal Ryan's A-bomb from Sarin's hand, then a nurse to treat the wounded. Its limit: she can only steal/hold one bomb at a time, which Ryan exploits by juggling three.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Unknowingly designed Ryan's 'Mr. President' costume; now his willing archenemy"
+        },
+        {
+          "key": "note",
+          "value": "Instant re-costume: FBI negotiator, Arsene Lupin, nurse"
+        },
+        {
+          "key": "note",
+          "value": "Can only steal/hold one bomb at a time (Ryan juggles three)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "agreed lifelong archenemy"
+        },
+        {
+          "to": "Star Studios",
+          "rel": "defends"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH82: Ryan walks out of the Star Studios raid untouched by out-bluffing every hero. He recruits Wardrobe as his archenemy, out-juggles her costume-theft power with three A-bombs (mass-produced via Mechron's matter replicator), dodges Atom Cat's kill-touch on legs alone, and forces Wyvern to stand down by threatening 'Dr. Strangelove'. He hands Wyvern a syringe of Len's blood as proof of the Bloodstream-knockoff crime, betting she'll turn on Dynamis. He spares Felix (per his promise to Livia) and leaves the wounded Shroud for Dynamis to avoid provoking Leo. He escapes with the ransom pending, only to find a horror waiting at the Rust Town checkpoint.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Juggles three A-bombs to defeat Wardrobe's one-item steal limit"
+        },
+        {
+          "key": "note",
+          "value": "Gives Wyvern Len's blood as proof against Dynamis"
+        },
+        {
+          "key": "note",
+          "value": "Spares Felix per his promise to Livia"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Wardrobe",
+          "rel": "recruits as archenemy"
+        },
+        {
+          "to": "Wyvern",
+          "rel": "turns against Dynamis with proof"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "protects Felix for"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "Mr. See-Through",
+      "kind": "character",
+      "summary": "CH82: the invisible glass-manipulating Shroud operative joins the assault on the Star Studios raiders but Livia (as Queen Crimson), warned by her foresight of alternate selves dying to 'glass shards to the neck', punches him with the Fisty Brothers, slamming him into the truck and revealing his bloodied body. Dying of a punctured lung, he rasps a crucial confession: the Shroud hunted down all of Bloodstream's clones but 'failed... we just delayed' Bloodstream's return, they only postponed it, not stopped it. Ryan leaves him for Dynamis rather than provoke Leo Hargraves by capturing him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Downed by Livia's Fisty punch (she foresaw his glass-shard kill)"
+        },
+        {
+          "key": "note",
+          "value": "Confesses the Shroud only 'delayed', not stopped, Bloodstream's return"
+        },
+        {
+          "key": "note",
+          "value": "Left wounded for Dynamis to avoid provoking Leo"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia Augusti",
+          "rel": "defeated by"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "failed to stop his return"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "operative of"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "CH82: Dynamis's shining hero Wyvern ('Dragon Mom') fights to stop the raid, dueling the overfed Mosquito in dragon form (she eventually smashes him back to normal size) and threatening Ryan with lethal force. Ryan neutralizes her with his triple-A-bomb bluff, which Dynamis's Geniuses confirm genuine over her earpiece, forcing her to stand down. He gives her a syringe of Len's blood, betting she never knew Dynamis makes Elixirs from a living man and would never have signed on if she had, planting the seed of her defection.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Duels Mosquito in dragon form; beats him back to normal size"
+        },
+        {
+          "key": "note",
+          "value": "Forced to stand down by Ryan's confirmed triple-bomb bluff"
+        },
+        {
+          "key": "note",
+          "value": "Handed Len's blood as proof against Dynamis"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mosquito",
+          "rel": "duels"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "out-bluffed by, turned against Dynamis"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "Mosquito",
+      "kind": "character",
+      "summary": "CH82: the 'Beefcake'-enhanced Mosquito holds his own against Wyvern in the skies over Star Studios (cracking nearby windows with a single punch), a reversal from an early loop where she squashed him easily. She eventually overpowers him, smashing him through the warehouse roof; he deflates back to normal size, badly wounded, and Frank carries him to the truck.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Enhanced 'Beefcake' form trades blows with dragon-form Wyvern"
+        },
+        {
+          "key": "note",
+          "value": "Eventually overpowered, smashed through the roof, deflates"
+        },
+        {
+          "key": "note",
+          "value": "Carried wounded to the truck by Frank"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Wyvern",
+          "rel": "outmatched by"
+        },
+        {
+          "to": "Frank the Mad",
+          "rel": "rescued by"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "The Killer Rabbit Plushie",
+      "kind": "item",
+      "summary": "CH82 cliffhanger: the plushie that breached containment and escaped the Junkyard reappears with lethal effect. At the Rust Town checkpoint the raiders find ~24 Private Security guards hung from an archway by their own intestines, '885' daubed in blood beneath them and 'HAPPY BIRTHDAY!' spelled out one letter per corpse, its signature loving-yet-monstrous flourish. It pollutes Livia's foresight (as another such creature did with Eugene-Henry), which is why she 'couldn't see it' coming. Its pointed ears rise behind Ryan in the truck's rear-view mirror, the reason Ryan declares this run already doomed.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Escaped plushie massacres ~24 guards, hanging them by their intestines"
+        },
+        {
+          "key": "note",
+          "value": "Signs its kills 'HAPPY BIRTHDAY! 885' in blood"
+        },
+        {
+          "key": "note",
+          "value": "Pollutes Livia's foresight so she can't predict it; appears in Ryan's truck"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "its creator, now hunted by it"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "blinds her foresight"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "Atom Cat",
+      "kind": "character",
+      "summary": "CH82: Felix ('Atom Cat', mocked as 'Atom Kitten/Kitty') fights among the heroes defending Star Studios, repeatedly lunging to land his kill-touch on Ryan's bare skin, but Ryan dodges and trips him with legs alone, humiliating him. Ryan sics Eugene-Henry on his face (the cat claws him bloody) but, per his promise to Livia, ensures Felix is not seriously harmed. Livia, disguised as Queen Crimson, tenses at her ex-boyfriend and avoids his gaze in apparent shame.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Kill-touch hero; repeatedly fails to land a blow on Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Humiliated (tripped, clawed by Eugene-Henry) but spared per Ryan's promise"
+        },
+        {
+          "key": "note",
+          "value": "Livia's ex; she avoids his gaze during the fight"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "outmatched by, spared by"
+        },
+        {
+          "to": "Livia Augusti",
+          "rel": "her ex-boyfriend"
+        }
+      ],
+      "chapter": 82
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "CH82: Livia proves herself in the field. Her foresight flags Wyvern's attack, the Il Migliore/Private Security siege, and her own alternate deaths by glass shards, letting her punch the invisible Shroud with the Fisty Brothers at the decisive moment. She uses her time-leap to skip past a killing burst of glass at Ryan. Exhilarated ('I couldn't tell how it would turn out at any point!'), she rediscovers her love of surprises, until the checkpoint massacre (which her foresight couldn't show) horrifies her, since the Killer Rabbit Plushie blinds her power.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Downs the invisible Shroud with a foreseen Fisty punch"
+        },
+        {
+          "key": "note",
+          "value": "Time-leaps Ryan past a lethal glass burst"
+        },
+        {
+          "key": "note",
+          "value": "Exhilarated by the chaos; then horrified by the plushie massacre she couldn't foresee"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mr. See-Through",
+          "rel": "defeats"
+        },
+        {
+          "to": "The Killer Rabbit Plushie",
+          "rel": "blinded to by"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "saves with time-leap"
+        }
+      ],
+      "chapter": 82
     }
   ],
   "plotObservations": [
@@ -12488,6 +12740,35 @@
         "Len"
       ],
       "chapter": 81
+    },
+    {
+      "title": "Corporate Raid",
+      "beat": "Dynamis's counterattack hits the Star Studios raiders: Wyvern duels the Beefcake-Mosquito while Private Security and heroes (Atom Cat/Felix, Reload, Wardrobe) surround the truck. Ryan turns it into theater, recruiting Wardrobe as his willing lifelong archenemy, dodging Felix's kill-touch, and out-juggling Wardrobe's costume-theft with three mass-produced A-bombs to force Wyvern to stand down. Livia (Queen Crimson) foresees and punches the invisible Shroud, who confesses the glass-vigilantes only 'delayed', not stopped, Bloodstream's return. Ryan hands Wyvern a syringe of Len's blood as proof against Dynamis, spares Felix per his promise to Livia, and the gang escapes with the ransom pending.",
+      "entities": [
+        "Ryan Romano",
+        "Wardrobe",
+        "Wyvern",
+        "Mosquito",
+        "Atom Cat",
+        "Reload",
+        "Livia Augusti",
+        "Queen Crimson",
+        "Mr. See-Through",
+        "Len",
+        "Bloodstream"
+      ],
+      "chapter": 82
+    },
+    {
+      "title": "Happy Birthday",
+      "beat": "Fleeing back to Rust Town, the crew finds the Private Security checkpoint massacred: ~24 guards hung from an archway by their own intestines, '885' scrawled in blood, and 'HAPPY BIRTHDAY!' spelled one letter per corpse. Livia's foresight had gone blind to it. Ryan realizes the escaped Killer Rabbit Plushie has surfaced, dooming this run, as its pointed ears rise behind him in the truck's rear-view mirror.",
+      "entities": [
+        "The Killer Rabbit Plushie",
+        "Ryan Romano",
+        "Livia Augusti",
+        "Private Security"
+      ],
+      "chapter": 82
     }
   ]
 }
