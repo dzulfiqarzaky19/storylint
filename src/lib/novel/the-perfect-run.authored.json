@@ -7357,7 +7357,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "pet of"
         },
         {
@@ -7609,7 +7609,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "arranged ex, only friendship"
         },
         {
@@ -7949,7 +7949,7 @@
           "rel": "godmother, betrayed by"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "aunt"
         }
       ],
@@ -8188,7 +8188,7 @@
       "chapter": 69
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "Refined: devastated by Fortuna's death and her aunt Pluto's murder-order (given by her own father Augustus), Livia fully allies with Ryan, admitting she was wrong to trust her father and that she was terrified of Ryan (who knows everything and can erase all she does, immune to her powers). Winning Len's cautious trust, she offers to help the brain-transfer project persist across loops: she can't retain memories, but keeps a detailed journal and offers to store a snapshot of Len's memory-map as a backup, giving them a lifeline if the transfer fails. She asks to speak to the catatonic Felix before Ryan resets.",
       "facts": [
@@ -8303,7 +8303,7 @@
           "rel": "guided"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "steered toward Ryan"
         }
       ],
@@ -13359,7 +13359,7 @@
           "rel": "granted him the immortal-killing paradox"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "completes her memory transfer before resetting"
         }
       ],
@@ -13388,7 +13388,7 @@
       "chapter": 91
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH91: waits for Ryan on a Sorrento rooftop ringed by hundreds of Vulcan-built turrets vaporizing every Bloodstream clone, her precognition showing the blood-rain apocalypse. Despite Ryan's warning she gently touches his acid/Augustus wounds. She receives the loop's data and the brainmap memory transfer via the Saturn armor's Chronoradio helmet, vowing that next loop Ryan 'won't carry this cross alone' and that they'll find a painless transfer so he needn't die for their mistakes. Her surviving memory is the anchor that makes the next run different from every loop before.",
       "facts": [
@@ -13462,7 +13462,7 @@
       "chapter": 92
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH92: the first ally to fully carry her memories across a reset, and it delights her, she greets Ryan with a theatrical fake-betrayal 'villain speech' (claiming Cancel waits outside) purely because she always wanted to, then apologizes. Now Ryan's true co-strategist: she runs precognitive simulations (the Bloodstream pandemic's odds spike if Alphonse takes over Dynamis), sketches a May calendar of the three calamities, and plans the perfect run, Ryan joins Augustus's mob as a double-agent, rebuilds the mind-transfer machine via Vulcan, and returns Narcinia to make peace with the Carnival. She insists the resets be made painless and that Ryan stop martyring himself: 'a perfect ending for everyone includes you too.'",
       "facts": [
@@ -13503,7 +13503,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "co-plans the perfect run with her"
         },
         {
@@ -13747,14 +13747,14 @@
           "rel": "recruits her luck-Elixir as his cheat code"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "forges the temporary anti-Mechron alliance"
         }
       ],
       "chapter": 94
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH94: co-architect of the anti-Mechron operation, arriving as Queen Crimson with Fortuna and Cancel. She brokers the fragile alliance with the Carnival's Shroud (whose secret identity and relationship with her 'best friend' she calmly reveals she knows), insists her father Augustus stays ignorant, and frames the goal as destroying the Mechron cache because her visions show the tech harms whoever holds it. She has timed the whole strike from Ryan's intel but admits she still can't see Ryan himself: 'Surprise me, Quicksave.'",
       "facts": [
@@ -13863,14 +13863,14 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "outpredicted and captured by her"
         }
       ],
       "chapter": 95
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH95 'Double Date': in the field for the Junkyard raid, Livia proves a devastating partner. Her Blue foresight lets her hard-counter Acid Rain (predicting each teleport) and aim borrowed weapons; her secondary Violet 'skip forward' power freezes everyone into sleepwalking predestined actions while she acts freely (Ryan alone is uninteractable in it, so Acid Rain's knife phased through him). She and Ryan fight in flawless synergy against drones and Psychos, flirting mid-battle ('Only if you conquer France for our honeymoon'), and float the idea of a vacation loop together. She warns the Land (a Yellow/Orange with area-dominion) hard-counters Fortuna's luck.",
       "facts": [
@@ -13911,7 +13911,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "intuits she is key to his future"
         },
         {
@@ -13963,7 +13963,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "mentally dismantled by her"
         }
       ],
@@ -14007,7 +14007,7 @@
           "rel": "kills him"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "she foresaw he could safely take the Elixir"
         }
       ],
@@ -14051,7 +14051,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "asks her out"
         },
         {
@@ -14062,7 +14062,7 @@
       "chapter": 96
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH96: the battle's tactician, foreseeing the winning branch. She reveals Adam's carbon skin only protects the surface (head trauma still works), mentally destroys Frank by exposing his real identity (Vladimir Khabarov), and lets the Panda absorb Adam's Elixir because she predicted he could safely take two. Increasingly warm with Ryan (letting him rescue her repeatedly, 'you may rescue me as many times as you like'), she insists Shroud come clean to Fortuna. When Ryan finally makes his move and asks her out, she, unable to predict him, blushes and gasps in genuine surprise.",
       "facts": [
@@ -14187,7 +14187,7 @@
           "rel": "family; accepts his memory transfer"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "reconciles herself to Ryan's relationship with her"
         }
       ],
@@ -14279,7 +14279,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "his date and now lover; his sole confidant"
         },
         {
@@ -14290,7 +14290,7 @@
       "chapter": 98
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH98: on her date with Ryan she experiences, for the first time in ~14 years, life without her foresight guiding her (she can't predict Ryan), finding it terrifying but refreshing, 'the unexpected' is his gift to her. She confesses she's seen the fuller lives she could have had with Felix but couldn't make them real ('watching is not living'), and vows to stop her father's coming war. Moved by Ryan's confession, she offers to share his burden. She dislikes sushi (a comic near-miss), and finally brings Ryan into her father's villa and her bed as a deliberate act of rebellion against Augustus.",
       "facts": [
@@ -14331,7 +14331,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "his daughter, who defies him to keep Ryan"
         },
         {
@@ -14361,14 +14361,14 @@
           "rel": "electrocuted by then grudgingly accepted as boyfriend"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "his lover, who shields him from her father"
         }
       ],
       "chapter": 99
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH99: paints alternate-universe cities in her spare time (a happier-realities hobby). Rushing into the kitchen when her father electrocutes Ryan, she uses her power on Augustus to save him and openly claims Ryan as her boyfriend, revealing to her father that she knows he murdered Narcinia's parents. She refuses to step aside and threatens to leave the Augusti empire forever if he harms Ryan or Felix, a threat that visibly shakes the tyrant into relenting. Insists on taking Ryan to Venus/Narcinia to heal his lightning burns.",
       "facts": [
@@ -14417,7 +14417,7 @@
           "rel": "hunted her; she has him experimented on"
         },
         {
-          "to": "Janus Augusti",
+          "to": "Augustus",
           "rel": "launders his mafia money; given the crystal drug by him"
         },
         {
@@ -14458,7 +14458,7 @@
       "chapter": 100
     },
     {
-      "name": "Janus Augusti",
+      "name": "Augustus",
       "kind": "character",
       "summary": "CH100 (~2005): elder patriarch of the Augusti mob dynasty, a Neapolitan Camorra boss in a red suit and Augustus's forebear (father of young Livia in this era, so Livia's grandfather-era figure). A godless 'necessary evil' who launders his blood money through Cardinal Torque's Vatican channel and serves as a patron of the Malleus Maleficarum's black budget. Cold, shark-like, expansionist. He gifts Torque a bag of colored crystals ('our new product', a mind-opening drug), tempting the priest's curiosity about contacting higher realms. Dotes on his little daughter Livia (who asked for a pony).",
       "facts": [
@@ -14472,10 +14472,6 @@
         }
       ],
       "ties": [
-        {
-          "to": "Augustus",
-          "rel": "Augusti-dynasty forebear of the modern patriarch"
-        },
         {
           "to": "Andreas Torque",
           "rel": "his money-launderer; gives him the crystal drug"
@@ -14671,7 +14667,7 @@
           "rel": "she runs its brothel/Bliss operation"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "keeps a private lovers' suite there"
         }
       ],
@@ -14719,7 +14715,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "his girlfriend, who reforms his habits and list"
         },
         {
@@ -14801,7 +14797,7 @@
           "rel": "completed her improved memory transfer"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "accepts her as Ryan's partner; 'family now'"
         }
       ],
@@ -15133,7 +15129,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "confesses his anti-Augustus plan; compromises on no-kill"
         },
         {
@@ -15144,7 +15140,7 @@
       "chapter": 105
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH105: torn between her boyfriend and her father. She admits Augustus can't be talked out of his madness and probably can't be stopped peacefully, yet extracts a promise from Ryan: don't kill her father ('or we are done') - she'll accept him dragged from his throne and imprisoned underwater, but not death, because 'Bacchus is not family.' She clings to hope for a 'third option.' Her precognition confirmed a Bliss test subject would die, and she needs time to read the ripples of Ryan's large actions. She helps sell her father the lie that the Meta-Gang, not Ryan, hit the lab.",
       "facts": [
@@ -15170,7 +15166,7 @@
       "chapter": 105
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH106 'Mice Trap': at the Veran manor dinner Livia realizes it's an assassination trap - Augustus, now certain the Bliss Factory hit was an inside job (Ryan let 'Dynamis' slip fighting Geist), sent Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop while ordering Mars to lure and kill Mathias/Shroud. Crucially, Livia CHOSE not to prevent this unlikely possibility: she needs Narcinia to witness her family's murderousness firsthand or the rare peaceful future (Augustus retires, Enrique Manada takes Dynamis, her organization goes legit and rebuilds Rust Town/Europe) can never come to pass. She warns Ryan of the chimney-shaft assassin, sets a Sorrento rendezvous, then distracts Cancel by asking for a bathroom escort, placing all her hope in Ryan to save Mathias and turn Narcinia.",
       "facts": [
@@ -15267,7 +15263,7 @@
           "rel": "her adopted son, whom she tries to lure to his death"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "impersonated her to deceive Ryan and Felix"
         }
       ],
@@ -15321,10 +15317,6 @@
         {
           "to": "Felix",
           "rel": "his godson, whom he orders killed"
-        },
-        {
-          "to": "Janus Augusti",
-          "rel": "shares the name 'Janus'; possibly the same man"
         }
       ],
       "chapter": 107
@@ -15423,7 +15415,7 @@
           "rel": "his brother, who tasked him against Len's base"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "her uncle, whom she'd spare"
         }
       ],
@@ -15475,7 +15467,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "keeps contact by burner phone; she teases an in-person secret"
         },
         {
@@ -16209,7 +16201,7 @@
           "rel": "past partner ('Quicksave the Pandas'); now recruited again"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "sister who died saving him in a prior loop"
         }
       ],
@@ -16316,7 +16308,7 @@
       "chapter": 118
     },
     {
-      "name": "Livia",
+      "name": "Livia Augusti",
       "kind": "character",
       "summary": "CH118 (full commitment + love): Livia confirms Augustus launched the war on Dynamis in Ryan's absence (believing them allied), blames herself for helping destroy the Bliss Factory, but finally drops all excuses for her father: 'It's him. It's all him, and he will never change.' She agrees to help take him and the whole organization down, and even brokers this meeting via Uncle Silvio/Neptune (the only sensible Olympian). She cannot forgive Leo for accidentally killing her mother Juno but sets it aside for the greater cause. Privately she tells Ryan 'I love you' for the first time - having never said it to anyone but family - and he answers in kind. Together they lock the final endgame plan and its risks; she insists on fighting her own family beside him rather than staying safe.",
       "facts": [
@@ -16361,7 +16353,7 @@
       ],
       "ties": [
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "co-architect of the plan and the save-after-transfer trick"
         },
         {
@@ -16469,7 +16461,7 @@
           "rel": "unintentionally erased him via retroactive Black Flux"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "can no longer perceive him with her power"
         }
       ],
@@ -16547,7 +16539,7 @@
           "rel": "the boss waiting at the end of the raid"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "scripted the Frank ruse and fights at Ryan's side"
         }
       ],
@@ -16573,7 +16565,7 @@
           "rel": "minor member subdued in the bunker raid"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "told Ryan her true name"
         }
       ],
@@ -16599,7 +16591,7 @@
           "rel": "minor member subdued in the bunker raid"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "told Ryan his true name"
         }
       ],
@@ -16651,7 +16643,7 @@
           "rel": "defeated and killed him"
         },
         {
-          "to": "Livia",
+          "to": "Livia Augusti",
           "rel": "at his bedside; steers him to celebrate before the next target"
         }
       ],
@@ -17970,7 +17962,7 @@
       "chapter": 130
     },
     {
-      "name": "Janus Augusti",
+      "name": "Augustus",
       "kind": "character",
       "summary": "CH130 (confirmed = Augustus; final fate): the finale explicitly names the defeated god-emperor 'Janus Augusti' - confirming Augustus and Janus Augusti are ONE man (Livia's father, Neptune's brother). Returned from the Purple World armless, catatonic, and broken, he sits in a wheelchair at the villa, sometimes apologizing to Livia and the world, mostly silent or sobbing - 'his ghost trapped in a broken, indestructible body.' Livia foresees he will die of cancer within two years, the death he'd have preferred to this half-life. She will care for him without pity until then. His lieutenants (Venus, Mars, Pluto, the Killer Seven, Hector Manada) rot in an undersea prison; his sister (Livia's aunt) is jailed and estranged for refusing rescue.",
       "facts": [
@@ -17984,10 +17976,6 @@
         }
       ],
       "ties": [
-        {
-          "to": "Augustus",
-          "rel": "confirmed to be the same man - his god-emperor persona"
-        },
         {
           "to": "Livia Augusti",
           "rel": "his daughter, who cares for his broken remnant without pity until his foreseen death"
@@ -18010,10 +17998,6 @@
         }
       ],
       "ties": [
-        {
-          "to": "Janus Augusti",
-          "rel": "confirmed to be the same man - his civilian family name"
-        },
         {
           "to": "Livia Augusti",
           "rel": "his daughter, who tends his broken remnant without pity"
@@ -18892,7 +18876,7 @@
         "Nora Moore",
         "Lab Sixty-Six",
         "Felix",
-        "Livia",
+        "Livia Augusti",
         "Narcinia",
         "Augustus",
         "Bacchus",
@@ -18951,7 +18935,7 @@
         "Len",
         "Little Sarah",
         "Eugène-Henry",
-        "Livia",
+        "Livia Augusti",
         "Narcinia",
         "The Brain-Transfer Project",
         "Mars",
@@ -18977,7 +18961,7 @@
         "The Brain-Transfer Project",
         "The Purple World",
         "The Hitchhiker",
-        "Livia",
+        "Livia Augusti",
         "Eugène-Henry"
       ],
       "chapter": 70
@@ -19547,7 +19531,7 @@
         "Augustus",
         "Leo Hargraves",
         "Mr. See-Through",
-        "Livia",
+        "Livia Augusti",
         "The Black Ultimate One",
         "The Black World",
         "The Saturn Armor",
@@ -19560,7 +19544,7 @@
       "beat": "CH92: a new loop begins with Ryan's cathartic revenge rounds (Ghoul, Night Terror, adopting Henriette). Reunited with the now-memory-carrying Livia (who pranks him with a fake villain-betrayal speech), the two become co-strategists. Livia's simulations date the three overlapping calamities, the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and the Bloodstream pandemic (odds spike if Alphonse takes over Dynamis). They map the perfect-run sequence: Ryan joins Augustus's mob as a Carnival double-agent, rebuilds the mind-transfer machine via Vulcan, returns Narcinia to appease the Carnival, and has Stitch/Tyrano weaponize the Knockoff vaccine to erase Bloodstream. Ryan radios Len that her father lives; she answers with cold determination: 'Meet me at the orphanage.'",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Ghoul",
         "Night Terror",
         "Henriette",
@@ -19589,7 +19573,7 @@
         "The Panda",
         "The Killer Rabbit Plushie",
         "Augustus",
-        "Livia",
+        "Livia Augusti",
         "Bloodstream",
         "Leo Hargraves",
         "Enrique Manada",
@@ -19605,7 +19589,7 @@
       "beat": "CH94 'Cheat Code' (May 10th): Ryan executes the revised loop. He preempts Psyshock's Meta-Gang raid on the orphanage, freezing time to bubble Mosquito and Mongrel and huffing Psyshock full of Bliss in under a minute, then captures them for Len's crush-depth underwater asylum instead of killing them. His Avengers assemble (Len, the Panda, Shroud) and forge a temporary alliance with Livia's team (Queen Crimson, Fortuna, Cancel) to destroy the Meta-Gang's cache of Mechron weapons before Adam the Ogre can use it. Ryan's key gambit: deploy Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe. Livia (who reveals she knows Shroud's identity) times the strike from Ryan's intel, Cancel's execution of Psyshock to coincide with the Junkyard assault, and the team drives out to attack the bunker.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Fortuna",
         "The Panda",
         "Mr. See-Through",
@@ -19627,7 +19611,7 @@
       "beat": "CH95 'Double Date': the Junkyard raid. Ryan masks the team's approach with Ghoul's severed foot so the Land mistakes the Plymouth Fury for her returning tenant. On Livia's cue Cancel executes Psyshock, freeing his thralls and sowing chaos. Ryan, Livia, the Panda, Shroud, Fortuna and Len blitz the base: Fortuna's luck bubbles the Reptilian, Livia's foresight hard-counters and captures Acid Rain (Helen), and Shroud flies Fortuna clear of the Land's terrakinesis. Ryan and Livia fight in flawless synergy (flirting mid-battle) to breach the blast door, which the Land seals behind them, trapping them inside. Len assaults from the sea access. The team reaches the recreational atrium and comes face-to-face with Adam the Ogre, Sarin and Frank the Mad, Adam wielding a salvaged Mechron cannon.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Fortuna",
         "Mr. See-Through",
         "The Panda",
@@ -19651,7 +19635,7 @@
       "beat": "CH96 'Beast of the East': the bunker boss fight. Adam the Ogre wields a salvaged Mechron gravity gun and brainwashes Frank with a 'protect democracy' delusion. Ryan learns his Fisty punch can't focus Black Flux without the Saturn armor, and turns Sarin (Bianca) to his side by disarming and offering her a cure. Livia foresees the winning branch: she IDs Adam's skin-only defense (head trauma works), mentally shatters Frank by exposing his true name Vladimir Khabarov, and lets the Panda absorb Adam's Blue Elixir, gaining a second power and finishing Adam with a 'Soaring Panda' kick (Len later drowns him). The Meta-Gang is jailed underwater pending a cure. A near-flawless victory. Ryan then plots infiltrating Dynamis via Jamie/Ki-jung/Lanka and rebuilding the Saturn armor with Vulcan, and finally asks Livia on a date.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Adam the Ogre",
         "Frank the Mad",
         "Sarin",
@@ -19677,7 +19661,7 @@
         "Mr. See-Through",
         "The Panda",
         "Len",
-        "Livia",
+        "Livia Augusti",
         "Alphonse Manada",
         "Enrique Manada",
         "Sarin",
@@ -19695,7 +19679,7 @@
       "beat": "CH98 'White Night': Ryan takes Livia on their date to the Midnight Road, a thin place he reaches via his car's particle accelerator. There he confides his deepest secret, that he once lived an entire full lifetime trapped in the Monaco anomaly and has never dared have a family, making Livia his sole confidant. Livia, freed of her foresight because she cannot predict him, vows to stop her father Augustus's coming war and to share Ryan's burden. She then brings Ryan into Augustus's villa on Mount Augustus and into her bed, an open act of rebellion, and they spend the night together, cementing their bond as partners.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "The Midnight Road",
         "Augustus",
         "Monaco"
@@ -19707,7 +19691,7 @@
       "beat": "CH99 'How I Met Your Daughter': the morning after, Ryan is caught cooking breakfast in Augustus's villa. He taunts the tyrant with repeated time-stops before confirming he slept with Livia, and Augustus electrocutes him, confirming Ryan still needs the Saturn Armor to harm the invincible mob boss. Livia rushes in, uses her foresight power on her father to save Ryan, and openly claims him as her boyfriend, revealing she knows Augustus murdered Narcinia's parents. When she threatens to abandon the Augusti empire forever if he harms Ryan or Felix, the shaken tyrant relents and grudgingly tolerates Ryan under a triple death-threat, turning a would-be enemy into a reluctant father-in-law and further entrenching Ryan's alliance with Livia.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Augustus",
         "Felix",
         "Narcinia"
@@ -19721,7 +19705,7 @@
         "Andreas Torque",
         "Eva Fabre",
         "The Alchemist",
-        "Janus Augusti",
+        "Augustus",
         "The Ultimate One",
         "The Malleus Maleficarum",
         "The Blue World",
@@ -19735,7 +19719,7 @@
       "beat": "CH101 'Lover's Breath': Ryan and Livia formalize their romance, she agrees to be his girlfriend on the condition it last until they choose to end it rather than until a reset. Reviewing Ryan's Perfect Run to-do list, Livia adds 'Be happy too' and bans his suicide-reloads and drugs, and crucially connects Ryan's Purple-World vision of an icebound Alchemist fortress to Station Orpheon, France's secret Antarctic base, revealing Bacchus was 'twisted' investigating the Alchemist before Last Easter. At the Augusti-owned Triton's Resort, Ryan meets Mars (Luca Veran) and is healed by Venus (Andrea Julani-Veran), learning the resort is a prostitution/Bliss-addiction front, and resolves to eventually bring down Augustus and the Veran clan to free Livia while reforming the empire.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Station Orpheon",
         "The Alchemist",
         "Bacchus",
@@ -19752,7 +19736,7 @@
       "entities": [
         "Ryan Romano",
         "Len",
-        "Livia",
+        "Livia Augusti",
         "Alchemo",
         "Stitch",
         "Fortuna",
@@ -19804,7 +19788,7 @@
       "beat": "CH105 'Miracle Cure': in the raid's aftermath Augustus decimates his own guards. The Psycho Cure is proven on Knockoff Psychos (Mongrel and Mosquito revert to healthy Genomes) but fails on two-true-Elixir Psychos like Frank, so Ryan launches an Antarctica expedition (Stitch joining) to research Elixir bonding via the Alchemist. Len, healing and shedding her red iconography, resolves to euthanize her father Bloodstream herself if uncurable. Ryan uses Incognito as a decoy alibi, then confesses to Livia that his Black Flux could neutralize Augustus. After her ultimatum, he swears not to KILL her father but to break and imprison him decisively - a fraught compromise between saving the world and sparing her family.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Len",
         "Augustus",
         "The Psycho Cure",
@@ -19824,7 +19808,7 @@
       "beat": "CH106 'Mice Trap': the Veran manor dinner is Augustus's assassination trap. Suspecting the Bliss raid was an inside job (Ryan slipped 'Dynamis' fighting Geist), Augustus sends Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop, and orders Mars to kill Mathias/Shroud once a chimney assassin is in place. Ryan silently unnerves Night Terror into abandoning his post. Livia reveals she deliberately let this possibility stand so Narcinia would witness her family's murderousness (the price of the rare peaceful future where Augustus retires and Enrique Manada takes Dynamis), warns Ryan of the assassin, sets a Sorrento rendezvous, and distracts Cancel. The trap springs when Atom Kitty/Felix - come to smuggle Narcinia out - tumbles down the chimney into the room.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Mars",
         "Mr. See-Through",
         "Mathias Martel",
@@ -19852,7 +19836,7 @@
         "Sparrow",
         "Narcinia",
         "Augustus",
-        "Livia",
+        "Livia Augusti",
         "Wyvern",
         "Mathias Martel",
         "Fortuna"
@@ -19877,7 +19861,7 @@
         "Fortuna",
         "The Killer Rabbit Plushie",
         "Pluto",
-        "Livia"
+        "Livia Augusti"
       ],
       "chapter": 108
     },
@@ -19886,7 +19870,7 @@
       "beat": "CH109 'Carnival Town': the submarine reaches Monaco on the way to Antarctica. By burner phone Ryan learns the aftermath - Livia is grounded, Dynamis and the Augusti near open war (Hector Manada may recall Alphonse), and Pluto killed Jamie and Ki-jung for defecting (Ryan will restore them by loop but hides it from Felix for now). He reunites with Simon, who has walled off the Carnival and is building a new French republic with Martine, long ago guessed Ryan's time-loop, agrees to foster the expedition's children, and knows Station Orpheon's history. Leo 'Sunshine' Hargraves joins the team as a fire-Genome ally for the ice. Ryan resolves his Perfect Run must dismantle Augustus's factory and organization in quick succession to minimize casualties; Livia teases an in-person secret.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "Jamie",
         "Ki-jung",
         "Pluto",
@@ -20048,7 +20032,7 @@
         "Len",
         "The Panda",
         "Chronoradio",
-        "Livia",
+        "Livia Augusti",
         "The Ultimate Ones",
         "Alphonse Manada"
       ],
@@ -20065,7 +20049,7 @@
         "The Chronoradio",
         "The Perfect Run",
         "Felix",
-        "Livia",
+        "Livia Augusti",
         "New Rome",
         "Augustus",
         "Leo Hargraves",
@@ -20080,7 +20064,7 @@
       "beat": "CH118 'The Last Quest' (final loop begins): at a Sorrentos meeting (Neptune/Silvio cleared the guards), Ryan's group reunites with Livia, Fortuna, and Narcinia. Fortuna claims Shroud as her husband-to-be. Livia confirms Augustus launched war on Dynamis in Ryan's absence (Fallout given command of the corporate army) and finally drops every excuse for her father - 'it's all him, he will never change' - committing fully to bringing her family down. Leo Hargraves reveals Narcinia is Giulia Costa, daughter of his murdered hero friends Bruno (Yellow) and Julie (Green) Costa, whom Augustus killed before Bacchus erased her memory; Leo owns his accidental killing of Livia's mother Juno and vows to face trial. Privately Livia tells Ryan 'I love you' for the first time and he answers in kind. Together they lock the full endgame: send 5-6 minds back (Livia, Len, Bianca, Felix, Shroud, the Panda), hit Adam's bunker within hours to save Rust Town captives, build the Saturn armor, cure the Psychos, break Dynamis (seizing the Gravity Gun), then the Olympians, then Augustus - with Ryan saving ~10s after the mind-transfer so memories survive a forced reload. The true Perfect Run begins.",
       "entities": [
         "Ryan Romano",
-        "Livia",
+        "Livia Augusti",
         "The Perfect Run",
         "Narcinia",
         "Leo Hargraves",
@@ -20108,7 +20092,7 @@
         "The Perfect Run",
         "Elixir Mechanics",
         "Geist",
-        "Livia",
+        "Livia Augusti",
         "Len",
         "Sarin",
         "Felix",
@@ -20130,7 +20114,7 @@
         "Ryan Romano",
         "The Perfect Run",
         "Adam the Ogre",
-        "Livia",
+        "Livia Augusti",
         "Fortuna",
         "Felix",
         "The Panda",
@@ -20156,7 +20140,7 @@
         "Adam the Ogre",
         "The Perfect Run",
         "The Panda",
-        "Livia",
+        "Livia Augusti",
         "Rust Town",
         "The Meta-Gang",
         "Psyshock",
@@ -20328,7 +20312,7 @@
         "Ryan Romano",
         "Livia Augusti",
         "Augustus",
-        "Janus Augusti",
+        "Augustus",
         "The New European Republic",
         "Len",
         "Enrique Manada",

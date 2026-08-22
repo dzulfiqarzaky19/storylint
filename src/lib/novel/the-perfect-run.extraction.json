@@ -713,11 +713,11 @@
             "rel": "granted him the immortal-killing paradox"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "completes her memory transfer before resetting"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "co-plans the perfect run with her"
           },
           {
@@ -737,11 +737,11 @@
             "rel": "recruits her luck-Elixir as his cheat code"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "forges the temporary anti-Mechron alliance"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "intuits she is key to his future"
           },
           {
@@ -749,7 +749,7 @@
             "rel": "reconciled as family, not lovers"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "asks her out"
           },
           {
@@ -765,7 +765,7 @@
             "rel": "targets him as the hardest Dynamis obstacle"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "his date and now lover; his sole confidant"
           },
           {
@@ -777,11 +777,11 @@
             "rel": "electrocuted by then grudgingly accepted as boyfriend"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "his lover, who shields him from her father"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "his girlfriend, who reforms his habits and list"
           },
           {
@@ -809,7 +809,7 @@
             "rel": "targets it for destruction"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "confesses his anti-Augustus plan; compromises on no-kill"
           },
           {
@@ -817,7 +817,7 @@
             "rel": "vows to break and imprison, not kill"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "keeps contact by burner phone; she teases an in-person secret"
           },
           {
@@ -845,7 +845,7 @@
             "rel": "defeated and killed him"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "at his bedside; steers him to celebrate before the next target"
           },
           {
@@ -1385,7 +1385,7 @@
             "rel": "family; accepts his memory transfer"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "reconciles herself to Ryan's relationship with her"
           },
           {
@@ -1393,7 +1393,7 @@
             "rel": "completed her improved memory transfer"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "accepts her as Ryan's partner; 'family now'"
           },
           {
@@ -2383,6 +2383,14 @@
             "value": "Grudgingly tolerates Ryan under a triple death-threat"
           },
           {
+            "key": "role",
+            "value": "Camorra patriarch; launders money via the Vatican"
+          },
+          {
+            "key": "product",
+            "value": "Introduces the colored-crystal mind-opening drug"
+          },
+          {
             "key": "order",
             "value": "Public execution of godson Felix to preserve the invincibility myth"
           },
@@ -2429,6 +2437,14 @@
           {
             "key": "the man beneath",
             "value": "Without his halo, just a feeble bitter old man who murdered thousands out of terror of death"
+          },
+          {
+            "key": "identity confirmed",
+            "value": "The finale names him 'Janus Augusti' as Augustus - resolving the long-open question that Augustus and Janus Augusti are the same man"
+          },
+          {
+            "key": "final fate",
+            "value": "Broken and catatonic in a wheelchair; foreseen to die of cancer within two years, the death he would have preferred"
           },
           {
             "key": "= Janus Augusti",
@@ -2513,7 +2529,7 @@
             "rel": "vaporizes him"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "his daughter, who defies him to keep Ryan"
           },
           {
@@ -2521,12 +2537,12 @@
             "rel": "electrocutes then reluctantly tolerates him"
           },
           {
-            "to": "felix",
-            "rel": "his godson, whom he orders killed"
+            "to": "andreas-torque",
+            "rel": "his money-launderer; gives him the crystal drug"
           },
           {
-            "to": "janus-augusti",
-            "rel": "shares the name 'Janus'; possibly the same man"
+            "to": "felix",
+            "rel": "his godson, whom he orders killed"
           },
           {
             "to": "adamantine",
@@ -2557,8 +2573,8 @@
             "rel": "disarmed and defeated by him, then carried back to face captivity"
           },
           {
-            "to": "janus-augusti",
-            "rel": "confirmed to be the same man - his civilian family name"
+            "to": "livia-augusti",
+            "rel": "his daughter, who cares for his broken remnant without pity until his foreseen death"
           },
           {
             "to": "livia-augusti",
@@ -2585,6 +2601,7 @@
           93,
           98,
           99,
+          100,
           105,
           106,
           107,
@@ -4249,7 +4266,7 @@
             "rel": "burning again on arrival, forcing the next crisis"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "co-architect of the plan and the save-after-transfer trick"
           },
           {
@@ -4269,7 +4286,7 @@
             "rel": "the boss waiting at the end of the raid"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "scripted the Frank ruse and fights at Ryan's side"
           },
           {
@@ -4348,7 +4365,7 @@
             "rel": "unintentionally erased him via retroactive Black Flux"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "can no longer perceive him with her power"
           }
         ],
@@ -4498,7 +4515,7 @@
             "rel": "his brother, who tasked him against Len's base"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "her uncle, whom she'd spare"
           }
         ],
@@ -4764,7 +4781,7 @@
             "rel": "kills him"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "she foresaw he could safely take the Elixir"
           },
           {
@@ -6617,7 +6634,7 @@
             "rel": "glimpses in the Purple World"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "outpredicted and captured by her"
           },
           {
@@ -6720,7 +6737,7 @@
             "rel": "civilian identity"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "arranged ex, only friendship"
           },
           {
@@ -6752,7 +6769,7 @@
             "rel": "past partner ('Quicksave the Pandas'); now recruited again"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "sister who died saving him in a prior loop"
           }
         ],
@@ -8425,7 +8442,7 @@
             "rel": "his bodyguard, buys him escape time"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "mentally dismantled by her"
           },
           {
@@ -9021,6 +9038,26 @@
           },
           {
             "key": "note",
+            "value": "Grief and guilt over Fortuna's death push her to Ryan's side"
+          },
+          {
+            "key": "note",
+            "value": "Admits fear of Ryan: he knows all and erases her actions"
+          },
+          {
+            "key": "note",
+            "value": "Keeps a journal to carry data across loops"
+          },
+          {
+            "key": "note",
+            "value": "Offers to back up Len's memory-map snapshot"
+          },
+          {
+            "key": "note",
+            "value": "Wins Len's cautious trust"
+          },
+          {
+            "key": "note",
             "value": "Gives Ryan Len's clean brain-map freely, honoring a debt"
           },
           {
@@ -9102,6 +9139,82 @@
           {
             "key": "theme",
             "value": "'Hell is loneliness'; shares her Sicily memory of lost family happiness"
+          },
+          {
+            "key": "role",
+            "value": "Receives the memory transfer; her mind carries across the reset"
+          },
+          {
+            "key": "vow",
+            "value": "Next loop Ryan won't loop alone; find a painless transfer"
+          },
+          {
+            "key": "milestone",
+            "value": "First to remember across a reset; Ryan's permanent co-strategist"
+          },
+          {
+            "key": "plan",
+            "value": "Simulations date the calamities; maps the perfect-run sequence"
+          },
+          {
+            "key": "role",
+            "value": "Times the strike; brokers the Carnival alliance behind Augustus's back"
+          },
+          {
+            "key": "powers",
+            "value": "Blue foresight + Violet skip-forward; Ryan is uninteractable within it"
+          },
+          {
+            "key": "dynamic",
+            "value": "Flawless combat synergy with Ryan; mutual flirting"
+          },
+          {
+            "key": "tactics",
+            "value": "IDs Adam's weakness, unmasks Frank, greenlights Panda's Elixir"
+          },
+          {
+            "key": "romance",
+            "value": "Accepts Ryan's advance; can't foresee him, so it's a real surprise"
+          },
+          {
+            "key": "gift",
+            "value": "Ryan gives her 'the unexpected'; her power can't foresee him"
+          },
+          {
+            "key": "choice",
+            "value": "Sleeps with Ryan in Augustus's villa as open rebellion"
+          },
+          {
+            "key": "stand",
+            "value": "Threatens to abandon the empire to protect Ryan and Felix"
+          },
+          {
+            "key": "knowledge",
+            "value": "Knows Augustus killed Narcinia's parents"
+          },
+          {
+            "key": "ultimatum",
+            "value": "Ryan must not kill Augustus, only imprison him"
+          },
+          {
+            "key": "power note",
+            "value": "Needs time to foresee ripples of Ryan's large actions"
+          },
+          {
+            "key": "gambit",
+            "value": "Let the assassination possibility stand so Narcinia sees her family's true nature"
+          },
+          {
+            "key": "peaceful future",
+            "value": "Requires Augustus's retirement + Enrique Manada leading Dynamis"
+          },
+          {
+            "key": "resolve",
+            "value": "Drops all excuses for Augustus; commits to bringing down her whole family"
+          },
+          {
+            "key": "milestone",
+            "value": "First 'I love you' to Ryan; brokered the meeting via Neptune/Silvio"
           },
           {
             "key": "NER plan",
@@ -9198,6 +9311,18 @@
             "rel": "trapped daughter"
           },
           {
+            "to": "augustus",
+            "rel": "disillusioned daughter"
+          },
+          {
+            "to": "len",
+            "rel": "cautious new ally"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "ally across loops"
+          },
+          {
             "to": "ryan-romano",
             "rel": "ally/partner"
           },
@@ -9271,6 +9396,82 @@
           },
           {
             "to": "ryan-romano",
+            "rel": "carries his memories forward"
+          },
+          {
+            "to": "vulcan",
+            "rel": "protected by her turret perimeter"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his memory-carrying co-planner"
+          },
+          {
+            "to": "vulcan",
+            "rel": "will introduce Ryan to rebuild the machine"
+          },
+          {
+            "to": "mr-see-through",
+            "rel": "knows Shroud's identity; uneasy allies"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "battle partner and growing romantic interest"
+          },
+          {
+            "to": "acid-rain",
+            "rel": "hard-counters and captures her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "grows close; he asks her out"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "her lover; shares his burden"
+          },
+          {
+            "to": "augustus",
+            "rel": "defies him openly by choosing Ryan"
+          },
+          {
+            "to": "augustus",
+            "rel": "defies her father to keep Ryan"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "shields and claims him as boyfriend"
+          },
+          {
+            "to": "augustus",
+            "rel": "her father, whom she forbids Ryan to kill"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "compromises with him on sparing Augustus"
+          },
+          {
+            "to": "mr-see-through",
+            "rel": "the assassination target she warns Ryan to save"
+          },
+          {
+            "to": "narcinia",
+            "rel": "must witness the hit to open her eyes"
+          },
+          {
+            "to": "cancel",
+            "rel": "sent by Augustus to blind her precognition; she distracts her"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "declares her love; his equal partner in the endgame"
+          },
+          {
+            "to": "augustus",
+            "rel": "her father, now her target"
+          },
+          {
+            "to": "ryan-romano",
             "rel": "receives his Black-power secret with trust; asks only that he spare her father"
           },
           {
@@ -9309,6 +9510,9 @@
           60,
           61,
           63,
+          66,
+          69,
+          70,
           75,
           77,
           78,
@@ -9318,6 +9522,28 @@
           83,
           84,
           85,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          101,
+          102,
+          105,
+          106,
+          107,
+          108,
+          109,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
           123,
           124,
           125,
@@ -10037,7 +10263,7 @@
             "rel": "her adopted son, whom she tries to lure to his death"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "impersonated her to deceive Ryan and Felix"
           }
         ],
@@ -12447,7 +12673,7 @@
         ],
         "ties": [
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "pet of"
           },
           {
@@ -12467,7 +12693,7 @@
             "rel": "guided"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "steered toward Ryan"
           }
         ],
@@ -12680,7 +12906,7 @@
             "rel": "godmother, betrayed by"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "aunt"
           }
         ],
@@ -12916,228 +13142,6 @@
         "appearances": [
           67,
           68
-        ],
-        "questions": []
-      },
-      {
-        "id": "livia",
-        "kind": "character",
-        "name": "Livia",
-        "summary": "Refined: devastated by Fortuna's death and her aunt Pluto's murder-order (given by her own father Augustus), Livia fully allies with Ryan, admitting she was wrong to trust her father and that she was terrified of Ryan (who knows everything and can erase all she does, immune to her powers). Winning Len's cautious trust, she offers to help the brain-transfer project persist across loops: she can't retain memories, but keeps a detailed journal and offers to store a snapshot of Len's memory-map as a backup, giving them a lifeline if the transfer fails. She asks to speak to the catatonic Felix before Ryan resets.",
-        "facts": [
-          {
-            "key": "note",
-            "value": "Grief and guilt over Fortuna's death push her to Ryan's side"
-          },
-          {
-            "key": "note",
-            "value": "Admits fear of Ryan: he knows all and erases her actions"
-          },
-          {
-            "key": "note",
-            "value": "Keeps a journal to carry data across loops"
-          },
-          {
-            "key": "note",
-            "value": "Offers to back up Len's memory-map snapshot"
-          },
-          {
-            "key": "note",
-            "value": "Wins Len's cautious trust"
-          },
-          {
-            "key": "role",
-            "value": "Receives the memory transfer; her mind carries across the reset"
-          },
-          {
-            "key": "vow",
-            "value": "Next loop Ryan won't loop alone; find a painless transfer"
-          },
-          {
-            "key": "milestone",
-            "value": "First to remember across a reset; Ryan's permanent co-strategist"
-          },
-          {
-            "key": "plan",
-            "value": "Simulations date the calamities; maps the perfect-run sequence"
-          },
-          {
-            "key": "role",
-            "value": "Times the strike; brokers the Carnival alliance behind Augustus's back"
-          },
-          {
-            "key": "powers",
-            "value": "Blue foresight + Violet skip-forward; Ryan is uninteractable within it"
-          },
-          {
-            "key": "dynamic",
-            "value": "Flawless combat synergy with Ryan; mutual flirting"
-          },
-          {
-            "key": "tactics",
-            "value": "IDs Adam's weakness, unmasks Frank, greenlights Panda's Elixir"
-          },
-          {
-            "key": "romance",
-            "value": "Accepts Ryan's advance; can't foresee him, so it's a real surprise"
-          },
-          {
-            "key": "gift",
-            "value": "Ryan gives her 'the unexpected'; her power can't foresee him"
-          },
-          {
-            "key": "choice",
-            "value": "Sleeps with Ryan in Augustus's villa as open rebellion"
-          },
-          {
-            "key": "stand",
-            "value": "Threatens to abandon the empire to protect Ryan and Felix"
-          },
-          {
-            "key": "knowledge",
-            "value": "Knows Augustus killed Narcinia's parents"
-          },
-          {
-            "key": "ultimatum",
-            "value": "Ryan must not kill Augustus, only imprison him"
-          },
-          {
-            "key": "power note",
-            "value": "Needs time to foresee ripples of Ryan's large actions"
-          },
-          {
-            "key": "gambit",
-            "value": "Let the assassination possibility stand so Narcinia sees her family's true nature"
-          },
-          {
-            "key": "peaceful future",
-            "value": "Requires Augustus's retirement + Enrique Manada leading Dynamis"
-          },
-          {
-            "key": "resolve",
-            "value": "Drops all excuses for Augustus; commits to bringing down her whole family"
-          },
-          {
-            "key": "milestone",
-            "value": "First 'I love you' to Ryan; brokered the meeting via Neptune/Silvio"
-          }
-        ],
-        "ties": [
-          {
-            "to": "augustus",
-            "rel": "disillusioned daughter"
-          },
-          {
-            "to": "len",
-            "rel": "cautious new ally"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "ally across loops"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "carries his memories forward"
-          },
-          {
-            "to": "vulcan",
-            "rel": "protected by her turret perimeter"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "his memory-carrying co-planner"
-          },
-          {
-            "to": "vulcan",
-            "rel": "will introduce Ryan to rebuild the machine"
-          },
-          {
-            "to": "mr-see-through",
-            "rel": "knows Shroud's identity; uneasy allies"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "battle partner and growing romantic interest"
-          },
-          {
-            "to": "acid-rain",
-            "rel": "hard-counters and captures her"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "grows close; he asks her out"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "her lover; shares his burden"
-          },
-          {
-            "to": "augustus",
-            "rel": "defies him openly by choosing Ryan"
-          },
-          {
-            "to": "augustus",
-            "rel": "defies her father to keep Ryan"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "shields and claims him as boyfriend"
-          },
-          {
-            "to": "augustus",
-            "rel": "her father, whom she forbids Ryan to kill"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "compromises with him on sparing Augustus"
-          },
-          {
-            "to": "mr-see-through",
-            "rel": "the assassination target she warns Ryan to save"
-          },
-          {
-            "to": "narcinia",
-            "rel": "must witness the hit to open her eyes"
-          },
-          {
-            "to": "cancel",
-            "rel": "sent by Augustus to blind her precognition; she distracts her"
-          },
-          {
-            "to": "ryan-romano",
-            "rel": "declares her love; his equal partner in the endgame"
-          },
-          {
-            "to": "augustus",
-            "rel": "her father, now her target"
-          }
-        ],
-        "appearances": [
-          66,
-          69,
-          70,
-          91,
-          92,
-          93,
-          94,
-          95,
-          96,
-          97,
-          98,
-          99,
-          101,
-          102,
-          105,
-          106,
-          107,
-          108,
-          109,
-          116,
-          117,
-          118,
-          119,
-          120,
-          121
         ],
         "questions": []
       },
@@ -15356,7 +15360,7 @@
             "rel": "minor member subdued in the bunker raid"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "told Ryan his true name"
           }
         ],
@@ -15395,7 +15399,7 @@
             "rel": "minor member subdued in the bunker raid"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "told Ryan her true name"
           }
         ],
@@ -15558,7 +15562,7 @@
             "rel": "hunted her; she has him experimented on"
           },
           {
-            "to": "janus-augusti",
+            "to": "augustus",
             "rel": "launders his mafia money; given the crystal drug by him"
           },
           {
@@ -15625,53 +15629,6 @@
           100,
           111,
           113
-        ],
-        "questions": []
-      },
-      {
-        "id": "janus-augusti",
-        "kind": "character",
-        "name": "Janus Augusti",
-        "summary": "CH100 (~2005): elder patriarch of the Augusti mob dynasty, a Neapolitan Camorra boss in a red suit and Augustus's forebear (father of young Livia in this era, so Livia's grandfather-era figure). A godless 'necessary evil' who launders his blood money through Cardinal Torque's Vatican channel and serves as a patron of the Malleus Maleficarum's black budget. Cold, shark-like, expansionist. He gifts Torque a bag of colored crystals ('our new product', a mind-opening drug), tempting the priest's curiosity about contacting higher realms. Dotes on his little daughter Livia (who asked for a pony).",
-        "facts": [
-          {
-            "key": "role",
-            "value": "Camorra patriarch; launders money via the Vatican"
-          },
-          {
-            "key": "product",
-            "value": "Introduces the colored-crystal mind-opening drug"
-          },
-          {
-            "key": "identity confirmed",
-            "value": "The finale names him 'Janus Augusti' as Augustus - resolving the long-open question that Augustus and Janus Augusti are the same man"
-          },
-          {
-            "key": "final fate",
-            "value": "Broken and catatonic in a wheelchair; foreseen to die of cancer within two years, the death he would have preferred"
-          }
-        ],
-        "ties": [
-          {
-            "to": "augustus",
-            "rel": "Augusti-dynasty forebear of the modern patriarch"
-          },
-          {
-            "to": "andreas-torque",
-            "rel": "his money-launderer; gives him the crystal drug"
-          },
-          {
-            "to": "augustus",
-            "rel": "confirmed to be the same man - his god-emperor persona"
-          },
-          {
-            "to": "livia-augusti",
-            "rel": "his daughter, who cares for his broken remnant without pity until his foreseen death"
-          }
-        ],
-        "appearances": [
-          100,
-          130
         ],
         "questions": []
       },
@@ -15786,7 +15743,7 @@
             "rel": "she runs its brothel/Bliss operation"
           },
           {
-            "to": "livia",
+            "to": "livia-augusti",
             "rel": "keeps a private lovers' suite there"
           }
         ],
@@ -17683,7 +17640,7 @@
           "nora-moore",
           "lab-sixty-six",
           "felix",
-          "livia",
+          "livia-augusti",
           "narcinia",
           "augustus",
           "bacchus",
@@ -17760,7 +17717,7 @@
           "len",
           "little-sarah",
           "eug-ne-henry",
-          "livia",
+          "livia-augusti",
           "narcinia",
           "the-brain-transfer-project",
           "mars",
@@ -17792,7 +17749,7 @@
           "the-brain-transfer-project",
           "the-purple-world",
           "the-hitchhiker",
-          "livia",
+          "livia-augusti",
           "eug-ne-henry"
         ]
       },
@@ -18528,7 +18485,7 @@
           "augustus",
           "leo-hargraves",
           "mr-see-through",
-          "livia",
+          "livia-augusti",
           "the-black-ultimate-one",
           "the-black-world",
           "the-saturn-armor",
@@ -18699,7 +18656,7 @@
         ],
         "entities": [
           "ryan-romano",
-          "livia",
+          "livia-augusti",
           "ghoul",
           "night-terror",
           "henriette",
@@ -18747,7 +18704,6 @@
           "andreas-torque",
           "eva-fabre",
           "the-alchemist",
-          "janus-augusti",
           "the-ultimate-one",
           "the-malleus-maleficarum",
           "the-blue-world",
@@ -18808,7 +18764,6 @@
           "rust-town",
           "the-knockoff-elixir",
           "lanka",
-          "livia-augusti",
           "the-opis-armor",
           "fallout",
           "the-cure-flu",
@@ -18826,8 +18781,10 @@
     ]
   },
   "counts": {
-    "entities": 250,
+    "entities": 248,
     "plotlines": 104,
-    "books": 1
+    "books": 1,
+    "denseExtraction": true,
+    "chapters": 130
   }
 }
