@@ -10,17 +10,18 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 // -----------------------------------------------------------------------------
 // W-5 (TCK-024) — previewWorldCascade (INTEGRATION, real Postgres). The advisory
 // blast-radius count for a WORLD delete. It MUST mirror deleteWorldCascade
-// exactly: its total counts the world's world_entities links + the world's user
-// categories + the world row, and NEVER counts entries (orphan=LEAVE — the entity
-// ROWS survive a world delete, reclaimable in their other worlds).
+// exactly: its total counts the world's world_entities links + the entities left
+// with ZERO links after that unlink (orphan=DELETE-on-last-link) + the world's user
+// categories + the world row. A STILL-SHARED entity (linked to a sibling world) is
+// NOT counted; only entities whose last link was this world die.
 //
 // GATE ASSERTIONS:
 //   pt-count : previewWorldCascade(A).total === deleteWorldCascade(A).total ===
-//              rows actually removed. The breakdown (worldEntities/categories/
-//              worlds) matches the seeded fixture; entries stays 0.
-//   pt-leave : a shared entity linked to BOTH A and sibling B — after A is
-//              deleted, its ROW SURVIVES and it is STILL linked to B (the preview
-//              counted the LINK, never the entry).
+//              rows actually removed. The breakdown (worldEntities/entries/
+//              categories/worlds) matches the seeded fixture.
+//   pt-die   : an A-only entity (its only link was A) is DELETED with A. A shared
+//              entity linked to BOTH A and sibling B SURVIVES (kept its B-link);
+//              the preview counted A's LINK, never the shared entry.
 //
 // FIXTURE — two sibling worlds (A, B) under universe-1, a shared entity linked to
 // both, an A-only entity, and a per-world user category on A. Mirrors
@@ -89,13 +90,14 @@ describe("W-5 previewWorldCascade (real Postgres)", () => {
     // --- ADVISORY preview BEFORE the delete -----------------------------------
     const preview = await previewWorldCascade(worldAId);
     // Breakdown mirrors the fixture: 2 junction rows (shared + aOnly under A),
-    // 1 user category, 1 world row. Entries are NEVER counted (orphan=LEAVE).
+    // 1 user category, 1 world row, and 1 ENTRY that dies with A (aOnly, whose only
+    // link was A). The shared entity keeps its B-link and is NOT counted.
     expect(preview.worldEntities).toBe(2);
     expect(preview.categories).toBe(1);
     expect(preview.worlds).toBe(1);
-    expect(preview.entries).toBe(0);
+    expect(preview.entries).toBe(1); // aOnly loses its last link -> deleted
     expect(preview.books).toBe(0);
-    expect(preview.total).toBe(4);
+    expect(preview.total).toBe(5);
 
     // --- ACT: the authoritative delete ----------------------------------------
     const count = await deleteWorldCascade(worldAId);
@@ -103,13 +105,15 @@ describe("W-5 previewWorldCascade (real Postgres)", () => {
     // pt-count — preview matched the delete matched the rows removed.
     expect(preview.total).toBe(count.total);
     expect(preview.worldEntities).toBe(count.worldEntities);
+    expect(preview.entries).toBe(count.entries);
     expect(preview.categories).toBe(count.categories);
     expect(preview.worlds).toBe(count.worlds);
 
-    // pt-leave — the shared entity ROW SURVIVES (never deleted; the preview counted
-    // the LINK, not the entry) and is STILL linked to sibling world B.
+    // pt-leave/pt-die — the SHARED entity ROW SURVIVES (it kept its sibling B-link;
+    // the preview counted only the A-link, not the entry) and is STILL linked to B.
+    // The A-ONLY entity lost its last link and is DELETED (orphan=DELETE-on-last-link).
     expect(await one(`SELECT id FROM entries WHERE id = $1`, [sharedEntId])).not.toBeNull();
-    expect(await one(`SELECT id FROM entries WHERE id = $1`, [aOnlyEntId])).not.toBeNull();
+    expect(await one(`SELECT id FROM entries WHERE id = $1`, [aOnlyEntId])).toBeNull();
     expect(
       await one(`SELECT 1 FROM world_entities WHERE world_id = $1 AND entity_id = $2`, [worldBId, sharedEntId]),
     ).not.toBeNull();
@@ -119,13 +123,15 @@ describe("W-5 previewWorldCascade (real Postgres)", () => {
     expect(await one(`SELECT id FROM categories WHERE id = $1`, [userCatAId])).toBeNull();
   });
 
-  it("preview of an EMPTY (no links, no user cats) world counts only the world row", async () => {
-    // worldB has no world_entities of its own except the shared link, and no user
-    // categories. Its preview: 1 shared link + 0 categories + 1 world row = 2.
+  it("preview of a world whose only members are now SINGLE-linked counts them as dying entries", async () => {
+    // After test A deleted worldA, the shared entity's ONLY remaining link is B.
+    // So previewing B now counts: 1 shared link + 0 categories + 1 world row + the
+    // shared ENTRY (its last link would go with B) = 3.
     const preview = await previewWorldCascade(worldBId);
     expect(preview.worldEntities).toBe(1); // the shared entity's B-link
     expect(preview.categories).toBe(0);
     expect(preview.worlds).toBe(1);
-    expect(preview.total).toBe(2);
+    expect(preview.entries).toBe(1); // shared is now single-linked -> dies with B
+    expect(preview.total).toBe(3);
   });
 });

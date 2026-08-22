@@ -8,10 +8,12 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // W-2 — deleteWorldCascade (INTEGRATION, real Postgres). Deleting a WORLD unlinks
-// its shared entities (junction only — the entity ROWS survive, reclaimable) and
-// drops its user categories, but NEVER destroys entities, universe-canon, sibling
-// worlds, or the 4 GLOBAL built-in categories. Books are universe-owned, not
-// world-owned, so a world delete removes NO books (coordinator ruling A).
+// its shared entities; an entity that keeps a link to a SIBLING world survives
+// there, but one whose LAST link was this world is DELETED with it
+// (orphan=DELETE-on-last-link). It drops the world's user categories but NEVER
+// destroys universe-canon of a still-shared entity, sibling worlds, or the 4
+// GLOBAL built-in categories. Books are universe-owned, not world-owned, so a
+// world delete removes NO books (coordinator ruling A).
 //
 // Explicit COUNTED deletes in one txn, so the reported `total` === rows actually
 // removed BY CONSTRUCTION.
@@ -20,16 +22,17 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 // SHARED entity linked to BOTH, plus a per-world user category on A:
 //   * worldA, worldB : both point at DEFAULT_UNIVERSE_ID.
 //   * shared entity  : a real entries row, linked via world_entities to A AND B.
-//   * a-only entity  : linked to A only (its membership dies with A; the row lives).
+//   * a-only entity  : linked to A only (dies with A — its last link — but its
+//                      universe-canon children go via ON DELETE CASCADE).
 //   * userCatA       : a categories row with world_id = A (user category).
 //   * the 4 built-ins (world_id NULL) are GLOBAL and must survive.
 //
 // GATE ASSERTIONS on deleteWorldCascade(A):
 //   pt6 count===rows : count.total === (rows before) - (rows after) over the
 //                      world-scoped tables; breakdown matches the seeded fixture.
-//   pt1 unlink-not-delete + cross-world isolation : the shared entity ROW SURVIVES
-//        and is STILL linked to sibling world B; the a-only entity ROW SURVIVES
-//        (only its A membership is gone).
+//   pt1 unlink-vs-delete + cross-world isolation : the shared entity ROW SURVIVES
+//        and is STILL linked to sibling world B; the a-only entity ROW is DELETED
+//        (its last link was A).
 //   pt4 built-in global survival : all 4 built-ins (world_id NULL) survive; a
 //        surviving entity's kind still resolves to a live category.
 //   + idempotency : a second deleteWorldCascade(A) removes nothing (total 0).
@@ -57,14 +60,16 @@ const userCatAId = `test-w2-cat-${randomUUID()}`;
 // key strictly on the fixture ids (coordinator ruling D — fixture-scoped counts).
 const FIXTURE_WORLD_IDS = [worldAId, worldBId];
 const FIXTURE_CAT_IDS = [userCatAId];
+const FIXTURE_ENT_IDS = [sharedEntId, aOnlyEntId];
 
 const COUNT_FIXTURE = `SELECT
     (SELECT COUNT(*) FROM world_entities WHERE world_id = ANY($1)) +
+    (SELECT COUNT(*) FROM entries WHERE id = ANY($3)) +
     (SELECT COUNT(*) FROM categories WHERE id = ANY($2)) +
     (SELECT COUNT(*) FROM worlds WHERE id = ANY($1)) AS n`;
 
 async function totalRows(): Promise<number> {
-  const r = await one<{ n: string }>(COUNT_FIXTURE, [FIXTURE_WORLD_IDS, FIXTURE_CAT_IDS]);
+  const r = await one<{ n: string }>(COUNT_FIXTURE, [FIXTURE_WORLD_IDS, FIXTURE_CAT_IDS, FIXTURE_ENT_IDS]);
   return Number(r!.n);
 }
 
@@ -131,13 +136,12 @@ describe("W-2 deleteWorldCascade (real Postgres)", () => {
 
     const totalAfter = await totalRows();
 
-    // pt1 — UNLINK-not-delete + cross-world isolation. Asserted FIRST so the
-    // entity-cascade mutant (junction DELETE -> entity DELETE) flips THIS
-    // (the semantically-correct pt1 signal), not just the count below.
-    // The shared entity ROW survives (never cascade-deleted).
+    // pt1 — UNLINK-vs-DELETE by remaining links. Asserted FIRST so the semantic
+    // signal flips here, not just the count below.
+    // The SHARED entity ROW survives: it kept its link to sibling world B.
     expect(await one(`SELECT id FROM entries WHERE id = $1`, [sharedEntId])).not.toBeNull();
-    // The a-only entity ROW survives too (only its A membership is gone).
-    expect(await one(`SELECT id FROM entries WHERE id = $1`, [aOnlyEntId])).not.toBeNull();
+    // The A-ONLY entity ROW is DELETED: A was its last link (orphan=DELETE-on-last-link).
+    expect(await one(`SELECT id FROM entries WHERE id = $1`, [aOnlyEntId])).toBeNull();
     // A's memberships are gone.
     expect(await one(`SELECT 1 FROM world_entities WHERE world_id = $1`, [worldAId])).toBeNull();
     // But the shared entity is STILL linked to sibling world B (isolation).
@@ -166,11 +170,11 @@ describe("W-2 deleteWorldCascade (real Postgres)", () => {
     // on a counted DELETE flips THIS: total drops AND userCatA survives above).
     expect(count.total).toBe(totalBefore - totalAfter);
     // Breakdown matches the fixture: 2 junction rows (shared+aOnly under A),
-    // 1 user category, 1 world row. No books/entries counted.
+    // 1 A-only ENTRY deleted (its last link was A), 1 user category, 1 world row.
     expect(count.worldEntities).toBe(2);
     expect(count.categories).toBe(1);
     expect(count.worlds).toBe(1);
-    expect(count.entries).toBe(0);
+    expect(count.entries).toBe(1); // aOnly died with its last link; shared survived
     expect(count.books).toBe(0);
 
     // idempotency — a second delete removes nothing.

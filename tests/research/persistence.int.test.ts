@@ -7,8 +7,11 @@ import {
   insertResearchTurnPair,
   deleteThread,
   updateThreadTitle,
+  insertWorld,
+  deleteWorldCascade,
 } from "@/lib/db/mutations";
 import { getResearchThread } from "@/lib/db/queries";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // F2a — research persistence (INTEGRATION, real Postgres). Proves the binding
@@ -301,17 +304,39 @@ describe("insertResearchTurnPair auto-title (same-txn)", () => {
 
 // -----------------------------------------------------------------------------
 // T-RESEARCH-2 world-stamp invariant (mutation-lock for the delete-last-thread
-// defect, dragon's FAIL on ResearchScreen.tsx:413). The delete-last-thread
-// branch and addThread and the auto-create path all funnel through
-// createThread({ worldId: activeWorldId }) -> insertResearchThread({ worldId }).
-// The bug was calling createThread() with NO worldId, whose fallback is the
-// DEFAULT world (world-universe-1 = Ashkeld) unconditionally. These lock the
-// contract at the mutation the branch ultimately hits: a passed worldId is
-// honored verbatim, so a writer in Vosk/Halen never gets an Ashkeld thread.
-// If the branch reverts to createThread() (no worldId), a Halen thread would be
-// stamped world-universe-1 and the "non-default" assertion below goes RED.
+// defect). The delete-last-thread branch, addThread, and the auto-create path all
+// funnel through createThread({ worldId: activeWorldId }) ->
+// insertResearchThread({ worldId }). The bug called createThread() with NO
+// worldId, whose fallback is the DEFAULT world unconditionally. These lock the
+// contract at the mutation the branch hits: a passed worldId is honored verbatim,
+// so a writer viewing a NON-default world never gets a thread in the default one.
+// If the branch reverts to createThread() (no worldId), the thread would be
+// stamped the default world and the "non-default" assertion below goes RED.
+//
+// The seed has ONE world (world-mol), so this spec mints a THROWAWAY second world
+// under the same universe to prove "passed world honored, not defaulted", then
+// deletes it (and its auto-created book) in afterAll.
 // -----------------------------------------------------------------------------
 describe("insertResearchThread world_id stamp (T-RESEARCH-2 delete-last-thread lock)", () => {
+  const altWorldId = `test-f2a-world-${randomUUID()}`;
+  const altBookId = `test-f2a-book-${randomUUID()}`;
+
+  beforeAll(async () => {
+    // A second world under the seed universe, distinct from DEFAULT_WORLD_ID, so a
+    // "non-default world honored" proof has a real target to stamp.
+    await insertWorld({
+      id: altWorldId,
+      universeId: DEFAULT_UNIVERSE_ID,
+      title: "Alt World",
+      bookId: altBookId,
+      bookName: "Alt Book",
+    });
+  });
+
+  afterAll(async () => {
+    await deleteWorldCascade(altWorldId);
+  });
+
   async function worldOf(threadId: string): Promise<string | null> {
     const r = await rows<{ world_id: string }>(
       "SELECT world_id FROM research_threads WHERE id = $1",
@@ -320,7 +345,7 @@ describe("insertResearchThread world_id stamp (T-RESEARCH-2 delete-last-thread l
     return r[0]?.world_id ?? null;
   }
 
-  it("stamps the NON-DEFAULT world verbatim when a worldId is passed (Halen, not Ashkeld)", async () => {
+  it("stamps the NON-DEFAULT world verbatim when a worldId is passed", async () => {
     const id = `test-f2a-${randomUUID()}`;
     created.push(id);
     const row = await insertResearchThread({
@@ -329,28 +354,13 @@ describe("insertResearchThread world_id stamp (T-RESEARCH-2 delete-last-thread l
       subtitle: "",
       sortOrder: 999,
       scope: "chat",
-      worldId: "world-halen",
+      universeId: DEFAULT_UNIVERSE_ID,
+      worldId: altWorldId,
     });
     // Read-back AND returned row both carry the passed world, never the default.
-    expect(row.worldId).toBe("world-halen");
-    expect(await worldOf(id)).toBe("world-halen");
-    expect(await worldOf(id)).not.toBe("world-universe-1");
-  });
-
-  it("stamps a sibling world (Vosk) in the default universe, not the default world", async () => {
-    const id = `test-f2a-${randomUUID()}`;
-    created.push(id);
-    const row = await insertResearchThread({
-      id,
-      title: "New thread",
-      subtitle: "",
-      sortOrder: 999,
-      scope: "chat",
-      worldId: "world-vosk",
-    });
-    expect(row.worldId).toBe("world-vosk");
-    expect(await worldOf(id)).toBe("world-vosk");
-    expect(await worldOf(id)).not.toBe("world-universe-1");
+    expect(row.worldId).toBe(altWorldId);
+    expect(await worldOf(id)).toBe(altWorldId);
+    expect(await worldOf(id)).not.toBe(DEFAULT_WORLD_ID);
   });
 
   it("falls back to the default world ONLY when worldId is omitted (legacy callers)", async () => {
@@ -363,9 +373,9 @@ describe("insertResearchThread world_id stamp (T-RESEARCH-2 delete-last-thread l
       sortOrder: 999,
       scope: "chat",
     });
-    // Documents the fallback the defect abused: no worldId => world-universe-1.
+    // Documents the fallback the defect abused: no worldId => the default world.
     // The delete-last-thread branch MUST pass activeWorldId so it never lands here.
-    expect(row.worldId).toBe("world-universe-1");
-    expect(await worldOf(id)).toBe("world-universe-1");
+    expect(row.worldId).toBe(DEFAULT_WORLD_ID);
+    expect(await worldOf(id)).toBe(DEFAULT_WORLD_ID);
   });
 });

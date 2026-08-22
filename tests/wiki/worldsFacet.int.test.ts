@@ -11,8 +11,15 @@ import {
   upsertEntryFacet,
 } from "@/lib/db/mutations";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
-import { DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
-import { ENTRIES, CONTENT_WORLDS } from "@/lib/db/seed";
+import { loadBook } from "@/lib/novel/loadBook";
+
+// The seed's default real hierarchy (Mother of Learning). Ids are DERIVED from
+// the loaded book (universe-/world-/<slug>-1), so they can never drift from what
+// the seed actually writes.
+const MOL = loadBook("mother-of-learning");
+const SEED_UNIVERSE_ID = MOL.universeId;
+const SEED_BOOK_ID = MOL.bookId;
+const SEED_WORLD_ID = MOL.worldId;
 
 // -----------------------------------------------------------------------------
 // F7-S4 — HYBRID FACET LAYER (INTEGRATION, real Postgres). The conceptual heart
@@ -46,7 +53,7 @@ import { ENTRIES, CONTENT_WORLDS } from "@/lib/db/seed";
 // DEFAULT-BOOK INVARIANT: with ZERO facet rows and all canon facts book_id=NULL,
 // loadWikiSnapshot(U1, book-1) is BYTE-IDENTICAL to the pre-S4 canon-only read.
 // Baseline: SEED_CANON_COUNT composed entries in U1, DERIVED from the seed source
-// (ENTRIES + universe-1 CONTENT_WORLDS bundles) so a reseed cannot re-break it.
+// (MOL_ENTRIES, all universe-mol) so a reseed cannot re-break it.
 // We snapshot
 // BEFORE seeding, assert the baseline, and after adding B2 facets re-assert the
 // B1 view of Gandalf is untouched (Grey) — the override never leaks to B1.
@@ -73,22 +80,10 @@ const CANON_NAME = "Grey the Wizard";
 const FACET_NAME = "White the Wizard";
 
 // The canon baseline, DERIVED FROM THE SEED SOURCE (not a hard-coded literal)
-// so a future reseed can never silently re-break this assertion. The count
-// query below is UNIVERSE-scoped (universe_id = DEFAULT_UNIVERSE_ID), so the
-// baseline is every non-deleted, non-test entry the seed stamps with
-// universe-1: the legacy Book I set (ENTRIES, all universe-1) PLUS every
-// CONTENT_WORLDS bundle whose universeId is universe-1 (Ash II + Vosk). Halen
-// is universe-2, so it is correctly excluded. This mirrors exactly how seed.ts
-// inserts entries (ENTRIES -> universe-1; each CONTENT_WORLDS bundle -> its own
-// universeId). At time of writing this evaluates to 32 (15 + 5 + 12); if the
-// seed grows, the constant tracks it automatically. Single source of truth so
-// both invariant checks stay pinned to the seed.
-const SEED_CANON_COUNT =
-  ENTRIES.length +
-  CONTENT_WORLDS.filter((w) => w.universeId === DEFAULT_UNIVERSE_ID).reduce(
-    (n, w) => n + w.entries.length,
-    0,
-  );
+// so a future reseed can never silently re-break this assertion. The seed homes
+// every real entry to universe-mol, so the universe-scoped count below equals
+// MOL_ENTRIES.length exactly; if the seed grows, the constant tracks it.
+const SEED_CANON_COUNT = MOL.entries.length + MOL.plotlines.length;
 
 beforeAll(async () => {
   if (!process.env.DATABASE_URL) {
@@ -117,11 +112,11 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     const canon = await one<{ c: number }>(
       `SELECT COUNT(*)::int c FROM entries
         WHERE deleted_at IS NULL AND universe_id = $1 AND id NOT LIKE 'test-%'`,
-      [DEFAULT_UNIVERSE_ID],
+      [SEED_UNIVERSE_ID],
     );
     expect(canon?.c).toBe(SEED_CANON_COUNT);
     //  (b) our test entries do NOT exist yet in the merged read (clean slate).
-    const snap = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID);
+    const snap = await loadWikiSnapshot(SEED_UNIVERSE_ID, SEED_BOOK_ID);
     expect(snap.byId[gandalfId]).toBeUndefined();
     expect(snap.byId[frodoId]).toBeUndefined();
   });
@@ -138,19 +133,20 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
         summary: "A wizard of the Grey order.",
         shelf: "characters",
         sortOrder: 9000,
+        universeId: SEED_UNIVERSE_ID,
       },
       confirm,
     );
     // A NEW book B2 under the existing series-1 (structural, no wiki token).
-    await insertBook({ id: b2Id, name: "Book Two", worldId: DEFAULT_WORLD_ID });
+    await insertBook({ id: b2Id, name: "Book Two", worldId: SEED_WORLD_ID });
     // B2 overrides ONLY the name -> White. summary/note stay NULL => canon shows.
     await upsertEntryFacet({ entryId: gandalfId, bookId: b2Id, name: FACET_NAME }, confirm);
 
     // B1 (default book): no facet row => COALESCE falls through to canon.
-    const b1 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID);
+    const b1 = await loadWikiSnapshot(SEED_UNIVERSE_ID, SEED_BOOK_ID);
     expect(b1.byId[gandalfId]?.name).toBe(CANON_NAME);
     // B2: the facet REPLACES the name.
-    const b2 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, b2Id);
+    const b2 = await loadWikiSnapshot(SEED_UNIVERSE_ID, b2Id);
     expect(b2.byId[gandalfId]?.name).toBe(FACET_NAME);
     // Same entry_id in both views (not a fork).
     expect(b2.byId[gandalfId]?.id).toBe(gandalfId);
@@ -159,7 +155,7 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     expect(b2.byId[gandalfId]?.summary).toBe("A wizard of the Grey order.");
 
     // getEntryWithDetails carries the same scalar merge, scoped to one entry.
-    const detailB1 = await getEntryWithDetails(gandalfId, DEFAULT_BOOK_ID);
+    const detailB1 = await getEntryWithDetails(gandalfId, SEED_BOOK_ID);
     const detailB2 = await getEntryWithDetails(gandalfId, b2Id);
     expect(detailB1?.name).toBe(CANON_NAME);
     expect(detailB2?.name).toBe(FACET_NAME);
@@ -181,12 +177,12 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
       confirm,
     );
 
-    const b1 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID);
+    const b1 = await loadWikiSnapshot(SEED_UNIVERSE_ID, SEED_BOOK_ID);
     const b1Keys = (b1.byId[gandalfId]?.facts ?? []).map((f) => f.key);
     // B1 sees ONLY canon, in sort order. The book-only fact must NOT appear.
     expect(b1Keys).toEqual(["canon-A", "canon-C"]);
 
-    const b2 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, b2Id);
+    const b2 = await loadWikiSnapshot(SEED_UNIVERSE_ID, b2Id);
     const b2Keys = (b2.byId[gandalfId]?.facts ?? []).map((f) => f.key);
     // B2 sees canon + its own fact, INTERLEAVED by sort_order (book-B at 10 sits
     // BETWEEN canon-A@0 and canon-C@20). This ordering is the interleave proof:
@@ -197,7 +193,7 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     // getEntryWithDetails mirrors the additive/interleave merge for one entry.
     const detailB2 = await getEntryWithDetails(gandalfId, b2Id);
     expect((detailB2?.facts ?? []).map((f) => f.key)).toEqual(["canon-A", "book-B", "canon-C"]);
-    const detailB1 = await getEntryWithDetails(gandalfId, DEFAULT_BOOK_ID);
+    const detailB1 = await getEntryWithDetails(gandalfId, SEED_BOOK_ID);
     expect((detailB1?.facts ?? []).map((f) => f.key)).toEqual(["canon-A", "canon-C"]);
   });
 
@@ -215,16 +211,17 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
         summary: "A hobbit.",
         shelf: "characters",
         sortOrder: 9001,
+        universeId: SEED_UNIVERSE_ID,
       },
       confirm,
     );
     await insertTie({ id: tieId, fromEntryId: frodoId, toEntryId: gandalfId, rel: "knows" }, confirm);
 
-    const b1 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID);
+    const b1 = await loadWikiSnapshot(SEED_UNIVERSE_ID, SEED_BOOK_ID);
     const b1Tie = (b1.byId[frodoId]?.ties ?? []).find((t) => t.id === tieId);
     expect(b1Tie?.toName).toBe(CANON_NAME); // canon target name in B1
 
-    const b2 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, b2Id);
+    const b2 = await loadWikiSnapshot(SEED_UNIVERSE_ID, b2Id);
     const b2Tie = (b2.byId[frodoId]?.ties ?? []).find((t) => t.id === tieId);
     expect(b2Tie?.toName).toBe(FACET_NAME); // facet-merged target name in B2
 
@@ -238,7 +235,7 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     // After all B2 facets exist, the B1 view of Gandalf must be byte-identical to
     // canon: the White override lives only in B2 and must never leak to B1. This
     // identity check is contention-proof (keyed on our id, not a global count).
-    const b1 = await loadWikiSnapshot(DEFAULT_UNIVERSE_ID, DEFAULT_BOOK_ID);
+    const b1 = await loadWikiSnapshot(SEED_UNIVERSE_ID, SEED_BOOK_ID);
     expect(b1.byId[gandalfId]?.name).toBe(CANON_NAME);
     expect(b1.byId[gandalfId]?.summary).toBe("A wizard of the Grey order.");
     // B1 still has exactly the two canon facts (no book-only fact leaked in).
@@ -248,7 +245,7 @@ describe("F7-S4 hybrid facet layer (real Postgres)", () => {
     const canon = await one<{ c: number }>(
       `SELECT COUNT(*)::int c FROM entries
         WHERE deleted_at IS NULL AND universe_id = $1 AND id NOT LIKE 'test-%'`,
-      [DEFAULT_UNIVERSE_ID],
+      [SEED_UNIVERSE_ID],
     );
     expect(canon?.c).toBe(SEED_CANON_COUNT);
     // Our 2 test entries ARE present in the merged read (seed took effect).

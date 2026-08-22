@@ -918,7 +918,7 @@ export async function insertResearchThread(input: {
   // the research action always passes the active world so a new thread lands in
   // the world the writer is viewing (never silently in the default world).
   const universeId = input.universeId ?? DEFAULT_UNIVERSE_ID;
-  const worldId = input.worldId ?? `world-${universeId}`;
+  const worldId = input.worldId ?? DEFAULT_WORLD_ID;
   const res = await one<import("../domain/types").ResearchThreadRow>(
     `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -1405,17 +1405,30 @@ export async function linkEntityToWorld(worldId: string, entityId: string): Prom
 }
 
 /**
- * TCK-023 (W-4b): UNLINK an entity from a world (stop sharing it there). Drops
- * ONLY that one membership row; the entity ROW is NEVER deleted (orphan = LEAVE,
- * mirroring deleteWorldCascade's rule that unlinking never destroys the entity)
- * and every OTHER world link — including its home membership — survives. Unlink of
- * a NON-member is a no-op (0 rows, no throw).
+ * TCK-023 (W-4b) + orphan=DELETE-on-last-link: UNLINK an entity from a world (stop
+ * sharing it there). Drops that membership row; if it was the entity's LAST world
+ * link, the entity ROW (and its ON DELETE CASCADE children: facts/ties/facets/
+ * appearances/open_questions/plotline edges) is deleted too — an entity with zero
+ * world links is unreachable dead data, never a kept orphan. A link into any OTHER
+ * world keeps the entity alive there. Both steps run in ONE transaction so a
+ * concurrent re-link can't strand a half-deleted entity. Unlink of a NON-member is
+ * a no-op (0 rows removed, entity untouched, no throw).
  */
 export async function unlinkEntityFromWorld(worldId: string, entityId: string): Promise<void> {
-  await query(
-    `DELETE FROM world_entities WHERE world_id = $1 AND entity_id = $2`,
-    [worldId, entityId],
-  );
+  await withTransaction(async (client) => {
+    await client.query(
+      `DELETE FROM world_entities WHERE world_id = $1 AND entity_id = $2`,
+      [worldId, entityId],
+    );
+    // Last link gone -> the entity follows. NOT EXISTS is evaluated AFTER the
+    // unlink above (same txn), so an entity still linked elsewhere is spared.
+    await client.query(
+      `DELETE FROM entries e
+        WHERE e.id = $1
+          AND NOT EXISTS (SELECT 1 FROM world_entities we WHERE we.entity_id = e.id)`,
+      [entityId],
+    );
+  });
 }
 
 // ---- Entry facets (F7 S4 scalar override) ---------------------------------
@@ -1656,14 +1669,17 @@ export async function deleteBookCascade(bookId: string): Promise<CascadeCount> {
  * is why the 2 leaked books used to survive a world delete pre-W-6 — books hung off
  * series, not the world; now they cascade.
  *
- * THE INVARIANT (orphan=LEAVE): the entity ROWS survive, reclaimable. We DELETE
- * the junction membership only (unlink), never the entries. Deleting the world
- * also drops its user categories; the 4 built-ins (world_id IS NULL) are GLOBAL
- * and SURVIVE so a shared entity kind still resolves in any world.
+ * THE INVARIANT (orphan=DELETE-on-last-link): a shared entity survives ONLY while
+ * some world still links it. This world's membership rows are unlinked; an entity
+ * still linked to a SIBLING world lives on there, but one whose LAST link was here
+ * is deleted (its ON DELETE CASCADE children go with it). An entity with zero world
+ * links is unreachable dead data, never a kept orphan. Deleting the world also
+ * drops its user categories; the 4 built-ins (world_id IS NULL) are GLOBAL and
+ * SURVIVE so a shared entity kind still resolves in any world.
  *
  * Explicit COUNTED deletes in one transaction (never an implicit FK cascade, so
  * total is exact and count === rows-removed holds by construction), leaf->root:
- * book subtree -> junction -> user categories -> the world row.
+ * book subtree -> junction -> now-orphaned entities -> user categories -> world.
  */
 export async function deleteWorldCascade(worldId: string): Promise<CascadeCount> {
   return withTransaction(async (client) => {
@@ -1692,10 +1708,30 @@ export async function deleteWorldCascade(worldId: string): Promise<CascadeCount>
       `DELETE FROM books WHERE world_id = $1`, [worldId],
     )).rowCount ?? 0;
 
-    // UNLINK membership only. The entity rows (and universe-canon) survive.
+    // The entities linked to THIS world, captured BEFORE we unlink them, so we can
+    // tell afterwards which ones lost their last link (orphan=DELETE-on-last-link).
+    const linkedHere = (await client.query<{ entity_id: string }>(
+      `SELECT entity_id FROM world_entities WHERE world_id = $1`, [worldId],
+    )).rows.map((r) => r.entity_id);
+
+    // UNLINK this world's membership rows. An entity shared into a SIBLING world
+    // keeps that link and survives; an entity whose ONLY link was here is now
+    // orphaned and deleted below.
     c.worldEntities += (await client.query(
       `DELETE FROM world_entities WHERE world_id = $1`, [worldId],
     )).rowCount ?? 0;
+
+    // Delete the entities left with ZERO links after the unlink (their ON DELETE
+    // CASCADE children — facts/ties/facets/appearances/open_questions/plotline
+    // edges — go with them). Universe-canon of a STILL-shared entity is untouched.
+    if (linkedHere.length > 0) {
+      c.entries += (await client.query(
+        `DELETE FROM entries e
+          WHERE e.id = ANY($1)
+            AND NOT EXISTS (SELECT 1 FROM world_entities we WHERE we.entity_id = e.id)`,
+        [linkedHere],
+      )).rowCount ?? 0;
+    }
 
     // User categories owned by this world. Built-ins (world_id IS NULL) are
     // global and are NOT matched by world_id = $1, so they survive.
@@ -1709,7 +1745,7 @@ export async function deleteWorldCascade(worldId: string): Promise<CascadeCount>
     )).rowCount ?? 0;
 
     c.total = c.ties + c.facts + c.entryFacets + c.chapterAppearances + c.chapters
-      + c.books + c.worldEntities + c.categories + c.worlds;
+      + c.books + c.worldEntities + c.entries + c.categories + c.worlds;
     return c;
   });
 }

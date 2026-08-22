@@ -29,8 +29,8 @@ import { createEntry, createEntryTied } from "@/lib/actions/wiki";
 
 loadEnv();
 
-// A world that exists in the seeded DB. universe-1's default world id.
-const WORLD = "world-universe-1";
+// A world that exists in the seeded DB. The MoL universe's default world id.
+const WORLD = "world-mol";
 
 const createdEntries: string[] = [];
 

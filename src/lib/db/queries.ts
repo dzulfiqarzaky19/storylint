@@ -54,7 +54,8 @@ const APPEARANCE_COLS = `
   text,
   flag,
   flag_text AS "flagText",
-  sort_order AS "sortOrder"
+  sort_order AS "sortOrder",
+  book_id AS "bookId"
 `;
 
 const OPEN_QUESTION_COLS = `
@@ -955,15 +956,16 @@ export async function previewBookCascade(bookId: string): Promise<CascadePreview
  * MIRRORING that mutation exactly (mutations.ts deleteWorldCascade): W-6 the
  * world's OWN books' subtree (book-scoped ties/facts/facets/appearances/chapters +
  * the books, keyed by books.world_id), then the world's world_entities junction
- * rows (membership UNLINKED, entity ROWS survive so they are NEVER counted as
- * entries), the world's user categories (built-ins have world_id NULL and are
- * excluded), and the world row itself. Entries, sibling worlds, universe-canon,
- * and the global built-in categories are untouched, so preview.total ===
- * deleteWorldCascade(...).total by construction.
+ * rows (membership UNLINKED), then the entities LEFT WITH ZERO links by that
+ * unlink (orphan=DELETE-on-last-link — counted as entries; a still-shared entity
+ * keeps a sibling link and is excluded), the world's user categories (built-ins
+ * have world_id NULL and are excluded), and the world row itself. Sibling worlds,
+ * universe-canon of still-shared entities, and the global built-in categories are
+ * untouched, so preview.total === deleteWorldCascade(...).total by construction.
  */
 export async function previewWorldCascade(worldId: string): Promise<CascadePreview> {
   const booksOf = `SELECT id FROM books WHERE world_id = $1`;
-  const [ties, facts, ef, appr, chap, bk, we, cat, wo] = await Promise.all([
+  const [ties, facts, ef, appr, chap, bk, we, cat, wo, doomedEntries] = await Promise.all([
     countOne(`SELECT COUNT(*) AS n FROM ties WHERE book_id IN (${booksOf})`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM facts WHERE book_id IN (${booksOf})`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM entry_facets WHERE book_id IN (${booksOf})`, [worldId]),
@@ -973,10 +975,22 @@ export async function previewWorldCascade(worldId: string): Promise<CascadePrevi
     countOne(`SELECT COUNT(*) AS n FROM world_entities WHERE world_id = $1`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM categories WHERE world_id = $1`, [worldId]),
     countOne(`SELECT COUNT(*) AS n FROM worlds WHERE id = $1`, [worldId]),
+    // Entities that will DIE with this world: linked here AND to NO other world
+    // (orphan=DELETE-on-last-link). A still-shared entity has another link and is
+    // excluded, so this mirrors deleteWorldCascade's entry delete exactly.
+    countOne(
+      `SELECT COUNT(*) AS n FROM world_entities me
+         WHERE me.world_id = $1
+           AND NOT EXISTS (
+             SELECT 1 FROM world_entities other
+              WHERE other.entity_id = me.entity_id AND other.world_id <> $1
+           )`,
+      [worldId],
+    ),
   ]);
   return sumPreview({
     ties, facts, entryFacets: ef, chapterAppearances: appr, chapters: chap,
-    openQuestions: 0, entries: 0, researchThreads: 0, books: bk, universes: 0,
+    openQuestions: 0, entries: doomedEntries, researchThreads: 0, books: bk, universes: 0,
     worldEntities: we, categories: cat, worlds: wo,
   });
 }

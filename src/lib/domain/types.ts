@@ -120,6 +120,12 @@ export interface ChapterAppearanceRow {
   flag: Flag | null;
   flagText: string | null;
   sortOrder: number;
+  /**
+   * The book this chapter belongs to. In a multi-book world a bare chapter
+   * number is ambiguous (Book 1 Ch. 1 vs Book 2 Ch. 1); the widget uses this to
+   * label the book. Null on legacy rows that predate book-scoped appearances.
+   */
+  bookId: string | null;
 }
 
 export interface OpenQuestionRow {

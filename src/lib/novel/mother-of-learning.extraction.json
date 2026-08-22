@@ -1,0 +1,1125 @@
+{
+  "wiki": {
+    "entities": [
+      {
+        "id": "mol-zorian",
+        "kind": "character",
+        "name": "Zorian Kazinski",
+        "summary": "Third-year mage at Cyoria's academy and the disfavored fourth Kazinski child. Dragged unwillingly into a month-long time loop, he becomes a hidden second looper alongside Zach, methodically mastering magic across countless restarts to survive the summer-festival invasion and unravel who built the loop.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "protagonist / hidden looper"
+          },
+          {
+            "key": "focus",
+            "value": "shaping, mind magic, later soul magic"
+          },
+          {
+            "key": "family",
+            "value": "disfavored son; sister Kirielle"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zach",
+            "rel": "loop-bonded to"
+          },
+          {
+            "to": "mol-kirielle",
+            "rel": "older brother of"
+          },
+          {
+            "to": "mol-xvim",
+            "rel": "assigned pupil of"
+          }
+        ]
+      },
+      {
+        "id": "mol-zach",
+        "kind": "character",
+        "name": "Zach Noveda",
+        "summary": "Wealthy, reckless golden-boy student and the original anchor of the time loop. He dies over and over trying to stop the invasion by force, unaware for a long time that Zorian loops with him. His hidden angelic contract sits at the heart of the loop.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "loop anchor / Controller"
+          },
+          {
+            "key": "secret",
+            "value": "bound by an angelic contract"
+          },
+          {
+            "key": "style",
+            "value": "brute-force heroics"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "loop-bonded to"
+          },
+          {
+            "to": "mol-panaxeth",
+            "rel": "opposes"
+          }
+        ]
+      },
+      {
+        "id": "mol-kirielle",
+        "kind": "character",
+        "name": "Kirielle Kazinski",
+        "summary": "Zorian's energetic, mischievous younger sister who badgers her way into coming to Cyoria. Her presence softens Zorian and grounds his home life across the stable loops.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "little sister"
+          },
+          {
+            "key": "trait",
+            "value": "boundless energy; secretly loves to draw"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "younger sister of"
+          }
+        ]
+      },
+      {
+        "id": "mol-daimen",
+        "kind": "character",
+        "name": "Daimen Kazinski",
+        "summary": "The eldest Kazinski brother, a famous, charismatic adventurer traveling abroad in Koth. Idolized by strangers and resented by Zorian for his effortless favor.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "eldest brother"
+          },
+          {
+            "key": "reputation",
+            "value": "celebrated adventurer"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "estranged brother of"
+          }
+        ]
+      },
+      {
+        "id": "mol-fortov",
+        "kind": "character",
+        "name": "Fortov Kazinski",
+        "summary": "A middle Kazinski brother, a socialite and poor student, at the academy alongside Zorian.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "brother"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "brother of"
+          }
+        ]
+      },
+      {
+        "id": "mol-xvim",
+        "kind": "character",
+        "name": "Xvim Chao",
+        "summary": "Zorian's assigned mentor, a severe, taciturn instructor who drills him with the marble exercise. His maddening methods eventually forge Zorian's reflexive spellcasting.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "assigned mentor"
+          },
+          {
+            "key": "method",
+            "value": "the marble / reflexive-casting drill"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "mentor of"
+          }
+        ]
+      },
+      {
+        "id": "mol-ilsa",
+        "kind": "character",
+        "name": "Ilsa Zileti",
+        "summary": "Academy administrator who handles Zorian's enrollment, mentor assignment, and quietly points him toward lodging and advanced instruction.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "academy administrator"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "advises"
+          }
+        ]
+      },
+      {
+        "id": "mol-imaya",
+        "kind": "character",
+        "name": "Imaya Kuroshka",
+        "summary": "Warm middle-aged landlord and a friend of Ilsa who rents rooms to Zorian, Kirielle, and Kael. She dotes on the children and turns her house into a real home.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "landlord"
+          },
+          {
+            "key": "trait",
+            "value": "loves children; sensitive about marriage"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "landlord of"
+          },
+          {
+            "to": "mol-kael",
+            "rel": "landlord of"
+          }
+        ]
+      },
+      {
+        "id": "mol-kael",
+        "kind": "character",
+        "name": "Kael Tverinov",
+        "summary": "A morlock alchemist and single father boarding at Imaya's with his toddler Kana. He becomes Zorian's alchemy mentor and steadfast ally, expert in potions and soul-adjacent lore.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "alchemist ally / mentor"
+          },
+          {
+            "key": "species",
+            "value": "morlock"
+          },
+          {
+            "key": "family",
+            "value": "father of Kana"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-kana",
+            "rel": "father of"
+          },
+          {
+            "to": "mol-zorian",
+            "rel": "teaches alchemy to"
+          }
+        ]
+      },
+      {
+        "id": "mol-kana",
+        "kind": "character",
+        "name": "Kana",
+        "summary": "Kael's young daughter, withdrawn until Kirielle befriends her.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "child"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-kael",
+            "rel": "daughter of"
+          }
+        ]
+      },
+      {
+        "id": "mol-taiven",
+        "kind": "character",
+        "name": "Taiven",
+        "summary": "A brash older student and freelance monster-hunter who repeatedly recruits Zorian for a sewer job. Stubborn and skilled, she is an early recurring fixture of the loops.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "monster-hunter, friend"
+          },
+          {
+            "key": "trait",
+            "value": "stubborn, combat-focused"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "friend of"
+          }
+        ]
+      },
+      {
+        "id": "mol-raynie",
+        "kind": "character",
+        "name": "Raynie",
+        "summary": "A capable, combat-oriented student who becomes a trusted teammate on later delves.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "ally, combat mage"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "ally of"
+          }
+        ]
+      },
+      {
+        "id": "mol-kyron",
+        "kind": "character",
+        "name": "Kyron",
+        "summary": "The academy's combat-magic instructor who revives banned mind-resistance training, helping Zorian harden his mind against the aranea.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "combat-magic instructor"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "trains"
+          }
+        ]
+      },
+      {
+        "id": "mol-silverlake",
+        "kind": "character",
+        "name": "Silverlake",
+        "summary": "A spry ninety-year-old witch living in the forest, a rare master of soul magic. Prickly and self-interested, she becomes Zorian's crucial and dangerous soul-magic mentor.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "witch / soul-magic mentor"
+          },
+          {
+            "key": "trait",
+            "value": "ancient, self-interested"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "teaches soul magic to"
+          }
+        ]
+      },
+      {
+        "id": "mol-alanic",
+        "kind": "character",
+        "name": "Alanic Zosk",
+        "summary": "A militant priest of Cyoria with deep knowledge of undead and curses. He leads the investigation into the soul-mage disappearances and becomes a key adult ally.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "priest / investigator"
+          },
+          {
+            "key": "expertise",
+            "value": "undead, curses, soul entities"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-sudomir",
+            "rel": "investigates"
+          },
+          {
+            "to": "mol-zorian",
+            "rel": "allies with"
+          }
+        ]
+      },
+      {
+        "id": "mol-lukav",
+        "kind": "character",
+        "name": "Lukav",
+        "summary": "A soul mage and former associate of Alanic who explains undead and soul mechanics to Zorian.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "soul mage contact"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "informs"
+          }
+        ]
+      },
+      {
+        "id": "mol-novelty",
+        "kind": "character",
+        "name": "Novelty",
+        "summary": "The aranea matriarch Zorian repeatedly negotiates with, whose telepathic web becomes a crucial intelligence and training resource across the loops.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "aranea matriarch"
+          },
+          {
+            "key": "trait",
+            "value": "proud, curious about humans"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-aranea",
+            "rel": "matriarch of"
+          },
+          {
+            "to": "mol-zorian",
+            "rel": "allies with"
+          }
+        ]
+      },
+      {
+        "id": "mol-quatach",
+        "kind": "character",
+        "name": "Quatach-Ichl",
+        "summary": "An ancient, immensely powerful lich last known from Ulquaan Ibasa, one leader of the invasion triumvirate. His soul is anchored to a hidden phylactery, making him nearly impossible to kill.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "antagonist / lich"
+          },
+          {
+            "key": "origin",
+            "value": "Ulquaan Ibasa"
+          },
+          {
+            "key": "weakness",
+            "value": "phylactery"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-ibasa",
+            "rel": "champion of"
+          },
+          {
+            "to": "mol-redrobe",
+            "rel": "allied with"
+          }
+        ]
+      },
+      {
+        "id": "mol-redrobe",
+        "kind": "character",
+        "name": "Red Robe",
+        "summary": "A masked, voice-distorted figure who leads the invasion triumvirate. Later revealed to be a rival looper contesting control of the time loop itself.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "antagonist / rival looper"
+          },
+          {
+            "key": "cover",
+            "value": "blood-red concealing robe"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-jornak",
+            "rel": "identity linked to"
+          },
+          {
+            "to": "mol-zach",
+            "rel": "targets"
+          }
+        ]
+      },
+      {
+        "id": "mol-jornak",
+        "kind": "character",
+        "name": "Jornak",
+        "summary": "The name behind the Red Robe: a hostile Controller-rival tied to the enemy faction and Zorian's ultimate opponent for mastery of the loop.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "antagonist / Controller-rival"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-redrobe",
+            "rel": "is"
+          }
+        ]
+      },
+      {
+        "id": "mol-sudomir",
+        "kind": "character",
+        "name": "Sudomir Kandrei",
+        "summary": "The respected mayor of Knyazov Dveri and a secret servant of the Cult of the Dragon Below, orchestrating the abduction of soul mages to advance the ritual.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "antagonist / cult mayor"
+          },
+          {
+            "key": "front",
+            "value": "mayor of Knyazov Dveri"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-cult",
+            "rel": "serves"
+          },
+          {
+            "to": "mol-ibasa",
+            "rel": "colludes with"
+          }
+        ]
+      },
+      {
+        "id": "mol-panaxeth",
+        "kind": "character",
+        "name": "Panaxeth",
+        "summary": "The imprisoned primordial (the Sleeper) beneath Cyoria, a fleshwarper of world-ending power. The Cult's true aim is to free and enslave it, not merely appease their dragon god.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "primordial / the Sleeper"
+          },
+          {
+            "key": "power",
+            "value": "fleshwarping, near-omnipotent"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-cult",
+            "rel": "sought by"
+          }
+        ]
+      },
+      {
+        "id": "mol-cyoria",
+        "kind": "location",
+        "name": "Cyoria",
+        "summary": "A great magical city built above a vast Dungeon, home to the Royal Academy of Magical Arts. Its summer festival is the night the invasion strikes and the loop's fixed endpoint.",
+        "facts": [
+          {
+            "key": "feature",
+            "value": "sits atop the Dungeon"
+          },
+          {
+            "key": "landmark",
+            "value": "Royal Academy of Magical Arts"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-dungeon",
+            "rel": "sits above"
+          },
+          {
+            "to": "mol-academy",
+            "rel": "home to"
+          }
+        ]
+      },
+      {
+        "id": "mol-academy",
+        "kind": "location",
+        "name": "Royal Academy of Magical Arts",
+        "summary": "Cyoria's premier magic school where Zorian, Zach, and their peers study. Its mentors, archives, and instructors shape Zorian's growth loop after loop.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "magic school"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-cyoria",
+            "rel": "located in"
+          }
+        ]
+      },
+      {
+        "id": "mol-dungeon",
+        "kind": "location",
+        "name": "The Dungeon",
+        "summary": "The immense labyrinth beneath Cyoria, home to monsters, the aranea, and older secrets. The invasion erupts from its depths and Panaxeth's prison lies far below.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "monster-filled labyrinth beneath Cyoria"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-cyoria",
+            "rel": "beneath"
+          }
+        ]
+      },
+      {
+        "id": "mol-knyazov",
+        "kind": "location",
+        "name": "Knyazov Dveri",
+        "summary": "A town where soul mages have been quietly disappearing, ruled by the mayor Sudomir. The thread that leads Zorian to the Cult's hand in the invasion.",
+        "facts": [
+          {
+            "key": "role",
+            "value": "site of the soul-mage disappearances"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-sudomir",
+            "rel": "governed by"
+          }
+        ]
+      },
+      {
+        "id": "mol-ibasa",
+        "kind": "location",
+        "name": "Ulquaan Ibasa",
+        "summary": "The infamous Island of the Exiles, populated by mages banished after the Necromancer's War. Home of the necromancers, war trolls, and Quatach-Ichl who make up the invasion force.",
+        "facts": [
+          {
+            "key": "nickname",
+            "value": "the Island of the Exiles"
+          },
+          {
+            "key": "role",
+            "value": "origin of the invasion force"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-quatach",
+            "rel": "home of"
+          }
+        ]
+      },
+      {
+        "id": "mol-cult",
+        "kind": "organization",
+        "name": "Cult of the Dragon Below",
+        "summary": "A secretive doomsday cult that worships the world-dragon god beneath the earth. Its rank-and-file believe they appease their god; the inner circle plots to release and enslave the primordial Panaxeth via the invasion.",
+        "facts": [
+          {
+            "key": "worships",
+            "value": "the world-dragon god / Dragon Below"
+          },
+          {
+            "key": "goal",
+            "value": "release and enslave Panaxeth"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-panaxeth",
+            "rel": "seeks to enslave"
+          },
+          {
+            "to": "mol-sudomir",
+            "rel": "served by"
+          }
+        ]
+      },
+      {
+        "id": "mol-aranea",
+        "kind": "organization",
+        "name": "The Aranea",
+        "summary": "A hidden society of sentient, telepathic spiders dwelling in the Dungeon, bound by a shared soul-web. Potential enemies turned indispensable allies in Zorian's mind-magic education.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "sentient telepathic spiders"
+          },
+          {
+            "key": "bond",
+            "value": "the shared soul-web"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-novelty",
+            "rel": "led by"
+          }
+        ]
+      },
+      {
+        "id": "mol-timeloop",
+        "kind": "concept",
+        "name": "The Time Loop",
+        "summary": "A recurring one-month restart that resets the world (but not the loopers' minds and souls) each time it ends. Anchored by a Controller, it is the story's engine, a prison, and a training ground all at once.",
+        "facts": [
+          {
+            "key": "length",
+            "value": "roughly one month per restart"
+          },
+          {
+            "key": "reset",
+            "value": "world resets; loopers' souls persist"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zach",
+            "rel": "anchored by"
+          },
+          {
+            "to": "mol-zorian",
+            "rel": "carries"
+          }
+        ]
+      },
+      {
+        "id": "mol-controller",
+        "kind": "concept",
+        "name": "The Controller",
+        "summary": "The individual whose soul anchors the time loop and can, in principle, end or reshape it. Determining who truly holds this role, and wresting it from a rival, drives the endgame.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "soul that anchors the loop"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zach",
+            "rel": "presumed"
+          },
+          {
+            "to": "mol-jornak",
+            "rel": "contested by"
+          }
+        ]
+      },
+      {
+        "id": "mol-soulmagic",
+        "kind": "magic",
+        "name": "Soul Magic",
+        "summary": "A rare, restricted discipline that manipulates souls directly: perception, marking, and transfer. Zorian's mastery of it, taught by Silverlake, is the key to understanding the loop and matching the enemy.",
+        "facts": [
+          {
+            "key": "status",
+            "value": "rare and restricted"
+          },
+          {
+            "key": "uses",
+            "value": "soul perception, marking, transfer"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-silverlake",
+            "rel": "taught by"
+          },
+          {
+            "to": "mol-timeloop",
+            "rel": "underpins"
+          }
+        ]
+      },
+      {
+        "id": "mol-mindmagic",
+        "kind": "magic",
+        "name": "Mind Magic",
+        "summary": "Telepathy and mental manipulation, mostly forbidden and feared. Zorian's early loops are spent learning it from the aranea and hardening himself against it, making it his signature toolset.",
+        "facts": [
+          {
+            "key": "status",
+            "value": "mostly forbidden"
+          },
+          {
+            "key": "uses",
+            "value": "telepathy, memory reading, mental defense"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-aranea",
+            "rel": "practiced by"
+          },
+          {
+            "to": "mol-zorian",
+            "rel": "mastered by"
+          }
+        ]
+      },
+      {
+        "id": "mol-invasion",
+        "kind": "event",
+        "name": "The Cyoria Invasion",
+        "summary": "The coordinated attack on Cyoria during its summer festival: staged artillery, elementals, and monsters covering an Ibasan-Cult strike that subverts the city's teleport wards. It is the fixed catastrophe every loop ends on.",
+        "facts": [
+          {
+            "key": "timing",
+            "value": "the summer festival"
+          },
+          {
+            "key": "cover",
+            "value": "the Cult's ritual to reach Panaxeth"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-cult",
+            "rel": "engineered by"
+          },
+          {
+            "to": "mol-ibasa",
+            "rel": "manned by"
+          },
+          {
+            "to": "mol-cyoria",
+            "rel": "strikes"
+          }
+        ]
+      },
+      {
+        "id": "mol-spear",
+        "kind": "concept",
+        "name": "Spear of Resolve",
+        "summary": "A key working Zorian develops and wields in the loops, emblem of the focused will his endless repetition forges.",
+        "facts": [
+          {
+            "key": "nature",
+            "value": "a signature technique / working"
+          }
+        ],
+        "ties": [
+          {
+            "to": "mol-zorian",
+            "rel": "wielded by"
+          }
+        ]
+      }
+    ]
+  },
+  "plot": {
+    "plotlines": [
+      {
+        "id": "mol-pl-zorian",
+        "title": "The Making of a Mage",
+        "label": "main story",
+        "owner": "mol-zorian",
+        "state": "resolved:106",
+        "summary": "Zorian's central arc: from a resentful, unremarkable student trapped in someone else's loop to the mage who understands the loop better than anyone and ends it on his own terms.",
+        "entities": [
+          "Zorian Kazinski",
+          "The Time Loop"
+        ],
+        "beats": [
+          {
+            "chapter": 4,
+            "summary": "The summer-festival invasion kills Zorian on his first pass through the night."
+          },
+          {
+            "chapter": 5,
+            "summary": "He wakes back in his bed and grasps that time has reset around him."
+          },
+          {
+            "chapter": 11,
+            "summary": "He masters the shaping exercises, turning the restarts into deliberate self-training."
+          },
+          {
+            "chapter": 31,
+            "summary": "Chasing the soul mages leads him toward soul magic and the truth of the loop."
+          },
+          {
+            "chapter": 75,
+            "summary": "He gains soul perception and begins to suspect he could be a Controller himself."
+          },
+          {
+            "chapter": 106,
+            "summary": "Zorian engineers the optimal ending, breaking the loop with Zach alive."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-zach",
+        "title": "Zach's Long War",
+        "label": "deuteragonist arc",
+        "owner": "mol-zach",
+        "state": "resolved:106",
+        "summary": "Zach Noveda's arc as the loop's original anchor: the golden boy who dies again and again trying to save the city by force, and whose hidden angelic contract shapes everything.",
+        "entities": [
+          "Zach Noveda",
+          "The Controller"
+        ],
+        "beats": [
+          {
+            "chapter": 9,
+            "summary": "Zach reveals to Zorian that he too remembers the restarts, ending Zorian's isolation."
+          },
+          {
+            "chapter": 10,
+            "summary": "The pair compare notes and Zach's reckless dying pattern comes into focus."
+          },
+          {
+            "chapter": 89,
+            "summary": "Zach's brute-force campaign against the invasion peaks."
+          },
+          {
+            "chapter": 106,
+            "summary": "Freed from dying each loop, Zach survives into the true ending alongside Zorian."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-disappear",
+        "title": "The Vanishing Soul Mages",
+        "label": "mystery",
+        "owner": "mol-alanic",
+        "state": "resolved:100",
+        "summary": "The investigation Alanic leads into soul mages disappearing around Knyazov Dveri, the thread that unravels the invasion's real architecture.",
+        "entities": [
+          "Alanic Zosk",
+          "Knyazov Dveri",
+          "Sudomir Kandrei"
+        ],
+        "beats": [
+          {
+            "chapter": 31,
+            "summary": "Zorian finds the region's soul mages have quietly vanished, and starts pulling the thread."
+          },
+          {
+            "chapter": 34,
+            "summary": "The trail points to Sudomir, the town's own mayor, and the Cult behind him."
+          },
+          {
+            "chapter": 75,
+            "summary": "Alanic's interrogations expose how much Sudomir knew about the Cult's plans."
+          },
+          {
+            "chapter": 100,
+            "summary": "The conspiracy behind the disappearances is fully laid bare."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-aranea",
+        "title": "Pact with the Web",
+        "label": "supporting arc",
+        "owner": "mol-novelty",
+        "state": "resolved:19",
+        "summary": "Zorian's fraught diplomacy with the telepathic aranea: from a lethal first contact in the sewers to an alliance that teaches him mind magic and opens the soul-web.",
+        "entities": [
+          "Novelty",
+          "The Aranea",
+          "Mind Magic"
+        ],
+        "beats": [
+          {
+            "chapter": 12,
+            "summary": "Zorian first brushes against the aranea's soul-web beneath the city."
+          },
+          {
+            "chapter": 17,
+            "summary": "He wins a hearing with the matriarch instead of a fight."
+          },
+          {
+            "chapter": 18,
+            "summary": "A pact is sealed: knowledge and safe passage in exchange for cooperation."
+          },
+          {
+            "chapter": 19,
+            "summary": "The alliance holds and the web becomes Zorian's window into mind magic."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-cult",
+        "title": "The Dragon Below",
+        "label": "antagonist arc",
+        "owner": "mol-sudomir",
+        "state": "resolved:100",
+        "summary": "Sudomir and the Cult of the Dragon Below's conspiracy: harvesting soul mages and staging the invasion as cover for a ritual to reach the primordial beneath Cyoria.",
+        "entities": [
+          "Sudomir Kandrei",
+          "Cult of the Dragon Below",
+          "The Cyoria Invasion"
+        ],
+        "beats": [
+          {
+            "chapter": 34,
+            "summary": "Sudomir is unmasked as the mayor steering the disappearances for the Cult."
+          },
+          {
+            "chapter": 61,
+            "summary": "The Cult's real aim surfaces: not appeasement but enslaving the primordial."
+          },
+          {
+            "chapter": 91,
+            "summary": "The conspiracy's cost in blood mounts as the plan nears completion."
+          },
+          {
+            "chapter": 100,
+            "summary": "Sudomir's faction makes its decisive move and is broken."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-ibasa",
+        "title": "The Exiles' Invasion",
+        "label": "faction arc",
+        "owner": "mol-quatach",
+        "state": "resolved:105",
+        "summary": "The Ulquaan Ibasa war effort led by the lich Quatach-Ichl: the necromancers, trolls, and artillery that turn Cyoria's festival into a massacre every single loop.",
+        "entities": [
+          "Quatach-Ichl",
+          "Ulquaan Ibasa",
+          "The Cyoria Invasion"
+        ],
+        "beats": [
+          {
+            "chapter": 20,
+            "summary": "The invaders are traced back to Ulquaan Ibasa and its exiled mages."
+          },
+          {
+            "chapter": 26,
+            "summary": "Quatach-Ichl appears among the triumvirate leading the strike."
+          },
+          {
+            "chapter": 80,
+            "summary": "Open conflict with the Ibasan forces escalates toward the endgame."
+          },
+          {
+            "chapter": 105,
+            "summary": "The lich and his war are defeated in the final confrontation."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-rival",
+        "title": "The Rival in Red",
+        "label": "antagonist arc",
+        "owner": "mol-jornak",
+        "state": "resolved:106",
+        "summary": "The masked Red Robe, later named Jornak: a hostile fellow looper contesting who truly controls the loop. Zorian's most personal and dangerous adversary.",
+        "entities": [
+          "Red Robe",
+          "Jornak",
+          "The Controller"
+        ],
+        "beats": [
+          {
+            "chapter": 26,
+            "summary": "The Red Robe reveals a personal interest in Zach during the invasion."
+          },
+          {
+            "chapter": 75,
+            "summary": "Signs mount that a rival Controller is manipulating the loop from the shadows."
+          },
+          {
+            "chapter": 95,
+            "summary": "The betrayer's hand is exposed as the factions turn on each other."
+          },
+          {
+            "chapter": 106,
+            "summary": "Zorian outmaneuvers Jornak and takes the loop's ending for himself."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-silverlake",
+        "title": "The Witch's Apprentice",
+        "label": "mentor arc",
+        "owner": "mol-silverlake",
+        "state": "resolved:60",
+        "summary": "Zorian's apprenticeship under the ancient witch Silverlake, who teaches him the forbidden art of soul magic on her own prickly, self-interested terms.",
+        "entities": [
+          "Silverlake",
+          "Soul Magic",
+          "Zorian Kazinski"
+        ],
+        "beats": [
+          {
+            "chapter": 28,
+            "summary": "Zorian seeks out the reclusive witch Silverlake in the forest."
+          },
+          {
+            "chapter": 45,
+            "summary": "She begins teaching him the fundamentals of soul magic."
+          },
+          {
+            "chapter": 60,
+            "summary": "His soul-magic training matures into real, dangerous capability."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-household",
+        "title": "A Home in Cyoria",
+        "label": "ally arc",
+        "owner": "mol-kael",
+        "state": "resolved:107",
+        "summary": "The found family that forms around Imaya's house: Kael the alchemist, little Kana, Kirielle, and the everyday bonds that give Zorian something to fight for beyond the loop.",
+        "entities": [
+          "Kael Tverinov",
+          "Imaya Kuroshka",
+          "Kirielle Kazinski",
+          "Kana"
+        ],
+        "beats": [
+          {
+            "chapter": 14,
+            "summary": "Zorian brings Kirielle to Cyoria and settles into Imaya's home."
+          },
+          {
+            "chapter": 15,
+            "summary": "Kael and Kana move in; Zorian becomes Kael's alchemy assistant."
+          },
+          {
+            "chapter": 107,
+            "summary": "In the true ending, these bonds endure past the loop's end."
+          }
+        ]
+      },
+      {
+        "id": "mol-pl-panaxeth",
+        "title": "The Sleeper Beneath",
+        "label": "looming threat",
+        "owner": "mol-panaxeth",
+        "state": "resolved:105",
+        "summary": "The buried primordial Panaxeth, whose intended release is the endgame stake: a fleshwarper of world-ending power the Cult means to free and enslave.",
+        "entities": [
+          "Panaxeth",
+          "Cult of the Dragon Below",
+          "The Dungeon"
+        ],
+        "beats": [
+          {
+            "chapter": 61,
+            "summary": "The prisoner beneath Cyoria is named: the primordial Panaxeth."
+          },
+          {
+            "chapter": 99,
+            "summary": "The ritual to breach its prison reaches its powderkeg point."
+          },
+          {
+            "chapter": 105,
+            "summary": "The threat of Panaxeth's release is finally contained."
+          }
+        ]
+      }
+    ]
+  }
+}

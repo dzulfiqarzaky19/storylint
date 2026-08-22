@@ -31,10 +31,10 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 //      entry and NO new world_entities row.
 //   3. FAIL CLOSED: mint with a blank worldId -> ok:false, NO entry, NO link.
 //   4. DEFAULT-WORLD PIN (case-a invariant guard): resolveWikiScope default ==
-//      'world-universe-1', AND every research_threads row is universe-1 (i.e.
-//      world-${universe_id} === the resolved default). This REDs the instant a
-//      non-default-universe thread ships — exactly when the URL-default becomes
-//      wrong and worldId must be derived from the thread's own universe instead.
+//      'world-mol', AND every research_threads row grounds in a world OF its own
+//      universe (i.e. the thread's world_id belongs to its universe_id). This REDs
+//      the instant a thread is grounded in a foreign universe's world — exactly
+//      when the snapshot loaded for that thread would be the wrong world's canon.
 //
 // MUTATIONS (high-risk gate, reproduced independently by zebra):
 //   - remove the world-link INSERT in insertEntryLinkedToWorld -> lock 1 RED
@@ -46,12 +46,12 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 // SHARED-DB HYGIENE: throwaway ids `test-e06r-*`; the derived mint entry
 // (`prop-<propId>`), its world_entities links, kept_cards, and the
 // thread->turn->proposition chain are all hard-deleted in afterEach. The seed
-// universe-1 / world-universe-1 / the 15 baseline entries are NEVER touched.
+// universe-mol / world-mol / the baseline entries are NEVER touched.
 // -----------------------------------------------------------------------------
 
 loadEnv();
 
-const DEFAULT_WORLD = "world-universe-1"; // the seed world resolveWikiScope defaults to
+const DEFAULT_WORLD = "world-mol"; // the seed world resolveWikiScope defaults to
 
 // Everything we create, cleaned in afterEach (FK-safe order).
 const mintedEntryIds: string[] = []; // `prop-<propId>` rows confirmCard mints
@@ -68,9 +68,9 @@ async function freshProposition(
   const threadId = `test-e06r-th-${tag}`;
   const turnId = `test-e06r-tn-${tag}`;
   const propId = `test-e06r-p-${tag}`;
-  // world_id is NOT NULL (T-RESEARCH-2); a thread in universe-N backfills to that
-  // universe's default world `world-${universeId}` (== world-universe-1 here).
-  await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", universeId, `world-${universeId}`]);
+  // world_id is NOT NULL (T-RESEARCH-2). The thread grounds in the seed's default
+  // world (world-mol); confirmCard resolves the same world for the mint.
+  await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", universeId, DEFAULT_WORLD]);
   await query(
     `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text) VALUES ($1, $2, 0, 'them', 'AI', '')`,
     [turnId, threadId],
@@ -199,8 +199,7 @@ describe("TCK-E06 default-world PIN — case-(a) invariant guard (real Postgres)
     // Historical note: 4b once asserted EVERY thread was universe-1, so the
     // URL-default world always matched. That premise is gone — T-RESEARCH-2 made
     // confirmCard derive the target world from the THREAD's own world (not the URL
-    // default), and the seed now grounds a thread per world (incl. universe-2's
-    // Halen). The live invariant today is the one that actually keeps grounding
+    // default). The live invariant today is the one that actually keeps grounding
     // correct: each thread's world_id must be a world OF its universe_id, so the
     // AI snapshot loaded for that thread is that world's canon, never a foreign
     // one. A mutant that seeds a thread whose world belongs to another universe

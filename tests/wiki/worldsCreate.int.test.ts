@@ -40,7 +40,7 @@ import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
 //
 // SHARED-DB HYGIENE: ids are `test-f7s3-<uuid>`; every created row (books,
 // worlds, universes) is hard-deleted in afterAll in FK order (book -> world ->
-// universe). universe-1 / world-universe-1 / book-1 are never touched.
+// universe). universe-mol / world-mol / book-mol-1 are never touched.
 // -----------------------------------------------------------------------------
 
 loadEnv();
@@ -56,7 +56,7 @@ const freshBookId = `test-f7s3-bk-${randomUUID()}`;
 const routedWorldId = `test-f7s3-wr-${randomUUID()}`;
 const routedWorldBookId = `test-f7s3-bk-${randomUUID()}`;
 // A book inserted with worldId OMITTED — locks that the CONTINUATION default homes
-// it onto DEFAULT_WORLD_ID ('world-universe-1'), the seeded default world.
+// it onto DEFAULT_WORLD_ID ('world-mol'), the seeded default world.
 const defaultRouteBookId = `test-f7s3-bk-${randomUUID()}`;
 
 beforeAll(async () => {
@@ -71,13 +71,13 @@ afterAll(async () => {
   const worlds = [contWorldId, freshWorldId, routedWorldId];
   await query(`DELETE FROM books WHERE world_id = ANY($1)`, [worlds]);
   await query(`DELETE FROM books WHERE id = ANY($1)`, [[contBookId, freshBookId, routedWorldBookId]]);
-  // The default-route book homes onto the SEEDED default world (world-universe-1),
+  // The default-route book homes onto the SEEDED default world (world-mol),
   // which our world-scoped sweep never lists — delete it by id so the baseline
-  // (book-1 only under world-universe-1) is restored.
+  // (book-mol-1 only under world-mol) is restored.
   await query(`DELETE FROM books WHERE id = ANY($1)`, [[defaultRouteBookId]]);
   // The (d) test pre-seeds a decoy world under universe-1 so a bogus-default
   // mutation surfaces as a value mismatch (not an FK crash). Sweep it so the
-  // baseline stays world-universe-1 only under universe-1.
+  // baseline stays world-mol only under universe-mol.
   await query(`DELETE FROM worlds WHERE id = $1`, [`world-BOGUS-${DEFAULT_UNIVERSE_ID}`]);
   await query(`DELETE FROM worlds WHERE id = ANY($1)`, [worlds]);
   await query(`DELETE FROM universes WHERE id = $1`, [freshUniId]);
@@ -113,8 +113,8 @@ describe("F7-S3/W-6 worlds-hierarchy creation flows (real Postgres)", () => {
 
   it("DEFAULT ROUTE: insertBook with worldId OMITTED homes the book onto DEFAULT_WORLD_ID", async () => {
     // (d) The CONTINUATION default: when no worldId is passed, insertBook stamps
-    // DEFAULT_WORLD_ID (`world-${DEFAULT_UNIVERSE_ID}` = 'world-universe-1'), the
-    // seeded default world. A mis-set DEFAULT_WORLD_ID silently mis-homes EVERY
+    // DEFAULT_WORLD_ID ('world-mol'), the seeded default world. A mis-set
+    // DEFAULT_WORLD_ID silently mis-homes EVERY
     // continuation book, so this asserts the POSITIVE identity of the stamped world
     // (read back from the DB) — not `.not.toBe(...)`.
     //
@@ -124,9 +124,9 @@ describe("F7-S3/W-6 worlds-hierarchy creation flows (real Postgres)", () => {
     // failure to surface as a SEMANTIC mismatch on the read-back value, we pre-seed
     // a REAL decoy world at the exact id a `world-BOGUS-${universe}` mutation would
     // resolve to. Under the intact constant the decoy is unused and the book homes
-    // onto world-universe-1 (GREEN). Under the mutation the book homes onto the
+    // onto world-mol (GREEN). Under the mutation the book homes onto the
     // (now-existing) decoy, the FK write SUCCEEDS, and the read-back is
-    // 'world-BOGUS-universe-1' !== 'world-universe-1' -> the assertion goes RED as a
+    // the decoy id !== 'world-mol' -> the assertion goes RED as a
     // value mismatch, exactly what a mis-set default does in production.
     await query(
       `INSERT INTO worlds (id, universe_id, title, sort_order)
@@ -138,13 +138,13 @@ describe("F7-S3/W-6 worlds-hierarchy creation flows (real Postgres)", () => {
     const bk = await insertBook({ id: defaultRouteBookId, name: "Default-Route Book" });
     // The value insertBook resolved for the omitted worldId is exactly the default.
     expect(bk.worldId).toBe(DEFAULT_WORLD_ID);
-    expect(bk.worldId).toBe("world-universe-1"); // the literal DEFAULT_WORLD_ID target
+    expect(bk.worldId).toBe("world-mol"); // the literal DEFAULT_WORLD_ID target
     // And the row PERSISTED that home (read back straight from the DB).
     const dbDefault = await one<{ world_id: string }>(
       `SELECT world_id FROM books WHERE id = $1`,
       [defaultRouteBookId],
     );
-    expect(dbDefault?.world_id).toBe("world-universe-1");
+    expect(dbDefault?.world_id).toBe("world-mol");
   });
 
   it("CONTINUATION: new book reuses U1 canon by construction, starts at chapter 1", async () => {
