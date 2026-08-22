@@ -9169,6 +9169,254 @@
         }
       ],
       "chapter": 73
+    },
+    {
+      "name": "Darkling",
+      "kind": "character",
+      "summary": "Ryan's name for the sentient Black Elixir shoggoth (it protests but sulkily accepts). It reveals itself as an EIGHTH-color Elixir: the paradox, the negation, 'the freedom of all rules, distilled chaos.' Unlike the obedient colored Elixirs (all secretly sentient but submissive, taught by the Alchemist to bond with humans), a Black Elixir cannot be bound and refuses to bond, its rule-undoing nature is why the Alchemist declared Black Elixirs off-limits even while allowing Ryan's power, Augustus, and Mechron. Our lower reality is a maddening 'molecule-shaped prison' where causality forces it into a fixed form; it begs Ryan to send it home through a portal in the bunker (which Mechron's AI used to summon it) 'back to the Black World.' Once through, it will ask the Black Ultimate One to undo the cause that brought it here.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "An eighth-color Black Elixir: paradox, negation, chaos"
+        },
+        {
+          "key": "note",
+          "value": "Cannot be bound; refuses to bond, unlike other Elixirs"
+        },
+        {
+          "key": "note",
+          "value": "The Alchemist declared Black Elixirs off-limits"
+        },
+        {
+          "key": "note",
+          "value": "Wants to go home through a bunker portal to the Black World"
+        },
+        {
+          "key": "note",
+          "value": "Will ask the Black Ultimate One to erase its arrival"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "allied with; named by"
+        },
+        {
+          "to": "The Ultimate Ones",
+          "rel": "emissary/priest of"
+        },
+        {
+          "to": "Mechron",
+          "rel": "summoned by his AI's portal"
+        }
+      ],
+      "chapter": 74
+    },
+    {
+      "name": "The Ultimate Ones",
+      "kind": "concept",
+      "summary": "The cosmology Darkling reveals: supreme beings, one per colored higher dimension, each 'the embodiment of their color' overseeing the higher realms. The Black Ultimate One is 'the undoer, the breaker of rules, even causality.' The Elixirs are their attendants/emissaries, 'priests' and conduits connecting the profane lower realms to the divine higher ones, so lesser beings may one day ascend (implying the Alchemist's true goal is to elevate humanity to godhood, Augustus a warning of where that goes wrong). Nothing is impossible for an Ultimate One within the bounds of its color, even restoring someone erased from existence, but the price is that a being from a higher realm existing here damages reality itself. Ryan is tied to the VIOLET Ultimate One.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Supreme beings, one per colored higher dimension"
+        },
+        {
+          "key": "note",
+          "value": "Each embodies and oversees its color's higher realm"
+        },
+        {
+          "key": "note",
+          "value": "The Black Ultimate One undoes rules, even causality"
+        },
+        {
+          "key": "note",
+          "value": "Elixirs are their priest-conduits for mortal ascension"
+        },
+        {
+          "key": "note",
+          "value": "Can restore the erased, but at a reality-damaging price"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Darkling",
+          "rel": "served by (Black emissary)"
+        },
+        {
+          "to": "The Violet Ultimate One",
+          "rel": "includes"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "goal tied to (mortal ascension)"
+        }
+      ],
+      "chapter": 74
+    },
+    {
+      "name": "The Violet Ultimate One",
+      "kind": "concept",
+      "summary": "The supreme being of the Violet dimension, 'the gate and the key of all of space and time, the supreme overseer of causality', the pyramid entity Ryan glimpsed in the previous timeline. Darkling reveals Ryan's save-point power comes 'by the will of the Violet One': Ryan is the OBSERVER of his timeline, deciding whether a moment is real, seeing 'with its eye.' This explains why his time-rewinds never cause paradoxes with cross-dimensional beings (like the gremlins who remember him): the Violet One smooths reality's coherence. Crucially, it does not micromanage, it 'nudges,' interfering only to maintain coherence; it showed Ryan a path (Darkling's rescue offer) but he is free to follow it, find another way, or fail. It no longer actively interferes in this timeline, leaving Ryan on his own.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Supreme being of Violet: overseer of causality"
+        },
+        {
+          "key": "note",
+          "value": "Source of Ryan's power; Ryan is the timeline's Observer"
+        },
+        {
+          "key": "note",
+          "value": "Smooths paradoxes from cross-dimensional beings"
+        },
+        {
+          "key": "note",
+          "value": "Nudges rather than controls; only maintains coherence"
+        },
+        {
+          "key": "note",
+          "value": "No longer actively interferes; Ryan is on his own"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "grants his power / guides"
+        },
+        {
+          "to": "The Ultimate Ones",
+          "rel": "is the Violet one"
+        },
+        {
+          "to": "The Pyramid Entity",
+          "rel": "is"
+        }
+      ],
+      "chapter": 74
+    },
+    {
+      "name": "Alchemo",
+      "kind": "character",
+      "summary": "Also called Braindead; a gruff old Genius specialized in brain-altering tech and Ryan's former partner, estranged for two years (centuries to Ryan). Their partnership ended in betrayal: after Ryan confessed his deepest secret, Alchemo tried to put Ryan's brain in a jar (an attempt Alchemo doesn't remember but Ryan never forgot). Ryan calls in an old favor, needing Alchemo to remove Psyshock's sabotage from the memory-transfer machine and perfect its design to safely restore Len's mind, the one reason Ryan swallows his distrust. Alchemo, still angry that Ryan vanished and 'broke the Doll's heart,' agrees but insists on bringing the Doll, who 'won't take no for an answer.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "A.k.a. Braindead; gruff old Genius of brain-altering tech"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's estranged former partner (2 years / centuries)"
+        },
+        {
+          "key": "note",
+          "value": "Once tried to put Ryan's brain in a jar (Ryan remembers)"
+        },
+        {
+          "key": "note",
+          "value": "Called in to fix the memory-transfer machine for Len"
+        },
+        {
+          "key": "note",
+          "value": "Insists on bringing 'the Doll' along"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "estranged former partner"
+        },
+        {
+          "to": "The Doll",
+          "rel": "brings / protective of"
+        },
+        {
+          "to": "Len",
+          "rel": "needed to restore her mind"
+        }
+      ],
+      "chapter": 74
+    },
+    {
+      "name": "Vulcan",
+      "kind": "character",
+      "summary": "Refined: Jasmine Sharif, weapons-obsessed Genius and Ryan's erased ex, contacted anonymously by 'President' Ryan. She loves weapons and destroying rivals; Ryan pitches supplying an assault on Dynamis HQ to humiliate Wyvern with a technological advantage, dangling Mechron android schematics as bait. She strikes a Faustian bargain: she'll help only if Ryan first trashes the Wyvern movie being filmed at Star Studio. Ryan agrees ('turn on your TV'). Interacting with her reopens Ryan's centuries-old wound, but he needs her to arm his coming war on Dynamis.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Jasmine Sharif; weapons-obsessed Genius, Ryan's erased ex"
+        },
+        {
+          "key": "note",
+          "value": "Contacted anonymously to arm an assault on Dynamis"
+        },
+        {
+          "key": "note",
+          "value": "Baited with Mechron android schematics"
+        },
+        {
+          "key": "note",
+          "value": "Deal: she helps if Ryan trashes the Wyvern movie shoot"
+        },
+        {
+          "key": "note",
+          "value": "Reopens Ryan's centuries-old wound"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "erased ex; weapons supplier"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "wants to strike at Wyvern"
+        }
+      ],
+      "chapter": 74
+    },
+    {
+      "name": "Ryan's Bond Villain Plan",
+      "kind": "concept",
+      "summary": "As 'Mr. President,' Ryan mounts a multi-pronged scheme to unlock the bunker and save Len. He hires the Architect (Nora Moore) to stress-test/crack the bunker's Genius tech, buying her exclusivity with a fortune and asking her to line up Wardrobe for a cashmere presidential costume. He recruits Vulcan to arm a war on Dynamis (breaking the Manada alliance, which needed the soon-dead Psyshock) so he can reach Dr. Tyrano and Lab Sixty-Six and make his own Elixirs and a Psycho cure. He calls in a favor from Alchemo to fix the memory-transfer machine for Len. He makes a live peace offering to the Augusti (via Minerva) while preparing for war with Dynamis ('we have always been at war with Dynamis'). Cure theory: combine Mongrel (multi-Elixir user) and someone who took two colors without going Psycho (like Augustus/Livia) plus Dr. Tyrano and Darkling.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Hires the Architect to crack the bunker's tech"
+        },
+        {
+          "key": "note",
+          "value": "Recruits Vulcan to arm a war on Dynamis"
+        },
+        {
+          "key": "note",
+          "value": "Breaks the Manada alliance to reach Dr. Tyrano/Lab 66"
+        },
+        {
+          "key": "note",
+          "value": "Peace offering to the Augusti via Minerva"
+        },
+        {
+          "key": "note",
+          "value": "Cure theory: Mongrel + a two-color survivor + Tyrano + Darkling"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "scheme of"
+        },
+        {
+          "to": "Nora Moore",
+          "rel": "hires"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "targets for war"
+        }
+      ],
+      "chapter": 74
     }
   ],
   "plotObservations": [
@@ -10160,6 +10408,16 @@
       "title": "President Ryan Goes Full Bond Villain",
       "summary": "After an hour of one-sided slaughter, the bunker belongs to Ryan. Standing atop Mechron's mech, he crowns himself 'President' of the ~20 surviving Psychos, ruling through mock-democracy, the Elixir supply ('Elixicare'), and the threat of his shoggoth. He forms a cabinet (Sarin VP, the Black Elixir secretary of state, Frank enforcer, Rakshasa feeding gremlins to the child-bonded plushies), keeps Len and the thralls sedated for later de-brainwashing, holds Psyshock for Cancel, and reassures Little Sarah he'll cure her mother. Since the run is doomed, he decides to throw caution aside, call in favors, seize the bunker's doomsday weapon, and aim for 'the woooooorld', sending for his white Persian cat to complete the villain aesthetic.",
       "chapter": 73
+    },
+    {
+      "title": "President Ryan Assembles His Scheme",
+      "summary": "Ruling the bunker as 'Mr. President,' Ryan cracks Adam and Psyshock's files, learning the Meta-Gang found the bunker by tracing a research probe's signal to New Rome, and grasping that whoever unlocks the central mainframe could dominate the world. He recruits Geniuses by phone: the Architect (Nora Moore) to stress-test the bunker's tech and line up a cashmere costume from Wardrobe; Vulcan (Jasmine) to arm a war on Dynamis, on the condition he first trashes the Wyvern movie at Star Studio; and, swallowing old betrayal, Alchemo/Braindead to fix the memory-transfer machine for Len (Alchemo insisting on bringing 'the Doll'). Livia agrees to a neutral meeting, and Minerva accepts a live peace offering to the Augusti. Cure theory forms: pair Mongrel and a two-color survivor with Dr. Tyrano.",
+      "chapter": 74
+    },
+    {
+      "title": "Darkling and the Cosmology of the Ultimate Ones",
+      "summary": "Ryan visits the Black Elixir, learning it is an eighth-color Elixir of pure paradox that cannot be bound and finds our causal universe a maddening 'molecule-shaped prison.' It reveals the cosmology: Ultimate Ones, one per colored higher dimension, are supreme beings the Elixirs serve as priest-conduits so mortals may ascend (the Alchemist's true goal, Augustus its warning). It wants to return through a bunker portal to the Black World and ask the Black Ultimate One to erase its arrival. It confirms Ryan's power comes from the Violet Ultimate One, making Ryan the timeline's Observer, and that this god 'nudges' rather than controls, no longer actively interfering, leaving Ryan free and alone. It hints an Ultimate One could even restore the erased (Jasmine), but at a reality-damaging price. Ryan names it 'Darkling,' which it sulkily accepts.",
+      "chapter": 74
     }
   ]
 }
