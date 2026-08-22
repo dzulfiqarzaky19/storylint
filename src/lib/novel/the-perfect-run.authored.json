@@ -8075,6 +8075,238 @@
         }
       ],
       "chapter": 68
+    },
+    {
+      "name": "Mars",
+      "kind": "character",
+      "summary": "An Augusti Genome (centurion-themed) seen dueling in the New Rome war. His power opens spatial tears that rain swords and spears on his enemies, and lets him materialize shields, including shields beneath his own feet to leap between rooftops. He battles a colossal plant monster over the city rooftops during the apocalyptic clash.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti Genome, Roman centurion motif"
+        },
+        {
+          "key": "note",
+          "value": "Opens spatial tears that rain swords and spears"
+        },
+        {
+          "key": "note",
+          "value": "Materializes shields, even to step across rooftops"
+        },
+        {
+          "key": "note",
+          "value": "Duels a giant plant monster in the New Rome war"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "New Rome",
+          "rel": "fights in the war"
+        }
+      ],
+      "chapter": 69
+    },
+    {
+      "name": "Neptune",
+      "kind": "character",
+      "summary": "An Augusti water-elemental Genome who rampages through Rust Town in the New Rome war, shaping an astronomical quantity of water into a colossal squid and flooding the strip with a tidal wave (whose corpses rise to attack Dynamis). His liquid form reforms even after a living laser and Devilry cut its tentacles, making him nearly unstoppable as he marches on the junkyard.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti water-elemental Genome"
+        },
+        {
+          "key": "note",
+          "value": "Shapes vast water into a colossal squid"
+        },
+        {
+          "key": "note",
+          "value": "Floods the strip; drowned corpses rise to attack"
+        },
+        {
+          "key": "note",
+          "value": "Reforms after being cut; near-unstoppable"
+        },
+        {
+          "key": "note",
+          "value": "Marches on Rust Town's junkyard"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "New Rome",
+          "rel": "devastates in the war"
+        }
+      ],
+      "chapter": 69
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "Refined: Fortuna makes a lucky shot that kills Aunt Pluto (hole in her forehead), canceling the death-curse and saving Felix, but Pluto's bullet had already struck her chest, and even her luck can't cheat death from its due. She dies in Felix's arms atop the waterfall, having sacrificed herself for her brother. Ryan resolves to save her (and everyone) next loop; only he carries the burden of memory across resets.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Kills Pluto with a lucky headshot, canceling the curse"
+        },
+        {
+          "key": "note",
+          "value": "Fatally shot in the chest; luck can't cheat death"
+        },
+        {
+          "key": "note",
+          "value": "Dies in Felix's arms, sacrificing herself for him"
+        },
+        {
+          "key": "note",
+          "value": "Ryan vows to save her in the next loop"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Aunt Pluto",
+          "rel": "killed, but died to"
+        },
+        {
+          "to": "Felix",
+          "rel": "died saving brother"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "vows to save"
+        }
+      ],
+      "chapter": 69
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "Refined: devastated by Fortuna's death and her aunt Pluto's murder-order (given by her own father Augustus), Livia fully allies with Ryan, admitting she was wrong to trust her father and that she was terrified of Ryan (who knows everything and can erase all she does, immune to her powers). Winning Len's cautious trust, she offers to help the brain-transfer project persist across loops: she can't retain memories, but keeps a detailed journal and offers to store a snapshot of Len's memory-map as a backup, giving them a lifeline if the transfer fails. She asks to speak to the catatonic Felix before Ryan resets.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Grief and guilt over Fortuna's death push her to Ryan's side"
+        },
+        {
+          "key": "note",
+          "value": "Admits fear of Ryan: he knows all and erases her actions"
+        },
+        {
+          "key": "note",
+          "value": "Keeps a journal to carry data across loops"
+        },
+        {
+          "key": "note",
+          "value": "Offers to back up Len's memory-map snapshot"
+        },
+        {
+          "key": "note",
+          "value": "Wins Len's cautious trust"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "disillusioned daughter"
+        },
+        {
+          "to": "Len",
+          "rel": "cautious new ally"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "ally across loops"
+        }
+      ],
+      "chapter": 69
+    },
+    {
+      "name": "The Apocalypse Suit",
+      "kind": "concept",
+      "summary": "Wardrobe's most extreme persona, deployed only when things are catastrophically bad. It transforms her into a horrifying eldritch mascot, a Cthulhu-esque squid-human hybrid with tentacle beard, great dark wings, and webbed hands, wielding public-domain-powered darkness so overwhelming that even seeing it on a screen gives Ryan a headache. In the New Rome war she screams 'CTHULHU FHTAGN!' at the harbor while Mortimer, Lanka, and others fire on her, a marker of how apocalyptic the fighting has become.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Wardrobe's ultimate, worst-case persona"
+        },
+        {
+          "key": "note",
+          "value": "A Cthulhu-like squid-human with tentacle beard and wings"
+        },
+        {
+          "key": "note",
+          "value": "Public-domain-powered darkness; painful even on camera"
+        },
+        {
+          "key": "note",
+          "value": "Screams 'CTHULHU FHTAGN!' in the New Rome war"
+        },
+        {
+          "key": "note",
+          "value": "Signals the fighting has reached apocalyptic scale"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Wardrobe",
+          "rel": "persona of"
+        },
+        {
+          "to": "New Rome",
+          "rel": "unleashed in the war"
+        }
+      ],
+      "chapter": 69
+    },
+    {
+      "name": "Eugène-Henry",
+      "kind": "character",
+      "summary": "Refined: at the waterfall the Purple World entity that possessed Eugène-Henry speaks through him in Ryan's own voice, eyes shining purple, saying 'I must go now, the rest is up to you,' then departs in a flash of violet light. Afterward the cat's energy readings vanish, he is a normal blue-eyed cat again. Ryan realizes the entity orchestrated the whole run: sending Chronoradio encouragement when he nearly gave up, steering him to Livia, aiding Len, and positioning Fortuna to save him, all to engineer the alliance and the memory-transfer breakthrough, even at the cost of Fortuna's life.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Purple World entity spoke through him in Ryan's voice"
+        },
+        {
+          "key": "note",
+          "value": "Said 'the rest is up to you,' then left in violet light"
+        },
+        {
+          "key": "note",
+          "value": "Reverted to a powerless normal cat afterward"
+        },
+        {
+          "key": "note",
+          "value": "Entity orchestrated the run's key events"
+        },
+        {
+          "key": "note",
+          "value": "Positioned Fortuna to save Ryan (at her life's cost)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "vessel of departed entity"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "guided"
+        },
+        {
+          "to": "Livia",
+          "rel": "steered toward Ryan"
+        }
+      ],
+      "chapter": 69
     }
   ],
   "plotObservations": [
@@ -8994,6 +9226,30 @@
         "The Augusti"
       ],
       "chapter": 68
+    },
+    {
+      "title": "Limited Time",
+      "beat": "Fortuna's lucky headshot kills Pluto and ends the curse, but she dies of her own wound in Felix's arms; a crippled, dying Ryan is rescued by Len in her diving armor. The Purple World entity in Eugène-Henry bids Ryan 'the rest is up to you' and departs in violet light, leaving a normal cat. Ryan wakes days later in Len's underwater base, legless and bandaged, tended by Little Sarah, with a catatonic Felix nearby (his own parents signed his death warrant, his sister died for him). Len shows him New Rome consumed by all-out war, Augusti vs Dynamis/Carnival, Mars, Neptune, Wyvern, Wardrobe's Cthulhu 'apocalypse suit,' and Augustus dueling Enrique atop Mount Augustus, another bad ending, spread across the whole coast. Livia calls via Vulcan's line, now fully allied through grief and guilt: she offers to back up a snapshot of Len's memory-map (kept via her journal) so the loop's progress can survive if the risky consciousness-transfer fails. Len, overcoming her distrust, agrees and reveals the transfer will kill Ryan to send her memories back. Ryan realizes Eugène-Henry's entity engineered the entire run to reach this alliance, and resolves to reset and do better.",
+      "entities": [
+        "Ryan Romano",
+        "Fortuna",
+        "Felix",
+        "Aunt Pluto",
+        "Len",
+        "Little Sarah",
+        "Eugène-Henry",
+        "Livia",
+        "Narcinia",
+        "The Brain-Transfer Project",
+        "Mars",
+        "Neptune",
+        "Wyvern",
+        "The Apocalypse Suit",
+        "Wardrobe",
+        "Augustus",
+        "New Rome"
+      ],
+      "chapter": 69
     }
   ]
 }
