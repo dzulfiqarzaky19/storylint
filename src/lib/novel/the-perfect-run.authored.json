@@ -12091,15 +12091,15 @@
           "rel": "sends home, then parts ways"
         },
         {
-          "to": "Reload",
+          "to": "Elixir Mechanics",
           "rel": "confronts his own Elixir/save-point"
         }
       ],
       "chapter": 85
     },
     {
-      "name": "Reload",
-      "kind": "character",
+      "name": "Elixir Mechanics",
+      "kind": "concept",
       "summary": "CH85: the origin and mechanics of Ryan's power are finally revealed by the power itself. In the Black World his save-point manifests as the violet phantom that always chases him, and speaks: it is his Elixir, his 'other half,' the Violet-Flux power slumbering in him. When they bonded it looked into him and granted his deepest wish (to return to the past to change the present), which is why it revives him even from old age, believing this makes him happy. It CANNOT undo or re-parameter that wish, so it cannot stop the loop; only Ryan choosing to stop can end it. In normal time the phantom cannot speak (that needed the Black World's interference); catching it forms a new save point.",
       "facts": [
         {
@@ -12314,6 +12314,220 @@
         }
       ],
       "chapter": 86
+    },
+    {
+      "name": "Fallout",
+      "kind": "character",
+      "summary": "CH87: arrives far faster than the ~1-2 hour estimate, drilling down through the floors above and crashing into Lab Sixty-Six just as Ryan reaches the final door. Named Alphonse 'Fallout' Manada, he tosses away Mosquito's charbroiled corpse (having killed him on the roof), his hands shining with deadly radiation that trips the Saturn Armor's alarm. 'You're going all-in, huh? Well, I'm calling your bet, muties... Time to die.' A Manada powerhouse and the raid's greatest threat, now blocking Ryan's crew inside the lab.",
+      "facts": [
+        {
+          "key": "identity",
+          "value": "Alphonse 'Fallout' Manada, radiation-based powerhouse"
+        },
+        {
+          "key": "note",
+          "value": "Kills Mosquito on the roof; drills into Lab 66 to confront Ryan"
+        },
+        {
+          "key": "arrival",
+          "value": "Comes much faster than the 1-2 hour estimate"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mosquito",
+          "rel": "kills him"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "confronts inside Lab 66"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "protects (his lab)"
+        }
+      ],
+      "chapter": 87
+    },
+    {
+      "name": "Wardrobe",
+      "kind": "character",
+      "summary": "CH87: guards Lab 66 but only makes a token effort (no apocalypse or Augustus suit) because Dynamis holds her girlfriend Nora Moore hostage over the money-laundering Ryan exposed; Enrique confirmed Ryan meant no harm, so she'd have quit like Felix otherwise. She and Ryan have a glorious costume duel (Poseidon, ninja, fencer) that Ryan wins only by cheating with a time-stop, blade to her throat. He proposes marriage ('together we can rule the galaxy'); she tearfully refuses (already taken, 'no harems'), they agree to stay 'good archnemeses,' and he taps her pressure points to lay her down gently. Ryan promises to free Nora on the way out.",
+      "facts": [
+        {
+          "key": "motive",
+          "value": "Only token-defends; Dynamis holds Nora Moore hostage"
+        },
+        {
+          "key": "duel",
+          "value": "Costume duel with Ryan; he wins by cheating a time-stop"
+        },
+        {
+          "key": "note",
+          "value": "Rejects Ryan's marriage proposal but stays willing archnemesis"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "duels and rejects his proposal"
+        },
+        {
+          "to": "Nora Moore",
+          "rel": "her hostage girlfriend, Ryan will free"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "confirmed Ryan's good faith to her"
+        }
+      ],
+      "chapter": 87
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "CH87: Dynamis desperately recruits Ryan's most powerful rogue to guard Lab 66, a colossal kung-fu manbear from Zhongguo whose head reaches the ceiling, fur white as bone and soul black. Grandiose and heroic in speech ('We meet at last, villain!'; 'The Panda is the only one who can stop you, even if he must ally with a lesser evil'), but visibly terrified underneath, unable to hide his fear. He leaps to fight Ryan 'in Justice's name' but Len simply traps him in a pressurized water bubble, where the great swimmer flails helplessly.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Giant kung-fu manbear, Ryan's most powerful rogue, recruited to guard Lab 66"
+        },
+        {
+          "key": "note",
+          "value": "Grandiose but frightened; neutralized instantly by Len's water bubble"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his self-styled nemesis"
+        },
+        {
+          "to": "Len",
+          "rel": "bubbles him harmlessly"
+        },
+        {
+          "to": "Lab Sixty-Six",
+          "rel": "guards it for Dynamis"
+        }
+      ],
+      "chapter": 87
+    },
+    {
+      "name": "Reload",
+      "kind": "character",
+      "summary": "CH87: the Il Migliore hero guards Lab 66 alongside the Panda and Wardrobe, wielding a laser blade and hungry for payback (still believing Ryan a deranged Psycho warlord who nuke-threatened New Rome, refusing to credit the Knockoff exposé). He charges recklessly and Len traps him in a water bubble, where his death-and-rebirth power cycles him through repeated drownings. Wardrobe later grabs his dropped laser blade for her fencing duel. He is unironically named the same as Ryan's save-point mechanic, but is a distinct person.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Charges Ryan; trapped in a drowning-rebirth cycle by Len's bubble"
+        },
+        {
+          "key": "belief",
+          "value": "Refuses to believe the Knockoff exposé; sees Ryan as a warlord"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "attacks him for payback"
+        },
+        {
+          "to": "Len",
+          "rel": "bubbles him repeatedly"
+        },
+        {
+          "to": "Wardrobe",
+          "rel": "she takes his dropped laser blade"
+        }
+      ],
+      "chapter": 87
+    },
+    {
+      "name": "Incognito",
+      "kind": "character",
+      "summary": "CH87: a Psycho infiltrator Ryan deployed earlier in the loop to breach Dynamis HQ. His Blue power forces others to perceive him as anyone he chooses (though not enough to fool all security systems). Combined with Ryan's hacking and Tea/Alchemo's remote assistance, Incognito slipped inside and reached the building's main servers, letting the crew reprogram every keycard to open any floor during the raid.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Blue: makes others perceive him as any person he picks"
+        },
+        {
+          "key": "note",
+          "value": "Infiltrated Dynamis servers to reprogram keycard access for the raid"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "deployed by him to infiltrate"
+        },
+        {
+          "to": "The Doll",
+          "rel": "coordinated the hack remotely"
+        }
+      ],
+      "chapter": 87
+    },
+    {
+      "name": "Lab Sixty-Six",
+      "kind": "location",
+      "summary": "CH87: finally breached. An immaculate sterile white room ~50m by 20m, a claustrophobic automated medical assembly line staffed only by robots and drones (no human guards, likely due to Elixir contamination risk). Colored Knockoff Elixir bottles emerge from a metal hole, get stamped with Dynamis's logo by robotic arms, and are crated for delivery. It runs on its own secure computer system, so Ryan's reprogrammed keycards fail on the inner bioscanner door, behind which Dr. Tyrano presumably works. Fallout drills in before they can breach that final door.",
+      "facts": [
+        {
+          "key": "layout",
+          "value": "Sterile automated Knockoff assembly line, robots only, no human guards"
+        },
+        {
+          "key": "security",
+          "value": "Own secure computer system; keycards fail on the inner bioscanner door"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Knockoff Elixir",
+          "rel": "mass-produced here"
+        },
+        {
+          "to": "Dr. Tyrano",
+          "rel": "works behind its inner door"
+        },
+        {
+          "to": "Fallout",
+          "rel": "drills in to defend it"
+        }
+      ],
+      "chapter": 87
+    },
+    {
+      "name": "Mosquito",
+      "kind": "character",
+      "summary": "CH87: carries Len into Dynamis HQ and fights bravely in the assault, tackling Devilry with Acid Rain's teleport assist. But he is killed on the roof by Fallout, who tosses away his charbroiled corpse into Lab 66, the raid's first major casualty. His mind was backed up earlier via Livia's brainmaps, so his death need not be permanent across the loop.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Airlifts Len into HQ; helps down Devilry"
+        },
+        {
+          "key": "death",
+          "value": "Killed and charbroiled by Fallout on the roof"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Fallout",
+          "rel": "killed by him"
+        },
+        {
+          "to": "Len",
+          "rel": "carried her into the raid"
+        },
+        {
+          "to": "Devilry",
+          "rel": "fought her"
+        }
+      ],
+      "chapter": 87
     }
   ],
   "plotObservations": [
@@ -13681,7 +13895,7 @@
         "Darkling",
         "The Black World",
         "The Black Ultimate One",
-        "Reload",
+        "Elixir Mechanics",
         "The Purple World"
       ],
       "chapter": 85
@@ -13717,6 +13931,27 @@
         "Frank the Mad"
       ],
       "chapter": 86
+    },
+    {
+      "title": "The End Times",
+      "beat": "CH87: Ryan's crew crashes into Dynamis HQ and fights up to Lab 66. Incognito's earlier server infiltration lets them reprogram every keycard. Devilry is downed by Mosquito and Acid Rain; the final guardians (the terrified kung-fu Panda, the hero Reload, and Wardrobe) are trapped in Len's water bubbles. Ryan and Wardrobe have a costume duel he wins by cheating a time-stop, then he playfully proposes marriage and she refuses (Dynamis holds her girlfriend Nora hostage, so she only token-defends). Sarin blasts open Lab 66, revealing the automated Knockoff Elixir assembly line. But before they breach Dr. Tyrano's inner door, Fallout drills in early, having killed Mosquito on the roof: 'Time to die.'",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Wardrobe",
+        "The Panda",
+        "Reload",
+        "Devilry",
+        "Incognito",
+        "Sarin",
+        "Mongrel",
+        "Mosquito",
+        "Fallout",
+        "Lab Sixty-Six",
+        "The Knockoff Elixir",
+        "Dr. Tyrano"
+      ],
+      "chapter": 87
     }
   ]
 }

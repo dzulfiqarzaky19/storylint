@@ -449,7 +449,7 @@
             "rel": "sends home, then parts ways"
           },
           {
-            "to": "reload",
+            "to": "elixir-mechanics",
             "rel": "confronts his own Elixir/save-point"
           },
           {
@@ -548,7 +548,8 @@
           83,
           84,
           85,
-          86
+          86,
+          87
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -834,7 +835,8 @@
           83,
           84,
           85,
-          86
+          86,
+          87
         ],
         "questions": []
       },
@@ -2210,7 +2212,8 @@
           83,
           84,
           85,
-          86
+          86,
+          87
         ],
         "questions": []
       },
@@ -3260,6 +3263,14 @@
           {
             "key": "note",
             "value": "Mourns Felix with chocolate and flowers at the hospital"
+          },
+          {
+            "key": "note",
+            "value": "Giant kung-fu manbear, Ryan's most powerful rogue, recruited to guard Lab 66"
+          },
+          {
+            "key": "note",
+            "value": "Grandiose but frightened; neutralized instantly by Len's water bubble"
           }
         ],
         "ties": [
@@ -3298,6 +3309,18 @@
           {
             "to": "dynamis",
             "rel": "star recruit"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his self-styled nemesis"
+          },
+          {
+            "to": "len",
+            "rel": "bubbles him harmlessly"
+          },
+          {
+            "to": "lab-sixty-six",
+            "rel": "guards it for Dynamis"
           }
         ],
         "appearances": [
@@ -3311,7 +3334,8 @@
           61,
           62,
           65,
-          66
+          66,
+          87
         ],
         "questions": []
       },
@@ -3380,6 +3404,18 @@
           {
             "key": "note",
             "value": "Can only steal/hold one bomb at a time (Ryan juggles three)"
+          },
+          {
+            "key": "motive",
+            "value": "Only token-defends; Dynamis holds Nora Moore hostage"
+          },
+          {
+            "key": "duel",
+            "value": "Costume duel with Ryan; he wins by cheating a time-stop"
+          },
+          {
+            "key": "note",
+            "value": "Rejects Ryan's marriage proposal but stays willing archnemesis"
           }
         ],
         "ties": [
@@ -3406,6 +3442,18 @@
           {
             "to": "star-studios",
             "rel": "defends"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "duels and rejects his proposal"
+          },
+          {
+            "to": "nora-moore",
+            "rel": "her hostage girlfriend, Ryan will free"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "confirmed Ryan's good faith to her"
           }
         ],
         "appearances": [
@@ -3422,7 +3470,8 @@
           65,
           66,
           69,
-          82
+          82,
+          87
         ],
         "questions": []
       },
@@ -4119,7 +4168,8 @@
           14,
           57,
           78,
-          83
+          83,
+          87
         ],
         "questions": []
       },
@@ -4180,6 +4230,14 @@
           {
             "key": "note",
             "value": "Carried wounded to the truck by Frank"
+          },
+          {
+            "key": "note",
+            "value": "Airlifts Len into HQ; helps down Devilry"
+          },
+          {
+            "key": "death",
+            "value": "Killed and charbroiled by Fallout on the roof"
           }
         ],
         "ties": [
@@ -4210,6 +4268,18 @@
           {
             "to": "frank-the-mad",
             "rel": "rescued by"
+          },
+          {
+            "to": "fallout",
+            "rel": "killed by him"
+          },
+          {
+            "to": "len",
+            "rel": "carried her into the raid"
+          },
+          {
+            "to": "devilry",
+            "rel": "fought her"
           }
         ],
         "appearances": [
@@ -4220,7 +4290,8 @@
           75,
           78,
           81,
-          82
+          82,
+          87
         ],
         "questions": []
       },
@@ -7209,6 +7280,14 @@
           {
             "key": "note",
             "value": "Explains Dynamis's obsession with Len's blood/DNA"
+          },
+          {
+            "key": "layout",
+            "value": "Sterile automated Knockoff assembly line, robots only, no human guards"
+          },
+          {
+            "key": "security",
+            "value": "Own secure computer system; keycards fail on the inner bioscanner door"
           }
         ],
         "ties": [
@@ -7227,6 +7306,18 @@
           {
             "to": "len",
             "rel": "target of investigation"
+          },
+          {
+            "to": "the-knockoff-elixir",
+            "rel": "mass-produced here"
+          },
+          {
+            "to": "dr-tyrano",
+            "rel": "works behind its inner door"
+          },
+          {
+            "to": "fallout",
+            "rel": "drills in to defend it"
           }
         ],
         "appearances": [
@@ -7235,7 +7326,8 @@
           66,
           80,
           84,
-          86
+          86,
+          87
         ],
         "questions": []
       },
@@ -7293,7 +7385,8 @@
           57,
           58,
           83,
-          86
+          86,
+          87
         ],
         "questions": []
       },
@@ -8137,7 +8230,8 @@
           }
         ],
         "appearances": [
-          44
+          44,
+          87
         ],
         "questions": []
       },
@@ -8314,16 +8408,12 @@
             "value": "Amateur duelist, easily outclassed by Ryan"
           },
           {
-            "key": "identity",
-            "value": "Ryan's save-point IS his Elixir, his violet-Flux other half"
+            "key": "note",
+            "value": "Charges Ryan; trapped in a drowning-rebirth cycle by Len's bubble"
           },
           {
-            "key": "origin",
-            "value": "Grants his wish to return to the past, made at bonding; cannot be undone"
-          },
-          {
-            "key": "mechanic",
-            "value": "Phantom catching Ryan forms a save point; it can only speak via the Black World"
+            "key": "belief",
+            "value": "Refuses to believe the Knockoff exposé; sees Ryan as a warlord"
           }
         ],
         "ties": [
@@ -8337,18 +8427,22 @@
           },
           {
             "to": "ryan-romano",
-            "rel": "is his bonded Elixir and power"
+            "rel": "attacks him for payback"
           },
           {
-            "to": "the-purple-world",
-            "rel": "the dimension its Violet Flux is drawn from"
+            "to": "len",
+            "rel": "bubbles him repeatedly"
+          },
+          {
+            "to": "wardrobe",
+            "rel": "she takes his dropped laser blade"
           }
         ],
         "appearances": [
           45,
           46,
           82,
-          85
+          87
         ],
         "questions": []
       },
@@ -8975,6 +9069,18 @@
           {
             "key": "note",
             "value": "White Elixir referees extra powers (Mongrel)"
+          },
+          {
+            "key": "identity",
+            "value": "Ryan's save-point IS his Elixir, his violet-Flux other half"
+          },
+          {
+            "key": "origin",
+            "value": "Grants his wish to return to the past, made at bonding; cannot be undone"
+          },
+          {
+            "key": "mechanic",
+            "value": "Phantom catching Ryan forms a save point; it can only speak via the Black World"
           }
         ],
         "ties": [
@@ -8993,10 +9099,19 @@
           {
             "to": "dr-tyrano",
             "rel": "co-theorist"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "is his bonded Elixir and power"
+          },
+          {
+            "to": "the-purple-world",
+            "rel": "the dimension its Violet Flux is drawn from"
           }
         ],
         "appearances": [
-          57
+          57,
+          85
         ],
         "questions": []
       },
@@ -11509,7 +11624,8 @@
         ],
         "appearances": [
           80,
-          81
+          81,
+          87
         ],
         "questions": []
       },
@@ -11589,6 +11705,18 @@
           {
             "key": "power",
             "value": "Radiation-based, detectable at long range"
+          },
+          {
+            "key": "identity",
+            "value": "Alphonse 'Fallout' Manada, radiation-based powerhouse"
+          },
+          {
+            "key": "note",
+            "value": "Kills Mosquito on the roof; drills into Lab 66 to confront Ryan"
+          },
+          {
+            "key": "arrival",
+            "value": "Comes much faster than the 1-2 hour estimate"
           }
         ],
         "ties": [
@@ -11607,11 +11735,24 @@
           {
             "to": "ryan-romano",
             "rel": "the threat racing to intercept his raid"
+          },
+          {
+            "to": "mosquito",
+            "rel": "kills him"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "confronts inside Lab 66"
+          },
+          {
+            "to": "dr-tyrano",
+            "rel": "protects (his lab)"
           }
         ],
         "appearances": [
           83,
-          86
+          86,
+          87
         ],
         "questions": []
       },
@@ -11766,6 +11907,36 @@
         ],
         "appearances": [
           86
+        ],
+        "questions": []
+      },
+      {
+        "id": "incognito",
+        "kind": "character",
+        "name": "Incognito",
+        "summary": "CH87: a Psycho infiltrator Ryan deployed earlier in the loop to breach Dynamis HQ. His Blue power forces others to perceive him as anyone he chooses (though not enough to fool all security systems). Combined with Ryan's hacking and Tea/Alchemo's remote assistance, Incognito slipped inside and reached the building's main servers, letting the crew reprogram every keycard to open any floor during the raid.",
+        "facts": [
+          {
+            "key": "power",
+            "value": "Blue: makes others perceive him as any person he picks"
+          },
+          {
+            "key": "note",
+            "value": "Infiltrated Dynamis servers to reprogram keycard access for the raid"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "deployed by him to infiltrate"
+          },
+          {
+            "to": "the-doll",
+            "rel": "coordinated the hack remotely"
+          }
+        ],
+        "appearances": [
+          87
         ],
         "questions": []
       }
@@ -13712,7 +13883,7 @@
           "darkling",
           "the-black-world",
           "the-black-ultimate-one",
-          "reload",
+          "elixir-mechanics",
           "the-purple-world"
         ]
       },
@@ -13743,6 +13914,10 @@
           {
             "chapter": 86,
             "summary": "CH86: The Lab Sixty-Six raid launches against a burning New Rome. Ryan forgives Alchemo (a final second chance, brainmap to Livia) and confesses to Len this is his TWELFTH world-ending, swearing no thirteenth ('together till the end'). The killer-plushie army has escalated into open war on Mount Augustus (the Leporimachia), overrunning Augustus's hill faster than he can cull it. Vulcan departs on Augustus's orders, scrambles Dynamis comms, and warns that Fallout is recalled and ~1-2 hours out. Sarin's rousing speech rallies the demoralized gang, and Ryan leads the assault on the Dynamis tower to grab Dr. Tyrano and torch Lab 66."
+          },
+          {
+            "chapter": 87,
+            "summary": "CH87: Ryan's crew crashes into Dynamis HQ and fights up to Lab 66. Incognito's earlier server infiltration lets them reprogram every keycard. Devilry is downed by Mosquito and Acid Rain; the final guardians (the terrified kung-fu Panda, the hero Reload, and Wardrobe) are trapped in Len's water bubbles. Ryan and Wardrobe have a costume duel he wins by cheating a time-stop, then he playfully proposes marriage and she refuses (Dynamis holds her girlfriend Nora hostage, so she only token-defends). Sarin blasts open Lab 66, revealing the automated Knockoff Elixir assembly line. But before they breach Dr. Tyrano's inner door, Fallout drills in early, having killed Mosquito on the roof: 'Time to die.'"
           }
         ],
         "entities": [
@@ -13757,13 +13932,21 @@
           "mount-augustus",
           "dr-tyrano",
           "lab-sixty-six",
-          "frank-the-mad"
+          "frank-the-mad",
+          "wardrobe",
+          "the-panda",
+          "reload",
+          "devilry",
+          "incognito",
+          "mongrel",
+          "mosquito",
+          "the-knockoff-elixir"
         ]
       }
     ]
   },
   "counts": {
-    "entities": 209,
+    "entities": 210,
     "plotlines": 99,
     "books": 1
   }
