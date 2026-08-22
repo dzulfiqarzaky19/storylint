@@ -15056,6 +15056,118 @@
         }
       ],
       "chapter": 104
+    },
+    {
+      "name": "The Psycho Cure",
+      "kind": "concept",
+      "summary": "CH105 'Miracle Cure': the Bliss/Psycho vaccine works, but only on KNOCKOFF Psychos. It destroys the Bloodstream particles in the circulatory system and reverses the genetic damage, letting the person's original true Elixir reassert itself and revert them to their old Genome self. Proven live: Mongrel's tumors/disfigurement vanish and Mosquito reverts to a normal middle-aged man (able to switch between insect and human form). It FAILS on Psychos made from two TRUE Elixirs (Frank the Mad/Vladimir) because Elixirs don't use DNA to store their pattern (they treat DNA like a painter treats canvas) and simply reassert their old form against any genetic edit, even the Neanderthal-ratio approach. It's also stumped by non-DNA biologies (gas/metal/shadow: Sarin, Frank, Gemini). Ryan theorizes Elixirs communicate via Flux; curing them needs data on the bonding process only the Alchemist's research (Antarctica) can provide, motivating the winter expedition Stitch joins.",
+      "facts": [
+        {
+          "key": "works on",
+          "value": "Knockoff Psychos (destroys Bloodstream particles, true Elixir reasserts)"
+        },
+        {
+          "key": "fails on",
+          "value": "Two-true-Elixir Psychos and non-DNA biologies"
+        },
+        {
+          "key": "next step",
+          "value": "Needs Elixir-bonding data from the Alchemist (Antarctica)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mongrel",
+          "rel": "cured by it (reverted to healthy Genome)"
+        },
+        {
+          "to": "Mosquito",
+          "rel": "cured by it (reverts to human form)"
+        },
+        {
+          "to": "The Alchemist",
+          "rel": "her research needed to extend the cure"
+        }
+      ],
+      "chapter": 105
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "CH105: healing under Alchemo's treatment, Len sheds her red communist iconography (new blue overalls, 'I've seen enough red for a lifetime') as she starts to live again, even wanting to stop at the Canary Islands for the children on the way to Antarctica. She names her modular self-sufficient underwater habitats the 'Cuba Initiative.' Most gravely, she resolves that if the Psycho cure can't save her father Bloodstream, she will euthanize him HERSELF, as her duty and choice, refusing to let Ryan carry it, accepting she'll bear that pain for life.",
+      "facts": [
+        {
+          "key": "resolve",
+          "value": "Will personally euthanize Bloodstream if the cure fails him"
+        },
+        {
+          "key": "growth",
+          "value": "Sheds red/communist iconography; re-engaging with life"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "her father, whom she'll euthanize if uncurable"
+        },
+        {
+          "to": "The Psycho Cure",
+          "rel": "her father's last hope before euthanasia"
+        }
+      ],
+      "chapter": 105
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH105: watches Augustus decimate his own guards (1-in-10 beaten to death) over the raid, and uses Incognito (nanite-leashed) as a decoy alibi. He confesses to Livia that he intends to neutralize her father and that his Black Flux is the weapon that could do it, 'because I trust you' and wants their relationship built on truth. Confronted with her ultimatum, he swears NOT to kill Augustus but to defeat and break him so decisively he'll never threaten anyone again (imprisonment, not death), refusing her hope of a purely peaceful solution while conceding it as a compromise. He plans a next-loop strike on the Bliss Factory before it makes victims, extracting Narcinia to the Carnival, and launches the Antarctica expedition to research Elixir bonding.",
+      "facts": [
+        {
+          "key": "vow",
+          "value": "Sworn to Livia he won't kill Augustus, only break/imprison him"
+        },
+        {
+          "key": "alibi",
+          "value": "Uses Incognito as a nanite-leashed decoy"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Livia",
+          "rel": "confesses his anti-Augustus plan; compromises on no-kill"
+        },
+        {
+          "to": "Augustus",
+          "rel": "vows to break and imprison, not kill"
+        }
+      ],
+      "chapter": 105
+    },
+    {
+      "name": "Livia",
+      "kind": "character",
+      "summary": "CH105: torn between her boyfriend and her father. She admits Augustus can't be talked out of his madness and probably can't be stopped peacefully, yet extracts a promise from Ryan: don't kill her father ('or we are done') - she'll accept him dragged from his throne and imprisoned underwater, but not death, because 'Bacchus is not family.' She clings to hope for a 'third option.' Her precognition confirmed a Bliss test subject would die, and she needs time to read the ripples of Ryan's large actions. She helps sell her father the lie that the Meta-Gang, not Ryan, hit the lab.",
+      "facts": [
+        {
+          "key": "ultimatum",
+          "value": "Ryan must not kill Augustus, only imprison him"
+        },
+        {
+          "key": "power note",
+          "value": "Needs time to foresee ripples of Ryan's large actions"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "her father, whom she forbids Ryan to kill"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "compromises with him on sparing Augustus"
+        }
+      ],
+      "chapter": 105
     }
   ],
   "plotObservations": [
@@ -16834,6 +16946,26 @@
         "The Yellow World"
       ],
       "chapter": 104
+    },
+    {
+      "title": "The Perfect Run Plan",
+      "beat": "CH105 'Miracle Cure': in the raid's aftermath Augustus decimates his own guards. The Psycho Cure is proven on Knockoff Psychos (Mongrel and Mosquito revert to healthy Genomes) but fails on two-true-Elixir Psychos like Frank, so Ryan launches an Antarctica expedition (Stitch joining) to research Elixir bonding via the Alchemist. Len, healing and shedding her red iconography, resolves to euthanize her father Bloodstream herself if uncurable. Ryan uses Incognito as a decoy alibi, then confesses to Livia that his Black Flux could neutralize Augustus. After her ultimatum, he swears not to KILL her father but to break and imprison him decisively - a fraught compromise between saving the world and sparing her family.",
+      "entities": [
+        "Ryan Romano",
+        "Livia",
+        "Len",
+        "Augustus",
+        "The Psycho Cure",
+        "Mongrel",
+        "Mosquito",
+        "Frank the Mad",
+        "Stitch",
+        "Bloodstream",
+        "Incognito",
+        "The Alchemist",
+        "Black Flux"
+      ],
+      "chapter": 105
     }
   ]
 }

@@ -421,6 +421,14 @@
           {
             "key": "gear",
             "value": "Improved Saturn armor: gravity rifle, radiation/heat shielding"
+          },
+          {
+            "key": "vow",
+            "value": "Sworn to Livia he won't kill Augustus, only break/imprison him"
+          },
+          {
+            "key": "alibi",
+            "value": "Uses Incognito as a nanite-leashed decoy"
           }
         ],
         "ties": [
@@ -691,6 +699,14 @@
           {
             "to": "castello-aragonese",
             "rel": "targets it for destruction"
+          },
+          {
+            "to": "livia",
+            "rel": "confesses his anti-Augustus plan; compromises on no-kill"
+          },
+          {
+            "to": "augustus",
+            "rel": "vows to break and imprison, not kill"
           }
         ],
         "appearances": [
@@ -793,7 +809,8 @@
           101,
           102,
           103,
-          104
+          104,
+          105
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -992,6 +1009,14 @@
           {
             "key": "arc",
             "value": "Accepts Ryan+Livia; resolves to move on from the past"
+          },
+          {
+            "key": "resolve",
+            "value": "Will personally euthanize Bloodstream if the cure fails him"
+          },
+          {
+            "key": "growth",
+            "value": "Sheds red/communist iconography; re-engaging with life"
           }
         ],
         "ties": [
@@ -1118,6 +1143,14 @@
           {
             "to": "livia",
             "rel": "accepts her as Ryan's partner; 'family now'"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "her father, whom she'll euthanize if uncurable"
+          },
+          {
+            "to": "the-psycho-cure",
+            "rel": "her father's last hope before euthanasia"
           }
         ],
         "appearances": [
@@ -1169,7 +1202,8 @@
           97,
           102,
           103,
-          104
+          104,
+          105
         ],
         "questions": []
       },
@@ -2111,7 +2145,8 @@
           92,
           93,
           98,
-          99
+          99,
+          105
         ],
         "questions": []
       },
@@ -2900,7 +2935,8 @@
           74,
           100,
           101,
-          103
+          103,
+          105
         ],
         "questions": []
       },
@@ -3261,7 +3297,8 @@
           91,
           92,
           93,
-          97
+          97,
+          105
         ],
         "questions": []
       },
@@ -4879,7 +4916,8 @@
           83,
           87,
           88,
-          94
+          94,
+          105
         ],
         "questions": []
       },
@@ -5002,7 +5040,8 @@
           81,
           82,
           87,
-          94
+          94,
+          105
         ],
         "questions": []
       },
@@ -7365,7 +7404,8 @@
           86,
           88,
           95,
-          96
+          96,
+          105
         ],
         "questions": []
       },
@@ -11527,6 +11567,14 @@
           {
             "key": "knowledge",
             "value": "Knows Augustus killed Narcinia's parents"
+          },
+          {
+            "key": "ultimatum",
+            "value": "Ryan must not kill Augustus, only imprison him"
+          },
+          {
+            "key": "power note",
+            "value": "Needs time to foresee ripples of Ryan's large actions"
           }
         ],
         "ties": [
@@ -11589,6 +11637,14 @@
           {
             "to": "ryan-romano",
             "rel": "shields and claims him as boyfriend"
+          },
+          {
+            "to": "augustus",
+            "rel": "her father, whom she forbids Ryan to kill"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "compromises with him on sparing Augustus"
           }
         ],
         "appearances": [
@@ -11605,7 +11661,8 @@
           98,
           99,
           101,
-          102
+          102,
+          105
         ],
         "questions": []
       },
@@ -11809,6 +11866,18 @@
           {
             "key": "blocker",
             "value": "Needs Dr. Tyrano, who rarely leaves Dynamis HQ and is protected by Fallout"
+          },
+          {
+            "key": "works on",
+            "value": "Knockoff Psychos (destroys Bloodstream particles, true Elixir reasserts)"
+          },
+          {
+            "key": "fails on",
+            "value": "Two-true-Elixir Psychos and non-DNA biologies"
+          },
+          {
+            "key": "next step",
+            "value": "Needs Elixir-bonding data from the Alchemist (Antarctica)"
           }
         ],
         "ties": [
@@ -11839,11 +11908,24 @@
           {
             "to": "alchemo",
             "rel": "theorizes it"
+          },
+          {
+            "to": "mongrel",
+            "rel": "cured by it (reverted to healthy Genome)"
+          },
+          {
+            "to": "mosquito",
+            "rel": "cured by it (reverts to human form)"
+          },
+          {
+            "to": "the-alchemist",
+            "rel": "her research needed to extend the cure"
           }
         ],
         "appearances": [
           71,
-          83
+          83,
+          105
         ],
         "questions": []
       },
@@ -13205,7 +13287,8 @@
         "appearances": [
           86,
           88,
-          104
+          104,
+          105
         ],
         "questions": []
       },
@@ -13235,7 +13318,8 @@
           }
         ],
         "appearances": [
-          87
+          87,
+          105
         ],
         "questions": []
       },
@@ -13374,7 +13458,8 @@
           90,
           92,
           97,
-          102
+          102,
+          105
         ],
         "questions": []
       },
@@ -16214,6 +16299,10 @@
           {
             "chapter": 104,
             "summary": "CH104 'Return of the Cashmere': the Carnival-route assault razes Ischia's Bliss Factory. Sarin (gaseous) sabotages defenses overnight; then Len's Cthulhu-mech, Sarin's new rust-proof armor, Mr. Wave, and King Saturn (Ryan) storm the fortress while Shroud infiltrates on Livia's codes. Ryan discovers his Black Flux only works during time-stop and uses it to crack, then split, the immortal ghost Geist, who begs joyfully for the death he's craved for 15 years. With Geist gone the factory falls in minutes; Shroud downloads the production data, wipes footage, and feeds Vulcan a cover story. Deeper in they find Bacchus's secret pens of ~23 mind-scrambled human Bliss test subjects. Ryan photographs the atrocity, frees them, and vows to bury the factory with Bacchus inside on his Perfect Run."
+          },
+          {
+            "chapter": 105,
+            "summary": "CH105 'Miracle Cure': in the raid's aftermath Augustus decimates his own guards. The Psycho Cure is proven on Knockoff Psychos (Mongrel and Mosquito revert to healthy Genomes) but fails on two-true-Elixir Psychos like Frank, so Ryan launches an Antarctica expedition (Stitch joining) to research Elixir bonding via the Alchemist. Len, healing and shedding her red iconography, resolves to euthanize her father Bloodstream herself if uncurable. Ryan uses Incognito as a decoy alibi, then confesses to Livia that his Black Flux could neutralize Augustus. After her ultimatum, he swears not to KILL her father but to break and imprison him decisively - a fraught compromise between saving the world and sparing her family."
           }
         ],
         "entities": [
@@ -16282,7 +16371,9 @@
           "mr-wave",
           "geist",
           "black-flux",
-          "the-yellow-world"
+          "the-yellow-world",
+          "the-psycho-cure",
+          "incognito"
         ]
       }
     ]
