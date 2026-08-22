@@ -1,0 +1,1041 @@
+{
+  "novel": "The Perfect Run",
+  "universe": {
+    "id": "perfect-run",
+    "name": "The Perfect Run"
+  },
+  "world": {
+    "id": "perfect-run-world",
+    "title": "New Rome"
+  },
+  "books": [
+    {
+      "id": "perfect-run-book-1",
+      "name": "The Perfect Run",
+      "sources": [],
+      "range": [
+        1,
+        130
+      ]
+    }
+  ],
+  "wiki": {
+    "categories": [
+      {
+        "id": "character",
+        "label": "Character",
+        "shelf": "people"
+      },
+      {
+        "id": "place",
+        "label": "Place",
+        "shelf": "places"
+      },
+      {
+        "id": "organization",
+        "label": "Organization",
+        "shelf": "orders"
+      },
+      {
+        "id": "lore",
+        "label": "Lore",
+        "shelf": "lore"
+      }
+    ],
+    "entities": [
+      {
+        "id": "ryan-romano",
+        "kind": "character",
+        "name": "Ryan Romano",
+        "summary": "Protagonist courier codenamed Quicksave; a Violet Genome time-looper who sets a save point, dies, and reloads. Bored immortal seeking his lost friend Len.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Runs Quicksave Deliveries"
+          },
+          {
+            "key": "note",
+            "value": "Wears mouthless metal mask, top hat, navy trench coat"
+          },
+          {
+            "key": "note",
+            "value": "Time-stop turns the world purple and silent"
+          },
+          {
+            "key": "note",
+            "value": "Most powers need a conscious action to trigger"
+          },
+          {
+            "key": "note",
+            "value": "Drives a customized red Plymouth Fury reinforced for ramming"
+          },
+          {
+            "key": "note",
+            "value": "Owns a white rabbit plushie he calls his most devastating weapon"
+          },
+          {
+            "key": "note",
+            "value": "Motto: I'm immortal but don't tell anyone"
+          }
+        ],
+        "ties": [
+          {
+            "to": "len",
+            "rel": "searching for his best friend"
+          },
+          {
+            "to": "ghoul",
+            "rel": "defeated and delivered to Private Security"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": [
+          "What exactly is the full scope of his save/reload power?"
+        ]
+      },
+      {
+        "id": "len",
+        "kind": "character",
+        "name": "Len",
+        "summary": "Ryan's lost best friend, a brilliant tinkerer he has hunted for years. Black hair, blue eyes, committed Marxist-Leninist.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Made Ryan's boxers years ago"
+          },
+          {
+            "key": "note",
+            "value": "Rumored to be in New Rome"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "best friend"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "renesco",
+        "kind": "character",
+        "name": "Renesco",
+        "summary": "Balding old Italian barman of the Jolie Wrangler, an Augusti front bar; receives Ryan's briefcase delivery.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Owns the Jolie Wrangler pub"
+          },
+          {
+            "key": "note",
+            "value": "Pays Private Security a protection subscription"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-augusti",
+            "rel": "runs a front bar for"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "ghoul",
+        "kind": "character",
+        "name": "Ghoul",
+        "summary": "Skeletal ice-Genome Psycho of the Meta-Gang who kills Ryan and Renesco in an early loop, sent by Adam.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Skinless skeleton exhaling chilling mist that forms ice weapons"
+          },
+          {
+            "key": "note",
+            "value": "Manifests ice armor over his bones"
+          },
+          {
+            "key": "note",
+            "value": "Sent by Adam"
+          },
+          {
+            "key": "note",
+            "value": "Second power is immortality, survives dismemberment and organ loss"
+          },
+          {
+            "key": "note",
+            "value": "Can transform into a giant ice-and-snow titan"
+          },
+          {
+            "key": "note",
+            "value": "Locates enemies by temperature when blinded"
+          }
+        ],
+        "ties": [
+          {
+            "to": "meta-gang",
+            "rel": "member"
+          },
+          {
+            "to": "adam",
+            "rel": "sent by"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "nemesis"
+          }
+        ],
+        "appearances": [
+          1,
+          5
+        ],
+        "questions": []
+      },
+      {
+        "id": "new-rome",
+        "kind": "place",
+        "name": "New Rome",
+        "summary": "Largest metropolis in Italy and ravaged Europe's capital of sin, built on the gulf of Naples after Mechron bombed the old city; corporate-run, 'no gods nor kings, only money'.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Built on the ruins of Naples"
+          },
+          {
+            "key": "note",
+            "value": "Dominated by the Dynamis corporation"
+          },
+          {
+            "key": "note",
+            "value": "Districts include the Golden Coast, Rust Town, the Plebeian district and Little Maghreb"
+          }
+        ],
+        "ties": [],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "dynamis",
+        "kind": "organization",
+        "name": "Dynamis",
+        "summary": "The megacorporation that openly runs New Rome, marked by an ouroboros logo; sells Genome elixirs and owns the Il Migliore hero team.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Sells the Hercules Elixir for 100k euros"
+          },
+          {
+            "key": "note",
+            "value": "Ouroboros corporate symbol"
+          },
+          {
+            "key": "note",
+            "value": "Owns Il Migliore's image and merchandising"
+          }
+        ],
+        "ties": [
+          {
+            "to": "il-migliore",
+            "rel": "owns and employs"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "meta-gang",
+        "kind": "organization",
+        "name": "Meta-Gang",
+        "summary": "Roving band of Psycho elixir-junkies led by Adam, hitting Augusti fronts across New Rome.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Members are Psychos (multi-elixir mutants)"
+          },
+          {
+            "key": "note",
+            "value": "Led by Adam who reportedly eats people"
+          }
+        ],
+        "ties": [
+          {
+            "to": "adam",
+            "rel": "led by"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-augusti",
+        "kind": "organization",
+        "name": "The Augusti",
+        "summary": "The true criminal power in New Rome and most of Italy, led by the invincible Augustus; styles itself a family of honorable men.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Led by Augustus"
+          },
+          {
+            "key": "note",
+            "value": "Renesco's bar is one of its fronts"
+          }
+        ],
+        "ties": [
+          {
+            "to": "augustus",
+            "rel": "led by"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "private-security",
+        "kind": "organization",
+        "name": "Private Security",
+        "summary": "Dynamis's armed enforcers, openly bribable, running subscription protection rackets.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Wear Dynamis ouroboros gear and carry energy rifles"
+          },
+          {
+            "key": "note",
+            "value": "Grunts are easily bribed"
+          }
+        ],
+        "ties": [
+          {
+            "to": "dynamis",
+            "rel": "enforcement arm of"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "adam",
+        "kind": "character",
+        "name": "Adam",
+        "summary": "Boss of the Meta-Gang; reputedly eats people. Orders the hit on Renesco.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Leader of the Meta-Gang"
+          },
+          {
+            "key": "note",
+            "value": "Said to eat people"
+          }
+        ],
+        "ties": [
+          {
+            "to": "meta-gang",
+            "rel": "leader"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "genome",
+        "kind": "lore",
+        "name": "Genome",
+        "summary": "A superpowered human created by drinking an Elixir; gains a power plus enhanced physique. Taking two or more elixirs makes an unstable, addicted Psycho.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Powers come from colored Elixirs"
+          },
+          {
+            "key": "note",
+            "value": "Psychos are multi-elixir mutants who need periodic injections"
+          }
+        ],
+        "ties": [],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "genome-wars",
+        "kind": "lore",
+        "name": "Genome Wars",
+        "summary": "The past cataclysm that ravaged Europe and destroyed the old world after Elixirs appeared; Mechron's drones bombed Naples to ruins.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Devastated southern Europe"
+          },
+          {
+            "key": "note",
+            "value": "Mechron's drones destroyed the old Naples"
+          }
+        ],
+        "ties": [],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "jolie-wrangler",
+        "kind": "place",
+        "name": "Jolie Wrangler",
+        "summary": "Renesco's cozy pub, an Augusti front where Ryan makes his fatal briefcase delivery.",
+        "facts": [],
+        "ties": [
+          {
+            "to": "renesco",
+            "rel": "owned by"
+          }
+        ],
+        "appearances": [
+          1
+        ],
+        "questions": []
+      },
+      {
+        "id": "wyvern",
+        "kind": "character",
+        "name": "Wyvern",
+        "summary": "Star superheroine of Il Migliore; an amazonian woman with translucent dragonfly wings, near-silent supersonic flight and super strength. Tries to recruit Ryan and offers to help find Len.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Black shoulder-length hair, greyish eyes, white Dynamis bodysuit"
+          },
+          {
+            "key": "note",
+            "value": "Translucent dragonfly wings, silent near-supersonic flight"
+          },
+          {
+            "key": "note",
+            "value": "Can bench press a school bus even partially transformed"
+          },
+          {
+            "key": "note",
+            "value": "Wears an earplug comm and takes orders mid-conversation"
+          }
+        ],
+        "ties": [
+          {
+            "to": "il-migliore",
+            "rel": "member"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "tries to recruit"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "il-migliore",
+        "kind": "organization",
+        "name": "Il Migliore",
+        "summary": "Dynamis's corporate superhero team, official celebrity protectors of New Rome, contrasted with the pro-bono Carnival.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "On Dynamis's payroll"
+          },
+          {
+            "key": "note",
+            "value": "Brands the Augusti as supervillains"
+          }
+        ],
+        "ties": [
+          {
+            "to": "dynamis",
+            "rel": "employed by"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "vulcan",
+        "kind": "character",
+        "name": "Vulcan",
+        "summary": "Encrypted-voice representative of the Augusti who counter-recruits Ryan, summoning him to the Bakuto casino; oversees the Augusti weapons/tech division.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Speaks only through an encrypted voice channel"
+          },
+          {
+            "key": "note",
+            "value": "Offers Ryan women, weapons and Bliss to prove himself"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-augusti",
+            "rel": "represents"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "augustus",
+        "kind": "character",
+        "name": "Augustus",
+        "summary": "Self-styled emperor of Italy and head of the Augusti; invincible and able to shoot homing lightning, with more victims to his name than the cigarette.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Invincible and shoots homing lightning"
+          },
+          {
+            "key": "note",
+            "value": "One of the rare two-power Genomes with no ill effects"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-augusti",
+            "rel": "leads"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "leo-hargraves",
+        "kind": "character",
+        "name": "Leo Hargraves",
+        "summary": "Leader of the Carnival, the pro-bono wandering-knight heroes Ryan admires despite them causing the worst day of his life.",
+        "facts": [],
+        "ties": [
+          {
+            "to": "the-carnival",
+            "rel": "leads"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-carnival",
+        "kind": "organization",
+        "name": "The Carnival",
+        "summary": "Leo Hargraves's band of real pro-bono, wandering-knight superheroes, unlike the corporate Il Migliore.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Pro-bono heroes, not corporate sellouts"
+          }
+        ],
+        "ties": [
+          {
+            "to": "leo-hargraves",
+            "rel": "led by"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "rust-town",
+        "kind": "place",
+        "name": "Rust Town",
+        "summary": "New Rome's walled-off poor northwest industrial district, a polluted labyrinth where rogue Geniuses trade; where Ryan hunts for leads on Len.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Walled off from the rest of the city"
+          },
+          {
+            "key": "note",
+            "value": "Home to the Junkyard black market"
+          }
+        ],
+        "ties": [],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-junkyard",
+        "kind": "place",
+        "name": "The Junkyard",
+        "summary": "An old coal mine turned open landfill in Rust Town where rogue Geniuses and adventurers trade Genius tech; full of cutthroats and Psychos.",
+        "facts": [],
+        "ties": [
+          {
+            "to": "rust-town",
+            "rel": "located in"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "bakuto",
+        "kind": "place",
+        "name": "Bakuto",
+        "summary": "Japan-themed Augusti casino where Vulcan summons Ryan; pagoda architecture, samurai bouncers, pachinko and sumo.",
+        "facts": [],
+        "ties": [
+          {
+            "to": "the-augusti",
+            "rel": "owned by"
+          }
+        ],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "bliss",
+        "kind": "lore",
+        "name": "Bliss",
+        "summary": "The ubiquitous mushroom drug of New Rome, peddled openly to the poor.",
+        "facts": [],
+        "ties": [],
+        "appearances": [
+          2
+        ],
+        "questions": []
+      },
+      {
+        "id": "zanbato",
+        "kind": "character",
+        "name": "Zanbato",
+        "summary": "Augusti Genome and Ryan's handler; wears sleek blue samurai armor with a demon-mask helm and conjures a crimson solid-light katana. A true believer who calls the Augusti honorable men; his real name is Jamie Cutter.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Conjures a crimson solid-light katana"
+          },
+          {
+            "key": "note",
+            "value": "Wears blue skintight samurai power armor"
+          },
+          {
+            "key": "note",
+            "value": "Italian, with a Korean girlfriend he hopes to marry"
+          },
+          {
+            "key": "note",
+            "value": "One of the Augusti's primary recruiters"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-augusti",
+            "rel": "enforcer and recruiter"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "handler and growing friend"
+          }
+        ],
+        "appearances": [
+          3
+        ],
+        "questions": []
+      },
+      {
+        "id": "luigi",
+        "kind": "character",
+        "name": "Luigi",
+        "summary": "Augusti supply manager alias Crypto; a fashionable African-Italian barely eighteen with a truth-compulsion power that stops anyone from lying once they start talking to him.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Alias Crypto"
+          },
+          {
+            "key": "note",
+            "value": "Truth-compulsion power once you start talking"
+          },
+          {
+            "key": "note",
+            "value": "Manages Augusti supply runs"
+          }
+        ],
+        "ties": [
+          {
+            "to": "the-augusti",
+            "rel": "supply manager"
+          }
+        ],
+        "appearances": [
+          4
+        ],
+        "questions": []
+      },
+      {
+        "id": "sarin",
+        "kind": "character",
+        "name": "Sarin",
+        "summary": "Meta-Gang Psycho in a black hazmat suit whose gauntlets fire compressed-air blasts; her true body is a corrosive gas that rusts metal. Ryan nicknames her Blower.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Fires compressed-air shockwaves and self-propels"
+          },
+          {
+            "key": "note",
+            "value": "Her body is corrosive gas that rusts metal"
+          },
+          {
+            "key": "note",
+            "value": "Wears a black hazmat suit and gas mask"
+          }
+        ],
+        "ties": [
+          {
+            "to": "meta-gang",
+            "rel": "member"
+          },
+          {
+            "to": "ghoul",
+            "rel": "raid partner"
+          }
+        ],
+        "appearances": [
+          4
+        ],
+        "questions": []
+      },
+      {
+        "id": "the-fisty-brothers",
+        "kind": "lore",
+        "name": "The Fisty Brothers",
+        "summary": "Ryan's signature pisto-gauntlets: hydraulic piston-ram gloves (Mechron design) that he upgraded with an electric shock. He jokes they are the real A-bombs; they jam when frozen by Ghoul's mist.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Piston-powered ram gauntlets with added electric shock"
+          },
+          {
+            "key": "note",
+            "value": "Based on Genius Mechron's close-combat drone design"
+          },
+          {
+            "key": "note",
+            "value": "Jam when iced over"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "signature weapon"
+          }
+        ],
+        "appearances": [
+          4
+        ],
+        "questions": []
+      },
+      {
+        "id": "quicksave",
+        "kind": "lore",
+        "name": "Quicksave",
+        "summary": "Ryan's power set: a Violet time-manipulator who can freeze time up to ten seconds with a cooldown equal to the duration used, plus a hidden save/reload ability he never reveals. Publicly known only for the time-stop.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Time-stop up to 10 seconds, cooldown equals time used"
+          },
+          {
+            "key": "note",
+            "value": "Hidden save/reload ('quicksave') never disclosed"
+          },
+          {
+            "key": "note",
+            "value": "Violet Genome (spacetime class)"
+          }
+        ],
+        "ties": [
+          {
+            "to": "ryan-romano",
+            "rel": "power"
+          }
+        ],
+        "appearances": [
+          4
+        ],
+        "questions": []
+      },
+      {
+        "id": "len-s-bathyspheres",
+        "kind": "lore",
+        "name": "Len's Bathyspheres",
+        "summary": "Cableless crimson steampunk submersibles powered by small propellers, unmistakably Len's rugged efficient design; the Augusti use them to move supplies underwater from the old harbor. First hard proof Len is in New Rome.",
+        "facts": [],
+        "ties": [
+          {
+            "to": "len",
+            "rel": "built by"
+          },
+          {
+            "to": "the-augusti",
+            "rel": "used by"
+          }
+        ],
+        "appearances": [
+          4
+        ],
+        "questions": []
+      },
+      {
+        "id": "mount-augustus",
+        "kind": "place",
+        "name": "Mount Augustus",
+        "summary": "Augustus's fortified hilltop estate on New Rome's highest point, officially 'Hillside'; a Vatican-sized Roman villa with a Parthenon replica, ringed by kilometers of empty land, a fence, and security. Ryan avoids it.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Officially named Hillside"
+          },
+          {
+            "key": "note",
+            "value": "Roman villa the size of the Vatican with a Parthenon replica"
+          },
+          {
+            "key": "note",
+            "value": "Isolated for kilometers with one guarded road"
+          }
+        ],
+        "ties": [
+          {
+            "to": "augustus",
+            "rel": "residence of"
+          }
+        ],
+        "appearances": [
+          6
+        ],
+        "questions": []
+      },
+      {
+        "id": "ischia",
+        "kind": "place",
+        "name": "Ischia",
+        "summary": "A toxic ruined island in the local gulf, never renovated after Mechron bombed Italy; Ryan suspects the Augusti bathyspheres ferry supplies there and that Len may be hidden on it.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Toxic ruin since Mechron's bombing"
+          },
+          {
+            "key": "note",
+            "value": "Ryan's suspected destination for the bathysphere shipments"
+          }
+        ],
+        "ties": [],
+        "appearances": [
+          6
+        ],
+        "questions": []
+      },
+      {
+        "id": "mystery-woman-in-crimson",
+        "kind": "character",
+        "name": "Mystery Woman in Crimson",
+        "summary": "An elegant woman with long black hair, a crimson gown, and a beauty spot on her right cheek who sits beside Ryan at the Bakuto and flirtatiously probes him; she reacts with recognition to his money-fan stunt. Identity unknown.",
+        "facts": [
+          {
+            "key": "note",
+            "value": "Long black hair, crimson gown, beauty spot on right cheek"
+          },
+          {
+            "key": "note",
+            "value": "Approaches Ryan at the Bakuto and probes him"
+          },
+          {
+            "key": "note",
+            "value": "Shows a flash of recognition at his behavior"
+          }
+        ],
+        "ties": [],
+        "appearances": [
+          6
+        ],
+        "questions": []
+      },
+      {
+        "id": "little-maghreb",
+        "kind": "place",
+        "name": "Little Maghreb",
+        "summary": "The Arab quarter of New Rome's Plebeian district, billboards in Arabic/Turkish, a derelict mosque and a replica Turin synagogue; Ryan hides in a seedy hotel here after his room is firebombed.",
+        "facts": [],
+        "ties": [
+          {
+            "to": "new-rome",
+            "rel": "district of"
+          }
+        ],
+        "appearances": [
+          6
+        ],
+        "questions": []
+      }
+    ]
+  },
+  "plot": {
+    "plotlines": [
+      {
+        "id": "the-endless-delivery-loop",
+        "title": "The endless delivery loop",
+        "summary": "Ryan keeps dying delivering a briefcase to Renesco; on the fourth loop he rams the assassin Ghoul with his Plymouth, beats him with a bat, bribes Private Security, and completes the delivery. His only motive: he is bored.",
+        "beats": [
+          {
+            "chapter": 1,
+            "summary": "Ryan keeps dying delivering a briefcase to Renesco; on the fourth loop he rams the assassin Ghoul with his Plymouth, beats him with a bat, bribes Private Security, and completes the delivery. His only motive: he is bored."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "renesco",
+          "ghoul",
+          "private-security"
+        ]
+      },
+      {
+        "id": "competing-recruitment-the-branching-paths",
+        "title": "Competing recruitment: the branching paths",
+        "summary": "Wyvern of Il Migliore recruits Ryan and offers to help find Len; then Vulcan of the Augusti counter-recruits him to the Bakuto casino. Ryan realizes multiple faction routes have opened, but his true quest is finding Len.",
+        "beats": [
+          {
+            "chapter": 2,
+            "summary": "Wyvern of Il Migliore recruits Ryan and offers to help find Len; then Vulcan of the Augusti counter-recruits him to the Bakuto casino. Ryan realizes multiple faction routes have opened, but his true quest is finding Len."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "wyvern",
+          "vulcan",
+          "len",
+          "il-migliore",
+          "the-augusti"
+        ]
+      },
+      {
+        "id": "joining-the-augusti-to-find-len",
+        "title": "Joining the Augusti to find Len",
+        "summary": "At the Bakuto, Zanbato recruits Ryan with a favor-for-favor deal: help crush the Meta-Gang and the Augusti will help find Len. Zanbato warns Ghoul has been busted out of Private Security and will hunt Ryan.",
+        "beats": [
+          {
+            "chapter": 3,
+            "summary": "At the Bakuto, Zanbato recruits Ryan with a favor-for-favor deal: help crush the Meta-Gang and the Augusti will help find Len. Zanbato warns Ghoul has been busted out of Private Security and will hunt Ryan."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "zanbato",
+          "the-augusti",
+          "meta-gang",
+          "ghoul",
+          "len"
+        ]
+      },
+      {
+        "id": "harbor-ambush-and-the-len-breakthrough",
+        "title": "Harbor ambush and the Len breakthrough",
+        "summary": "Guarding an Augusti supply run at the old harbor, Ryan sees Len's crimson bathyspheres surface and realizes she is truly in New Rome. Ghoul and Sarin (Blower) ambush the shipment; Ryan fights them off solo, learning the Meta answer to a leader named Adam.",
+        "beats": [
+          {
+            "chapter": 4,
+            "summary": "Guarding an Augusti supply run at the old harbor, Ryan sees Len's crimson bathyspheres surface and realizes she is truly in New Rome. Ghoul and Sarin (Blower) ambush the shipment; Ryan fights them off solo, learning the Meta answer to a leader named Adam."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "zanbato",
+          "luigi",
+          "len",
+          "ghoul",
+          "sarin",
+          "adam"
+        ]
+      },
+      {
+        "id": "battle-won-then-killed-in-the-night",
+        "title": "Battle won, then killed in the night",
+        "summary": "With Zanbato's help Ryan defeats Ghoul and Sarin as Private Security fires on everyone; Zanbato reveals his real name is Jamie and promises to ask Vulcan about Len's tech. Back at his hotel, Ryan is killed by a firebomb rigged to his door, forcing a reload.",
+        "beats": [
+          {
+            "chapter": 5,
+            "summary": "With Zanbato's help Ryan defeats Ghoul and Sarin as Private Security fires on everyone; Zanbato reveals his real name is Jamie and promises to ask Vulcan about Len's tech. Back at his hotel, Ryan is killed by a firebomb rigged to his door, forcing a reload."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "zanbato",
+          "ghoul",
+          "sarin",
+          "private-security",
+          "len"
+        ]
+      },
+      {
+        "id": "the-divergence-that-breaks-the-augusti-path",
+        "title": "The divergence that breaks the Augusti path",
+        "summary": "Reloading, Ryan changes his routine (shoots Ghoul, switches hotels, warns Wyvern). The changes cost him: Vulcan never calls, the Augusti path closes, and he meets the mysterious crimson-gowned woman at the Bakuto. He resolves to chase Len's tech through Rust Town's black market instead.",
+        "beats": [
+          {
+            "chapter": 6,
+            "summary": "Reloading, Ryan changes his routine (shoots Ghoul, switches hotels, warns Wyvern). The changes cost him: Vulcan never calls, the Augusti path closes, and he meets the mysterious crimson-gowned woman at the Bakuto. He resolves to chase Len's tech through Rust Town's black market instead."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "ghoul",
+          "wyvern",
+          "vulcan",
+          "mystery-woman-in-crimson",
+          "len"
+        ]
+      }
+    ]
+  },
+  "counts": {
+    "entities": 33,
+    "plotlines": 6,
+    "books": 1
+  }
+}

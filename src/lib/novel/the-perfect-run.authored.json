@@ -1,0 +1,2128 @@
+{
+  "novel": "The Perfect Run",
+  "universe": {
+    "id": "perfect-run",
+    "name": "The Perfect Run"
+  },
+  "world": {
+    "id": "perfect-run-world",
+    "title": "New Rome"
+  },
+  "books": [
+    {
+      "id": "perfect-run-book-1",
+      "name": "The Perfect Run",
+      "sources": [],
+      "range": [
+        1,
+        130
+      ]
+    }
+  ],
+  "wikiObservations": [
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "Protagonist courier codenamed Quicksave; a Violet Genome time-looper who sets a save point, dies, and reloads. Bored immortal seeking his lost friend Len.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Runs Quicksave Deliveries"
+        },
+        {
+          "key": "note",
+          "value": "Wears mouthless metal mask, top hat, navy trench coat"
+        },
+        {
+          "key": "note",
+          "value": "Time-stop turns the world purple and silent"
+        },
+        {
+          "key": "note",
+          "value": "Most powers need a conscious action to trigger"
+        },
+        {
+          "key": "note",
+          "value": "Drives a customized red Plymouth Fury reinforced for ramming"
+        },
+        {
+          "key": "note",
+          "value": "Owns a white rabbit plushie he calls his most devastating weapon"
+        },
+        {
+          "key": "note",
+          "value": "Motto: I'm immortal but don't tell anyone"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "searching for his best friend"
+        },
+        {
+          "to": "Ghoul",
+          "rel": "defeated and delivered to Private Security"
+        }
+      ],
+      "questions": [
+        "What exactly is the full scope of his save/reload power?"
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Len",
+      "kind": "character",
+      "summary": "Ryan's lost best friend, a brilliant tinkerer he has hunted for years. Black hair, blue eyes, committed Marxist-Leninist.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Made Ryan's boxers years ago"
+        },
+        {
+          "key": "note",
+          "value": "Rumored to be in New Rome"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "best friend"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Renesco",
+      "kind": "character",
+      "summary": "Balding old Italian barman of the Jolie Wrangler, an Augusti front bar; receives Ryan's briefcase delivery.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Owns the Jolie Wrangler pub"
+        },
+        {
+          "key": "note",
+          "value": "Pays Private Security a protection subscription"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "runs a front bar for"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Ghoul",
+      "kind": "character",
+      "summary": "Skeletal ice-Genome Psycho of the Meta-Gang who kills Ryan and Renesco in an early loop, sent by Adam.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Skinless skeleton exhaling chilling mist that forms ice weapons"
+        },
+        {
+          "key": "note",
+          "value": "Manifests ice armor over his bones"
+        },
+        {
+          "key": "note",
+          "value": "Sent by Adam"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Adam",
+          "rel": "sent by"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "New Rome",
+      "kind": "place",
+      "summary": "Largest metropolis in Italy and ravaged Europe's capital of sin, built on the gulf of Naples after Mechron bombed the old city; corporate-run, 'no gods nor kings, only money'.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Built on the ruins of Naples"
+        },
+        {
+          "key": "note",
+          "value": "Dominated by the Dynamis corporation"
+        },
+        {
+          "key": "note",
+          "value": "Districts include the Golden Coast, Rust Town, the Plebeian district and Little Maghreb"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Dynamis",
+      "kind": "organization",
+      "summary": "The megacorporation that openly runs New Rome, marked by an ouroboros logo; sells Genome elixirs and owns the Il Migliore hero team.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Sells the Hercules Elixir for 100k euros"
+        },
+        {
+          "key": "note",
+          "value": "Ouroboros corporate symbol"
+        },
+        {
+          "key": "note",
+          "value": "Owns Il Migliore's image and merchandising"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "owns and employs"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Meta-Gang",
+      "kind": "organization",
+      "summary": "Roving band of Psycho elixir-junkies led by Adam, hitting Augusti fronts across New Rome.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Members are Psychos (multi-elixir mutants)"
+        },
+        {
+          "key": "note",
+          "value": "Led by Adam who reportedly eats people"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Adam",
+          "rel": "led by"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "The Augusti",
+      "kind": "organization",
+      "summary": "The true criminal power in New Rome and most of Italy, led by the invincible Augustus; styles itself a family of honorable men.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Led by Augustus"
+        },
+        {
+          "key": "note",
+          "value": "Renesco's bar is one of its fronts"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "led by"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Private Security",
+      "kind": "organization",
+      "summary": "Dynamis's armed enforcers, openly bribable, running subscription protection rackets.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Wear Dynamis ouroboros gear and carry energy rifles"
+        },
+        {
+          "key": "note",
+          "value": "Grunts are easily bribed"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "enforcement arm of"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Adam",
+      "kind": "character",
+      "summary": "Boss of the Meta-Gang; reputedly eats people. Orders the hit on Renesco.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Leader of the Meta-Gang"
+        },
+        {
+          "key": "note",
+          "value": "Said to eat people"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "leader"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Genome",
+      "kind": "lore",
+      "summary": "A superpowered human created by drinking an Elixir; gains a power plus enhanced physique. Taking two or more elixirs makes an unstable, addicted Psycho.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Powers come from colored Elixirs"
+        },
+        {
+          "key": "note",
+          "value": "Psychos are multi-elixir mutants who need periodic injections"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Genome Wars",
+      "kind": "lore",
+      "summary": "The past cataclysm that ravaged Europe and destroyed the old world after Elixirs appeared; Mechron's drones bombed Naples to ruins.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Devastated southern Europe"
+        },
+        {
+          "key": "note",
+          "value": "Mechron's drones destroyed the old Naples"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Jolie Wrangler",
+      "kind": "place",
+      "summary": "Renesco's cozy pub, an Augusti front where Ryan makes his fatal briefcase delivery.",
+      "ties": [
+        {
+          "to": "Renesco",
+          "rel": "owned by"
+        }
+      ],
+      "chapter": 1
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "Star superheroine of Il Migliore; an amazonian woman with translucent dragonfly wings, near-silent supersonic flight and super strength. Tries to recruit Ryan and offers to help find Len.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Black shoulder-length hair, greyish eyes, white Dynamis bodysuit"
+        },
+        {
+          "key": "note",
+          "value": "Translucent dragonfly wings, silent near-supersonic flight"
+        },
+        {
+          "key": "note",
+          "value": "Can bench press a school bus even partially transformed"
+        },
+        {
+          "key": "note",
+          "value": "Wears an earplug comm and takes orders mid-conversation"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "tries to recruit"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Il Migliore",
+      "kind": "organization",
+      "summary": "Dynamis's corporate superhero team, official celebrity protectors of New Rome, contrasted with the pro-bono Carnival.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "On Dynamis's payroll"
+        },
+        {
+          "key": "note",
+          "value": "Brands the Augusti as supervillains"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "employed by"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Vulcan",
+      "kind": "character",
+      "summary": "Encrypted-voice representative of the Augusti who counter-recruits Ryan, summoning him to the Bakuto casino; oversees the Augusti weapons/tech division.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Speaks only through an encrypted voice channel"
+        },
+        {
+          "key": "note",
+          "value": "Offers Ryan women, weapons and Bliss to prove himself"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "represents"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Self-styled emperor of Italy and head of the Augusti; invincible and able to shoot homing lightning, with more victims to his name than the cigarette.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Invincible and shoots homing lightning"
+        },
+        {
+          "key": "note",
+          "value": "One of the rare two-power Genomes with no ill effects"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "leads"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Leo Hargraves",
+      "kind": "character",
+      "summary": "Leader of the Carnival, the pro-bono wandering-knight heroes Ryan admires despite them causing the worst day of his life.",
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "leads"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "The Carnival",
+      "kind": "organization",
+      "summary": "Leo Hargraves's band of real pro-bono, wandering-knight superheroes, unlike the corporate Il Migliore.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Pro-bono heroes, not corporate sellouts"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Leo Hargraves",
+          "rel": "led by"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Rust Town",
+      "kind": "place",
+      "summary": "New Rome's walled-off poor northwest industrial district, a polluted labyrinth where rogue Geniuses trade; where Ryan hunts for leads on Len.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Walled off from the rest of the city"
+        },
+        {
+          "key": "note",
+          "value": "Home to the Junkyard black market"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "The Junkyard",
+      "kind": "place",
+      "summary": "An old coal mine turned open landfill in Rust Town where rogue Geniuses and adventurers trade Genius tech; full of cutthroats and Psychos.",
+      "ties": [
+        {
+          "to": "Rust Town",
+          "rel": "located in"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Bakuto",
+      "kind": "place",
+      "summary": "Japan-themed Augusti casino where Vulcan summons Ryan; pagoda architecture, samurai bouncers, pachinko and sumo.",
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "owned by"
+        }
+      ],
+      "chapter": 2
+    },
+    {
+      "name": "Bliss",
+      "kind": "lore",
+      "summary": "The ubiquitous mushroom drug of New Rome, peddled openly to the poor.",
+      "chapter": 2
+    },
+    {
+      "name": "Zanbato",
+      "kind": "character",
+      "summary": "Augusti Genome and Ryan's handler; wears sleek blue samurai armor with a demon-mask helm and conjures a crimson solid-light katana. A true believer who calls the Augusti honorable men; his real name is Jamie Cutter.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Conjures a crimson solid-light katana"
+        },
+        {
+          "key": "note",
+          "value": "Wears blue skintight samurai power armor"
+        },
+        {
+          "key": "note",
+          "value": "Italian, with a Korean girlfriend he hopes to marry"
+        },
+        {
+          "key": "note",
+          "value": "One of the Augusti's primary recruiters"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "enforcer and recruiter"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "handler and growing friend"
+        }
+      ],
+      "chapter": 3
+    },
+    {
+      "name": "Luigi",
+      "kind": "character",
+      "summary": "Augusti supply manager alias Crypto; a fashionable African-Italian barely eighteen with a truth-compulsion power that stops anyone from lying once they start talking to him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alias Crypto"
+        },
+        {
+          "key": "note",
+          "value": "Truth-compulsion power once you start talking"
+        },
+        {
+          "key": "note",
+          "value": "Manages Augusti supply runs"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "supply manager"
+        }
+      ],
+      "chapter": 4
+    },
+    {
+      "name": "Sarin",
+      "kind": "character",
+      "summary": "Meta-Gang Psycho in a black hazmat suit whose gauntlets fire compressed-air blasts; her true body is a corrosive gas that rusts metal. Ryan nicknames her Blower.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Fires compressed-air shockwaves and self-propels"
+        },
+        {
+          "key": "note",
+          "value": "Her body is corrosive gas that rusts metal"
+        },
+        {
+          "key": "note",
+          "value": "Wears a black hazmat suit and gas mask"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Ghoul",
+          "rel": "raid partner"
+        }
+      ],
+      "chapter": 4
+    },
+    {
+      "name": "The Fisty Brothers",
+      "kind": "lore",
+      "summary": "Ryan's signature pisto-gauntlets: hydraulic piston-ram gloves (Mechron design) that he upgraded with an electric shock. He jokes they are the real A-bombs; they jam when frozen by Ghoul's mist.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Piston-powered ram gauntlets with added electric shock"
+        },
+        {
+          "key": "note",
+          "value": "Based on Genius Mechron's close-combat drone design"
+        },
+        {
+          "key": "note",
+          "value": "Jam when iced over"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "signature weapon"
+        }
+      ],
+      "chapter": 4
+    },
+    {
+      "name": "Quicksave",
+      "kind": "lore",
+      "summary": "Ryan's power set: a Violet time-manipulator who can freeze time up to ten seconds with a cooldown equal to the duration used, plus a hidden save/reload ability he never reveals. Publicly known only for the time-stop.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Time-stop up to 10 seconds, cooldown equals time used"
+        },
+        {
+          "key": "note",
+          "value": "Hidden save/reload ('quicksave') never disclosed"
+        },
+        {
+          "key": "note",
+          "value": "Violet Genome (spacetime class)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "power"
+        }
+      ],
+      "chapter": 4
+    },
+    {
+      "name": "Len's Bathyspheres",
+      "kind": "lore",
+      "summary": "Cableless crimson steampunk submersibles powered by small propellers, unmistakably Len's rugged efficient design; the Augusti use them to move supplies underwater from the old harbor. First hard proof Len is in New Rome.",
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "built by"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "used by"
+        }
+      ],
+      "chapter": 4
+    },
+    {
+      "name": "Mount Augustus",
+      "kind": "place",
+      "summary": "Augustus's fortified hilltop estate on New Rome's highest point, officially 'Hillside'; a Vatican-sized Roman villa with a Parthenon replica, ringed by kilometers of empty land, a fence, and security. Ryan avoids it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Officially named Hillside"
+        },
+        {
+          "key": "note",
+          "value": "Roman villa the size of the Vatican with a Parthenon replica"
+        },
+        {
+          "key": "note",
+          "value": "Isolated for kilometers with one guarded road"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "residence of"
+        }
+      ],
+      "chapter": 6
+    },
+    {
+      "name": "Ischia",
+      "kind": "place",
+      "summary": "A toxic ruined island in the local gulf, never renovated after Mechron bombed Italy; Ryan suspects the Augusti bathyspheres ferry supplies there and that Len may be hidden on it.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Toxic ruin since Mechron's bombing"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's suspected destination for the bathysphere shipments"
+        }
+      ],
+      "chapter": 6
+    },
+    {
+      "name": "Mystery Woman in Crimson",
+      "kind": "character",
+      "summary": "An elegant woman with long black hair, a crimson gown, and a beauty spot on her right cheek who sits beside Ryan at the Bakuto and flirtatiously probes him; she reacts with recognition to his money-fan stunt. Identity unknown.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Long black hair, crimson gown, beauty spot on right cheek"
+        },
+        {
+          "key": "note",
+          "value": "Approaches Ryan at the Bakuto and probes him"
+        },
+        {
+          "key": "note",
+          "value": "Shows a flash of recognition at his behavior"
+        }
+      ],
+      "chapter": 6
+    },
+    {
+      "name": "Little Maghreb",
+      "kind": "place",
+      "summary": "The Arab quarter of New Rome's Plebeian district, billboards in Arabic/Turkish, a derelict mosque and a replica Turin synagogue; Ryan hides in a seedy hotel here after his room is firebombed.",
+      "ties": [
+        {
+          "to": "New Rome",
+          "rel": "district of"
+        }
+      ],
+      "chapter": 6
+    },
+    {
+      "name": "Ghoul",
+      "kind": "character",
+      "summary": "Meta-Gang Psycho with two powers: cryokinesis (ice armor, mist, a four-meter snow-titan form) and true immortality, surviving even being cut apart. Obsessed with killing Ryan for humiliating him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Second power is immortality, survives dismemberment and organ loss"
+        },
+        {
+          "key": "note",
+          "value": "Can transform into a giant ice-and-snow titan"
+        },
+        {
+          "key": "note",
+          "value": "Locates enemies by temperature when blinded"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "nemesis"
+        }
+      ],
+      "chapter": 5
+    },
+    {
+      "name": "The Alchemist",
+      "kind": "character",
+      "summary": "The unknown architect of the Genome age who scattered over ten million Wonderboxes of Elixirs worldwide as a 'grand socio-genetic experiment,' ending the old world and triggering the Last Easter and Genome Wars. Signs letters simply 'The Alchemist.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Distributed 10+ million Elixir Wonderboxes globally"
+        },
+        {
+          "key": "note",
+          "value": "Calls it a socio-genetic experiment to evolve humanity"
+        },
+        {
+          "key": "note",
+          "value": "Identity and fate unknown"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "Wonderbox",
+      "kind": "lore",
+      "summary": "Hexagonal metal boxes with helix locks that the Alchemist sent to chosen recipients, each holding three random Elixirs and a personalized letter; the devices that began the Last Easter tragedy.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Contains three randomly-selected Elixirs and a letter"
+        },
+        {
+          "key": "note",
+          "value": "Helix-shaped lock, multicolored helix symbol"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "sent by"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "Elixirs",
+      "kind": "lore",
+      "summary": "Serums that grant health benefits and one power keyed to color: Green=Life, Blue=Information, Violet=Spacetime, Red=Energy, Orange=Matter, Yellow=Abstract, White=Meta-power. Drinking more than one destabilizes the body into a Psycho.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Green=Life, Blue=Information, Violet=Spacetime, Red=Energy"
+        },
+        {
+          "key": "note",
+          "value": "Orange=Matter, Yellow=Abstract, White=Meta-power"
+        },
+        {
+          "key": "note",
+          "value": "More than one per person causes Psycho mutation"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Alchemist",
+          "rel": "created by"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "The Last Easter",
+      "kind": "lore",
+      "summary": "The world-ending event when the Alchemist's Elixirs activated worldwide, birthing the first Genomes and igniting the Genome Wars.",
+      "chapter": 8
+    },
+    {
+      "name": "Mechron",
+      "kind": "character",
+      "summary": "The most famous Genius (Blue Genome tech-maker); his self-replicating robot army swept Eurasia until nations nuked it, and he retaliated with drone bombardments and bioweapons that turned southern Europe into a mass grave.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Built a self-replicating robot army that nearly conquered the world"
+        },
+        {
+          "key": "note",
+          "value": "Retaliated with drones and bioweapons after being nuked"
+        },
+        {
+          "key": "note",
+          "value": "Bombed Italy back to the stone age"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "Paulie",
+      "kind": "character",
+      "summary": "A scrawny, balding half-French half-British scavenger who runs Paulie's Shop in Rust Town; Ryan once crashed a plane on his old Otranto workshop. He knew Len as the Underdiver and asks Ryan to wipe out the Meta-Gang.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Runs Paulie's Shop, a junk garage in Rust Town"
+        },
+        {
+          "key": "note",
+          "value": "Ryan destroyed his old Otranto workshop two years prior"
+        },
+        {
+          "key": "note",
+          "value": "Sold parts to Len and knows her as the Underdiver"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Rust Town",
+          "rel": "shopkeeper in"
+        },
+        {
+          "to": "Len",
+          "rel": "former customer"
+        }
+      ],
+      "chapter": 7
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "Len's father, born Freddie; a Red-Elixir Psycho whose body is a faceless, shapeless mass of living blood over bones. Addicted to draining others' Elixirs, he drifts between gentle 'Freddie' and murderous 'Bloodstream,' and calls Ryan by his dead son's name, Cesare.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Body is a shapeless faceless mass of blood over bones"
+        },
+        {
+          "key": "note",
+          "value": "Addicted to draining Genomes' Elixirs to stay stable"
+        },
+        {
+          "key": "note",
+          "value": "Unbeatable except perhaps by Augustus or Leo Hargraves"
+        },
+        {
+          "key": "note",
+          "value": "Calls Ryan 'Cesare' after his dead son"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "father"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "deludes Ryan is his son Cesare"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "Cesare",
+      "kind": "character",
+      "summary": "Len's dead brother; Bloodstream refuses to accept his death and projects the identity onto Ryan, forcing Ryan to answer to the name to avoid a violent episode.",
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "brother"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "son"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "Hyun Ki-jung",
+      "kind": "character",
+      "summary": "Jamie's Korean girlfriend, a recovering addict and Green Genome alias Chitter who telepathically controls and boosts the intelligence of a pack of pet rats. Shares the Made Men's flat.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alias Chitter, a Green (Life) Genome"
+        },
+        {
+          "key": "note",
+          "value": "Controls and intelligence-boosts a pack of rats"
+        },
+        {
+          "key": "note",
+          "value": "Recovering addict, thin with visible scars"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Jamie Cutter",
+          "rel": "girlfriend"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "Made Woman"
+        }
+      ],
+      "chapter": 9
+    },
+    {
+      "name": "Lanka",
+      "kind": "character",
+      "summary": "A heavily tattooed biker Made Woman of the Augusti who runs Bliss near Rust Town; blunt and abrasive, she mockingly calls Ryan a hobo. Bears a bird tattoo under her right eye.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Tattooed biker with dreadlocks and a bird mark under her right eye"
+        },
+        {
+          "key": "note",
+          "value": "Runs Bliss distribution near Rust Town"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "Made Woman"
+        }
+      ],
+      "chapter": 9
+    },
+    {
+      "name": "Mercury",
+      "kind": "character",
+      "summary": "The Augusti capo over gambling, logistics and security work; Jamie, Ki-jung and Lanka answer to him, distinct from Vulcan's weapons division.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Capo of gambling, logistics and security"
+        },
+        {
+          "key": "note",
+          "value": "Rival division to Vulcan's weapon trade"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "capo"
+        },
+        {
+          "to": "Jamie Cutter",
+          "rel": "boss of"
+        }
+      ],
+      "chapter": 9
+    },
+    {
+      "name": "The Made Men",
+      "kind": "organization",
+      "summary": "Jamie Cutter's tight Augusti crew (himself, Ki-jung/Chitter, Lanka) who share a flat north of Mount Augustus and answer to capo Mercury; Jamie invites Ryan to live with them.",
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "crew within"
+        },
+        {
+          "to": "Mercury",
+          "rel": "report to"
+        }
+      ],
+      "chapter": 9
+    },
+    {
+      "name": "The Underdiver",
+      "kind": "lore",
+      "summary": "Len's Rust Town alias and armored persona: a scavenged Old-World JIM-style diving suit fitted with a minigun. As the Underdiver she sold inventions to the Augusti and attacked a Dynamis chemical plant over working conditions before Private Security captured her.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Scavenged JIM-style diving armor with a minigun"
+        },
+        {
+          "key": "note",
+          "value": "Attacked a Dynamis chemical plant in protest"
+        },
+        {
+          "key": "note",
+          "value": "Captured by Private Security, then reportedly broken out by the Augusti"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len",
+          "rel": "alias of"
+        }
+      ],
+      "chapter": 7
+    },
+    {
+      "name": "The Perfect Run",
+      "kind": "lore",
+      "summary": "Ryan's guiding philosophy: gather every scrap of information across countless loops, then spend one final loop engineering the optimal chain of events for the best possible outcome, and only then set a new save point and move on.",
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "philosophy of"
+        }
+      ],
+      "chapter": 7
+    },
+    {
+      "name": "Geist",
+      "kind": "character",
+      "summary": "A Yellow Genome whose powers activated post-mortem, binding him to his grave outside town; the only local flier who can also turn invisible, but he cannot leave his one spot.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Yellow (Abstract) Genome, powers activated after death"
+        },
+        {
+          "key": "note",
+          "value": "Bound to his grave, cannot leave"
+        },
+        {
+          "key": "note",
+          "value": "Can fly and turn invisible"
+        }
+      ],
+      "chapter": 9
+    },
+    {
+      "name": "Geniuses",
+      "kind": "lore",
+      "summary": "Slang for Genomes (usually Blue) who can invent technology far ahead of their time; Mechron was the most famous. Len is one.",
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "most famous"
+        },
+        {
+          "to": "Len",
+          "rel": "is one"
+        }
+      ],
+      "chapter": 8
+    },
+    {
+      "name": "Pluto",
+      "kind": "character",
+      "summary": "Augustus's sister and underboss of the Augusti, a pale blue-haired woman of eerie elegance whose power simply kills anyone she wills dead with no warning, protection, or counter (limits unknown). When she is deployed, heads fall.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augustus's sister and Augusti underboss"
+        },
+        {
+          "key": "note",
+          "value": "Power: instant no-counter death by will alone, limits unknown"
+        },
+        {
+          "key": "note",
+          "value": "Pale skin, bright blue hair, wears a black Greek chiton"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "sister"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "underboss"
+        },
+        {
+          "to": "The Killer Seven",
+          "rel": "commands"
+        }
+      ],
+      "chapter": 10
+    },
+    {
+      "name": "Neptune",
+      "kind": "character",
+      "summary": "The third of Augustus's sibling trio, serving as his consigliere.",
+      "ties": [
+        {
+          "to": "Augustus",
+          "rel": "sibling"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "consigliere"
+        }
+      ],
+      "chapter": 10
+    },
+    {
+      "name": "The Killer Seven",
+      "kind": "organization",
+      "summary": "The Augusti's elite hit squad, deployed under Pluto to hunt the vigilante assassin killing Made Men.",
+      "ties": [
+        {
+          "to": "Pluto",
+          "rel": "led by"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "hit squad of"
+        }
+      ],
+      "chapter": 10
+    },
+    {
+      "name": "Vulcan's Mech",
+      "kind": "lore",
+      "summary": "Vulcan's five-meter gold-plated power armor, a walking tank with a miniaturized fusion reactor, turbo reactors for speed, plasma beams, cannons, an arm-mounted rocket launcher, and eye-cameras for all-around vision; slaved to her sensory link.",
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "built and pilots"
+        }
+      ],
+      "chapter": 10
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "A hapless solo 'vigilante' who dyes his hair, dresses like Rambo, and transforms into a giant panda larger than a polar bear; too weak to matter, mocked by villains and heroes alike. Ryan pities and protects him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Transforms into a giant panda, his only power"
+        },
+        {
+          "key": "note",
+          "value": "Wannabe solo hero nobody takes seriously"
+        }
+      ],
+      "chapter": 10
+    },
+    {
+      "name": "Wardrobe",
+      "kind": "character",
+      "summary": "An Il Migliore Yellow Genome who gains a weakened version of powers themed to whatever costume she wears (vampire, Wyvern, etc.); the effect lasts only while the outfit stays intact. Doubles as Wyvern's stunt double.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Yellow Genome: costume-based powers, weakened versions"
+        },
+        {
+          "key": "note",
+          "value": "Effect ends when the costume is damaged"
+        },
+        {
+          "key": "note",
+          "value": "Wyvern's movie stunt double"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        }
+      ],
+      "chapter": 11
+    },
+    {
+      "name": "Atom Cat",
+      "kind": "character",
+      "summary": "A teenage Genome, son of Augustus's inner circle, in a rebellious phase doing hero guest-work; can turn anything he touches skin-to-skin into a bomb. The Augusti are forbidden from endangering him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Turns anything into a bomb by direct skin contact"
+        },
+        {
+          "key": "note",
+          "value": "Child of Augustus's inner circle, off-limits to the Augusti"
+        }
+      ],
+      "chapter": 11
+    },
+    {
+      "name": "Enrique Manada",
+      "kind": "character",
+      "summary": "Chief Brand Officer of Dynamis and head manager of Il Migliore, alias Blackthorn; a rose-scented, Daft-Punk-helmeted mastermind who offers Ryan a five-year contract, a clean slate, and access to Len in exchange for good behavior and Elixir research.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Alias Blackthorn, Chief Brand Officer of Dynamis"
+        },
+        {
+          "key": "note",
+          "value": "Runs Il Migliore; believes in rehabilitation over harsh measures"
+        },
+        {
+          "key": "note",
+          "value": "Wears a white helmet and cashmere suit, smells of roses"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "executive"
+        },
+        {
+          "to": "Il Migliore",
+          "rel": "head manager"
+        }
+      ],
+      "chapter": 12
+    },
+    {
+      "name": "Len Sabino",
+      "kind": "character",
+      "summary": "Len's full legal name, Len 'Underdiver' Sabino, daughter of Freddie Sabino (Bloodstream); arrested by Private Security, her mugshot held by Dynamis, now detained somewhere out of Ryan's reach.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Full name Len 'Underdiver' Sabino"
+        },
+        {
+          "key": "note",
+          "value": "Daughter of Freddie Sabino / Bloodstream"
+        },
+        {
+          "key": "note",
+          "value": "In Dynamis-connected custody"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bloodstream",
+          "rel": "daughter"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "best friend"
+        }
+      ],
+      "chapter": 12
+    },
+    {
+      "name": "Optimates Tower",
+      "kind": "place",
+      "summary": "Il Migliore's HQ, a 70-floor Art Deco skyscraper-hotel in Dynamis's elite northeast district, guarded by elite Private Security; Ryan meets Enrique Manada here on floor 63.",
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "headquarters of"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "owned by"
+        }
+      ],
+      "chapter": 12
+    },
+    {
+      "name": "Dynamis HQ",
+      "kind": "place",
+      "summary": "Dynamis's reinforced-glass spire overlooking New Rome, taller than the Optimates Tower; an arcology-style self-sufficient fortress with greenhouses and reservoirs, its upper floors opaque and secretive, ringed by elite Private Security.",
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "headquarters of"
+        }
+      ],
+      "chapter": 12
+    },
+    {
+      "name": "Star Studios",
+      "kind": "place",
+      "summary": "Dynamis's film studios east of New Rome (~2.5 sq km, seven warehouses) where Il Migliore movies are shot; Ryan's crew floods it with Chitter's rats to spite Vulcan by disrupting 'Wyvern's Flight II'.",
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "owned by"
+        }
+      ],
+      "chapter": 11
+    },
+    {
+      "name": "Chronoradio",
+      "kind": "lore",
+      "summary": "Ryan's tinkered car radio that picks up broadcasts across space and time, defaulting oddly to the Roman Republic era (news of Julius Caesar's assassination); evidence his loops span more than one version of the past.",
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "built by"
+        }
+      ],
+      "chapter": 11
+    },
+    {
+      "name": "Timelord",
+      "kind": "lore",
+      "summary": "The soulless marketing rebrand Dynamis wants to slap on Quicksave to sell to teenagers, replacing his own chosen name.",
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "proposed rebrand"
+        },
+        {
+          "to": "Dynamis",
+          "rel": "coined by"
+        }
+      ],
+      "chapter": 12
+    },
+    {
+      "name": "Lanka",
+      "kind": "character",
+      "summary": "Codename Sphere: fires paralyzing orange energy spheres from finger-guns; a reformed savage-band marauder (hidden snake tattoo) now an Augusti Made Woman.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Codename Sphere, fires paralyzing orange energy spheres"
+        },
+        {
+          "key": "note",
+          "value": "Former marauder of a savage band, hidden snake tattoo"
+        }
+      ],
+      "chapter": 10
+    },
+    {
+      "name": "Adam",
+      "kind": "character",
+      "summary": "Big Adam, the Meta-Gang's boss: a hugely obese, scarred bald man in 1950s menswear, hippo-like with prominent teeth. Once a minor Psycho warlord, he now leads a disciplined ~50-strong gang and covets a mysterious bunker beneath the Junkyard, abducting children small enough to enter its shafts.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Massively obese, scarred, bald, dresses in 1950s menswear"
+        },
+        {
+          "key": "note",
+          "value": "Rivaled Augustus and Bloodstream in infamy"
+        },
+        {
+          "key": "note",
+          "value": "Leads a disciplined ~50-member Meta-Gang"
+        },
+        {
+          "key": "note",
+          "value": "Abducts children to reach a bunker under the Junkyard"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "leads"
+        },
+        {
+          "to": "Psyshock",
+          "rel": "second-in-command"
+        }
+      ],
+      "chapter": 13
+    },
+    {
+      "name": "Psyshock",
+      "kind": "character",
+      "summary": "Adam's second-in-command, a telepath whose flesh is gone, replaced by thousands of black wires around an exposed bio-mechanical skull; he hijacks nervous systems on contact and recognizes brainwave patterns forever. Tormented teen Ryan years ago; Ryan punches through his skull to kill him at the orphanage.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Body of black wires around an exposed cyborg skull"
+        },
+        {
+          "key": "note",
+          "value": "Hijacks nervous systems through physical contact"
+        },
+        {
+          "key": "note",
+          "value": "Recognizes any nervous system he has once connected to"
+        },
+        {
+          "key": "note",
+          "value": "Killed by Ryan at the orphanage"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "second-in-command"
+        },
+        {
+          "to": "Adam",
+          "rel": "lieutenant"
+        }
+      ],
+      "chapter": 13
+    },
+    {
+      "name": "Mongrel",
+      "kind": "character",
+      "summary": "A Meta-Gang Psycho who drank a cocktail of Dynamis knock-off Elixirs, gaining weak fireballs, limited invisibility, and wind bursts at the cost of his sanity; he burns the shelter animals alive before Atom Cat vaporizes him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Multiple knock-off Elixir powers: fire, invisibility, wind"
+        },
+        {
+          "key": "note",
+          "value": "Handles more than two powers because they are weak knock-offs"
+        },
+        {
+          "key": "note",
+          "value": "Killed by Atom Cat's touch"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 14
+    },
+    {
+      "name": "Mosquito",
+      "kind": "character",
+      "summary": "A Meta-Gang Psycho fused with a mosquito, a three-meter insect who crushed Ryan's Plymouth in an earlier loop; flies and impales with a stinger. Wyvern swats him near-dead; he reveals the Junkyard bunker and its Genome-killing robots before the medics come.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Human-mosquito hybrid, flies and impales with a stinger"
+        },
+        {
+          "key": "note",
+          "value": "Reveals Adam seeks a bunker below the Junkyard guarded by robots"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 14
+    },
+    {
+      "name": "Hector Manada",
+      "kind": "character",
+      "summary": "Founder and CEO of Dynamis, an elderly Latino resembling Pablo Escobar; built the company in Spain 33 years ago and grew it into the dominant post-Genome-War conglomerate ruling western Italy and beyond. His motto is 'don't rock the boat.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Founder and CEO of Dynamis"
+        },
+        {
+          "key": "note",
+          "value": "Built New Rome as Dynamis's stronghold after the Wars"
+        },
+        {
+          "key": "note",
+          "value": "Cautious; refuses to move against Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "founder and CEO"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "father"
+        }
+      ],
+      "chapter": 13
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "Hector's son and Dynamis vice-president, Enrique's brother; a hardliner who favors harsh measures and orchestrated Len's arrest, unlike Enrique's rehabilitation approach.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Dynamis vice-president, favors harsh measures"
+        },
+        {
+          "key": "note",
+          "value": "Orchestrated Len's arrest"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis",
+          "rel": "vice-president"
+        },
+        {
+          "to": "Enrique Manada",
+          "rel": "brother"
+        }
+      ],
+      "chapter": 12
+    },
+    {
+      "name": "Atom Cat",
+      "kind": "character",
+      "summary": "Teenage Genome hero (real allegiance Augusti) who befriends Ryan; son of Augusti capos Mars and Venus, brother to Fortuna, Narcinia and Livia. Can turn anything to a bomb on skin contact, delay and modulate the blast, and charge thrown objects. Left the Augusti over their Bliss trade and crimes.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Turns objects into bombs on touch; can delay and modulate blasts"
+        },
+        {
+          "key": "note",
+          "value": "Son of Augusti capos Mars and Venus"
+        },
+        {
+          "key": "note",
+          "value": "Sisters: Fortuna, Narcinia, Livia"
+        },
+        {
+          "key": "note",
+          "value": "Left the Augusti in disgust at their crimes"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "guest hero"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "sidekick and friend"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "estranged family"
+        }
+      ],
+      "chapter": 13
+    },
+    {
+      "name": "Mars and Venus",
+      "kind": "character",
+      "summary": "Atom Cat's parents, a pair of Augusti capos in Augustus's inner circle; they and Atom Cat's sisters keep pressuring him to return to the fold.",
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "capos"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "parents"
+        }
+      ],
+      "chapter": 13
+    },
+    {
+      "name": "Vulcan",
+      "kind": "character",
+      "summary": "Real name Jasmine; a petite teenage bomb-loving Genius and Augusti weapons capo, rival to Wyvern (Laura). She pilots a Wyvern-buster mech whose joints are its weakness. Ryan cripples it at the orphanage and Wyvern captures her.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Jasmine"
+        },
+        {
+          "key": "note",
+          "value": "Rivalry with Wyvern (Laura)"
+        },
+        {
+          "key": "note",
+          "value": "Her mech is optimized to fight aerial targets, weak at joints"
+        },
+        {
+          "key": "note",
+          "value": "Captured by Wyvern at the orphanage battle"
+        }
+      ],
+      "chapter": 15
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "Real name Laura; transforms fully into a sixty-foot white dragon with steel-cutting claws, a flail tail, and a roaring voice. She trails Vulcan to the orphanage, swats Mosquito, pins and captures Vulcan, and grounds Ryan and Atom Cat for the unauthorized op.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Laura"
+        },
+        {
+          "key": "note",
+          "value": "Full form: a 60-foot white dragon"
+        },
+        {
+          "key": "note",
+          "value": "Captures Vulcan and saves the orphanage"
+        }
+      ],
+      "chapter": 15
+    },
+    {
+      "name": "The Junkyard Bunker",
+      "kind": "lore",
+      "summary": "A sealed bunker beneath the Junkyard, guarded by robots that shoot Genomes on sight, with access shafts too small for adults. Adam abducts children to send them inside; its contents are unknown and become a central mystery.",
+      "ties": [
+        {
+          "to": "The Junkyard",
+          "rel": "located beneath"
+        },
+        {
+          "to": "Adam",
+          "rel": "target of"
+        }
+      ],
+      "chapter": 15
+    },
+    {
+      "name": "Enhanced Timing",
+      "kind": "lore",
+      "summary": "A facet of Ryan's single unifying power: the more he experiences a situation, the better he predicts and reacts to it, letting him learn physical skills almost instantly and shift out of a line of fire before the trigger, appearing to dodge bullets. Useless against light-speed or invisible attacks.",
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "power facet"
+        }
+      ],
+      "chapter": 15
+    },
+    {
+      "name": "The Orphanage",
+      "kind": "place",
+      "summary": "A combined orphanage and animal shelter south of the Junkyard in Rust Town, run by children after their 'Grandpa' was murdered; funded secretly by an unseen 'Mama.' The Meta target its kids for the bunker; Ryan, Atom Cat and Wyvern defend it.",
+      "ties": [
+        {
+          "to": "Rust Town",
+          "rel": "located in"
+        }
+      ],
+      "chapter": 14
+    },
+    {
+      "name": "Sarah",
+      "kind": "character",
+      "summary": "A tough ~11-year-old orphan who leads the shelter kids and pulls a revolver on Ryan; she guards the secret of 'Mama,' the unseen benefactor sending the orphans food and money.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Leads the orphanage children"
+        },
+        {
+          "key": "note",
+          "value": "Protects the secret of 'Mama', the hidden benefactor"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Orphanage",
+          "rel": "resident"
+        }
+      ],
+      "chapter": 14
+    },
+    {
+      "name": "The Shroud",
+      "kind": "character",
+      "summary": "A powerful Orange Genome vigilante of Leo Hargraves' Carnival, encased head-to-toe in featureless blue glass he bends light around to mimic invisibility (defeated by flour, smoke or rain). He is the hidden hacker infiltrating Dynamis to root out Meta moles, and the assassin who killed Ryan twice targeting Augusti/Meta. He knows Ryan's true name and that Len won't contact him; open to a non-lethal path against the Augusti.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Orange Genome; controls glass/silica over a wide radius"
+        },
+        {
+          "key": "note",
+          "value": "Bends light to feign invisibility; foiled by flour, smoke, rain"
+        },
+        {
+          "key": "note",
+          "value": "Carnival operative infiltrating New Rome as a fourth faction"
+        },
+        {
+          "key": "note",
+          "value": "Killed Ryan twice; targets the Augusti and the Meta, not Il Migliore"
+        },
+        {
+          "key": "note",
+          "value": "Knows Len's location and Ryan's real name"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "operative"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "uneasy ally"
+        }
+      ],
+      "chapter": 17
+    },
+    {
+      "name": "The Carnival",
+      "kind": "organization",
+      "summary": "Leo Hargraves' Carnival: wandering knight-errant heroes who fight warlords, Psychos and dangerous Genomes pro bono using small-unit tactics, then move on. High turnover. Four years ago they killed Bloodstream (Ryan caught in the crossfire, losing Len); Augustus once slaughtered half their original line-up. Now they infiltrate New Rome as a covert fourth faction via the Shroud.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Wandering pro-bono heroes with small-unit tactics"
+        },
+        {
+          "key": "note",
+          "value": "Killed Bloodstream four years ago"
+        },
+        {
+          "key": "note",
+          "value": "Augustus killed half their original members long ago"
+        },
+        {
+          "key": "note",
+          "value": "Now a covert fourth faction in New Rome"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Leo Hargraves",
+          "rel": "led by"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "operative in New Rome"
+        }
+      ],
+      "chapter": 17
+    },
+    {
+      "name": "Acid Rain",
+      "kind": "character",
+      "summary": "A Meta-Gang heavy hitter and knife-mad Psycho: bleached-white, crimson-eyed, joker-like and masochistic. She summons a corrosive acid downpour (Orange) and teleports by swapping herself or grenades with raindrops (Violet). She draws power from the same source as Ryan, sensing his time-stop and reacting inside its activation window. Fixated on the 'purple world.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Orange power: summons corrosive acid rain"
+        },
+        {
+          "key": "note",
+          "value": "Violet power: teleports by swapping places with raindrops"
+        },
+        {
+          "key": "note",
+          "value": "Same power source as Ryan; senses and out-speeds his time-stop"
+        },
+        {
+          "key": "note",
+          "value": "Masochistic, obsessed with the 'purple world'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "heavy hitter"
+        }
+      ],
+      "chapter": 18
+    },
+    {
+      "name": "Bliss",
+      "kind": "lore",
+      "summary": "The Augusti's signature narcotic, incredibly addictive, produced at their fortress-lab on Ischia island and shipped by boat and submarine across Italy, Spain, France, Turkey and Libya. It causes roughly twenty thousand deaths a year, three thousand in New Rome alone, and is Augustus's tool for subverting struggling post-War communities.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Made at the Augusti fortress-lab on Ischia island"
+        },
+        {
+          "key": "note",
+          "value": "Shipped across Europe by boat and submarine"
+        },
+        {
+          "key": "note",
+          "value": "~20,000 deaths a year, 3,000 in New Rome"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "produced by"
+        }
+      ],
+      "chapter": 17
+    },
+    {
+      "name": "Malta",
+      "kind": "place",
+      "summary": "An island that 'sank' in a past catastrophe Enrique invokes as the disaster he refuses to risk repeating; his justification for Dynamis's cautious detente with Augustus.",
+      "chapter": 16
+    },
+    {
+      "name": "The Ship Graveyard",
+      "kind": "place",
+      "summary": "A vast graveyard of rusting tankers, boats and aircraft husks on the shore between Rust Town and the old harbor. The Shroud built a hidden, light-bent server safehouse inside a beached cruise ship here, wired into Dynamis's underground cables to hack the company.",
+      "ties": [
+        {
+          "to": "New Rome",
+          "rel": "located in"
+        },
+        {
+          "to": "The Shroud",
+          "rel": "safehouse of"
+        }
+      ],
+      "chapter": 17
+    },
+    {
+      "name": "Felix",
+      "kind": "character",
+      "summary": "Atom Cat's civilian name, meaning 'lucky'; Ryan mercilessly mocks the pairing of 'Felix' and 'Atom Cat.' Felix was a friend of Jamie/Zanbato before he left the Augusti.",
+      "ties": [
+        {
+          "to": "Atom Cat",
+          "rel": "civilian identity"
+        }
+      ],
+      "chapter": 16
+    },
+    {
+      "name": "Vulcan-Wyvern partnership",
+      "kind": "lore",
+      "summary": "Before Il Migliore, Jasmine (Vulcan, the brains) and Laura (Wyvern, the brawn) were hero partners. The public credited Laura for their shared wins and Dynamis confined the Genius Jasmine to a lab; feeling sidelined, Jasmine defected to the Augusti for a Capo rank and autonomy, becoming their sole advanced-armor maker.",
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "former partner"
+        },
+        {
+          "to": "Wyvern",
+          "rel": "former partner"
+        }
+      ],
+      "chapter": 16
+    }
+  ],
+  "plotObservations": [
+    {
+      "title": "The endless delivery loop",
+      "beat": "Ryan keeps dying delivering a briefcase to Renesco; on the fourth loop he rams the assassin Ghoul with his Plymouth, beats him with a bat, bribes Private Security, and completes the delivery. His only motive: he is bored.",
+      "entities": [
+        "Ryan Romano",
+        "Renesco",
+        "Ghoul",
+        "Private Security"
+      ],
+      "chapter": 1
+    },
+    {
+      "title": "Competing recruitment: the branching paths",
+      "beat": "Wyvern of Il Migliore recruits Ryan and offers to help find Len; then Vulcan of the Augusti counter-recruits him to the Bakuto casino. Ryan realizes multiple faction routes have opened, but his true quest is finding Len.",
+      "entities": [
+        "Ryan Romano",
+        "Wyvern",
+        "Vulcan",
+        "Len",
+        "Il Migliore",
+        "The Augusti"
+      ],
+      "chapter": 2
+    },
+    {
+      "title": "Joining the Augusti to find Len",
+      "beat": "At the Bakuto, Zanbato recruits Ryan with a favor-for-favor deal: help crush the Meta-Gang and the Augusti will help find Len. Zanbato warns Ghoul has been busted out of Private Security and will hunt Ryan.",
+      "entities": [
+        "Ryan Romano",
+        "Zanbato",
+        "The Augusti",
+        "Meta-Gang",
+        "Ghoul",
+        "Len"
+      ],
+      "chapter": 3
+    },
+    {
+      "title": "Harbor ambush and the Len breakthrough",
+      "beat": "Guarding an Augusti supply run at the old harbor, Ryan sees Len's crimson bathyspheres surface and realizes she is truly in New Rome. Ghoul and Sarin (Blower) ambush the shipment; Ryan fights them off solo, learning the Meta answer to a leader named Adam.",
+      "entities": [
+        "Ryan Romano",
+        "Zanbato",
+        "Luigi",
+        "Len",
+        "Ghoul",
+        "Sarin",
+        "Adam"
+      ],
+      "chapter": 4
+    },
+    {
+      "title": "Battle won, then killed in the night",
+      "beat": "With Zanbato's help Ryan defeats Ghoul and Sarin as Private Security fires on everyone; Zanbato reveals his real name is Jamie and promises to ask Vulcan about Len's tech. Back at his hotel, Ryan is killed by a firebomb rigged to his door, forcing a reload.",
+      "entities": [
+        "Ryan Romano",
+        "Zanbato",
+        "Ghoul",
+        "Sarin",
+        "Private Security",
+        "Len"
+      ],
+      "chapter": 5
+    },
+    {
+      "title": "The divergence that breaks the Augusti path",
+      "beat": "Reloading, Ryan changes his routine (shoots Ghoul, switches hotels, warns Wyvern). The changes cost him: Vulcan never calls, the Augusti path closes, and he meets the mysterious crimson-gowned woman at the Bakuto. He resolves to chase Len's tech through Rust Town's black market instead.",
+      "entities": [
+        "Ryan Romano",
+        "Ghoul",
+        "Wyvern",
+        "Vulcan",
+        "Mystery Woman in Crimson",
+        "Len"
+      ],
+      "chapter": 6
+    },
+    {
+      "title": "Rust Town, Paulie, and the Perfect Run vow",
+      "beat": "Ryan enters walled Rust Town, finds Paulie who confirms Len operated there as the Underdiver before Private Security caught her and the Augusti broke her out. Paulie begs Ryan to destroy the child-abducting Meta-Gang; Ryan vows to grant it in his Perfect Run, then nukes a Mosquito Psycho for crushing his Plymouth.",
+      "entities": [
+        "Ryan Romano",
+        "Paulie",
+        "Len",
+        "Meta-Gang",
+        "The Augusti"
+      ],
+      "chapter": 7
+    },
+    {
+      "title": "Past fragment: the Wonderbox and Bloodstream",
+      "beat": "Flashback to teen Ryan and Len in ruined Venezia finding an Alchemist Wonderbox with three Elixirs and the origin letter. Len's father Bloodstream, a blood-Psycho who calls Ryan 'Cesare,' seizes and drinks the Red Elixir; Ryan secretly pockets the Blue and Violet, resolving they must escape him.",
+      "entities": [
+        "Ryan Romano",
+        "Len",
+        "Bloodstream",
+        "The Alchemist",
+        "Elixirs"
+      ],
+      "chapter": 8
+    },
+    {
+      "title": "Back on the Augusti path and the Made Men's table",
+      "beat": "Ryan re-runs the loop cleanly, keeps the Augusti path, and detects an invisible flying watcher (possibly Geist). Jamie insists Ryan stay with his Made Men crew, introducing Ki-jung (Chitter) and Lanka, and promises to introduce him to Vulcan to locate Len.",
+      "entities": [
+        "Ryan Romano",
+        "Jamie Cutter",
+        "Hyun Ki-jung",
+        "Lanka",
+        "Vulcan",
+        "Len",
+        "Geist"
+      ],
+      "chapter": 9
+    },
+    {
+      "title": "Meeting Vulcan and the studio job",
+      "beat": "At Vulcan's foundry Ryan meets Pluto (Augustus's death-touch sister) hunting the vigilante killing Made Men, and impresses capo Vulcan, a bomb-loving girl Genius who dangles access to Len. She assigns Ryan's crew to trash Star Studios and sabotage 'Wyvern's Flight II'.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Pluto",
+        "Jamie Cutter",
+        "Len",
+        "The Killer Seven"
+      ],
+      "chapter": 10
+    },
+    {
+      "title": "The studio raid and the assassin's third strike",
+      "beat": "The crew floods Star Studios with Chitter's rats and flees without a fight. Back home, the invisible glass-controlling assassin detonates the house, killing Ki-jung and Lanka, then beheads Ryan with a storm of glass shards, resetting the loop. Ryan resolves to hunt the killer before Len.",
+      "entities": [
+        "Ryan Romano",
+        "Jamie Cutter",
+        "Hyun Ki-jung",
+        "Lanka",
+        "Atom Cat"
+      ],
+      "chapter": 11
+    },
+    {
+      "title": "Blackthorn's contract and Len's name",
+      "beat": "Ryan takes Wyvern's referral to Il Migliore and meets Enrique Manada (Blackthorn), who reveals Len's full identity, her Dynamis-linked custody, and offers a five-year contract, clean slate, and reunion in exchange for good behavior and Elixir research, plus a rebrand to 'Timelord'.",
+      "entities": [
+        "Ryan Romano",
+        "Enrique Manada",
+        "Len Sabino",
+        "Wyvern",
+        "Dynamis"
+      ],
+      "chapter": 12
+    },
+    {
+      "title": "The corporate seminar and Atom Cat",
+      "beat": "Ryan endures a soul-crushing Il Migliore internship, plants trackers to hack Dynamis's systems, and befriends Atom Cat, learning Adam's Meta-Gang is now disciplined with lieutenants Psyshock, Acid Rain and Frank the Mad. The two ditch the seminar to hunt the Meta.",
+      "entities": [
+        "Ryan Romano",
+        "Atom Cat",
+        "Dynamis",
+        "Meta-Gang",
+        "Adam",
+        "Psyshock"
+      ],
+      "chapter": 13
+    },
+    {
+      "title": "The orphanage standoff",
+      "beat": "Ryan and Atom Cat find a Rust Town orphanage-shelter run by children under a hidden 'Mama.' Psyshock, Mosquito and Mongrel arrive to abduct kids small enough for a bunker; Psyshock recognizes Ryan as 'Cesare.' The standoff erupts and Vulcan crashes in to kill Ryan for spurning her.",
+      "entities": [
+        "Ryan Romano",
+        "Atom Cat",
+        "Psyshock",
+        "Mosquito",
+        "Mongrel",
+        "Vulcan",
+        "Sarah"
+      ],
+      "chapter": 14
+    },
+    {
+      "title": "Saving the orphanage and the bunker clue",
+      "beat": "Ryan kills Psyshock, Atom Cat kills Mongrel, and Wyvern arrives to swat Mosquito and capture Vulcan (revealed as Jasmine; Wyvern is Laura). Dying Mosquito reveals Adam seeks a robot-guarded bunker below the Junkyard needing child-sized entrants. Ryan also detects a rival hacker's backdoor in Dynamis.",
+      "entities": [
+        "Ryan Romano",
+        "Psyshock",
+        "Atom Cat",
+        "Wyvern",
+        "Vulcan",
+        "Mosquito",
+        "The Junkyard Bunker"
+      ],
+      "chapter": 15
+    },
+    {
+      "title": "Vulcan released and the insider theory",
+      "beat": "At the hospital Enrique reveals Hector orders Vulcan freed to avoid war with Augustus, enraging Wyvern, who reveals Vulcan is Jasmine, her ex-partner turned defector. Atom Cat argues an insider in Dynamis is arming the Meta with knock-off Elixirs; then word comes Sarin massacred Zanbato/Jamie and his crew at the docks.",
+      "entities": [
+        "Ryan Romano",
+        "Enrique Manada",
+        "Wyvern",
+        "Vulcan",
+        "Atom Cat",
+        "Zanbato"
+      ],
+      "chapter": 16
+    },
+    {
+      "title": "Confronting the Shroud",
+      "beat": "Ryan tracks the hacker to a hidden server safehouse in the ship graveyard and unmasks the Shroud, a Carnival glass-Genome who killed him twice. Shroud explains he targets the Augusti's Bliss empire and Meta, offers cooperation for a non-lethal path, knows where Len is, and coldly suggests Len never contacted Ryan by choice.",
+      "entities": [
+        "Ryan Romano",
+        "The Shroud",
+        "The Carnival",
+        "Len",
+        "Bliss"
+      ],
+      "chapter": 17
+    },
+    {
+      "title": "Acid Rain and Len's return",
+      "beat": "A Dynamis DNA tracker leads the Meta to the safehouse: Psyshock (somehow revived) and Acid Rain ambush them under an acid downpour. Acid Rain, sharing Ryan's power source, overpowers him. As he lies dying, Len appears in bronze diver-armor to save him, but Acid Rain's grenade-rain kills them both, ending the loop. Ryan resets to May 8th and sucker-punches Ghoul anew.",
+      "entities": [
+        "Ryan Romano",
+        "Acid Rain",
+        "Psyshock",
+        "The Shroud",
+        "Len",
+        "Ghoul"
+      ],
+      "chapter": 18
+    }
+  ]
+}
