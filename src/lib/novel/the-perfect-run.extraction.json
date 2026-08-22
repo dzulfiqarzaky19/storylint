@@ -317,6 +317,14 @@
           {
             "key": "gambit",
             "value": "Baits the Carnival to kill Bloodstream; sends Len away on the Laika"
+          },
+          {
+            "key": "power onset",
+            "value": "10s time-stop, 10s cooldown; death creates a reload checkpoint"
+          },
+          {
+            "key": "first tragedy",
+            "value": "Loses Len forever; traps in the unwinnable Porto Venere explosion loop"
           }
         ],
         "ties": [
@@ -479,6 +487,14 @@
           {
             "to": "the-carnival",
             "rel": "lures them to the hideout"
+          },
+          {
+            "to": "elixir-mechanics",
+            "rel": "his checkpoint/loop is discovered here"
+          },
+          {
+            "to": "len",
+            "rel": "loses her on the Laika, never catches up"
           }
         ],
         "appearances": [
@@ -567,7 +583,8 @@
           86,
           87,
           88,
-          89
+          89,
+          90
         ],
         "questions": [
           "What exactly is the full scope of his save/reload power?"
@@ -872,7 +889,8 @@
           86,
           87,
           88,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -1855,7 +1873,8 @@
           62,
           63,
           80,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -1916,7 +1935,8 @@
           2,
           17,
           66,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -2763,6 +2783,14 @@
           {
             "key": "doomsday",
             "value": "If Len dies he becomes an extinction-level plague; limits are psychological"
+          },
+          {
+            "key": "combat",
+            "value": "Blood spikes/axes, tentacle limbs, flea-like leaps, seconds-fast regen"
+          },
+          {
+            "key": "death",
+            "value": "Last clone incinerated by Leo's fireball at Porto Venere"
           }
         ],
         "ties": [
@@ -2817,6 +2845,14 @@
           {
             "to": "pythia",
             "rel": "prophesied his extinction event"
+          },
+          {
+            "to": "leo-hargraves",
+            "rel": "burned to death by him"
+          },
+          {
+            "to": "cesare",
+            "rel": "no longer recognizes Ryan as his son"
           }
         ],
         "appearances": [
@@ -2830,7 +2866,8 @@
           82,
           84,
           88,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -2869,7 +2906,8 @@
         ],
         "appearances": [
           8,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -3792,6 +3830,14 @@
           {
             "key": "note",
             "value": "Judged clean by Shroud despite his villainous look"
+          },
+          {
+            "key": "alias",
+            "value": "Blackthorn; the principled Manada son"
+          },
+          {
+            "key": "act",
+            "value": "Backs the Carnival's hunt; orders Bloodstream's samples destroyed"
           }
         ],
         "ties": [
@@ -3806,6 +3852,18 @@
           {
             "to": "hector-manada",
             "rel": "son"
+          },
+          {
+            "to": "alphonse-manada",
+            "rel": "his brother"
+          },
+          {
+            "to": "the-carnival",
+            "rel": "secretly supports their hunt"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "orders his samples destroyed"
           }
         ],
         "appearances": [
@@ -3814,7 +3872,8 @@
           32,
           36,
           37,
-          83
+          83,
+          90
         ],
         "questions": []
       },
@@ -4671,6 +4730,14 @@
           {
             "key": "weakness",
             "value": "His Red Flux is devoured by Ryan's Black Flux"
+          },
+          {
+            "key": "note",
+            "value": "Incinerates Dynamis's Bloodstream samples, resentfully"
+          },
+          {
+            "key": "foreshadow",
+            "value": "Dynamis knew the blood's genetic-rewrite power (later Knockoffs)"
           }
         ],
         "ties": [
@@ -4733,6 +4800,14 @@
           {
             "to": "frank-the-mad",
             "rel": "buried alive together"
+          },
+          {
+            "to": "enrique-manada",
+            "rel": "his brother"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "kept and destroyed his samples"
           }
         ],
         "appearances": [
@@ -4744,7 +4819,8 @@
           62,
           63,
           70,
-          88
+          88,
+          90
         ],
         "questions": []
       },
@@ -8209,7 +8285,8 @@
         ],
         "appearances": [
           40,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -9300,6 +9377,14 @@
           {
             "key": "mechanic",
             "value": "Phantom catching Ryan forms a save point; it can only speak via the Black World"
+          },
+          {
+            "key": "reload",
+            "value": "Death rewinds Ryan to his power's checkpoint; not one-time, permanent"
+          },
+          {
+            "key": "first checkpoint",
+            "value": "Locked just before the Porto Venere fireball, an unwinnable window"
           }
         ],
         "ties": [
@@ -9326,12 +9411,17 @@
           {
             "to": "the-purple-world",
             "rel": "the dimension its Violet Flux is drawn from"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "his looping power"
           }
         ],
         "appearances": [
           57,
           85,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -9452,6 +9542,14 @@
           {
             "key": "note",
             "value": "Helps plan the anti-Meta strike"
+          },
+          {
+            "key": "power",
+            "value": "Teleporter; opens portals to Stitch's infirmary"
+          },
+          {
+            "key": "note",
+            "value": "Killed by Bloodstream in the failed run, saved in the reload"
           }
         ],
         "ties": [
@@ -9462,12 +9560,17 @@
           {
             "to": "leo-hargraves",
             "rel": "teammate"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "killed then spared depending on Ryan's choice"
           }
         ],
         "appearances": [
           59,
           62,
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -12237,16 +12340,33 @@
           {
             "key": "code",
             "value": "Refuses to harm children"
+          },
+          {
+            "key": "power",
+            "value": "Lightspeed laser, straight-line only; must revert to human form to turn"
+          },
+          {
+            "key": "role",
+            "value": "Repeatedly shields Ryan from the fireball; tends him in the infirmary"
           }
         ],
         "ties": [
           {
             "to": "the-carnival",
             "rel": "member"
+          },
+          {
+            "to": "ryan-romano",
+            "rel": "protects and befriends him"
+          },
+          {
+            "to": "bloodstream",
+            "rel": "keeps him from regenerating"
           }
         ],
         "appearances": [
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -12276,7 +12396,8 @@
           }
         ],
         "appearances": [
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -12302,7 +12423,8 @@
           }
         ],
         "appearances": [
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -12324,7 +12446,8 @@
           }
         ],
         "appearances": [
-          89
+          89,
+          90
         ],
         "questions": []
       },
@@ -14417,12 +14540,40 @@
           "the-violet-elixir",
           "elixir-mechanics"
         ]
+      },
+      {
+        "id": "origin-loop-the-first-run",
+        "title": "Origin Loop: The First Run",
+        "summary": "CH90: Ryan discovers his power mid-battle as the Carnival (Leo, the Cossack, Mr. Wave) fights Bloodstream at Porto Venere's Marina, a 10-second time-stop with a 10-second cooldown. In his first try he steps out and shouts for them to stop; the distraction lets Bloodstream kill Ace and, no longer knowing 'Cesare,' crush Ryan's skull, his first death. He wakes rewound to a checkpoint: his power creates a save-point. On the reload he hides, lets Leo's fireball incinerate Bloodstream's last clone (Ace survives), but can't outrun the blast and dies again, waking in the Carnival infirmary. Len and the Laika are long gone; Ryan loops the explosion endlessly, never catching her, and is left utterly alone. Epilogue: Enrique and Alphonse Manada reveal Dynamis secretly backed the hunt and knew the god-tier genetic-rewrite power of Bloodstream's blood, the seed of the Knockoffs.",
+        "beats": [
+          {
+            "chapter": 90,
+            "summary": "CH90: Ryan discovers his power mid-battle as the Carnival (Leo, the Cossack, Mr. Wave) fights Bloodstream at Porto Venere's Marina, a 10-second time-stop with a 10-second cooldown. In his first try he steps out and shouts for them to stop; the distraction lets Bloodstream kill Ace and, no longer knowing 'Cesare,' crush Ryan's skull, his first death. He wakes rewound to a checkpoint: his power creates a save-point. On the reload he hides, lets Leo's fireball incinerate Bloodstream's last clone (Ace survives), but can't outrun the blast and dies again, waking in the Carnival infirmary. Len and the Laika are long gone; Ryan loops the explosion endlessly, never catching her, and is left utterly alone. Epilogue: Enrique and Alphonse Manada reveal Dynamis secretly backed the hunt and knew the god-tier genetic-rewrite power of Bloodstream's blood, the seed of the Knockoffs."
+          }
+        ],
+        "entities": [
+          "ryan-romano",
+          "bloodstream",
+          "leo-hargraves",
+          "mr-wave",
+          "the-cossack",
+          "ace",
+          "len",
+          "the-laika",
+          "porto-venere",
+          "elixir-mechanics",
+          "cesare",
+          "enrique-manada",
+          "alphonse-manada",
+          "stitch",
+          "the-carnival"
+        ]
       }
     ]
   },
   "counts": {
     "entities": 217,
-    "plotlines": 101,
+    "plotlines": 102,
     "books": 1
   }
 }

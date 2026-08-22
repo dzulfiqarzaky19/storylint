@@ -13000,6 +13000,188 @@
         }
       ],
       "chapter": 89
+    },
+    {
+      "name": "Ryan Romano",
+      "kind": "character",
+      "summary": "CH90 (origin, 'The First Run'): Ryan discovers his power in real time, a 10-second time-stop with a 10-second cooldown. On his first attempt he steps out of the smoke and shouts at the Carnival to stop; the distraction lets Bloodstream infect and kill Ace, and Bloodstream, no longer recognizing 'Cesare,' crushes Ryan's skull, his first death. He wakes rewound to a checkpoint: his power also creates a save-point. This run he stays hidden and lets Bloodstream die in Leo's fireball, but can't outrun the blast (light beats his 10-second window) and dies again, waking in the Carnival infirmary. Len and the Laika are gone; he loops the explosion endlessly, never catching her, and is left alone, the numb, grieving seed of the man he becomes.",
+      "facts": [
+        {
+          "key": "power onset",
+          "value": "10s time-stop, 10s cooldown; death creates a reload checkpoint"
+        },
+        {
+          "key": "first tragedy",
+          "value": "Loses Len forever; traps in the unwinnable Porto Venere explosion loop"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Elixir Mechanics",
+          "rel": "his checkpoint/loop is discovered here"
+        },
+        {
+          "to": "Len",
+          "rel": "loses her on the Laika, never catches up"
+        }
+      ],
+      "chapter": 90
+    },
+    {
+      "name": "Elixir Mechanics",
+      "kind": "concept",
+      "summary": "CH90: Ryan's Violet power is revealed in full at its origin. A ~10-second time-stop (10s cooldown), and crucially, dying rewinds him to a checkpoint set by his power ('like video games'), proven when Bloodstream kills him and he wakes back on the walkway. In this first loop the checkpoint lands at the worst moment, just before Leo's fireball, so no matter what he tries he keeps dying to the blast and can never reach the departed Len. The loop is not a one-time thing, it is his permanent condition from here on.",
+      "facts": [
+        {
+          "key": "reload",
+          "value": "Death rewinds Ryan to his power's checkpoint; not one-time, permanent"
+        },
+        {
+          "key": "first checkpoint",
+          "value": "Locked just before the Porto Venere fireball, an unwinnable window"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "his looping power"
+        }
+      ],
+      "chapter": 90
+    },
+    {
+      "name": "Mr. Wave",
+      "kind": "character",
+      "summary": "CH90: shines in the Bloodstream fight. A creature of living wavelengths who moves at lightspeed in laser form, but only in a straight line and must revert to human form to turn (his worst fear: being ejected into space unable to turn back). He shreds Bloodstream repeatedly to stop him regenerating, and repeatedly shields the powerless Ryan with his own body from Leo's fireball, waking him in the Carnival infirmary each loop and gently helping him ('the adventurer's gate' window exit). Blames himself for Ryan's wounds. His comic third-person bravado hides genuine heroism.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Lightspeed laser, straight-line only; must revert to human form to turn"
+        },
+        {
+          "key": "role",
+          "value": "Repeatedly shields Ryan from the fireball; tends him in the infirmary"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "protects and befriends him"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "keeps him from regenerating"
+        }
+      ],
+      "chapter": 90
+    },
+    {
+      "name": "Ace",
+      "kind": "character",
+      "summary": "CH90: the Carnival's freckled teleporter, on standby to evacuate the wounded to Stitch's infirmary. In Ryan's first attempt his distraction gets her killed, Bloodstream's blood volley hits her throat and converts her mid-scream into a copy of himself. On the reload where Ryan stays hidden, Mr. Wave downs Bloodstream in time and Ace escapes unharmed with the Cossack. Her death-or-survival is the clearest lesson of Ryan's first reload.",
+      "facts": [
+        {
+          "key": "power",
+          "value": "Teleporter; opens portals to Stitch's infirmary"
+        },
+        {
+          "key": "note",
+          "value": "Killed by Bloodstream in the failed run, saved in the reload"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "member"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "killed then spared depending on Ryan's choice"
+        }
+      ],
+      "chapter": 90
+    },
+    {
+      "name": "Enrique Manada",
+      "kind": "character",
+      "summary": "CH90 (origin epilogue): 'Blackthorn.' Hector's more principled son, brother of Alphonse. He quietly directs Dynamis to support the Carnival's Bloodstream hunt (movement reports via Dynamis agents, blood-sample analysis via Dr. Tyrano) 'on principle', a better world has fewer Psychos. He dreams of an Italy reborn under the rule of law rather than Genome strength, and hopes Dynamis and the Carnival can one day unite against Augustus. He insists Bloodstream's samples be destroyed, overruling his father's and Alphonse's wish to keep the world-changing power.",
+      "facts": [
+        {
+          "key": "alias",
+          "value": "Blackthorn; the principled Manada son"
+        },
+        {
+          "key": "act",
+          "value": "Backs the Carnival's hunt; orders Bloodstream's samples destroyed"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Alphonse Manada",
+          "rel": "his brother"
+        },
+        {
+          "to": "The Carnival",
+          "rel": "secretly supports their hunt"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "orders his samples destroyed"
+        }
+      ],
+      "chapter": 90
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "CH90 (origin epilogue, as Fallout): already the glowing skeleton in a black hazmat suit. He personally incinerates Dynamis's copy of Bloodstream's blood samples, but resents it, he and even Hector saw the god-tier potential of a power that rewrites genetic code in an instant. He tells Enrique he disposed of the samples ('Yes,' after a telling pause) and signs off with his creed 'All for the dream.' The seed of Dynamis's later Knockoff program: they knew exactly what Bloodstream's blood could do.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Incinerates Dynamis's Bloodstream samples, resentfully"
+        },
+        {
+          "key": "foreshadow",
+          "value": "Dynamis knew the blood's genetic-rewrite power (later Knockoffs)"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Enrique Manada",
+          "rel": "his brother"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "kept and destroyed his samples"
+        }
+      ],
+      "chapter": 90
+    },
+    {
+      "name": "Bloodstream",
+      "kind": "character",
+      "summary": "CH90: seen in full combat at Porto Venere's Marina. He fights the Carnival trio (Leo, the Cossack, Mr. Wave) as a red blur that leaps like a flea, crystallizes blood into spikes/axes, stretches tentacle limbs, and reforms in seconds from any hit, only Leo's fireball or total incineration can end him. His shrieking, childlike delusion ('why does everyone harass me?!') breaks when Ryan's Elixir seems to shatter the 'Cesare' illusion: he no longer recognizes Ryan, demands 'where is my son?!' and crushes his skull. His last clone finally dies in Leo's fireball; Dynamis and the Carnival incinerate every sample after.",
+      "facts": [
+        {
+          "key": "combat",
+          "value": "Blood spikes/axes, tentacle limbs, flea-like leaps, seconds-fast regen"
+        },
+        {
+          "key": "death",
+          "value": "Last clone incinerated by Leo's fireball at Porto Venere"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Leo Hargraves",
+          "rel": "burned to death by him"
+        },
+        {
+          "to": "Cesare",
+          "rel": "no longer recognizes Ryan as his son"
+        }
+      ],
+      "chapter": 90
     }
   ],
   "plotObservations": [
@@ -14481,6 +14663,28 @@
         "Elixir Mechanics"
       ],
       "chapter": 89
+    },
+    {
+      "title": "Origin Loop: The First Run",
+      "beat": "CH90: Ryan discovers his power mid-battle as the Carnival (Leo, the Cossack, Mr. Wave) fights Bloodstream at Porto Venere's Marina, a 10-second time-stop with a 10-second cooldown. In his first try he steps out and shouts for them to stop; the distraction lets Bloodstream kill Ace and, no longer knowing 'Cesare,' crush Ryan's skull, his first death. He wakes rewound to a checkpoint: his power creates a save-point. On the reload he hides, lets Leo's fireball incinerate Bloodstream's last clone (Ace survives), but can't outrun the blast and dies again, waking in the Carnival infirmary. Len and the Laika are long gone; Ryan loops the explosion endlessly, never catching her, and is left utterly alone. Epilogue: Enrique and Alphonse Manada reveal Dynamis secretly backed the hunt and knew the god-tier genetic-rewrite power of Bloodstream's blood, the seed of the Knockoffs.",
+      "entities": [
+        "Ryan Romano",
+        "Bloodstream",
+        "Leo Hargraves",
+        "Mr. Wave",
+        "The Cossack",
+        "Ace",
+        "Len",
+        "The Laika",
+        "Porto Venere",
+        "Elixir Mechanics",
+        "Cesare",
+        "Enrique Manada",
+        "Alphonse Manada",
+        "Stitch",
+        "The Carnival"
+      ],
+      "chapter": 90
     }
   ]
 }
