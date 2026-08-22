@@ -26,7 +26,12 @@ interface PlotlineSeed {
   label: string;
   /** the entry that OWNS this arc (a character), or null for a standalone arc. */
   ownerEntryId: string | null;
-  /** beats keyed by chapter id; summary is the one-line "what advanced here". */
+  /** arc end-state written to the plotline entry's `summary` as `state[:chapter]`
+   * (seed-only encoding this pass; the durable column lands in a later ticket).
+   * The loader's deriveState reads it back; open arcs may auto-upgrade to stalled. */
+  state: string;
+  /** beats keyed by chapter id; summary is the one-line "what advanced here". A
+   * beat may carry a trailing " \u2691resolves"/" \u2691abandons" cap marker. */
   beats: Array<{ chapterId: string; summary: string }>;
 }
 
@@ -39,6 +44,7 @@ const PLOTLINES: PlotlineSeed[] = [
     name: "Maren's reckoning",
     label: "character arc",
     ownerEntryId: "maren",
+    state: "open",
     beats: [
       { chapterId: "ch1", summary: "Lights the Verge alone for the first time, three days after the funeral." },
       { chapterId: "ch2", summary: "Reads a salt-name on the harbour wall and tells no one whose it is." },
@@ -54,9 +60,10 @@ const PLOTLINES: PlotlineSeed[] = [
     name: "The Lantern Oath binds",
     label: "power arc",
     ownerEntryId: "maren",
+    state: "resolved:4",
     beats: [
       { chapterId: "ch1", summary: "The Verge answers her hand — the first sign the oath is taking hold." },
-      { chapterId: "ch4", summary: "The oath, sworn out of season, costs her more than she is told." },
+      { chapterId: "ch4", summary: "The oath, sworn out of season, costs her more than she is told. \u2691resolves" },
     ],
   },
   {
@@ -64,6 +71,7 @@ const PLOTLINES: PlotlineSeed[] = [
     name: "Who struck the ledger",
     label: "main story",
     ownerEntryId: null,
+    state: "open",
     beats: [
       { chapterId: "ch3", summary: "Forty-one names struck — someone is unmaking the drift roll on purpose." },
       { chapterId: "ch6", summary: "The empty chair names the one who profits if the roll stays broken." },
@@ -71,12 +79,29 @@ const PLOTLINES: PlotlineSeed[] = [
     ],
   },
   {
+    // An open arc that goes QUIET: introduced early, then no beat for chapters —
+    // the loader auto-upgrades open -> stalled at LONG_GAP, so this lane exercises
+    // the stall cells, the "went quiet" drawer rows, and the neglect-first reorder
+    // that a fully-advanced arc can't show. Grounded in the seeded empty-chair
+    // thread (Maren's ch6 beat asks Idra about it) so it's real, not a fixture.
+    id: "pl-emptychair",
+    name: "The empty chair",
+    label: "subplot",
+    ownerEntryId: "idra",
+    state: "open",
+    beats: [
+      { chapterId: "ch2", summary: "Idra leaves a chair empty at the Verge table and will not say for whom." },
+      { chapterId: "ch3", summary: "Maren notices the dust on it has never been disturbed." },
+    ],
+  },
+  {
     id: "pl-ferrymen",
     name: "Halvard's berth",
     label: "subplot",
     ownerEntryId: "halvard",
+    state: "abandoned:5",
     beats: [
-      { chapterId: "ch5", summary: "Offers Maren the berth she refuses — his own passage out goes with it." },
+      { chapterId: "ch5", summary: "Offers Maren the berth she refuses — his own passage out goes with it. \u2691abandons" },
     ],
   },
 ];
@@ -102,13 +127,14 @@ export async function seedPlot(): Promise<void> {
     const universeId = uni.rows[0]?.universe_id ?? DEFAULT_UNIVERSE_ID;
     for (const pl of PLOTLINES) {
       // 1. The plotline as an entry (kind='plotline'). catalogue_no/shelf mirror the
-      //    entry contract; note carries the freeform kind label. universe stamped so
-      //    it satisfies the NOT NULL universe_id FK like every entry.
+      //    entry contract; note carries the freeform kind label; summary carries the
+      //    seed-only arc state tag (`state[:chapter]`) the /plot loader reads back.
+      //    universe stamped so it satisfies the NOT NULL universe_id FK like every entry.
       await client.query(
         `INSERT INTO entries (id, kind, name, catalogue_no, note, summary, shelf, sort_order, universe_id)
-           VALUES ($1, 'plotline', $2, $3, $4, '', 'plots', 0, $5)
+           VALUES ($1, 'plotline', $2, $3, $4, $5, 'plots', 0, $6)
          ON CONFLICT (id) DO NOTHING`,
-        [pl.id, pl.name, `PL-${pl.id}`, pl.label, universeId],
+        [pl.id, pl.name, `PL-${pl.id}`, pl.label, pl.state, universeId],
       );
       // 2. World membership — the same junction /wiki + /research read to scope an
       //    entry to a world, so /plot's world-scoped read sees the arc.

@@ -1,51 +1,119 @@
 /* /plot screen — Ashkeld tokens only (globals.css custom props); radius 0;
-   no shadows. Column widths are custom props so the responsive block can
-   retune density per viewport in one place. */
+   no shadows. Column widths are custom props so the responsive block can retune
+   density per viewport in one place. Feature parity with prototypes/plot.*. */
 .screen {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  /* Cap the content column so a short book (few chapter columns) does not strand
-     a whitespace lake on wide (2K/4K) viewports. Left-anchored, not centered: a
-     data grid reads from the left edge like the wiki index, so the surplus sits
-     to the right. width:100% keeps it fluid below the cap. */
   width: 100%;
-  max-width: 1120px;
-  --lane-col: 240px;
-  --beat-col: 46px;
+  /* Beat cards carry prose, so the whole board is wider than v1's dot grid. The
+     board itself scrolls horizontally; the screen fills its shell column. */
+  --lane-col: 210px;
+  --beat-col: 208px;
+  --row-h: 128px;
 }
 
-.head {
-  padding: 30px var(--gutter) 0;
+/* ---- toolbar: projection toggle + completion meter + legend ----------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px var(--gutter);
+  border-bottom: var(--rule-row);
+  flex-wrap: wrap;
 }
 
-.kicker {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.title {
-  font-size: 46px;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin: 10px 0 8px;
-  text-wrap: pretty;
-}
-
-.sub {
-  font-size: 14px;
+.proj {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
   color: var(--muted);
-  margin-bottom: 22px;
 }
 
-.subWarn {
-  color: var(--warning);
+.projLabel {
+  white-space: nowrap;
+}
+
+.seg {
+  display: inline-flex;
+  border: var(--rule-major);
+}
+.seg button {
+  padding: 7px 15px;
+  font-size: 13px;
   font-weight: 600;
+  color: var(--muted-2);
+  background: none;
+  cursor: pointer;
+}
+.seg button + button {
+  border-left: var(--rule-major);
+}
+.seg button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--ground);
+}
+.seg button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.meterBar {
+  width: 132px;
+  height: 8px;
+  background: var(--rule);
+  border: 1px solid var(--muted-2);
+  position: relative;
+}
+.meterBar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+}
+.meter b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.legendBar {
+  width: 22px;
+  height: 3px;
+  display: inline-block;
+}
+.legendWarn {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: var(--accent);
+}
+.legendGap {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border: 1px dashed var(--muted-2);
 }
 
 .empty {
@@ -54,71 +122,77 @@
   max-width: 46ch;
   margin-top: 6px;
 }
+.head {
+  padding: 30px var(--gutter) 0;
+}
+.kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.title {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 10px 0 8px;
+  text-wrap: pretty;
+}
 
-/* ---- grid ------------------------------------------------------------- */
+/* ---- board + grid ----------------------------------------------------- */
 
-.gridWrap {
+.board {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 0 var(--gutter) var(--gutter);
 }
-
 .grid {
   display: grid;
-  border-top: var(--rule-major);
-  border-left: var(--rule-row);
   min-width: max-content;
 }
 
 .headCell {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 13px;
   color: var(--muted);
   background: var(--tile);
   border-right: var(--rule-row);
-  border-bottom: var(--rule-row);
+  border-bottom: var(--rule-major);
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 3;
+  padding: 12px 16px;
 }
-
 .corner {
   left: 0;
-  z-index: 3;
+  z-index: 5;
+  border-right: var(--rule-major);
   display: flex;
   align-items: center;
-  padding: 10px 14px;
+  font-weight: 600;
 }
-
 .chapHead {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   gap: 2px;
-  padding: 8px 4px;
-  text-align: center;
 }
-
 .chapNum {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
 }
-
 .chapTitle {
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--faint);
-  max-width: 100%;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-2);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* the "here" (latest chapter) column highlight, header + cells */
+.here {
+  background: #ffe0d9;
 }
 
 /* ---- lane rows -------------------------------------------------------- */
@@ -126,38 +200,58 @@
 .laneRow {
   display: contents;
 }
-
 .laneLabel {
   position: sticky;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   background: var(--surface);
-  border-right: var(--rule-row);
+  border-right: var(--rule-major);
   border-bottom: var(--rule-row);
-  padding: 12px 14px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
+  min-height: var(--row-h);
+  cursor: pointer;
 }
-
+.laneLabel:hover .laneName {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+.laneLabel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
 .laneName {
-  font-size: 15px;
   font-weight: 700;
-  line-height: 1.15;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--ink);
 }
-
-.laneMeta {
-  font-size: 12px;
+.swatch {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  flex: none;
+}
+.laneKind {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--muted-2);
 }
-
-.neglect {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+.laneOwner {
+  font-size: 12px;
+  color: var(--muted);
 }
-
+.status {
+  margin-top: auto;
+  font-size: 12px;
+  font-weight: 600;
+}
 .fresh {
   color: var(--accent-deep);
 }
@@ -165,7 +259,19 @@
   color: var(--muted);
 }
 .warm {
+  color: var(--accent-deep);
+  font-weight: 600;
+}
+.stalled {
   color: var(--warning);
+  font-weight: 600;
+}
+.done {
+  color: var(--muted);
+}
+.abandoned {
+  color: var(--muted-2);
+  font-style: italic;
 }
 .idle {
   color: var(--faint);
@@ -173,69 +279,127 @@
   font-weight: 500;
 }
 
-/* ---- cells ------------------------------------------------------------ */
+/* ---- cells + beat cards ---------------------------------------------- */
 
 .cell {
-  border-right: var(--rule-row);
   border-bottom: var(--rule-row);
-  min-height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.blank {
+  border-right: var(--rule-row);
+  padding: 10px;
+  min-height: var(--row-h);
   background: var(--surface);
+  display: flex;
+  align-items: stretch;
 }
 
-/* A stall (>= LONG_GAP empty chapters between two beats) — the sagging middle.
-   A faint warm wash so a long quiet stretch is visible without shouting. */
-.gap {
+.empty {
   background: repeating-linear-gradient(
-    -45deg,
-    var(--surface),
-    var(--surface) 5px,
-    var(--fresh) 5px,
-    var(--fresh) 6px
+    135deg,
+    transparent 0 9px,
+    rgba(125, 121, 121, 0.06) 9px 10px
   );
 }
-
-.beat {
+.longgap {
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 9px,
+    rgba(236, 48, 19, 0.1) 9px 10px
+  );
+}
+.gapflag {
+  align-self: center;
+  margin: auto;
+  font-size: 11px;
+  color: var(--muted-2);
+  text-align: center;
+}
+.longgap .gapflag {
+  color: var(--accent-deep);
+  font-weight: 600;
+}
+/* greyed tail after a closed arc's cap — done, not quiet */
+.past {
   background: var(--tile);
+}
+
+.beatcard {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: var(--rule-row);
+  border-left: 4px solid var(--lane);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   cursor: pointer;
+  transition: box-shadow 120ms ease-out, transform 120ms ease-out;
 }
-.beat:hover {
-  background: var(--hover);
+.beatcard:hover {
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-1px, -1px);
 }
-.beat:focus-visible {
+.beatcard:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: -2px;
+  outline-offset: 2px;
+}
+.broken {
+  border-left-color: var(--accent);
+}
+.beatText {
+  font-size: 13.5px;
+  color: var(--body-ink);
+  line-height: 1.4;
+}
+.beatMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+.beatKind {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.capped {
+  box-shadow: inset 0 0 0 2px var(--lane);
+}
+.capped.abandoned {
+  box-shadow: inset 0 0 0 2px var(--muted-2);
+  border-left-color: var(--muted-2);
+}
+.capnote {
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--lane);
+}
+.capped.abandoned .capnote {
+  color: var(--muted-2);
+}
+.beatWarn {
+  font-size: 12px;
+  color: var(--accent-deep);
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  border-top: 1px dashed var(--rule);
+  padding-top: 6px;
+  margin-top: 2px;
+}
+.glyph {
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .beatcard {
+    transition: none;
+  }
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-  background: var(--accent);
-}
+/* ---- drawer: one arc's chapter-ordered "story so far" ----------------- */
 
-/* A beat that carries a canon-break warning: danger dot + a corner flag, so a
-   contradiction never reads the same as a clean beat. */
-.beatWarn .dot {
-  background: var(--danger);
-}
-.flag {
-  position: absolute;
-  top: 2px;
-  right: 3px;
-  font-size: 10px;
-  line-height: 1;
-  color: var(--danger);
-}
-
-/* ---- drawer (beat drill-down) ---------------------------------------- */
-
-.drawerScrim {
+.scrim {
   position: fixed;
   inset: 0;
   background: var(--scrim);
@@ -243,112 +407,139 @@
   display: flex;
   justify-content: flex-end;
 }
-
 .drawer {
-  width: min(440px, 100vw);
+  width: min(460px, 92vw);
   height: 100%;
-  background: var(--surface);
+  background: var(--ground);
   border-left: var(--rule-major);
-  padding: 28px var(--gutter);
-  overflow-y: auto;
+  border-top: 5px solid var(--lane);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  overflow: hidden;
 }
-
-.drawerClose {
-  align-self: flex-end;
-  font-size: 12px;
-  font-weight: 700;
+.dhead {
+  padding: 20px var(--gutter) 16px;
+  border-bottom: var(--rule-major);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dtitle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dtitle h2 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.dclose {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--muted-2);
+  padding: 2px 6px;
+  background: none;
+  cursor: pointer;
+}
+.dclose:hover {
+  color: var(--accent);
+}
+.dkind {
+  font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.drawerClose:hover {
-  color: var(--accent);
-}
-
-.drawerKicker {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.drawerTitle {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-.drawerOwner {
-  font-size: 14px;
   color: var(--muted-2);
-  margin-bottom: 12px;
 }
-
-.drawerBody {
-  font-size: 16px;
-  line-height: 1.55;
-  color: var(--body-ink);
+.dsub {
+  font-size: 12px;
+  color: var(--muted);
 }
-
-.drawerWarn {
-  margin-top: 14px;
-  padding: 12px 14px;
-  background: var(--drop);
-  border-left: 3px solid var(--danger);
+.pill {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1.5px solid currentColor;
+  padding: 1px 7px;
+  margin-right: 8px;
+}
+.beatlist {
+  overflow-y: auto;
+  padding: 8px var(--gutter) 40px;
+}
+.beatrow {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: var(--rule-row);
+}
+.rowCh {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+}
+.rowCh small {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+.rowBody {
   font-size: 14px;
   line-height: 1.5;
-  color: var(--danger-deep);
-  font-weight: 600;
+  color: var(--body-ink);
+}
+.beatrow.broken .rowCh {
+  color: var(--accent-deep);
+}
+.rowWarn {
+  margin-top: 7px;
+  font-size: 12.5px;
+  color: var(--accent-deep);
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+.beatrow.stall {
+  opacity: 0.72;
+}
+.beatrow.stall .rowBody {
+  font-style: italic;
+  color: var(--muted);
 }
 
 /* ---- responsive ------------------------------------------------------- */
 
-/* Tablet: narrow the lane column and tighten the title so the grid keeps more
-   room for chapter columns before it needs to scroll. */
 @media (max-width: 1200px) {
   .screen {
     --lane-col: 190px;
-  }
-  .title {
-    font-size: 38px;
+    --beat-col: 188px;
   }
 }
-
-/* Mobile: compact density; the grid scrolls both axes inside gridWrap. The
-   drawer becomes a bottom sheet so it never exceeds a phone's width. */
 @media (max-width: 640px) {
-  .head {
-    padding: 22px 20px 0;
-  }
-  .gridWrap {
-    padding: 0 20px 20px;
-  }
   .screen {
-    --lane-col: 150px;
-    --beat-col: 40px;
+    --lane-col: 148px;
+    --beat-col: 168px;
+    --row-h: 116px;
   }
-  .title {
-    font-size: 30px;
+  .toolbar {
+    padding: 14px 20px;
   }
-  .laneName {
-    font-size: 13px;
+  .headCell {
+    padding: 10px 12px;
   }
-  .drawerScrim {
+  .scrim {
     align-items: flex-end;
   }
   .drawer {
     width: 100vw;
     height: auto;
-    max-height: 82vh;
+    max-height: 86vh;
     border-left: none;
-    border-top: var(--rule-major);
-    padding: 22px 20px;
   }
 }
-

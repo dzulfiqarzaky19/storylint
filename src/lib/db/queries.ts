@@ -83,7 +83,7 @@ export async function getAllEntries(): Promise<EntryRow[]> {
   // from every live surface — shelves, the wiki snapshot, AND the AI gazetteer
   // built from this snapshot, so a deleted entry can never leak into AI grounding.
   return rows<EntryRow>(
-    `SELECT ${ENTRY_COLS} FROM entries WHERE deleted_at IS NULL ORDER BY shelf, sort_order, name`,
+    `SELECT ${ENTRY_COLS} FROM entries WHERE deleted_at IS NULL AND kind <> 'plotline' ORDER BY shelf, sort_order, name`,
   );
 }
 
@@ -98,7 +98,7 @@ export async function getWorldEntries(worldId: string): Promise<EntryRow[]> {
   return rows<EntryRow>(
     `SELECT ${ENTRY_COLS} FROM entries e
        JOIN world_entities we ON we.entity_id = e.id AND we.world_id = $1
-      WHERE e.deleted_at IS NULL
+      WHERE e.deleted_at IS NULL AND e.kind <> 'plotline'
       ORDER BY e.shelf, e.sort_order, e.name`,
     [worldId],
   );
@@ -254,7 +254,7 @@ export async function loadWikiSnapshot(
        e.deleted_at                    AS "deletedAt"
      FROM entries e
      LEFT JOIN entry_facets ef ON ef.entry_id = e.id AND ef.book_id = $2
-     WHERE e.deleted_at IS NULL AND e.universe_id = $1
+     WHERE e.deleted_at IS NULL AND e.universe_id = $1 AND e.kind <> 'plotline'
      ORDER BY e.shelf, e.sort_order, name`,
     [universeId, bookId],
   );
@@ -410,7 +410,7 @@ export async function loadWorldSnapshot(
      FROM entries e
      JOIN world_entities we ON we.entity_id = e.id AND we.world_id = $1
      LEFT JOIN entry_facets ef ON ef.entry_id = e.id AND ef.book_id IN (SELECT id FROM win)
-     WHERE e.deleted_at IS NULL
+     WHERE e.deleted_at IS NULL AND e.kind <> 'plotline'
      ORDER BY e.shelf, e.sort_order, name`,
     [worldId, asOfBookId],
   );

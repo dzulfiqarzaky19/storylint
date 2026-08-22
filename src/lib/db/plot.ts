@@ -17,10 +17,16 @@ export interface PlotChapter {
   title: string;
 }
 
-/** A beat = one chapter advancing one plotline (a filled grid cell). */
+/** An arc\x27s end-state. Derived from the seeded state tag; `open` = still\n * running to the current chapter, `stalled` = quiet >= LONG_GAP chapters,\n * `resolved`/`abandoned` = capped at `resolvedAt` (payoff / dropped). */
+export type PlotState = "open" | "stalled" | "resolved" | "abandoned";
+
+/** A beat = one chapter advancing one plotline (a filled grid cell). The card the\n * grid renders: `summary` is the visible beat text, `warn` a live canon-break\n * note (null = clean), and `resolves`/`abandons` mark the payoff beat that caps\n * the arc. */
 export interface PlotBeat {
   chapterNumber: number;
   summary: string;
+  warn: string | null;
+  resolves: boolean;
+  abandons: boolean;
 }
 
 /** One plotline row of the grid (a lane, the Y axis). */
@@ -37,6 +43,12 @@ export interface PlotLane {
   lastAdvanced: number | null;
   /** latestChapter - lastAdvanced (0 = current, higher = more neglected). */
   neglect: number;
+  /** the arc\x27s end-state (open|stalled|resolved|abandoned). */
+  state: PlotState;
+  /** the chapter the arc was resolved/abandoned at, or null while open/stalled.\n * Cells after it are the greyed "past" tail (arc closed, not neglected). */
+  resolvedAt: number | null;
+  /** stable 0-based index for the per-lane arc color (grid swatch/border/drawer). */
+  colorIndex: number;
 }
 
 /** The whole /plot payload for one world's active book. */
@@ -45,6 +57,8 @@ export interface PlotProgression {
   lanes: PlotLane[];
   /** the latest chapter number in the book (the "here" column). */
   latestChapter: number;
+  /** completion readout: resolved arcs / (total - abandoned). An abandoned arc is\n * not an unpaid promise, so it is excluded from the denominator. */
+  completion: { resolved: number; owed: number; percent: number };
 }
 
 /** A raw beat row joined to its chapter number (the grouping key for a lane). */
@@ -79,11 +93,13 @@ export async function loadPlotProgression(
     id: string;
     name: string;
     label: string;
+    stateTag: string;
     ownerName: string | null;
   }>(
     `SELECT pl.id,
             pl.name,
             pl.note                       AS label,
+            pl.summary                    AS "stateTag",
             owner.name                    AS "ownerName"
        FROM entries pl
        JOIN world_entities we ON we.entity_id = pl.id AND we.world_id = $1
@@ -117,9 +133,48 @@ export async function loadPlotProgression(
  * beats reports lastAdvanced=null and neglect=0 (never advanced = not "neglected",
  * it simply hasn't started — the client shows it as awaiting its first beat).
  */
+/** Chapters of quiet at or beyond which an open arc is flagged `stalled`. Also
+ * the threshold the drawer uses to collapse a gap into an "arc went quiet" row. */
+export const LONG_GAP = 3;
+
+/** Split a stored beat summary into structured card fields. Markers are seeded
+ * inline (there are no beat-flag columns yet): a "\u26a0" (warning sign) splits
+ * the visible beat text from a live canon-break note, and a trailing
+ * " \u2691resolves" / " \u2691abandons" (flag) marks the payoff beat that caps
+ * the arc. The visible `summary` is the text with every marker stripped. */
+export function parseBeat(chapterNumber: number, raw: string): PlotBeat {
+  let rest = raw;
+  const resolves = /\u2691resolves$/.test(rest);
+  const abandons = /\u2691abandons$/.test(rest);
+  rest = rest.replace(/\s*\u2691(resolves|abandons)$/, "");
+  const [text, ...warnParts] = rest.split("\u26a0");
+  const warn = warnParts.length > 0 ? warnParts.join("\u26a0").trim() : null;
+  return { chapterNumber, summary: (text ?? "").trim(), warn, resolves, abandons };
+}
+
+/** Derive an arc's end-state from its seeded tag (the plotline entry's summary
+ * column, `state[:chapter]`). An unknown/blank tag defaults to open, then is
+ * upgraded to `stalled` when it has gone quiet for LONG_GAP+ chapters. resolved
+ * / abandoned carry the cap chapter; when the tag omits it we fall back to the
+ * last advanced chapter so the cap marker still lands on a real beat. */
+export function deriveState(
+  tag: string,
+  lastAdvanced: number | null,
+  latestChapter: number,
+): { state: PlotState; resolvedAt: number | null } {
+  const [rawState, rawAt] = (tag ?? "").trim().split(":");
+  const at = rawAt ? Number(rawAt) : lastAdvanced;
+  if (rawState === "resolved") return { state: "resolved", resolvedAt: at };
+  if (rawState === "abandoned") return { state: "abandoned", resolvedAt: at };
+  const quiet = lastAdvanced === null ? 0 : latestChapter - lastAdvanced;
+  if (rawState === "stalled" || quiet >= LONG_GAP)
+    return { state: "stalled", resolvedAt: null };
+  return { state: "open", resolvedAt: null };
+}
+
 export function assemble(
   chapters: PlotChapter[],
-  laneRows: Array<{ id: string; name: string; label: string; ownerName: string | null }>,
+  laneRows: Array<{ id: string; name: string; label: string; stateTag: string; ownerName: string | null }>,
   beatRows: BeatRow[],
 ): PlotProgression {
   const latestChapter = chapters.reduce((max, c) => Math.max(max, c.number), 0);
@@ -127,7 +182,7 @@ export function assemble(
   const beatsByLane = new Map<string, PlotBeat[]>();
   for (const b of beatRows) {
     const list = beatsByLane.get(b.plotlineId) ?? [];
-    list.push({ chapterNumber: b.chapterNumber, summary: b.summary });
+    list.push(parseBeat(b.chapterNumber, b.summary));
     beatsByLane.set(b.plotlineId, list);
   }
 
@@ -150,7 +205,14 @@ export function assemble(
       beats.length === 0
         ? null
         : beats.reduce((max, b) => Math.max(max, b.chapterNumber), 0);
-    const neglect = lastAdvanced === null ? 0 : latestChapter - lastAdvanced;
+    const { state, resolvedAt } = deriveState(l.stateTag, lastAdvanced, latestChapter);
+    // Neglect is meaningless once an arc has closed (resolved/abandoned): the gap
+    // after its cap is intentional, not a dropped thread. Only open/stalled arcs
+    // carry a neglect count; a closed arc reports 0 so it never shows as "quiet".
+    const neglect =
+      lastAdvanced === null || state === "resolved" || state === "abandoned"
+        ? 0
+        : latestChapter - lastAdvanced;
     const lane: PlotLane = {
       id: l.id,
       name: l.name,
@@ -159,10 +221,17 @@ export function assemble(
       beats,
       lastAdvanced,
       neglect,
+      state,
+      resolvedAt,
+      colorIndex: lanes.length,
     };
     laneById.set(l.id, lane);
     lanes.push(lane);
   }
 
-  return { chapters, lanes, latestChapter };
+  const resolved = lanes.filter((l) => l.state === "resolved").length;
+  const owed = lanes.filter((l) => l.state !== "abandoned").length;
+  const percent = owed === 0 ? 0 : Math.round((resolved / owed) * 100);
+
+  return { chapters, lanes, latestChapter, completion: { resolved, owed, percent } };
 }
