@@ -4930,6 +4930,116 @@
         }
       ],
       "chapter": 51
+    },
+    {
+      "name": "The Panda",
+      "kind": "character",
+      "summary": "Timmy 'the Panda,' an anxious, endearing Green Genome hero-hopeful with a manbear/human-muppet demeanor, dismissed by Enrique as incompetent and a liability to any team, though Wyvern sees potential and Dr. Tyrano finds his power useful for his work. Ryan recruits him as his eager sidekick, dubs their team 'Quicksave the Pandas,' and has Timmy call him 'Super Sifu Ryan'; the Panda dreams of fame, a 'pandamobile,' and honoring his panda heritage.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Timmy 'the Panda'; anxious Green Genome hero-hopeful"
+        },
+        {
+          "key": "note",
+          "value": "Deemed incompetent by Enrique; Wyvern sees potential"
+        },
+        {
+          "key": "note",
+          "value": "Ryan recruits him as sidekick in 'Quicksave the Pandas'"
+        },
+        {
+          "key": "note",
+          "value": "Dr. Tyrano finds his power useful"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "joins"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "sidekick"
+        }
+      ],
+      "chapter": 52
+    },
+    {
+      "name": "Blackthorn",
+      "kind": "character",
+      "summary": "Enrique Manada, Dynamis's CBO and Head Manager of the Il Migliore program: a Green Genome whose poisonous-plant office and pufferfish pond suit his icy, mastermind manner, and whose flowers react to his hidden emotions. In this loop he proves clean, not the Meta's sponsor; on seeing Ryan's evidence he fires the responsible drone-handler and deduces a high-placed board-level traitor may back the Meta. Distrustful of the unstable Ryan but valuing his power, he takes him into Il Migliore's junior division on a six-month trial under direct supervision, granting Ryan's terms to keep his name and to leave the Underdiver alone, and pairs him with the Panda as a package deal.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Enrique Manada; Dynamis CBO, Il Migliore Head Manager"
+        },
+        {
+          "key": "note",
+          "value": "Green Genome; poisonous-plant office, flowers mirror his mood"
+        },
+        {
+          "key": "note",
+          "value": "Clean this loop; suspects a board-level Meta sponsor"
+        },
+        {
+          "key": "note",
+          "value": "Takes Ryan into Il Migliore's junior division on trial"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "executive"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "recruits"
+        },
+        {
+          "to": "The Panda",
+          "rel": "assigns to Ryan"
+        }
+      ],
+      "chapter": 52
+    },
+    {
+      "name": "Livia Augusti",
+      "kind": "character",
+      "summary": "Livia Augusti, an Augusti princess with platinum/white hair and elegant dress, and Fortuna's best friend. Her Purple-World-linked sight cannot perceive Ryan at all, and she glimpses Schrodinger only unclearly, hinting the cat half-exists in the Purple World. Poised and amused where Fortuna is haughty, she finds Ryan's name 'Quicksave' familiar and watches him with intrigue after their chance meeting on Sol Street.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti princess; platinum hair, Fortuna's best friend"
+        },
+        {
+          "key": "note",
+          "value": "Purple-World-linked sight cannot perceive Ryan"
+        },
+        {
+          "key": "note",
+          "value": "Sees Schrodinger only unclearly"
+        },
+        {
+          "key": "note",
+          "value": "Intrigued by Ryan after their Sol Street meeting"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Fortuna",
+          "rel": "best friend"
+        },
+        {
+          "to": "The Purple World",
+          "rel": "linked sight"
+        }
+      ],
+      "chapter": 52
     }
   ],
   "plotObservations": [
@@ -5552,6 +5662,21 @@
         "Vulcan"
       ],
       "chapter": 51
+    },
+    {
+      "title": "Chance Meetings",
+      "beat": "Ryan meets Enrique 'Blackthorn' Manada and lays out his evidence that a Dynamis insider armed the Meta-Gang. Enrique proves clean: he fires the negligent drone-handler, deduces a board-level traitor may be the sponsor, and takes the unstable-but-useful Ryan into Il Migliore's junior division on a six-month supervised trial, granting Ryan's terms (keep his name, never touch the Underdiver). Ryan adopts the hapless hero-hopeful Timmy 'the Panda' as his sidekick, naming their team 'Quicksave the Pandas.' Driving home he learns Dynamis surveils Len's undersea base (likely how Adam found it) and resolves to get her real antidepressant treatment. On Sol Street a chance encounter throws him together with the haughty Fortuna and the intrigued Livia Augusti, whose Purple-World sight cannot perceive Ryan or clearly see his teleporting cat Schrodinger. Ryan rebuffs Fortuna's demand for a ride and drives off, leaving Livia watching him with curiosity.",
+      "entities": [
+        "Ryan Romano",
+        "Blackthorn",
+        "The Panda",
+        "Il Migliore",
+        "Len Sabino",
+        "Fortuna",
+        "Livia Augusti",
+        "Schrodinger"
+      ],
+      "chapter": 52
     }
   ]
 }
