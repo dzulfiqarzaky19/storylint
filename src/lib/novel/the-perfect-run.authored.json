@@ -1890,6 +1890,976 @@
         }
       ],
       "chapter": 16
+    },
+    {
+      "name": "Pluto",
+      "kind": "character",
+      "summary": "Augustus's sister and Augusti underboss, a cold, paranoid Genius/Genome who can kill with a thought and 'marks' people. Uniquely, she recognizes Ryan as marked across loops though she can't place him, threatening his infiltration. She loans the Killer Seven to Vulcan for the Meta cleanup.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augustus's sister and Augusti underboss"
+        },
+        {
+          "key": "note",
+          "value": "Kills with a thought; 'marks' targets"
+        },
+        {
+          "key": "note",
+          "value": "Senses Ryan is marked even across timeline resets"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "underboss"
+        },
+        {
+          "to": "Augustus",
+          "rel": "sister"
+        }
+      ],
+      "chapter": 21
+    },
+    {
+      "name": "The Killer Seven",
+      "kind": "organization",
+      "summary": "An elite Augusti hit squad under Pluto, loaned to Vulcan to spearhead the assault on the Meta-Gang in Rust Town.",
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "elite squad"
+        },
+        {
+          "to": "Pluto",
+          "rel": "commanded by"
+        }
+      ],
+      "chapter": 21
+    },
+    {
+      "name": "Cancel",
+      "kind": "character",
+      "summary": "An Augusti Genome who would detect any memory alteration or infohazard; cited by Pluto's bodyguard as proof Ryan hasn't tampered with minds, deepening the mystery of how Pluto still senses him.",
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        }
+      ],
+      "chapter": 21
+    },
+    {
+      "name": "Auto-pilot",
+      "kind": "lore",
+      "summary": "Not a separate power but a mental state Ryan enters after countless identical loops: he lets his sense of timing run conversations and fights on rehearsal-like reflex while his conscious mind checks out, since people become predictable machines that forget and relearn the same things. Prolonged looping erodes his perception of reality.",
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "coping state"
+        }
+      ],
+      "chapter": 21
+    },
+    {
+      "name": "Len Sabino",
+      "kind": "character",
+      "summary": "As a child, Len drank the Blue Elixir Bloodstream had hoarded, hoping a Genius power could cure her father; instead she woke a water-themed Genius mind and compulsively built a red hammer-and-sickle bathysphere in a fugue. Bloodstream nearly strangled her for 'stealing' his power but stopped himself; Ryan kissed her in the aftermath. She now hides three km deep in the Vavilov basin as the Underdiver, secretly watching Ryan but afraid to face him.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Drank the Blue Elixir hoping to cure her father"
+        },
+        {
+          "key": "note",
+          "value": "Water-themed Genius: submarines, deep-sea tech, tsunami devices"
+        },
+        {
+          "key": "note",
+          "value": "Bloodstream nearly killed her for taking 'his' power"
+        },
+        {
+          "key": "note",
+          "value": "Shared her first kiss with Ryan afterward"
+        },
+        {
+          "key": "note",
+          "value": "Now hides in a deep-sea base, watching Ryan from afar"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "childhood love"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "father"
+        }
+      ],
+      "chapter": 20
+    },
+    {
+      "name": "The Blue Elixir",
+      "kind": "lore",
+      "summary": "A Blue-color Elixir that grants a Genius intellect, seemingly shaping the power to the drinker's personality; Len's love of the sea and Verne yielded water mastery. The substance fuses into the bloodstream through the mouth, bypassing digestion, then triggers a manic creative fugue. Mechron drank one to invent his killer robots and orbital lasers.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Grants Genius intellect, shaped by the drinker's personality"
+        },
+        {
+          "key": "note",
+          "value": "Absorbs through the mouth into the blood, bypassing digestion"
+        },
+        {
+          "key": "note",
+          "value": "Causes a manic creative fugue on first use"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Elixirs",
+          "rel": "Blue variant"
+        }
+      ],
+      "chapter": 20
+    },
+    {
+      "name": "The Underdiver's Base",
+      "kind": "place",
+      "summary": "Len's undersea habitat three kilometers deep in the Vavilov basin, the deepest part of the Tyrrhenian Sea, roughly equidistant from New Rome, Sardinia and Sicily. A modular, independently-sealed habitat she constantly repairs against deep-sea pressure, meant one day to safely house life; guarded by mutant fish and hazards.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "3 km deep in the Vavilov basin of the Tyrrhenian Sea"
+        },
+        {
+          "key": "note",
+          "value": "Modular habitat with independently sealed sections"
+        },
+        {
+          "key": "note",
+          "value": "Surrounded by mutant fish and deep-sea hazards"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len Sabino",
+          "rel": "home of"
+        }
+      ],
+      "chapter": 20
+    },
+    {
+      "name": "The Shroud Pact",
+      "kind": "lore",
+      "summary": "Ryan's deal with the Shroud: the Carnival halts its assassinations of the Augusti (sparing Zanbato, Chitter, Sphere and Ryan) and protects the orphanage, while Ryan infiltrates the Augusti and destroys their Ischia Bliss superlab within three weeks to cripple the syndicate non-lethally. Bliss is ~half of Augusti revenue and can only be made at that lab.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Shroud pauses Augusti assassinations and guards the orphanage"
+        },
+        {
+          "key": "note",
+          "value": "Ryan must destroy the Ischia Bliss superlab within three weeks"
+        },
+        {
+          "key": "note",
+          "value": "Bliss is ~half of Augusti revenue, made only at that lab"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Shroud",
+          "rel": "party to"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "party to"
+        }
+      ],
+      "chapter": 19
+    },
+    {
+      "name": "Cancel",
+      "kind": "character",
+      "summary": "Real name Greta, a cheerful Bulgarian White Genome of the Killer Seven who negates all powers within a radius (Augustus excepted) and purges memory alteration or infohazards of any color. Her nullification blocks even Ryan's automatic save-trigger, making him mortal near her.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "White Genome; nullifies all powers in a radius except Augustus's"
+        },
+        {
+          "key": "note",
+          "value": "Purges memory alteration and infohazards of any color"
+        },
+        {
+          "key": "note",
+          "value": "Her negation blocks Ryan's automatic save-trigger"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Killer Seven",
+          "rel": "member"
+        },
+        {
+          "to": "Pluto",
+          "rel": "serves"
+        }
+      ],
+      "chapter": 22
+    },
+    {
+      "name": "Sparrow",
+      "kind": "character",
+      "summary": "Pluto's female bodyguard, a skilled and thorough searcher who frisks Ryan and his car; discovers the synthetic brain hidden in his Plymouth.",
+      "ties": [
+        {
+          "to": "Pluto",
+          "rel": "bodyguard"
+        }
+      ],
+      "chapter": 22
+    },
+    {
+      "name": "Pluto's Death-Sense",
+      "kind": "lore",
+      "summary": "Pluto controls the metaphysical concept of death and can sense the accumulated 'weight of years' on a person. She reads Ryan as the oldest being she has met, in the triple digits and 'closer to four than two' (300+), because his fused save-copies stack metaphysical age.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Senses a person's accumulated lifespan/metaphysical weight"
+        },
+        {
+          "key": "note",
+          "value": "Pegs Ryan at 300+ years old"
+        },
+        {
+          "key": "note",
+          "value": "Can kill by severing life directly"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Pluto",
+          "rel": "power of"
+        }
+      ],
+      "chapter": 22
+    },
+    {
+      "name": "Minerva",
+      "kind": "character",
+      "summary": "Pluto's niece, a Blue Genius who can interact with parallel universes; mentioned as a possible analog to Ryan's cover story of universe-hopping.",
+      "ties": [
+        {
+          "to": "Pluto",
+          "rel": "niece"
+        },
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        }
+      ],
+      "chapter": 22
+    },
+    {
+      "name": "The Brain-Car",
+      "kind": "lore",
+      "summary": "Ryan's Plymouth Fury is driven by a synthetic, homegrown non-sentient brain in a jar hidden under the hood, wired with a miniature particle accelerator; it powers the self-driving and the Chronoradio, gifted by a wetware-computer Genius who grew brains 'like weed.'",
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "vehicle system"
+        },
+        {
+          "to": "Chronoradio",
+          "rel": "powers"
+        }
+      ],
+      "chapter": 22
+    },
+    {
+      "name": "Bacchus",
+      "kind": "character",
+      "summary": "Alias Andreas Torque, an excommunicated priest and Blue Genome who heads the Augusti's Bliss drug division from the island superlab. He drives victims mad with visions and hallucinations by an unknown trigger, and rarely leaves the lab except to visit Augustus. Ryan must reach him through an intermediary to infiltrate the drug operation.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Real name Andreas Torque; excommunicated priest"
+        },
+        {
+          "key": "note",
+          "value": "Blue Genome: inflicts maddening visions and hallucinations"
+        },
+        {
+          "key": "note",
+          "value": "Heads the Augusti Bliss drug division at the superlab"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "drug-division head"
+        }
+      ],
+      "chapter": 24
+    },
+    {
+      "name": "Vamp",
+      "kind": "character",
+      "summary": "A Green Genome of the Augusti hit squad, a succubus-like woman who drains those who fall into her arms; Jamie warns Ryan never to sleep with her. Invited to Genome parties to avoid her drama.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Green Genome; drains victims she seduces"
+        },
+        {
+          "key": "note",
+          "value": "Jamie explicitly warns Ryan away from her"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "hit-squad member"
+        }
+      ],
+      "chapter": 24
+    },
+    {
+      "name": "Psyshock's Duplication",
+      "kind": "lore",
+      "summary": "The Shroud reveals Psyshock keeps returning because he is a duplicator, not merely a regenerator: he makes copies of himself and kills himself rather than be captured. The mechanism echoes Bloodstream's cloning, which he witnessed, and which the Carnival only beat by hunting down every double.",
+      "ties": [
+        {
+          "to": "Psyshock",
+          "rel": "true power"
+        },
+        {
+          "to": "Bloodstream",
+          "rel": "echoes"
+        }
+      ],
+      "chapter": 24
+    },
+    {
+      "name": "Len's Undersea Commune",
+      "kind": "place",
+      "summary": "Len's deep-sea habitat is a sprawling nest of sphere-houses linked by corridors, a utilitarian 'undersea Khrushchyovka' with room for hundreds, which she is building to shelter Rust Town's orphans and start an equal society. Soulless and bare but for her books (Verne, Marx, Hegel) and a hoard of antidepressants.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Modular sphere-habitats for hundreds, meant for orphans"
+        },
+        {
+          "key": "note",
+          "value": "Utilitarian and soulless; furnished only with books and medications"
+        },
+        {
+          "key": "note",
+          "value": "Reflects Len's Marxist ideals and depression"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Len Sabino",
+          "rel": "built by"
+        },
+        {
+          "to": "The Orphanage",
+          "rel": "intended refuge for"
+        }
+      ],
+      "chapter": 23
+    },
+    {
+      "name": "Fortuna",
+      "kind": "character",
+      "summary": "Atom Cat's beautiful, vain elder sister and an Augusti Yellow Genome whose supernatural luck makes attacks miss her (bullets, snipers) and lets her kill with impossible trick shots. Ryan bypasses her luck only inside frozen time, cutting her hair as a trophy. Her luck fails against the Land's territorial Yellow interference.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Yellow Genome; overwhelming luck deflects all harm"
+        },
+        {
+          "key": "note",
+          "value": "Kills with impossible trick shots (two snipers, one bullet)"
+        },
+        {
+          "key": "note",
+          "value": "Luck is bypassed only by Ryan's time-stop"
+        },
+        {
+          "key": "note",
+          "value": "Atom Cat's (Felix's) elder sister"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Atom Cat",
+          "rel": "brother"
+        }
+      ],
+      "chapter": 25
+    },
+    {
+      "name": "Mortimer",
+      "kind": "character",
+      "summary": "A skull-masked, weapon-loving Killer Seven original who phases through solid surfaces (walls, ground) and fights unarmored; enjoys startling people. One of only two original members left.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Phases through walls and ground"
+        },
+        {
+          "key": "note",
+          "value": "Fights without armor; loves guns"
+        },
+        {
+          "key": "note",
+          "value": "Original Killer Seven member"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Killer Seven",
+          "rel": "member"
+        }
+      ],
+      "chapter": 25
+    },
+    {
+      "name": "Sparrow",
+      "kind": "character",
+      "summary": "Pluto's bodyguard and a Killer Seven original who shoots lasers ('sort of'); named for her favorite bird, not her power. Thorough, professional operative.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Shoots lasers; named for the bird not the power"
+        },
+        {
+          "key": "note",
+          "value": "Original Killer Seven member and Pluto's bodyguard"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Killer Seven",
+          "rel": "member"
+        },
+        {
+          "to": "Pluto",
+          "rel": "bodyguard"
+        }
+      ],
+      "chapter": 25
+    },
+    {
+      "name": "The Land",
+      "kind": "character",
+      "summary": "A lone-wolf Psycho recruited by the Meta who fuses her body into terrain to gain psychic control and geokinesis over it; her range far exceeds Augusti intel, letting her collapse every building across Rust Town and suppress Fortuna's luck (Yellow interfering with Yellow).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Fuses into terrain for psychic control and geokinesis"
+        },
+        {
+          "key": "note",
+          "value": "Range covers all of Rust Town"
+        },
+        {
+          "key": "note",
+          "value": "Her Yellow field suppresses Fortuna's luck"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "recruit"
+        }
+      ],
+      "chapter": 26
+    },
+    {
+      "name": "The Killer Seven",
+      "kind": "organization",
+      "summary": "The Augusti's elite hit squad, founded by Pluto with one member per Genome color (Violet, Blue, Green, Yellow, Orange, White, Red). Now down to four-to-six through turnover; the name stuck for catchiness. Known members: Sparrow (laser), Mortimer (phasing), Fortuna (luck), Cancel/Greta (White negation), plus Vamp (drain) and Night Terror (dark-only power).",
+      "facts": [
+        {
+          "key": "note",
+          "value": "One member per color when Pluto led it; the '7' name stuck"
+        },
+        {
+          "key": "note",
+          "value": "Current members: Sparrow, Mortimer, Fortuna, Cancel, Vamp, Night Terror"
+        },
+        {
+          "key": "note",
+          "value": "Handles the Augusti's most sensitive missions"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "hit squad"
+        },
+        {
+          "to": "Pluto",
+          "rel": "founder"
+        }
+      ],
+      "chapter": 25
+    },
+    {
+      "name": "Night Terror",
+      "kind": "character",
+      "summary": "A Killer Seven member whose power only functions in darkness; mentioned as one of the squad's rotating members.",
+      "ties": [
+        {
+          "to": "The Killer Seven",
+          "rel": "member"
+        }
+      ],
+      "chapter": 25
+    },
+    {
+      "name": "Weapon Creation",
+      "kind": "lore",
+      "summary": "Vulcan's narrow Genius power: she can invent any weapon or war-support device (armors, vehicles, cyber-viruses that detonate phones, power-enhancing armor like Mechron's) but her power refuses non-combat innovation, so she can never fix her mechs' non-weapon flaws like joint weakness. She offers to build Ryan power-enhancing armor to study his ability.",
+      "ties": [
+        {
+          "to": "Vulcan",
+          "rel": "power of"
+        }
+      ],
+      "chapter": 25
+    },
+    {
+      "name": "Mechron's Warmech",
+      "kind": "lore",
+      "summary": "A pristine twelve-meter, six-legged Mechron war-robot with a laser scorpion-tail, missile racks, flamethrowers and turrets, deployed by the Meta and piloted from within by Psyshock via his wires. Its Mechron-tech provenance and the robots guarding the Junkyard bunker hint the Meta's true prize is a Mechron cache.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Pristine Mechron combat robot, not scavenged"
+        },
+        {
+          "key": "note",
+          "value": "Piloted internally by Psyshock's wires"
+        },
+        {
+          "key": "note",
+          "value": "Links the Meta's bunker obsession to a Mechron cache"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "built by"
+        },
+        {
+          "to": "Meta-Gang",
+          "rel": "deployed by"
+        }
+      ],
+      "chapter": 26
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Jupiter Augustus, an ex-Camorra warlord who drank two Elixirs to become an invulnerable ivory statue with lightning and cut-anything-immune super-strength; he neither breathes, eats nor feels. Self-styled god-emperor who believes Genomes must rule and old humanity must be culled. He massacred the Costa farm to erase Bruno, whose blade could cut anything, as a 'paradox' to his invulnerability, then spared their daughter Giulia.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Drank two Elixirs: invulnerability + lightning + super-strength"
+        },
+        {
+          "key": "note",
+          "value": "Ivory body; feels nothing, needs no food, air or sleep"
+        },
+        {
+          "key": "note",
+          "value": "Cannot take a third Elixir due to invulnerability"
+        },
+        {
+          "key": "note",
+          "value": "Massacred the Costa farm; killed Bruno as a 'paradox'"
+        },
+        {
+          "key": "note",
+          "value": "Believes Genomes are chosen to rule and humanity must be culled"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "patriarch"
+        },
+        {
+          "to": "Pluto",
+          "rel": "brother"
+        },
+        {
+          "to": "Bruno Costa",
+          "rel": "murdered"
+        }
+      ],
+      "chapter": 27
+    },
+    {
+      "name": "Leo Hargraves",
+      "kind": "character",
+      "summary": "Leonard 'Leo the Living Sun' Hargraves, leader of the Carnival; his Red Elixir turned him into a being of solar flame with control over his own gravity, so mighty he must constantly suppress it lest he incinerate cities (and he burns his clothes when he transforms). He always uses his real name for accountability and befriended the Costa family.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Red Genome; becomes a living sun, controls his gravity"
+        },
+        {
+          "key": "note",
+          "value": "Suppresses his power to avoid incinerating cities"
+        },
+        {
+          "key": "note",
+          "value": "Uses his real name on principle"
+        },
+        {
+          "key": "note",
+          "value": "Leads the Carnival; friend of the Costas"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "leader"
+        }
+      ],
+      "chapter": 27
+    },
+    {
+      "name": "Bruno and Julie Costa",
+      "kind": "character",
+      "summary": "A farming couple who each drank an Elixir from a Last Easter Wonderbox: Bruno could make any blade cut through anything (used only on cattle), Julie a Green biologist who edits DNA to breed pollution-cleansing super-crops. They built a refugee community in Campania, befriended Leo Hargraves, and were slaughtered by Augustus; their daughter Giulia survived.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Bruno: blades that cut anything; gentle, used it only on cattle"
+        },
+        {
+          "key": "note",
+          "value": "Julie: Green power to edit DNA and breed super-crops"
+        },
+        {
+          "key": "note",
+          "value": "Ran a refugee farm community in Campania"
+        },
+        {
+          "key": "note",
+          "value": "Both murdered by Augustus"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Giulia",
+          "rel": "parents"
+        },
+        {
+          "to": "Augustus",
+          "rel": "killed by"
+        }
+      ],
+      "chapter": 27
+    },
+    {
+      "name": "Giulia",
+      "kind": "character",
+      "summary": "Bruno and Julie Costa's young daughter, a second-generation Genome (born to two Elixir-drinkers, showing toughness, healing and toxin resistance). Augustus spared the three-year-old at her parents' massacre because her blue eyes recalled his own daughter, carrying her off to solve a 'problem' Mars had raised.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Second-generation Genome born of two Elixir-drinkers"
+        },
+        {
+          "key": "note",
+          "value": "Spared and abducted by Augustus as a toddler"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Bruno and Julie Costa",
+          "rel": "daughter"
+        },
+        {
+          "to": "Augustus",
+          "rel": "spared by"
+        }
+      ],
+      "chapter": 27
+    },
+    {
+      "name": "Pythia",
+      "kind": "character",
+      "summary": "The Carnival's seer, whose precognition guides Leo's group; she foresaw Mechron's orbital weapons and the growing threat of Manic Plague, steering the Carnival north to fight Mechron rather than the new Camorra offshoot in Calabria.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Carnival seer; precognition directs the group's targets"
+        },
+        {
+          "key": "note",
+          "value": "Foresaw Mechron's orbital weapons and Manic Plague's rise"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Carnival",
+          "rel": "member"
+        }
+      ],
+      "chapter": 27
+    },
+    {
+      "name": "Second-Generation Genomes",
+      "kind": "lore",
+      "summary": "Children conceived by two Elixir-drinkers who inherit secondary Genome mutations (sickness/toxin resistance, hardened organs, accelerated healing) and may inherit a parent's power. Julie Costa suspects the Alchemist engineered Elixirs specifically to breed this new species to replace baseline humanity; Giulia is one such child.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Born to Elixir-drinking parents; inherit Genome mutations"
+        },
+        {
+          "key": "note",
+          "value": "May inherit a parent's power"
+        },
+        {
+          "key": "note",
+          "value": "Suspected as the Alchemist's true goal: a breeding superhuman species"
+        }
+      ],
+      "chapter": 27
+    },
+    {
+      "name": "Manic Plague",
+      "kind": "character",
+      "summary": "A Psycho in France described as a living pandemic whose danger grows exponentially the longer she stays active; named by the Carnival as an existential threat alongside Mechron.",
+      "chapter": 27
+    },
+    {
+      "name": "Rampage",
+      "kind": "lore",
+      "summary": "A red Genius-designed combat drug Ryan takes only on suicide runs: for four hours it boosts pain tolerance, reaction time, adrenaline, strength and metabolism, potent enough to affect even Genomes. The aftermath (days of vomiting, stroke risk) makes it usable only in loops he plans to reset.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Genius-made combat stimulant, four-hour effect"
+        },
+        {
+          "key": "note",
+          "value": "Boosts pain tolerance, reflexes, strength, metabolism"
+        },
+        {
+          "key": "note",
+          "value": "Works even on Genomes"
+        },
+        {
+          "key": "note",
+          "value": "Severe aftermath: vomiting, stroke risk"
+        }
+      ],
+      "chapter": 28
+    },
+    {
+      "name": "The Killer Rabbit Plushie",
+      "kind": "lore",
+      "summary": "Ryan's most dangerous invention: an innocent-looking rabbit plushie hiding an eldritch, unkillable murder-entity that fires disintegrating laser eyes, wields claws and improvises garrotes, whispering loving phrases while slaughtering. Once switched on it can't be recalled; it imprints on the first preteen it finds. Ryan unleashes it inside the Meta bunker.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Cute plushie shell over an eldritch murder-entity"
+        },
+        {
+          "key": "note",
+          "value": "Laser eyes, claws, improvised weapons; unkillable once active"
+        },
+        {
+          "key": "note",
+          "value": "Cannot be controlled once switched on; imprints on a preteen"
+        },
+        {
+          "key": "note",
+          "value": "Ryan's own creation, even he fears it"
+        }
+      ],
+      "chapter": 29
+    },
+    {
+      "name": "Adam the Ogre",
+      "kind": "character",
+      "summary": "'Big Bad Adam,' the Meta-Gang's leader: an obese Psycho who turns his skin into indestructible black carbon alloy and a cannibal who eats people (preferring the French, settling for others). Witty, narcissistic and cruel, he commands from the bunker's depths, shrugs off Ryan's punches, and kills him by exploiting his refusal to let a hostage die.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Skin becomes indestructible black carbon alloy"
+        },
+        {
+          "key": "note",
+          "value": "Cannibal Psycho; eats his victims"
+        },
+        {
+          "key": "note",
+          "value": "Leads the Meta-Gang from the Mechron bunker's depths"
+        },
+        {
+          "key": "note",
+          "value": "Real moniker 'Adam the Ogre'"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "leader"
+        }
+      ],
+      "chapter": 30
+    },
+    {
+      "name": "Frank the Mad",
+      "kind": "character",
+      "summary": "A three-and-a-half-meter rusted-steel humanoid Psycho with a Vader-like mask who calls himself 'Vice-President of the United States,' absorbs metal into his body, shrugs off grenades, grows stronger with rage (raving about Pearl Harbor), and is superhumanly fast. Psyshock's bodyguard.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Rusted-steel tank body; absorbs metal, immune to grenades"
+        },
+        {
+          "key": "note",
+          "value": "Grows stronger with rage; extremely fast"
+        },
+        {
+          "key": "note",
+          "value": "Delusional 'Vice-President' persona"
+        },
+        {
+          "key": "note",
+          "value": "Psyshock's bodyguard"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 29
+    },
+    {
+      "name": "The Mechron Bunker",
+      "kind": "place",
+      "summary": "A vast underground Mechron weapons-research-and-production complex beneath Rust Town's Junkyard, sealed by a Mechron blast door and guarded by dormant robot armies. Not a survival shelter but a facility of labs, a nanobot factory, robot production, matter replicator, orbital comms, reactor core and a 'Forbidden Area' (signage in Bosnian). The Meta bleed men to break its defenses and seize the robot army and armory to conquer New Rome. Holds Psyshock's warmech and a Mechron submarine.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Mechron weapons R&D/production facility, not a survival bunker"
+        },
+        {
+          "key": "note",
+          "value": "Sprawls beneath most of Rust Town, deep underground"
+        },
+        {
+          "key": "note",
+          "value": "Guarded by dormant Mechron robot armies"
+        },
+        {
+          "key": "note",
+          "value": "Houses the warmech and a Mechron submarine"
+        },
+        {
+          "key": "note",
+          "value": "The Meta seek its robot army/armory to take New Rome"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Mechron",
+          "rel": "built by"
+        },
+        {
+          "to": "Meta-Gang",
+          "rel": "contested by"
+        }
+      ],
+      "chapter": 29
+    },
+    {
+      "name": "Psyshock's True Power",
+      "kind": "lore",
+      "summary": "Beyond mind-reading, Psyshock can rewire brains and possess prepared thralls: when his body dies he reincarnates by seizing one of hundreds of pre-brainwired vessels around him, making him a functional loop-rival to Ryan's save point (though he must die first to activate it). He unlocked this after Bloodstream's wounds revealed the trick, and he tried to inflict it on a child at the orphanage.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Rewires brains and possesses pre-prepared thralls"
+        },
+        {
+          "key": "note",
+          "value": "Reincarnates into a vessel on death, like a rival save-point"
+        },
+        {
+          "key": "note",
+          "value": "Must die first to trigger the jump"
+        },
+        {
+          "key": "note",
+          "value": "Unlocked after Bloodstream wounded him"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Psyshock",
+          "rel": "power of"
+        }
+      ],
+      "chapter": 29
+    },
+    {
+      "name": "The Chronoradio",
+      "kind": "lore",
+      "summary": "Ryan's in-car radio that plays Post-Apocalyptic Blues; it becomes his channel to Len when, after confessing his looping over its airwaves, her voice answers back through it: 'Meet me at the orphanage.'",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Ryan's car radio; plays Post-Apocalyptic Blues"
+        },
+        {
+          "key": "note",
+          "value": "Becomes his communication link to Len across the sea"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Ryan Romano",
+          "rel": "belongs to"
+        }
+      ],
+      "chapter": 30
+    },
+    {
+      "name": "Ink Machine",
+      "kind": "character",
+      "summary": "A Meta Psycho who becomes a shapeshifting body of black ink, turning limbs into axes and changing color to crimson; bullets phase through her. Killed by Ryan's plushie in the bunker.",
+      "ties": [
+        {
+          "to": "Meta-Gang",
+          "rel": "member"
+        }
+      ],
+      "chapter": 29
     }
   ],
   "plotObservations": [
@@ -2123,6 +3093,152 @@
         "Ghoul"
       ],
       "chapter": 18
+    },
+    {
+      "title": "The pact with the Shroud",
+      "beat": "In a fresh loop Ryan brings Ghoul's living skull to the Shroud, torturing intel from Ghoul with a Hercules Elixir: the Junkyard bunker is robot-guarded and Adam sees it as 'the future,' and Psyshock secretly runs the Meta's Elixir supply. Shroud reveals Len is the Underdiver in the Vavilov basin, deduces Ryan peeks across timelines, and strikes a pact: no Augusti assassinations for three weeks while Ryan destroys the Ischia Bliss lab.",
+      "entities": [
+        "Ryan Romano",
+        "The Shroud",
+        "Ghoul",
+        "Len Sabino",
+        "The Shroud Pact"
+      ],
+      "chapter": 19
+    },
+    {
+      "title": "Len's origin under the sea",
+      "beat": "Flashback: young Len drinks the Blue Elixir to try to cure Bloodstream, gaining water-Genius powers and building a red bathysphere in a fugue. Bloodstream nearly strangles her for taking 'his' power but restrains himself; Ryan kisses her. In the present, Len hides in her deep-sea base, secretly eavesdropping on Ryan via chronoradio, longing for him yet afraid to face him.",
+      "entities": [
+        "Len Sabino",
+        "Bloodstream",
+        "Ryan Romano",
+        "The Blue Elixir",
+        "The Underdiver's Base"
+      ],
+      "chapter": 20
+    },
+    {
+      "title": "Pluto's mark and Vulcan's offer",
+      "beat": "On the Augusti path, Ryan finally beats Luigi's truth-telling by ambushing him with a hockey stick beforehand. He meets Pluto, Augustus's sister, who senses he is 'marked' across loops and threatens death if he disobeys. Vulcan, warmed by Ryan's engineering insight and a gifted A-bomb, offers to arrange a meeting with the Underdiver, and Shroud confirms the orphanage was saved.",
+      "entities": [
+        "Ryan Romano",
+        "Luigi",
+        "Pluto",
+        "Vulcan",
+        "Len Sabino"
+      ],
+      "chapter": 21
+    },
+    {
+      "title": "Pluto's inspection and the brain-car",
+      "beat": "Pluto surprise-inspects Jamie's crew with Cancel (Greta) and Sparrow. Cancel nullifies Ryan's time-stop, and Pluto's death-sense reads him as 300+ years old. Cornered, Ryan sells a cover lie that he hops parallel universes and fuses with his other selves; his synthetic brain-driven car is exposed but he passes on probation, assigned to Vulcan, who offers a lavish contract and a ride to Len.",
+      "entities": [
+        "Ryan Romano",
+        "Pluto",
+        "Cancel",
+        "Vulcan",
+        "The Brain-Car"
+      ],
+      "chapter": 22
+    },
+    {
+      "title": "The reunion with Len",
+      "beat": "Vulcan flies Ryan to Len's deep-sea commune. Len, gaunt and medicated, admits she avoided him for two years: his looping-warped mind reopens her trauma and she blames him for leading the Carnival to kill Bloodstream. She refuses his offered hand to leave together, choosing to keep building her undersea refuge for orphans. Ryan's main quest ends in heartbreak.",
+      "entities": [
+        "Ryan Romano",
+        "Len Sabino",
+        "Vulcan",
+        "Len's Undersea Commune"
+      ],
+      "chapter": 23
+    },
+    {
+      "title": "Aftermath and the duplicator reveal",
+      "beat": "Hollowed by the rejection, Ryan is comforted by Jamie, who invites him to a Genome party (warning him off Vamp and Livia). The Shroud ambushes Ryan to report: Psyshock is a duplicator like Bloodstream, and Ryan must reach drug-boss Bacchus (Andreas Torque) to infiltrate the Bliss operation. Ryan recommits to his side quests: clear the Meta and destroy the superlab.",
+      "entities": [
+        "Ryan Romano",
+        "Jamie",
+        "The Shroud",
+        "Psyshock's Duplication",
+        "Bacchus"
+      ],
+      "chapter": 24
+    },
+    {
+      "title": "Vulcan's assistant and the Killer Seven",
+      "beat": "Working as Vulcan's weapons-review assistant, Ryan deduces her Genius is narrow 'weapon creation' and hears her bitter history as Wyvern's sidelined 'brain.' He meets the Killer Seven (Mortimer, Sparrow, Greta/Cancel, and Fortuna the lucky), empties his entire arsenal at Fortuna to no effect, then bypasses her luck in frozen time to cut her hair as a trophy. Vulcan tempts him with power-enhancing armor and orders an assault on the Meta-Gang.",
+      "entities": [
+        "Ryan Romano",
+        "Vulcan",
+        "Fortuna",
+        "The Killer Seven",
+        "Weapon Creation"
+      ],
+      "chapter": 25
+    },
+    {
+      "title": "The Rust Town assault turns into a massacre",
+      "beat": "Ryan and Fortuna clear the Junkyard's outskirts in a chaotic firefight, but the Meta's true forces spring the trap: the Land collapses all of Rust Town with terrain-fusion geokinesis, a Mechron warmech piloted by Psyshock bombards the district, and Acid Rain counterattacks. The Augusti force is annihilated, Ryan's car destroyed again, and Psyshock corners him. Ryan chooses to reset (loop ~9), now knowing where Len is and that the Meta hold Mechron tech.",
+      "entities": [
+        "Ryan Romano",
+        "Fortuna",
+        "The Land",
+        "Psyshock",
+        "Mechron's Warmech",
+        "Acid Rain"
+      ],
+      "chapter": 26
+    },
+    {
+      "title": "The crimes of Augustus",
+      "beat": "A past fragment: Leo the Living Sun bids farewell to the Costa refugee farm as the Carnival heads north on Pythia's counsel. That night Jupiter Augustus, an invulnerable ivory god-warlord, massacres the entire community, killing Bruno Costa to erase the 'paradox' of a blade that can cut anything and butchering Julie in her garden. In the barn's hidden cellar he finds their toddler Giulia, a second-generation Genome, and spares her because her eyes recall his own daughter.",
+      "entities": [
+        "Augustus",
+        "Leo Hargraves",
+        "Bruno and Julie Costa",
+        "Giulia",
+        "Second-Generation Genomes"
+      ],
+      "chapter": 27
+    },
+    {
+      "title": "The suicide run into the Junkyard",
+      "beat": "Fed up after the Meta wrecked his car three times and abduct children, Ryan mounts a Rampage-fueled one-man suicide raid: he trucks Ghoul, drives into the Junkyard chained to a facehugger missile that endlessly chases Acid Rain, kills Mosquito and Mongrel, and breaches the Mechron blast door. Inside he discovers the 'bunker' is a Mechron weapons facility, not a shelter.",
+      "entities": [
+        "Ryan Romano",
+        "Ghoul",
+        "Acid Rain",
+        "Mosquito",
+        "Rampage",
+        "The Mechron Bunker"
+      ],
+      "chapter": 28
+    },
+    {
+      "title": "The rampage and the plushie unleashed",
+      "beat": "Ryan slaughters a room of Meta Psychos, unleashing his uncontrollable killer-rabbit plushie when overwhelmed. Descending deeper he reads the facility map (labs, robot production, orbital comms) and grasps the Meta's plan: seize Mechron's dormant robot army to conquer New Rome. He kills Psyshock, only to learn Psyshock reincarnates into brainwired thralls, then confronts the metal giant Frank the Mad.",
+      "entities": [
+        "Ryan Romano",
+        "The Killer Rabbit Plushie",
+        "Psyshock",
+        "Psyshock's True Power",
+        "Frank the Mad",
+        "The Mechron Bunker"
+      ],
+      "chapter": 29
+    },
+    {
+      "title": "Bites the Dust and Len's answer",
+      "beat": "Cornered between Frank and the plushie, Ryan meets Meta leader Adam the Ogre, who reveals his cannibalism and carbon-alloy invulnerability. Adam kills Ryan by dangling a hostage teen Ryan can't abandon; Ryan detonates his belt and resets. In the new loop he confesses everything to Len over the Chronoradio, offering to vanish from her life. She finally answers: 'Meet me at the orphanage.'",
+      "entities": [
+        "Ryan Romano",
+        "Adam the Ogre",
+        "Frank the Mad",
+        "Len Sabino",
+        "The Chronoradio"
+      ],
+      "chapter": 30
     }
   ]
 }
