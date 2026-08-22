@@ -4536,6 +4536,142 @@
         }
       ],
       "chapter": 47
+    },
+    {
+      "name": "Lanka",
+      "kind": "character",
+      "summary": "An Augusti fighter and ally of Ryan's, snarky and devil-may-care, who fights as a sniper firing white-colored spheres that shrink whatever they hit; at the Junkyard she uses them to keep the exponentially-growing Frank the Mad's size manageable (Ryan wonders if she's 'Cancel's lost sister'). She survives the orbital strike alongside Jamie and Ki-jung.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Augusti fighter and Ryan's ally"
+        },
+        {
+          "key": "note",
+          "value": "Sniper: white spheres that shrink their target"
+        },
+        {
+          "key": "note",
+          "value": "Held down Frank the Mad's growth at the Junkyard"
+        },
+        {
+          "key": "note",
+          "value": "Survived the Bahamut strike"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "member"
+        },
+        {
+          "to": "Ryan Romano",
+          "rel": "ally"
+        }
+      ],
+      "chapter": 48
+    },
+    {
+      "name": "Wyvern",
+      "kind": "character",
+      "summary": "Laura, an Il Migliore heroine who transforms into an enormous dragon and once was Jasmine/Vulcan's close friend before a falling-out turned them enemies. After the orbital catastrophe she seeks Jasmine out to apologize and 'come in peace,' insisting she never knew Hector hired the Meta and blaming him alone. She warns that with Enrique dead, the hardliner Alphonse Manada now commands Dynamis's forces and the truce will collapse into a new war, and that the Carnival has entered New Rome, setting Augustus and Leo on a collision course.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Laura; Il Migliore heroine, transforms into a dragon"
+        },
+        {
+          "key": "note",
+          "value": "Jasmine's estranged former friend; seeks to reconcile"
+        },
+        {
+          "key": "note",
+          "value": "Denies knowing Hector hired the Meta"
+        },
+        {
+          "key": "note",
+          "value": "Warns of Alphonse's rise and a coming new war"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Il Migliore",
+          "rel": "member"
+        },
+        {
+          "to": "Vulcan",
+          "rel": "estranged friend"
+        }
+      ],
+      "chapter": 48
+    },
+    {
+      "name": "Augustus",
+      "kind": "character",
+      "summary": "Janus, the lightning-emperor and untouchable ruler of the Augusti, who flies by electrohydrodynamics (ionizing air with electrical charge) and moves freely inside Ryan's stopped time as an ivory statue wreathed in a blinding electric aura. Utterly invulnerable (even Leo's flames can't warm him), he kills Frank the Mad with an eye-bolt, brutally beats and captures Adam to be crucified alive on Ischia for murdering his sister, daughter, and goddaughter, then destroys Mechron's bunker with a thunderbolt to finish what Leo would not. He notes Ryan's time-stop would make him 'a powerful Saturn,' marking Ryan as a coveted recruit.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Janus; lightning-emperor of the Augusti, effectively invulnerable"
+        },
+        {
+          "key": "note",
+          "value": "Flies via electrohydrodynamics; moves inside stopped time"
+        },
+        {
+          "key": "note",
+          "value": "Killed Frank, captured Adam, destroyed Mechron's bunker"
+        },
+        {
+          "key": "note",
+          "value": "Eyes Ryan as a potential 'Saturn' recruit"
+        }
+      ],
+      "ties": [
+        {
+          "to": "The Augusti",
+          "rel": "emperor"
+        },
+        {
+          "to": "The Olympians",
+          "rel": "leads"
+        }
+      ],
+      "chapter": 48
+    },
+    {
+      "name": "Alphonse Manada",
+      "kind": "character",
+      "summary": "The Dynamis hardliner who, after Hector and Enrique's deaths in the orbital strike, takes command of the corporation's remnants and all its troops in Sicily, Libya, and Spain. Uncompromising, he views the catastrophe as an opportunity to wipe out the Augusti for good, meaning the truce cannot hold and a new round of Genome Wars is coming as the factions fight over the ashes.",
+      "facts": [
+        {
+          "key": "note",
+          "value": "Takes command of Dynamis after Hector and Enrique die"
+        },
+        {
+          "key": "note",
+          "value": "Controls Dynamis troops in Sicily, Libya, and Spain"
+        },
+        {
+          "key": "note",
+          "value": "Hardliner; sees a chance to destroy the Augusti"
+        },
+        {
+          "key": "note",
+          "value": "His rise signals a new round of Genome Wars"
+        }
+      ],
+      "ties": [
+        {
+          "to": "Dynamis Corporation",
+          "rel": "new leader"
+        },
+        {
+          "to": "Blackthorn",
+          "rel": "succeeds"
+        }
+      ],
+      "chapter": 48
     }
   ],
   "plotObservations": [
@@ -5107,6 +5243,19 @@
         "The Meta"
       ],
       "chapter": 47
+    },
+    {
+      "title": "Bad End",
+      "beat": "Vulcan (temporarily allied with Wyvern), Jamie and Lanka fight the Meta until Augustus himself descends, moving through Ryan's stopped time. The invulnerable emperor kills Frank, savagely beats and captures Adam (to be crucified alive for killing his family), then destroys Mechron's bunker with a thunderbolt, obliterating the orbital tech, the Chronoradio plans' hardware, and Ryan's last hope of the consciousness-transfer plan. Ryan wakes in a Sorrento hospital to the loop's ruin: Len is dead, his car and the Chronoradio destroyed, and with Hector and Enrique gone the hardliner Alphonse now steers Dynamis toward a new war. Only the cat Schrodinger survived. Deciding he must finally change and stop relying on Len alone, Ryan chooses to trust Vulcan and reveals his secret: 'I can time-travel.'",
+      "entities": [
+        "Ryan Romano",
+        "Augustus",
+        "Vulcan",
+        "Len Sabino",
+        "Big Fat Adam",
+        "Alphonse Manada"
+      ],
+      "chapter": 48
     }
   ]
 }
