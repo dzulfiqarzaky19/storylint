@@ -161,6 +161,12 @@ test("threads: a newly created world is born with exactly one default thread", a
 // Base world VOSK seeds exactly one thread. This spec MUTATES, so it reseeds.
 // ---------------------------------------------------------------------------
 test.describe("threads floor (mutates → reseeds)", () => {
+  // Split into two describes, each reseeding in its OWN afterAll, because the
+  // floor-delete test below mutates VOSK and the focus test in the sibling
+  // describe must run against a pristine VOSK. A single shared afterAll fires
+  // only after BOTH, leaving the second test on dirty state. A describe-level
+  // beforeEach reseed is rejected doctrine (suite-wide flake), so describe A's
+  // afterAll reseeds VOSK before describe B runs.
   test.afterAll(reseed);
 
   test("threads: the last thread cannot be deleted (trash hidden at the floor)", async ({
@@ -189,6 +195,10 @@ test.describe("threads floor (mutates → reseeds)", () => {
     await expect(threadRows(nav)).toHaveCount(1);
     await expect(trashButtons(nav)).toHaveCount(0);
   });
+});
+
+test.describe("threads focus (mutates → reseeds)", () => {
+  test.afterAll(reseed);
 
   test("threads: '+ New thread' creates a thread and moves focus onto it (user step 6)", async ({
     page,
