@@ -24,11 +24,30 @@
     }
   ],
   "finished": true,
+  "counts": {
+    "chapters": 130,
+    "denseExtraction": true
+  },
+  "plotlineSummaries": {
+    "the-loop-and-the-perfect-run": "Ryan Romano's Violet-Elixir time loop: every death rewinds him to a save point, and across centuries of loops he vows a 'Perfect Run' that saves everyone. Resolved: he completes it and spends his last power to purge it.",
+    "finding-len": "Ryan's central quest to reunite with Len, the Underdiver, and mend the trauma his looping reopened. Resolved: she becomes his family (not lover), heals, and takes charge of rebuilding Rust Town.",
+    "the-meta-gang-and-mechron-s-bunker": "The war against Adam the Ogre's Meta-Gang for control of Mechron's buried robot bunker and its orbital doomsday weapon. Resolved: on the Perfect Run the bunker is taken with zero casualties, Adam killed, and the Bahamut satellite destroyed.",
+    "bloodstream-and-the-knockoff-conspiracy": "The buried truth that Dynamis's Knockoff Elixirs are manufactured from Len's father Bloodstream, a caged human plague-Psycho at Lab Sixty-Six. Resolved: exposed publicly, the Knockoffs cured citywide, and Bloodstream euthanized.",
+    "the-augusti-and-augustus": "The invulnerable lightning-tyrant Augustus and his Olympian dynasty rule New Rome. Resolved: Ryan's Black Flux cracks his Orange-metal body and the Violet Ultimate One shatters his godhood; he is imprisoned, broken, dying of cancer.",
+    "vulcan-and-the-saturn-armor": "Jasmine 'Vulcan' Sharif, the bomb-loving weapons Genius, and the power-armor she builds Ryan, culminating in the Saturn Armor that carries minds across loops. Resolved: the maxed armor lets Ryan wage and win the final war.",
+    "the-dynamis-corporation": "The corporate-warlord Dynamis under the Manada brothers (Hector, Enrique/Blackthorn, Alphonse/Fallout) and its collusion in the Knockoff crime. Resolved: Hector deposed, Fallout killed, Enrique reforms it into the New European Republic.",
+    "the-carnival-the-shroud-and-narcinia": "Leo Hargraves's Carnival, the vigilante Shroud (Mathias Martel), and their quest to recover Narcinia/Giulia Costa, Augustus's stolen hostage. Resolved: Narcinia is rescued and reunited; the Carnival allies with Ryan.",
+    "ryan-and-livia": "Ryan's bond with Livia Augusti, the only person his power hides from, growing from wary allies who share loop-memories into co-strategists and lovers. Resolved: they win the war together and he proposes for real.",
+    "the-alchemist-and-the-elixir-cosmology": "The origin of the Genome age: Eva Fabre / the Alchemist, the crashed Hegemony starship in Antarctica, the colored Ultimate Ones, and the Elixirs' true nature. Resolved: Ryan destroys the ship across all timelines and frees the Elixirs.",
+    "the-plushie-s-secret": "The possessed Bahamut plushie: an alien entity anchored in a toy, Ryan's last-resort weapon and secret living gate between universes. Resolved: it sacrifices itself to open the death-portal that drags Augustus into the Purple World.",
+    "monaco-and-the-absurd": "The Monte Carlo pocket dimension where Ryan lived and died of old age over a century, learning he is truly immortal and embracing the absurd. Resolved: he freed its captives and its survivors build a new French republic.",
+    "curing-the-psychos": "The effort to cure the sterile, multi-color Psycho condition, proven first on Sarin/Bianca by 'divorcing' her rival Elixirs. Resolved: a working airborne cure reverts the Meta-Gang's Psychos to healthy Genomes."
+  },
   "wikiObservations": [
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "Protagonist courier codenamed Quicksave; a Violet Genome time-looper who sets a save point, dies, and reloads. Bored immortal seeking his lost friend Len.",
+      "summary": "The protagonist and narrator, a delivery courier codenamed Quicksave who is secretly a Violet Genome time-looper: he sets a save point, and on death rewinds to it, making him a bored functional immortal. Behind the mouthless mask, top hat and quips he is a lonely man who has spent countless loops hunting Len, the one friend he lost, and slowly graduates from petty schemes to toppling New Rome's powers. His true struggle is not immortality but choosing to build one 'perfect run' worth keeping instead of resetting forever.",
       "facts": [
         {
           "key": "note",
@@ -77,7 +96,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Ryan's lost best friend, a brilliant tinkerer he has hunted for years. Black hair, blue eyes, committed Marxist-Leninist.",
+      "summary": "Ryan's lost best friend and the emotional center of his quest, a brilliant water-themed Genius engineer (real name Len 'Underdiver' Sabino) and the daughter of the plague-carrier Bloodstream. A committed idealist Ryan has hunted across years of loops, she is both the person he most wants to save and the key to the Knockoff conspiracy, since her blood is the trigger that turns Elixir-drinkers into Bloodstream clones. Her arc runs from lost hope, through capture, brainwashing and cross-loop memory transfer, to a healed woman who accepts Ryan as family and euthanizes her own father to end his plague.",
       "facts": [
         {
           "key": "note",
@@ -94,7 +113,10 @@
           "rel": "best friend"
         }
       ],
-      "chapter": 1
+      "chapter": 1,
+      "aliases": [
+        "Len Sabino"
+      ]
     },
     {
       "name": "Renesco",
@@ -138,11 +160,11 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         },
         {
-          "to": "Adam",
+          "to": "Big Fat Adam",
           "rel": "sent by"
         }
       ],
@@ -195,7 +217,7 @@
       "chapter": 1
     },
     {
-      "name": "Meta-Gang",
+      "name": "The Meta-Gang",
       "kind": "organization",
       "summary": "Roving band of Psycho elixir-junkies led by Adam, hitting Augusti fronts across New Rome.",
       "facts": [
@@ -210,11 +232,14 @@
       ],
       "ties": [
         {
-          "to": "Adam",
+          "to": "Big Fat Adam",
           "rel": "led by"
         }
       ],
-      "chapter": 1
+      "chapter": 1,
+      "aliases": [
+        "Meta-Gang"
+      ]
     },
     {
       "name": "The Augusti",
@@ -261,7 +286,7 @@
       "chapter": 1
     },
     {
-      "name": "Adam",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "Boss of the Meta-Gang; reputedly eats people. Orders the hit on Renesco.",
       "facts": [
@@ -276,11 +301,15 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "leader"
         }
       ],
-      "chapter": 1
+      "chapter": 1,
+      "aliases": [
+        "Adam",
+        "Adam the Ogre"
+      ]
     },
     {
       "name": "Genome",
@@ -299,7 +328,7 @@
       "chapter": 1
     },
     {
-      "name": "Genome Wars",
+      "name": "The Genome Wars",
       "kind": "lore",
       "summary": "The past cataclysm that ravaged Europe and destroyed the old world after Elixirs appeared; Mechron's drones bombed Naples to ruins.",
       "facts": [
@@ -312,7 +341,10 @@
           "value": "Mechron's drones destroyed the old Naples"
         }
       ],
-      "chapter": 1
+      "chapter": 1,
+      "aliases": [
+        "Genome Wars"
+      ]
     },
     {
       "name": "Jolie Wrangler",
@@ -329,7 +361,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "Star superheroine of Il Migliore; an amazonian woman with translucent dragonfly wings, near-silent supersonic flight and super strength. Tries to recruit Ryan and offers to help find Len.",
+      "summary": "An Augusti armorer and Vulcan's rival (real name Laura), a genius who builds aerial mechs and weapon systems for the empire. Her arms race with Vulcan drives much of New Rome's escalating firepower, and she is both an obstacle and, at times, a bargaining chip in Ryan's schemes.",
       "facts": [
         {
           "key": "note",
@@ -385,7 +417,7 @@
     {
       "name": "Vulcan",
       "kind": "character",
-      "summary": "Encrypted-voice representative of the Augusti who counter-recruits Ryan, summoning him to the Bakuto casino; oversees the Augusti weapons/tech division.",
+      "summary": "An Augusti weapons-and-tech Capo (real name Jasmine Sharif), an ex-Dynamis genius armorer who speaks through an encrypted voice and builds the power armor and mechs that arm Ryan across his schemes. She counter-recruits him to the Augusti at the Bakuto casino and becomes his most reliable supplier and uneasy ally, her rivalry with fellow armorer Wyvern shadowing the arms race of New Rome.",
       "facts": [
         {
           "key": "note",
@@ -407,7 +439,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Self-styled emperor of Italy and head of the Augusti; invincible and able to shoot homing lightning, with more victims to his name than the cigarette.",
+      "summary": "The self-styled emperor of Italy and head of the Augusti crime-empire, a rare two-power Genome who is both invulnerable and able to fire homing lightning, making him the story's apex threat. Ivory-bodied and needing neither food nor sleep, he believes Genomes are chosen to rule and humanity must be culled, a conviction written in atrocities like the Costa farm massacre. His near-invincibility is the central problem Ryan must out-think rather than out-fight.",
       "facts": [
         {
           "key": "note",
@@ -429,7 +461,7 @@
     {
       "name": "Leo Hargraves",
       "kind": "character",
-      "summary": "Leader of the Carnival, the pro-bono wandering-knight heroes Ryan admires despite them causing the worst day of his life.",
+      "summary": "Leader of the Carnival, the pro-bono wandering heroes Ryan idolizes even though they caused the worst day of his life. A Red Genome called the 'Living Sun' who becomes a star and must constantly suppress his power to avoid incinerating cities, he fights on principle under his real name. His well-meaning heroism repeatedly collides with Ryan's harder pragmatism, and his history with the Costa and Augusti families ties him to the story's deepest wounds.",
       "ties": [
         {
           "to": "The Carnival",
@@ -565,7 +597,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "Meta-Gang Psycho in a black hazmat suit whose gauntlets fire compressed-air blasts; her true body is a corrosive gas that rusts metal. Ryan nicknames her Blower.",
+      "summary": "A Meta-Gang Psycho turned reluctant ally, a poison-gas Genome whose lethal touch and unstable loyalty make her one of Ryan's most volatile recruits. Bound to the gang by Elixir-dependence rather than love, she is among the members Ryan works to peel away and reform once Adam falls, her arc tracing the possibility of redemption for New Rome's monsters.",
       "facts": [
         {
           "key": "note",
@@ -582,7 +614,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         },
         {
@@ -754,7 +786,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         },
         {
@@ -1273,9 +1305,9 @@
       "chapter": 12
     },
     {
-      "name": "Len Sabino",
+      "name": "Len",
       "kind": "character",
-      "summary": "Len's full legal name, Len 'Underdiver' Sabino, daughter of Freddie Sabino (Bloodstream); arrested by Private Security, her mugshot held by Dynamis, now detained somewhere out of Ryan's reach.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -1387,7 +1419,7 @@
       "chapter": 10
     },
     {
-      "name": "Adam",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "Big Adam, the Meta-Gang's boss: a hugely obese, scarred bald man in 1950s menswear, hippo-like with prominent teeth. Once a minor Psycho warlord, he now leads a disciplined ~50-strong gang and covets a mysterious bunker beneath the Junkyard, abducting children small enough to enter its shafts.",
       "facts": [
@@ -1410,7 +1442,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "leads"
         },
         {
@@ -1444,11 +1476,11 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "second-in-command"
         },
         {
-          "to": "Adam",
+          "to": "Big Fat Adam",
           "rel": "lieutenant"
         }
       ],
@@ -1474,7 +1506,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         }
       ],
@@ -1496,7 +1528,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         }
       ],
@@ -1615,7 +1647,7 @@
     {
       "name": "Vulcan",
       "kind": "character",
-      "summary": "Real name Jasmine; a petite teenage bomb-loving Genius and Augusti weapons capo, rival to Wyvern (Laura). She pilots a Wyvern-buster mech whose joints are its weakness. Ryan cripples it at the orphanage and Wyvern captures her.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -1639,7 +1671,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "Real name Laura; transforms fully into a sixty-foot white dragon with steel-cutting claws, a flail tail, and a roaring voice. She trails Vulcan to the orphanage, swats Mosquito, pins and captures Vulcan, and grounds Ryan and Atom Cat for the unauthorized op.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -1666,7 +1698,7 @@
           "rel": "located beneath"
         },
         {
-          "to": "Adam",
+          "to": "Big Fat Adam",
           "rel": "target of"
         }
       ],
@@ -1814,7 +1846,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "heavy hitter"
         }
       ],
@@ -1871,7 +1903,7 @@
     {
       "name": "Felix",
       "kind": "character",
-      "summary": "Atom Cat's civilian name, meaning 'lucky'; Ryan mercilessly mocks the pairing of 'Felix' and 'Atom Cat.' Felix was a friend of Jamie/Zanbato before he left the Augusti.",
+      "summary": "Livia and Narcinia's adoptive brother and an Augusti insider, a young Genome whose loyalties are torn between his adoptive family and the cruelty of Augustus. His bond with his sisters makes him one of Ryan's routes into the Augusti and a barometer of that faction's buried humanity.",
       "ties": [
         {
           "to": "Atom Cat",
@@ -1967,9 +1999,9 @@
       "chapter": 21
     },
     {
-      "name": "Len Sabino",
+      "name": "Len",
       "kind": "character",
-      "summary": "As a child, Len drank the Blue Elixir Bloodstream had hoarded, hoping a Genius power could cure her father; instead she woke a water-themed Genius mind and compulsively built a red hammer-and-sickle bathysphere in a fugue. Bloodstream nearly strangled her for 'stealing' his power but stopped himself; Ryan kissed her in the aftermath. She now hides three km deep in the Vavilov basin as the Underdiver, secretly watching Ryan but afraid to face him.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -2050,7 +2082,7 @@
       ],
       "ties": [
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "home of"
         }
       ],
@@ -2270,7 +2302,7 @@
       ],
       "ties": [
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "built by"
         },
         {
@@ -2386,7 +2418,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "recruit"
         }
       ],
@@ -2470,7 +2502,7 @@
           "rel": "built by"
         },
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "deployed by"
         }
       ],
@@ -2479,7 +2511,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Jupiter Augustus, an ex-Camorra warlord who drank two Elixirs to become an invulnerable ivory statue with lightning and cut-anything-immune super-strength; he neither breathes, eats nor feels. Self-styled god-emperor who believes Genomes must rule and old humanity must be culled. He massacred the Costa farm to erase Bruno, whose blade could cut anything, as a 'paradox' to his invulnerability, then spared their daughter Giulia.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -2521,7 +2553,7 @@
     {
       "name": "Leo Hargraves",
       "kind": "character",
-      "summary": "Leonard 'Leo the Living Sun' Hargraves, leader of the Carnival; his Red Elixir turned him into a being of solar flame with control over his own gravity, so mighty he must constantly suppress it lest he incinerate cities (and he burns his clothes when he transforms). He always uses his real name for accountability and befriended the Costa family.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -2705,7 +2737,7 @@
       "chapter": 29
     },
     {
-      "name": "Adam the Ogre",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "'Big Bad Adam,' the Meta-Gang's leader: an obese Psycho who turns his skin into indestructible black carbon alloy and a cannibal who eats people (preferring the French, settling for others). Witty, narcissistic and cruel, he commands from the bunker's depths, shrugs off Ryan's punches, and kills him by exploiting his refusal to let a hostage die.",
       "facts": [
@@ -2728,7 +2760,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "leader"
         }
       ],
@@ -2758,7 +2790,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         }
       ],
@@ -2796,7 +2828,7 @@
           "rel": "built by"
         },
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "contested by"
         }
       ],
@@ -2860,7 +2892,7 @@
       "summary": "A Meta Psycho who becomes a shapeshifting body of black ink, turning limbs into axes and changing color to crimson; bullets phase through her. Killed by Ryan's plushie in the bunker.",
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         }
       ],
@@ -2952,7 +2984,7 @@
       ],
       "ties": [
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "run by"
         }
       ],
@@ -2978,7 +3010,12 @@
           "rel": "pet"
         }
       ],
-      "chapter": 32
+      "chapter": 32,
+      "aliases": [
+        "Eugene-Henry",
+        "Eugène-Henry",
+        "Schrodinger"
+      ]
     },
     {
       "name": "Sarah",
@@ -2990,7 +3027,7 @@
           "rel": "resident"
         },
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "ward"
         }
       ],
@@ -3054,7 +3091,7 @@
       ],
       "ties": [
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "afflicts"
         }
       ],
@@ -3121,7 +3158,7 @@
       "chapter": 33
     },
     {
-      "name": "Narcinia Veran",
+      "name": "Narcinia",
       "kind": "character",
       "summary": "'Ceres,' a sweet ~14-year-old Green Genome adopted into the Augusti, given an Olympian name by Augustus; Atom Cat's adopted younger sister. Her power creates living things from her own blood, from goats and plants to chimeras. She works on Ischia island helping 'Father Torque' (Bacchus) 'open the path to heaven' (the Bliss drug operation). Ryan and Shroud both realize she is the lost Giulia Costa, whose raider 'birth parents' were really her true parents murdered by Augustus.",
       "facts": [
@@ -3160,7 +3197,10 @@
           "rel": "is"
         }
       ],
-      "chapter": 35
+      "chapter": 35,
+      "aliases": [
+        "Narcinia Veran"
+      ]
     },
     {
       "name": "Livia Augusti",
@@ -3228,7 +3268,7 @@
           "rel": "alias of"
         },
         {
-          "to": "Narcinia Veran",
+          "to": "Narcinia",
           "rel": "targeting"
         }
       ],
@@ -3431,7 +3471,7 @@
     {
       "name": "Vulcan",
       "kind": "character",
-      "summary": "Jasmine Sharif, the Augusti's weapons-trafficking Capo and Genius armorer; a short, foul-mouthed, hard-drinking woman with pitch-black humor who becomes Ryan's employer, lover and 'summer fling' this arc. A former Dynamis employee, she reverse-engineers knockoff-Elixir tech and lives inside her own steampunk foundry. Sharp enough to see through Ryan's power bluff without calling it, and to theorize the Red Flux dimension.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -3507,7 +3547,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Real name Janus, the lightning-emperor overlord of the Augusti (New Rome's dominant crime family); an aging man in a toga wrapped in a crimson electric halo so bright it hurts to look at him, radiating booming, thunderous power. Near-invulnerable, with most powers failing against him. A brutal warlord, not an administrator: he cares only for his family's authority and killing those who challenge it, leaving logistics to his heir Livia. Orders the entire Meta-Gang exterminated ('No man, no problem').",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -3606,7 +3646,7 @@
           "rel": "husband"
         },
         {
-          "to": "Narcinia Veran",
+          "to": "Narcinia",
           "rel": "adoptive father"
         }
       ],
@@ -3988,7 +4028,7 @@
       ],
       "ties": [
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "designed by"
         },
         {
@@ -4068,7 +4108,7 @@
           "rel": "controlled by"
         },
         {
-          "to": "Narcinia Veran",
+          "to": "Narcinia",
           "rel": "works at"
         },
         {
@@ -4304,7 +4344,7 @@
           "rel": "produced by"
         },
         {
-          "to": "Narcinia Veran",
+          "to": "Narcinia",
           "rel": "cooked by"
         },
         {
@@ -4351,7 +4391,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "Laura, a heroine of Il Migliore who leads Dynamis's Ischia drug-bust as an excuse she has craved for two years; she publicly demands Quicksave and Jasmine surrender for the HQ attack, then transforms into an enormous dragon to level the Bliss facility.",
+      "summary": "",
       "ties": [
         {
           "to": "Dynamis Corporation",
@@ -4579,7 +4619,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "Laura, an Il Migliore heroine who transforms into an enormous dragon and once was Jasmine/Vulcan's close friend before a falling-out turned them enemies. After the orbital catastrophe she seeks Jasmine out to apologize and 'come in peace,' insisting she never knew Hector hired the Meta and blaming him alone. She warns that with Enrique dead, the hardliner Alphonse Manada now commands Dynamis's forces and the truce will collapse into a new war, and that the Carnival has entered New Rome, setting Augustus and Leo on a collision course.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -4613,7 +4653,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Janus, the lightning-emperor and untouchable ruler of the Augusti, who flies by electrohydrodynamics (ionizing air with electrical charge) and moves freely inside Ryan's stopped time as an ivory statue wreathed in a blinding electric aura. Utterly invulnerable (even Leo's flames can't warm him), he kills Frank the Mad with an eye-bolt, brutally beats and captures Adam to be crucified alive on Ischia for murdering his sister, daughter, and goddaughter, then destroys Mechron's bunker with a thunderbolt to finish what Leo would not. He notes Ryan's time-stop would make him 'a powerful Saturn,' marking Ryan as a coveted recruit.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -4816,7 +4856,7 @@
           "rel": "mentor/roommate"
         },
         {
-          "to": "Doll",
+          "to": "The Doll",
           "rel": "creator"
         },
         {
@@ -4827,7 +4867,7 @@
       "chapter": 50
     },
     {
-      "name": "Doll",
+      "name": "The Doll",
       "kind": "character",
       "summary": "'Tea,' a lifelike gynoid built by Alchemo and passing the Turing test, animated by an artificial brain; Alchemo claims she is a work assistant but really wants human company. He gave her only a face and featureless body, so Ryan finished making her humanlike and named her Tea. Gentle and affectionate, she is uniquely un-attacked by the murderous plushie, which switches to 'cute mode' and even gives her a rose, and she adopts it as a pet.",
       "facts": [
@@ -4858,7 +4898,10 @@
           "rel": "adopts"
         }
       ],
-      "chapter": 50
+      "chapter": 50,
+      "aliases": [
+        "Doll"
+      ]
     },
     {
       "name": "The Plushie",
@@ -4899,7 +4942,7 @@
       "chapter": 50
     },
     {
-      "name": "Schrodinger",
+      "name": "Eugene-Henry von Schrodinger",
       "kind": "character",
       "summary": "Eugène-Henry Schrodinger, a prideful white Persian cat with blue eyes from Len's orphanage, and Ryan's beloved pet. Exposed to Violet-dimension energies (and the alien entity) at the end of the prior loop, he now carries that change across the reset: he manifests at Ryan's car far from the orphanage and teleports away with a 'pop' when Ryan tries to pet him, apparently having gained a Genome-like power. In the disastrous loop he was the sole survivor of the Ischia strike, luckier than Fortuna herself.",
       "facts": [
@@ -4926,7 +4969,7 @@
           "rel": "pet"
         },
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "from orphanage of"
         },
         {
@@ -5234,7 +5277,7 @@
           "rel": "secret client"
         },
         {
-          "to": "Len Sabino",
+          "to": "Len",
           "rel": "exploits her tech"
         }
       ],
@@ -5491,7 +5534,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Augustus ('Lightning Dad'), the god-wannabe patriarch of the Augusti, whose Bliss drug Ryan reframes as a deliberate weapon: it sterilizes unpowered humans by design (Narcinia could fix it but Augustus won't), part of his contempt for 'normies' as cattle whom he would rather rule as 'king of a cemetery.' He shares his daughter Livia's genetic quirk allowing two Elixirs safely, and like Ryan he is immune to Ryan's time-stop, moving through frozen time; his family has quietly noticed him stutter or repeat himself mid-sentence (unknowingly Ryan's time-stops interrupting him). He murdered Narcinia's parents (branding them raiders) to hold her hostage against Leo Hargraves. His invulnerability's mechanics remain unknown to Ryan.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -5743,7 +5786,7 @@
     {
       "name": "Chitter",
       "kind": "character",
-      "summary": "An Augusti-adjacent Genome who controls swarms of intelligent rats, once close to Zanbato and Felix. Her origin is a tragedy of Bliss: her rats stole Bliss batches from Mercury's casino division, and when Felix and Zanbato tracked them to her, they found her squatting in a rat-infested apartment, dying of a Bliss overdose (bleeding from nose and eyes, mold on her skin) though Genomes were thought immune. Saved at a hospital, the first thing she asked for was more Bliss, body and soul enslaved. She now perpetually surveils Felix from a distance.",
+      "summary": "An Augusti-adjacent Genome who commands swarms of intelligent rats, once close to Felix and Zanbato. Her rats' theft of Bliss led to her own overdose and enslavement to the drug, and she now perpetually surveils Felix from afar.",
       "facts": [
         {
           "key": "note",
@@ -5789,7 +5832,7 @@
     {
       "name": "Leo Hargraves",
       "kind": "character",
-      "summary": "Leonard 'Leo' Hargraves, the Carnival's leader (the 'Living Sun' Shroud answers to), who murdered Livia and Felix's mother. Four years after first crossing paths with Ryan, and on a Carnival member's recommendation, he personally phones Ryan to propose that the Menagerie and the Carnival join forces against the 'cancers' infecting New Rome (the Augusti and the Meta). Augustus once held Narcinia hostage against him by killing her parents.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -5995,7 +6038,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Augustus ('Lightning Dad'), god-wannabe patriarch of the Augusti, revealed here to be dying of a brain TUMOR: the source of his years-long lethargy, forgetfulness, stuttering, and reclusiveness that Felix noticed. This reframes Don Hector's whole strategy, secretly funding the Meta to weaken the Augusti while waiting for the tumor to kill Augustus so Dynamis can strike unopposed. Augustus still despises 'normies,' weaponizes Bliss as a sterility tool, shares Livia's two-Elixir genetic quirk, and is immune to Ryan's time-stop (his 'stutters' are Ryan's stops). He murdered Narcinia's parents to hostage her against Leo Hargraves, and remains feared enough that his enemies expect him to descend from his mountain to hunt them if provoked.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -6287,7 +6330,7 @@
       "chapter": 60
     },
     {
-      "name": "Adam the Ogre",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "Adam Fontaine, alias Adam the Ogre, alias the Brooklyn Cannibal, boss of the Meta-Gang: a cannibalistic serial killer wanted for four Brooklyn murders who fled to Europe on the eve of the Genome Wars, then took Elixirs to become Orange/Violet. His power turns his skin into a highly resistant carbon alloy (enhanced strength, tank-like resilience) and makes his stomach a pocket dimension that stores almost anything, nearly the same power set as Mars/Augustus but far weaker and short-ranged. He can barely keep his own men (Adam's mooks) under control; without his unifying presence they rampage. His impulsive-seeming order to fire the Bahamut prompts Ryan to reconsider whether it was truly impulsive.",
       "facts": [
@@ -6356,7 +6399,7 @@
       ],
       "ties": [
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "bodyguard"
         },
         {
@@ -6491,7 +6534,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Augustus ('Lightning Butt'), whose true nature Ryan pieces further together during the raid. Frank the Mad's power once automatically tried and failed to absorb Augustus, proving his body registers as METAL, which rules out the temporal-stasis theory (that would also stop his aging and the tumor). Ryan narrows it to a Yellow or Orange Elixir hypothesis: perhaps Augustus consumed a Yellow Elixir turning him into a Roman-deity metal statue, or already had the tumor before powers so it is now as invulnerable as he is. He feels he has all the puzzle pieces but hasn't assembled them right yet.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -6554,7 +6597,7 @@
           "rel": "created by"
         },
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "consumed"
         },
         {
@@ -6565,7 +6608,7 @@
       "chapter": 62
     },
     {
-      "name": "Dr. Stitch",
+      "name": "Stitch",
       "kind": "character",
       "summary": "A Carnival member and medic dressed as a plague doctor, whose expertise is viruses and bacteria; he carries grotesque organic devices in a waist bag, including a wriggling white tumor he grafts onto Shroud's wound so his engineered bacteria colony can repair the flesh. Brought in by Ace's portal, he and Wardrobe are sent to the field infirmary to save Shroud (whose arm Acid Rain blew off) and the other wounded.",
       "facts": [
@@ -6600,7 +6643,10 @@
           "rel": "teammate"
         }
       ],
-      "chapter": 62
+      "chapter": 62,
+      "aliases": [
+        "Dr. Stitch"
+      ]
     },
     {
       "name": "Psyshock",
@@ -6634,7 +6680,7 @@
           "rel": "second-in-command"
         },
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "served"
         },
         {
@@ -6647,7 +6693,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Len Sabino (Genius, Ryan's adoptive sister), who during the Rust Town siege infiltrates Mechron's bunker via its sea tunnels, fleeing the lower levels when Dynamis invades, and successfully steals the brain-duplicating braintech, her quiet-triumph goal for the raid. Her success means Ryan may finally carry a consciousness across loops (potentially Len's, to preserve her against her depression). She confirms she is safe under the sea afterward.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -6933,7 +6979,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Len Sabino, Ryan's Genius adoptive sister, who delivers the stolen braintech (a gray helmet with pylons, only a small part; the rest moved to Ryan's new room in her undersea base) and warmly insists Ryan is no longer homeless. Growing more optimistic and hopeful the braintech might let Ryan carry a consciousness across loops, she nonetheless spirals when the clues converge: recalling Dynamis force-took her blood and DNA, she and Ryan realize the knockoff Elixirs and Dynamis's fixation on her may trace to a surviving clone of her father Bloodstream at Lab Sixty-Six. With an iron gaze ('Not Riri, Ryan'), she refuses to flee without investigating for closure, unable to move on while his ghost may still live. Ryan likens her to a caged songbird too afraid to fly through the open door.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -7211,7 +7257,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "In the Monaco flashback, Ryan's defining transformation. Searching the Mediterranean for the lost Len after Bloodstream's death, he enters Monaco (the place no one returns from), is trapped in its time-stop-suppressing pocket dimension, and spends nearly a CENTURY there, first as Simon's deputy, then the last sheriff, then the last man alive, digging Simon's endless tunnel and finally dying of OLD AGE alone in bed. His save point revives him young at the promontory: he realizes he is truly immortal, that even old age can't end him. After hysterical laughter he feels not horror but liberation, embracing Camus's absurd, resolving to live to the fullest, fear nothing, and treat life as an endless game whose first quest is to free everyone trapped in Monaco. This is the death that 'made him stop caring and taught him to enjoy life,' the long loop he never repeats.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -7328,14 +7374,14 @@
           "rel": "stores"
         },
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "potential vulnerability to"
         }
       ],
       "chapter": 65
     },
     {
-      "name": "Eugène-Henry",
+      "name": "Eugene-Henry von Schrodinger",
       "kind": "character",
       "summary": "Livia's placid cat, a Genome feline with an enormous-range teleportation power. In this chapter Ryan concludes the cat's 'random' teleports are anything but: Eugène-Henry gained powers across time, deliberately led Livia to Ryan, and appeared in the Ark exactly when Len considered studying Violet Flux, too many coincidences. Ryan theorizes the cat is being teleported by something else, a benevolent guiding entity (the Alchemist / the Purple-World pyramid entity / the 'Ultimate Ones'), the same force behind the Chronoradio signals and his visions, quietly showing them the path to success.",
       "facts": [
@@ -7589,7 +7635,7 @@
     {
       "name": "Felix",
       "kind": "character",
-      "summary": "Refined (Atom Cat): recovering from Acid Rain's gut-wound, Felix announces he's quitting Il Migliore to join the Carnival, feeling more aligned with its values than Dynamis's red tape. He reveals he never romantically loved Livia, their match was arranged by their parents (best friends from the old Camorra branch) since childhood, he cares for her only as a friend and could never be her 'Prince Charming.' He told Narcinia the full truth of Augustus's crimes. Suspecting Ryan is secretly close to Livia, he turns wary and distant. Warned Augustus has sent Aunt Pluto to kill him, he's initially resigned to martyrdom until Ryan guilts him into fleeing (invoking how Fortuna would grieve).",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -7875,7 +7921,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "Refined: during the chase, Ryan reasons out how to resist Pluto: her death-certainty is a Yellow-Genome causality warp, but the Purple World belongs to the Violet Genome, so selectively stopping time lets him break her hold on causality (as he ignores Fortuna's luck). Under Night Terror's darkness illusion he relives his deepest trauma, his adoptive father Bloodstream ('Cesare') choking him and blaming him for his death, which makes him crash. His time-stop instinct saves both him and Felix from the exploding Pandamobile; they flee into the woods, the hunt continuing.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -8076,7 +8122,7 @@
           "rel": "turns against godmother"
         },
         {
-          "to": "Eugène-Henry",
+          "to": "Eugene-Henry von Schrodinger",
           "rel": "led by"
         }
       ],
@@ -8273,7 +8319,7 @@
       "chapter": 69
     },
     {
-      "name": "Eugène-Henry",
+      "name": "Eugene-Henry von Schrodinger",
       "kind": "character",
       "summary": "Refined: at the waterfall the Purple World entity that possessed Eugène-Henry speaks through him in Ryan's own voice, eyes shining purple, saying 'I must go now, the rest is up to you,' then departs in a flash of violet light. Afterward the cat's energy readings vanish, he is a normal blue-eyed cat again. Ryan realizes the entity orchestrated the whole run: sending Chronoradio encouragement when he nearly gave up, steering him to Livia, aiding Len, and positioning Fortuna to save him, all to engineer the alliance and the memory-transfer breakthrough, even at the cost of Fortuna's life.",
       "facts": [
@@ -8359,7 +8405,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "Refined: Ryan reflects that loops tend to reassert their shape (fate/causality), a stone in a river, until he masters one enough to derail it, but carrying more people across time could turn his pebble into a landslide. He tells Felix he is roughly 500-1000 years old (uncertain) and can only reset to just before his arrival in New Rome. Rather than die under Alphonse's bombardment, he triggers Len's consciousness-transfer, resetting the loop to May 8th 2020. In the new loop, the Chronoradio and Eugène-Henry are ordinary again (the guiding entity gone), it is 'all up to Ryan now.' Len's voice comes through the Chronoradio and confirms she REMEMBERS, the centuries-old curse of solitude finally broken.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -8397,7 +8443,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Refined: Len completes the consciousness-transfer, sending her memories back to her past self even as Alphonse's Dynamis submarine bombards her base. In the new loop (May 8th 2020) she confirms via the Chronoradio that she REMEMBERS, the breakthrough Ryan spent centuries pursuing, finally ending his solitude. But something went catastrophically wrong: she urgently summons Ryan to the orphanage, nose bleeding, seemingly ill from the procedure, then shoots him and traps him in a water-sphere. Her eyes are cold and soulless: the transfer worked, but something ELSE hitched a ride back through time inside her body.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -8502,7 +8548,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "leader"
         },
         {
@@ -8565,7 +8611,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "Refined (Hazmat Girl): a Meta-Gang Psycho, a gas cloud trapped in a hazmat suit. She is the only one visibly troubled by Adam's cruelty. Ryan's revelation, that Adam isn't seeking a cure for the Psycho condition (which is what recruited them) and doesn't even want to save himself, shakes her loyalty. When explosions rock the bunker and the others are distracted, she secretly whispers to Ryan asking if he can find a cure, then rusts his chair's restraints with her gas power to help him, seizing the chance to jump ship.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -8590,7 +8636,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "defecting member"
         },
         {
@@ -8636,7 +8682,7 @@
           "rel": "friend/protector"
         },
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "slaughters"
         }
       ],
@@ -8771,7 +8817,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "Refined: fully defects to Ryan. She air-blasts Adam into the shattered Black Elixir (killing him), frees Ryan from the chair, and becomes his sardonic sidekick for his 'Meta Run,' motivated by his promise he has the resources to make a Psycho cure. She recognizes his manipulations aren't like Adam's ('friendly grass-eating time-traveler' vs sociopathic cannibal). She helps him con Frank into killing Psyshock, arms him with a laser gun and Bliss, and confirms she has no remorse about massacring her old comrades. Ryan stays wary: she stood with Adam to the end when he burned New Rome with the orbital laser.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -8838,7 +8884,7 @@
       ],
       "ties": [
         {
-          "to": "Meta-Gang",
+          "to": "The Meta-Gang",
           "rel": "member"
         },
         {
@@ -8855,7 +8901,7 @@
     {
       "name": "Ryan's Meta Run",
       "kind": "concept",
-      "summary": "Ryan's audacious plan after the Bahamut's duplication ruins the loop beyond repair: instead of suiciding to reset, he seizes the once-in-many-lifetimes chance to TAKE OVER Mechron's bunker. With Adam and Psyshock dead, most of the Meta-Gang outside, and the Bahamut/shoggoth/Sarin as allies, he'll free the captive orphanage children, save 'Shortie,' study Mechron's tech up close, and try to build a Psycho cure. As Dynamis predicted, without Adam to unify them the Meta-Gang implodes with the right push. Only Psyshock and Acid Rain knew Ryan's true power, so eliminating Psyshock keeps his secret. He arms up with a laser gun, Bliss (brain-altering drug to paralyze the brain-based Psyshock), and a bloodied hammer.",
+      "summary": "Ryan's plan once the Bahamut's duplication ruins the loop beyond a clean reset: rather than suicide to rewind, he seizes the chance to seize Mechron's bunker outright, freeing the captive orphans and studying its tech while the leaderless Meta-Gang implodes.",
       "facts": [
         {
           "key": "note",
@@ -8981,7 +9027,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Refined: as Psyshock's soulless thrall she's used as a human shield, made to hold a drill to her own temple. Rather than let Psyshock force her suicide, Ryan (who has never raised a hand against Len in any loop and is enraged at being made to) time-stops and strikes her carotid and aorta to block blood to her brain, knocking her out and dropping the drill, a dangerous technique but the only way to stop her. He catches her gently. She survives, is heavily sedated with the other thralls until he can undo the brainwashing, and he vows to eliminate Psyshock as early as possible in his true Perfect Run.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -9099,7 +9145,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "Refined: after conquering Mechron's bunker, Ryan crowns himself its 'President' with unlimited emergency powers and decides that, since the run is doomed anyway, he'll throw safety out the window and 'go full Bond Villain', ham it up, call in risky favors, and aim the bunker's doomsday weapon at 'the woooooorld.' He runs the Meta-Gang through mock-democracy and the Elixir supply, forms a cabinet (Sarin VP, the shoggoth secretary of state, Frank enforcer, Rakshasa gremlin-supplier for the plushies), and sends the Reptilian to fetch his white-furred blue-eyed Persian cat for the villain aesthetic. He notes the plushie duplication is a ticking 'plushipocalypse' he can only delay a few days.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -9347,7 +9393,7 @@
     {
       "name": "Vulcan",
       "kind": "character",
-      "summary": "Refined: Jasmine Sharif, weapons-obsessed Genius and Ryan's erased ex, contacted anonymously by 'President' Ryan. She loves weapons and destroying rivals; Ryan pitches supplying an assault on Dynamis HQ to humiliate Wyvern with a technological advantage, dangling Mechron android schematics as bait. She strikes a Faustian bargain: she'll help only if Ryan first trashes the Wyvern movie being filmed at Star Studio. Ryan agrees ('turn on your TV'). Interacting with her reopens Ryan's centuries-old wound, but he needs her to arm his coming war on Dynamis.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -9385,7 +9431,7 @@
     {
       "name": "Ryan's Bond Villain Plan",
       "kind": "concept",
-      "summary": "As 'Mr. President,' Ryan mounts a multi-pronged scheme to unlock the bunker and save Len. He hires the Architect (Nora Moore) to stress-test/crack the bunker's Genius tech, buying her exclusivity with a fortune and asking her to line up Wardrobe for a cashmere presidential costume. He recruits Vulcan to arm a war on Dynamis (breaking the Manada alliance, which needed the soon-dead Psyshock) so he can reach Dr. Tyrano and Lab Sixty-Six and make his own Elixirs and a Psycho cure. He calls in a favor from Alchemo to fix the memory-transfer machine for Len. He makes a live peace offering to the Augusti (via Minerva) while preparing for war with Dynamis ('we have always been at war with Dynamis'). Cure theory: combine Mongrel (multi-Elixir user) and someone who took two colors without going Psycho (like Augustus/Livia) plus Dr. Tyrano and Darkling.",
+      "summary": "Ryan's multi-pronged 'Mr. President' scheme to crack Mechron's bunker and save Len: hire the Architect to break its tech, arm a war on Dynamis via Vulcan to reach Lab Sixty-Six, and call in Alchemo to fix Len's memory-transfer machine, all while making a peace offering to the Augusti.",
       "facts": [
         {
           "key": "note",
@@ -9469,7 +9515,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "Refined (theory): Ryan deduces the nature of his near-invincibility. Because Cancel can't negate his invulnerability, it must be a PHYSICAL mutation, his body mimicking the properties of a specific metal (a superior variant of Frank's power), likely an Orange Elixir, and a very strong one. But that alone doesn't explain how he moves in stopped time or resists most powers, so Ryan concludes the metal itself has unique, anomalous properties. Livia notes both she and her father can wield two powers with no side-effects, a secret Ryan wants for a Psycho cure and which Dynamis wanted for an army (she refused them).",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -9553,7 +9599,7 @@
     {
       "name": "Luigi the Hockey Victim",
       "kind": "character",
-      "summary": "An Augusti truth-teller whose power forces others to speak truth and detects lies. Livia has him verify Ryan's confession; Ryan, whose favorite pastime is beating Luigi with a hockey stick across loops, spitefully rants the whole truth at him (time travel, Darkling, the doomed loop, 'you don't matter'). The revelation triggers an existential crisis (Livia notes her power gave him a 1-in-3 chance of suicide). To contain the leak she pays him 20 million euros to leave New Rome immediately and never speak of it, even to Augustus, on pain of consequences. He flees the city.",
+      "summary": "A minor Augusti truth-teller Genome whom Ryan habitually beats with a hockey stick across loops. When Livia uses him to verify Ryan's confession, the whole truth breaks him, and she pays him 20 million euros to leave New Rome and stay silent.",
       "facts": [
         {
           "key": "note",
@@ -9797,7 +9843,7 @@
     {
       "name": "Toasty",
       "kind": "character",
-      "summary": "Ryan's first sentient robot, an intelligent toaster on four little wheels with a vocalizer mimicking the Terminator's voice. Ryan built him during a 'robot-building phase' (before the Bahamut plushie), born of his anxiety about moving to France and waking to un-toastable bread. Unlike the others, Toasty bears Ryan no reproach and warmly missed him. He's crude and playful (jokes about 'toasting chicks'), lives on Alchemo's farm, and begs Ryan to upload his personality into Mechron's scorpion mech ('a giant robot is just a toaster with too much power'). Tea installed his wheels when he tired of watching TV.",
+      "summary": "Ryan's first sentient robot, an intelligent talking toaster on wheels built during an early 'robot-building phase.' Unlike Ryan's other creations he bears no grudge, living on Alchemo's farm and dreaming of being uploaded into a giant mech.",
       "facts": [
         {
           "key": "note",
@@ -9965,7 +10011,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Refined, the emotional payoff: Alchemo's rebuilt machine overwrites Len's brain with Livia's clean backup map and repairs the overuse damage. She wakes with full recognition, the elusive look Ryan waited centuries for, and rejoices 'Riri, it worked! The transfer worked!' She is herself again, remembering. Seeing Ryan collapse into tears under the lifted weight of his centuries of loneliness, she hugs him as she did in childhood and repeats the words he once gave her: 'You're not alone. You're not alone.' For the first time in his endless looping he is truly not alone.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10007,7 +10053,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "Refined, catharsis: after Len wakes restored and recognizes him, Ryan, who has carried centuries of buried loneliness, pain, and denial across Monaco and countless loops, finally breaks. He collapses to his knees and sobs uncontrollably, the crushing weight of time lifting, his 'shining armor' falling away to reveal the raw sadness beneath. Len holds him and tells him he's not alone, and for the first time since he began looping he believes it. Earlier he tells Little Sarah he and Len were teenage lovers. This run is his first true 'one-shot': its enabling flukes (Psyshock time-travel, Sarin's aid, Darkling) can never repeat.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10129,7 +10175,7 @@
     {
       "name": "Wardrobe's Presidential Costume",
       "kind": "item",
-      "summary": "A war-fashioned suit made by Wardrobe and delivered to Ryan in a black briefcase (the 'Nuclear Football'), pure black and red, unlike his earlier playful outfits. Cashmere red shirt and black Lagerfeld-style suit, leather boots with skull socks, velvet gloves, flowing jacket, a red-and-silver mask baring only the eyes, and a bowler hat. Ryan dons it ceremonially to establish 'stylish dominance' over his minions before the raid. Durable enough to survive his acrobatics without rupturing; a laser hole in its bowler hat infuriates him.",
+      "summary": "A black-and-red war-fashioned suit Wardrobe builds for Ryan's 'Mr. President' persona, delivered in a briefcase dubbed the 'Nuclear Football.' Ryan dons it ceremonially to assert stylish dominance before the bunker raid.",
       "facts": [
         {
           "key": "note",
@@ -10339,7 +10385,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "Refined: recovered and clear-headed on Alchemo's superior antidepressants, Len sets up a Genius workshop in the bunker to maintain the brain-copying machine. She defines its key limit: it sends only one brain-map back per loop, requiring an unbroken rebuild-and-resend chain (one break and she forgets everything) unless memories are stored externally, which needs Livia. She warms to cooperating with Livia, who honored their bargain. When Ryan finally confesses he loves her and wants to settle down and have children, she gently declines romance ('I don't feel I'm ready... perhaps never') but insists he stay in her life, reframing them not as best friends but as family. She remains wary of the Meta-Gang Psychos.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10381,7 +10427,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "Refined: for the first time in centuries Ryan wakes genuinely happy and at peace, radiating uncharacteristic kindness (praising Frank, forgiving Acid Rain, sparing cruelty). Secure with his 'White House' and base, he plans to take New Rome before Manada's ultimatum expires, expecting a clash with Il Migliore and maybe the Carnival. He believes some Psychos are victims worth curing, not just monsters. He finally confesses his love to Len and asks to build a life with her; when she declines romance but offers family, he accepts it with hard-won dignity, having had centuries to process the feelings. All he ever truly wanted was to be remembered, and that wish is now fulfilled.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10465,7 +10511,7 @@
     {
       "name": "Toasty",
       "kind": "character",
-      "summary": "Refined: Ryan's sentient toaster robot continues his comic-relief antics, awkwardly flirting with the newly-cured Helen ('do you want me to toast your bread?... I've got butter'). He is eager for Ryan to install him into the big battle mech in the garage so he can finally 'show arms' and fight Wyvern, planned for the coming assault. His flirting is atrocious, as expected of a toaster.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10745,7 +10791,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH79 flashback illuminates Ryan's defining early arc, his self-set 'Perfect Run' to free Monaco. Key power revelation: because he exists simultaneously in a place beyond spacetime and on Earth, 'I am an exit', the pocket dimension can push back the convergence of his two selves but never fully sever it, which is how a mortal escape becomes possible. He realizes the bittersweet truth of a Perfect Run here: he lived over a century of loops beside these people, knows them better than they know themselves, yet remains a stranger they meet only once, 'This was the perfect ending, for everyone. Everyone but Ryan.' He debuts the Quicksave persona, adopts Simon's Sisyphus/Camus outlook, and receives Nietzsche's eternal recurrence as its capstone. He freezes time to absorb the entire century of memories into himself before the save point advances, then drives into the sunset, his Perfect Run complete.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10851,7 +10897,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH80 shows Ryan's softened, matured worldview. He accepts Len as a friend rather than lover ('all I wished for was someone to remember me'), and declines Livia's suggestion to recreate his lost Jasmine across loops, fearing he'd obsess over his idea of her rather than the person (as he once did with Len). He commits to making the Psycho cure part of his final loop, 'I gave them hope; I don't want to disappoint it', extending mercy to Acid Rain, Mongrel, Frank, and Sarin as victims of their own powers, while still wanting Bloodstream dead. He plans to take Dynamis by going 'full supervillain': seize Star Studios, livestream Hector Manada's crimes, and recruit Vulcan's tech (bought with cooperation, not coercion) to boost his power and carry more minds across time.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10885,7 +10931,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH80: to get closure, Len insists on the Lab Sixty-Six knockoff test despite Ryan's fears. Her theory: Dynamis didn't just capture her father, they 'packaged him, turned him into a product' -- inhuman and unforgivable even if it isn't truly him. When a droplet of her blood hits the Dynamis knockoff Elixir it SCREAMS, turns bloody red, and bloats into a twisted parody of Bloodstream's face reaching for its 'lost daughter'. Len relives her four-year-old trauma in raw terror, screaming and clawing her own cheeks bloody until Alchemo's flamethrowers incinerate the slime; Ryan holds her as she sobs. She still cannot answer what she'll do if her father is really alive in the lab.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -10991,7 +11037,7 @@
     {
       "name": "Leo Hargraves",
       "kind": "character",
-      "summary": "CH80: Livia's foresight increasingly places Leo Hargraves ('Sunshine') in Rust Town intending to attack Ryan, odds rising with time -- which would only happen if he learned of the bunker. Ryan links this to the glass-manipulator Mr. See-Through's ('Safelite') recent activity, suspecting Shroud pieced together the bunker's existence via former Psyshock thralls or Ryan's own presence among the Meta-Gang.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11081,7 +11127,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH81: Ryan executes his 'Mr. President' villain plan, storming Dynamis's Star Studios with the Meta-Gang, seizing the live news set, and broadcasting to New Rome. He livestreams his edited confrontation with Hector Manada plus the Bloodstream-knockoff footage (revealing ~10% of New Rome unknowingly carries a Bloodstream clone), threatens the city with a mini A-bomb (the 'North Korea special'), performs a stop-motion figurine parody of Manada/Augustus/Adam/Psyshock, and demands a deliberately absurd 'one million dollars' ransom. The stunt is designed to make Dynamis tear itself apart rather than target Rust Town. Sarin keeps re-uploading the exposé faster than Dynamis can censor it.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11269,7 +11315,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH82: Ryan walks out of the Star Studios raid untouched by out-bluffing every hero. He recruits Wardrobe as his archenemy, out-juggles her costume-theft power with three A-bombs (mass-produced via Mechron's matter replicator), dodges Atom Cat's kill-touch on legs alone, and forces Wyvern to stand down by threatening 'Dr. Strangelove'. He hands Wyvern a syringe of Len's blood as proof of the Bloodstream-knockoff crime, betting she'll turn on Dynamis. He spares Felix (per his promise to Livia) and leaves the wounded Shroud for Dynamis to avoid provoking Leo. He escapes with the ransom pending, only to find a horror waiting at the Rust Town checkpoint.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11337,7 +11383,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "CH82: Dynamis's shining hero Wyvern ('Dragon Mom') fights to stop the raid, dueling the overfed Mosquito in dragon form (she eventually smashes him back to normal size) and threatening Ryan with lethal force. Ryan neutralizes her with his triple-A-bomb bluff, which Dynamis's Geniuses confirm genuine over her earpiece, forcing her to stand down. He gives her a syringe of Len's blood, betting she never knew Dynamis makes Elixirs from a living man and would never have signed on if she had, planting the seed of her defection.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11491,7 +11537,7 @@
     {
       "name": "Vulcan",
       "kind": "character",
-      "summary": "CH83: Vulcan (Jasmine's alternate loop-self) flies past Dynamis's blockade, which she designed, to honor her deal with Ryan, delighted that he humiliated 'that bitch Wyvern'. Ryan, still in love and aching over the promise his own Jasmine made him ('don't replace me with another Jasmine'), keeps things playful but won't rekindle romance. She agrees to build his magnum opus using the bunker's Mechron tech and matter replicator: a power-boosting cashmere-poncho armor incorporating Len's signal tech, meant to let Ryan carry multiple people back through time. The armor still needs Len's help, and Len won't leave her room.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11525,7 +11571,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "CH83: at Dynamis's damage-control press conference, Wyvern goes off-script and publicly confirms the Knockoff Elixir horror is real ('I have checked'), then resigns as Il Migliore's leader on principle, refusing to stay with an organization capable of it (she'll still cooperate against the Meta-Gang). Her defection detonates Dynamis's PR; Enrique Manada stays silent (as if he'd long wanted to say it) and Felix walks out of Dynamis entirely. Ryan's exposure gambit ('all according to keikaku') pays off.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11687,7 +11733,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH83: eavesdrops on Ryan and Livia's cure/endgame discussion and turns on Ryan, leveling her vibrating gauntlet at him ('Better luck next time, eh? Not gonna work for me.'). Livia foresaw it and coaxes her out of hiding, hoping to avoid violence. A betrayal beat that closes the chapter.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -11713,7 +11759,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH84: mutinies against Ryan, refusing to let him time-travel until he cures her, but her rebellion collapses into the chapter's most tragic backstory. Her real grief: when she first gained power the wind dispersed her; it took SIX MONTHS to pull herself together and find a container she wouldn't rust through, spent 'years' sealed in a cloth prison feeling nothing, terrified of any blade. Ryan refuses to absolve her for standing by Adam through his atrocities ('you're entirely lucid'). She fires a warning blast, then collapses sobbing: 'My name is not Sarin... I want my life back.' Ryan swears she'll get a happy ending but must wait her turn; Alchemo takes her to attempt a memory backup.",
+      "summary": "",
       "facts": [
         {
           "key": "backstory",
@@ -11734,7 +11780,7 @@
           "rel": "mutinies against, then yields"
         },
         {
-          "to": "Adam",
+          "to": "Big Fat Adam",
           "rel": "former enabler she stood by"
         },
         {
@@ -11781,7 +11827,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH84: reaches a major turning point in his eternal-loop psychology. Confronted by Sarin's mutiny, Alchemo's plea, and Livia, he agrees for the first time to bring loop-companions FORWARD via memory backups rather than leaving everyone behind as he did in Monaco, Spain, France, Italy. He's terrified of bonds he can't take back, but recalls that trusting Jasmine taught him change must begin with himself. He won't take everyone (too many already know, risking another Adam/Psyshock capture) but lets Livia record vetted people's brainmaps. Livia names his true fear: 'You're not afraid of death, but you're afraid of other people.' He counters Sartre's 'hell is other people' with her 'hell is loneliness.'",
+      "summary": "",
       "facts": [
         {
           "key": "arc",
@@ -11849,7 +11895,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH84: found catatonic in Shortie's room, knees to chest, water rifle within reach as if Bloodstream might barge in like in her childhood. She has never moved on. Ryan tells her it's almost time to open Darkling's gate home and then raid Lab Sixty-Six to face what remains of Bloodstream. She dreads it and doubts her father can be cured or is even still alive (maybe just a harvested corpse for Knockoffs), but grabbing her water rifle she resolves to go: 'Let's go.' She stops hiding to face the raid.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -12071,7 +12117,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH85: his most profound crossroads. After sending Darkling home, Ryan crosses into the Black World and is tempted by the Black Ultimate One to ascend, shed his flesh, and escape immortality's curse forever, lured by the voices of Jasmine, Simon, and Felix, the promise of reuniting with everyone he ever erased. He almost stays, but chooses the living (Len, Livia, Felix, Sarin, all who trust him) over the dead, refusing to recreate the erased as suffering paradoxes. He returns changed, now radiating BLACK particles alongside violet. He confirms he cannot break the loop himself: his power is the wish he made at bonding and his Elixir cannot undo it.",
+      "summary": "",
       "facts": [
         {
           "key": "choice",
@@ -12169,7 +12215,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH86: launches the Lab Sixty-Six raid. He puzzles over his new Black Flux (a possible unusable second power), then formally forgives Alchemo, granting him a second chance (send his brainmap to Livia) with a hard 'no third chance' warning, embodying his new resolve to extend a hand rather than stay alone. He confesses to Len this will be his TWELFTH time destroying the world, swearing there won't be a thirteenth, and they pinky-swear 'together till the end.' The plan: Mosquito flies Ryan and Len up while minions and Toasty's robots storm the tower; grab Dr. Tyrano, torch Lab 66, flee before Dynamis mobilizes. Complication: Fallout is recalled, ~1-2 hours out.",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -12237,7 +12283,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH86: fully redeemed from mutineer to Ryan's most fervent believer. When the demoralized gang wants to flee (Mongrel, Mosquito, Acid Rain all wavering), Sarin delivers a rousing, unexpectedly charismatic speech casting Ryan as an unbeatable cheating gambler who ran circles around Adam, Dynamis, Augustus, and the Carnival: 'This guy brings a nuclear bomb to a gunfight and wins his wars with a goddamn alien... Would you bet against a cheater? I say we burn [the house]!' Frank's applause turns the tide and rallies everyone. She reminds Ryan of his cure-promise ('I'll haunt you').",
+      "summary": "",
       "facts": [
         {
           "key": "arc",
@@ -12263,7 +12309,7 @@
     {
       "name": "Vulcan",
       "kind": "character",
-      "summary": "CH86: parts ways with Ryan before the raid on Augustus's orders (she won't disobey her father-figure warlord for Ryan's sake: 'that mofo is more lethal than Ebola'). She sees through his lie about the killer-plushie ('I'm a Genius, but I'm also a genius, so don't f--- with me') and tells him to skip town so they don't end up enemies. She scrambles Dynamis's comms on the way out and, crucially, warns Ryan her radars detected a radiation spike west: Fallout has been recalled, ~1-2 hours out. She warns Len not to hang around Ryan ('he's going to live fast and die young').",
+      "summary": "",
       "facts": [
         {
           "key": "note",
@@ -12623,7 +12669,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH88: her sacrifice. Fighting Fallout with shockwaves despite her leaking, holed suit, she orders Ryan to grab the cure data and flee while she and Frank keep the nuclear Genome busy, judging the loop already lost now that Mongrel is dead. Ryan refuses to abandon her ('I'm not Adam'), and in that moment she finally gives him her real name: Bianca. She charges Fallout like a suicide bomber and is buried alive with him and Frank when the ceiling collapses. Ryan vows to save her next loop.",
+      "summary": "",
       "facts": [
         {
           "key": "real name",
@@ -12931,7 +12977,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH89 (origin loop): teenage Lenora Sabino, the 'Genius' who scavenge-built the submarine Laika to carry the family to America. In love with Ryan (their clumsy first night together), but she refuses again and again to abandon her father, clinging to the kind man he once was ('as long as he's alive, there's a chance he can heal'). When the Carnival attacks, Ryan forces her onto the Laika alone and goes back to die; she sets the irreversible autopilot and begs him to return. Her survival is literally the fate of the world: her death triggers Bloodstream's extinction plague.",
+      "summary": "",
       "facts": [
         {
           "key": "origin",
@@ -12957,7 +13003,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH89 (origin loop, as 'Cesare'): the pre-power Ryan. A captive stepson of the delusional Bloodstream, secretly in love with Len, worn down by the Psycho's abuse and the constant fear he'll one day feed on his own daughter. Unable to convince Len to abandon her father, Ryan takes the desperate gambit: he deliberately leads the Carnival to their Porto Venere hideout, forces Len onto the Laika, and returns to die alongside Bloodstream. As the battle rages he injects his hidden Violet Elixir for the first time ('the world turned purple, and Ryan ran'), the moment that begins his time-looping existence.",
+      "summary": "",
       "facts": [
         {
           "key": "origin",
@@ -13009,7 +13055,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH90 (origin, 'The First Run'): Ryan discovers his power in real time, a 10-second time-stop with a 10-second cooldown. On his first attempt he steps out of the smoke and shouts at the Carnival to stop; the distraction lets Bloodstream infect and kill Ace, and Bloodstream, no longer recognizing 'Cesare,' crushes Ryan's skull, his first death. He wakes rewound to a checkpoint: his power also creates a save-point. This run he stays hidden and lets Bloodstream die in Leo's fireball, but can't outrun the blast (light beats his 10-second window) and dies again, waking in the Carnival infirmary. Len and the Laika are gone; he loops the explosion endlessly, never catching her, and is left alone, the numb, grieving seed of the man he becomes.",
+      "summary": "",
       "facts": [
         {
           "key": "power onset",
@@ -13217,7 +13263,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH91: her tragic end this loop. Bloodstream long ago implanted a foreign agent in her blood (which is why Knockoffs react violently to her, and why Tyrano wanted to study her). Confronted with the truth that her father is <50% human and unsavable, she goes silent and, standing before the aquarium, shoots the glass, her proximity having already let the infection take her over (black blood behind her visor). Her converted body merges with Bloodstream, freeing and empowering him; the monster devours his own daughter. Her death is literally the trigger the Carnival prophesied.",
+      "summary": "",
       "facts": [
         {
           "key": "reveal",
@@ -13291,7 +13337,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH91: descends on the burning New Rome having won the Lepiromachia (holding a destroyed rabbit-plushie's charred half). He shrugs off Ryan's time-stop entirely (neither he nor his lightning slow), vaporizes Mr. See-Through with crimson lightning, and cares only for killing Leo Hargraves ('a world where your sun has set') over the world ending. But when Ryan's Saturn armor absorbs a bolt and he punches Augustus, black-and-violet particles swirling, the tyrant recoils: 'I felt that', the first blow that ever reached him, a flash of fear beneath the god-mask. Augustus counters harder than anyone Ryan's fought, breaching his armor, then duels Leo (whose burning core is his one weakness).",
+      "summary": "",
       "facts": [
         {
           "key": "lepiromachia",
@@ -13347,7 +13393,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH91: this raid-loop ends in total disaster, but it's the one where his endgame crystallizes. He nationalizes Tyrano and the Knockoff cure, downloads the vaccine data and Tyrano's encrypted-email codes for the next loop, and watches Bloodstream's world-plague consume Len, New Rome, and the planet. Fleeing to Livia in Sorrento for the memory transfer, he confronts Augustus and, for the first time ever, hurts him with a Black-particle punch ('I felt that'), realizing the Black Ultimate One's wish granted him a paradox: a power that can kill immortals. He completes Livia's brainmap transfer as Augustus closes in and resets, uncertain his power is even the same now that the Black World courses through him.",
+      "summary": "",
       "facts": [
         {
           "key": "gains",
@@ -13495,7 +13541,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH92 (new loop, 'Best Laid Plans'): Ryan opens with cathartic revenge rounds, ramming Ghoul again, feeding his bones to his new stray dog Henriette, and one-punching Night Terror (Richard Pinkman). Then he and the now-memory-carrying Livia plan the endgame around three overlapping calamities: the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and Bloodstream. His plan: play Carnival double-agent, rebuild the mind-transfer machine via Vulcan, have Stitch/Tyrano turn the Knockoff vaccine into a 'vaccine plague' to erase Bloodstream, and neutralize Len's implanted sample. He admits it's taken dozens of resets and isn't the final loop yet.",
+      "summary": "",
       "facts": [
         {
           "key": "loop plan",
@@ -13519,7 +13565,7 @@
       "chapter": 92
     },
     {
-      "name": "Eugene-Henry",
+      "name": "Eugene-Henry von Schrodinger",
       "kind": "character",
       "summary": "CH93: Ryan's aristocratic pet cat, an aloof, noble-mannered feline who treats the newly-adopted stray dog Henriette like a peasant, ignoring her nuzzling entirely. Part of the menagerie Ryan keeps at the Rust Town orphanage and in his Plymouth Fury (alongside Henriette and the sulking plushie).",
       "facts": [
@@ -13639,7 +13685,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH93: amnesiac Len, atop the orphanage roof, hears Ryan's full tale (time travel, downloadable memories, her father alive as Bloodstream, her own death). She believes her oldest friend despite the insanity, and asks how she died: Ryan explains the blood sleeper-agent turned her into her father, and warns her feelings for him may not be her own while the infection remains. She wavers on the memory transfer, fearing it will change her, but has not refused. Backstory filled in: after the origin she was carried by the Laika to the Canary Islands, wandered years finding she couldn't fix a broken world, and admits she waited for Ryan and her father to the last second before letting the sub take her. Ryan vows not to abandon her.",
+      "summary": "",
       "facts": [
         {
           "key": "post-origin",
@@ -13665,7 +13711,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH93 'Defenders of the Realm': Ryan builds his alliance for the perfect run. He counsels amnesiac Len and seeks her consent for the memory transfer, then recruits Shroud/Mathias (proving the Knockoff-Bloodstream link with Len's blood, and taking a leap of faith to all-but-confirm his chronokinetic looping), and finally cold-calls the Panda (Timmy). He plans to sic Sunshine on Mechron's other bases (hoping to self-detonate the Bahamut satellite), turn Enrique/Blackthorn against Hector and Fallout, and reserve Augustus for himself, admitting he only has a 'maybe' for defeating the emperor. Learns Augustus is fated to wage an all-out war to leave Livia queen of the ashes.",
+      "summary": "",
       "facts": [
         {
           "key": "recruits",
@@ -13735,7 +13781,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH94 'Cheat Code' (May 10th): on the revised loop Ryan preempts Psyshock's orphanage raid, freezing time to bubble Mosquito and Mongrel with Len's water rifle and huffing Psyshock full of Bliss in under a minute. He assembles his 'Avengers' (Len, Panda, Shroud) and forges a temporary alliance with Livia's team (Livia, Fortuna, Cancel) to destroy the Meta-Gang's Mechron weapons cache. His plan: use Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe instead of grinding loops, jail Psychos in Len's crush-depth underwater asylum rather than killing them, and time Cancel's execution of Psyshock to coincide with the Junkyard assault for maximum chaos.",
+      "summary": "",
       "facts": [
         {
           "key": "raid",
@@ -13903,7 +13949,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH95: leads the Junkyard raid, masking their approach with Ghoul's severed foot (so the Land mistakes the car for her returning tenant), then blitzing the base with Livia, the Panda, Shroud, Fortuna and Len. Cancel's execution of Psyshock frees the thralls and sows chaos; the crew defeats the Reptilian, Acid Rain and the drones and breaches the blast door, trapped inside with Adam, Sarin and Frank waiting. Emotionally, Ryan settles that he and Len are now family (brother-sister), not romance, and for the first time in ages wonders what he wants from his life now that friends can remember him, sensing Livia is the key.",
+      "summary": "",
       "facts": [
         {
           "key": "tactic",
@@ -13927,7 +13973,7 @@
       "chapter": 95
     },
     {
-      "name": "Adam the Ogre",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "CH96 'Beast of the East': the Meta-Gang's cannibal leader makes his last stand in the Junkyard bunker, wielding a salvaged Mechron gravity gun (a slow black projectile that shreds metal by pulling matter inward). He brainwashes Frank with a 'CIA is staging a coup, protect democracy' delusion, and his carbon skin shrugs off Ryan's Fisty punch entirely, teaching Ryan he needs the Saturn armor to focus Black Flux. Livia deduces his skin protects only the surface, so head trauma still concussions him; blinded by coil-gun rounds, he tries to Elixir-convert the Panda but the Panda absorbs it and finishes him with a 'Soaring Panda' kick. Len bubbles him and he drowns to death.",
       "facts": [
@@ -14008,7 +14054,7 @@
       ],
       "ties": [
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "kills him"
         },
         {
@@ -14021,7 +14067,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH96: real name Bianca. Adam's Psycho enforcer (shockwave gauntlets, sealed hazmat suit) whom Ryan finally turns to his side: he refuses to fight her, disarms himself, and offers her his cure and a last chance at being human again. Her doubt seeded, she picks Ryan's side mid-battle, collapsing the floor to trap Frank and helping subdue the Meta-Gang, then aids Len in loading the captured Psychos into bathyspheres. Ryan tells the crew she 'will be very important later.'",
+      "summary": "",
       "facts": [
         {
           "key": "turn",
@@ -14043,7 +14089,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH96: leads the bunker's final fight, learning his Fisty punch can't focus Black Flux without the Saturn armor. He turns Sarin/Bianca to his side, sets up Adam's death, and wins a near-flawless victory (his only loss the car). The Meta-Gang is jailed underwater pending a cure; Adam drowns. Afterward he plots his next phase, infiltrate Dynamis from the bottom via Jamie/Ki-jung/Lanka, brief Alchemo/Len/Sarin on the memory map, have Vulcan rebuild the Saturn armor, deal with the Carnival, Narcinia and the Bliss Factory. Emotionally freed by having friends who can remember him, he finally makes his move on Livia and asks her out.",
+      "summary": "",
       "facts": [
         {
           "key": "lesson",
@@ -14175,7 +14221,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH97: Len, still adjusting, pulls Ryan aside about Livia. She wistfully floats running away together on the Mechron sub, but Ryan gently refuses, he has too many people to fight for now, and won't abandon them. He reassures her she is family forever, his sister and most important person, regardless of anything with Livia. Persuaded that one must 'let the dead rest' rather than cling to her father's blood tracker, she finally agrees to both the memory transfer (to recover her other self's memories) and having the Carnival remove her infection, choosing to offer Ryan her hand as he offered his.",
+      "summary": "",
       "facts": [
         {
           "key": "decision",
@@ -14201,7 +14247,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH97 'A Breath of Fresh Air' (day after the raid): Ryan consolidates his gains, recruiting Tyrano remotely, gifting the real A-bomb to Vulcan (and becoming her reluctant assistant), and giving the suicidal plushie a decoy prop bomb (then the gravity cannon). With Shroud he maps the Dynamis endgame: flip Enrique, but Alphonse/Fallout won't surrender Bloodstream's power-give-and-take monopoly, so Ryan will stop him with the bunker's resources and a rebuilt Saturn armor (chest-blaster swapped for the gravity cannon). He plans to destroy the bunker only after it solves the crisis, wins Len's consent to the memory transfer, and heads off for his date with Livia.",
+      "summary": "",
       "facts": [
         {
           "key": "moves",
@@ -14271,7 +14317,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH98 'White Night': Ryan's date with Livia. He drives her to the Midnight Road (a thin place) via his car's particle accelerator, and there, in a rare act of total trust, unburdens his darkest secret: he once spent an ENTIRE full lifetime trapped in the Monaco anomaly, which is why he calls himself immortal, and has never dared start a family because loop-timing would produce a different child each reset. Livia is the only one he's ever told. The evening deepens into genuine intimacy; she brings him into her father's villa at Mount Augustus as an open act of rebellion, and they spend the night together.",
+      "summary": "",
       "facts": [
         {
           "key": "confession",
@@ -14323,7 +14369,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH99 'How I Met Your Daughter': catches Ryan the morning after in his villa kitchen (Augustus sleeps standing utterly still like his own Jupiter statue). Enraged, he electrocutes Ryan with low-current lightning, discerning via the electrons in Ryan's brain that Ryan is the source of the time-stops. He cannot be harmed by Ryan (who lacks the Saturn Armor to focus his Black power). When Livia intervenes with her power and threatens to leave forever if he harms Ryan or Felix, the tyrant relents, a rare crack showing the lonely, paranoid old man beneath. He half-accepts Ryan with a triple death-threat (disrespect / break her heart / break up = 'I will kill you'), still refusing to acknowledge him otherwise. Grieves being unable to protect his late wife.",
+      "summary": "",
       "facts": [
         {
           "key": "quirk",
@@ -14349,7 +14395,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH99: wakes the morning after in Livia's bed feeling genuinely loved (she won't release him even asleep), and for the first time dreads a reset because he doesn't want Livia to forget him. Cooking her breakfast, he's caught by Augustus, taunts the tyrant with repeated time-stops, then confirms (defiantly) he slept with Livia and gets electrocuted. He confirms he still needs the Saturn Armor to harm Augustus. Saved by Livia, he weathers Augustus's triple death-threat and gives his real name ('Ryan Quicksave Romano, immortal'). Notes that lovemaking reveals character (Len hesitant, the Doll playful, Jasmine wild, Livia 'just right'). Agrees to be healed by Venus/Narcinia.",
+      "summary": "",
       "facts": [
         {
           "key": "growth",
@@ -14465,7 +14511,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH100 (~2005): elder patriarch of the Augusti mob dynasty, a Neapolitan Camorra boss in a red suit and Augustus's forebear (father of young Livia in this era, so Livia's grandfather-era figure). A godless 'necessary evil' who launders his blood money through Cardinal Torque's Vatican channel and serves as a patron of the Malleus Maleficarum's black budget. Cold, shark-like, expansionist. He gifts Torque a bag of colored crystals ('our new product', a mind-opening drug), tempting the priest's curiosity about contacting higher realms. Dotes on his little daughter Livia (who asked for a pony).",
+      "summary": "",
       "facts": [
         {
           "key": "role",
@@ -14707,7 +14753,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH101 'Lover's Breath': officially asks Livia to be his girlfriend; she insists their relationship last 'until we choose to break up', not until a reset, refusing to let his power define its end. He shares his Perfect Run to-do list (Kill Psypsy, Cure the Psycho condition, Prevent the Leporimachia, Reconcile Wyvern & Vulcan, Find the Alchemist's Antarctic base, Bury my daddy issues, Make Livia happy); Livia strikes his other 'fuck/marry' goals and adds 'Be happy too', banning his suicide-reloads and his drugs. He offers Livia an endorphin-blocker Bliss cure and to tear down Triton's Resort for her. He's healed by Venus and resolves to eventually bring down Augustus and the Veran 'Olympians' for Livia's sake.",
+      "summary": "",
       "facts": [
         {
           "key": "milestone",
@@ -14785,7 +14831,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH102: her memory transfer is completed by Alchemo using his improved method (memories now coexist rather than overriding), so she recalls both this loop and the last, remembering that her father Bloodstream killed her. Stitch removes the Bloodstream strain from her body. She can only agree to help destroy her father once she's certain he's truly beyond saving, so Ryan delays the Dynamis raid. Learning (via the chronoradio) that Ryan is now dating Livia, she accepts it gracefully: they're 'family now', Livia is good for him, and, inspired by his happiness, she resolves to stop living in the fearful past and look forward. Both agree it's time to move on, together.",
+      "summary": "",
       "facts": [
         {
           "key": "memory",
@@ -14811,7 +14857,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH102: consolidates the post-raid gains, Mechron's mainframe lets him recreate the Saturn Armor and probe his new Black power. Stitch (with Dr. Tyrano's help) develops an airborne vaccine for the Psycho condition and a viral Bliss cure (endorphin blockers + nerve suppressant) from Ryan's own recipe; the Panda, via accelerated learning, has absorbed multiple doctorates to serve as lab assistant. Ryan counsels Shroud through his Fortuna rift, delays the Dynamis raid until Len is ready, and sets the next plan: after hitting the Bliss Factory, blow the bunker and flee New Rome for Antarctica (Station Orpheon) to find the Psycho cure's source, with a stop near Monaco. He affirms he no longer wants to die and wants lifetimes with Livia and Len.",
+      "summary": "",
       "facts": [
         {
           "key": "plan",
@@ -14923,7 +14969,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH103: scouts Ischia's Bliss Superlab under cover of Vulcan's security inspection (racing jetpacks, trading jabs), then launches its destruction with Len, Sarin, and Shroud (plus surprise ally Mr. Wave), donning the improved Saturn armor (Adam's gravity rifle for the chest cannon, better flight, radiation/heat shielding vs Fallout). He notices his Black Flux power has grown markedly stronger between loops (the black particles now an 'oil spill on a violet sea' rather than faint spots), theorizing it feeds on destruction or each reset and ignores his time-travel rules, and wonders if it could harm even Geist. He extracts Station Orpheon's coordinates from Bacchus and cements his resolve to raze the lab after the priest endorses Bliss's mass sterilization.",
+      "summary": "",
       "facts": [
         {
           "key": "power growth",
@@ -15095,7 +15141,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH105: healing under Alchemo's treatment, Len sheds her red communist iconography (new blue overalls, 'I've seen enough red for a lifetime') as she starts to live again, even wanting to stop at the Canary Islands for the children on the way to Antarctica. She names her modular self-sufficient underwater habitats the 'Cuba Initiative.' Most gravely, she resolves that if the Psycho cure can't save her father Bloodstream, she will euthanize him HERSELF, as her duty and choice, refusing to let Ryan carry it, accepting she'll bear that pain for life.",
+      "summary": "",
       "facts": [
         {
           "key": "resolve",
@@ -15121,7 +15167,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH105: watches Augustus decimate his own guards (1-in-10 beaten to death) over the raid, and uses Incognito (nanite-leashed) as a decoy alibi. He confesses to Livia that he intends to neutralize her father and that his Black Flux is the weapon that could do it, 'because I trust you' and wants their relationship built on truth. Confronted with her ultimatum, he swears NOT to kill Augustus but to defeat and break him so decisively he'll never threaten anyone again (imprisonment, not death), refusing her hope of a purely peaceful solution while conceding it as a compromise. He plans a next-loop strike on the Bliss Factory before it makes victims, extracting Narcinia to the Carnival, and launches the Antarctica expedition to research Elixir bonding.",
+      "summary": "",
       "facts": [
         {
           "key": "vow",
@@ -15277,7 +15323,7 @@
     {
       "name": "Felix",
       "kind": "character",
-      "summary": "CH107: recklessly infiltrates the Veran dinner via the chimney to smuggle Narcinia away from drug-making now that the factory's gone, walking into Augustus's trap. Augustus (whom Mars calls 'Janus' on the phone) orders him killed as the presumed inside source of the Ischia raid, despite being his godson - 'No traitor shall survive.' Ryan blocks Mortimer's assassination shot and hauls Felix out the window. Devastated rather than angry that his own parents tried to kill him ('they're my parents, I thought that counted for something'), Felix flees with Ryan through New Rome. He didn't come alone - he brought Wyvern and (co-opted) Private Security as backup.",
+      "summary": "",
       "facts": [
         {
           "key": "motive",
@@ -15307,7 +15353,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH107: orders the public execution of his own godson Felix ('No traitor shall survive, not even my godson') to protect the myth of Augusti invincibility after the Ischia raid, believing Felix leaked the intel. Notably, Mars addresses him by phone as 'Janus' - the same name as the CH100 patriarch Janus Augusti - hinting the immortal, ageless Augustus may BE Janus Augusti rather than merely his descendant (unconfirmed). He deploys Night Terror's illusions (a fake red-lightning Augustus) as part of the ambush.",
+      "summary": "",
       "facts": [
         {
           "key": "order",
@@ -15459,7 +15505,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH109: on the three-day submarine voyage to Antarctica he keeps in touch with Livia by burner phone (she's grounded after his escape with Felix, tensions with Dynamis nearing open war, Hector Manada may recall Alphonse from Sicily). He learns Pluto killed Jamie and Ki-jung for defecting and resolves Felix must eventually know, but not yet. He and Livia backed up her mind-scan before the dinner as loop insurance. Reaching Monaco, he reunites with Simon, drops the children as Simon's wards, and gains Leo Hargraves as a fire-Genome ally for the icy expedition. He concludes his Perfect Run must topple Augustus's factory and organization fast to minimize casualties. Livia teases an important secret she'll only reveal in person.",
+      "summary": "",
       "facts": [
         {
           "key": "plan",
@@ -15515,7 +15561,7 @@
     {
       "name": "Leo Hargraves",
       "kind": "character",
-      "summary": "CH110: on the Antarctic expedition (immune to cold via self-controlled heat/gravity) the Living Sun apologizes to Len for the Carnival's attempt on Bloodstream, taking sole responsibility - they'd predicted Bloodstream would cause a disaster and kill both his children, and didn't think a cure possible. He swears to try to cure him now, but warns he'll still act if Bloodstream threatens millions. He's cleared Mechron's other robot-armory bases (only the New Rome bunker did R&D) and joined this quest partly to ask the Alchemist 'why.' He invites Panda/Timmy to the Carnival, provoking an ecstatic fanboy meltdown.",
+      "summary": "",
       "facts": [
         {
           "key": "confession",
@@ -15761,7 +15807,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH112: his nature is finally explained. The team finds Augustus's body-metal matches a substance on the Orange World hologram - his power gives his flesh the properties of Adamantine, the ur-metal of a realm without time, life, or death (Sunshine calls him 'an Orange'). This resolves every anomaly: why time-stop and Livia's time-skip can still affect the 'invincible' warlord, why Frank the Mad's metal-absorption harmed him, why he neither eats nor breathes yet sleeps and ages, and why Julie Costa's life-touch never registered him as alive. Conceptual powers (Frank, Ryan's Geist-killing Black) remain his only known counters.",
+      "summary": "",
       "facts": [
         {
           "key": "true nature",
@@ -16007,7 +16053,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH115: at the Antarctic climax Ryan cannot pilot the alien ship (only Blues can; he is a Violet), so he corrupts its overmind with Black Flux and summons the Black Ultimate One, which devours Eva Fabre and the Hegemony Soldiers and will send the captive Elixirs home. Darkling delivers a crucial warning about his growing power: BLACK CONSUMES and is self-reinforcing - every reality and color it devours makes it stronger, and if unchecked it will consume Ryan himself, dissolving his human shape. Darkling also reframes his purpose warmly: ascension can't be forced (the Alchemist's error), humanity is young, and the Elixirs will walk beside mankind to the stars. Ryan, who first came to this loop to die, now wants to live to see humanity reach the cosmos. The ship, the Alchemist, and the aliens are erased from his timeline.",
+      "summary": "",
       "facts": [
         {
           "key": "warning",
@@ -16085,7 +16131,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH116 (CURED / true name Bianca): the refurbished Station Orpheon team uses copied Alchemist data + a Chronoradio-based Flux signal to guide Sarin's Elixirs into cleanly separating her powers. The reveal of the Psycho mechanism: her condition was two competing Elixirs (a Red and an Orange) each believing it served the sole host, unaware humans can 'twin' - Hanlon's razor, incompetence not malice. Told there are 'two Homo Sapiens in one flesh vessel,' the Elixirs 'divorce,' each taking custody of a DNA share. Her gas cloud condenses into flesh: Bianca is a thin, small (~1.5m), ~30-year-old woman with messy green-and-orange hair and gray eyes, memories intact (the molecular sample Ryan saved from the Meta-Gang loop restored her). She weeps, embraces Ryan for keeping his promise, and rejoins his circle - the same Bianca who once sacrificed herself to delay Fallout.",
+      "summary": "",
       "facts": [
         {
           "key": "true name / new body",
@@ -16189,7 +16235,7 @@
     {
       "name": "Felix",
       "kind": "character",
-      "summary": "CH117 (comes to believe / joins the mission): aboard the submarine Felix demands Ryan prove he is a time-traveler. Ryan can't reload on demand, so he recounts an unrepeatable private memory (Felix tracking rats to a Bliss-overdosed Ki-jung, and Narcinia's parents' 'greater good of the family' line) that only the real Felix ever knew - convincing him it's time-travel, not mind-reading. Ryan reveals this is his ~16th New Rome reload, that in a past loop they were close partners ('Quicksave the Pandas') and Felix's sister Livia died to save him, and that Jamie and Ki-jung died protecting Felix believing he hated them. Grief-stricken, Felix resolves to take the second chance and formally joins Ryan's endgame, accepting a 'boss rush' against his own parents and godfather. Then they sight the coast: New Rome is on fire again.",
+      "summary": "",
       "facts": [
         {
           "key": "believes now",
@@ -16371,7 +16417,7 @@
     {
       "name": "Leo Hargraves",
       "kind": "character",
-      "summary": "CH118: increasingly drawn toward ascension - the longer he uses his power the less he wants to be human again, sometimes going weeks as a sun; the Alchemist's revelations quelled his doubts, and he may one day become a true sun and leave Earth. He reunites Narcinia with her true origin (daughter of his murdered friends the Costas), carrying their photo for years. He owns his gravest sin plainly: accidentally killing Livia's mother Juno was a mistake he will not excuse ('the ends never justify the means'), and he vows to submit to whatever trial Livia sets once Augustus is stopped. He notes Augustus likely suffers the same ascension-pull (wanting to become indestructible metal) but, unlike Leo, cannot revert to human.",
+      "summary": "",
       "facts": [
         {
           "key": "ascension",
@@ -16397,7 +16443,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH119 (final run launch, two power crises): the mind-transfer works - Livia, Len, Bianca, Felix, Shroud, and the Panda/Timmy all reload to May 8th (his 17th loop) with memories intact, confirmed by texts. But Ryan discovers he CAN'T SAVE: his power refuses to freeze time past ten seconds, his Elixir pushing back exactly as it did in Monaco (to stop him locking himself in a ruined run). Worse, Livia reports Geist has simply VANISHED from existence and from her precognition - Ryan's Black power, strengthened over two loops, now acts RETROACTIVELY, feeding on deleted realities and bleeding into the timestream; if he kills anyone with Black Flux (even Augustus) it may be permanent. Sunshine's warning (a Black-World entity annihilated Mechron and nearly all Sarajevo through careless curiosity) lands hard. Guided by Chronoradio echoes of past voices to persevere, Ryan proceeds - rams Ghoul, delivers the mail, and takes a comedic joyride tormenting Ghoul ('you're going to space, Ghoul!').",
+      "summary": "",
       "facts": [
         {
           "key": "can't save",
@@ -16499,7 +16545,7 @@
       "chapter": 119
     },
     {
-      "name": "Adam the Ogre",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "CH120 (revealed a VIOLET; final confrontation): after Ryan's team routs the Meta-Gang bunker, Ryan reaches the deep chamber and faces Big Fat Adam alone. Adam emerges grinning, carbon skin black, and reveals he is a fellow VIOLET ('never tasted a fellow Violet before') - meaning he too can manipulate time/space, making him uniquely dangerous. Ryan names him the deadliest of his foes: Augustus is stronger and Fallout more determined, but Adam is shrewder, crueler, and more dangerous, which is why he had to be taken down FIRST. The duel begins on a cliffhanger, Ryan warning 'make that last loop count - you won't get another.'",
       "facts": [
@@ -16540,7 +16586,7 @@
       ],
       "ties": [
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "the boss waiting at the end of the raid"
         },
         {
@@ -16603,7 +16649,7 @@
       "chapter": 120
     },
     {
-      "name": "Adam the Ogre",
+      "name": "Big Fat Adam",
       "kind": "character",
       "summary": "CH121 (KILLED): the duel reveals his two powers - a Violet time-sense (he FEELS Ryan's freezes like Acid Rain and shields his vitals whenever time stops, though he lacks the reflexes/teleport to fully exploit it) and a POCKET DIMENSION in his gullet/torso (wounds bleed no blood, only suck air; he pulls out grenades, a flail, a crossbow he spits bolts from, even a Blue Elixir syringe). His carbon skin resists most bullets; Ryan blinds both eyes with depleted-uranium rounds but is crossbow-bolted in the belly and leg. Cornered, Ryan throws his triggered A-bomb down Adam's throat mid-taunt ('Filibuster!'); the pocket dimension contains most of the blast, but flames erupt from his mouth, nostrils, and the uranium bullet-holes, cooking his organs and melting his skull. He dies. The Panda's prior-loop fight had taught Ryan Adam was vulnerable to internal damage.",
       "facts": [
@@ -16631,7 +16677,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH121: in a brutal solo duel Ryan kills Adam the Ogre - shooting a hostage boy free, blinding Adam with depleted-uranium rounds, and finally feeding him his own triggered A-bomb so the blast cooks him from inside. Ryan learns Adam is a fellow Violet who could SENSE his time-stops (giving him only 8-10 seconds of usable freeze that Adam reads), a reminder that even after 17 loops his enemies still surprise him. Wounded (crossbow bolts in waist and leg), he's patched up by the Panda in the infirmary with Livia at his side. The raid is a total success: zero casualties, every Rust Town hostage saved, captive Psychos moved to underwater habitats. He resolves to next break Dynamis, then the Augusti - but Livia tells him to celebrate this hard-won win first.",
+      "summary": "",
       "facts": [
         {
           "key": "victory",
@@ -16644,7 +16690,7 @@
       ],
       "ties": [
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "defeated and killed him"
         },
         {
@@ -16670,7 +16716,7 @@
       ],
       "ties": [
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "the first major boss cleared"
         },
         {
@@ -16696,7 +16742,7 @@
       ],
       "ties": [
         {
-          "to": "Adam the Ogre",
+          "to": "Big Fat Adam",
           "rel": "his earlier fight revealed the winning weakness"
         },
         {
@@ -16735,7 +16781,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH122: Len confronts Enrique Manada face-to-face, demanding to know why Dynamis did this to her father. She reveals the doomsday stakes: her own blood carries an agent that strips the safeguards off the Knockoffs - contact would revert every Knockoff-drinker into a Bloodstream clone, killing millions, and the core may soon do it unaided. She refuses Enrique's handshake but accepts his apology; she wants no revenge, only to try the cure on her father Bloodstream and, failing that, to end his suffering and give him peace. Still awkward with strangers (waits in the car during the Jamie visit), she is steadier and braver here, her anger at Dynamis giving her confidence.",
+      "summary": "",
       "facts": [
         {
           "key": "doomsday",
@@ -16761,7 +16807,7 @@
     {
       "name": "Wyvern",
       "kind": "character",
-      "summary": "CH122: present at the Dynamis confrontation as Enrique's guard. She reads the evidence dossier in denial, dismissing it as Lab-Sixty-Six conspiracy theory, until Enrique's phone-checks force the truth on her. Devastated - she was Enrique's ex-lover ('Laura'/'Enrique') - she snaps the mahogany desk in half, then resigns on the spot rather than stand by the Knockoff horror, and pleads with Enrique to do the same ('Someone has to try'). Ryan privately urges her to reconcile with Jasmine (Vulcan): all Jasmine wants is an apology and recognition for living in Wyvern's shadow, treated as an equal. Wyvern, shaken, seems willing to try - and to give Enrique another chance.",
+      "summary": "",
       "facts": [
         {
           "key": "resigns",
@@ -16891,7 +16937,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH123: reviews the Gravity Gun plans with Timmy - a projectile that makes a gravity anomaly to fling Augustus out of the atmosphere ('Kars Augustus') - and insists on miniaturizing it into his own armor and facing Mob Zeus ALONE, since only he can harm the tyrant and survive death via reload. He finally tells Livia the full Black-power secret: he gained it by wishing to die, which is why the Violet Ultimate One now blocks his saves; she reframes it as past-tense, since now he wants to live. He surveys the allies he has gathered/cured (Bianca, Helen, Jerome, Vlad, the Panda, Len) and feels he has something to fight for again. He vows to imprison Augustus, not slay him. Next: Lab Sixty-Six, then the Bliss Factory, then Augustus - the gauntlet.",
+      "summary": "",
       "facts": [
         {
           "key": "solo resolve",
@@ -17009,7 +17055,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH124: insists on facing her father alone at Lab Sixty-Six (Stitch first removed the Bloodstream agent from her blood so she won't transform). She tries the cure on Bloodstream; when it fails she moves from denial through bargaining to acceptance, says 'Goodbye, Father,' and euthanizes him with Tyrano's failsafe - grief, not anger. She asks Ryan to leave her alone with the body a while. Her hardest, most adult moment: choosing to end the suffering of the father she loved rather than cling to a lost hope.",
+      "summary": "",
       "facts": [
         {
           "key": "closure",
@@ -17035,7 +17081,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH124: coordinates the three-pronged Lab Sixty-Six strike from the air in his Saturn armor, comforting Len through her father's euthanasia, then waltzes with Livia over New Rome to seed the sky with the green Cure Flu. His armor is now maxed out with data looted from the Alchemist's lab: five Flux batteries (every color but his own Violet, fueled by his allies) driving Fisty-brothers gauntlets with a Red-Flux shockwave (Bianca's power), a Blue-Flux computer that kills control lag, Orange emergency shielding, Green self-healing, Yellow conceptual defense, White harmony - plus a miniaturized Gravity Gun hidden in his chest as a secret trump against Augustus. He still feels only pity, not joy, at Bloodstream's death. Then Fallout arrives 'riding the atom' from Sicily, and Ryan and Livia stand together to fight him.",
+      "summary": "",
       "facts": [
         {
           "key": "armor maxed",
@@ -17165,7 +17211,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH125: fights Fallout with Livia's combo; his upgraded gauntlets (Red shockwaves, Green self-heal, Orange emergency shielding) let him trade blows, but Fallout's nuke-blast burns through, hurts Livia, and forces Ryan to escalate. Enraged for Livia and by Fallout's threat to dissect Len, he wields Black Flux to disintegrate both the corpo's arms ('Give me an inch, I'll take the arm... I destroyed time'), swearing to peel him until he finds his core rather than kill (his vow to Livia). He arms his hidden Gravity Gun but Shroud fires first. He then rushes to the wounded Livia's side - one poison purged from New Rome, but Augustus still waits on Ischia.",
+      "summary": "",
       "facts": [
         {
           "key": "Black amputation",
@@ -17321,7 +17367,7 @@
     {
       "name": "Len",
       "kind": "character",
-      "summary": "CH126 (closure): fully at peace after euthanizing her father - grief without guilt, having let go of the childhood belief that his fall was her fault. She sees the world can change (if even Dynamis can), and resolves to join The Architect not just for Rust Town's children but to build cities and help children worldwide, giving them a better childhood than her own. She and Ryan reaffirm their bond ('more powerful than friendship'), and she makes him promise to come back from the Augustus fight. Ryan reflects that Len (unlike Mechron, the Alchemist, Fallout) has the kind heart that makes power matter - 'You will do great.'",
+      "summary": "",
       "facts": [
         {
           "key": "closure",
@@ -17373,7 +17419,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH126: after tender farewells with Livia (who begs him to flee if he truly can't survive, since he can't save) and Len, he has his Saturn armor repaired in the bunker and installs an Elixir-comms system to finally talk with and name his Violet Elixir, Magenta. It confirms the Ultimate One blocks his saves because his Black has grown dangerous, hints he may Ascend, and confirms his Black can beat Augustus's conceptual-only-vulnerable metal. He takes the Plushie as an ally, then triggers the bunker self-destruct ('Execute order Sixty-Six') as the Augusti invade Rust Town - collapsing the Junkyard and detonating the Bahamut orbital satellite, erasing Mechron's legacy. He flies to Ischia for his last battle, having promised Livia and Len he'll return.",
+      "summary": "",
       "facts": [
         {
           "key": "bunker erased",
@@ -17447,7 +17493,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH127 (Ischia assault): as King Saturn he leads the counter-invasion of Augustus's Bliss fortress, having pre-arranged rock-paper-scissors power match-ups Livia mapped - Vladimir + Acid Rain neutralize Mars, Shroud + Fortuna tranq Pluto and Cancel, Vulcan's killswitch traps the Augusti in their own armors. He goes inside alone to face the telepath Bacchus (acting as bait so the brainless Sarin can creep up unseen) and the necromancer Mercury, enduring devastating hallucination-assaults (drowning, crucifixion, insanity) that tax but can't physically break his centuries-hardened mind. He unravels Bacchus with the Ascension-wisdom truth, knocks out Mercury, rescues the tortured Narcinia, and demolishes the factory. Then he rises alone into the storm to meet Augustus, who descends as an ivory lightning-god - the final duel begins.",
+      "summary": "",
       "facts": [
         {
           "key": "battle name",
@@ -17473,7 +17519,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH127 (descends for the duel): the Augusti god-emperor finally takes the field, descending from a cumulonimbus as an ivory statue shrouded in crimson electric aura, riding ionized winds, red lightning coursing the skies. He looks down on Ryan with contempt, calls him 'the architect of all of this,' and frames the fight as his own Titanomachy - vowing to nail Ryan to a cross and make him watch his friends die. Indestructible metal vulnerable only to conceptual powers (per Magenta, Ryan's Black can beat him). The final battle opens on his word: 'Let's go.'",
+      "summary": "",
       "facts": [
         {
           "key": "form",
@@ -17577,7 +17623,7 @@
     {
       "name": "Sarin",
       "kind": "character",
-      "summary": "CH127 (the Bacchus-killer play): Bianca, the sentient nerve-gas creature, is the linchpin of Ryan's plan against the telepath Bacchus - because she has no brain, his telepathy can't perceive her. While Ryan draws the priest's full attention with his mind, she creeps through the fortress, seeps into Bacchus's lungs as mist, and chokes him unconscious from within (offering to burst out 'Alien-style,' but Ryan wants him alive for a possible cure). She reforms beside her victim, worried at how harrowed Ryan looks, and later helps Vladimir level the fortress with shockwaves.",
+      "summary": "",
       "facts": [
         {
           "key": "why she works",
@@ -17603,7 +17649,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH128 (the Augustus duel): King Saturn duels the lightning-god above New Rome. His Black-Flux punches - fueled by every crime he witnessed - CRACK Augustus's 'invulnerable' ivory body, reversing the fight and drawing real fear. He out-boxes the god with centuries of martial experience, but Augustus refuses melee, harasses him from range with homing lightning that Monaco can't cage (the cursed dimension spits Augustus back out of spite), overloads the Saturn Armor's storage, and finally fries it - Ryan crashes crippled on a French beach, glass in his eye, facing death with no save left. The Plushie sacrifices itself, revealing it was always a living gate between universes and Ryan the key: Ryan grabs the tear it opens, forces it wide, drags Augustus in by the ankle, and both fall into the Purple World.",
+      "summary": "",
       "facts": [
         {
           "key": "breakthrough",
@@ -17633,7 +17679,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH128 (invulnerability shattered): the lightning-god fights Ryan above New Rome, revealing his Red-Elixir lightning has NO upper limit - he detonates a nuclear-scale crimson supernova in the upper atmosphere (the power that sank Malta; enough to end civilization). But Ryan's Black-Flux punches crack his 'invulnerable' ivory body, glowing red rifts spreading like a damaged statue, and he tastes fear and pain for the first time in twenty years. His over-aggressive, defense-less style (never having needed to dodge) fails against Ryan's centuries of martial skill in melee, so he wins at range instead - homing lightning, overloading the Saturn Armor, immune to Monaco's grasp. Moments from vaporizing the grounded Ryan, he is grabbed by the ankle (his adamantine flesh now soft as butter) and dragged into the Purple World. Creed: 'There can only be one master of the world... they exist to serve us.'",
+      "summary": "",
       "facts": [
         {
           "key": "no limit",
@@ -17715,7 +17761,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH129 (the Purple World reckoning and the choice): at full power on his 'home turf,' Ryan burns off the Saturn Armor into a living-void of Black Flux ('I am the gate, and the key') and severs both Augustus's arms - the hands that killed Julie Costa - though the Black eats his own body toward oblivion. The Violet Ultimate One descends, heals him fully (time-transplanting his Black-erased eye and limbs from an earlier possibility), and shatters Augustus's godhood delusion. It explains Ryan's nature: he is an 'observer,' a spacetime singularity granted the power to exist in both realities and DECIDE which possibility becomes true history - the true master of his universe, the only one who can grant second chances. Offered ascension (become an Ultimate One or enter the Black World), he chooses instead to return to Earth for 'a happy life, with friends who can remember me.' The Ultimate One leaves the door to ascension open forever and removes his destabilizing Black connection. He returns beside Leo Hargraves and carries the broken Augustus back Pieta-style; the war is over.",
+      "summary": "",
       "facts": [
         {
           "key": "observer",
@@ -17775,7 +17821,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH129 (broken utterly): dragged into the Purple World, Augustus is cut off from the Red World and can't summon lightning - a powerless intruder. Ryan's Black severs both his arms (the very hands that murdered Julie Costa; his adamantine flesh calcified into indestructible stumps but his nerves still scream). Stripped of his halo, he is revealed as a feeble, bitter old man - a petty miscreant who murdered thousands out of terror of his own death. The Violet Ultimate One forces on him the vision of his own insignificance and pronounces him 'NOT A GOD... NOTHING,' shattering the divine self-delusion around which he built his family and empire. Something inside him breaks forever. Returned to Earth armless and catatonic, carried Pieta-style by Ryan; when his loyal Olympians see him crushed, they lose all will to fight and surrender.",
+      "summary": "",
       "facts": [
         {
           "key": "disarmed",
@@ -17887,7 +17933,7 @@
     {
       "name": "Ryan Romano",
       "kind": "character",
-      "summary": "CH130 (the happy ending): Ryan spends his last authored day quietly touring New Rome, then meets Livia at the Tete-de-chien promontory where his adventure began. He chooses to stay - not drive off into new adventures - because what he wants above the vast cosmos is to spend life with those he love and no longer be alone. He proposes for real; Livia agrees to a two-year betrothal before becoming Mrs. Romano, and they plan children (his Elixir Magenta will keep them from inheriting his powers). He seals a final kiss by freezing time and spending the last Black particles in his body on one last save (safely ascending them out of him), during which the Ultimate One shows him a montage of everyone's futures: 'THIS IS THE FUTURE YOU FOUGHT FOR... IT IS ALL UP TO YOU.' Ryan Romano has completed his Perfect Run - and he is happy at last.",
+      "summary": "",
       "facts": [
         {
           "key": "stays and proposes",
@@ -17969,7 +18015,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH130 (confirmed = Augustus; final fate): the finale explicitly names the defeated god-emperor 'Janus Augusti' - confirming Augustus and Janus Augusti are ONE man (Livia's father, Neptune's brother). Returned from the Purple World armless, catatonic, and broken, he sits in a wheelchair at the villa, sometimes apologizing to Livia and the world, mostly silent or sobbing - 'his ghost trapped in a broken, indestructible body.' Livia foresees he will die of cancer within two years, the death he'd have preferred to this half-life. She will care for him without pity until then. His lieutenants (Venus, Mars, Pluto, the Killer Seven, Hector Manada) rot in an undersea prison; his sister (Livia's aunt) is jailed and estranged for refusing rescue.",
+      "summary": "",
       "facts": [
         {
           "key": "identity confirmed",
@@ -17991,7 +18037,7 @@
     {
       "name": "Augustus",
       "kind": "character",
-      "summary": "CH130 (confirmed identity + final fate): the finale explicitly names him 'Janus Augusti,' confirming the long-open question that Augustus IS Janus Augusti - Livia's father and Neptune's brother, one man behind the god-emperor mask. Returned broken and armless from the Purple World, he lives out his days catatonic in a wheelchair at the villa, apologizing or sobbing, 'his ghost trapped in a broken, indestructible body.' Livia foresees cancer will kill him within two years - the death he'd have preferred to this powerless half-life - and cares for him without pity. In the epilogue montage his fallen Olympians (Venus, Mars, Pluto, the Killer Seven, Hector Manada) waste away in an undersea prison.",
+      "summary": "",
       "facts": [
         {
           "key": "= Janus Augusti",
@@ -18047,7 +18093,7 @@
         "Ryan Romano",
         "Zanbato",
         "The Augusti",
-        "Meta-Gang",
+        "The Meta-Gang",
         "Ghoul",
         "Len"
       ],
@@ -18065,7 +18111,7 @@
         "Len",
         "Ghoul",
         "Sarin",
-        "Adam"
+        "Big Fat Adam"
       ],
       "chapter": 4,
       "chronoOrder": 1004,
@@ -18108,7 +18154,7 @@
         "Ryan Romano",
         "Paulie",
         "Len",
-        "Meta-Gang",
+        "The Meta-Gang",
         "The Augusti"
       ],
       "chapter": 7,
@@ -18180,7 +18226,7 @@
       "entities": [
         "Ryan Romano",
         "Enrique Manada",
-        "Len Sabino",
+        "Len",
         "Wyvern",
         "Dynamis"
       ],
@@ -18195,8 +18241,8 @@
         "Ryan Romano",
         "Atom Cat",
         "Dynamis",
-        "Meta-Gang",
-        "Adam",
+        "The Meta-Gang",
+        "Big Fat Adam",
         "Psyshock"
       ],
       "chapter": 13,
@@ -18286,7 +18332,7 @@
         "Ryan Romano",
         "The Shroud",
         "Ghoul",
-        "Len Sabino",
+        "Len",
         "The Shroud Pact"
       ],
       "chapter": 19,
@@ -18297,7 +18343,7 @@
       "title": "Finding Len",
       "beat": "Flashback: young Len drinks the Blue Elixir to try to cure Bloodstream, gaining water-Genius powers and building a red bathysphere in a fugue. Bloodstream nearly strangles her for taking 'his' power but restrains himself; Ryan kisses her. In the present, Len hides in her deep-sea base, secretly eavesdropping on Ryan via chronoradio, longing for him yet afraid to face him.",
       "entities": [
-        "Len Sabino",
+        "Len",
         "Bloodstream",
         "Ryan Romano",
         "The Blue Elixir",
@@ -18315,7 +18361,7 @@
         "Luigi",
         "Pluto",
         "Vulcan",
-        "Len Sabino"
+        "Len"
       ],
       "chapter": 21,
       "chronoOrder": 1021,
@@ -18340,7 +18386,7 @@
       "beat": "Vulcan flies Ryan to Len's deep-sea commune. Len, gaunt and medicated, admits she avoided him for two years: his looping-warped mind reopens her trauma and she blames him for leading the Carnival to kill Bloodstream. She refuses his offered hand to leave together, choosing to keep building her undersea refuge for orphans. Ryan's main quest ends in heartbreak.",
       "entities": [
         "Ryan Romano",
-        "Len Sabino",
+        "Len",
         "Vulcan",
         "Len's Undersea Commune"
       ],
@@ -18440,9 +18486,9 @@
       "beat": "Cornered between Frank and the plushie, Ryan meets Meta leader Adam the Ogre, who reveals his cannibalism and carbon-alloy invulnerability. Adam kills Ryan by dangling a hostage teen Ryan can't abandon; Ryan detonates his belt and resets. In the new loop he confesses everything to Len over the Chronoradio, offering to vanish from her life. She finally answers: 'Meet me at the orphanage.'",
       "entities": [
         "Ryan Romano",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "Frank the Mad",
-        "Len Sabino",
+        "Len",
         "The Chronoradio"
       ],
       "chapter": 30,
@@ -18454,7 +18500,7 @@
       "beat": "At the orphanage, Ryan finally explains his power to Len in full: the Purple World, Schrodinger's-cat bilocation, that saving means suicide, that he may be 500-800 years old and has searched for her the whole time. Len, wracked with guilt, weeps for his loneliness but flinches from his touch, still unable to feel safe near him. She asks him to stay the night rather than keep to his old timing.",
       "entities": [
         "Ryan Romano",
-        "Len Sabino",
+        "Len",
         "The Purple World",
         "Ryan's Power (mechanics)",
         "The Orphanage"
@@ -18468,7 +18514,7 @@
       "beat": "Waking to the cat Eugene-Henry, Ryan reassures a frightened Len about the brain-car and hands over his A-bomb to earn her trust. He learns her origin (jailed by Dynamis for attacking a chemical plant, freed by Vulcan into drug-running) and briefs Shroud on the Mechron bunker. Shroud confirms Mechron is dead, begs him to keep the cache secret from the Augusti, and lets slip Leo is coming, meaning Ryan has ~3 weeks before Leo and Augustus clash.",
       "entities": [
         "Ryan Romano",
-        "Len Sabino",
+        "Len",
         "Eugene-Henry von Schrodinger",
         "The Shroud",
         "The Mechron Bunker",
@@ -18483,7 +18529,7 @@
       "beat": "Ryan finds Len in a medicated near-catatonic state but she suits up to defend the orphans. When Psyshock attacks, Ryan reveals his trump: Cancel, whose negation lets her permanently kill the body-jumper (and Mongrel and Mosquito) before he can transfer. Ryan and Len evacuate the orphans via the sewers; Len hints her Chronoradio navigation insight might finally help his power, and Shroud reveals his search for the teenage Giulia Costa.",
       "entities": [
         "Ryan Romano",
-        "Len Sabino",
+        "Len",
         "Psyshock",
         "Cancel",
         "The Hunt for Giulia Costa"
@@ -18498,9 +18544,9 @@
       "entities": [
         "Ryan Romano",
         "Vulcan",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "The Mechron Bunker",
-        "Len Sabino"
+        "Len"
       ],
       "chapter": 34,
       "chronoOrder": 1034,
@@ -18512,7 +18558,7 @@
       "entities": [
         "Ryan Romano",
         "Mathias Martel",
-        "Narcinia Veran",
+        "Narcinia",
         "The Shroud",
         "Giulia"
       ],
@@ -18527,7 +18573,7 @@
         "Ryan Romano",
         "Vulcan",
         "Livia Augusti",
-        "Narcinia Veran",
+        "Narcinia",
         "Enrique Manada"
       ],
       "chapter": 36,
@@ -18606,7 +18652,7 @@
       "beat": "Back in the present, Ryan cleans up the party wreck and learns Jamie proposed to Ki-jung and will reinvest his new Mercury division into Rust Town charity. Over the Chronoradio, Len (warming toward him, hinting he could visit the orphans) proposes the consciousness-transfer plan to let someone else remember across loops, but it needs Mechron's bunker tech. Ryan refuses to give the Augusti bunker access and accepts this good loop still won't be perfect.",
       "entities": [
         "Ryan Romano",
-        "Len Sabino",
+        "Len",
         "Jamie",
         "The Consciousness-Transfer Plan"
       ],
@@ -18651,7 +18697,7 @@
         "Ryan Romano",
         "Reload",
         "Wardrobe",
-        "Len Sabino",
+        "Len",
         "Mortimer",
         "Vulcan"
       ],
@@ -18680,7 +18726,7 @@
         "Ryan Romano",
         "Augustus",
         "Vulcan",
-        "Len Sabino",
+        "Len",
         "Big Fat Adam",
         "Alphonse Manada"
       ],
@@ -18697,7 +18743,7 @@
         "Ryan's Armor",
         "The Purple World",
         "The Founders of Homo Novus",
-        "Len Sabino"
+        "Len"
       ],
       "chapter": 49,
       "chronoOrder": 1049,
@@ -18709,7 +18755,7 @@
       "entities": [
         "Ryan Romano",
         "Alchemo",
-        "Doll",
+        "The Doll",
         "The Plushie",
         "The Purple World"
       ],
@@ -18724,8 +18770,8 @@
         "Ryan Romano",
         "Wyvern",
         "The Shroud",
-        "Schrodinger",
-        "Len Sabino",
+        "Eugene-Henry von Schrodinger",
+        "Len",
         "Vulcan"
       ],
       "chapter": 51,
@@ -18740,10 +18786,10 @@
         "Blackthorn",
         "The Panda",
         "Il Migliore",
-        "Len Sabino",
+        "Len",
         "Fortuna",
         "Livia Augusti",
-        "Schrodinger"
+        "Eugene-Henry von Schrodinger"
       ],
       "chapter": 52,
       "chronoOrder": 1052,
@@ -18771,7 +18817,7 @@
       "entities": [
         "Ryan Romano",
         "Psyshock",
-        "Len Sabino",
+        "Len",
         "Wardrobe",
         "Atom Cat",
         "The Panda",
@@ -18793,7 +18839,7 @@
         "The Panda",
         "Wardrobe",
         "Atom Cat",
-        "Len Sabino",
+        "Len",
         "The Shroud",
         "Rakshasa",
         "Livia Augusti",
@@ -18813,7 +18859,7 @@
         "Augustus",
         "Bliss",
         "Narcinia",
-        "Len Sabino",
+        "Len",
         "Cancel",
         "The Higher-Dimension Power Theory",
         "Leo Hargraves"
@@ -18904,7 +18950,7 @@
         "Atom Cat",
         "The Panda",
         "Wardrobe",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "Frank the Mad",
         "Acid Rain",
         "Sarin",
@@ -18924,14 +18970,14 @@
       "beat": "In the field shelter, Dr. Stitch (Carnival medic) and Wardrobe barely save the maimed Shroud with engineered bacteria. Ace portals Ryan and the Panda into Mechron's bunker, where Fallout and Dynamis security fight door-to-door through Psyshock's suicide-bomber thralls and human shields. Blackthorn (fighting personally, vine-mapping the halls) locates Adam and Psyshock at the brain-database command center. Cornered, Adam smashes a Mechron-made Black Elixir, which acts even in stopped time and, unable to assimilate him, devours him alive, its alien voice begging Ryan to 'open the gate' and 'send me to the Black' while canceling Fallout's nuclear ray, before dissolving Adam to nothing. Fallout then out-blasts the forcefield and vaporizes the brain-database; Blackthorn's poison-rose squid gasses Psyshock unconscious with aconitine, disabling his death-triggered mind-transfer. Ryan freezes time to disarm suicide belts and spare thralls, saving many but not all. The Meta-Gang is destroyed. Leo admits he knew of the bunker; the group heads to the Manada manor to arrest Don Hector. Len radios: safe under the sea, she has the braintech.",
       "entities": [
         "Ryan Romano",
-        "Dr. Stitch",
+        "Stitch",
         "Wardrobe",
         "The Shroud",
         "Ace",
         "The Panda",
         "Alphonse Manada",
         "Blackthorn",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "The Black Elixir",
         "Psyshock",
         "Leo Hargraves",
@@ -18988,7 +19034,7 @@
         "The Brain-Transfer Project",
         "The Purple World",
         "The Blood Beacon",
-        "Eugène-Henry",
+        "Eugene-Henry von Schrodinger",
         "The Alchemist",
         "Nora Moore",
         "Wardrobe",
@@ -19054,7 +19100,7 @@
         "Aunt Pluto",
         "The Vamp",
         "Night Terror",
-        "Eugène-Henry",
+        "Eugene-Henry von Schrodinger",
         "Len",
         "Monaco",
         "The Augusti"
@@ -19073,7 +19119,7 @@
         "Aunt Pluto",
         "Len",
         "Little Sarah",
-        "Eugène-Henry",
+        "Eugene-Henry von Schrodinger",
         "Livia Augusti",
         "Narcinia",
         "The Brain-Transfer Project",
@@ -19103,7 +19149,7 @@
         "The Purple World",
         "The Hitchhiker",
         "Livia Augusti",
-        "Eugène-Henry"
+        "Eugene-Henry von Schrodinger"
       ],
       "chapter": 70,
       "chronoOrder": 1070,
@@ -19441,7 +19487,7 @@
         "The Knockoff Elixir",
         "Bloodstream",
         "Wyvern",
-        "Eugène-Henry",
+        "Eugene-Henry von Schrodinger",
         "Len"
       ],
       "chapter": 81,
@@ -19769,7 +19815,7 @@
         "Henriette",
         "Len",
         "Augustus",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "Leo Hargraves",
         "The Carnival",
         "Stitch",
@@ -19821,7 +19867,7 @@
         "Psyshock",
         "Mosquito",
         "Mongrel",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "The Meta-Gang",
         "Mechron",
         "Mathias Martel",
@@ -19847,7 +19893,7 @@
         "The Reptilian",
         "The Land",
         "Gemini",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "Sarin",
         "Frank the Mad",
         "Ink Machine",
@@ -19863,7 +19909,7 @@
       "entities": [
         "Ryan Romano",
         "Livia Augusti",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "Frank the Mad",
         "Sarin",
         "The Panda",
@@ -20388,7 +20434,7 @@
       "entities": [
         "Ryan Romano",
         "The Perfect Run",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "Livia Augusti",
         "Fortuna",
         "Felix",
@@ -20414,7 +20460,7 @@
       "beat": "CH121 'Presidential Debate': Ryan duels Adam the Ogre alone in the vat chamber. Adam takes a Rust Town hostage boy; Ryan shoots him free and blinds Adam with depleted-uranium rounds. The fight exposes Adam's two powers: a Violet time-sense (he feels Ryan's freezes and shields his vitals, limiting Ryan to ~8-10 usable seconds) and a pocket dimension in his gullet (bleeds no blood; produces grenades, a flail, a crossbow, and a Blue Elixir syringe). Bolted in waist and leg, Ryan feeds Adam his own triggered A-bomb ('Filibuster!'); the pocket dimension contains most of the blast but flames cook Adam through the uranium bullet-holes, killing him. The Panda (whose prior-loop fight had revealed Adam's internal weakness) patches Ryan up as Livia holds his hand. The raid is a total success: zero casualties, every hostage saved, captive Psychos moved to underwater habitats. Psyshock is handed to Cancel; the bunker will be occupied and destroyed. Next: Dynamis, then the Augusti - after they celebrate.",
       "entities": [
         "Ryan Romano",
-        "Adam the Ogre",
+        "Big Fat Adam",
         "The Perfect Run",
         "The Panda",
         "Livia Augusti",
