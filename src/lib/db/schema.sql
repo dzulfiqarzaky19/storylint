@@ -214,11 +214,17 @@ CREATE TABLE entry_facets (
 -- chapters + entries so both FKs resolve. Live-DB path: plot-plotlines-expand.mts.
 --
 -- chapter_plotlines: the per-chapter tag / neglect spine. `summary` = the per-beat
--- note (what the chapter did to the arc); '' for a bare tag.
+-- note (what the chapter did to the arc); '' for a bare tag. chrono_order/chronology
+-- carry STORY-TIME position (distinct from the chapter's READING position) so a
+-- plotline's beats can be sorted by when they actually happen — flashbacks and loop
+-- stories read out of chronological order. chrono_order = sortable rank (0 = unset,
+-- falls back to chapter order); chronology = human label (e.g. "2020-05-08 (loop 1)").
 CREATE TABLE chapter_plotlines (
   chapter_id   text NOT NULL REFERENCES chapters(id) ON DELETE CASCADE,
   plotline_id  text NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
   summary      text NOT NULL DEFAULT '',
+  chrono_order integer NOT NULL DEFAULT 0,
+  chronology   text NOT NULL DEFAULT '',
   PRIMARY KEY (chapter_id, plotline_id)
 );
 

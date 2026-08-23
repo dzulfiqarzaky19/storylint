@@ -27,6 +27,12 @@ export interface PlotBeat {
   warn: string | null;
   resolves: boolean;
   abandons: boolean;
+  /** story-time rank (0 = unset, falls back to chapter order). Lower = earlier
+   * in-story. Distinct from chapterNumber (reading order): a flashback beat reads
+   * late but has a low chronoOrder. */
+  chronoOrder: number;
+  /** human story-time label for this beat (e.g. "~2005 flashback"), or "". */
+  chronology: string;
 }
 
 /** One plotline row of the grid (a lane, the Y axis). */
@@ -66,6 +72,8 @@ interface BeatRow {
   plotlineId: string;
   chapterNumber: number;
   summary: string;
+  chronoOrder: number;
+  chronology: string;
 }
 
 /**
@@ -116,7 +124,9 @@ export async function loadPlotProgression(
   const beatRows = await rows<BeatRow>(
     `SELECT cp.plotline_id AS "plotlineId",
             c.number       AS "chapterNumber",
-            cp.summary     AS summary
+            cp.summary     AS summary,
+            cp.chrono_order AS "chronoOrder",
+            cp.chronology  AS chronology
        FROM chapter_plotlines cp
        JOIN chapters c ON c.id = cp.chapter_id AND c.book_id = $1
       ORDER BY cp.plotline_id, c.number`,
@@ -142,14 +152,19 @@ export const LONG_GAP = 3;
  * the visible beat text from a live canon-break note, and a trailing
  * " \u2691resolves" / " \u2691abandons" (flag) marks the payoff beat that caps
  * the arc. The visible `summary` is the text with every marker stripped. */
-export function parseBeat(chapterNumber: number, raw: string): PlotBeat {
+export function parseBeat(
+  chapterNumber: number,
+  raw: string,
+  chronoOrder = 0,
+  chronology = "",
+): PlotBeat {
   let rest = raw;
   const resolves = /\u2691resolves$/.test(rest);
   const abandons = /\u2691abandons$/.test(rest);
   rest = rest.replace(/\s*\u2691(resolves|abandons)$/, "");
   const [text, ...warnParts] = rest.split("\u26a0");
   const warn = warnParts.length > 0 ? warnParts.join("\u26a0").trim() : null;
-  return { chapterNumber, summary: (text ?? "").trim(), warn, resolves, abandons };
+  return { chapterNumber, summary: (text ?? "").trim(), warn, resolves, abandons, chronoOrder, chronology };
 }
 
 /** Derive an arc's end-state from its seeded tag (the plotline entry's summary
@@ -182,7 +197,7 @@ export function assemble(
   const beatsByLane = new Map<string, PlotBeat[]>();
   for (const b of beatRows) {
     const list = beatsByLane.get(b.plotlineId) ?? [];
-    list.push(parseBeat(b.chapterNumber, b.summary));
+    list.push(parseBeat(b.chapterNumber, b.summary, b.chronoOrder, b.chronology));
     beatsByLane.set(b.plotlineId, list);
   }
 

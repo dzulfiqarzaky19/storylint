@@ -17,6 +17,8 @@ const beat = (plotlineId: string, chapterNumber: number) => ({
   plotlineId,
   chapterNumber,
   summary: `beat ${plotlineId} ch${chapterNumber}`,
+  chronoOrder: 0,
+  chronology: "",
 });
 
 describe("assemble — empty data never throws", () => {
@@ -105,7 +107,7 @@ describe("assemble — arc state, resolution, completion", () => {
     const p = assemble(
       [ch(1)],
       [lane("a", null, "resolved:1")],
-      [{ plotlineId: "a", chapterNumber: 1, summary: "she swears the oath  \u26a0 timeline clash \u2691resolves" }],
+      [{ plotlineId: "a", chapterNumber: 1, summary: "she swears the oath  \u26a0 timeline clash \u2691resolves", chronoOrder: 0, chronology: "" }],
     );
     const b = p.lanes[0]!.beats[0]!;
     expect(b.summary).toBe("she swears the oath");

@@ -23,6 +23,7 @@
       ]
     }
   ],
+  "finished": true,
   "wikiObservations": [
     {
       "name": "Ryan Romano",
@@ -18012,7 +18013,7 @@
   ],
   "plotObservations": [
     {
-      "title": "The endless delivery loop",
+      "title": "The Loop and the Perfect Run",
       "beat": "Ryan keeps dying delivering a briefcase to Renesco; on the fourth loop he rams the assassin Ghoul with his Plymouth, beats him with a bat, bribes Private Security, and completes the delivery. His only motive: he is bored.",
       "entities": [
         "Ryan Romano",
@@ -18020,10 +18021,12 @@
         "Ghoul",
         "Private Security"
       ],
-      "chapter": 1
+      "chapter": 1,
+      "chronoOrder": 1001,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Competing recruitment: the branching paths",
+      "title": "Finding Len",
       "beat": "Wyvern of Il Migliore recruits Ryan and offers to help find Len; then Vulcan of the Augusti counter-recruits him to the Bakuto casino. Ryan realizes multiple faction routes have opened, but his true quest is finding Len.",
       "entities": [
         "Ryan Romano",
@@ -18033,10 +18036,12 @@
         "Il Migliore",
         "The Augusti"
       ],
-      "chapter": 2
+      "chapter": 2,
+      "chronoOrder": 1002,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Joining the Augusti to find Len",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "At the Bakuto, Zanbato recruits Ryan with a favor-for-favor deal: help crush the Meta-Gang and the Augusti will help find Len. Zanbato warns Ghoul has been busted out of Private Security and will hunt Ryan.",
       "entities": [
         "Ryan Romano",
@@ -18046,10 +18051,12 @@
         "Ghoul",
         "Len"
       ],
-      "chapter": 3
+      "chapter": 3,
+      "chronoOrder": 1003,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Harbor ambush and the Len breakthrough",
+      "title": "Finding Len",
       "beat": "Guarding an Augusti supply run at the old harbor, Ryan sees Len's crimson bathyspheres surface and realizes she is truly in New Rome. Ghoul and Sarin (Blower) ambush the shipment; Ryan fights them off solo, learning the Meta answer to a leader named Adam.",
       "entities": [
         "Ryan Romano",
@@ -18060,10 +18067,12 @@
         "Sarin",
         "Adam"
       ],
-      "chapter": 4
+      "chapter": 4,
+      "chronoOrder": 1004,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Battle won, then killed in the night",
+      "title": "The Loop and the Perfect Run",
       "beat": "With Zanbato's help Ryan defeats Ghoul and Sarin as Private Security fires on everyone; Zanbato reveals his real name is Jamie and promises to ask Vulcan about Len's tech. Back at his hotel, Ryan is killed by a firebomb rigged to his door, forcing a reload.",
       "entities": [
         "Ryan Romano",
@@ -18073,10 +18082,12 @@
         "Private Security",
         "Len"
       ],
-      "chapter": 5
+      "chapter": 5,
+      "chronoOrder": 1005,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The divergence that breaks the Augusti path",
+      "title": "Finding Len",
       "beat": "Reloading, Ryan changes his routine (shoots Ghoul, switches hotels, warns Wyvern). The changes cost him: Vulcan never calls, the Augusti path closes, and he meets the mysterious crimson-gowned woman at the Bakuto. He resolves to chase Len's tech through Rust Town's black market instead.",
       "entities": [
         "Ryan Romano",
@@ -18086,10 +18097,12 @@
         "Mystery Woman in Crimson",
         "Len"
       ],
-      "chapter": 6
+      "chapter": 6,
+      "chronoOrder": 1006,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Rust Town, Paulie, and the Perfect Run vow",
+      "title": "Finding Len",
       "beat": "Ryan enters walled Rust Town, finds Paulie who confirms Len operated there as the Underdiver before Private Security caught her and the Augusti broke her out. Paulie begs Ryan to destroy the child-abducting Meta-Gang; Ryan vows to grant it in his Perfect Run, then nukes a Mosquito Psycho for crushing his Plymouth.",
       "entities": [
         "Ryan Romano",
@@ -18098,10 +18111,12 @@
         "Meta-Gang",
         "The Augusti"
       ],
-      "chapter": 7
+      "chapter": 7,
+      "chronoOrder": 1007,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Past fragment: the Wonderbox and Bloodstream",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "Flashback to teen Ryan and Len in ruined Venezia finding an Alchemist Wonderbox with three Elixirs and the origin letter. Len's father Bloodstream, a blood-Psycho who calls Ryan 'Cesare,' seizes and drinks the Red Elixir; Ryan secretly pockets the Blue and Violet, resolving they must escape him.",
       "entities": [
         "Ryan Romano",
@@ -18110,10 +18125,12 @@
         "The Alchemist",
         "Elixirs"
       ],
-      "chapter": 8
+      "chapter": 8,
+      "chronoOrder": 500,
+      "chronology": "Ryan & Len's teens: the Wonderbox and the three Elixirs in ruined Venezia"
     },
     {
-      "title": "Back on the Augusti path and the Made Men's table",
+      "title": "The Augusti and Augustus",
       "beat": "Ryan re-runs the loop cleanly, keeps the Augusti path, and detects an invisible flying watcher (possibly Geist). Jamie insists Ryan stay with his Made Men crew, introducing Ki-jung (Chitter) and Lanka, and promises to introduce him to Vulcan to locate Len.",
       "entities": [
         "Ryan Romano",
@@ -18124,10 +18141,12 @@
         "Len",
         "Geist"
       ],
-      "chapter": 9
+      "chapter": 9,
+      "chronoOrder": 1009,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Meeting Vulcan and the studio job",
+      "title": "Vulcan and the Saturn Armor",
       "beat": "At Vulcan's foundry Ryan meets Pluto (Augustus's death-touch sister) hunting the vigilante killing Made Men, and impresses capo Vulcan, a bomb-loving girl Genius who dangles access to Len. She assigns Ryan's crew to trash Star Studios and sabotage 'Wyvern's Flight II'.",
       "entities": [
         "Ryan Romano",
@@ -18137,10 +18156,12 @@
         "Len",
         "The Killer Seven"
       ],
-      "chapter": 10
+      "chapter": 10,
+      "chronoOrder": 1010,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The studio raid and the assassin's third strike",
+      "title": "The Loop and the Perfect Run",
       "beat": "The crew floods Star Studios with Chitter's rats and flees without a fight. Back home, the invisible glass-controlling assassin detonates the house, killing Ki-jung and Lanka, then beheads Ryan with a storm of glass shards, resetting the loop. Ryan resolves to hunt the killer before Len.",
       "entities": [
         "Ryan Romano",
@@ -18149,10 +18170,12 @@
         "Lanka",
         "Atom Cat"
       ],
-      "chapter": 11
+      "chapter": 11,
+      "chronoOrder": 1011,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Blackthorn's contract and Len's name",
+      "title": "The Dynamis Corporation",
       "beat": "Ryan takes Wyvern's referral to Il Migliore and meets Enrique Manada (Blackthorn), who reveals Len's full identity, her Dynamis-linked custody, and offers a five-year contract, clean slate, and reunion in exchange for good behavior and Elixir research, plus a rebrand to 'Timelord'.",
       "entities": [
         "Ryan Romano",
@@ -18161,10 +18184,12 @@
         "Wyvern",
         "Dynamis"
       ],
-      "chapter": 12
+      "chapter": 12,
+      "chronoOrder": 1012,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The corporate seminar and Atom Cat",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan endures a soul-crushing Il Migliore internship, plants trackers to hack Dynamis's systems, and befriends Atom Cat, learning Adam's Meta-Gang is now disciplined with lieutenants Psyshock, Acid Rain and Frank the Mad. The two ditch the seminar to hunt the Meta.",
       "entities": [
         "Ryan Romano",
@@ -18174,10 +18199,12 @@
         "Adam",
         "Psyshock"
       ],
-      "chapter": 13
+      "chapter": 13,
+      "chronoOrder": 1013,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The orphanage standoff",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan and Atom Cat find a Rust Town orphanage-shelter run by children under a hidden 'Mama.' Psyshock, Mosquito and Mongrel arrive to abduct kids small enough for a bunker; Psyshock recognizes Ryan as 'Cesare.' The standoff erupts and Vulcan crashes in to kill Ryan for spurning her.",
       "entities": [
         "Ryan Romano",
@@ -18188,10 +18215,12 @@
         "Vulcan",
         "Sarah"
       ],
-      "chapter": 14
+      "chapter": 14,
+      "chronoOrder": 1014,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Saving the orphanage and the bunker clue",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan kills Psyshock, Atom Cat kills Mongrel, and Wyvern arrives to swat Mosquito and capture Vulcan (revealed as Jasmine; Wyvern is Laura). Dying Mosquito reveals Adam seeks a robot-guarded bunker below the Junkyard needing child-sized entrants. Ryan also detects a rival hacker's backdoor in Dynamis.",
       "entities": [
         "Ryan Romano",
@@ -18202,10 +18231,12 @@
         "Mosquito",
         "The Junkyard Bunker"
       ],
-      "chapter": 15
+      "chapter": 15,
+      "chronoOrder": 1015,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Vulcan released and the insider theory",
+      "title": "The Dynamis Corporation",
       "beat": "At the hospital Enrique reveals Hector orders Vulcan freed to avoid war with Augustus, enraging Wyvern, who reveals Vulcan is Jasmine, her ex-partner turned defector. Atom Cat argues an insider in Dynamis is arming the Meta with knock-off Elixirs; then word comes Sarin massacred Zanbato/Jamie and his crew at the docks.",
       "entities": [
         "Ryan Romano",
@@ -18215,10 +18246,12 @@
         "Atom Cat",
         "Zanbato"
       ],
-      "chapter": 16
+      "chapter": 16,
+      "chronoOrder": 1016,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Confronting the Shroud",
+      "title": "The Carnival, the Shroud, and Narcinia",
       "beat": "Ryan tracks the hacker to a hidden server safehouse in the ship graveyard and unmasks the Shroud, a Carnival glass-Genome who killed him twice. Shroud explains he targets the Augusti's Bliss empire and Meta, offers cooperation for a non-lethal path, knows where Len is, and coldly suggests Len never contacted Ryan by choice.",
       "entities": [
         "Ryan Romano",
@@ -18227,10 +18260,12 @@
         "Len",
         "Bliss"
       ],
-      "chapter": 17
+      "chapter": 17,
+      "chronoOrder": 1017,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Acid Rain and Len's return",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "A Dynamis DNA tracker leads the Meta to the safehouse: Psyshock (somehow revived) and Acid Rain ambush them under an acid downpour. Acid Rain, sharing Ryan's power source, overpowers him. As he lies dying, Len appears in bronze diver-armor to save him, but Acid Rain's grenade-rain kills them both, ending the loop. Ryan resets to May 8th and sucker-punches Ghoul anew.",
       "entities": [
         "Ryan Romano",
@@ -18240,10 +18275,12 @@
         "Len",
         "Ghoul"
       ],
-      "chapter": 18
+      "chapter": 18,
+      "chronoOrder": 1018,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The pact with the Shroud",
+      "title": "The Carnival, the Shroud, and Narcinia",
       "beat": "In a fresh loop Ryan brings Ghoul's living skull to the Shroud, torturing intel from Ghoul with a Hercules Elixir: the Junkyard bunker is robot-guarded and Adam sees it as 'the future,' and Psyshock secretly runs the Meta's Elixir supply. Shroud reveals Len is the Underdiver in the Vavilov basin, deduces Ryan peeks across timelines, and strikes a pact: no Augusti assassinations for three weeks while Ryan destroys the Ischia Bliss lab.",
       "entities": [
         "Ryan Romano",
@@ -18252,10 +18289,12 @@
         "Len Sabino",
         "The Shroud Pact"
       ],
-      "chapter": 19
+      "chapter": 19,
+      "chronoOrder": 1019,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Len's origin under the sea",
+      "title": "Finding Len",
       "beat": "Flashback: young Len drinks the Blue Elixir to try to cure Bloodstream, gaining water-Genius powers and building a red bathysphere in a fugue. Bloodstream nearly strangles her for taking 'his' power but restrains himself; Ryan kisses her. In the present, Len hides in her deep-sea base, secretly eavesdropping on Ryan via chronoradio, longing for him yet afraid to face him.",
       "entities": [
         "Len Sabino",
@@ -18264,10 +18303,12 @@
         "The Blue Elixir",
         "The Underdiver's Base"
       ],
-      "chapter": 20
+      "chapter": 20,
+      "chronoOrder": 510,
+      "chronology": "Shortly after: young Len drinks the Blue Elixir to try to cure Bloodstream"
     },
     {
-      "title": "Pluto's mark and Vulcan's offer",
+      "title": "The Augusti and Augustus",
       "beat": "On the Augusti path, Ryan finally beats Luigi's truth-telling by ambushing him with a hockey stick beforehand. He meets Pluto, Augustus's sister, who senses he is 'marked' across loops and threatens death if he disobeys. Vulcan, warmed by Ryan's engineering insight and a gifted A-bomb, offers to arrange a meeting with the Underdiver, and Shroud confirms the orphanage was saved.",
       "entities": [
         "Ryan Romano",
@@ -18276,10 +18317,12 @@
         "Vulcan",
         "Len Sabino"
       ],
-      "chapter": 21
+      "chapter": 21,
+      "chronoOrder": 1021,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Pluto's inspection and the brain-car",
+      "title": "The Augusti and Augustus",
       "beat": "Pluto surprise-inspects Jamie's crew with Cancel (Greta) and Sparrow. Cancel nullifies Ryan's time-stop, and Pluto's death-sense reads him as 300+ years old. Cornered, Ryan sells a cover lie that he hops parallel universes and fuses with his other selves; his synthetic brain-driven car is exposed but he passes on probation, assigned to Vulcan, who offers a lavish contract and a ride to Len.",
       "entities": [
         "Ryan Romano",
@@ -18288,10 +18331,12 @@
         "Vulcan",
         "The Brain-Car"
       ],
-      "chapter": 22
+      "chapter": 22,
+      "chronoOrder": 1022,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The reunion with Len",
+      "title": "Finding Len",
       "beat": "Vulcan flies Ryan to Len's deep-sea commune. Len, gaunt and medicated, admits she avoided him for two years: his looping-warped mind reopens her trauma and she blames him for leading the Carnival to kill Bloodstream. She refuses his offered hand to leave together, choosing to keep building her undersea refuge for orphans. Ryan's main quest ends in heartbreak.",
       "entities": [
         "Ryan Romano",
@@ -18299,10 +18344,12 @@
         "Vulcan",
         "Len's Undersea Commune"
       ],
-      "chapter": 23
+      "chapter": 23,
+      "chronoOrder": 1023,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Aftermath and the duplicator reveal",
+      "title": "The Carnival, the Shroud, and Narcinia",
       "beat": "Hollowed by the rejection, Ryan is comforted by Jamie, who invites him to a Genome party (warning him off Vamp and Livia). The Shroud ambushes Ryan to report: Psyshock is a duplicator like Bloodstream, and Ryan must reach drug-boss Bacchus (Andreas Torque) to infiltrate the Bliss operation. Ryan recommits to his side quests: clear the Meta and destroy the superlab.",
       "entities": [
         "Ryan Romano",
@@ -18311,10 +18358,12 @@
         "Psyshock's Duplication",
         "Bacchus"
       ],
-      "chapter": 24
+      "chapter": 24,
+      "chronoOrder": 1024,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Vulcan's assistant and the Killer Seven",
+      "title": "Vulcan and the Saturn Armor",
       "beat": "Working as Vulcan's weapons-review assistant, Ryan deduces her Genius is narrow 'weapon creation' and hears her bitter history as Wyvern's sidelined 'brain.' He meets the Killer Seven (Mortimer, Sparrow, Greta/Cancel, and Fortuna the lucky), empties his entire arsenal at Fortuna to no effect, then bypasses her luck in frozen time to cut her hair as a trophy. Vulcan tempts him with power-enhancing armor and orders an assault on the Meta-Gang.",
       "entities": [
         "Ryan Romano",
@@ -18323,10 +18372,12 @@
         "The Killer Seven",
         "Weapon Creation"
       ],
-      "chapter": 25
+      "chapter": 25,
+      "chronoOrder": 1025,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Rust Town assault turns into a massacre",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan and Fortuna clear the Junkyard's outskirts in a chaotic firefight, but the Meta's true forces spring the trap: the Land collapses all of Rust Town with terrain-fusion geokinesis, a Mechron warmech piloted by Psyshock bombards the district, and Acid Rain counterattacks. The Augusti force is annihilated, Ryan's car destroyed again, and Psyshock corners him. Ryan chooses to reset (loop ~9), now knowing where Len is and that the Meta hold Mechron tech.",
       "entities": [
         "Ryan Romano",
@@ -18336,10 +18387,12 @@
         "Mechron's Warmech",
         "Acid Rain"
       ],
-      "chapter": 26
+      "chapter": 26,
+      "chronoOrder": 1026,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The crimes of Augustus",
+      "title": "The Augusti and Augustus",
       "beat": "A past fragment: Leo the Living Sun bids farewell to the Costa refugee farm as the Carnival heads north on Pythia's counsel. That night Jupiter Augustus, an invulnerable ivory god-warlord, massacres the entire community, killing Bruno Costa to erase the 'paradox' of a blade that can cut anything and butchering Julie in her garden. In the barn's hidden cellar he finds their toddler Giulia, a second-generation Genome, and spares her because her eyes recall his own daughter.",
       "entities": [
         "Augustus",
@@ -18348,10 +18401,12 @@
         "Giulia",
         "Second-Generation Genomes"
       ],
-      "chapter": 27
+      "chapter": 27,
+      "chronoOrder": 400,
+      "chronology": "~15+ years pre-loop: Augustus massacres the Costa farm; toddler Narcinia spared"
     },
     {
-      "title": "The suicide run into the Junkyard",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Fed up after the Meta wrecked his car three times and abduct children, Ryan mounts a Rampage-fueled one-man suicide raid: he trucks Ghoul, drives into the Junkyard chained to a facehugger missile that endlessly chases Acid Rain, kills Mosquito and Mongrel, and breaches the Mechron blast door. Inside he discovers the 'bunker' is a Mechron weapons facility, not a shelter.",
       "entities": [
         "Ryan Romano",
@@ -18361,10 +18416,12 @@
         "Rampage",
         "The Mechron Bunker"
       ],
-      "chapter": 28
+      "chapter": 28,
+      "chronoOrder": 1028,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The rampage and the plushie unleashed",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan slaughters a room of Meta Psychos, unleashing his uncontrollable killer-rabbit plushie when overwhelmed. Descending deeper he reads the facility map (labs, robot production, orbital comms) and grasps the Meta's plan: seize Mechron's dormant robot army to conquer New Rome. He kills Psyshock, only to learn Psyshock reincarnates into brainwired thralls, then confronts the metal giant Frank the Mad.",
       "entities": [
         "Ryan Romano",
@@ -18374,10 +18431,12 @@
         "Frank the Mad",
         "The Mechron Bunker"
       ],
-      "chapter": 29
+      "chapter": 29,
+      "chronoOrder": 1029,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Bites the Dust and Len's answer",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Cornered between Frank and the plushie, Ryan meets Meta leader Adam the Ogre, who reveals his cannibalism and carbon-alloy invulnerability. Adam kills Ryan by dangling a hostage teen Ryan can't abandon; Ryan detonates his belt and resets. In the new loop he confesses everything to Len over the Chronoradio, offering to vanish from her life. She finally answers: 'Meet me at the orphanage.'",
       "entities": [
         "Ryan Romano",
@@ -18386,10 +18445,12 @@
         "Len Sabino",
         "The Chronoradio"
       ],
-      "chapter": 30
+      "chapter": 30,
+      "chronoOrder": 1030,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Knight of Faith: Ryan bares his soul",
+      "title": "Finding Len",
       "beat": "At the orphanage, Ryan finally explains his power to Len in full: the Purple World, Schrodinger's-cat bilocation, that saving means suicide, that he may be 500-800 years old and has searched for her the whole time. Len, wracked with guilt, weeps for his loneliness but flinches from his touch, still unable to feel safe near him. She asks him to stay the night rather than keep to his old timing.",
       "entities": [
         "Ryan Romano",
@@ -18398,10 +18459,12 @@
         "Ryan's Power (mechanics)",
         "The Orphanage"
       ],
-      "chapter": 31
+      "chapter": 31,
+      "chronoOrder": 1031,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Change of plans and the Meta's true goal",
+      "title": "Finding Len",
       "beat": "Waking to the cat Eugene-Henry, Ryan reassures a frightened Len about the brain-car and hands over his A-bomb to earn her trust. He learns her origin (jailed by Dynamis for attacking a chemical plant, freed by Vulcan into drug-running) and briefs Shroud on the Mechron bunker. Shroud confirms Mechron is dead, begs him to keep the cache secret from the Augusti, and lets slip Leo is coming, meaning Ryan has ~3 weeks before Leo and Augustus clash.",
       "entities": [
         "Ryan Romano",
@@ -18411,10 +18474,12 @@
         "The Mechron Bunker",
         "Mechron's Death"
       ],
-      "chapter": 32
+      "chapter": 32,
+      "chronoOrder": 1032,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Black Swan: killing Psyshock for good",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan finds Len in a medicated near-catatonic state but she suits up to defend the orphans. When Psyshock attacks, Ryan reveals his trump: Cancel, whose negation lets her permanently kill the body-jumper (and Mongrel and Mosquito) before he can transfer. Ryan and Len evacuate the orphans via the sewers; Len hints her Chronoradio navigation insight might finally help his power, and Shroud reveals his search for the teenage Giulia Costa.",
       "entities": [
         "Ryan Romano",
@@ -18423,10 +18488,12 @@
         "Cancel",
         "The Hunt for Giulia Costa"
       ],
-      "chapter": 33
+      "chapter": 33,
+      "chronoOrder": 1033,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Hit and Run: the Meta vanish",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "With Psyshock dead for good (his death freed his brainwashed thralls citywide), Ryan's optimized Augusti loop sails smoothly until the Meta torch the Junkyard and flee north. Ryan alone grasps the trick: they're slipping away by the bunker's hidden sea route to keep the Mechron cache secret. Torn between committing to a Perfect Run (saving hundreds) and preserving his fragile real progress with Len, he's left agonizing over mutually exclusive consequences.",
       "entities": [
         "Ryan Romano",
@@ -18435,10 +18502,12 @@
         "The Mechron Bunker",
         "Len Sabino"
       ],
-      "chapter": 34
+      "chapter": 34,
+      "chronoOrder": 1034,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Pre-Party: the guests assemble",
+      "title": "The Carnival, the Shroud, and Narcinia",
       "beat": "At Jamie's Genome house party Ryan meets Fortuna's new boyfriend Mathias Martel, whom he recognizes as the Shroud in civilian guise, and her sweet adopted sister Narcinia 'Ceres' Veran, who makes animals from her blood. Ryan and Shroud both realize Narcinia is the lost Giulia Costa, Augustus's stolen hostage; Shroud confirms 'it's her' with murder in his eyes. Talk surfaces Felix's estrangement and the mysterious 'Livia.'",
       "entities": [
         "Ryan Romano",
@@ -18447,10 +18516,12 @@
         "The Shroud",
         "Giulia"
       ],
-      "chapter": 35
+      "chapter": 35,
+      "chronoOrder": 1035,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Color Rave and the wager",
+      "title": "Ryan and Livia",
       "beat": "Ryan DJs the rave (brain-in-a-jar, Narcinia's mushrooms, goat fights) as Vulcan reports the Meta escaped by Mechron submarine after Dynamis killstole them. He learns Narcinia works Bacchus's Ischia Bliss op, and meets Livia Augusti/Minerva, Augustus's reality-seeing daughter to whom he is uniquely invisible. On a bet to show her something no timeline predicts, Ryan and Vulcan raid Dynamis HQ, clashing with Enrique on the twentieth floor.",
       "entities": [
         "Ryan Romano",
@@ -18459,10 +18530,12 @@
         "Narcinia Veran",
         "Enrique Manada"
       ],
-      "chapter": 36
+      "chapter": 36,
+      "chronoOrder": 1036,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The War of the Suit",
+      "title": "Vulcan and the Saturn Armor",
       "beat": "Vulcan crashes her stealth mech into the twentieth floor of Dynamis HQ so Ryan can steal a purple cashmere suit. Confronted by Enrique/Blackthorn and his squad, Ryan calmly strips and dresses in the suit mid-standoff, short-circuiting Enrique's mind with the sheer stupidity of it. A running gunfight erupts (Enrique revealed as a growth-boosting plant-controller) before the pair escape by sea, winning Livia's bet. Vulcan takes Ryan home as her lover.",
       "entities": [
         "Ryan Romano",
@@ -18470,10 +18543,12 @@
         "Enrique Manada",
         "Livia Augusti"
       ],
-      "chapter": 37
+      "chapter": 37,
+      "chronoOrder": 1037,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Olympians' Gauntlet",
+      "title": "The Augusti and Augustus",
       "beat": "After a night with Vulcan (real name Jasmine Sharif), who probes the haunted plushie and shares her Red Flux/Red Dimension theory, the pair fly to Mount Augustus. Ryan meets the Augusti high command, the Olympians, and their brutal lightning-emperor leader Augustus/Janus, summoned by Livia. He sees Narcinia among Augustus's family and the priest Bacchus, who claims to have seen God through Bliss.",
       "entities": [
         "Ryan Romano",
@@ -18482,10 +18557,12 @@
         "Livia Augusti",
         "Bacchus"
       ],
-      "chapter": 38
+      "chapter": 38,
+      "chronoOrder": 1038,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Court of the Lightning King",
+      "title": "The Augusti and Augustus",
       "beat": "Augustus's court convenes. Mercury's necromancer exposes Ryan's true name (Cesare Sabino, Bloodstream's 'son'); Livia vouches for him and Pluto keeps her mark on him, sparing his life. Augustus orders the whole Meta-Gang exterminated, promotes Jamie/Zanbato to replace the retiring Mercury, and tasks Vulcan to harden Ischia's Bliss sanctuary. Livia privately admits Ryan is the one blind spot in her reality-sight, and warns him off her own ambitions ('Here be dragons').",
       "entities": [
         "Ryan Romano",
@@ -18494,10 +18571,12 @@
         "Jamie",
         "Pluto"
       ],
-      "chapter": 39
+      "chapter": 39,
+      "chronoOrder": 1039,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Mechron's Last Stand",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "Flashback: at the final battle of Sarajevo, Leo Hargraves rallies 500+ Genomes of the Anti-Mechron Front, networked by Pythia, and drops Mechron's forcefield with a supernova beam. Amid the machine war Mechron launches his twin orbital weapons; the Cossack downs the Kujata but a Mechron-made gravity-controlling Red dragon delays Leo and the Bahamut escapes to orbit. Pythia redirects Leo to the fortress, warning something worse than the satellite waits inside: 'It's all black.'",
       "entities": [
         "Leo Hargraves",
@@ -18505,10 +18584,12 @@
         "Pythia",
         "The Bahamut and Kujata"
       ],
-      "chapter": 40
+      "chapter": 40,
+      "chronoOrder": 300,
+      "chronology": "The Anti-Mechron War, final battle of Sarajevo (before the Genome present)"
     },
     {
-      "title": "Into the Darkness Beyond",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "Inside the fortress-collider Leo confronts a broken, hateful Mechron, who refuses surrender and opens a gate meant for the Blue World / Akashic Records. It instead breaches onto the Darkness Beyond, an eye-like void entity that erases Mechron atom by atom and begins consuming reality. Leo collapses the fortress by going supernova, sealing the gate at the cost of near-death. He wakes days later: the war is won, but Pythia is brain-damaged, the Bahamut lost, and her USB names Bloodstream as humanity's top threat.",
       "entities": [
         "Leo Hargraves",
@@ -18516,10 +18597,12 @@
         "The Darkness Beyond",
         "The Bloodstream Prophecy"
       ],
-      "chapter": 41
+      "chapter": 41,
+      "chronoOrder": 310,
+      "chronology": "The Anti-Mechron War: the Darkness Beyond at Mechron's fortress"
     },
     {
-      "title": "Progress Made",
+      "title": "Finding Len",
       "beat": "Back in the present, Ryan cleans up the party wreck and learns Jamie proposed to Ki-jung and will reinvest his new Mercury division into Rust Town charity. Over the Chronoradio, Len (warming toward him, hinting he could visit the orphans) proposes the consciousness-transfer plan to let someone else remember across loops, but it needs Mechron's bunker tech. Ryan refuses to give the Augusti bunker access and accepts this good loop still won't be perfect.",
       "entities": [
         "Ryan Romano",
@@ -18527,10 +18610,12 @@
         "Jamie",
         "The Consciousness-Transfer Plan"
       ],
-      "chapter": 42
+      "chapter": 42,
+      "chronoOrder": 1042,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Ghost of Drug Island",
+      "title": "Vulcan and the Saturn Armor",
       "beat": "Laying low on Vulcan's orders, Ryan spends the weekend with Jasmine designing his power armor and a scheme to trap his own 'Violet Flux' to boost his power. She reveals Dynamis's decade-long mind-uploading immortality project (brain scans into Tyrano's cloned bodies), and Ryan realizes combining it with Len's and Jasmine's tech could let him carry a companion across loops, giving him hope. They fly to the miasma-choked Ischia superlab for Livia's defense inspection, where Livia introduces the ghost Geist as a sentry and warns that many alternate realities now end in her own sudden death. Ryan, planning to blow up the island to settle his debt with Shroud, sizes up how to bring the fortress down.",
       "entities": [
         "Ryan Romano",
@@ -18540,10 +18625,12 @@
         "Ischia Island",
         "The Immortality Project"
       ],
-      "chapter": 43
+      "chapter": 43,
+      "chronoOrder": 1043,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Return of the Corpo",
+      "title": "The Dynamis Corporation",
       "beat": "Locked out of the Ischia facility's secrets, Ryan passes the inspection playing knucklebones with Geist and Mortimer, learning Geist's origin, that Ceres is the sole Bliss cook, and that Bliss sterilizes ordinary users. Len calls with alarm, tremors from Rust Town and flying objects inbound on Ischia, then Blackthorn calls to gloat: as retaliation for the HQ raid, Don Hector has finally chosen war. Thirty Dynamis war helicopters and Il Migliore's elite (Wyvern, Windsweep, Devilry) descend on the island, demanding Quicksave and Jasmine surrender. Vulcan refuses, Wyvern transforms into a dragon, and the drug-lab battle erupts, exactly the destruction Ryan owes Shroud, so he sits back to watch.",
       "entities": [
         "Ryan Romano",
@@ -18553,10 +18640,12 @@
         "Windsweep",
         "Vulcan"
       ],
-      "chapter": 44
+      "chapter": 44,
+      "chronoOrder": 1044,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Blood in the Water",
+      "title": "The Dynamis Corporation",
       "beat": "The Ischia battle erupts into chaos: Geist swats helicopters, Vulcan grapples the dragon-form Wyvern out to sea, and Ryan duels the newly-arrived Il Migliore pair, Reload and Wardrobe. He steals Reload's violet lightsaber and toys with the self-resurrecting hero, but Wardrobe's shifting costumes escalate until her unstable 'Augustus' guise blasts Ryan with imitation lightning that reaches him even inside stopped time, the exact threat Chitter once warned him about. As she readies a deadly 'Apocalypse Suit,' Len arrives in her underwater armor with skyscraper-sized water arms (mistaken for Neptune) and Augusti reinforcements race in on jet skis. Before Wardrobe can transform, Mortimer phases up and shoots her dead, winning his kill-count bet.",
       "entities": [
         "Ryan Romano",
@@ -18566,10 +18655,12 @@
         "Mortimer",
         "Vulcan"
       ],
-      "chapter": 45
+      "chapter": 45,
+      "chronoOrder": 1045,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "While Rome Burns",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan reaches the Junkyard, blaming himself for leaving Mechron's bunker for the Meta to seize. He finds the five surviving Psychos (Adam, Frank, Acid Rain, Sarin, and the dirt-formed Land) holding a rock concert beneath the risen orbital-control tower as New Rome burns. Adam gloats that he tracked the sabotage back to Ryan/'Cesare,' reveals he is dying as his Elixir-abused powers go haywire, and that, denied a cure by Psyshock's death, he fired the Bahamut out of pure Jonestown spite, then threatens Len's underwater orphanage. Ryan attacks, unleashing the plushie on Acid Rain, blinding Adam, and killing the Land and Sarin, but is caught between Adam's chain and the Land and nearly force-fed an Elixir, until Vulcan, Lanka and Jamie crash in to rescue him.",
       "entities": [
         "Ryan Romano",
@@ -18578,10 +18669,12 @@
         "Vulcan",
         "The Meta-Gang"
       ],
-      "chapter": 47
+      "chapter": 47,
+      "chronoOrder": 1047,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Bad End",
+      "title": "The Augusti and Augustus",
       "beat": "Vulcan (temporarily allied with Wyvern), Jamie and Lanka fight the Meta until Augustus himself descends, moving through Ryan's stopped time. The invulnerable emperor kills Frank, savagely beats and captures Adam (to be crucified alive for killing his family), then destroys Mechron's bunker with a thunderbolt, obliterating the orbital tech, the Chronoradio plans' hardware, and Ryan's last hope of the consciousness-transfer plan. Ryan wakes in a Sorrento hospital to the loop's ruin: Len is dead, his car and the Chronoradio destroyed, and with Hector and Enrique gone the hardliner Alphonse now steers Dynamis toward a new war. Only the cat Schrodinger survived. Deciding he must finally change and stop relying on Len alone, Ryan chooses to trust Vulcan and reveals his secret: 'I can time-travel.'",
       "entities": [
         "Ryan Romano",
@@ -18591,10 +18684,12 @@
         "Big Fat Adam",
         "Alphonse Manada"
       ],
-      "chapter": 48
+      "chapter": 48,
+      "chronoOrder": 1048,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Time and Again",
+      "title": "The Loop and the Perfect Run",
       "beat": "In Vulcan's makeshift lab, Jasmine seals Ryan into the purple power armor for a desperate gambit: using it to open a physical rift to the Purple World so she can time-travel with him rather than be erased by the reset. They share a last kiss and pop-culture banter, and she makes him promise never to replace her or forget her. Ryan activates his power; violet particles multiply uncontrollably and pull him bodily into the Purple World, where he witnesses a vision of the homo-novus founders and their crashed craft, the color-dimension cosmology, a plushie meadow, and a planet-sized god-entity. Then the loop resets to May 8, 2020, in his restored car. Jasmine didn't make it through, but a haunting recording of his rooftop talk with Len plays over the Chronoradio. Ryan vows to keep his promise and complete the Perfect Run.",
       "entities": [
         "Ryan Romano",
@@ -18604,10 +18699,12 @@
         "The Founders of Homo Novus",
         "Len Sabino"
       ],
-      "chapter": 49
+      "chapter": 49,
+      "chronoOrder": 1049,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Past Fragment: How to Tame Your Plushie",
+      "title": "The Plushie's Secret",
       "beat": "A flashback to an earlier loop reveals the plushie's origin. A younger Ryan, learning Genius tech from his cyborg roommate Alchemo ('Braindead'), builds a cute rabbit plushie as a probe to send through a mini particle accelerator into the Purple World, hoping to enable his car's dimensional time-travel. The accelerator runs in reverse, frying the hardware and anchoring an alien tentacled entity inside the toy. The possessed plushie kills Alchemo on sight (repeatedly), spares the gynoid Doll/Tea and children, strings up human victims, and multiplies exponentially when happy, overrunning Firenze in one loop. Ryan resets each time and finally tames it by flipping its switch off on reload, keeping it as a last-resort weapon he dares not destroy lest he free what lives inside. It watches over his sleep, pledging eternal friendship.",
       "entities": [
         "Ryan Romano",
@@ -18616,10 +18713,12 @@
         "The Plushie",
         "The Purple World"
       ],
-      "chapter": 50
+      "chapter": 50,
+      "chronoOrder": 750,
+      "chronology": "An earlier loop: the Killer Rabbit Plushie's origin (Alchemo, the accelerator)"
     },
     {
-      "title": "Route Split",
+      "title": "The Loop and the Perfect Run",
       "beat": "A new loop resets everyone's memories, wiping Ryan's progress with Jasmine (Vulcan doesn't remember him). Choosing to avoid an Augusti run so soon after losing her, Ryan takes the Dynamis path instead: he pitches Wyvern to join Il Migliore and warns Shroud that Adam is after the orbital Bahamut. Shroud, shaken that Ryan knows the secret name, believes him and postpones the Carnival's Augusti strikes to prioritize the bunker crisis, urging Ryan to infiltrate Dynamis and report back. Ryan then notices his cat Schrodinger has gained a teleport power from Violet-dimension exposure. Finally Len, who overheard the time-travel recording, radios him live: she now knows he can time-travel, and asks why he didn't just re-run their reconciliation. Ryan explains he wants their bond to be true, not manufactured, and heads to the orphanage where Len agrees to meet him.",
       "entities": [
         "Ryan Romano",
@@ -18629,10 +18728,12 @@
         "Len Sabino",
         "Vulcan"
       ],
-      "chapter": 51
+      "chapter": 51,
+      "chronoOrder": 1051,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Chance Meetings",
+      "title": "The Dynamis Corporation",
       "beat": "Ryan meets Enrique 'Blackthorn' Manada and lays out his evidence that a Dynamis insider armed the Meta-Gang. Enrique proves clean: he fires the negligent drone-handler, deduces a board-level traitor may be the sponsor, and takes the unstable-but-useful Ryan into Il Migliore's junior division on a six-month supervised trial, granting Ryan's terms (keep his name, never touch the Underdiver). Ryan adopts the hapless hero-hopeful Timmy 'the Panda' as his sidekick, naming their team 'Quicksave the Pandas.' Driving home he learns Dynamis surveils Len's undersea base (likely how Adam found it) and resolves to get her real antidepressant treatment. On Sol Street a chance encounter throws him together with the haughty Fortuna and the intrigued Livia Augusti, whose Purple-World sight cannot perceive Ryan or clearly see his teleporting cat Schrodinger. Ryan rebuffs Fortuna's demand for a ride and drives off, leaving Livia watching him with curiosity.",
       "entities": [
         "Ryan Romano",
@@ -18644,10 +18745,12 @@
         "Livia Augusti",
         "Schrodinger"
       ],
-      "chapter": 52
+      "chapter": 52,
+      "chronoOrder": 1052,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Fashion Disaster",
+      "title": "The Dynamis Corporation",
       "beat": "At Wardrobe's Il Migliore atelier, Yukiko designs Ryan's signature costume (dark-purple cashmere suit, clock-symbol scarf, silver-and-black mask) and 'Rambo Panda' for Timmy, while the practical Atom Cat resists a latex cat-suit. Ryan rallies Wardrobe, the Panda, and Atom Cat into an unsanctioned Rust Town patrol to test the costumes. En route Wardrobe explains her power copies the collective *idea* of a persona (not real abilities), that she can become the persona if worn too long, and that her 'Apocalypse Suit' could destroy the world, but she cannot copy the obscure Cancel, spoiling Ryan's plan against Psyshock. Atom Cat is revealed as Livia Augusti's brother and ex who broke with his family. Fortuna, obsessed after Ryan's rejection, spams him with 41 messages. Then a cryptic 'Unknown' texts 'The orange is in the hen house'; Ryan slams the brakes and replies as 'PlushieTamer,' racing back toward the orphanage.",
       "entities": [
         "Ryan Romano",
@@ -18658,10 +18761,12 @@
         "Fortuna",
         "Cancel"
       ],
-      "chapter": 53
+      "chapter": 53,
+      "chronoOrder": 1053,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "A Gambling Man",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "Ryan brings his patrol team (Wardrobe, Atom Cat, the Panda) plus Len to defend the Rust Town orphanage from Psyshock's raid. Rattled that someone sent him his private power-catchphrase ('the orange is in the hen house'), Ryan suspects Livia may retain loop memories. When Psyshock arrives with reinforcements (Rakshasa and a lizard-man), Ryan runs an audacious poker bluff, posing as Hector Manada's envoy, and extracts the full conspiracy: the Meta approached Don Hector for a knockoff supply, never intended to hit the Augusti, are secretly unearthing Mechron's bunker, and Psyshock's 'second project' is a mind-transfer brain-scan (workable only between closely related brains). Shroud records it all invisibly. His trap sprung, Ryan sucker-punches Psyshock as every window in the area shatters, launching the ambush.",
       "entities": [
         "Ryan Romano",
@@ -18675,10 +18780,12 @@
         "Rakshasa",
         "Livia Augusti"
       ],
-      "chapter": 54
+      "chapter": 54,
+      "chronoOrder": 1054,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Future Past",
+      "title": "Ryan and Livia",
       "beat": "The orphanage ambush becomes a crushing victory: Shroud, Len, Wardrobe (in a Che Guevara costume), Atom Cat, and a surprisingly formidable Panda subdue the Meta mooks into Len's suspended-animation bubbles, and Rakshasa's cross-universe gremlins flee in terror on recognizing Ryan. But Psyshock again suicides to escape capture. Ryan plays the wiretapped confession for his team, turning Atom Cat and a murderous Len against Dynamis, and they agree to hand the recording to Enrique for a by-the-book arrest. Then Ryan and Len drive to the ominous Deadland Motel answering the 'Unknown' invitation, guarded by Cancel and Mortimer. Inside waits Livia Augusti, who reveals she remembers the loops too: his catchphrase was a 'message in a bottle' that reached her, and she invites Ryan to compare their memories.",
       "entities": [
         "Ryan Romano",
@@ -18693,10 +18800,12 @@
         "Cancel",
         "Deadland Motel"
       ],
-      "chapter": 55
+      "chapter": 55,
+      "chronoOrder": 1055,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Heartfelt Talk",
+      "title": "Ryan and Livia",
       "beat": "At Deadland Motel, Ryan and Livia trade their full truths in a tense, chess-framed parley. Livia demands honesty and threatens to expose Ryan to her father unless he proves no threat to her family; Ryan counters by exposing Bliss as Augustus's deliberate sterility weapon, cracking Livia's regal mask to reveal a daughter crushed by trying to protect a family she cannot reform. They strike a fragile mutual-honesty truce. Ryan explains his time-loop; Livia admits her two powers (Blue-Elixir six-screen alternate-sight archived in a 'blue room,' plus a localized temporal anomaly) and the genetic quirk she shares with Augustus. They test their powers against each other over the chessboard: Ryan acts as an untouchable 'ghost' inside her anomaly and freezes her (she, unlike Augustus, is not immune), confirming Ryan's higher-dimension theory that he is 'the controller' whose Purple power sustains or collapses her simulated timelines. Ryan withholds Shroud/the Carnival and Mechron's bunker; the talk breaks down over mutual mistrust, ending with dueling protect-lists and Livia's promise to call again. Driving home, Ryan tells Len he confided in Livia because he's 'seen it before' and it ended badly.",
       "entities": [
         "Ryan Romano",
@@ -18709,10 +18818,12 @@
         "The Higher-Dimension Power Theory",
         "Leo Hargraves"
       ],
-      "chapter": 56
+      "chapter": 56,
+      "chronoOrder": 1056,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Island of Dr. Tyrano",
+      "title": "The Dynamis Corporation",
       "beat": "Ryan settles into a bribe-lavish Dynamis penthouse and reunites with his Menagerie teammates, now media darlings after the arrests. He gifts Wardrobe a homemade Playboy-bunny costume (a cultural kinship cemented), and probes Atom Cat for intel: Augustus's invulnerability secret is guarded by the spymaster Mercury, and Felix reports the patriarch has grown lethargic and forgetful, hiding a sick face behind an electric halo, hinting something is deeply wrong with him. Meeting Dr. Tyrano, the T-rex-transformed Blue Genius who makes knockoff Elixirs and creates dinosaur hybrids, Ryan rescues the Panda from vivisection and discovers a kindred theorist: the two lay out the full Elixir cosmology (living virus-like Elixirs, color-dimension power sources, the two-power limit and its conflicts, Mongrel's referee White Elixir). Ryan angles for access to Tyrano's brain-copy project (Level-5 clearance required) and Mechron's bunker as a possible cure for his own power's degeneration.",
       "entities": [
         "Ryan Romano",
@@ -18725,10 +18836,12 @@
         "Augustus",
         "The Menagerie"
       ],
-      "chapter": 57
+      "chapter": 57,
+      "chronoOrder": 1057,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Family Business",
+      "title": "The Carnival, the Shroud, and Narcinia",
       "beat": "Between Dynamis film-studio nonsense (screenwriters wanting to rewrite the Panda as an uplifted mascot), Ryan and Felix take a coffee break and open up. Ryan reveals he knows Felix is the son of Mars and Venus; Felix explains he abandoned the Augusti over Bliss, recounting how his friend Chitter nearly died of a Bliss overdose and begged for more, how Narcinia is guilt-tripped into making the drug, and how Ki-jung was drawn into the Killer Seven. Ryan admits he arranged Bloodstream's death and commiserates over toxic families. Fortuna crashes the studio (via her luck power) to drag Felix home, and the siblings quarrel bitterly over the Killer Seven and the family. Then Ryan gets a call from Leonard Hargraves, the Carnival's leader who killed Felix and Livia's mother: his team has arrived in New Rome, and he invites Ryan and Atom Cat to ally against the city's 'cancers.' Ryan accepts.",
       "entities": [
         "Ryan Romano",
@@ -18741,10 +18854,12 @@
         "Dr. Tyrano",
         "Narcinia"
       ],
-      "chapter": 58
+      "chapter": 58,
+      "chronoOrder": 1058,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Corpoalition",
+      "title": "The Carnival, the Shroud, and Narcinia",
       "beat": "Ryan drives Felix (shielded from Dynamis's Flux tracker) to a Carnival war council at the Pompei ruins, where Leo Hargraves, Shroud, and Ace reveal a grand alliance is forming against the Meta and the Augusti. Enrique 'Blackthorn' and Wyvern arrive (Enrique secretly contacted the Carnival), then Dynamis VP Alphonse 'Fallout' Manada, the exiled nuke-Genome 'butcher of Malta,' descends by helicopter. The corroborated wiretap convinces the corpos of Don Hector's treachery. They agree a coordinated strike: the Carnival beheads the Meta's leadership (Psyshock, who mind-jumps and uses hostages) while Dynamis's force surrounds and contains Adam's men in Rust Town, without telling the corpos about Mechron's bunker. Alphonse further commits to a coup deposing their father Don Hector, dismaying Wyvern who dreads him as CEO. Leo pulls Felix aside about Narcinia. Finally Enrique lets slip the secret that reframes everything: Augustus is dying of a brain tumor, and Hector is simply waiting it out. Ryan freezes at the revelation.",
       "entities": [
         "Ryan Romano",
@@ -18759,10 +18874,12 @@
         "The Flux Tracker",
         "Psyshock"
       ],
-      "chapter": 59
+      "chapter": 59,
+      "chronoOrder": 1059,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Lucky Break",
+      "title": "Ryan and Livia",
       "beat": "After the war council, Ryan consoles a devastated Felix (who learned Augustus murdered Narcinia's parents), then calls Len: he suspects the Manada are after her over Dynamis's own buried secrets, and proposes she slip into the Meta's sea-access bunker during tomorrow's siege to steal the brain-duplicating tech (which Hector lent Psyshock). Len agrees and invites Ryan to move into a room she set up in her undersea base, sounding steadier as she paces her treatment. Ryan then keeps a smokescreen date with Fortuna at Le Parisien, intending to be so perfectly affectionate she loses interest, but Fortuna brings Livia along. Fortuna reveals hidden depth (secret sculptor, insecure about her face-shaping mother Venus, joined the Killer Seven to shield Livia), raising Ryan's esteem. Livia engineers a private moment to confront Ryan: she blames the Carnival for her mother Juno's death and warns him off her family and Fortuna. Ryan counters with hard truths, Augustus's brain tumor and that Narcinia's father could have cut it out, explaining Livia's paralysis before her invincible, ailing father; she leaves shaken. Ryan's plan backfires: Fortuna 'forgives' him and uses her busted luck to lock him in the car.",
       "entities": [
         "Ryan Romano",
@@ -18775,10 +18892,12 @@
         "Augustus",
         "Psyshock"
       ],
-      "chapter": 60
+      "chapter": 60,
+      "chronoOrder": 1060,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Death Warrant",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "May 12th: Team Quicksave (Ryan, Atom Cat, the Panda, Wardrobe) drives to Rust Town for the coordinated raid, Wardrobe deducing (via a Sherlock costume) Ryan's chaste Fortuna date. Felix briefs them on the Meta leadership: Adam the Ogre (Brooklyn Cannibal, carbon-skin + pocket-stomach) and Frank the Mad (schizophrenic metal giant), while Ryan privately advances his Augustus theory (Frank's power proving Augustus registers as metal). Leo Hargraves strikes the Junkyard like a missile as Alphonse's helicopters swarm from the west; the Meta answer with missiles, a Frank-caused earthquake, and Sarin's acid clouds. Ryan's team battles Sarin (beheaded by Shroud) and the teleporting Acid Rain, who raves about 'the Ultimate One'/Purple World and calls Ryan a thief. The fight goes badly: Acid Rain blows off Shroud's arm, stabs Felix, and eviscerates the Panda (who heals by shapeshifting). Ryan out-skills her, but she readies a grenade begging to be 'sent there', until Mortimer, an Augusti assassin, snipes her dead. He refuses to fight Ryan, revealing Livia sent him: 'Miss Livia sends her regards.'",
       "entities": [
         "Ryan Romano",
@@ -18796,10 +18915,12 @@
         "Mortimer",
         "Livia Augusti"
       ],
-      "chapter": 61
+      "chapter": 61,
+      "chronoOrder": 1061,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Quest Complete",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "In the field shelter, Dr. Stitch (Carnival medic) and Wardrobe barely save the maimed Shroud with engineered bacteria. Ace portals Ryan and the Panda into Mechron's bunker, where Fallout and Dynamis security fight door-to-door through Psyshock's suicide-bomber thralls and human shields. Blackthorn (fighting personally, vine-mapping the halls) locates Adam and Psyshock at the brain-database command center. Cornered, Adam smashes a Mechron-made Black Elixir, which acts even in stopped time and, unable to assimilate him, devours him alive, its alien voice begging Ryan to 'open the gate' and 'send me to the Black' while canceling Fallout's nuclear ray, before dissolving Adam to nothing. Fallout then out-blasts the forcefield and vaporizes the brain-database; Blackthorn's poison-rose squid gasses Psyshock unconscious with aconitine, disabling his death-triggered mind-transfer. Ryan freezes time to disarm suicide belts and spare thralls, saving many but not all. The Meta-Gang is destroyed. Leo admits he knew of the bunker; the group heads to the Manada manor to arrest Don Hector. Len radios: safe under the sea, she has the braintech.",
       "entities": [
         "Ryan Romano",
@@ -18817,10 +18938,12 @@
         "Len",
         "Hector Manada"
       ],
-      "chapter": 62
+      "chapter": 62,
+      "chronoOrder": 1062,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "End of Disc One",
+      "title": "The Dynamis Corporation",
       "beat": "At Don Hector's modest manor, the Manada brothers and Leo Hargraves confront the CEO, found gardening. Enrique bluffs that Psyshock confessed everything (the Meta deal, the mind-transfer clone project), and Hector's flicker of surprise confirms he never knew about the Mechron base. Abandoned by his own guards and outgunned by his sons' shares, proof, and army, Hector surrenders with grim dignity rather than die pointlessly, choosing forced retirement; Alphonse and Enrique will reform Dynamis and finally move on Augustus. Ryan is fired from Il Migliore but spared; Enrique privately warns him to flee New Rome with Len before the ruthless Alphonse (who knows Len's base) hunts them, since Dynamis fixates on Len for reasons Enrique won't name. Livia calls, worried for Felix, offers Ryan the Killer Seven's Violet slot (declined), and grieves that her own father won't step down like Hector. Reunited with Len and the braintech, Ryan pieces the horror together: the knockoff Elixirs (a synth resource mimicking Elixirs, only ~3 years old), Dynamis's theft of Len's blood/DNA, and Enrique fleeing Lab Sixty-Six all point to a surviving clone of Bloodstream. Len, refusing to flee, insists they investigate Lab Sixty-Six for closure.",
       "entities": [
         "Ryan Romano",
@@ -18834,10 +18957,12 @@
         "Lab Sixty-Six",
         "The Brain-Transfer Project"
       ],
-      "chapter": 63
+      "chapter": 63,
+      "chronoOrder": 1063,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "A Death in Monaco",
+      "title": "Monaco and the Absurd",
       "beat": "A past fragment revealing Ryan's defining death. Years after Bloodstream's death, a lonely Ryan scours the Mediterranean for the vanished Len and finally enters Monaco, the microstate 'nobody returns from.' He is teleported into the Monte Carlo Casino, a pocket dimension that suppresses his time-stop (but not his save point) and is patrolled by cannibalistic croupier-clowns who worship an unseen 'Prince Jean-Stéphanie.' The old French sheriff Simon rescues him and teaches him to survive among Suitestown's ~40 trapped powerless, along with Camus's philosophy of embracing the absurd ('the boulder is your only friend'). Ryan spends nearly a century there as the community dwindles, digs Simon's endless tunnel after the old man dies on a suicide run, and finally, as the last man alive, dies of OLD AGE in bed. His save point revives him young at the promontory: he realizes even old age can't kill him, that he is truly immortal. After hysterical laughter, horror gives way to liberation; he embraces the absurd, vowing to live fearlessly to the fullest, treating life as an endless game whose first quest is to free everyone trapped in Monaco.",
       "entities": [
         "Ryan Romano",
@@ -18849,10 +18974,12 @@
         "Len",
         "Bloodstream"
       ],
-      "chapter": 64
+      "chapter": 64,
+      "chronoOrder": 700,
+      "chronology": "The Monaco century: Ryan lives and dies of old age in the Monte Carlo anomaly"
     },
     {
-      "title": "In Mysterious Ways",
+      "title": "Finding Len",
       "beat": "At the Ark (his 'Commie-Cave'), Ryan reconnects with Len as she works on the brain-transfer project, sharing a rare warm, tender moment (she chuckles at his jokes; they touch on their long-past romance). They diagnose the project's roadblock: transmitting a brainmap back through time needs Violet Flux power (Chronoradio hooked to Vulcan's armor), which reopens the mystery of who sent the ORIGINAL Chronoradio messages. Ryan proposes a 'blood beacon': Bloodstream may have left a trace inside Len that Dynamis now tracks, and Len's blood could match the Knockoff Elixirs to her father, hinting at a surviving clone. Studying Eugène-Henry's too-convenient teleports, Ryan concludes a benevolent guiding entity (the Alchemist / Purple-World pyramid) is steering them, and they consider seeking its Antarctic base. Ryan then heads to a Dynamis hospital for the heist plan, glimpsing an upset Narcinia leaving with Mortimer, and meets Wardrobe's Genius girlfriend Nora Moore ('the Architect'), who designed the Dynamis HQ and Optimates Tower, priceless intel for Ryan's scheme. He comforts the newly meme-famous, tearful Panda before being summoned to see Mr. Veran.",
       "entities": [
         "Ryan Romano",
@@ -18870,10 +18997,12 @@
         "Mortimer",
         "Dynamis"
       ],
-      "chapter": 65
+      "chapter": 65,
+      "chronoOrder": 1065,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Hit",
+      "title": "The Augusti and Augustus",
       "beat": "At Felix's hospital room, Nora feeds Ryan intel on Lab Sixty-Six's defenses (missile-proof, one elevator/blast-door entry, no emergency exit, 'secure not safe'), narrowing his infiltration options. Felix announces he's quitting Il Migliore for the Carnival and, wary that Ryan seems tied to Livia, confronts him, revealing he never loved Livia (their match was arranged since childhood) and that he told Narcinia the truth: Augustus murdered her birth parents and arranged her adoption to exploit her drug-making power, with Bacchus shattering her memory. The Il Migliore members are summoned to a war-council meeting (Ryan barred), confirming the Dynamis-Carnival strike on the Augusti is imminent. Livia calls in a panic: Augustus, now marshaling for war, has sent Aunt Pluto ('Cruella') to kill Felix, her death-curse already marks him and Ryan. Rather than abandon a teammate, Ryan guilts the resigned Felix into fleeing and arranges for Len to bathysphere them out to France, urging her to rebuild Vulcan's armor fast. The storm Enrique foretold breaks: war has come to New Rome, and they escape in the Pandamobile.",
       "entities": [
         "Ryan Romano",
@@ -18893,10 +19022,12 @@
         "Dynamis",
         "The Augusti"
       ],
-      "chapter": 66
+      "chapter": 66,
+      "chronoOrder": 1066,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Murphy's Law",
+      "title": "The Augusti and Augustus",
       "beat": "Ryan and Felix flee New Rome in the fur-covered Pandamobile toward a rendezvous with Len near the Amalfi Coast. Fortuna calls, her luck power inexplicably connecting her to Ryan instead of Felix. The Augusti catch up: Aunt Pluto in a bulletproof Lamborghini, escorted by Killer Seven assassins the Vamp (pheromone/touch-kill) and Night Terror (Blue Genome whose darkness power conjures illusions). A running highway chase ensues, Pluto's death-curse escalating from failing brakes to collapsing highway pillars as she closes in, while Felix hurls explosive darts. Ryan works out he can resist her causality warp by selectively stopping time. He jumps the Pandamobile across a collapsed section, but after nightfall Night Terror unleashes an illusion of Ryan's dead father Bloodstream ('Cesare') choking him, making him crash off the highway. Ryan's time-stop instinct saves both from the exploding wreck, and the pair escape into the dark woods as Pluto and the Vamp give chase, the hunt only beginning.",
       "entities": [
         "Ryan Romano",
@@ -18909,10 +19040,12 @@
         "Bloodstream",
         "Len"
       ],
-      "chapter": 67
+      "chapter": 67,
+      "chronoOrder": 1067,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Death Stranding",
+      "title": "The Augusti and Augustus",
       "beat": "In the Valle Delle Ferriere woods, Ryan splits off from Felix to draw the single-target Pluto onto himself. He confronts the Vamp (Karen Ricci), resisting her seductive pheromones via drug tolerance, and Night Terror (Richard Pinkman), who conjures Monaco clowns and a horrifying blood-drenched Len taunting that Ryan never escaped Monaco. Ryan kills both at a waterfall. Pluto arrives and, studying his marker, realizes it links to a second universe her curse can't reach, she can kill him but never permanently. She unleashes her full curse: reality itself turns lethal (noose-branches, self-moving knife, exploding gun, his own primed A-bomb), collapsing the ground and burying Ryan in rubble. As she moves to execute him, Felix returns and is impaled by defensive spears; Pluto reveals their own parents authorized the hit. Eugène-Henry then appears, and Fortuna arrives, her luck flickering yellow energy that neutralizes Pluto's curse and shields Felix. Learning the truth, Fortuna turns traitor, aiming her gun at her godmother to defend her brother, and the chapter ends on two gunshots.",
       "entities": [
         "Ryan Romano",
@@ -18926,10 +19059,12 @@
         "Monaco",
         "The Augusti"
       ],
-      "chapter": 68
+      "chapter": 68,
+      "chronoOrder": 1068,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Limited Time",
+      "title": "Ryan and Livia",
       "beat": "Fortuna's lucky headshot kills Pluto and ends the curse, but she dies of her own wound in Felix's arms; a crippled, dying Ryan is rescued by Len in her diving armor. The Purple World entity in Eugène-Henry bids Ryan 'the rest is up to you' and departs in violet light, leaving a normal cat. Ryan wakes days later in Len's underwater base, legless and bandaged, tended by Little Sarah, with a catatonic Felix nearby (his own parents signed his death warrant, his sister died for him). Len shows him New Rome consumed by all-out war, Augusti vs Dynamis/Carnival, Mars, Neptune, Wyvern, Wardrobe's Cthulhu 'apocalypse suit,' and Augustus dueling Enrique atop Mount Augustus, another bad ending, spread across the whole coast. Livia calls via Vulcan's line, now fully allied through grief and guilt: she offers to back up a snapshot of Len's memory-map (kept via her journal) so the loop's progress can survive if the risky consciousness-transfer fails. Len, overcoming her distrust, agrees and reveals the transfer will kill Ryan to send her memories back. Ryan realizes Eugène-Henry's entity engineered the entire run to reach this alliance, and resolves to reset and do better.",
       "entities": [
         "Ryan Romano",
@@ -18950,10 +19085,12 @@
         "Augustus",
         "New Rome"
       ],
-      "chapter": 69
+      "chapter": 69,
+      "chronoOrder": 1069,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Gotcha",
+      "title": "The Loop and the Perfect Run",
       "beat": "As Len rigs the transfer armor onto Ryan in the flooding underwater base, a recovered Felix listens in and deduces Ryan's time-travel, making peace with the loss of Fortuna once he learns Ryan will save her. He asks Ryan to help him understand and reconcile with his sister next loop. Alphonse Manada's Dynamis submarine arrives and demands Len 'dead or alive,' revealing his goal to democratize Elixirs (make everyone a Genome to break warlord monopolies) with Len as the key; he threatens to flood the base and children to force her. Len refuses ('better dead than corpo') and, under bombardment, triggers the transfer. Ryan freezes time, Violet Flux builds, and the loop ends, resetting to May 8th 2020. In the fresh loop the guiding entity is gone (Chronoradio plays only music). Len's voice confirms she REMEMBERS, Ryan's centuries of solitude finally broken and the transfer a success. But she urgently, sickly summons him to the orphanage; when he arrives she is nosebleeding with cold soulless eyes, shoots him, and traps him in a water-sphere. The transfer worked, but something else hitched a ride back inside her.",
       "entities": [
         "Ryan Romano",
@@ -18968,10 +19105,12 @@
         "Livia Augusti",
         "Eugène-Henry"
       ],
-      "chapter": 70
+      "chapter": 70,
+      "chronoOrder": 1070,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Captured in Mechron's Bunker",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 71,
       "beat": "Ryan wakes naked and thoroughly restrained in a Mechron torture chair inside the bunker, held by the Meta-Gang: Big Fat Adam, Psyshock, Ghoul, and Sarin. The chair keeps him alive against his will, blocking his suicide-reload escape. Adam reveals Len is now Psyshock's thrall: he had Psyshock booby-trap the Dynamis brain-tech so any overwritten mind becomes a host, this triggers only on the overwrite step, so Livia still holds a clean backup of Len's mind in the Blue World. Psyshock taunts Ryan with Len's private memories while Adam debates whether to overwrite Ryan or take another route.",
       "entities": [
@@ -18981,10 +19120,12 @@
         "Ghoul",
         "Sarin",
         "Mechron"
-      ]
+      ],
+      "chronoOrder": 1071,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Adam's Real Plan and the Black Elixir Gambit",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 71,
       "beat": "Ryan deduces Adam's manipulations: Adam gaslights his own lieutenants and his true goal is the bunker's Orbital Communications Tower, not a Psycho cure, he wants to kill everyone. Adam reveals a horror dessert: Little Sarah bound on a plate. Rather than risk Psyshock's uncertain overwrite, Adam produces the Black Elixir, planning to force Ryan to become a Psycho and corrupt his save-point power (Ryan never dared take a second Elixir for that reason). The Elixir wriggles, remembering Ryan. Explosions rock the bunker; Sarin, her faith in Adam broken, secretly asks Ryan for a cure and rusts his restraints. Ghoul opens the door to reveal the corridor slaughtered and Ryan's savior: the possessed Bahamut plushie, declaring 'I will always be your friend!'",
       "entities": [
@@ -18993,10 +19134,12 @@
         "Little Sarah",
         "The Black Elixir",
         "Psyshock"
-      ]
+      ],
+      "chronoOrder": 1071,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Bahamut's Rampage and the Shoggoth Bargain",
+      "title": "The Plushie's Secret",
       "chapter": 72,
       "beat": "The possessed Bahamut plushie tears through the Meta-Gang: it vaporizes Psyshock and, when Adam raises the Black Elixir to corrupt Ryan, Sarin betrays and air-blasts Adam into the shattered bottle. Adam and the immortal Ghoul are both devoured, and the paradox stabilizes the Black Elixir into a sentient shoggoth pleading to be sent 'back to the Black.' Ryan bargains help-for-help; the shoggoth clears the bunker of thralls. The Bahamut duplicates, freeing Little Sarah, ruining the run beyond repair. Rather than reset, Ryan resolves on a 'Meta Run': take over the bunker, free the children, and build a Psycho cure.",
       "entities": [
@@ -19008,10 +19151,12 @@
         "The Black Elixir",
         "Ghoul",
         "Darkling"
-      ]
+      ],
+      "chronoOrder": 1072,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Conning Frank the Mad",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 72,
       "beat": "Armed with a hammer, laser gun, and Bliss and joined by the defected Sarin, Ryan sets out to free the caged orphanage children and implode the leaderless Meta-Gang. Cornered by the metal-immune schizophrenic giant Frank the Mad and a surviving Psyshock host, Ryan exploits Frank's Cold-War delusions: posing as 'CIA agent Romano,' he frames Psyshock as a communist traitor who murdered 'President Adam,' planting the bloody hammer in his tentacles. When Psyshock contradicts Frank's delusion, the enraged giant punches his head apart and storms off to hunt the new host. Ryan reaches the infirmary, arms up, and, as child-obsessed plushies mass toward the caged kids, his first Meta Run begins 'with chaos and madness.'",
       "entities": [
@@ -19020,10 +19165,12 @@
         "Frank the Mad",
         "Little Sarah",
         "Psyshock"
-      ]
+      ],
+      "chronoOrder": 1072,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Bunker Civil War",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 73,
       "beat": "Ryan, Sarin, the plushies, and the Black Elixir shoggoth storm the bunker's upper levels, where Frank's rampage has already routed Psyshock's forces. The leaderless Meta-Gang implodes: Mosquito, Rakshasa, Ink Machine and others switch to Ryan's winning side against Psyshock. Ryan chases the fleeing brainjacker through the hangars (past his engine-stripped Plymouth), sniping each host as Psyshock hops bodies. Psyshock takes the enthralled Len hostage with a drill to her temple; Ryan time-stops and strikes her carotid to knock her out safely, then paralyzes Psyshock's brain-tissue body with a full Bliss dose and captures him.",
       "entities": [
@@ -19037,10 +19184,12 @@
         "Mosquito",
         "Rakshasa",
         "Ink Machine"
-      ]
+      ],
+      "chronoOrder": 1073,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "President Ryan Goes Full Bond Villain",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 73,
       "beat": "After an hour of one-sided slaughter, the bunker belongs to Ryan. Standing atop Mechron's mech, he crowns himself 'President' of the ~20 surviving Psychos, ruling through mock-democracy, the Elixir supply ('Elixicare'), and the threat of his shoggoth. He forms a cabinet (Sarin VP, the Black Elixir secretary of state, Frank enforcer, Rakshasa feeding gremlins to the child-bonded plushies), keeps Len and the thralls sedated for later de-brainwashing, holds Psyshock for Cancel, and reassures Little Sarah he'll cure her mother. Since the run is doomed, he decides to throw caution aside, call in favors, seize the bunker's doomsday weapon, and aim for 'the woooooorld', sending for his white Persian cat to complete the villain aesthetic.",
       "entities": [
@@ -19048,10 +19197,12 @@
         "The Meta-Gang",
         "Elixicare",
         "Mechron"
-      ]
+      ],
+      "chronoOrder": 1073,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "President Ryan Assembles His Scheme",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 74,
       "beat": "Ruling the bunker as 'Mr. President,' Ryan cracks Adam and Psyshock's files, learning the Meta-Gang found the bunker by tracing a research probe's signal to New Rome, and grasping that whoever unlocks the central mainframe could dominate the world. He recruits Geniuses by phone: the Architect (Nora Moore) to stress-test the bunker's tech and line up a cashmere costume from Wardrobe; Vulcan (Jasmine) to arm a war on Dynamis, on the condition he first trashes the Wyvern movie at Star Studio; and, swallowing old betrayal, Alchemo/Braindead to fix the memory-transfer machine for Len (Alchemo insisting on bringing 'the Doll'). Livia agrees to a neutral meeting, and Minerva accepts a live peace offering to the Augusti. Cure theory forms: pair Mongrel and a two-color survivor with Dr. Tyrano.",
       "entities": [
@@ -19059,10 +19210,12 @@
         "Big Fat Adam",
         "Psyshock",
         "The Meta-Gang"
-      ]
+      ],
+      "chronoOrder": 1074,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Darkling and the Cosmology of the Ultimate Ones",
+      "title": "The Alchemist and the Elixir Cosmology",
       "chapter": 74,
       "beat": "Ryan visits the Black Elixir, learning it is an eighth-color Elixir of pure paradox that cannot be bound and finds our causal universe a maddening 'molecule-shaped prison.' It reveals the cosmology: Ultimate Ones, one per colored higher dimension, are supreme beings the Elixirs serve as priest-conduits so mortals may ascend (the Alchemist's true goal, Augustus its warning). It wants to return through a bunker portal to the Black World and ask the Black Ultimate One to erase its arrival. It confirms Ryan's power comes from the Violet Ultimate One, making Ryan the timeline's Observer, and that this god 'nudges' rather than controls, no longer actively interfering, leaving Ryan free and alone. It hints an Ultimate One could even restore the erased (Jasmine), but at a reality-damaging price. Ryan names it 'Darkling,' which it sulkily accepts.",
       "entities": [
@@ -19072,10 +19225,12 @@
         "The Ultimate Ones",
         "The Violet Ultimate One",
         "The Alchemist"
-      ]
+      ],
+      "chronoOrder": 1074,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Peace Offering to the Augusti",
+      "title": "The Augusti and Augustus",
       "chapter": 75,
       "beat": "Ryan meets Livia at Deadland Motel and gifts her the drugged Psyshock; Cancel negates his power and Mortimer executes him, freeing his thralls. Under the truth-teller Luigi, Ryan spitefully rants his entire history (time travel, Monaco, Darkling, the doomed loop), triggering Luigi's existential crisis; Livia pays Luigi 20M euros to leave the city forever. Ryan confirms Cancel's true mechanic (severing the Elixir-dimension link, lethal to his Purple-dependent power) and theorizes Augustus's invulnerability is an anomalous metal-mimicking Orange mutation.",
       "entities": [
@@ -19086,10 +19241,12 @@
         "Mortimer",
         "Luigi",
         "Darkling"
-      ]
+      ],
+      "chronoOrder": 1075,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "An Alliance and Its Limits",
+      "title": "Ryan and Livia",
       "chapter": 75,
       "beat": "Convinced, Livia freely gives Ryan Len's uncorrupted brain-map, no strings, honoring her past self's debt, and commits to partnership toward a 'perfect ending,' agreeing to consider helping cure Psychos via her two-power secret. Her limits: only a week or two before her family retakes Rust Town; she wants Augustus retired, not killed; and she's in denial over Felix, meaning to try to win him back this loop. She warns of mysterious Augusti assassinations, which Ryan recognizes as the Shroud, now on a lone spree, believing Ryan turned Psycho. Returning, Ryan learns Psyshock scrambled Len's brain into a vegetable on his way out, forcing him to rely on Alchemo, and turns to cracking the bunker with the Architect's 35-page report.",
       "entities": [
@@ -19097,10 +19254,12 @@
         "Livia Augusti",
         "Len",
         "Augustus"
-      ]
+      ],
+      "chronoOrder": 1075,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Manada's Ultimatum",
+      "title": "The Dynamis Corporation",
       "chapter": 76,
       "beat": "In a tense video call, Dynamis CEO Hector Manada refuses to renew the knockoff-Elixir supply, revealing Psyshock had been secretly taking over Dynamis by brainwashing his staff, treachery his death exposed. Manada calls Ryan's blackmail bluffs (recordings; the knockoffs' Bloodstream/Lab 66 link) and gives him 48 hours to release the technicians, return the tech, and leave town, or face Il Migliore. Ryan, unable to keep the juice flowing, resolves instead to storm the bunker's mainframe, using Manada's 48-hour window as cover.",
       "entities": [
@@ -19108,10 +19267,12 @@
         "Hector Manada",
         "Psyshock",
         "Il Migliore"
-      ]
+      ],
+      "chronoOrder": 1076,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Alchemo, the Doll, and Diagnosing Len",
+      "title": "Curing the Psychos",
       "chapter": 76,
       "beat": "Alchemo arrives with his android daughter Tea (the Doll, Ryan's ex, who slaps then forgives him) and Ryan's old toaster-robot Toasty. Amid the awkward reunion, Alchemo treats the captive Acid Rain's brain tumors and agrees, at the Doll's urging, to help cure Psychos and Mechron-plague tumors. Examining the comatose Len, he confirms Psyshock's repeated overwrites nearly shut down her brain and she won't wake on her own; he can't repair Dynamis's booby-trapped machine but can build a working copy, if he can access the bunker's central Universal Brain and matter replicator. Ryan commits to assaulting the mainframe, with Frank guarding the non-combatant Genius.",
       "entities": [
@@ -19122,10 +19283,12 @@
         "Acid Rain",
         "Len",
         "Universal Brain"
-      ]
+      ],
+      "chronoOrder": 1076,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Storming the Mainframe",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 77,
       "beat": "Clad in Wardrobe's new black-and-red presidential war-suit, Ryan leads a strike team (Sarin, Alchemo, Darkling, Frank, and expendable Psychos) through Nora's shortcut into the bunker to seize the mainframe and let Alchemo interface with it. They face Mechron's learning hivemind: cyclopean androids, drones, and turrets that adapt within minutes and kill Gemini, Ink Machine, and the Reptilian. Frank and Darkling hold the rear while Sarin rusts through walls; Darkling devours a telekinetic vat-boss and its Red Elixir. In the command room Alchemo hijacks the Universal Brain, registers the team as 'staff,' shuts down the defenses, and unlocks Mechron's entire research database.",
       "entities": [
@@ -19139,10 +19302,12 @@
         "Ink Machine",
         "The Reptilian",
         "Universal Brain"
-      ]
+      ],
+      "chronoOrder": 1077,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Len Wakes, and Ryan Breaks",
+      "title": "Finding Len",
       "chapter": 77,
       "beat": "Using the bunker's replicator, Alchemo builds a working transfer machine and restores Len with Livia's clean brain-map, repairing the overuse damage. After Tea gently ushers Little Sarah out, Ryan sits alone with Len as she wakes with full recognition, rejoicing that the transfer worked. The centuries of buried loneliness finally crash down and Ryan collapses in tears, unable to speak. Len holds him as she did in childhood and tells him he's not alone, and for the first time since he began looping, he isn't.",
       "entities": [
@@ -19152,10 +19317,12 @@
         "The Doll",
         "Little Sarah",
         "Livia Augusti"
-      ]
+      ],
+      "chronoOrder": 1077,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Chekhov's Gun Falls on New Rome",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "chapter": 46,
       "beat": "After Mortimer coldly executes Wardrobe, Len bubbles the enraged Reload and, grieving, begs Ryan to leave the doomed city with her, finally admitting she wants him back in her life. As Livia's people evacuate by bathysphere, the Shroud abducts Narcinia mid-loading on Felix's behalf, and Livia senses her alternate selves dying to an incoming secret weapon. A pillar of light falls from orbit; Ryan blacks out and wakes alone in the rerouted escape pod beneath the sea. Surfacing, he sees New Rome ablaze, Mount Augustus a crater, and Dynamis's towers annihilated by repeated orbital strikes. He realizes Big Fat Adam has thrown his own men into the meat-grinder, unlocked Mechron's bunker, and seized its Orbital Communications Center weapon. Ryan waited too long.",
       "entities": [
@@ -19169,10 +19336,12 @@
         "The Shroud",
         "Big Fat Adam",
         "Mechron"
-      ]
+      ],
+      "chronoOrder": 1046,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Happiness Overdose",
+      "title": "Curing the Psychos",
       "beat": "Ryan wakes at peace for the first time in centuries, uncharacteristically kind to Frank and his minions, and declares a day off before tomorrow's assault on Dynamis, racing Manada's expiring ultimatum. Alchemo's cured Acid Rain (now the meek 'Helen') and Mongrel emerge; Helen reveals her teleport passes through the Purple World where she glimpses the watching pyramid and a closed 'pathway' inside Ryan, and recounts Adam force-feeding her a Violet Elixir. Ryan swears to help her though he can't restore her family.",
       "entities": [
         "Ryan Romano",
@@ -19188,10 +19357,12 @@
         "Mosquito",
         "Hector Manada"
       ],
-      "chapter": 78
+      "chapter": 78,
+      "chronoOrder": 1078,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Family, Not Lovers",
+      "title": "Finding Len",
       "beat": "In Len's new bunker workshop, Ryan confesses he loves her and wants to build a life together; Len, clear-headed on Alchemo's antidepressants, gently declines romance but insists he stay in her life, reframing them as family. They plan the endgame: the transfer machine sends only one brain-map per loop, so they'll need Livia for external memory storage and Vulcan's or the bunker's tech to rebuild the scanner. Next target: raiding Dynamis's Lab Sixty-Six.",
       "entities": [
         "Ryan Romano",
@@ -19201,10 +19372,12 @@
         "The Brain-Copying Machine",
         "Vulcan"
       ],
-      "chapter": 78
+      "chapter": 78,
+      "chronoOrder": 1078,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Goodbye, Monaco!",
+      "title": "Monaco and the Absurd",
       "beat": "Flashback to Ryan's self-appointed 'Perfect Run': after years of loops mapping Monaco's pocket dimension (proving nukes, drones, and animals can't break or bypass it) he realizes 'I am an exit' and spends five years building the Resonators from CERN parts. On April 27th he plants one in Simon's tunnel to tear open an escape portal, single-handedly massacres the entire clown garrison and its circus minibosses as 'Quicksave', and evacuates ~40 captives including Simon and Martine. Simon survives, stays to fence off Monaco, and gifts Ryan Nietzsche's 'Thus Spoke Zarathustra'. Ryan detonates the Resonator's nuke behind them and, knowing these people he lived a century beside will never truly know him, freezes time to absorb every memory before driving into the sunset, his Perfect Run complete.",
       "entities": [
         "Ryan Romano",
@@ -19216,10 +19389,12 @@
         "Jean-Stéphanie",
         "The Resonators"
       ],
-      "chapter": 79
+      "chapter": 79,
+      "chronoOrder": 800,
+      "chronology": "Ryan's first self-declared Perfect Run: freeing Monaco's captives"
     },
     {
-      "title": "Lonely Together",
+      "title": "Ryan and Livia",
       "beat": "On the Rust Town pier, Ryan and Livia bond over their mirrored isolation -- both know everyone around them yet are truly known by no one. Livia, having confirmed Felix will never love her back, agrees to Ryan's endgame: use her time-leap to preserve memories, co-develop a cure for the Psycho condition (on condition she's involved throughout), and disguise herself as the supervillain 'Queen Crimson' to join tomorrow's Star Studios raid. She warns that Leo Hargraves and Dynamis are converging on Rust Town in her visions.",
       "entities": [
         "Ryan Romano",
@@ -19230,10 +19405,12 @@
         "Felix",
         "Vulcan"
       ],
-      "chapter": 80
+      "chapter": 80,
+      "chronoOrder": 1080,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Screaming Knockoff",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "In the bunker lab, Len insists on testing whether Dynamis's knockoff Elixirs are made from her father. A drop of her blood makes the green 'Hercules' knockoff scream, turn bloody red, and bloat into Bloodstream's face reaching for its 'lost daughter'. Alchemo's flamethrowers incinerate it as Len relives her trauma, clawing her cheeks bloody, and Ryan holds her. The horror confirmed: Dynamis packaged Bloodstream into a product, and unknown numbers of New Romans have unknowingly drunk Elixirs made from a human being.",
       "entities": [
         "Len",
@@ -19244,10 +19421,12 @@
         "Lab Sixty-Six",
         "Hector Manada"
       ],
-      "chapter": 80
+      "chapter": 80,
+      "chronoOrder": 1080,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Good Morning New Rome",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "As Hector Manada's ultimatum expires, Ryan launches his 'full supervillain' plan: the Meta-Gang (Ryan as Mr. President, Livia debuting as Queen Crimson, the Doll, Sarin, Frank, and a 'Beefcake'-enhanced Mosquito) crashes Dynamis's Star Studios and seizes the live news set. On air Ryan broadcasts his edited confrontation with Manada and the Bloodstream-knockoff footage (exposing that ~10% of New Rome carries a Bloodstream clone), threatens the city with a mini A-bomb, performs a stop-motion figurine parody, and demands a ludicrous one-million-dollar ransom. Len, shattered by the knockoff test, refuses to come. Wyvern races toward the studio just as Eugène-Henry the cat bats the A-bomb's button and starts the countdown.",
       "entities": [
         "Ryan Romano",
@@ -19265,10 +19444,12 @@
         "Eugène-Henry",
         "Len"
       ],
-      "chapter": 81
+      "chapter": 81,
+      "chronoOrder": 1081,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Corporate Raid",
+      "title": "The Dynamis Corporation",
       "beat": "Dynamis's counterattack hits the Star Studios raiders: Wyvern duels the Beefcake-Mosquito while Private Security and heroes (Atom Cat/Felix, Reload, Wardrobe) surround the truck. Ryan turns it into theater, recruiting Wardrobe as his willing lifelong archenemy, dodging Felix's kill-touch, and out-juggling Wardrobe's costume-theft with three mass-produced A-bombs to force Wyvern to stand down. Livia (Queen Crimson) foresees and punches the invisible Shroud, who confesses the glass-vigilantes only 'delayed', not stopped, Bloodstream's return. Ryan hands Wyvern a syringe of Len's blood as proof against Dynamis, spares Felix per his promise to Livia, and the gang escapes with the ransom pending.",
       "entities": [
         "Ryan Romano",
@@ -19283,10 +19464,12 @@
         "Len",
         "Bloodstream"
       ],
-      "chapter": 82
+      "chapter": 82,
+      "chronoOrder": 1082,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Happy Birthday",
+      "title": "The Plushie's Secret",
       "beat": "Fleeing back to Rust Town, the crew finds the Private Security checkpoint massacred: ~24 guards hung from an archway by their own intestines, '885' scrawled in blood, and 'HAPPY BIRTHDAY!' spelled one letter per corpse. Livia's foresight had gone blind to it. Ryan realizes the escaped Killer Rabbit Plushie has surfaced, dooming this run, as its pointed ears rise behind him in the truck's rear-view mirror.",
       "entities": [
         "The Killer Rabbit Plushie",
@@ -19294,7 +19477,9 @@
         "Livia Augusti",
         "Private Security"
       ],
-      "chapter": 82
+      "chapter": 82,
+      "chronoOrder": 1082,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
       "beat": "CH83: With Rust Town under siege (but its underwater bunker access secretly edited out of the plans Ryan sent Nora), Vulcan flies in past her own blockade and agrees to build Ryan's magnum opus: a power-boosting cashmere armor using Mechron's tech, the matter replicator, and Len's signal tech, meant to let him carry multiple people back in time. Alchemo's bio-scans then crack the Psycho puzzle: Livia's two Elixirs coexist because her genome (Neanderthal DNA/chimerism) fools them into thinking they bonded to two people. The cure would reproduce Mongrel's Elixir-control power via gene therapy, but needs Dr. Tyrano, who is shielded by Fallout.",
@@ -19311,7 +19496,9 @@
         "Len"
       ],
       "chapter": 83,
-      "title": "R&D"
+      "title": "Vulcan and the Saturn Armor",
+      "chronoOrder": 1083,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
       "beat": "CH83: Dynamis's damage-control press conference backfires spectacularly. Wyvern goes off-script, confirms the Knockoff Elixir crime is real ('I have checked'), and resigns as Il Migliore's leader on principle. Felix walks out of Dynamis; Enrique Manada stays silent as if he'd long wanted to say it. Ryan's exposure gambit lands: 'all according to keikaku.' The chapter closes on betrayal: Sarin eavesdrops on the cure/endgame talk and levels her vibrating gauntlet at Ryan, a turn Livia foresaw.",
@@ -19325,10 +19512,12 @@
         "Livia Augusti"
       ],
       "chapter": 83,
-      "title": "The Public Defection"
+      "title": "The Dynamis Corporation",
+      "chronoOrder": 1083,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Left Behind",
+      "title": "Curing the Psychos",
       "beat": "CH84: Sarin's mutiny forces Ryan's biggest psychological turning point. She refuses to let him reload until he cures her, revealing her tragedy (six months to reform from dispersed wind, years sealed in a cloth prison, 'my name is not Sarin, I want my life back'), then breaks down after a warning shot. Alchemo, exposed for reading the Doll's memory-map, refuses to be judged by his other self's madness and offers to copy minds. Livia (who foresaw Sarin killing her and Alchemo) and the Doll's love push Ryan to finally keep his loop-bonds: for the first time he agrees to carry vetted companions forward via Livia's brainmap backups before the coming point of no return. 'Hell is loneliness,' not other people.",
       "entities": [
         "Ryan Romano",
@@ -19338,10 +19527,12 @@
         "The Doll",
         "The Brain-Copying Machine"
       ],
-      "chapter": 84
+      "chapter": 84,
+      "chronoOrder": 1084,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Bloodstream's Shadow",
+      "title": "Finding Len",
       "beat": "CH84: Ryan finds Len catatonic in her room, water rifle in reach against a childhood ghost, having never moved on from Bloodstream. He warns it is almost time to open Darkling's gate home and raid Lab Sixty-Six to face whatever remains of her father, who may be cured, dead, or a harvested Knockoff source. Len grabs her rifle and resolves to go: 'Let's go.'",
       "entities": [
         "Len",
@@ -19350,10 +19541,12 @@
         "Lab Sixty-Six",
         "Darkling"
       ],
-      "chapter": 84
+      "chapter": 84,
+      "chronoOrder": 1084,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "R&D",
+      "title": "Vulcan and the Saturn Armor",
       "beat": "CH85: Vulcan completes the magnum-opus power armor she and Jasmine once dreamed of, naming it the Saturn Armor: a purple exoskeleton with a 'Chernobyl' nuclear chest blaster, gauntlet lasers, and a miniaturized Chronoradio backpack to carry one mind across time, its rabbit-ear helmet streamlining Ryan's Violet Flux connection. Meanwhile Livia safely records brainmaps at her father's, Len evacuates the children by bathysphere, and Alchemo backs up the Doll and struggles to record Sarin (whose memories are molecular, not neural). Then it's raiding time.",
       "entities": [
         "Vulcan",
@@ -19365,10 +19558,12 @@
         "Sarin",
         "The Brain-Copying Machine"
       ],
-      "chapter": 85
+      "chapter": 85,
+      "chronoOrder": 1085,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Light Beyond",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH85: Ryan uses the bunker's particle collider to open a gate to the Black World and send Darkling home; the shoggoth reverts to its true impossible form. The Black Ultimate One tempts Ryan to ascend and shed his flesh forever, luring him with the voices of his dead (Jasmine, Simon, Felix) and the promise of undoing every erasure. In the abyss his own violet phantom speaks and reveals it is his Elixir, his other half, granting the unbreakable wish he made at bonding (to return to the past). Ryan chooses the living over the dead, refuses ascension, and returns radiating Black particles alongside violet. Darkling vows to wait for him at the end.",
       "entities": [
         "Ryan Romano",
@@ -19378,10 +19573,12 @@
         "Elixir Mechanics",
         "The Purple World"
       ],
-      "chapter": 85
+      "chapter": 85,
+      "chronoOrder": 1085,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Second Power",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH86: Aboard the submarine, Ryan, Vulcan, and Alchemo study the Black Flux he brought back from the Black World. The Saturn Armor detects it only in frozen time; its readings self-alter after recording and refuse categorization, warping reality when insisted upon, yet Ryan's bioscan still reads as an ordinary Violet Genome. Vulcan suspects a dormant secondary power linked to the Black World, but Ryan cannot activate or understand it ('UNLIMITED POWAH' does nothing). Alchemo gives up theorizing.",
       "entities": [
         "Ryan Romano",
@@ -19391,10 +19588,12 @@
         "Alchemo",
         "The Black World"
       ],
-      "chapter": 86
+      "chapter": 86,
+      "chronoOrder": 1086,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The End Times",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH86: The Lab Sixty-Six raid launches against a burning New Rome. Ryan forgives Alchemo (a final second chance, brainmap to Livia) and confesses to Len this is his TWELFTH world-ending, swearing no thirteenth ('together till the end'). The killer-plushie army has escalated into open war on Mount Augustus (the Leporimachia), overrunning Augustus's hill faster than he can cull it. Vulcan departs on Augustus's orders, scrambles Dynamis comms, and warns that Fallout is recalled and ~1-2 hours out. Sarin's rousing speech rallies the demoralized gang, and Ryan leads the assault on the Dynamis tower to grab Dr. Tyrano and torch Lab 66.",
       "entities": [
         "Ryan Romano",
@@ -19410,10 +19609,12 @@
         "Lab Sixty-Six",
         "Frank the Mad"
       ],
-      "chapter": 86
+      "chapter": 86,
+      "chronoOrder": 1086,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The End Times",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH87: Ryan's crew crashes into Dynamis HQ and fights up to Lab 66. Incognito's earlier server infiltration lets them reprogram every keycard. Devilry is downed by Mosquito and Acid Rain; the final guardians (the terrified kung-fu Panda, the hero Reload, and Wardrobe) are trapped in Len's water bubbles. Ryan and Wardrobe have a costume duel he wins by cheating a time-stop, then he playfully proposes marriage and she refuses (Dynamis holds her girlfriend Nora hostage, so she only token-defends). Sarin blasts open Lab 66, revealing the automated Knockoff Elixir assembly line. But before they breach Dr. Tyrano's inner door, Fallout drills in early, having killed Mosquito on the roof: 'Time to die.'",
       "entities": [
         "Ryan Romano",
@@ -19431,10 +19632,12 @@
         "The Knockoff Elixir",
         "Dr. Tyrano"
       ],
-      "chapter": 87
+      "chapter": 87,
+      "chronoOrder": 1087,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The End Times",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH88: the Fallout boss fight. Ryan's crew battles Atom Smasher (Fallout) through the Knockoff factory, past cloning pods holding modified template clones (Wyvern, Devilry, Windsweep, an embryo Panda) used as living organ processors. Ryan traps Fallout in Mechron nanomachine goo, but the cyborg overrides his safeties and becomes a blackened flaming skeleton of pure Red Flux, Hargraves-durable, melting the floor. He bisects and kills Mongrel. Frank tackles him and Sarin (real name Bianca) charges him like a suicide bomber to buy Ryan time; the collapsing ceiling buries Frank, Sarin, and Fallout alive. Ryan notes his Black Flux devours Fallout's Red Flux, and vows to save Sarin next loop.",
       "entities": [
         "Ryan Romano",
@@ -19451,10 +19654,12 @@
         "The Panda",
         "The Knockoff Elixir"
       ],
-      "chapter": 88
+      "chapter": 88,
+      "chronoOrder": 1088,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Bloodstream Reunion",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH88: Ryan captures Dr. Tyrano at gunpoint to open the inner bioscanner door, learning Tyrano's true goal is a Knockoff that turns humans into dinosaurs. Behind the door, at the heart of Lab 66, is the source of all Knockoffs: Bloodstream, Len's father, survived as a house-sized red shoggoth in a mechanical aquarium wired into the whole system. Len drops her rifle and rushes to the glass; the blob's eyes find his daughter. Blood calls to blood.",
       "entities": [
         "Ryan Romano",
@@ -19464,10 +19669,12 @@
         "The Knockoff Elixir",
         "Lab Sixty-Six"
       ],
-      "chapter": 88
+      "chapter": 88,
+      "chronoOrder": 1088,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Origin Loop: Bloodstream's Last Stand",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH89 (flashback to Ryan's first, powerless life as 'Cesare'): Leo Hargraves briefs the Carnival on their target Freddie Sabino / Bloodstream, a Green/Blue Psycho who lives in every blood cell and converts anyone he infects into a copy of himself. Meanwhile Ryan and Len hide with the delusional Bloodstream in Porto Venere, building the submarine Laika to flee to America. Ryan endures Bloodstream's love-and-abuse, learns the Psycho plans to kill everyone if his children die, and secretly resolves he must die. Stitch delivers the doom reveal: Bloodstream's limits are only psychological, and if Len dies he becomes an extinction-level plague. Ryan baits the Carnival to the hideout, forces Len onto the Laika alone, returns to die beside Bloodstream, and injects his Violet Elixir for the very first time. The world turns purple, and Ryan runs, the birth of his time loop.",
       "entities": [
         "Ryan Romano",
@@ -19488,10 +19695,12 @@
         "The Violet Elixir",
         "Elixir Mechanics"
       ],
-      "chapter": 89
+      "chapter": 89,
+      "chronoOrder": 600,
+      "chronology": "Ryan's powerless 'Cesare' life ends: Bloodstream's last stand at Porto Venere"
     },
     {
-      "title": "Origin Loop: The First Run",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH90: Ryan discovers his power mid-battle as the Carnival (Leo, the Cossack, Mr. Wave) fights Bloodstream at Porto Venere's Marina, a 10-second time-stop with a 10-second cooldown. In his first try he steps out and shouts for them to stop; the distraction lets Bloodstream kill Ace and, no longer knowing 'Cesare,' crush Ryan's skull, his first death. He wakes rewound to a checkpoint: his power creates a save-point. On the reload he hides, lets Leo's fireball incinerate Bloodstream's last clone (Ace survives), but can't outrun the blast and dies again, waking in the Carnival infirmary. Len and the Laika are long gone; Ryan loops the explosion endlessly, never catching her, and is left utterly alone. Epilogue: Enrique and Alphonse Manada reveal Dynamis secretly backed the hunt and knew the god-tier genetic-rewrite power of Bloodstream's blood, the seed of the Knockoffs.",
       "entities": [
         "Ryan Romano",
@@ -19510,10 +19719,12 @@
         "Stitch",
         "The Carnival"
       ],
-      "chapter": 90
+      "chapter": 90,
+      "chronoOrder": 610,
+      "chronology": "The origin loop: Ryan injects the Violet Elixir and his time loop is born"
     },
     {
-      "title": "The End Times",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH91 (loop climax): In Lab 66 Ryan confirms Dynamis has held a neutered Bloodstream since 2016, nationalizes Dr. Tyrano and the Knockoff cure, and downloads the vaccine + email codes for next loop. But Len, infected by proximity, shoots the aquarium and merges with her father; Bloodstream detonates into a rangeless world-plague, devouring Len and Tyrano and reverting every Knockoff in New Rome. Enrique (breaking with Hector) and Fallout are engulfed. Ryan flees as the city, then the planet, turns red.",
       "entities": [
         "Ryan Romano",
@@ -19525,10 +19736,12 @@
         "The Knockoff Elixir",
         "Lab Sixty-Six"
       ],
-      "chapter": 91
+      "chapter": 91,
+      "chronoOrder": 1091,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "Paradox: The Reset",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH91: fleeing the apocalypse, Ryan meets Augustus, who won the Lepiromachia and vaporizes Mr. See-Through while ignoring the world's end to hunt Leo Hargraves. Ryan's Saturn armor absorbs a lightning bolt and he punches Augustus with Black-and-violet particles, the tyrant recoils ('I felt that'), the first blow to ever reach him. Ryan realizes the Black Ultimate One's wish is a paradox: the power to kill immortals. He reaches Livia's turret-ringed Sorrento safehouse, completes her brainmap memory transfer via the Chronoradio as Augustus closes in, and resets, unsure his power is even the same now the Black World runs through him.",
       "entities": [
         "Ryan Romano",
@@ -19541,10 +19754,12 @@
         "The Saturn Armor",
         "Vulcan"
       ],
-      "chapter": 91
+      "chapter": 91,
+      "chronoOrder": 1091,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH92: a new loop begins with Ryan's cathartic revenge rounds (Ghoul, Night Terror, adopting Henriette). Reunited with the now-memory-carrying Livia (who pranks him with a fake villain-betrayal speech), the two become co-strategists. Livia's simulations date the three overlapping calamities, the Meta-Gang seizing Mechron's satellite (~May 12-18), Augustus's war with the incoming Carnival (~May 28), and the Bloodstream pandemic (odds spike if Alphonse takes over Dynamis). They map the perfect-run sequence: Ryan joins Augustus's mob as a Carnival double-agent, rebuilds the mind-transfer machine via Vulcan, returns Narcinia to appease the Carnival, and has Stitch/Tyrano weaponize the Knockoff vaccine to erase Bloodstream. Ryan radios Len that her father lives; she answers with cold determination: 'Meet me at the orphanage.'",
       "entities": [
         "Ryan Romano",
@@ -19564,10 +19779,12 @@
         "Vulcan",
         "Alphonse Manada"
       ],
-      "chapter": 92
+      "chapter": 92,
+      "chronoOrder": 1092,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH93 'Defenders of the Realm': Ryan recruits his alliance for the perfect run. On the orphanage roof he tells amnesiac Len the full truth (time travel, her death, her father as Bloodstream, her infection possibly shaping her feelings) and seeks her consent for the memory transfer; she wavers but believes him. He discovers the Killer Rabbit Plushie, so thoroughly beaten by Augustus in the Leporimachia, has lost its will to kill (given 'depression'), and realizes it was never truly bound. He recruits Shroud/Mathias Martel, proving the Knockoff-Bloodstream link with Len's blood and taking a leap of faith to confirm his chronokinetic looping; Mathias reveals his mother is the seer Pythia (Alice Martel, alive in Denmark) and that Augustus is fated to wage an all-out war to leave Livia 'queen of the ashes.' Ryan plans to sic Sunshine on Mechron's other bases (to self-detonate the Bahamut), flip Enrique/Blackthorn against Hector and Fallout, and reserve Augustus for himself. He recruits the Panda (Timmy) last.",
       "entities": [
         "Ryan Romano",
@@ -19586,10 +19803,12 @@
         "Narcinia",
         "Julie Costa"
       ],
-      "chapter": 93
+      "chapter": 93,
+      "chronoOrder": 1093,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "CH94 'Cheat Code' (May 10th): Ryan executes the revised loop. He preempts Psyshock's Meta-Gang raid on the orphanage, freezing time to bubble Mosquito and Mongrel and huffing Psyshock full of Bliss in under a minute, then captures them for Len's crush-depth underwater asylum instead of killing them. His Avengers assemble (Len, the Panda, Shroud) and forge a temporary alliance with Livia's team (Queen Crimson, Fortuna, Cancel) to destroy the Meta-Gang's cache of Mechron weapons before Adam the Ogre can use it. Ryan's key gambit: deploy Fortuna's luck-Elixir as a 'living cheat code' to crack Mechron's mainframe. Livia (who reveals she knows Shroud's identity) times the strike from Ryan's intel, Cancel's execution of Psyshock to coincide with the Junkyard assault, and the team drives out to attack the bunker.",
       "entities": [
         "Ryan Romano",
@@ -19608,10 +19827,12 @@
         "Mathias Martel",
         "The Land"
       ],
-      "chapter": 94
+      "chapter": 94,
+      "chronoOrder": 1094,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "CH95 'Double Date': the Junkyard raid. Ryan masks the team's approach with Ghoul's severed foot so the Land mistakes the Plymouth Fury for her returning tenant. On Livia's cue Cancel executes Psyshock, freeing his thralls and sowing chaos. Ryan, Livia, the Panda, Shroud, Fortuna and Len blitz the base: Fortuna's luck bubbles the Reptilian, Livia's foresight hard-counters and captures Acid Rain (Helen), and Shroud flies Fortuna clear of the Land's terrakinesis. Ryan and Livia fight in flawless synergy (flirting mid-battle) to breach the blast door, which the Land seals behind them, trapping them inside. Len assaults from the sea access. The team reaches the recreational atrium and comes face-to-face with Adam the Ogre, Sarin and Frank the Mad, Adam wielding a salvaged Mechron cannon.",
       "entities": [
         "Ryan Romano",
@@ -19632,10 +19853,12 @@
         "Ink Machine",
         "Rakshasa"
       ],
-      "chapter": 95
+      "chapter": 95,
+      "chronoOrder": 1095,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "CH96 'Beast of the East': the bunker boss fight. Adam the Ogre wields a salvaged Mechron gravity gun and brainwashes Frank with a 'protect democracy' delusion. Ryan learns his Fisty punch can't focus Black Flux without the Saturn armor, and turns Sarin (Bianca) to his side by disarming and offering her a cure. Livia foresees the winning branch: she IDs Adam's skin-only defense (head trauma works), mentally shatters Frank by exposing his true name Vladimir Khabarov, and lets the Panda absorb Adam's Blue Elixir, gaining a second power and finishing Adam with a 'Soaring Panda' kick (Len later drowns him). The Meta-Gang is jailed underwater pending a cure. A near-flawless victory. Ryan then plots infiltrating Dynamis via Jamie/Ki-jung/Lanka and rebuilding the Saturn armor with Vulcan, and finally asks Livia on a date.",
       "entities": [
         "Ryan Romano",
@@ -19653,10 +19876,12 @@
         "The Saturn Armor",
         "Jamie"
       ],
-      "chapter": 96
+      "chapter": 96,
+      "chronoOrder": 1096,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Vulcan and the Saturn Armor",
       "beat": "CH97 'A Breath of Fresh Air' (day after the raid): Ryan consolidates. He recruits Dr. Tyrano remotely for the Psycho-cure research (dangling a dinosaur Knockoff), though Tyrano is bound to Dynamis and can't sabotage the Knockoff supply, so Lab 66 must still be assaulted. He gives the real A-bomb to Vulcan (becoming her assistant) and a decoy to the suicidal plushie. With Shroud he maps the Dynamis endgame: flip Enrique, but Alphonse/Fallout won't surrender Bloodstream's power give-and-take monopoly, so Ryan will stop him with an upgraded Saturn armor. Len's tests reveal the Panda's second power is accelerated learning (mastering origami, French, and Bruce Lee's kick in half an hour). Ryan reassures Len she's family forever, and she finally consents to the memory transfer and to having her father's blood tracker removed, learning to 'let the dead rest.' Ryan leaves for his date with Livia.",
       "entities": [
         "Ryan Romano",
@@ -19676,10 +19901,12 @@
         "Origami",
         "The Monster Girl Project"
       ],
-      "chapter": 97
+      "chapter": 97,
+      "chronoOrder": 1097,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Ryan and Livia",
       "beat": "CH98 'White Night': Ryan takes Livia on their date to the Midnight Road, a thin place he reaches via his car's particle accelerator. There he confides his deepest secret, that he once lived an entire full lifetime trapped in the Monaco anomaly and has never dared have a family, making Livia his sole confidant. Livia, freed of her foresight because she cannot predict him, vows to stop her father Augustus's coming war and to share Ryan's burden. She then brings Ryan into Augustus's villa on Mount Augustus and into her bed, an open act of rebellion, and they spend the night together, cementing their bond as partners.",
       "entities": [
         "Ryan Romano",
@@ -19688,10 +19915,12 @@
         "Augustus",
         "Monaco"
       ],
-      "chapter": 98
+      "chapter": 98,
+      "chronoOrder": 1098,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Ryan and Livia",
       "beat": "CH99 'How I Met Your Daughter': the morning after, Ryan is caught cooking breakfast in Augustus's villa. He taunts the tyrant with repeated time-stops before confirming he slept with Livia, and Augustus electrocutes him, confirming Ryan still needs the Saturn Armor to harm the invincible mob boss. Livia rushes in, uses her foresight power on her father to save Ryan, and openly claims him as her boyfriend, revealing she knows Augustus murdered Narcinia's parents. When she threatens to abandon the Augusti empire forever if he harms Ryan or Felix, the shaken tyrant relents and grudgingly tolerates Ryan under a triple death-threat, turning a would-be enemy into a reluctant father-in-law and further entrenching Ryan's alliance with Livia.",
       "entities": [
         "Ryan Romano",
@@ -19700,10 +19929,12 @@
         "Felix",
         "Narcinia"
       ],
-      "chapter": 99
+      "chapter": 99,
+      "chronoOrder": 1099,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH100 'Past Fragment: No Planet for Old Men' (a ~2005 flashback, origin lore): Cardinal Andreas Torque, Inquisitor-General of the Vatican's secret Malleus Maleficarum, investigates the pre-Genome-age incidents (the Stanford Incident and worldwide monster outbreaks) and tracks the immortal teleporting geneticist Eva Fabre, revealed to be a legion of blue-particle copies who calls herself the Alchemist and is seeding the Elixirs to force mankind's evolution. Her hive wipes out his order and captures him; dosed with Janus Augusti's mind-opening crystals and a Blue Elixir, Torque's soul ascends into the Blue World and melds with the Ultimate One, the psionic information-god at its center, an experience of divine rapture that leaves him a broken addict craving only to return as the old world burns. This exposes the true origin of the Genome age, the Alchemist, the Blue World deity, and the Augusti dynasty's complicity.",
       "entities": [
         "Andreas Torque",
@@ -19716,10 +19947,12 @@
         "The Stanford Incident",
         "The Blue Elixir"
       ],
-      "chapter": 100
+      "chapter": 100,
+      "chronoOrder": 200,
+      "chronology": "~2005: Cardinal Torque ascends into the Blue World (the Alchemist / Genome-age origin)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Ryan and Livia",
       "beat": "CH101 'Lover's Breath': Ryan and Livia formalize their romance, she agrees to be his girlfriend on the condition it last until they choose to end it rather than until a reset. Reviewing Ryan's Perfect Run to-do list, Livia adds 'Be happy too' and bans his suicide-reloads and drugs, and crucially connects Ryan's Purple-World vision of an icebound Alchemist fortress to Station Orpheon, France's secret Antarctic base, revealing Bacchus was 'twisted' investigating the Alchemist before Last Easter. At the Augusti-owned Triton's Resort, Ryan meets Mars (Luca Veran) and is healed by Venus (Andrea Julani-Veran), learning the resort is a prostitution/Bliss-addiction front, and resolves to eventually bring down Augustus and the Veran clan to free Livia while reforming the empire.",
       "entities": [
         "Ryan Romano",
@@ -19732,10 +19965,12 @@
         "Venus",
         "Narcinia"
       ],
-      "chapter": 101
+      "chapter": 101,
+      "chronoOrder": 1101,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Curing the Psychos",
       "beat": "CH102 'Moving On': after the successful Mechron-mainframe raid (won on Fortuna's luck), Ryan consolidates his gains. Alchemo completes Len's improved memory transfer (coexisting memories) and Stitch, aided by Dr. Tyrano, develops an airborne Psycho vaccine and a viral Bliss cure; the Panda's accelerated learning makes him a lab assistant. Ryan counsels Shroud through his rift with Fortuna, and Len, now recalling that Bloodstream killed her, asks to delay the Dynamis raid until she's certain her father is beyond saving. Ryan sets the next arc: hit the Bliss Factory, blow the bunker, and flee New Rome for Antarctica (Station Orpheon) via Monaco to find the source of the Psycho cure and rebuild the Saturn Armor. Len accepts Ryan's romance with Livia, and both resolve to stop living in the past and move on together.",
       "entities": [
         "Ryan Romano",
@@ -19748,10 +19983,12 @@
         "Station Orpheon",
         "The Panda"
       ],
-      "chapter": 102
+      "chapter": 102,
+      "chronoOrder": 1102,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH103 'Drug Bust': scouting Ischia's Bliss Superlab during Vulcan's security inspection, Ryan discovers Bacchus is Andreas Torque, the ascended ex-Cardinal from CH100, a Bliss-cooking fanatic who reveres the Alchemist/Eva Fabre as a prophet and craves return to the Blue Ultimate One. Ryan extracts Station Orpheon's coordinates (Bacchus believes it emptied after a violet flash) and, sickened by the priest's endorsement of Bliss's mass sterilization, commits to razing the lab. Donning improved Saturn armor, he stages the assault with Len, Sarin, and Shroud while the Augusti high command attends the Olympians meeting, noticing his Black Flux power has grown stronger between loops. Mr. Wave arrives as a surprise ally.",
       "entities": [
         "Ryan Romano",
@@ -19767,10 +20004,12 @@
         "Vulcan",
         "Geist"
       ],
-      "chapter": 103
+      "chapter": 103,
+      "chronoOrder": 1103,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH104 'Return of the Cashmere': the Carnival-route assault razes Ischia's Bliss Factory. Sarin (gaseous) sabotages defenses overnight; then Len's Cthulhu-mech, Sarin's new rust-proof armor, Mr. Wave, and King Saturn (Ryan) storm the fortress while Shroud infiltrates on Livia's codes. Ryan discovers his Black Flux only works during time-stop and uses it to crack, then split, the immortal ghost Geist, who begs joyfully for the death he's craved for 15 years. With Geist gone the factory falls in minutes; Shroud downloads the production data, wipes footage, and feeds Vulcan a cover story. Deeper in they find Bacchus's secret pens of ~23 mind-scrambled human Bliss test subjects. Ryan photographs the atrocity, frees them, and vows to bury the factory with Bacchus inside on his Perfect Run.",
       "entities": [
         "Ryan Romano",
@@ -19785,10 +20024,12 @@
         "Vulcan",
         "The Yellow World"
       ],
-      "chapter": 104
+      "chapter": 104,
+      "chronoOrder": 1104,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Curing the Psychos",
       "beat": "CH105 'Miracle Cure': in the raid's aftermath Augustus decimates his own guards. The Psycho Cure is proven on Knockoff Psychos (Mongrel and Mosquito revert to healthy Genomes) but fails on two-true-Elixir Psychos like Frank, so Ryan launches an Antarctica expedition (Stitch joining) to research Elixir bonding via the Alchemist. Len, healing and shedding her red iconography, resolves to euthanize her father Bloodstream herself if uncurable. Ryan uses Incognito as a decoy alibi, then confesses to Livia that his Black Flux could neutralize Augustus. After her ultimatum, he swears not to KILL her father but to break and imprison him decisively - a fraught compromise between saving the world and sparing her family.",
       "entities": [
         "Ryan Romano",
@@ -19805,10 +20046,12 @@
         "The Alchemist",
         "Black Flux"
       ],
-      "chapter": 105
+      "chapter": 105,
+      "chronoOrder": 1105,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH106 'Mice Trap': the Veran manor dinner is Augustus's assassination trap. Suspecting the Bliss raid was an inside job (Ryan slipped 'Dynamis' fighting Geist), Augustus sends Cancel/Greta to blind Livia's precognition and suppress Ryan's time-stop, and orders Mars to kill Mathias/Shroud once a chimney assassin is in place. Ryan silently unnerves Night Terror into abandoning his post. Livia reveals she deliberately let this possibility stand so Narcinia would witness her family's murderousness (the price of the rare peaceful future where Augustus retires and Enrique Manada takes Dynamis), warns Ryan of the assassin, sets a Sorrento rendezvous, and distracts Cancel. The trap springs when Atom Kitty/Felix - come to smuggle Narcinia out - tumbles down the chimney into the room.",
       "entities": [
         "Ryan Romano",
@@ -19825,10 +20068,12 @@
         "Jamie",
         "Ki-jung"
       ],
-      "chapter": 106
+      "chapter": 106,
+      "chronoOrder": 1106,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH107 'Black Dinner': the trap springs. Felix arrives to extract Narcinia; Augustus (called 'Janus' by Mars) orders his godson executed as the presumed Ischia leak. Ryan freezes time to block Mortimer's assassination shot and hauls Felix out the window under Mars's glass storm. He downs Night Terror (whose fake-Augustus illusion nearly fools them) and exposes Venus impersonating Livia's face and voice, pinning her hand with a knife via the 'Master Ryan' passphrase. A car chase erupts through New Rome: Mars, revealed to wield a pocket-dimension armory of thousands of weapons hurled ~1km and self-repairing his motorcycle, pursues with Mortimer and Sparrow, callously killing civilians. Felix, crushed that his parents tried to kill him, reveals he brought backup - Wyvern and Private Security arrive as Livia sets a Sorrento rendezvous.",
       "entities": [
         "Ryan Romano",
@@ -19845,10 +20090,12 @@
         "Mathias Martel",
         "Fortuna"
       ],
-      "chapter": 107
+      "chapter": 107,
+      "chronoOrder": 1107,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH108 'Go Daddy Go': the Strip chase climaxes. Wyvern, Wardrobe (whistle freezes all traffic), and Private Security aid Ryan and Felix against Mars and Sparrow; Ryan wields the Killer Rabbit Plushie as a laser and downs Mortimer. Felix, realizing Livia foresaw and staged his rescue, is bitter but alive. At the decisive moment Jamie - torn between his light-sword and his conscience - cuts Mars's grappling chains instead of Felix, defecting from the Augusti; Mars crashes, breaks his leg, and is buried under a rat horde. The group escapes onto Len's submarine via a Fortuna-luck glass ramp, Shroud having gotten Fortuna to safety. The very public fight pushes Dynamis and the Augusti toward open war, with Pluto watching them flee.",
       "entities": [
         "Ryan Romano",
@@ -19867,10 +20114,12 @@
         "Pluto",
         "Livia Augusti"
       ],
-      "chapter": 108
+      "chapter": 108,
+      "chronoOrder": 1108,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Monaco and the Absurd",
       "beat": "CH109 'Carnival Town': the submarine reaches Monaco on the way to Antarctica. By burner phone Ryan learns the aftermath - Livia is grounded, Dynamis and the Augusti near open war (Hector Manada may recall Alphonse), and Pluto killed Jamie and Ki-jung for defecting (Ryan will restore them by loop but hides it from Felix for now). He reunites with Simon, who has walled off the Carnival and is building a new French republic with Martine, long ago guessed Ryan's time-loop, agrees to foster the expedition's children, and knows Station Orpheon's history. Leo 'Sunshine' Hargraves joins the team as a fire-Genome ally for the ice. Ryan resolves his Perfect Run must dismantle Augustus's factory and organization in quick succession to minimize casualties; Livia teases an in-person secret.",
       "entities": [
         "Ryan Romano",
@@ -19889,10 +20138,12 @@
         "Martine",
         "Little Sarah"
       ],
-      "chapter": 109
+      "chapter": 109,
+      "chronoOrder": 1109,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH110 'The Truth Beneath the Ice': the expedition reaches Antarctica. Flying recon with Leo Hargraves, Ryan detects the Alchemist's base is sealed inside an artificial Thin Place - a Monaco-like pocket dimension that traps prisoners in as well as intruders out. Sunshine apologizes to Len for the Carnival's attempt on Bloodstream (they'd predicted he would kill his children and cause disaster) and swears to try a cure now. At found Station Orpheon, Panda fanboys over Sunshine (who invites him to the Carnival). Ryan freezes time, tears the pocket dimension open with his hands, and holds it with Resonators (Stitch + Atom Cat guard the exit). Inside, under a black sky, they find the base breached from within, sinking, defenses dead, and a huge dead non-Mechron cyborg killed by claws bearing an M/omega sigil. Ryan's armor reveals the dome is only the tip of a kilometers-long buried spaceship.",
       "entities": [
         "Ryan Romano",
@@ -19912,10 +20163,12 @@
         "The Doll",
         "Alchemo"
       ],
-      "chapter": 110
+      "chapter": 110,
+      "chronoOrder": 1110,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH111 'Past Fragment: Origins of the Species' (Eva Fabre flashback, the setting's origin): stargazing near Station Orpheon, Eva witnesses a purple Thin-Place rift tear open and a kilometers-long Hegemony starship - fleeing a battle with rebel robot-ships - crash into Antarctica, sealing her inside its artificial pocket dimension. Inside the corpse-choked wreck (a civil war of scaled aliens vs their own freed robots, both marked with an M/omega sigil), a blue-Flux ooze engulfs her and splits her into ~10 quantum-echo copies (Eva-One the original). Jacking into the ship's biological overmind, she learns the whole cosmology: the Hegemony harvested Flux (Red/Blue/Orange/Green/Yellow/Violet/White; Black shunned) from the Ultimate Ones' colored realms via towers, conquered its universe enslaving worlds (a past Earth included), then tried to enslave the Ultimate Ones' formless messengers - drawing the punishment (free-willed robots, Black Flux rot) that collapsed it. The last Lord of Science fled via a Reality-Drive into Earth's reality and crashed here. Eva resolves to keep the tech from all governments and uplift humanity into a 'master race' herself - the birth of the Alchemist.",
       "entities": [
         "Eva Fabre",
@@ -19928,10 +20181,12 @@
         "The Alchemist",
         "Thin Places"
       ],
-      "chapter": 111
+      "chapter": 111,
+      "chronoOrder": 100,
+      "chronology": "Deep past: the Hegemony starship crashes in Antarctica (Eva Fabre's origin, decades pre-loop)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH112 'The Thing': the team enters the crashed Hegemony ship. Ryan confirms it is alien ('Reptilians') and notices his Black Flux now cracks the fabric of this Thin Place - hinting his Black power might even kill energy or Elixirs. In the dome they find holograms of the seven Colored Worlds (Black missing) and, crucially, recognize Augustus's body-metal in the Orange World's substance-cube: Augustus is 'an Orange,' his flesh made of Adamantine, the ur-metal of a realm without time/life/death - which explains why time-stop, Livia's skip, and Frank can touch the 'invincible' warlord while Julie Costa's life-touch never registered him. In the Elixir lab (the likely birthplace of Elixirs) they find seven vats and Wonderboxes; the Panda cracks the Alchemist's password by psych-profiling her; the Blue Elixir turns out to be a sapient, telepathic, possession-hungry being (muteness is the Alchemist's deliberate control feature). Then the captive Elixirs flood with fear as an alien with a green visor approaches from the dark corridor.",
       "entities": [
         "Ryan Romano",
@@ -19952,10 +20207,12 @@
         "Wonderbox",
         "Elixirs"
       ],
-      "chapter": 112
+      "chapter": 112,
+      "chronoOrder": 1112,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH113 'Final Contact': a surviving Hegemony Soldier ('E.T.') ambushes the team, wielding every Flux color from a finite stolen reserve - teleport, phasing, a White cancel-shield, seed-cannon, and an Adamantine armor-shift. The group can't safely use powers near the Elixir vats, but Ryan cracks its adamantine visor with Black Flux, corrupting its seven-color balance and collapsing it into a black hole. Inside that hole Darkling speaks: the Hegemony fell decades ago, no invasion or rescue is coming - the ship is just vengeful ghosts of a lost war, and the killed alien was a mere grunt. Eva Fabre read that history as a blueprint and repeated its hubris, birthing Genomes and Psychos. The Violet Ultimate One never acts directly; it sent Ryan via visions so a human could end a human-made disaster. Ryan, now able to speak Elixir and nearest to ascension, resolves to find the ship's control-mind and destroy the ship across all timelines - though the Alchemist will fight to keep it.",
       "entities": [
         "Ryan Romano",
@@ -19976,10 +20233,12 @@
         "Mr. See-Through",
         "The Panda"
       ],
-      "chapter": 113
+      "chapter": 113,
+      "chronoOrder": 1113,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH114 'Chemical Reaction': pushing through the plant-choked, corpse-strewn ship toward its command center, Len finishes decoding the Alchemist's data and drops two bombshells - Elixir genetics (Genome children are always stable Genomes, so Homo Novus will supplant Homo Sapiens in ~200 years; Psychos are a deliberate multi-color synergy experiment, sterile by design) and, worst of all, the Alchemist has had a working Psycho cure FROM THE START and withheld it. Sarin's grief turns to fury. They reach a checkpoint where quantum-duplicate Eva Fabre clones (the Purple-World-vision Founders) fight off Hegemony Soldiers before the blue command-center gate. The Evas admit, without remorse, that the apocalypse was 'an acceptable loss' for Homo Novus and mankind their lab rats. Ryan diagnoses her flaw: her Elixir gave her an echo chamber of adoring copies that eroded her conscience. Sunshine arrests her for genocide; battle erupts, and Ryan freezes time and locks onto the command-center gate.",
       "entities": [
         "Ryan Romano",
@@ -19998,10 +20257,12 @@
         "Elixirs",
         "Bloodstream"
       ],
-      "chapter": 114
+      "chapter": 114,
+      "chronoOrder": 1114,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Alchemist and the Elixir Cosmology",
       "beat": "CH115 'The Clone War': the battle for the command gate rages - Eva's clones swarm endlessly with shields, suicide belts, and Green-Flux revert-rifles, while awakened Hegemony Soldiers (including a winged nine-eyed dragon) crash the fight. Mr. Wave's crew hold the line so Ryan and Len can slip through the blue gate into the command center. There they find the real Eva Fabre: a human head on a biomechanical body fused into the ship's overmind, remorseless and consequence-free. Ryan can't pilot the ship (a Violet, not a Blue), so he infects the overmind brain with Black Flux, tearing open black-hole rifts and summoning the Black Ultimate One, which devours Eva, her clones, and the aliens, and sends the captive Elixirs home. In the Black World, Darkling confirms the ship will vanish from Ryan's timeline on reload, warns that Black is self-reinforcing and could consume Ryan himself, and affirms Elixirs will walk with humanity to the stars. The team is expelled safely; Station Orpheon and the Alchemist are gone. Ryan now wants to live to see mankind reach the cosmos.",
       "entities": [
         "Ryan Romano",
@@ -20022,10 +20283,12 @@
         "Stitch",
         "Elixirs"
       ],
-      "chapter": 115
+      "chapter": 115,
+      "chronoOrder": 1115,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Curing the Psychos",
       "beat": "CH116 'Couple Therapy': in the refurbished, warm Station Orpheon lab, Ryan's Geniuses (Shortie/Len, Alchemo, Stitch) plus the Panda attempt the Psycho cure on Sarin using copied Alchemist data and a Chronoradio-based Flux signal - no guarantee, since they lack the alien tech. Ryan coaxes the wary Sarin into the vat with a heart-to-heart on vulnerability (recalling his own fear of Livia). The loudspeakered Elixir debate exposes the Psycho mechanism: two rival Elixirs (Red + Orange) each thought they had the sole host, unaware she was a 'twin' - incompetence, not malice. Instructed, they 'divorce,' each taking a DNA share; her gas cloud condenses into flesh. Sarin's true self, Bianca - a small ~30yo woman with green-orange hair, memories intact from the saved Meta-Gang-loop sample - is restored, weeping and embracing Ryan. Lore: True Genomes exist biologically + immaterially, and that immaterial consciousness can grow beyond the body and ASCEND. The Psycho scourge finally has a cure.",
       "entities": [
         "Ryan Romano",
@@ -20040,10 +20303,12 @@
         "The Ultimate Ones",
         "Alphonse Manada"
       ],
-      "chapter": 116
+      "chapter": 116,
+      "chronoOrder": 1116,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Curing the Psychos",
       "beat": "CH117 'Making Waves': on the submarine home, Bianca demos her cleanly-separated powers (Orange gas no longer corrosive, Red intact) and pledges loyalty; the team debates mass-producing the Psycho cure across Europe (Enrique Manada as a possible partner) and Stitch projects Elixirs will vanish from circulation in ~10 years, so future Genomes will be born, not made. Ryan comes clean to Mr. Wave, his hero and surrogate father, who already knew and is proud. Alchemo reports a breakthrough: since a Genome's consciousness is intangible Flux, he can refine the Chronoradio to send 5-6 mindmaps back per reload (brain matter no longer required) - reshaping the endgame into a coordinated team-reload strike (Livia, Len, Shroud, Bianca, plus a Dynamis insider) to hit the Meta-Gang instantly. Ryan then convinces a skeptical Felix he's a time-traveler via an unrepeatable private memory; Felix, learning his sister died for him and that he condemned the now-dead Jamie and Ki-jung, commits to the mission. Arriving at the coast, they find New Rome ablaze again - Augustus struck in Ryan's absence.",
       "entities": [
         "Ryan Romano",
@@ -20061,10 +20326,12 @@
         "Enrique Manada",
         "Stitch"
       ],
-      "chapter": 117
+      "chapter": 117,
+      "chronoOrder": 1117,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH118 'The Last Quest' (final loop begins): at a Sorrentos meeting (Neptune/Silvio cleared the guards), Ryan's group reunites with Livia, Fortuna, and Narcinia. Fortuna claims Shroud as her husband-to-be. Livia confirms Augustus launched war on Dynamis in Ryan's absence (Fallout given command of the corporate army) and finally drops every excuse for her father - 'it's all him, he will never change' - committing fully to bringing her family down. Leo Hargraves reveals Narcinia is Giulia Costa, daughter of his murdered hero friends Bruno (Yellow) and Julie (Green) Costa, whom Augustus killed before Bacchus erased her memory; Leo owns his accidental killing of Livia's mother Juno and vows to face trial. Privately Livia tells Ryan 'I love you' for the first time and he answers in kind. Together they lock the full endgame: send 5-6 minds back (Livia, Len, Bianca, Felix, Shroud, the Panda), hit Adam's bunker within hours to save Rust Town captives, build the Saturn armor, cure the Psychos, break Dynamis (seizing the Gravity Gun), then the Olympians, then Augustus - with Ryan saving ~10s after the mind-transfer so memories survive a forced reload. The true Perfect Run begins.",
       "entities": [
         "Ryan Romano",
@@ -20086,10 +20353,12 @@
         "Neptune",
         "Juno"
       ],
-      "chapter": 118
+      "chapter": 118,
+      "chronoOrder": 1118,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH119 'The Last Save': aboard the submarine, six travelers (Livia, Len, Bianca, Felix, Shroud, and the Panda/Timmy) don helmets on Alchemo's throne machine. The Panda gets a heartfelt send-off (Ryan tells him he was never useless); Sunshine warns Ryan the Black World power annihilated Mechron and nearly all Sarajevo through careless curiosity, so use it sparingly - Augustus's death isn't worth the world. Ryan activates his power; during transfer the Illuminati/Violet Ultimate One pyramid watches through the Violet Flux window. All reload to May 8th (17th loop) with memories intact, confirmed by texts. Then two crises hit: Ryan CAN'T SAVE (his Elixir blocks freezing past 10 seconds, as in Monaco), so memories aren't locked; and his retroactive Black power - strengthened over two loops - has already ERASED Geist from existence (invisible even to Livia's precognition), proving lethal Black Flux could permanently scar the timeline. Chronoradio echoes urge him on. Ryan opens the run anyway: rams Ghoul, delivers the mail, and takes a comedic joyride tormenting Ghoul.",
       "entities": [
         "Ryan Romano",
@@ -20109,10 +20378,12 @@
         "Ghoul",
         "Alchemo"
       ],
-      "chapter": 119
+      "chapter": 119,
+      "chronoOrder": 1119,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "CH120 'Speedrunners': Ryan runs the honed bunker assault with his memory-loaded team. He drives Livia and Fortuna to the Junkyard (Ghoul chained to the hood), air-drops Felix and the Panda/Timmy, and Shroud saves Fortuna from collapsing debris; the guards (Reptilian, Gemini, Acid Rain, Mosquito, Mongrel) are subdued non-lethally. Inside, Bianca (secret code confirmed) turns on her old Meta-Gang, and the recreational Psychos fall - Ink Machine, Rakshasa, Incognito, Catcher (aka 'Fuckface'), and Penanggalan (aka 'Pale Guy'). Ryan Bliss-overdoses Psyshock and cons Frank the Mad into guarding the infirmary via a fake 'Agent Frank/Pearl Harbor' script Livia authored. His Plymouth Fury takes no damage for the first time ever - a 'holy sign.' He reaches the deep chamber and confronts Adam the Ogre, who reveals he is a fellow VIOLET; the priority-kill duel begins.",
       "entities": [
         "Ryan Romano",
@@ -20134,10 +20405,12 @@
         "The Meta-Gang",
         "Ghoul"
       ],
-      "chapter": 120
+      "chapter": 120,
+      "chronoOrder": 1120,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Meta-Gang and Mechron's Bunker",
       "beat": "CH121 'Presidential Debate': Ryan duels Adam the Ogre alone in the vat chamber. Adam takes a Rust Town hostage boy; Ryan shoots him free and blinds Adam with depleted-uranium rounds. The fight exposes Adam's two powers: a Violet time-sense (he feels Ryan's freezes and shields his vitals, limiting Ryan to ~8-10 usable seconds) and a pocket dimension in his gullet (bleeds no blood; produces grenades, a flail, a crossbow, and a Blue Elixir syringe). Bolted in waist and leg, Ryan feeds Adam his own triggered A-bomb ('Filibuster!'); the pocket dimension contains most of the blast but flames cook Adam through the uranium bullet-holes, killing him. The Panda (whose prior-loop fight had revealed Adam's internal weakness) patches Ryan up as Livia holds his hand. The raid is a total success: zero casualties, every hostage saved, captive Psychos moved to underwater habitats. Psyshock is handed to Cancel; the bunker will be occupied and destroyed. Next: Dynamis, then the Augusti - after they celebrate.",
       "entities": [
         "Ryan Romano",
@@ -20153,10 +20426,12 @@
         "Alchemo",
         "Mechron"
       ],
-      "chapter": 121
+      "chapter": 121,
+      "chronoOrder": 1121,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Dynamis Corporation",
       "beat": "CH122 'Second Chances': With the Meta-Gang crushed and Alchemo securing Adam's bunker, Ryan/Len/Felix bring the evidence dossier to Enrique Manada (Blackthorn) at Dynamis, Wyvern present. Enrique phone-checks and confirms every charge - Knockoffs made from Bloodstream slime, Len cloned at Lab Sixty-Six, Hector's collusion with Adam - and learns the doomsday risk: Len's blood would revert every Knockoff-drinker into a Bloodstream clone, killing millions. He unmasks, apologizes, and agrees to help dismantle the program and share the Gravity Gun data; Wyvern resigns in disgust and pleads with him to reform. Ryan nudges Wyvern to reconcile with Jasmine (Vulcan). Then Felix visits estranged friends Jamie, Ki-jung, and Lanka, winning their conditional neutrality: Ki-jung and Jamie will step aside once Augustus falls, Lanka stays silent. Next targets: Dynamis's Lab Sixty-Six / Alphonse, then the Augusti.",
       "entities": [
         "Ryan Romano",
@@ -20172,10 +20447,12 @@
         "Ki-jung",
         "Lanka"
       ],
-      "chapter": 122
+      "chapter": 122,
+      "chronoOrder": 1122,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Dynamis Corporation",
       "beat": "CH123 'The Last Break': Enrique delivers the Gravity Gun schematics; Ryan plans to miniaturize it into his armor to fling Augustus out of the atmosphere ('Kars Augustus') and insists on fighting him ALONE. At Livia's rented Dostoevski gathering the war-party assembles - the cured ex-Psychos Bianca, Helen (ex-Acid Rain), Jerome (ex-Mongrel), and Vlad/Vladimir (ex-Frank), plus Alchemo, the Doll, Toasty, Mathias, Fortuna, Felix, the Panda, and Len. Ryan confesses the full Black-power secret to Livia (he wished to die); she takes it calmly and asks only that he spare - imprison, not kill - her father, sharing her New European Republic endgame (merge a reformed Augusti with Dynamis). She gifts him the Opis armor (spider-themed, precog-piloted) and they exile the incurable Ghoul to Earth orbit aboard the SpaceZ rocket. Next in the gauntlet: Lab Sixty-Six, the Bliss Factory, then Augustus.",
       "entities": [
         "Ryan Romano",
@@ -20192,10 +20469,12 @@
         "Len",
         "Enrique Manada"
       ],
-      "chapter": 123
+      "chapter": 123,
+      "chronoOrder": 1123,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "Bloodstream and the Knockoff Conspiracy",
       "beat": "CH124 'Lab Closure': the three-pronged strike on Dynamis. Enrique and Len raid Lab Sixty-Six - Dr. Tyrano is subdued, explosives set, and Len tries the cure on her father Bloodstream; it fails (he has mutated past saving), so she euthanizes him via Tyrano's failsafe and grieves. Simultaneously Wyvern, Felix, and Il Migliore arrest Hector Manada at his mansion on Enrique's own mandate; he surrenders warning of Alphonse's revenge. Ryan (Saturn armor, now maxed with five all-color Flux batteries + a hidden chest Gravity Gun) and Livia (Opis armor) waltz over New Rome releasing the green Cure Flu, a benign virus that scrubs the Knockoff Elixirs from all of Europe's blood. Then Fallout 'rides the atom' from Sicily to attack, and Ryan and Livia stand together to face him.",
       "entities": [
         "Ryan Romano",
@@ -20212,10 +20491,12 @@
         "The Gravity Gun",
         "The Opis Armor"
       ],
-      "chapter": 124
+      "chapter": 124,
+      "chronoOrder": 1124,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Dynamis Corporation",
       "beat": "CH125 'Fusion & Fission': Ryan and Livia battle Fallout over the Gulf of Naples - her timeskip makes Ryan intangible/invincible, cracking his suit and dropping him into the sea, where he sheds his cyborg armor into a radioactive skeleton and self-detonates like a nuke, gravely wounding Livia (who stayed in the blast to be sure Ryan survived). Ryan Black-Fluxes off both Fallout's arms rather than kill him. Enrique arrives, excavates Livia with his roots, and begs his brother to reconcile, daring Alphonse to kill him instead; Fallout refuses ('All for the dream') and moves to self-destruct again - so Shroud fires the full Dynamis Gravity Gun and launches Fallout into space, killing him with the weapon he funded. Livia survives concussed. New Rome is cured of one poison; only Augustus remains, on Ischia.",
       "entities": [
         "Ryan Romano",
@@ -20227,10 +20508,12 @@
         "Wyvern",
         "Augustus"
       ],
-      "chapter": 125
+      "chapter": 125,
+      "chronoOrder": 1125,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH126 'The End is Nigh': aftermath and the eve of the final battle. Dynamis falls publicly, Enrique becomes acting Chairman and promises a public trial; no locals died in Fallout's blast, so the Perfect Run holds. Livia (recovering, saved by Braindead) shares intel - Vulcan has defected, Augustus ordered Wyvern's death, and his forces will invade Rust Town and find the bunker. After tender farewells with Livia and Len (who finds closure and will join The Architect to build cities worldwide), Ryan repairs his Saturn armor, installs Elixir-comms to name his Violet Elixir 'Magenta' (which explains the Ultimate One blocks his saves because his Black has grown dangerous, hints at Ascension, and confirms his Black can beat Augustus's conceptual-only metal), and takes the Plushie as an ally. He triggers the bunker self-destruct ('order Sixty-Six'), collapsing the Junkyard and destroying the Bahamut satellite - erasing Mechron's legacy - then flies to Ischia for the last battle.",
       "entities": [
         "Ryan Romano",
@@ -20245,10 +20528,12 @@
         "Vulcan",
         "The Architect"
       ],
-      "chapter": 126
+      "chapter": 126,
+      "chronoOrder": 1126,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH127 'Theomachia': the assault on Augustus's Bliss fortress on Ischia Island. Ryan's pre-mapped rock-paper-scissors power match-ups (Livia's intel) dismantle the defense - Vladimir (steel giant) + Acid Rain neutralize Mars and his undead legion, Shroud + Fortuna tranq Pluto and Cancel, the Killer Seven fall (Vamp dies, the rest surrender/sedated), and Vulcan's hidden killswitch traps the Augusti in their own armors. Ryan goes inside alone as bait for the telepath Bacchus so the brainless Sarin can ambush and choke him unconscious; he knocks out the necromancer Mercury, spares both for a possible cure, and rescues the mind-tortured Narcinia (reunited with Fortuna and Felix). The factory is razed. Then Augustus finally descends as an ivory lightning-god, framing the duel as his Titanomachy, and the final one-on-one battle above the ruins begins.",
       "entities": [
         "Ryan Romano",
@@ -20270,10 +20555,12 @@
         "Mr. Wave",
         "Livia Augusti"
       ],
-      "chapter": 127
+      "chapter": 127,
+      "chronoOrder": 1127,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH128 'Time & Thunder': the duel with Augustus. Ryan's Black-Flux punches crack the god's 'invulnerable' ivory body, drawing real fear and reversing the fight; Augustus reveals his lightning has no upper limit, detonating a nuclear-scale supernova. Ryan tries to trap him in cursed Monaco but the pocket-dimension spits Augustus back out of spite. Out-boxed in melee, Augustus refuses close combat and wins at range - homing lightning, overloaded and finally fried Saturn Armor - grounding Ryan crippled on a French beach with no save left. As the god moves to vaporize him, the Plushie sacrifices itself, revealing it was always a living gate between universes and Ryan the key. Ryan forces the death-portal wide, drags Augustus in by the ankle, and both fall into the Purple World for the final reckoning.",
       "entities": [
         "Ryan Romano",
@@ -20285,10 +20572,12 @@
         "Simon",
         "The Opis Armor"
       ],
-      "chapter": 128
+      "chapter": 128,
+      "chronoOrder": 1128,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Augusti and Augustus",
       "beat": "CH129 'The Gate & The Key': the Purple World reckoning. On his home turf Ryan reaches full Black power ('I am the gate, and the key'), severs both of Augustus's arms (the hands that killed Julie Costa) while the powerless god can't summon lightning. The Violet Ultimate One descends - a triangular spiral of universe-eyes - shatters Augustus's godhood delusion ('YOU ARE NOTHING'), heals Ryan fully, and reveals his nature as an 'observer' who alone decides which possibility becomes true history. It shows extinguished forks he discarded (the malevolent Clockstopper, a Livia-war, a hollow harem ending), explains causality and free will, and offers ascension. Ryan defers it to return to Earth for 'a happy life with friends who remember me'; the door stays open forever and his destabilizing Black connection is removed. He returns beside Leo Hargraves carrying the broken Augustus Pieta-style; the surviving Olympians surrender at the sight. The war is over.",
       "entities": [
         "Ryan Romano",
@@ -20307,10 +20596,12 @@
         "Wyvern",
         "Vulcan"
       ],
-      "chapter": 129
+      "chapter": 129,
+      "chronoOrder": 1129,
+      "chronology": "The loop present (May 2020, New Rome)"
     },
     {
-      "title": "The Perfect Run Plan",
+      "title": "The Loop and the Perfect Run",
       "beat": "CH130 'Farewell, New Rome' (ENDING): the happy ending. A fifty-page treaty founds the New European Republic, dissolving Dynamis and the Augusti empire; Livia funds Rust Town's renovation (Len in charge) and a Genius Think Tank to heal the Earth with her father's drug wealth. Augustus - confirmed to be Janus Augusti, Livia's father - lives broken and catatonic, foreseen to die of cancer within two years. Ryan chooses to stay rather than wander, meets Livia at the promontory where his journey began, and proposes for real; she accepts a two-year betrothal before becoming Mrs. Romano, and they plan children. Sealing the kiss, Ryan spends the last Black particles in his body on one final time-save, safely purging his destabilizing power while the Ultimate One shows him a montage of everyone's hopeful futures ('THIS IS THE FUTURE YOU FOUGHT FOR... IT IS ALL UP TO YOU'). Ryan Romano has completed his Perfect Run, and he is happy at last. THE END.",
       "entities": [
         "Ryan Romano",
@@ -20330,7 +20621,9 @@
         "Fortuna",
         "Narcinia"
       ],
-      "chapter": 130
+      "chapter": 130,
+      "chronoOrder": 1130,
+      "chronology": "The loop present (May 2020, New Rome)"
     }
   ]
 }
