@@ -39,7 +39,7 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: var(--text-7);
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -47,7 +47,7 @@
 }
 
 .provenance {
-  font-size: 13px;
+  font-size: var(--text-3);
   color: var(--muted);
   margin: 0;
 }
@@ -59,7 +59,7 @@
 }
 
 .levelLabel {
-  font-size: 11px;
+  font-size: var(--text-1);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -68,7 +68,7 @@
 
 .fixedTarget {
   align-self: flex-start;
-  font-size: 14px;
+  font-size: var(--text-4);
   font-weight: 600;
   padding: var(--space-2) 13px;
   border: 1px solid var(--rule);
@@ -85,7 +85,7 @@
 
 .pill,
 .pillActive {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   padding: var(--space-2) 13px;
   border: 1px solid var(--rule);
@@ -113,7 +113,7 @@
 
 .search,
 .field {
-  font-size: 14px;
+  font-size: var(--text-4);
   padding: 10px var(--space-3);
   border: 1px solid var(--rule);
   background: var(--surface);
@@ -145,7 +145,7 @@
 
 .confirm {
   min-height: 42px;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   padding: 10px 18px;
   background: var(--accent);
@@ -171,7 +171,7 @@
 }
 
 .cancel {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   padding: 10px var(--space-3);
   min-height: 42px;

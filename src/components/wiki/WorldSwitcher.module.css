@@ -45,7 +45,7 @@
 }
 
 .crumbUniverse {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--muted);
 }
@@ -55,14 +55,14 @@
 }
 
 .crumbWorld {
-  font-size: 15px;
+  font-size: var(--text-5);
   font-weight: 800;
   color: var(--ink);
 }
 
 .caret {
   margin-left: var(--space-1);
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--muted);
 }
 
@@ -91,7 +91,7 @@
 
 .groupHead {
   padding: var(--space-2) 14px var(--space-1);
-  font-size: 11px;
+  font-size: var(--text-1);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -108,7 +108,7 @@
   gap: var(--space-2);
   width: 100%;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-4);
   text-align: left;
   padding: var(--space-2) 14px;
   border: none;
@@ -147,7 +147,7 @@
 .footerAction {
   width: 100%;
   font: inherit;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   text-align: left;
   padding: var(--space-2) 14px;
@@ -168,7 +168,7 @@
 
 .manageLink {
   display: block;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   text-decoration: none;
   padding: var(--space-2) 14px;
@@ -181,7 +181,7 @@
 
 .error {
   color: var(--danger);
-  font-size: 13px;
+  font-size: var(--text-3);
   margin: 6px 0 0;
 }
 
@@ -190,7 +190,7 @@
    centered panel (square corners, Ashkeld tokens) now come from the base
    <Modal>; only the panel-content styles below are dialog-specific. */
 .promptTitle {
-  font-size: 20px;
+  font-size: var(--text-7);
   font-weight: 800;
   color: var(--ink);
 }
@@ -220,7 +220,7 @@
 .promptCancel {
   height: 36px;
   padding: 0 var(--space-4);
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--ink);
   background: transparent;
@@ -235,7 +235,7 @@
 .promptConfirm {
   height: 36px;
   padding: 0 var(--space-4);
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--on-ink);
   background: var(--ink);

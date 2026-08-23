@@ -33,7 +33,7 @@
 .railToggleChevron {
   display: none;
   margin-left: auto;
-  font-size: 20px;
+  font-size: var(--text-7);
   font-weight: 700;
   line-height: 1;
   color: var(--muted);
@@ -50,13 +50,13 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: var(--text-7);
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 
 .count {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
 }
 
@@ -100,7 +100,7 @@
   background: var(--surface);
   color: inherit;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--text-4);
   font-weight: 700;
   min-height: 40px;
 }
@@ -146,7 +146,7 @@
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--text-3);
   line-height: 1;
   color: var(--muted);
   opacity: 0;
@@ -197,12 +197,12 @@
 }
 
 .itemName {
-  font-size: 14px;
+  font-size: var(--text-4);
   font-weight: 700;
 }
 
 .itemNote {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
 }
 
@@ -215,7 +215,7 @@
   border-top: var(--rule-row);
   cursor: pointer;
   text-align: left;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   color: var(--accent-deep, var(--accent));
   min-height: 40px;

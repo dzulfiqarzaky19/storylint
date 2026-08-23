@@ -15,7 +15,7 @@
    button reset and inherits the heading typography. It reads as plain text
    until hover, when a faint background signals it is editable. */
 .title {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -35,7 +35,7 @@
 }
 
 .count {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--faint);
 }
 
@@ -64,7 +64,7 @@
    Uses --faint, which meets AA (4.5:1) on --ground, so it is legible copy, not
    a color-only cue. */
 .emptyHint {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-style: italic;
   color: var(--faint);
 }
@@ -76,7 +76,7 @@
 
 /* Inline rename input, sized to sit in the heading row like the title. */
 .titleInput {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -96,7 +96,7 @@
 }
 
 .headerButton {
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--faint);
   background: transparent;
   border: none;
@@ -113,7 +113,7 @@
 /* TCK-007: direct trash icon (replaces the ⋯ menu's Delete). Danger-colored on
    hover so the destructive action reads without relying on the glyph alone. */
 .deleteIcon {
-  font-size: 13px;
+  font-size: var(--text-3);
   line-height: 1;
   color: var(--faint);
   background: transparent;
@@ -131,7 +131,7 @@
 /* TCK-006: main-shelf add-entry affordance, mirroring the sidebar's "+ New".
    Sits in the tiles row after the tiles, reads as a quiet action until hover. */
 .addEntry {
-  font-size: 13px;
+  font-size: var(--text-3);
   color: var(--faint);
   background: transparent;
   border: 1px dashed var(--rule);

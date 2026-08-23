@@ -71,6 +71,21 @@
      stay literal at their call site and do not track this token. */
   --radius: 0;
 
+  /* Type scale. A theme restates reading density in one place, the same way
+     --space-* restates spatial rhythm. The ramp covers only the BODY cluster
+     that repeats across the app (the vast majority of call sites land on
+     --text-3 13px / --text-2 12px). Display sizes (a 44px entry name, a 76px
+     404) and optical half-steps (12.5px) are layout/art direction, not a theme
+     step, so they stay literal at their call site and do not track this token,
+     exactly as an 11px pill radius stays literal against --radius. */
+  --text-1: 11px;
+  --text-2: 12px;
+  --text-3: 13px;
+  --text-4: 14px;
+  --text-5: 15px;
+  --text-6: 16px;
+  --text-7: 20px;
+
   /* --font-archivo is injected by next/font in layout.tsx */
 }
 

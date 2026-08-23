@@ -10,7 +10,7 @@
 }
 
 .title {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -35,13 +35,13 @@
 }
 
 .text {
-  font-size: 14px;
+  font-size: var(--text-4);
   line-height: 1.4;
 }
 
 .fallback {
   padding: 11px 0;
-  font-size: 14px;
+  font-size: var(--text-4);
   line-height: 1.4;
   color: var(--muted-2);
 }

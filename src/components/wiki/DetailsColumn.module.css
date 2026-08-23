@@ -12,7 +12,7 @@
 }
 
 .title {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -39,7 +39,7 @@
 /* Key cell 104px, 12px/700/0.04em uppercase muted-2. */
 .key {
   flex: 0 0 104px;
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -49,7 +49,7 @@
 .value {
   flex: 1;
   min-width: 0;
-  font-size: 15px;
+  font-size: var(--text-5);
 }
 
 /* Suggestion card drop target (Direction B: border:2px solid #ec3013 over --drop tint). */
@@ -64,7 +64,7 @@
   display: inline-block;
   margin-top: 10px;
   padding: var(--space-1) 6px;
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -86,7 +86,7 @@
   margin-top: 14px;
 }
 .aiSuggest {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   padding: 7px var(--space-3);
   border: 1px solid var(--accent);
@@ -116,7 +116,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .aiText {
-  font-size: 14px;
+  font-size: var(--text-4);
   color: var(--ink);
 }
 .aiActions {
@@ -125,7 +125,7 @@
   flex-shrink: 0;
 }
 .aiAdd {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   padding: var(--space-1) 10px;
   border: none;
@@ -134,7 +134,7 @@
   cursor: pointer;
 }
 .aiDismiss {
-  font-size: 12px;
+  font-size: var(--text-2);
   padding: var(--space-1) var(--space-2);
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: transparent;

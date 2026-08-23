@@ -19,14 +19,14 @@
 }
 
 .wordmark {
-  font-size: 15px;
+  font-size: var(--text-5);
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .descriptor {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 400;
   color: var(--muted);
 }
@@ -39,7 +39,7 @@
 
 .navItem,
 .navActive {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   text-transform: lowercase;
   padding-bottom: 2px;

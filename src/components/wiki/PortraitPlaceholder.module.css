@@ -13,7 +13,7 @@
 
 .label {
   padding: 10px var(--space-3);
-  font-size: 11px;
+  font-size: var(--text-1);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;

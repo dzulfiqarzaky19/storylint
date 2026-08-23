@@ -34,7 +34,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: var(--text-3);
   color: var(--muted);
 }
 
@@ -48,7 +48,7 @@
 }
 .seg button {
   padding: 7px 15px;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   color: var(--muted-2);
   background: none;
@@ -121,7 +121,7 @@
 }
 
 .empty {
-  font-size: 16px;
+  font-size: var(--text-6);
   color: var(--muted);
   max-width: 46ch;
   margin-top: 6px;
@@ -130,7 +130,7 @@
   padding: 30px var(--gutter) 0;
 }
 .kicker {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -158,7 +158,7 @@
 }
 
 .headCell {
-  font-size: 13px;
+  font-size: var(--text-3);
   color: var(--muted);
   background: var(--tile);
   border-right: var(--rule-row);
@@ -182,12 +182,12 @@
   gap: 2px;
 }
 .chapNum {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--ink);
 }
 .chapTitle {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 400;
   color: var(--muted-2);
   overflow: hidden;
@@ -230,7 +230,7 @@
 }
 .laneName {
   font-weight: 700;
-  font-size: 15px;
+  font-size: var(--text-5);
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -243,13 +243,13 @@
   flex: none;
 }
 .laneKind {
-  font-size: 11px;
+  font-size: var(--text-1);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted-2);
 }
 .laneOwner {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
 }
 .statusRow {
@@ -260,7 +260,7 @@
   gap: var(--space-2);
 }
 .status {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 600;
 }
 .laneTrash {
@@ -270,7 +270,7 @@
   background: none;
   padding: 2px var(--space-1);
   margin: -2px -2px -2px 0;
-  font-size: 13px;
+  font-size: var(--text-3);
   line-height: 1;
   color: var(--muted-2);
   cursor: pointer;
@@ -349,7 +349,7 @@
 .gapflag {
   align-self: center;
   margin: auto;
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--muted-2);
   text-align: center;
 }
@@ -409,7 +409,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--muted-2);
 }
 .beatKind {
@@ -434,7 +434,7 @@
   color: var(--muted-2);
 }
 .beatWarn {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--accent-deep);
   display: flex;
   gap: 6px;
@@ -503,13 +503,13 @@
   color: var(--accent);
 }
 .dkind {
-  font-size: 11px;
+  font-size: var(--text-1);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted-2);
 }
 .dsub {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
 }
 .pill {
@@ -535,17 +535,17 @@
 }
 .rowCh {
   font-weight: 700;
-  font-size: 13px;
+  font-size: var(--text-3);
   color: var(--ink);
 }
 .rowCh small {
   display: block;
   font-weight: 400;
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--muted-2);
 }
 .rowBody {
-  font-size: 14px;
+  font-size: var(--text-4);
   line-height: 1.5;
   color: var(--body-ink);
 }
@@ -643,7 +643,7 @@
 /* new-plotline: collapsed to a single button, expands to an inline form */
 .newLane {
   padding: 7px 15px;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   color: var(--muted-2);
   background: none;
@@ -665,7 +665,7 @@
 }
 .newLaneInput {
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: var(--text-3);
   font-family: inherit;
   color: var(--ink);
   background: var(--ground);
@@ -679,7 +679,7 @@
 .newLaneSave,
 .newLaneCancel {
   padding: 6px var(--space-3);
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -702,7 +702,7 @@
 .editError {
   margin: var(--space-2) 0 0;
   padding: var(--space-2) var(--space-3);
-  font-size: 13px;
+  font-size: var(--text-3);
   color: var(--ground);
   background: var(--accent-deep, var(--accent));
   border: var(--rule-major);
@@ -722,7 +722,7 @@
   min-height: 60px;
   resize: none;
   padding: 6px var(--space-2);
-  font-size: 12px;
+  font-size: var(--text-2);
   font-family: inherit;
   line-height: 1.35;
   color: var(--ink);
@@ -740,7 +740,7 @@
 .beatSave,
 .beatCancelBtn {
   padding: var(--space-1) 10px;
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -777,7 +777,7 @@
 .dedit {
   margin-left: 10px;
   padding: 2px var(--space-2);
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 600;
   font-family: inherit;
   color: var(--muted-2);
@@ -799,14 +799,14 @@
   margin-top: 14px;
 }
 .dactionLabel {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted-2);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 .stateBtn {
   padding: 5px var(--space-3);
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 600;
   font-family: inherit;
   color: var(--muted-2);
@@ -834,7 +834,7 @@
 .rowEdit,
 .rowDelete {
   padding: 2px var(--space-2);
-  font-size: 11px;
+  font-size: var(--text-1);
   font-weight: 600;
   font-family: inherit;
   background: none;

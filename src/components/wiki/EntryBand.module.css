@@ -22,7 +22,7 @@
 .deleteEntry {
   margin-left: auto;
   padding: 2px var(--space-2);
-  font-size: 11px;
+  font-size: var(--text-1);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -46,7 +46,7 @@
 }
 
 .kind {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 }
 
 .catalogueNo {
-  font-size: 14px;
+  font-size: var(--text-4);
   color: var(--faint);
 }
 
@@ -91,14 +91,14 @@
 }
 
 .sectionTitle {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .meta {
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
 }
 
@@ -118,6 +118,6 @@
 @media (max-width: 560px) {
   .band { padding: var(--space-5) var(--gutter) 0; }
   .name { font-size: 44px; letter-spacing: -0.03em; }
-  .summary { font-size: 16px; max-width: none; }
+  .summary { font-size: var(--text-6); max-width: none; }
   .detailsRow { flex-direction: column; gap: var(--space-5); }
 }

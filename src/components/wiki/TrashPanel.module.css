@@ -20,14 +20,14 @@
 }
 
 .title {
-  font-size: 14px;
+  font-size: var(--text-4);
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 
 .count {
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   color: var(--muted);
 }
@@ -60,7 +60,7 @@
 }
 
 .name {
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--ink);
   overflow: hidden;
@@ -69,19 +69,19 @@
 }
 
 .sub {
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--muted);
 }
 
 .expiry {
-  font-size: 11px;
+  font-size: var(--text-1);
   color: var(--muted);
 }
 
 /* Retention elapsed: this row will go in the next purge. Reads in the danger
    accent (not color alone — the "Ready to purge" text carries the meaning too). */
 .expiryReady {
-  font-size: 11px;
+  font-size: var(--text-1);
   font-weight: 700;
   color: var(--accent);
 }
@@ -89,7 +89,7 @@
 .restore {
   flex: none;
   padding: 5px var(--space-3);
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   color: var(--ink);
   background: transparent;
@@ -115,7 +115,7 @@
 
 .purge {
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: var(--text-2);
   font-weight: 700;
   color: var(--on-accent);
   background: var(--accent);

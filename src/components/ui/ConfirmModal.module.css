@@ -3,14 +3,14 @@
    styles the slot content: heading, body copy, and the two action buttons. */
 
 .title {
-  font-size: 20px;
+  font-size: var(--text-7);
   font-weight: 800;
   color: var(--ink);
 }
 
 .body {
   margin-top: 10px;
-  font-size: 14px;
+  font-size: var(--text-4);
   line-height: 1.5;
   color: var(--muted);
 }
@@ -22,7 +22,7 @@
 
 .typeGateHint {
   display: block;
-  font-size: 13px;
+  font-size: var(--text-3);
   line-height: 1.4;
   color: var(--muted);
 }
@@ -36,7 +36,7 @@
   margin-top: 6px;
   width: 100%;
   padding: var(--space-2) 10px;
-  font-size: 14px;
+  font-size: var(--text-4);
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -60,7 +60,7 @@
 
 .cancel {
   padding: var(--space-2) var(--space-4);
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--ink);
   background: transparent;
@@ -81,7 +81,7 @@
 
 .confirm {
   padding: var(--space-2) var(--space-4);
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--on-ink);
   background: var(--ink);
@@ -107,7 +107,7 @@
 /* Destructive confirm: red, for deletes and other irreversible actions. */
 .confirmDanger {
   padding: var(--space-2) var(--space-4);
-  font-size: 13px;
+  font-size: var(--text-3);
   font-weight: 700;
   color: var(--on-accent);
   background: var(--accent);
