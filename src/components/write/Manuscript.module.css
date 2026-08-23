@@ -90,7 +90,7 @@
 }
 
 /* Direction B: contradiction = 3px solid accent. */
-:global(.write-underline-conflict) {
+.editor :global(.write-underline-conflict) {
   cursor: pointer;
   padding-bottom: 1px;
   border-bottom: 3px solid var(--accent);
@@ -99,7 +99,7 @@
 /* Direction B: unrecorded = 3px dotted muted-2 (DM override of the ref's
    #605d5d dotted; DM specified var(--muted-2) #7d7979). Kept a distinct rule
    from the conflict one so the two signals can never collapse into one. */
-:global(.write-underline-unrecorded) {
+.editor :global(.write-underline-unrecorded) {
   cursor: pointer;
   padding-bottom: 1px;
   border-bottom: 3px dotted var(--muted-2);
@@ -377,8 +377,8 @@
 .railRow:focus-visible,
 .action:focus-visible,
 .underline:focus-visible,
-:global(.write-underline-conflict):focus-visible,
-:global(.write-underline-unrecorded):focus-visible {
+.editor :global(.write-underline-conflict):focus-visible,
+.editor :global(.write-underline-unrecorded):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
