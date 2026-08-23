@@ -113,7 +113,7 @@
 
   .toggleChevron {
     flex: none;
-    font-size: 22px;
+    font-size: var(--text-11);
     font-weight: 700;
     line-height: 1;
   }

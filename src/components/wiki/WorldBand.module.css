@@ -14,7 +14,7 @@
 }
 
 .title {
-  font-size: 22px;
+  font-size: var(--text-11);
   font-weight: 800;
 }
 

@@ -60,7 +60,7 @@
 
 /* The Tiptap editor content. Paragraphs only, 18px / 1.7 (§6). */
 .editor :global(.ProseMirror) {
-  font-size: 18px;
+  font-size: var(--text-9);
   line-height: 1.7;
   color: var(--ink);
   outline: none;
@@ -360,7 +360,7 @@
 }
 
 .promiseHead {
-  font-size: 19px;
+  font-size: var(--text-10);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -502,14 +502,14 @@
   .manuscript { max-width: 100%; }
   .title { font-size: 32px; }
 
-  .editor :global(.ProseMirror) { font-size: 17px; }
+  .editor :global(.ProseMirror) { font-size: var(--text-8); }
 
   .rail { width: 100%; }
   .railToggle { padding: 14px var(--gutter); }
   .legend { padding: var(--space-4) var(--gutter) 14px; }
   .railList { padding: var(--space-1) var(--gutter) var(--space-4); max-height: none; }
   .promise { padding: var(--space-4) var(--gutter); }
-  .promiseHead { font-size: 17px; }
+  .promiseHead { font-size: var(--text-8); }
 
   .noteActions { gap: var(--space-2); }
   .action { flex: 1 1 auto; text-align: center; min-height: 44px; }

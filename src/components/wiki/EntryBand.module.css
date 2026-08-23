@@ -72,7 +72,7 @@
 }
 
 .summary {
-  font-size: 18px;
+  font-size: var(--text-9);
   line-height: 1.5;
   color: var(--body-ink);
   max-width: 56ch;

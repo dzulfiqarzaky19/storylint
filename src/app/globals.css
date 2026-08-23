@@ -72,12 +72,16 @@
   --radius: 0;
 
   /* Type scale. A theme restates reading density in one place, the same way
-     --space-* restates spatial rhythm. The ramp covers only the BODY cluster
-     that repeats across the app (the vast majority of call sites land on
-     --text-3 13px / --text-2 12px). Display sizes (a 44px entry name, a 76px
-     404) and optical half-steps (12.5px) are layout/art direction, not a theme
-     step, so they stay literal at their call site and do not track this token,
-     exactly as an 11px pill radius stays literal against --radius. */
+     --space-* restates spatial rhythm. Rungs 1-7 are the original body cluster
+     (11-16px) plus the 20px subhead the app already adopted; 8-12 fill the
+     reading/subhead sizes that used to strand as literals (17/18/19/22/24px),
+     so every reading and UI size now lands on a rung. Rungs are size-labelled,
+     not strictly size-ordered: 1-7 keep their adopted meaning so no existing
+     call site shifts, and the fill sizes are appended rather than renumbered.
+     True DISPLAY sizes (a 44px entry name, a 76px 404, band headings at
+     28-32px) and optical half-steps (12.5px) are art direction, not a reading
+     step, so they stay literal at their call site, exactly as an 11px pill
+     radius stays literal against --radius. */
   --text-1: 11px;
   --text-2: 12px;
   --text-3: 13px;
@@ -85,6 +89,11 @@
   --text-5: 15px;
   --text-6: 16px;
   --text-7: 20px;
+  --text-8: 17px;
+  --text-9: 18px;
+  --text-10: 19px;
+  --text-11: 22px;
+  --text-12: 24px;
 
   /* --font-archivo is injected by next/font in layout.tsx */
 }
