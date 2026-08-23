@@ -55,7 +55,7 @@
   color: var(--on-accent);
   background: var(--accent);
   border: 1px solid var(--accent);
-  border-radius: 0;
+  border-radius: var(--radius);
 }
 
 .toolbar {
@@ -69,7 +69,7 @@
   color: var(--on-ink);
   background: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
@@ -93,7 +93,7 @@
 
 .universe {
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
 }
 
 .universeHead {
@@ -152,7 +152,7 @@
   color: var(--ink);
   background: transparent;
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
@@ -179,7 +179,7 @@
   color: var(--accent);
   background: transparent;
   border: 1px solid var(--accent);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
@@ -218,7 +218,7 @@
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
 }
 
 .promptInput:focus {
@@ -241,7 +241,7 @@
   color: var(--ink);
   background: transparent;
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
@@ -252,7 +252,7 @@
   color: var(--on-ink);
   background: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 

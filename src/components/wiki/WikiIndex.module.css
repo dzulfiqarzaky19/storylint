@@ -126,7 +126,7 @@
   font-family: inherit;
   padding: 2px 4px;
   border: var(--rule-row);
-  border-radius: 0;
+  border-radius: var(--radius);
   min-width: 8rem;
   color: inherit;
   background: var(--surface);

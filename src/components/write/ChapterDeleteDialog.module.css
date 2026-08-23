@@ -57,7 +57,7 @@
 .confirm {
   background: var(--danger);
   border-color: var(--danger);
-  color: var(--on-ink, #fff);
+  color: var(--on-ink);
 }
 
 .cancel:hover {

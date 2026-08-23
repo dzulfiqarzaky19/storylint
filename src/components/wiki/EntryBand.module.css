@@ -29,7 +29,7 @@
   color: var(--danger);
   background: transparent;
   border: 1px solid var(--danger);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 

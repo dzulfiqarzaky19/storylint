@@ -131,7 +131,7 @@
   margin-top: 10px;
   padding: 10px;
   border: var(--rule-row);
-  background: var(--paper-2, #faf8f4);
+  background: var(--tile);
 }
 
 .relInput,
@@ -140,7 +140,7 @@
   padding: 6px 8px;
   font-size: 13px;
   border: var(--rule-row);
-  background: #fff;
+  background: var(--surface);
 }
 
 .picker {

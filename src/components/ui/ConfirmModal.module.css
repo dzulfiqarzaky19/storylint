@@ -40,7 +40,7 @@
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
 }
 
 .typeGateInput:focus {
@@ -65,7 +65,7 @@
   color: var(--ink);
   background: transparent;
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
@@ -86,7 +86,7 @@
   color: var(--on-ink);
   background: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 
@@ -112,7 +112,7 @@
   color: var(--on-accent);
   background: var(--accent);
   border: 1px solid var(--accent);
-  border-radius: 0;
+  border-radius: var(--radius);
   cursor: pointer;
 }
 

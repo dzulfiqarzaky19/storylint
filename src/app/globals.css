@@ -36,12 +36,29 @@
   /* Modal backdrop scrim (dims the page behind a confirm dialog). */
   --scrim: rgba(32, 30, 29, 0.44);
 
+  /* Plot lane hues, cycled by lane.colorIndex. Six low-chroma arc colors kept
+     inside the palette so the plot grid never turns into a rainbow. Tokenized so
+     a theme can restate them; PlotScreen reads var(--lane-1..6), never a hex. */
+  --lane-1: #2f6f6a;
+  --lane-2: #b5561f;
+  --lane-3: #3a4f8a;
+  --lane-4: #7a6a2f;
+  --lane-5: #5b3a6a;
+  --lane-6: #2f5a8a;
+
   /* Rules */
   --rule-major: 2px solid var(--ink);
   --rule-row: 1px solid var(--rule);
 
   /* Spacing */
   --gutter: 40px;
+
+  /* Geometry. --radius is the chrome corner radius (panels, cards, inputs,
+     buttons). 0 is the house design (HANDOFF §3); tokenized so a theme can
+     restate it in one place instead of overriding ~40 hardcoded zeros. Shape
+     radii that are not chrome (a round status dot at 50%, a stadium count pill)
+     stay literal at their call site and do not track this token. */
+  --radius: 0;
 
   /* --font-archivo is injected by next/font in layout.tsx */
 }
@@ -56,7 +73,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border-radius: 0; /* HANDOFF §3: border-radius 0 everywhere, no exceptions */
+  border-radius: var(--radius); /* HANDOFF §3: 0 by default; --radius lets a theme restate chrome corners in one place */
 }
 
 html,

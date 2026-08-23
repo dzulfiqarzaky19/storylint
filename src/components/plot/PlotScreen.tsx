@@ -28,9 +28,17 @@ import styles from "./PlotScreen.module.css";
 // long-gap run + the drawer's collapsed "went quiet" rows. Keep the two in sync.
 const LONG_GAP = 3;
 
-// Six low-chroma arc hues, cycled by lane.colorIndex. Kept inside the Ashkeld
-// palette (prototype --lane-a..d) so the grid never turns into a rainbow.
-const LANE_COLORS = ["#2f6f6a", "#b5561f", "#3a4f8a", "#7a6a2f", "#5b3a6a", "#2f5a8a"];
+// Six low-chroma arc hues, cycled by lane.colorIndex. The values live in
+// globals.css (--lane-1..6) so a theme can restate them; here we only reference
+// the tokens, never a hex, so the plot grid follows the active theme.
+const LANE_COLORS = [
+  "var(--lane-1)",
+  "var(--lane-2)",
+  "var(--lane-3)",
+  "var(--lane-4)",
+  "var(--lane-5)",
+  "var(--lane-6)",
+];
 const laneColor = (lane: PlotLane) => LANE_COLORS[lane.colorIndex % LANE_COLORS.length]!;
 
 /** The lane's status readout. A resolved/abandoned arc is DONE, not neglected, so

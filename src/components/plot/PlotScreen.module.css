@@ -196,7 +196,7 @@
 }
 /* the "here" (latest chapter) column highlight, header + cells */
 .here {
-  background: #ffe0d9;
+  background: var(--fresh);
 }
 
 /* ---- lane rows -------------------------------------------------------- */

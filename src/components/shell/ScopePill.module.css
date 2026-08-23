@@ -21,7 +21,7 @@
   text-transform: uppercase;
   padding: 4px 8px;
   border: 1px solid var(--rule);
-  border-radius: 0;
+  border-radius: var(--radius);
   background: transparent;
   color: var(--ink);
   cursor: pointer;
@@ -54,7 +54,7 @@
   padding: 4px 10px;
   margin-left: -10px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius);
   background: var(--ink);
   color: var(--on-ink);
   cursor: pointer;
