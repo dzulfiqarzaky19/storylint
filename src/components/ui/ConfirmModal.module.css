@@ -17,7 +17,7 @@
 
 .typeGate {
   display: block;
-  margin-top: 16px;
+  margin-top: var(--space-4);
 }
 
 .typeGateHint {
@@ -35,7 +35,7 @@
 .typeGateInput {
   margin-top: 6px;
   width: 100%;
-  padding: 8px 10px;
+  padding: var(--space-2) 10px;
   font-size: 14px;
   color: var(--ink);
   background: var(--surface);
@@ -54,12 +54,12 @@
      it back on the RIGHT and Cancel on the LEFT, preserving the visual order. */
   flex-direction: row-reverse;
   justify-content: flex-start;
-  gap: 12px;
-  margin-top: 24px;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
 }
 
 .cancel {
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
   font-size: 13px;
   font-weight: 700;
   color: var(--ink);
@@ -80,7 +80,7 @@
 }
 
 .confirm {
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
   font-size: 13px;
   font-weight: 700;
   color: var(--on-ink);
@@ -106,7 +106,7 @@
 
 /* Destructive confirm: red, for deletes and other irreversible actions. */
 .confirmDanger {
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
   font-size: 13px;
   font-weight: 700;
   color: var(--on-accent);

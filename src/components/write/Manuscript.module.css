@@ -26,7 +26,7 @@
   flex: 1;
   min-width: 0;
   overflow-y: auto;
-  padding: 36px 0 40px 56px;
+  padding: 36px 0 var(--space-7) 56px;
 }
 
 .manuscript {
@@ -46,7 +46,7 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
-  margin: 8px 0 14px;
+  margin: var(--space-2) 0 14px;
   text-transform: uppercase;
   min-width: 0;
   overflow-wrap: anywhere;
@@ -74,7 +74,7 @@
 .saveState {
   font-size: 12px;
   color: var(--muted);
-  margin-top: 8px;
+  margin-top: var(--space-2);
   min-height: 1.4em;
 }
 
@@ -108,8 +108,8 @@
 /* ---- Inline note (widget under the paragraph) --------------------------- */
 
 .note {
-  margin: 18px 0 8px;
-  padding: 16px 18px;
+  margin: 18px 0 var(--space-2);
+  padding: var(--space-4) 18px;
   background: var(--surface);
   font-family: var(--font-archivo), system-ui, sans-serif;
 }
@@ -140,7 +140,7 @@
 .noteText {
   font-size: 15px;
   line-height: 1.45;
-  margin-top: 8px;
+  margin-top: var(--space-2);
 }
 
 .noteActions {
@@ -181,7 +181,7 @@
 
 .aiAdvice {
   margin-top: 14px;
-  padding-top: 12px;
+  padding-top: var(--space-3);
   border-top: 1px dashed var(--ink);
 }
 
@@ -245,7 +245,7 @@
 }
 
 .legend {
-  padding: 20px 24px 16px;
+  padding: 20px var(--space-5) var(--space-4);
   border-bottom: var(--rule-major, 2px solid var(--ink));
 }
 
@@ -259,7 +259,7 @@
 
 .legendRow {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
   align-items: baseline;
   margin-bottom: 10px;
 }
@@ -287,7 +287,7 @@
 .railList {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 24px 18px;
+  padding: var(--space-1) var(--space-5) 18px;
 }
 
 .railRow {
@@ -311,7 +311,7 @@
    thin leading accent marks it without competing with the open-row fill. */
 .railRowImportant {
   border-left: 2px solid var(--accent);
-  padding-left: 8px;
+  padding-left: var(--space-2);
 }
 
 .railKind {
@@ -340,7 +340,7 @@
   font-size: 13px;
   line-height: 1.4;
   color: var(--muted);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 .railEmpty {
@@ -356,7 +356,7 @@
   flex: none;
   background: var(--accent);
   color: var(--on-accent);
-  padding: 18px 24px;
+  padding: 18px var(--space-5);
 }
 
 .promiseHead {
@@ -408,7 +408,7 @@
 
   .manuscriptScroll {
     overflow-y: visible;
-    padding: 28px 40px 32px;
+    padding: 28px var(--space-7) var(--space-6);
   }
 
   .rail {
@@ -433,7 +433,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 16px 40px;
+    padding: var(--space-4) var(--space-7);
     background: none;
     border: none;
     cursor: pointer;
@@ -506,14 +506,14 @@
 
   .rail { width: 100%; }
   .railToggle { padding: 14px var(--gutter); }
-  .legend { padding: 16px var(--gutter) 14px; }
-  .railList { padding: 4px var(--gutter) 16px; max-height: none; }
-  .promise { padding: 16px var(--gutter); }
+  .legend { padding: var(--space-4) var(--gutter) 14px; }
+  .railList { padding: var(--space-1) var(--gutter) var(--space-4); max-height: none; }
+  .promise { padding: var(--space-4) var(--gutter); }
   .promiseHead { font-size: 17px; }
 
-  .noteActions { gap: 8px; }
+  .noteActions { gap: var(--space-2); }
   .action { flex: 1 1 auto; text-align: center; min-height: 44px; }
-  .railRow { padding: 16px 0; }
+  .railRow { padding: var(--space-4) 0; }
 }
 
 /* F8 - Export-book (Markdown) affordance in the manuscript header. */

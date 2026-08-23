@@ -7,7 +7,7 @@
 }
 
 .heading {
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
   border-bottom: var(--rule-major);
 }
 
@@ -25,9 +25,9 @@
 /* Each fact row: flex, 12px gap, baseline, padding 10px 4px, 1px rule, grab. */
 .row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
   align-items: baseline;
-  padding: 10px 4px;
+  padding: 10px var(--space-1);
   border-bottom: var(--rule-row);
   cursor: grab;
 }
@@ -63,7 +63,7 @@
   all: unset;
   display: inline-block;
   margin-top: 10px;
-  padding: 4px 6px;
+  padding: var(--space-1) 6px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -88,7 +88,7 @@
 .aiSuggest {
   font-size: 13px;
   font-weight: 700;
-  padding: 7px 12px;
+  padding: 7px var(--space-3);
   border: 1px solid var(--accent);
   background: transparent;
   color: var(--accent);
@@ -100,18 +100,18 @@
 }
 .aiList {
   list-style: none;
-  margin: 12px 0 0;
+  margin: var(--space-3) 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .aiItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 8px 10px;
+  gap: var(--space-3);
+  padding: var(--space-2) 10px;
   background: var(--fresh);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -127,7 +127,7 @@
 .aiAdd {
   font-size: 12px;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: var(--space-1) 10px;
   border: none;
   background: var(--accent);
   color: var(--on-accent);
@@ -135,7 +135,7 @@
 }
 .aiDismiss {
   font-size: 12px;
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: transparent;
   color: var(--faint);

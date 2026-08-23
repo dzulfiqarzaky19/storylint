@@ -41,7 +41,7 @@ export default function GlobalError({
           style={{ maxWidth: "34rem", border: "2px solid #201e1d", background: "#ffffff", padding: "2rem" }}
         >
           <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700 }}>
-            Ashkeld could not start.
+            storylint could not start.
           </h1>
           <p style={{ marginTop: "0.75rem", color: "#605d5d", lineHeight: 1.5 }}>
             A critical error occurred while loading the application. Try again in

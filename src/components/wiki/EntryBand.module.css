@@ -2,7 +2,7 @@
 
 .band {
   display: flex;
-  gap: 40px;
+  gap: var(--space-7);
   padding: 34px var(--gutter) 0;
 }
 
@@ -21,7 +21,7 @@
 /* Soft-delete affordance, pushed to the right edge of the kicker row. */
 .deleteEntry {
   margin-left: auto;
-  padding: 2px 8px;
+  padding: 2px var(--space-2);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -64,7 +64,7 @@
   line-height: 0.95;
   letter-spacing: -0.035em;
   text-transform: uppercase;
-  margin: 8px 0 14px;
+  margin: var(--space-2) 0 14px;
 }
 
 .rule {
@@ -76,7 +76,7 @@
   line-height: 1.5;
   color: var(--body-ink);
   max-width: 56ch;
-  margin-top: 16px;
+  margin-top: var(--space-4);
   text-wrap: pretty;
 }
 
@@ -86,7 +86,7 @@
   align-items: baseline;
   justify-content: space-between;
   margin-top: 30px;
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
   border-bottom: var(--rule-major);
 }
 
@@ -116,8 +116,8 @@
 }
 
 @media (max-width: 560px) {
-  .band { padding: 24px var(--gutter) 0; }
+  .band { padding: var(--space-5) var(--gutter) 0; }
   .name { font-size: 44px; letter-spacing: -0.03em; }
   .summary { font-size: 16px; max-width: none; }
-  .detailsRow { flex-direction: column; gap: 24px; }
+  .detailsRow { flex-direction: column; gap: var(--space-5); }
 }

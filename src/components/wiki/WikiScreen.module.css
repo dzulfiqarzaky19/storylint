@@ -29,7 +29,7 @@
 
 .body {
   display: block;
-  padding-bottom: 40px;
+  padding-bottom: var(--space-7);
 }
 
 .shelves {
@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 10px var(--gutter);
   background: var(--accent);
   color: var(--on-accent);

@@ -10,7 +10,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Ashkeld",
+  title: "storylint",
   description: "A gazetteer in progress.",
 };
 

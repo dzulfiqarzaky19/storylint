@@ -10,7 +10,7 @@
   padding: 26px 20px 30px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 /* Header row doubles as the mobile collapse toggle: static header on desktop
@@ -21,7 +21,7 @@
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 0 0 8px;
+  padding: 0 0 var(--space-2);
   background: none;
   border: none;
   text-align: left;
@@ -65,7 +65,7 @@
   flex-direction: column;
   gap: 1px;
   width: 100%;
-  padding: 9px 8px;
+  padding: 9px var(--space-2);
   background: none;
   border: none;
   border-left: 2px solid transparent;
@@ -93,7 +93,7 @@
    rather than the browser default input chrome. */
 .rename {
   width: 100%;
-  padding: 9px 8px;
+  padding: 9px var(--space-2);
   border: none;
   border-left: 2px solid var(--accent);
   border-top: var(--rule-row);
@@ -208,7 +208,7 @@
 
 .add {
   width: 100%;
-  padding: 9px 8px;
+  padding: 9px var(--space-2);
   margin-top: 2px;
   background: none;
   border: none;
@@ -230,8 +230,8 @@
 .createRow {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 8px 0;
+  gap: var(--space-2);
+  padding: 6px var(--space-2) 0;
   margin-top: 2px;
   border-top: var(--rule-row);
 }
@@ -240,7 +240,7 @@
   flex: 1 1 auto;
   margin-top: 0;
   border-top: none;
-  padding: 5px 8px;
+  padding: 5px var(--space-2);
 }
 
 /* Stacked tier: the whole thread list folds behind the header toggle. Closed
@@ -257,7 +257,7 @@
   }
 
   .railToggle {
-    padding: 16px var(--gutter, 24px);
+    padding: var(--space-4) var(--gutter, 24px);
     cursor: pointer;
     min-height: 44px;
     align-items: center;
@@ -289,14 +289,14 @@
   }
 
   .itemRow .item {
-    padding-right: 8px;
+    padding-right: var(--space-2);
   }
 
   .rowActions {
     display: flex;
     justify-content: flex-end;
-    gap: 4px;
-    padding: 2px 4px 6px;
+    gap: var(--space-1);
+    padding: 2px var(--space-1) 6px;
   }
 
   .rowAction {

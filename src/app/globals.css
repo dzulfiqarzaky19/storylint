@@ -1,5 +1,5 @@
 /* ===========================================================================
-   Ashkeld — design tokens (HANDOFF §3). Single source of truth for color and
+   storylint — design tokens (HANDOFF §3). Single source of truth for color and
    geometry. Do not write a hex literal anywhere outside this file.
    =========================================================================== */
 
@@ -50,8 +50,19 @@
   --rule-major: 2px solid var(--ink);
   --rule-row: 1px solid var(--rule);
 
-  /* Spacing */
+  /* Spacing. --gutter is the page edge inset (horizontal page rhythm). The
+     --space-* ramp is the vertical/inner rhythm on a 4px base, so a theme can
+     restate density in one place. Only genuine rhythm steps map to the ramp;
+     optical one-offs (a -10px overlap, an 11px pill radius, a 9px nudge) stay
+     literal at their call site because they are layout math, not a theme step. */
   --gutter: 40px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
 
   /* Geometry. --radius is the chrome corner radius (panels, cards, inputs,
      buttons). 0 is the house design (HANDOFF §3); tokenized so a theme can

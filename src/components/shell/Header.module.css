@@ -15,7 +15,7 @@
 .brand {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .wordmark {
@@ -59,11 +59,11 @@
 @media (max-width: 560px) {
   .header {
     flex-wrap: wrap;
-    gap: 6px 16px;
+    gap: 6px var(--space-4);
     align-items: baseline;
   }
   .descriptor { display: none; }
-  .nav { gap: 16px; }
+  .nav { gap: var(--space-4); }
   /* WCAG 2.5.5: 44px tap targets on phones. */
   .navItem,
   .navActive { display: inline-flex; align-items: center; min-height: 44px; }

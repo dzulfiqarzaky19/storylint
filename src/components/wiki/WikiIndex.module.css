@@ -11,7 +11,7 @@
   padding: 26px 20px 30px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 /* Header row doubles as the mobile collapse toggle. On desktop it reads as a
@@ -22,7 +22,7 @@
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 0 0 8px;
+  padding: 0 0 var(--space-2);
   background: none;
   border: none;
   text-align: left;
@@ -68,7 +68,7 @@
 .panel {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .title {
@@ -94,9 +94,9 @@
 .groupHead {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   width: 100%;
-  padding: 8px 0;
+  padding: var(--space-2) 0;
   border-top: var(--rule-row);
 }
 
@@ -124,7 +124,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-family: inherit;
-  padding: 2px 4px;
+  padding: 2px var(--space-1);
   border: var(--rule-row);
   border-radius: var(--radius);
   min-width: 8rem;
@@ -220,7 +220,7 @@
   flex-direction: column;
   gap: 1px;
   width: 100%;
-  padding: 7px 8px;
+  padding: 7px var(--space-2);
   background: none;
   border: none;
   border-left: 2px solid transparent;
@@ -261,7 +261,7 @@
    Keeps an obvious "author the first entry" call-to-action when a shelf is bare. */
 .emptyAdd {
   width: 100%;
-  padding: 7px 8px;
+  padding: 7px var(--space-2);
   margin-top: 2px;
   background: none;
   border: none;
@@ -291,7 +291,7 @@
   }
 
   .railToggle {
-    padding: 16px var(--gutter, 24px);
+    padding: var(--space-4) var(--gutter, 24px);
     cursor: pointer;
     min-height: 44px;
     align-items: center;

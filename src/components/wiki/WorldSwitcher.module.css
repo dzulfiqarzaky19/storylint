@@ -7,7 +7,7 @@
   position: relative;
   padding: 10px var(--gutter);
   border-bottom: var(--rule-major);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 /* The breadcrumb + its anchored dropdown share this positioned wrapper so the
@@ -21,9 +21,9 @@
 .crumb {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   font: inherit;
-  padding: 6px 12px;
+  padding: 6px var(--space-3);
   border: var(--rule-row);
   background: var(--surface);
   color: var(--ink);
@@ -61,7 +61,7 @@
 }
 
 .caret {
-  margin-left: 4px;
+  margin-left: var(--space-1);
   font-size: 11px;
   color: var(--muted);
 }
@@ -82,7 +82,7 @@
 
 .menuList {
   list-style: none;
-  padding: 4px 0;
+  padding: var(--space-1) 0;
 }
 
 .group + .group {
@@ -90,7 +90,7 @@
 }
 
 .groupHead {
-  padding: 8px 14px 4px;
+  padding: var(--space-2) 14px var(--space-1);
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -105,12 +105,12 @@
 .item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   width: 100%;
   font: inherit;
   font-size: 14px;
   text-align: left;
-  padding: 8px 14px;
+  padding: var(--space-2) 14px;
   border: none;
   background: transparent;
   color: var(--ink);
@@ -141,7 +141,7 @@
   display: flex;
   flex-direction: column;
   border-top: var(--rule-major);
-  padding: 4px 0;
+  padding: var(--space-1) 0;
 }
 
 .footerAction {
@@ -150,7 +150,7 @@
   font-size: 13px;
   font-weight: 700;
   text-align: left;
-  padding: 8px 14px;
+  padding: var(--space-2) 14px;
   border: none;
   background: transparent;
   color: var(--ink);
@@ -171,7 +171,7 @@
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
-  padding: 8px 14px;
+  padding: var(--space-2) 14px;
   color: var(--accent);
 }
 
@@ -197,9 +197,9 @@
 
 .promptInput {
   width: 100%;
-  margin-top: 16px;
+  margin-top: var(--space-4);
   height: 40px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   font: inherit;
   color: var(--ink);
   background: var(--surface);
@@ -213,13 +213,13 @@
 .promptActions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
 }
 
 .promptCancel {
   height: 36px;
-  padding: 0 16px;
+  padding: 0 var(--space-4);
   font-size: 13px;
   font-weight: 700;
   color: var(--ink);
@@ -234,7 +234,7 @@
 
 .promptConfirm {
   height: 36px;
-  padding: 0 16px;
+  padding: 0 var(--space-4);
   font-size: 13px;
   font-weight: 700;
   color: var(--on-ink);

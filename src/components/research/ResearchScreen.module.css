@@ -45,7 +45,7 @@
   line-height: 1.05;
   letter-spacing: -0.03em;
   max-width: 24ch;
-  margin: 10px 0 16px;
+  margin: 10px 0 var(--space-4);
   text-wrap: pretty;
 }
 
@@ -75,7 +75,7 @@
 
 .turnRow {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   align-items: baseline;
 }
 
@@ -146,8 +146,8 @@
 
 .cards {
   display: flex;
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
   flex-wrap: wrap;
 }
 
@@ -159,7 +159,7 @@
   flex-direction: column;
   border: var(--rule-major);
   background: var(--tile);
-  padding: 16px;
+  padding: var(--space-4);
   cursor: grab;
 }
 
@@ -180,7 +180,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-deep);
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
   border-bottom: var(--rule-major);
 }
 
@@ -189,7 +189,7 @@
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.01em;
-  margin: 12px 0 8px;
+  margin: var(--space-3) 0 var(--space-2);
 }
 
 /* flex:1 so all cards in a row align their action rows. */
@@ -212,7 +212,7 @@
   min-height: 40px;
   font-size: 12px;
   font-weight: 700;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   border: var(--rule-major);
   background: transparent;
   color: var(--ink);
@@ -244,12 +244,12 @@
 /* ---- 4. Confirmation strip (only when pending) ------------------------ */
 
 .confirmStrip {
-  margin: 24px var(--gutter) 0;
+  margin: var(--space-5) var(--gutter) 0;
   border: 2px solid var(--accent);
-  padding: 16px 18px;
+  padding: var(--space-4) 18px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
@@ -272,7 +272,7 @@
 .confirmCancel {
   font-size: 13px;
   font-weight: 600;
-  padding: 9px 12px;
+  padding: 9px var(--space-3);
   min-height: 40px;
   color: var(--muted);
   background: transparent;
@@ -284,9 +284,9 @@
 
 .entryPicker {
   flex-basis: 100%;
-  margin-top: 4px;
+  margin-top: var(--space-1);
   border-top: 1px solid var(--rule);
-  padding-top: 12px;
+  padding-top: var(--space-3);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -296,7 +296,7 @@
 
 .entryPickerInput {
   font-size: 13px;
-  padding: 8px 10px;
+  padding: var(--space-2) 10px;
   border: 1px solid var(--rule);
   background: var(--surface);
   color: inherit;
@@ -311,7 +311,7 @@
 .entryPickerOption {
   text-align: left;
   font-size: 13px;
-  padding: 8px 10px;
+  padding: var(--space-2) 10px;
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
@@ -354,7 +354,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
   margin-bottom: 14px;
   padding: 10px 14px;
   background: var(--accent);
@@ -390,7 +390,7 @@
 .chips {
   display: flex;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: var(--space-4);
   flex-wrap: wrap;
 }
 
@@ -399,7 +399,7 @@
 .aiRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -413,7 +413,7 @@
   background: transparent;
   border: none;
   border-bottom: var(--rule-major);
-  padding: 4px 0;
+  padding: var(--space-1) 0;
   outline: none;
 }
 .aiInput::placeholder {
@@ -459,7 +459,7 @@
   min-height: 40px;
   font-size: 13px;
   font-weight: 600;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   border: var(--rule-major);
   background: transparent;
   color: var(--ink);
@@ -474,7 +474,7 @@
   flex: none;
   border-left: var(--rule-major);
   overflow-y: auto;
-  padding: 24px 0;
+  padding: var(--space-5) 0;
   display: flex;
   flex-direction: column;
 }
@@ -489,7 +489,7 @@
 }
 
 .board {
-  padding: 12px var(--gutter);
+  padding: var(--space-3) var(--gutter);
   border: 2px solid transparent;
 }
 
@@ -502,7 +502,7 @@
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding-bottom: 8px;
+  padding-bottom: var(--space-2);
   border-bottom: var(--rule-major);
 }
 
@@ -526,7 +526,7 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--muted-2);
-  padding: 12px 0;
+  padding: var(--space-3) 0;
 }
 
 .keptItem {
@@ -561,7 +561,7 @@ button.keptItem {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.25;
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 /* "from <thread>" source-thread attribution — the board aggregates every thread
@@ -570,7 +570,7 @@ button.keptItem {
   font-size: 12px;
   font-weight: 600;
   color: var(--muted-2);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 .keptState {
@@ -587,8 +587,8 @@ button.keptItem {
    other two are built-but-empty. A thin underline row under the board head. */
 .boardTabs {
   display: flex;
-  gap: 4px;
-  margin: 4px 0 8px;
+  gap: var(--space-1);
+  margin: var(--space-1) 0 var(--space-2);
   border-bottom: var(--rule-row);
 }
 
@@ -597,7 +597,7 @@ button.keptItem {
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  padding: 6px 8px;
+  padding: 6px var(--space-2);
   font: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -663,7 +663,7 @@ button.keptItem {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 16px var(--gutter);
+    padding: var(--space-4) var(--gutter);
     text-align: left;
     min-height: 44px;
   }
@@ -718,7 +718,7 @@ button.keptItem {
   }
 
   .board {
-    padding-top: 4px;
+    padding-top: var(--space-1);
   }
 
   /* Stack the speaker label above the message the moment the page goes
@@ -727,7 +727,7 @@ button.keptItem {
      inherits this and only adds its own font-size bump. */
   .turnRow {
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-1);
   }
 
   .who {
@@ -748,7 +748,7 @@ button.keptItem {
   .cards { flex-direction: column; }
   .card { width: 100%; }
 
-  .confirmStrip { flex-wrap: wrap; gap: 10px 12px; margin: 20px var(--gutter) 0; }
+  .confirmStrip { flex-wrap: wrap; gap: 10px var(--space-3); margin: 20px var(--gutter) 0; }
   .confirmSentence { flex: 1 1 100%; }
 
   .composerPlaceholder { font-size: 20px; }

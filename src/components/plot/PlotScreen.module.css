@@ -25,7 +25,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 16px var(--gutter);
+  padding: var(--space-4) var(--gutter);
   border-bottom: var(--rule-row);
   flex-wrap: wrap;
 }
@@ -92,7 +92,7 @@
 
 .legend {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
   font-size: 12.5px;
   color: var(--muted);
@@ -141,7 +141,7 @@
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.03em;
-  margin: 10px 0 8px;
+  margin: 10px 0 var(--space-2);
   text-wrap: pretty;
 }
 
@@ -166,7 +166,7 @@
   position: sticky;
   top: 0;
   z-index: 3;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
 }
 .corner {
   left: 0;
@@ -211,7 +211,7 @@
   background: var(--surface);
   border-right: var(--rule-major);
   border-bottom: var(--rule-row);
-  padding: 14px 16px;
+  padding: 14px var(--space-4);
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -233,7 +233,7 @@
   font-size: 15px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   color: var(--ink);
 }
 .swatch {
@@ -257,7 +257,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .status {
   font-size: 12px;
@@ -268,7 +268,7 @@
   appearance: none;
   border: none;
   background: none;
-  padding: 2px 4px;
+  padding: 2px var(--space-1);
   margin: -2px -2px -2px 0;
   font-size: 13px;
   line-height: 1;
@@ -370,7 +370,7 @@
   background: var(--surface);
   border: var(--rule-row);
   border-left: 4px solid var(--lane);
-  padding: 10px 12px;
+  padding: 10px var(--space-3);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -408,7 +408,7 @@
 .beatMeta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 11px;
   color: var(--muted-2);
 }
@@ -473,17 +473,17 @@
   overflow: hidden;
 }
 .dhead {
-  padding: 20px var(--gutter) 16px;
+  padding: 20px var(--gutter) var(--space-4);
   border-bottom: var(--rule-major);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .dtitle {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 .dtitle h2 {
   font-size: 22px;
@@ -520,16 +520,16 @@
   font-weight: 700;
   border: 1.5px solid currentColor;
   padding: 1px 7px;
-  margin-right: 8px;
+  margin-right: var(--space-2);
 }
 .beatlist {
   overflow-y: auto;
-  padding: 8px var(--gutter) 40px;
+  padding: var(--space-2) var(--gutter) var(--space-7);
 }
 .beatrow {
   display: grid;
   grid-template-columns: 58px 1fr;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 14px 0;
   border-bottom: var(--rule-row);
 }
@@ -585,7 +585,7 @@
     padding: 14px 20px;
   }
   .headCell {
-    padding: 10px 12px;
+    padding: 10px var(--space-3);
   }
   .scrim {
     align-items: flex-end;
@@ -661,7 +661,7 @@
 .newLaneForm {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .newLaneInput {
   padding: 6px 10px;
@@ -678,7 +678,7 @@
 }
 .newLaneSave,
 .newLaneCancel {
-  padding: 6px 12px;
+  padding: 6px var(--space-3);
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
@@ -700,8 +700,8 @@
 
 /* inline error banner for any failed edit action */
 .editError {
-  margin: 8px 0 0;
-  padding: 8px 12px;
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2) var(--space-3);
   font-size: 13px;
   color: var(--ground);
   background: var(--accent-deep, var(--accent));
@@ -721,7 +721,7 @@
   flex: 1;
   min-height: 60px;
   resize: none;
-  padding: 6px 8px;
+  padding: 6px var(--space-2);
   font-size: 12px;
   font-family: inherit;
   line-height: 1.35;
@@ -739,7 +739,7 @@
 }
 .beatSave,
 .beatCancelBtn {
-  padding: 4px 10px;
+  padding: var(--space-1) 10px;
   font-size: 12px;
   font-weight: 600;
   font-family: inherit;
@@ -776,7 +776,7 @@
 }
 .dedit {
   margin-left: 10px;
-  padding: 2px 8px;
+  padding: 2px var(--space-2);
   font-size: 12px;
   font-weight: 600;
   font-family: inherit;
@@ -795,7 +795,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   margin-top: 14px;
 }
 .dactionLabel {
@@ -805,7 +805,7 @@
   letter-spacing: 0.04em;
 }
 .stateBtn {
-  padding: 5px 12px;
+  padding: 5px var(--space-3);
   font-size: 12px;
   font-weight: 600;
   font-family: inherit;
@@ -828,12 +828,12 @@
 /* drawer: per-beat edit/delete row */
 .rowActions {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 .rowEdit,
 .rowDelete {
-  padding: 2px 8px;
+  padding: 2px var(--space-2);
   font-size: 11px;
   font-weight: 600;
   font-family: inherit;

@@ -40,13 +40,13 @@
 .text {
   font-size: 15px;
   line-height: 1.4;
-  margin: 6px 0 12px;
+  margin: 6px 0 var(--space-3);
 }
 
 /* Card actions (ref: primary dark fill / secondary 2px ink outline). */
 .actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .writeIn {
@@ -95,9 +95,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--space-3);
     width: 100%;
-    padding: 16px var(--gutter);
+    padding: var(--space-4) var(--gutter);
     background: var(--accent);
     color: var(--on-accent);
     border: none;
@@ -129,7 +129,7 @@
     overflow-y: auto;
     background: var(--accent);
     color: var(--on-accent);
-    padding: 20px var(--gutter) 24px;
+    padding: 20px var(--gutter) var(--space-5);
   }
 
   /* The headline already lives in the toggle bar on this tier. */

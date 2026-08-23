@@ -13,7 +13,7 @@
 /* Chapter cell: 56px fixed, 12px vertical padding, 13px/700 faint. */
 .chapter {
   flex: 0 0 56px;
-  padding: 12px 0;
+  padding: var(--space-3) 0;
   font-size: 13px;
   font-weight: 700;
   color: var(--faint);
@@ -23,7 +23,7 @@
 .text {
   flex: 1;
   min-width: 0;
-  padding: 12px 16px 12px 0;
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
   font-size: 15px;
   line-height: 1.45;
 }
@@ -31,7 +31,7 @@
 /* Flag cell: 196px fixed, 12px/1.35/600, 3px solid left border. */
 .flag {
   flex: 0 0 196px;
-  padding: 12px 0 12px 12px;
+  padding: var(--space-3) 0 var(--space-3) var(--space-3);
   font-size: 12px;
   line-height: 1.35;
   font-weight: 600;
