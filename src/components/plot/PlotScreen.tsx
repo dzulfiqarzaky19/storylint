@@ -2,11 +2,23 @@
 
 // The /plot timeline: chapters (X) x plotlines (Y). Each cell is a beat CARD (the
 // beat prose + arc kind), not a dot — the grid is meant to be READ, so a neglected
-// arc's silence and a resolved arc's payoff are both visible at a glance. Pure
-// presentation over the server-assembled PlotProgression: no fetching, no mutation.
-// Feature parity with prototypes/plot.{html,js} (the design source of truth).
-import { useEffect, useMemo, useRef, useState } from "react";
+// arc's silence and a resolved arc's payoff are both visible at a glance. The grid
+// is also EDITABLE: rename a lane, set its arc state, create/edit/delete/move a
+// beat, and create/delete a lane, each via a /plot server action that revalidates
+// the page. Feature parity with prototypes/plot.{html,js} (the design source).
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import type { PlotProgression, PlotLane, PlotBeat } from "@/lib/db/plot";
+import {
+  renamePlotlineAction,
+  setPlotlineStateAction,
+  upsertBeatAction,
+  deleteBeatAction,
+  moveBeatAction,
+  createPlotlineAction,
+  deletePlotlineAction,
+  type ActionResult,
+} from "@/lib/actions/plot";
 import styles from "./PlotScreen.module.css";
 
 // Client-side mirror of the loader's LONG_GAP (src/lib/db/plot.ts). Redeclared
@@ -56,21 +68,92 @@ function longGapChapters(lane: PlotLane): Set<number> {
 
 type Projection = "chapter" | "arc";
 
+/** The edit surface handed down to the grid + drawer. Each method fires a /plot
+ *  server action inside a transition, then refreshes the route so the server-
+ *  rendered grid reflects the write; `pending` disables controls mid-flight and
+ *  `error` surfaces a failed write (the store never swallows it). Scope
+ *  (worldId/bookId) is captured here so callers pass only the row-level ids. */
+interface PlotEdit {
+  pending: boolean;
+  error: string | null;
+  clearError: () => void;
+  rename: (plotlineId: string, name: string) => void;
+  setState: (plotlineId: string, state: "open" | "resolved" | "abandoned", resolvedAt: number | null) => void;
+  saveBeat: (plotlineId: string, chapterNumber: number, summary: string) => void;
+  removeBeat: (plotlineId: string, chapterNumber: number) => void;
+  moveBeat: (plotlineId: string, fromChapterNumber: number, toChapterNumber: number) => void;
+  createLane: (name: string) => void;
+  deleteLane: (plotlineId: string) => void;
+}
+
+function usePlotEdit(worldId: string, bookId: string): PlotEdit {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  // Run one action, surface its error, and refresh on success so the server
+  // re-reads the grid. Kept generic so every method below is a one-liner.
+  const run = (fn: () => Promise<ActionResult<unknown>>) => {
+    setError(null);
+    startTransition(async () => {
+      const res = await fn();
+      if (!res.ok) setError(res.error);
+      else router.refresh();
+    });
+  };
+
+  return {
+    pending,
+    error,
+    clearError: () => setError(null),
+    rename: (plotlineId, name) => run(() => renamePlotlineAction({ plotlineId, name })),
+    setState: (plotlineId, state, resolvedAt) =>
+      run(() => setPlotlineStateAction({ plotlineId, state, resolvedAt })),
+    saveBeat: (plotlineId, chapterNumber, summary) =>
+      run(() => upsertBeatAction({ bookId, plotlineId, chapterNumber, summary })),
+    removeBeat: (plotlineId, chapterNumber) =>
+      run(() => deleteBeatAction({ bookId, plotlineId, chapterNumber })),
+    moveBeat: (plotlineId, fromChapterNumber, toChapterNumber) =>
+      run(() => moveBeatAction({ bookId, plotlineId, fromChapterNumber, toChapterNumber })),
+    createLane: (name) => run(() => createPlotlineAction({ worldId, name })),
+    deleteLane: (plotlineId) => run(() => deletePlotlineAction({ plotlineId })),
+  };
+}
+
 export default function PlotScreen({
   progression,
+  worldId,
+  bookId,
 }: {
   progression: PlotProgression;
+  worldId: string;
+  bookId: string;
 }) {
   const { chapters, lanes, latestChapter, completion } = progression;
   const [projection, setProjection] = useState<Projection>("chapter");
   const [openLaneId, setOpenLaneId] = useState<string | null>(null);
+  const edit = usePlotEdit(worldId, bookId);
 
-  // "by character arc" re-sorts lanes most-neglected-first so the arcs that have
-  // gone quiet surface to the top; "by chapter" keeps the natural (seeded) order.
-  const orderedLanes = useMemo(() => {
-    if (projection === "chapter") return lanes;
-    return [...lanes].sort((a, b) => b.neglect - a.neglect);
-  }, [lanes, projection]);
+  // "chapter" is reading order (the seeded chapter axis). "chronology" re-lays the
+  // X axis in STORY-TIME: columns sort by each chapter's chrono rank, so a fragment
+  // that reads late but happens early (a flashback, an origin loop) slides left. The
+  // rank is the min chronoOrder of any beat in that chapter; a chapter with no
+  // chrono data (rank 0) falls back to its chapter number so it stays put.
+  const orderedChapters = useMemo(() => {
+    if (projection === "chapter") return chapters;
+    const rankByChapter = new Map<number, number>();
+    for (const lane of lanes) {
+      for (const beat of lane.beats) {
+        if (beat.chronoOrder === 0) continue;
+        const prev = rankByChapter.get(beat.chapterNumber);
+        if (prev === undefined || beat.chronoOrder < prev) {
+          rankByChapter.set(beat.chapterNumber, beat.chronoOrder);
+        }
+      }
+    }
+    const rankOf = (n: number) => rankByChapter.get(n) ?? n;
+    return [...chapters].sort((a, b) => rankOf(a.number) - rankOf(b.number));
+  }, [chapters, lanes, projection]);
 
   const openLane = lanes.find((l) => l.id === openLaneId) ?? null;
 
@@ -84,6 +167,12 @@ export default function PlotScreen({
             This world has no plotlines. Add a beat to a chapter and it appears
             here as an arc across the grid.
           </p>
+          <NewPlotlineButton edit={edit} />
+          {edit.error ? (
+            <p className={styles.editError} role="alert">
+              {edit.error}
+            </p>
+          ) : null}
         </header>
       </main>
     );
@@ -107,7 +196,7 @@ export default function PlotScreen({
               aria-pressed={projection === "arc"}
               onClick={() => setProjection("arc")}
             >
-              character arc
+              chronology
             </button>
           </div>
         </div>
@@ -125,14 +214,27 @@ export default function PlotScreen({
             <i className={styles.legendGap} /> gap &mdash; arc went quiet
           </span>
         </div>
+
+        <NewPlotlineButton edit={edit} />
       </div>
+
+      {edit.error ? (
+        <p className={styles.editError} role="alert">
+          {edit.error}
+          <button type="button" onClick={edit.clearError} aria-label="Dismiss error">
+            &times;
+          </button>
+        </p>
+      ) : null}
 
       <section className={styles.board} aria-label="Plot timeline">
         <PlotGrid
-          lanes={orderedLanes}
-          chapters={chapters}
+          lanes={lanes}
+          chapters={orderedChapters}
           latestChapter={latestChapter}
           onOpen={setOpenLaneId}
+          edit={edit}
+          projection={projection}
         />
       </section>
 
@@ -142,9 +244,79 @@ export default function PlotScreen({
           chapters={chapters}
           latestChapter={latestChapter}
           onClose={() => setOpenLaneId(null)}
+          edit={edit}
         />
       ) : null}
     </main>
+  );
+}
+
+/** The "+ new plotline" affordance (feature 4, create). Collapsed to a button;
+ *  clicking reveals a one-field inline form. Empty/blank name is rejected by the
+ *  action, so the button just needs a non-empty submit. */
+function NewPlotlineButton({ edit }: { edit: PlotEdit }) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        className={styles.newLane}
+        onClick={() => setOpen(true)}
+        disabled={edit.pending}
+      >
+        + new plotline
+      </button>
+    );
+  }
+  const submit = () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    edit.createLane(trimmed);
+    setName("");
+    setOpen(false);
+  };
+  return (
+    <form
+      className={styles.newLaneForm}
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit();
+      }}
+    >
+      <input
+        ref={inputRef}
+        className={styles.newLaneInput}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            setOpen(false);
+            setName("");
+          }
+        }}
+        placeholder="Plotline name"
+        aria-label="New plotline name"
+      />
+      <button type="submit" className={styles.newLaneSave} disabled={edit.pending || !name.trim()}>
+        add
+      </button>
+      <button
+        type="button"
+        className={styles.newLaneCancel}
+        onClick={() => {
+          setOpen(false);
+          setName("");
+        }}
+      >
+        cancel
+      </button>
+    </form>
   );
 }
 
@@ -175,38 +347,74 @@ function PlotGrid({
   chapters,
   latestChapter,
   onOpen,
+  edit,
+  projection,
 }: {
   lanes: PlotLane[];
   chapters: PlotProgression["chapters"];
   latestChapter: number;
   onOpen: (laneId: string) => void;
+  edit: PlotEdit;
+  projection: Projection;
 }) {
+  // The beat being dragged, keyed by lane + source chapter. A drag is HORIZONTAL
+  // and lane-local: a card can only be dropped on an empty cell of its OWN lane
+  // (feature 1), so the drop target checks laneId matches before accepting.
+  const [drag, setDrag] = useState<{ laneId: string; from: number } | null>(null);
+  // The empty cell currently being edited into a new beat (feature 2).
+  const [adding, setAdding] = useState<{ laneId: string; chapter: number } | null>(null);
+
   // Fixed track widths (not 1fr) so the board scrolls horizontally past ~12
   // chapters instead of crushing beat cards below tap size on a long book.
   const cols = `var(--lane-col) repeat(${chapters.length}, var(--beat-col))`;
+
+  // In chronology mode the column header carries the story-time label of the
+  // earliest-ranked beat in that chapter (the same beat the reorder sorts on), so
+  // a reader sees WHY a late chapter sits early. Keyed by chapter number.
+  const chronoMode = projection === "arc";
+  const chronoLabel = useMemo(() => {
+    const label = new Map<number, string>();
+    if (!chronoMode) return label;
+    const rank = new Map<number, number>();
+    for (const lane of lanes) {
+      for (const beat of lane.beats) {
+        if (beat.chronoOrder === 0 || beat.chronology === "") continue;
+        const prev = rank.get(beat.chapterNumber);
+        if (prev === undefined || beat.chronoOrder < prev) {
+          rank.set(beat.chapterNumber, beat.chronoOrder);
+          label.set(beat.chapterNumber, beat.chronology);
+        }
+      }
+    }
+    return label;
+  }, [lanes, chronoMode]);
+
   return (
     <div
       className={styles.grid}
       style={{ gridTemplateColumns: cols }}
       role="grid"
-      aria-label="Plot progression by chapter"
+      aria-label={chronoMode ? "Plot progression by story chronology" : "Plot progression by chapter"}
     >
       <div className={`${styles.corner} ${styles.headCell}`} role="columnheader">
-        plotline &darr;&nbsp; chapter &rarr;
+        plotline &darr;&nbsp; {chronoMode ? "story-time" : "chapter"} &rarr;
       </div>
-      {chapters.map((c) => (
-        <div
-          key={c.id}
-          className={`${styles.chapHead} ${styles.headCell} ${
-            c.number === latestChapter ? styles.here : ""
-          }`}
-          role="columnheader"
-          title={c.title}
-        >
-          <span className={styles.chapNum}>Ch.{c.number}</span>
-          <span className={styles.chapTitle}>{c.title}</span>
-        </div>
-      ))}
+      {chapters.map((c) => {
+        const chrono = chronoLabel.get(c.number);
+        return (
+          <div
+            key={c.id}
+            className={`${styles.chapHead} ${styles.headCell} ${
+              c.number === latestChapter ? styles.here : ""
+            }`}
+            role="columnheader"
+            title={chrono ? `${c.title} \u2014 ${chrono}` : c.title}
+          >
+            <span className={styles.chapNum}>Ch.{c.number}</span>
+            <span className={styles.chapTitle}>{chrono ?? c.title}</span>
+          </div>
+        );
+      })}
 
       {lanes.map((lane) => {
         const gaps = longGapChapters(lane);
@@ -218,6 +426,7 @@ function PlotGrid({
             ? lane.resolvedAt
             : null;
         const color = laneColor(lane);
+        const draggingHere = drag?.laneId === lane.id;
         return (
           <div key={lane.id} className={styles.laneRow} role="row">
             <div
@@ -241,14 +450,32 @@ function PlotGrid({
               {lane.ownerName ? (
                 <span className={styles.laneOwner}>{lane.ownerName}</span>
               ) : null}
-              <span className={`${styles.status} ${styles[status.cls] ?? ""}`}>
-                {status.text}
+              <span className={styles.statusRow}>
+                <span className={`${styles.status} ${styles[status.cls] ?? ""}`}>
+                  {status.text}
+                </span>
+                <button
+                  type="button"
+                  className={styles.laneTrash}
+                  aria-label={`Delete plotline ${lane.name}`}
+                  title="Delete plotline"
+                  disabled={edit.pending}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (confirm(`Delete plotline "${lane.name}"? Its beats are hidden with it.`)) {
+                      edit.deleteLane(lane.id);
+                    }
+                  }}
+                >
+                  &#128465;
+                </button>
               </span>
             </div>
 
             {chapters.map((c) => {
               const beat = byChapter.get(c.number);
               const isHere = c.number === latestChapter;
+              const isEditing = adding?.laneId === lane.id && adding.chapter === c.number;
               if (beat) {
                 return (
                   <div
@@ -256,12 +483,27 @@ function PlotGrid({
                     className={`${styles.cell} ${isHere ? styles.here : ""}`}
                     role="gridcell"
                   >
-                    <BeatCard
-                      beat={beat}
-                      kind={lane.label}
-                      color={color}
-                      onOpen={() => onOpen(lane.id)}
-                    />
+                    {isEditing ? (
+                      <BeatEditor
+                        initial={beat.summary}
+                        pending={edit.pending}
+                        onSave={(text) => {
+                          edit.saveBeat(lane.id, c.number, text);
+                          setAdding(null);
+                        }}
+                        onCancel={() => setAdding(null)}
+                      />
+                    ) : (
+                      <BeatCard
+                        beat={beat}
+                        kind={lane.label}
+                        color={color}
+                        onOpen={() => setAdding({ laneId: lane.id, chapter: c.number })}
+                        draggable={!edit.pending}
+                        onDragStart={() => setDrag({ laneId: lane.id, from: c.number })}
+                        onDragEnd={() => setDrag(null)}
+                      />
+                    )}
                   </div>
                 );
               }
@@ -274,17 +516,58 @@ function PlotGrid({
                   />
                 );
               }
+              // An empty cell is a drop target for THIS lane's dragged card, and
+              // a click-to-add slot when idle. A pending write freezes both.
               const isGap = gaps.has(c.number);
+              const dropTarget = draggingHere && drag.from !== c.number;
               return (
                 <div
                   key={c.id}
                   className={`${styles.cell} ${styles.empty} ${
                     isGap ? styles.longgap : ""
-                  } ${isHere ? styles.here : ""}`}
+                  } ${isHere ? styles.here : ""} ${dropTarget ? styles.dropTarget : ""}`}
                   role="gridcell"
                   aria-label={isGap ? `arc stalled at chapter ${c.number}` : undefined}
+                  onDragOver={(e) => {
+                    if (dropTarget) e.preventDefault();
+                  }}
+                  onDrop={(e) => {
+                    if (!dropTarget) return;
+                    e.preventDefault();
+                    edit.moveBeat(lane.id, drag.from, c.number);
+                    setDrag(null);
+                  }}
                 >
-                  {isGap ? <span className={styles.gapflag}>arc stalled</span> : null}
+                  {isEditing ? (
+                    <BeatEditor
+                      initial=""
+                      pending={edit.pending}
+                      onSave={(text) => {
+                        edit.saveBeat(lane.id, c.number, text);
+                        setAdding(null);
+                      }}
+                      onCancel={() => setAdding(null)}
+                    />
+                  ) : isGap ? (
+                    <button
+                      type="button"
+                      className={styles.gapflag}
+                      onClick={() => setAdding({ laneId: lane.id, chapter: c.number })}
+                      disabled={edit.pending}
+                    >
+                      arc stalled
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.addBeat}
+                      aria-label={`Add a beat to ${lane.name} at chapter ${c.number}`}
+                      onClick={() => setAdding({ laneId: lane.id, chapter: c.number })}
+                      disabled={edit.pending}
+                    >
+                      +
+                    </button>
+                  )}
                 </div>
               );
             })}
@@ -300,11 +583,17 @@ function BeatCard({
   kind,
   color,
   onOpen,
+  draggable,
+  onDragStart,
+  onDragEnd,
 }: {
   beat: PlotBeat;
   kind: string;
   color: string;
   onOpen: () => void;
+  draggable?: boolean;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 }) {
   const capped = beat.resolves || beat.abandons;
   return (
@@ -315,6 +604,15 @@ function BeatCard({
       } ${beat.abandons ? styles.abandoned : ""}`}
       style={{ ["--lane" as string]: color }}
       onClick={onOpen}
+      draggable={draggable}
+      onDragStart={(e) => {
+        // A payload is required for Firefox to start a drag; the real move data
+        // lives in React state, this is just the enabling handshake.
+        e.dataTransfer.setData("text/plain", "beat");
+        e.dataTransfer.effectAllowed = "move";
+        onDragStart?.();
+      }}
+      onDragEnd={onDragEnd}
     >
       <span className={styles.beatText}>{beat.summary}</span>
       <span className={styles.beatMeta}>
@@ -332,6 +630,62 @@ function BeatCard({
         </span>
       ) : null}
     </button>
+  );
+}
+
+/** Inline beat text editor (feature 2 create + edit). A small textarea with
+ *  save/cancel; Enter (no shift) saves, Escape cancels. Blank text can't save.
+ *  Used both in an empty grid cell (create) and in the drawer (edit). */
+function BeatEditor({
+  initial,
+  pending,
+  onSave,
+  onCancel,
+}: {
+  initial: string;
+  pending: boolean;
+  onSave: (text: string) => void;
+  onCancel: () => void;
+}) {
+  const [text, setText] = useState(initial);
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    ref.current?.focus();
+    ref.current?.select();
+  }, []);
+  const save = () => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    onSave(trimmed);
+  };
+  return (
+    <div className={styles.beatEditor}>
+      <textarea
+        ref={ref}
+        className={styles.beatInput}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            save();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            onCancel();
+          }
+        }}
+        placeholder="Beat summary"
+        aria-label="Beat summary"
+      />
+      <div className={styles.beatEditorRow}>
+        <button type="button" className={styles.beatSave} onClick={save} disabled={pending || !text.trim()}>
+          save
+        </button>
+        <button type="button" className={styles.beatCancelBtn} onClick={onCancel}>
+          cancel
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -376,21 +730,35 @@ function StoryDrawer({
   chapters,
   latestChapter,
   onClose,
+  edit,
 }: {
   lane: PlotLane;
   chapters: PlotProgression["chapters"];
   latestChapter: number;
   onClose: () => void;
+  edit: PlotEdit;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [renaming, setRenaming] = useState(false);
+  const [nameDraft, setNameDraft] = useState(lane.name);
+  const [editingBeat, setEditingBeat] = useState<number | null>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      // Escape closes the drawer only when no inline editor is capturing it.
+      if (e.key === "Escape" && !renaming && editingBeat === null) onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, renaming, editingBeat]);
+  useEffect(() => {
+    if (renaming) {
+      setNameDraft(lane.name);
+      nameRef.current?.focus();
+      nameRef.current?.select();
+    }
+  }, [renaming, lane.name]);
 
   const rows = buildStoryRows(lane, chapters);
   const status = statusLabel(lane, latestChapter);
@@ -404,6 +772,12 @@ function StoryDrawer({
           ? "stalled"
           : null;
 
+  const commitRename = () => {
+    const trimmed = nameDraft.trim();
+    if (trimmed && trimmed !== lane.name) edit.rename(lane.id, trimmed);
+    setRenaming(false);
+  };
+
   return (
     <div className={styles.scrim} onClick={onClose} data-open="true">
       <aside
@@ -416,7 +790,38 @@ function StoryDrawer({
       >
         <div className={styles.dhead}>
           <div className={styles.dtitle}>
-            <h2>Story so far &mdash; {lane.name}</h2>
+            {renaming ? (
+              <input
+                ref={nameRef}
+                className={styles.dtitleInput}
+                value={nameDraft}
+                onChange={(e) => setNameDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitRename();
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    setRenaming(false);
+                  }
+                }}
+                onBlur={commitRename}
+                aria-label="Plotline name"
+              />
+            ) : (
+              <h2>
+                Story so far &mdash; {lane.name}
+                <button
+                  type="button"
+                  className={styles.dedit}
+                  aria-label="Rename plotline"
+                  onClick={() => setRenaming(true)}
+                  disabled={edit.pending}
+                >
+                  rename
+                </button>
+              </h2>
+            )}
             <button
               ref={closeRef}
               type="button"
@@ -432,6 +837,39 @@ function StoryDrawer({
             {pill ? <span className={styles.pill}>{pill}</span> : null}
             {status.text}
           </span>
+
+          <div className={styles.dactions}>
+            <span className={styles.dactionLabel}>arc state</span>
+            <button
+              type="button"
+              className={`${styles.stateBtn} ${lane.state === "open" || lane.state === "stalled" ? styles.stateOn : ""}`}
+              onClick={() => edit.setState(lane.id, "open", null)}
+              disabled={edit.pending}
+            >
+              open
+            </button>
+            <button
+              type="button"
+              className={`${styles.stateBtn} ${lane.state === "resolved" ? styles.stateOn : ""}`}
+              onClick={() => edit.setState(lane.id, "resolved", lane.lastAdvanced ?? latestChapter)}
+              disabled={edit.pending}
+            >
+              resolved
+            </button>
+            <button
+              type="button"
+              className={`${styles.stateBtn} ${lane.state === "abandoned" ? styles.stateOn : ""}`}
+              onClick={() => edit.setState(lane.id, "abandoned", lane.lastAdvanced ?? latestChapter)}
+              disabled={edit.pending}
+            >
+              dropped
+            </button>
+          </div>
+          {edit.error ? (
+            <p className={styles.editError} role="alert">
+              {edit.error}
+            </p>
+          ) : null}
         </div>
 
         <div className={styles.beatlist}>
@@ -446,13 +884,45 @@ function StoryDrawer({
                   <small>{r.chapterTitle}</small>
                 </div>
                 <div className={styles.rowBody}>
-                  {r.beat.summary}
-                  {r.beat.warn ? (
-                    <div className={styles.rowWarn}>
-                      <span className={styles.glyph}>&#9888;</span>
-                      {r.beat.warn}
-                    </div>
-                  ) : null}
+                  {editingBeat === r.chapterNumber ? (
+                    <BeatEditor
+                      initial={r.beat.summary}
+                      pending={edit.pending}
+                      onSave={(text) => {
+                        edit.saveBeat(lane.id, r.chapterNumber, text);
+                        setEditingBeat(null);
+                      }}
+                      onCancel={() => setEditingBeat(null)}
+                    />
+                  ) : (
+                    <>
+                      {r.beat.summary}
+                      {r.beat.warn ? (
+                        <div className={styles.rowWarn}>
+                          <span className={styles.glyph}>&#9888;</span>
+                          {r.beat.warn}
+                        </div>
+                      ) : null}
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className={styles.rowEdit}
+                          onClick={() => setEditingBeat(r.chapterNumber)}
+                          disabled={edit.pending}
+                        >
+                          edit
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.rowDelete}
+                          onClick={() => edit.removeBeat(lane.id, r.chapterNumber)}
+                          disabled={edit.pending}
+                        >
+                          delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (

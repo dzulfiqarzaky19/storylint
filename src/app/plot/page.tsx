@@ -22,5 +22,12 @@ export default async function PlotPage({
   );
   const progression = await loadPlotProgression(activeWorldId, activeBookId);
   // Key on the world so switching worlds remounts the grid with the new arcs.
-  return <PlotScreen key={activeWorldId} progression={progression} />;
+  return (
+    <PlotScreen
+      key={activeWorldId}
+      progression={progression}
+      worldId={activeWorldId}
+      bookId={activeBookId}
+    />
+  );
 }
