@@ -50,12 +50,14 @@
 }
 
 .title {
+  font-family: var(--font-mono);
   font-size: var(--text-7);
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 
 .count {
+  font-family: var(--font-mono);
   font-size: var(--text-2);
   color: var(--muted);
 }
@@ -76,16 +78,14 @@
   min-height: 40px;
 }
 
-/* Hover tint only on non-active rows. The active row is dark ink with white
-   text, so painting it the light --surface on hover would put white text on a
-   white background (invisible). Keep the active row dark and darken it slightly
-   for hover feedback instead. */
+/* The active row is an accent-soft fill (cockpit .item.on); a hover on it deepens
+   toward accent so it still gives feedback without going ink-dark. */
 .item:not(.itemActive):hover {
   background: var(--surface);
 }
 
 .itemActive:hover {
-  background: color-mix(in srgb, var(--ink) 88%, var(--surface));
+  background: color-mix(in srgb, var(--accent-soft) 80%, var(--accent));
 }
 
 /* Inline rename input: occupies the same box as the select button while editing
@@ -169,7 +169,7 @@
 }
 
 .itemRowActive .rowAction {
-  color: var(--on-ink-muted);
+  color: var(--muted);
 }
 
 .rowAction:hover {
@@ -184,19 +184,20 @@
 }
 
 .itemActive {
-  background: var(--ink);
+  background: var(--accent-soft);
   border-left-color: var(--accent);
 }
 
 .itemActive .itemName {
-  color: var(--on-ink);
+  color: var(--ink);
 }
 
 .itemActive .itemNote {
-  color: var(--on-ink-muted);
+  color: var(--muted);
 }
 
 .itemName {
+  font-family: var(--font-serif);
   font-size: var(--text-4);
   font-weight: 700;
 }
