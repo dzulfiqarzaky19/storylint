@@ -474,15 +474,16 @@
   font-size: var(--text-3);
   font-weight: 600;
   padding: var(--space-2) var(--space-3);
-  border: var(--rule-major);
-  background: transparent;
-  color: var(--ink);
+  border: 1px solid var(--line2);
+  border-radius: 20px;
+  background: var(--panel);
+  color: var(--muted);
   cursor: pointer;
 }
 
-/* Kept rail (340px right column, mirrors the Write "Two signals" rail). The
-   transparent 2px board border turns accent while a card hovers. On desktop
-   the collapsible toggle is hidden and the body always shows. */
+/* Kept rail (340px right column, mirrors the Write "Two signals" rail): the
+   panel fill + left hairline live on this full-width wrap so the rail reads as
+   one joined column. On desktop the collapsible toggle is hidden. */
 .boardWrap {
   width: 340px;
   flex: none;
