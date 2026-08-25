@@ -4,50 +4,57 @@
    =========================================================================== */
 
 :root {
-  /* Color */
-  --ground: #f3f2f2;
-  --ink: #201e1d;
-  --accent: #ec3013;
-  --accent-deep: #ae1800;
-  --muted: #605d5d;
-  --muted-2: #7d7979;
-  --faint: #6f6b6b;
-  --rule: #d7d3d3;
-  --tile: #f8f4f4;
+  /* Color — cockpit paper (the prototypes/*-c-cockpit.html design language, now
+     the app's one look). Warm cream ground, amber accent, slate for the wiki-
+     write confirm path. --panel is the warm off-white rail/card fill, distinct
+     from the pure-white --surface used for text fields. */
+  --ground: #f3efe6;
+  --panel: #fbf9f4;
+  --ink: #20211d;
+  --accent: #b26a1b;
+  --accent-deep: #8a4f11;
+  --accent-soft: #f0e2cb;
+  --slate: #3f5a6b;
+  --muted: #6f6b60;
+  --muted-2: #a49e90;
+  --faint: #a49e90;
+  --rule: #ddd6c6;
+  --line2: #e8e2d4;
+  --tile: #f3efe6;
   --surface: #ffffff;
-  --hover: #eae7e7;
-  --fresh: #ffe0d9;
-  --drop: #fff2ef;
+  --hover: #efe9dc;
+  --fresh: #f0e2cb;
+  --drop: #f7f0e2;
   --on-ink: #f3f2f2;
   --on-accent: #ffffff;
   /* Destructive action (delete). Distinct from --accent so a normal accent and
      a danger action never read as the same thing. */
-  --danger: #b00020;
-  --danger-deep: #8a0019;
-  --body-ink: #2d2b2b;
-  --card-body: #444141;
+  --danger: #a8322a;
+  --danger-deep: #83271f;
+  --body-ink: #2d2b26;
+  --card-body: #4a4640;
   /* Unrecorded-chapter severity dot (amber). Distinct from --danger (red dot)
      so "has unrecorded objects" never reads as "has a contradiction". */
-  --warning: #d6a419;
+  --warning: #8a6a1a;
   /* Muted text on an --ink (dark) surface: e.g. the secondary note under an
-     active rail item. #bcbcbb is the flat equivalent of white@0.7 composited
-     over --ink (#201e1d); contrast vs --ink is 8.74:1 (WCAG AA, >=4.5:1). */
-  --on-ink-muted: #bcbcbb;
+     active rail item. A warm light tint kept above the WCAG AA 4.5:1 contrast
+     floor against --ink. */
+  --on-ink-muted: #bcb8ad;
   /* Modal backdrop scrim (dims the page behind a confirm dialog). */
-  --scrim: rgba(32, 30, 29, 0.44);
+  --scrim: rgba(28, 26, 20, 0.5);
 
   /* Plot lane hues, cycled by lane.colorIndex. Six low-chroma arc colors kept
      inside the palette so the plot grid never turns into a rainbow. Tokenized so
      a theme can restate them; PlotScreen reads var(--lane-1..6), never a hex. */
-  --lane-1: #2f6f6a;
+  --lane-1: #2f6d5f;
   --lane-2: #b5561f;
-  --lane-3: #3a4f8a;
+  --lane-3: #3f5a6b;
   --lane-4: #7a6a2f;
   --lane-5: #5b3a6a;
   --lane-6: #2f5a8a;
 
   /* Rules */
-  --rule-major: 2px solid var(--ink);
+  --rule-major: 1px solid var(--rule);
   --rule-row: 1px solid var(--rule);
 
   /* Spacing. --gutter is the page edge inset (horizontal page rhythm). The
@@ -69,7 +76,7 @@
      restate it in one place instead of overriding ~40 hardcoded zeros. Shape
      radii that are not chrome (a round status dot at 50%, a stadium count pill)
      stay literal at their call site and do not track this token. */
-  --radius: 0;
+  --radius: 9px;
 
   /* Type scale. A theme restates reading density in one place, the same way
      --space-* restates spatial rhythm. Rungs 1-7 are the original body cluster
@@ -95,7 +102,15 @@
   --text-11: 22px;
   --text-12: 24px;
 
-  /* --font-archivo is injected by next/font in layout.tsx */
+  /* Type roles. Faces are wired via next/font in layout.tsx and exposed as the
+     --font-* CSS vars below; components read the ROLE (serif/sans/mono), never a
+     face name, so the typeface swaps in one place.
+       --font-serif : Fraunces      — display + reading (titles, turns, entry names)
+       --font-sans  : IBM Plex Sans — body / UI (the default on <body>)
+       --font-mono  : IBM Plex Mono — kickers, labels, nav, meta, counts */
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 /* ---------------------------------------------------------------------------
@@ -119,7 +134,7 @@ body {
 body {
   background: var(--ground);
   color: var(--ink);
-  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

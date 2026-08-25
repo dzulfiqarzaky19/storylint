@@ -11,7 +11,7 @@
   flex-direction: column;
   background: var(--ground);
   color: var(--ink);
-  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .body {
@@ -111,7 +111,7 @@
   margin: 18px 0 var(--space-2);
   padding: var(--space-4) 18px;
   background: var(--surface);
-  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .noteConflict {
