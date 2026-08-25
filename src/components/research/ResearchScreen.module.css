@@ -1,9 +1,9 @@
-/* Research screen (#2b) — README Screen 2 geometry, verbatim.
-   Colors via globals.css custom properties only; radius 0; no shadows. */
+/* Research screen — cockpit skin over the app's real research logic. All color,
+   font, radius, and rule values come from globals.css tokens (never a literal),
+   so the whole surface re-skins when the theme's :root changes. */
 
-/* Two-column shell mirroring the Write screen: a scrolling main column and a
-   standing KEPT rail on the right. On <=1200px the rail becomes a collapsible
-   panel pinned to the bottom of the viewport (see the responsive block). */
+/* Three-column shell: threads rail (ResearchIndex) · thread chat · Kept board.
+   On <=1200px both rails stack and the Kept board becomes a bottom sheet. */
 .screen {
   flex: 1;
   min-height: 0;
@@ -32,6 +32,7 @@
 }
 
 .kicker {
+  font-family: var(--font-mono);
   font-size: var(--text-2);
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -40,6 +41,7 @@
 }
 
 .question {
+  font-family: var(--font-serif);
   font-size: 46px;
   font-weight: 800;
   line-height: 1.05;
@@ -61,6 +63,7 @@
 }
 
 .guidance {
+  font-family: var(--font-serif);
   margin: 0;
   max-width: 46ch;
   color: var(--muted);
@@ -80,6 +83,7 @@
 }
 
 .who {
+  font-family: var(--font-mono);
   width: 130px;
   flex: none;
   font-size: var(--text-2);
@@ -97,6 +101,7 @@
 }
 
 .turnText {
+  font-family: var(--font-serif);
   flex: 1;
   font-size: var(--text-7);
   line-height: 1.4;
@@ -146,20 +151,20 @@
 
 .cards {
   display: flex;
-  gap: var(--space-4);
+  flex-direction: column;
+  gap: 10px;
   margin-top: var(--space-4);
-  flex-wrap: wrap;
 }
 
-/* ---- 3. Proposition card (300px, column flex) ------------------------- */
+/* ---- 3. Proposition card (column stack under the turn) ---------------- */
 
 .card {
-  width: 300px;
   display: flex;
   flex-direction: column;
-  border: var(--rule-major);
-  background: var(--tile);
-  padding: var(--space-4);
+  border: 1px solid var(--line2);
+  background: var(--panel);
+  border-radius: 11px;
+  padding: 13px 14px;
   cursor: grab;
 }
 
@@ -175,6 +180,7 @@
 }
 
 .cardKicker {
+  font-family: var(--font-mono);
   font-size: var(--text-1);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -185,6 +191,7 @@
 }
 
 .cardTitle {
+  font-family: var(--font-serif);
   font-size: var(--text-7);
   font-weight: 700;
   line-height: 1.15;
@@ -207,22 +214,28 @@
   align-items: center;
 }
 
-/* Keep button: 2px ink border; inverts to filled ink/#f3f2f2 once kept. */
 .keep {
   min-height: 40px;
   font-size: var(--text-2);
   font-weight: 700;
-  padding: var(--space-2) var(--space-3);
-  border: var(--rule-major);
+  padding: 6px 11px;
+  border: 1px solid var(--line2);
+  border-radius: 7px;
   background: transparent;
   color: var(--ink);
   cursor: pointer;
 }
 
+.keep:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .keepActive {
-  background: var(--ink);
-  color: var(--on-ink);
-  border-color: var(--ink);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
 }
 
 /* "Make it an entry" (reads "In the wiki" once written) — text only. */
@@ -507,6 +520,7 @@
 }
 
 .boardTitle {
+  font-family: var(--font-mono);
   font-size: var(--text-3);
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -518,6 +532,7 @@
 }
 
 .boardCount {
+  font-family: var(--font-mono);
   font-size: var(--text-2);
   color: var(--muted);
 }
@@ -530,26 +545,32 @@
 }
 
 .keptItem {
-  padding: 11px 0;
-  border-bottom: var(--rule-row);
+  border: 1px solid var(--line2);
+  background: var(--panel);
+  border-radius: 9px;
+  padding: 10px 11px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: border-color 0.12s;
+}
+
+.keptItem:hover {
+  border-color: var(--accent);
 }
 
 /* The row is a real button (world-wide board: clicking routes to its source
    thread + focuses the origin card), so strip the native button chrome and let
-   it read as the flush-left card row it was as a div. */
+   it carry the bordered card look. */
 button.keptItem {
   display: block;
   width: 100%;
   text-align: left;
-  background: none;
-  border: none;
-  border-bottom: var(--rule-row);
   font: inherit;
   color: inherit;
-  cursor: pointer;
 }
 
 .keptKind {
+  font-family: var(--font-mono);
   font-size: var(--text-1);
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -558,6 +579,7 @@ button.keptItem {
 }
 
 .keptTitle {
+  font-family: var(--font-serif);
   font-size: var(--text-5);
   font-weight: 700;
   line-height: 1.25;
@@ -567,6 +589,7 @@ button.keptItem {
 /* "from <thread>" source-thread attribution — the board aggregates every thread
    in the world, so each row names its origin. */
 .keptFrom {
+  font-family: var(--font-mono);
   font-size: var(--text-2);
   font-weight: 600;
   color: var(--muted-2);
@@ -574,6 +597,7 @@ button.keptItem {
 }
 
 .keptState {
+  font-family: var(--font-mono);
   font-size: var(--text-2);
   font-weight: 600;
   margin-top: 6px;
@@ -596,18 +620,20 @@ button.keptItem {
   appearance: none;
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
-  padding: 6px var(--space-2);
+  border-radius: 7px;
+  padding: 6px 10px;
   font: inherit;
+  font-family: var(--font-mono);
   font-size: var(--text-2);
   font-weight: 700;
-  color: var(--muted-2);
+  color: var(--faint);
   cursor: pointer;
 }
 
 .boardTabActive {
-  color: inherit;
-  border-bottom-color: currentColor;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 
@@ -731,10 +757,12 @@ button.keptItem {
   }
 
   .who {
+    font-family: var(--font-mono);
     width: auto;
   }
 
   .turnText {
+    font-family: var(--font-serif);
     max-width: none;
   }
 }
