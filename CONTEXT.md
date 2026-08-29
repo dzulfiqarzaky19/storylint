@@ -21,8 +21,8 @@ agent could plausibly misread it. Discipline that maintains this file lives in
   active universe is the source of truth for scope; everything below is derived
   from it.
 - **world** — the scope one level under a universe, derived **1:1** from it
-  (`world-${universeId}`). /wiki and /research are world-scoped. "World" and
-  "universe" are not interchangeable even though they map one-to-one today —
+  (`world-${universeId}`). /wiki, /research, and /plot are world-scoped. "World"
+  and "universe" are not interchangeable even though they map one-to-one today —
   keep them distinct because the hierarchy is designed to widen (a universe may
   hold more than one world later).
 - **book** — the level under world in the intended universe → world → book(s)
@@ -30,6 +30,23 @@ agent could plausibly misread it. Discipline that maintains this file lives in
   the *feature*; a schema/query change that merely *enables* it is not the feature
   (non-negotiable #6). If a level the user named is dropped, that's a surfaced
   narrowing, not a silent amputation.
+
+## Wiki nouns
+
+- **gazetteer** — the wiki as the author's recorded canon of entities. The
+  user-facing name for /wiki ("Back to the gazetteer"). Not the research helper
+  `buildGazetteer()`.
+- **entry** — one wiki entity (person, place, order, lore, or plotline). Row in
+  `entries`. Soft-deleted (`deleted_at`); child facts/ties/appearances survive
+  as tombstones.
+- **fact** — a key/value detail on one entry (`facts`).
+- **tie** — a named directional relationship from one entry to another (`ties`).
+
+## Manuscript
+
+- **chapter** — one manuscript unit of a book (`chapters`): number, title,
+  ProseMirror body. Unique per book (`UNIQUE(book_id, number)`), not globally —
+  two books can each have a Chapter 1.
 
 ## Marks and checking
 
@@ -55,12 +72,20 @@ agent could plausibly misread it. Discipline that maintains this file lives in
 
 - **/write** — the manuscript editor; renders marks inline as left-index dots +
   sidebar.
-- **/wiki** — the world-scoped encyclopedia of the user's own entities/lore.
+- **/wiki** — the world-scoped gazetteer of the author's own entries.
 - **/research** — the world-scoped research-thread surface; a thread reasons over
   its OWN world, not the whole universe.
+- **/plot** — the fourth top-level surface, a peer of wiki / research / write.
+  World-scoped. Read-only grid of plotlines × chapters. Answers "has this arc
+  moved?" and "is it finished?" — questions the wiki cannot. Does not generate
+  prose.
+- **plotline** — a wiki entry of kind `plotline`. One lane on /plot. Not a
+  separate table.
+- **beat** — one chapter advancing one plotline (a filled /plot grid cell).
 - **research-thread** — one investigative thread on /research, scoped to a world.
 - **queries.ts** — the shared read/write data layer fanned across /wiki,
-  /research, and /write. A change here has all three as its blast radius: any edit
-  is driven live on all three surfaces, never just the one you meant to touch
-  (non-negotiable live-browser gate, question 2).
+  /research, /write, and /plot. A change here has all four as its blast radius:
+  any edit is driven live on every surface that reads it, never just the one you
+  meant to touch (non-negotiable live-browser gate, question 2). Explore via
+  codescratch MCP before editing.
 
