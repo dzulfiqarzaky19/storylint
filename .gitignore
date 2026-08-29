@@ -44,3 +44,7 @@ prototypes/
 
 # local-only test corpus (measured from copyrighted epub, never committed)
 dummy_novel/
+
+# codescratch local code-graph (SQLite under .codescratch/). Host-owned index,
+# never source, never pushed.
+.codescratch/
