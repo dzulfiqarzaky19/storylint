@@ -10,6 +10,7 @@
 // knowledge), so no confirmation token is required — same posture as wiki
 // moveEntry/reorderShelf.
 import { revalidatePath } from "next/cache";
+import { type ActionResult } from "./confirmation";
 import {
   renamePlotline,
   setPlotlineState,
@@ -20,10 +21,6 @@ import {
   deletePlotline,
   type SettablePlotState,
 } from "../db/plot-mutations";
-
-export type ActionResult<T = void> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
 
 function fail(err: unknown, where: string): { ok: false; error: string } {
   const msg = err instanceof Error ? err.message : String(err);

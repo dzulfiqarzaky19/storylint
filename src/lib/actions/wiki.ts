@@ -23,7 +23,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import type { Kind, Shelf, EntryRow, EntryWithDetails, CategoryRow } from "../domain/types";
-import { confirmWikiWrite } from "./confirmation";
+import { confirmWikiWrite, type ActionResult } from "./confirmation";
 import { completeJson, aiEnabled } from "../ai/saarouters";
 import {
   loadWikiSnapshot,
@@ -78,10 +78,6 @@ import { RETENTION_MS } from "../wiki/retention";
 import { DEFAULT_UNIVERSE_ID } from "../db/scope";
 
 // ---- Result envelope ------------------------------------------------------
-
-export type ActionResult<T = void> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
 
 function fail(err: unknown, where: string): { ok: false; error: string } {
   const msg = err instanceof Error ? err.message : String(err);

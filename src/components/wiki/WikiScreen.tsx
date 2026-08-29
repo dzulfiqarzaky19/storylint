@@ -36,8 +36,8 @@ import {
   getDeletedEntries,
   restoreEntry,
   purgeExpiredDeleted,
-  type ActionResult,
 } from "@/lib/actions/wiki";
+import { type ActionResult } from "@/lib/actions/confirmation";
 import { resolveCategoryLabel, categoryLabelById, defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
 import { kindForNewEntry } from "./createEntryKind";
 import { trashCountdown } from "@/lib/wiki/trashCountdown";

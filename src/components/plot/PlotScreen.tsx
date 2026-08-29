@@ -17,8 +17,8 @@ import {
   moveBeatAction,
   createPlotlineAction,
   deletePlotlineAction,
-  type ActionResult,
 } from "@/lib/actions/plot";
+import { type ActionResult } from "@/lib/actions/confirmation";
 import styles from "./PlotScreen.module.css";
 
 // Client-side mirror of the loader's LONG_GAP (src/lib/db/plot.ts). Redeclared

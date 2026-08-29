@@ -19,7 +19,7 @@
 //   path — the invariant is enforced at the action boundary, not just the UI.
 // =============================================================================
 
-import { confirmWikiWrite } from "./confirmation";
+import { confirmWikiWrite, type ActionResult } from "./confirmation";
 import {
   markKeptInWiki,
   upsertKeptCard,
@@ -48,10 +48,6 @@ import { loadWebSearchConfig } from "../websearch/search/config";
 import { retrieve, buildSearchImpl } from "../websearch/retrieve";
 import { enforceCitations } from "../websearch/ground/enforceCitations";
 import { renderWebContext, collectAllowedUrls } from "../research/webSearchAdapter";
-
-export type ActionResult<T = void> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
 
 /** kind -> shelf. Matches the seed's KIND_SHELF. */
 const KIND_SHELF: Record<Kind, string> = {

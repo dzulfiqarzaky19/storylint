@@ -43,14 +43,11 @@ import type { Mark } from "../check";
 import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
 import { selectGazetteer, findRetrievalMisses } from "../check/retrieval";
 import { hashValue } from "../check/hash";
+import { type ActionResult } from "./confirmation";
 
 function messageOf(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
-
-export type ActionResult<T = void> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
 
 /** The three note actions offered under a mark (§8). `actionId` on resolveMark is one of these. */
 export type MarkActionId = "wiki" | "text" | "leave";

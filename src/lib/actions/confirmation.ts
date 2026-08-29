@@ -43,3 +43,8 @@ export function confirmWikiWrite(input: { confirmed: true }): WikiWriteConfirmat
   // brand is a compile-time phantom; an empty object carries it structurally.
   return {} as WikiWriteConfirmation;
 }
+
+/** Per-mutation write envelope. Shared by every rail so a failed write surfaces. */
+export type ActionResult<T = void> =
+  | { ok: true; data: T }
+  | { ok: false; error: string };
