@@ -66,7 +66,7 @@ const loadWikiSnapshot = vi.fn(
     byId: { sept: septEntry },
   }),
 );
-vi.mock('@/lib/db/queries', () => ({
+vi.mock('@/lib/db/gazetteer', () => ({
   loadWikiSnapshot: () => loadWikiSnapshot(),
 }));
 

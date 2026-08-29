@@ -62,7 +62,7 @@ const loadWikiSnapshot = vi.fn(
     byId: { ironkey: key, dragon },
   }),
 );
-vi.mock('@/lib/db/queries', () => ({
+vi.mock('@/lib/db/gazetteer', () => ({
   loadWikiSnapshot: () => loadWikiSnapshot(),
 }));
 

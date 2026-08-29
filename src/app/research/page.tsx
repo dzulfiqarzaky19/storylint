@@ -3,7 +3,8 @@
 // sort_order. No mutations here — writes happen via the server actions the
 // client invokes (research.ts). Product rule 1: the only wiki write is confirmCard.
 import { loadResearchSnapshot } from "@/lib/db/research";
-import { getWorldEntries, getCategories, getWorldTree } from "@/lib/db/queries";
+import { getWorldEntries, getCategories } from "@/lib/db/gazetteer";
+import { getWorldTree } from "@/lib/db/queries";
 import { getWorldKeptCards } from "@/lib/db/research-queries";
 import { resolveWikiScope } from "@/app/wiki/scope";
 import ResearchScreen from "@/components/research/ResearchScreen";

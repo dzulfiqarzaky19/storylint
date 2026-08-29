@@ -24,27 +24,25 @@ import {
   markKeptInWiki,
   upsertKeptCard,
   deleteKeptCard,
-  insertEntryLinkedToWorld,
-  insertFact,
   getProposition,
-  getMaxSortOrderForShelf,
-  getMaxSortOrderForFacts,
   insertResearchThread,
   getNextResearchThreadSortOrder,
   insertResearchTurnPair,
   deleteLastThreadGuarded,
   updateThreadTitle,
-} from "../db/mutations";
+} from "../db/research-mutations";
+import {
+  insertEntryLinkedToWorld,
+  insertFact,
+  getMaxSortOrderForShelf,
+  getMaxSortOrderForFacts,
+} from "../db/gazetteer-mutations";
 import { randomUUID } from "node:crypto";
 import type { Kind, Shelf, ResearchScope } from "../domain/types";
 import type { ResearchTurnWithCards } from "../domain/types";
 import { complete, completeJson, aiEnabled } from "../ai/saarouters";
-import {
-  loadWikiSnapshot,
-  loadWorldSnapshot,
-  getResearchThreadWorldId,
-  getEntry,
-} from "../db/queries";
+import { loadWikiSnapshot, loadWorldSnapshot, getEntry } from "../db/gazetteer";
+import { getResearchThreadWorldId } from "../db/research-queries";
 import { deriveThreadTitle } from "../research/title";
 import { loadWebSearchConfig } from "../websearch/search/config";
 import { retrieve, buildSearchImpl } from "../websearch/retrieve";

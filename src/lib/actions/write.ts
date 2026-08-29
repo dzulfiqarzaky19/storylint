@@ -35,7 +35,8 @@ import {
 } from "../db/mutations";
 import { randomUUID } from "node:crypto";
 import { completeJson, aiEnabled } from "../ai/saarouters";
-import { loadWikiSnapshot, getChapter, listChapters } from "../db/queries";
+import { loadWikiSnapshot } from "../db/gazetteer";
+import { getChapter, listChapters } from "../db/chapter-queries";
 import { docToParagraphs } from "../write/adapters";
 import { extractCandidatePhrases } from "../check/unrecorded";
 import type { Mark } from "../check";

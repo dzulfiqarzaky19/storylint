@@ -7,7 +7,9 @@
 // /write. The ACTIVE universe still comes from the URL (?u=); the active WORLD is
 // derived 1:1 from it (`world-${universeId}`). Scope resolution is the PURE
 // resolveWikiScope helper (see ./scope.ts) so its defaults are unit-testable.
-import { loadWorldSnapshot, getChaptersForBook, getDismissedSuggestionKeys, getResolvedMarkKeys, getWorldTree } from "@/lib/db/queries";
+import { loadWorldSnapshot } from "@/lib/db/gazetteer";
+import { getChaptersForBook, getDismissedSuggestionKeys, getResolvedMarkKeys } from "@/lib/db/chapter-queries";
+import { getWorldTree } from "@/lib/db/queries";
 import { checkWikiBook } from "@/lib/domain/wikiCheck";
 import WikiScreen from "@/components/wiki/WikiScreen";
 import { resolveWikiScope } from "./scope";

@@ -41,18 +41,15 @@ const detailed: EntryWithDetails = {
   openQuestions: [],
 };
 
-vi.mock("@/lib/db/mutations", () => ({
-  // The two the wrappers under test forward to.
+vi.mock("@/lib/db/gazetteer-mutations", () => ({
   restoreEntry: (arg: unknown, conf: unknown) => restoreEntryRow(arg, conf),
   purgeDeletedBefore: (arg: unknown, conf: unknown) => purgeDeletedBeforeRow(arg, conf),
-  // Siblings imported by actions/wiki.ts; stub so the module loads. None reached.
   insertFact: vi.fn(),
   insertTie: vi.fn(),
   deleteTie: vi.fn(),
   createEntryWithTie: vi.fn(),
   updateFactEntry: vi.fn(),
   reorderShelf: vi.fn(),
-  insertDismissedSuggestion: vi.fn(),
   insertEntry: vi.fn(),
   updateEntryFields: vi.fn(),
   updateFact: vi.fn(),
@@ -63,11 +60,11 @@ vi.mock("@/lib/db/mutations", () => ({
   deleteCategory: vi.fn(),
 }));
 
-vi.mock("@/lib/db/queries", () => ({
+vi.mock("@/lib/db/gazetteer", () => ({
   getDeletedEntries: () => getDeletedEntriesRow(),
   getEntryWithDetails: (id: string) => getEntryWithDetails(id),
-  // Siblings imported by actions/wiki.ts; stub so the module loads.
   loadWikiSnapshot: vi.fn(),
+  getCategories: vi.fn(),
 }));
 
 import {

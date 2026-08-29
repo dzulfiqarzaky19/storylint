@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
 import { loadEnv } from "@/lib/db/env";
 import { query, closePool } from "@/lib/db/pool";
-import { loadWorldSnapshot, loadWikiSnapshot } from "@/lib/db/queries";
+import { loadWorldSnapshot, loadWikiSnapshot } from "@/lib/db/gazetteer";
 import { DEFAULT_BOOK_ID } from "@/lib/db/scope";
 
 loadEnv();
@@ -74,6 +74,11 @@ const book1FactId = `test-w3-fact-b1-${randomUUID()}`;
 const book2FactId = `test-w3-fact-b2-${randomUUID()}`;
 const book1ApprId = `test-w3-appr-b1-${randomUUID()}`;
 const book2ApprId = `test-w3-appr-b2-${randomUUID()}`;
+// Sibling world (world2) book + book-scoped fact on the SHARED entity. Dropping
+// WIN_CTE's `b.world_id = $1` lets this book into worldId's window (same
+// sort_order 0 as book-1) and the sibling fact bleeds into worldId's as-of-N.
+const siblingBookId = `test-w3-sb-${randomUUID()}`;
+const siblingFactId = `test-w3-fact-sib-${randomUUID()}`;
 
 async function seedFixture(): Promise<void> {
   // Two universes: worldId's home + a foreign one (for G4).
@@ -90,6 +95,12 @@ async function seedFixture(): Promise<void> {
   await query(
     `INSERT INTO books (id, world_id, name, sort_order) VALUES ($1,$2,'Book One',0), ($3,$2,'Book Two',1), ($4,$5,'Foreign',0)`,
     [book1Id, worldId, book2Id, foreignBookId, foreignWorldId],
+  );
+  // Sibling world's own book (sort_order 0, same as book-1). Seeded so dropping
+  // WIN_CTE's world bound includes it in worldId's window.
+  await query(
+    `INSERT INTO books (id, world_id, name, sort_order) VALUES ($1,$2,'Sibling Book',0)`,
+    [siblingBookId, world2Id],
   );
   // Entities live in the universe; membership is the junction below.
   await query(
@@ -118,6 +129,14 @@ async function seedFixture(): Promise<void> {
        ($1,$3,1,'seen in book one',$4),
        ($2,$3,1,'seen in book two',$5)`,
     [book1ApprId, book2ApprId, entMainId, book1Id, book2Id],
+  );
+  // Book-scoped fact on the SHARED entity, stamped with the sibling world's
+  // book. Membership puts entShared in worldId's snapshot; the WIN_CTE world
+  // bound is what keeps this fact out. Drop `b.world_id = $1` -> it bleeds.
+  await query(
+    `INSERT INTO facts (id, entry_id, key, value, book_id) VALUES
+       ($1,$2,'sibkey','sibling-world-only',$3)`,
+    [siblingFactId, entSharedId, siblingBookId],
   );
 }
 
@@ -196,6 +215,16 @@ describe("W-3 loadWorldSnapshot as-of-book window (real Postgres)", () => {
     // entMain is linked ONLY to worldId, so it is absent from world2.
     expect(w1.byId[entMainId]).toBeDefined();
     expect(w2.byId[entMainId]).toBeUndefined();
+  });
+
+  it("WIN_CTE world bound: a sibling world's book-fact does not bleed into this world's as-of-N", async () => {
+    const atB1 = await loadWorldSnapshot(worldId, book1Id);
+    const sibFacts = (atB1.byId[entSharedId]?.facts ?? []).map((f) => f.id);
+    // Shared entity IS in this world; the sibling-book fact must not be. Dropping
+    // `WHERE b.world_id = $1` on WIN_CTE lets siblingBookId (sort_order 0) into
+    // the window and this assertion flips RED.
+    expect(atB1.byId[entSharedId]).toBeDefined();
+    expect(sibFacts).not.toContain(siblingFactId);
   });
 
   it("G4 fail-closed: a FOREIGN asOfBookId yields canon-only facts and ZERO book-scoped rows", async () => {

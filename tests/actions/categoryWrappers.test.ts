@@ -22,20 +22,16 @@ const renameCategoryRow = vi.fn(async (_arg: unknown) => {});
 const resetCategoryLabelRow = vi.fn(async (_arg: unknown) => {});
 const deleteCategoryRow = vi.fn(async (_arg: unknown, _conf: unknown) => 3);
 
-vi.mock("@/lib/db/mutations", () => ({
-  // The three the wrappers under test forward to.
+vi.mock("@/lib/db/gazetteer-mutations", () => ({
   renameCategory: (arg: unknown) => renameCategoryRow(arg),
   resetCategoryLabel: (arg: unknown) => resetCategoryLabelRow(arg),
   deleteCategory: (arg: unknown, conf: unknown) => deleteCategoryRow(arg, conf),
-  // Siblings imported by actions/wiki.ts; stub so the module loads. None are
-  // reached by the wrappers under test.
   insertFact: vi.fn(),
   insertTie: vi.fn(),
   deleteTie: vi.fn(),
   createEntryWithTie: vi.fn(),
   updateFactEntry: vi.fn(),
   reorderShelf: vi.fn(),
-  insertDismissedSuggestion: vi.fn(),
   insertEntry: vi.fn(),
   updateEntryFields: vi.fn(),
   updateFact: vi.fn(),
