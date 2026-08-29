@@ -379,3 +379,50 @@ describe("insertResearchThread world_id stamp (T-RESEARCH-2 delete-last-thread l
     expect(await worldOf(id)).toBe(DEFAULT_WORLD_ID);
   });
 });
+
+// T-SEED-RESEARCH-INTEGRITY: /research createThread passes only worldId. The
+// thread's universe MUST come from that world row. Falling back to
+// DEFAULT_UNIVERSE_ID (`universe-${DEFAULT_BOOK_SLUG}`) drifted from live seed
+// ids (`mol`) and threw research_threads_universe_id_fkey on +New thread.
+describe("insertResearchThread universe_id from world row (T-SEED-RESEARCH-INTEGRITY)", () => {
+  const uniId = `test-sri-u-${randomUUID()}`;
+  const worldId = `test-sri-w-${randomUUID()}`;
+  const bookId = `test-sri-b-${randomUUID()}`;
+
+  beforeAll(async () => {
+    await query(`INSERT INTO universes (id, name) VALUES ($1, 'SRI Universe')`, [uniId]);
+    await insertWorld({
+      id: worldId,
+      universeId: uniId,
+      title: "SRI World",
+      bookId,
+      bookName: "SRI Book",
+    });
+  });
+
+  afterAll(async () => {
+    await deleteWorldCascade(worldId);
+    await query(`DELETE FROM universes WHERE id = $1`, [uniId]);
+  });
+
+  it("stamps the world's own universe when universeId is omitted (createThread path)", async () => {
+    const id = `test-f2a-${randomUUID()}`;
+    created.push(id);
+    await insertResearchThread({
+      id,
+      title: "New thread",
+      subtitle: "",
+      sortOrder: 999,
+      scope: "chat",
+      worldId,
+    });
+    const row = await rows<{ universe_id: string; world_id: string }>(
+      `SELECT universe_id, world_id FROM research_threads WHERE id = $1`,
+      [id],
+    );
+    expect(row).toHaveLength(1);
+    expect(row[0]!.world_id).toBe(worldId);
+    expect(row[0]!.universe_id).toBe(uniId);
+    expect(row[0]!.universe_id).not.toBe(DEFAULT_UNIVERSE_ID);
+  });
+});

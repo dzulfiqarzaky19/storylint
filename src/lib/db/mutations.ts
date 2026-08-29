@@ -917,8 +917,24 @@ export async function insertResearchThread(input: {
   // universe's DEFAULT world only when the caller omits worldId (legacy callers);
   // the research action always passes the active world so a new thread lands in
   // the world the writer is viewing (never silently in the default world).
-  const universeId = input.universeId ?? DEFAULT_UNIVERSE_ID;
   const worldId = input.worldId ?? DEFAULT_WORLD_ID;
+  // A thread's universe MUST be its world's own universe. The /research UI passes
+  // only worldId, so derive universe_id FROM the world row rather than the global
+  // DEFAULT_UNIVERSE_ID constant: that constant is `universe-${DEFAULT_BOOK_SLUG}`
+  // and drifted from the seed's real default id ('mol'), so falling back to it made
+  // every +New thread on the default world insert a nonexistent universe_id and
+  // throw research_threads_universe_id_fkey. Keying the lookup on the world we are
+  // about to reference keeps the FK satisfied for any world regardless of id drift.
+  // (Same order plot-mutations.ts already uses: explicit -> world row -> constant.)
+  const universeId =
+    input.universeId ??
+    (
+      await one<{ universeId: string }>(
+        `SELECT universe_id AS "universeId" FROM worlds WHERE id = $1`,
+        [worldId],
+      )
+    )?.universeId ??
+    DEFAULT_UNIVERSE_ID;
   const res = await one<import("../domain/types").ResearchThreadRow>(
     `INSERT INTO research_threads (id, title, subtitle, sort_order, scope, universe_id, world_id)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
