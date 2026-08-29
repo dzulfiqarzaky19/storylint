@@ -9,12 +9,11 @@ import type { ResearchThreadRow } from "@/lib/domain/types";
 
 // The loader composes two DB queries; mock them so the empty-vs-non-empty
 // branches are driven deterministically with no Postgres.
-vi.mock("@/lib/db/queries", () => ({
+vi.mock("@/lib/db/research-queries", () => ({
   listResearchThreads: vi.fn(),
   getResearchThread: vi.fn(),
-  getAllEntries: vi.fn(async () => []),
 }));
-import { listResearchThreads, getResearchThread } from "@/lib/db/queries";
+import { listResearchThreads, getResearchThread } from "@/lib/db/research-queries";
 const listMock = vi.mocked(listResearchThreads);
 const getMock = vi.mocked(getResearchThread);
 

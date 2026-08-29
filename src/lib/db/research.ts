@@ -7,7 +7,7 @@
 // Lives in its own file (not queries.ts) to avoid concurrent edits on the
 // shared read layer. Read-only.
 
-import { getResearchThread, listResearchThreads } from "./queries";
+import { getResearchThread, listResearchThreads } from "./research-queries";
 import type { ResearchTurnWithCards, ResearchThreadRow } from "../domain/types";
 
 /**
