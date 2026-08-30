@@ -507,7 +507,7 @@ export function Manuscript({
           return;
         }
 
-        const res = await resolveMarkAction(mark.markKey, resolution, {
+        const res = await resolveMarkAction(mark.markKey, 'leave', {
           quote: mark.quote,
         });
         if (!res.ok) {
@@ -515,14 +515,10 @@ export function Manuscript({
           return;
         }
 
-        if (res.data.kind === 'resolved') {
-          // 'leave' persisted → suppress locally too (survives reload via DB).
-          dispatch({ type: 'RESOLVE_MARK', markKey: mark.markKey, actionId: 'leave' });
-        } else if (res.data.kind === 'needsConfirmation') {
-          // The 'wiki' resolution is intercepted above and never reaches here; any
-          // other needsConfirmation has no inline gate, so just close the note.
-          dispatch({ type: 'OPEN_MARK', markKey: null });
-        }
+        // Only 'leave' reaches here: 'wiki'/'text' both return above, and
+        // resolutionIdOf never produces anything else — 'needsConfirmation'
+        // (only for 'wiki') is dead on this call path.
+        dispatch({ type: 'RESOLVE_MARK', markKey: mark.markKey, actionId: 'leave' });
       } finally {
         setBusy(false);
       }
