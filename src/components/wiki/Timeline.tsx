@@ -41,6 +41,14 @@ export default function Timeline({ appearances }: TimelineProps) {
                 {a.flagText}
               </span>
             )}
+            <a
+              href={`/write?chapter=${a.chapter}`}
+              className={styles.chapterLink}
+              aria-label={`Jump to chapter ${a.chapter}`}
+              title={`Open chapter ${a.chapter} in the manuscript`}
+            >
+              Jump to {cites[i]}  ↗
+            </a>
           </li>
         );
       })}

@@ -41,6 +41,7 @@ import {
   insertFact,
   insertTie,
   deleteTie,
+  deleteFact as deleteFactMutation,
   createEntryWithTie,
   updateFactEntry,
   reorderShelf,
@@ -637,6 +638,24 @@ export async function createFact(input: {
     return { ok: true, data: { factId: fact.id } };
   } catch (err) {
     return fail(err, "wiki.createFact");
+  }
+}
+
+/**
+ * WIKI WRITE (product rule 1). Delete a fact from an entry. Mirrors reducer
+ * `DELETE_FACT`. A fact is a low-stakes wiki detail (no cascade), so it removes
+ * the row outright without a tombstone. Requires a confirmation token, mirroring
+ * createFact (defence in depth on every wiki write).
+ */
+export async function deleteFact(input: {
+  factId: string;
+}): Promise<ActionResult<{ ok: true }>> {
+  try {
+    const confirmation = confirmWikiWrite({ confirmed: true });
+    await deleteFactMutation(input.factId, confirmation);
+    return { ok: true, data: { ok: true } };
+  } catch (err) {
+    return fail(err, "wiki.deleteFact");
   }
 }
 

@@ -51,6 +51,26 @@ function DismissIcon({ className }: { className?: string }) {
   );
 }
 
+function DeleteIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M3 4h10M5 4v10a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V4M10 4V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v1" />
+    </svg>
+  );
+}
+
 interface DetailsColumnProps {
   entryId: string;
   facts: FactRow[];
@@ -65,6 +85,8 @@ interface DetailsColumnProps {
   ) => void;
   /** Add a new blank fact to this entry. */
   onAddFact: (entryId: string) => void;
+  /** Delete a fact from this entry. */
+  onDeleteFact: (entryId: string, factId: string) => void;
   /** AI "suggest details" (optional). Writes nothing until the writer adds one. */
   ai?: {
     suggestions: { key: string; value: string }[];
@@ -86,6 +108,7 @@ export default function DetailsColumn({
   onDropSuggestion,
   onEditFactField,
   onAddFact,
+  onDeleteFact,
   ai,
 }: DetailsColumnProps) {
   const drag = useDrag();
@@ -149,6 +172,19 @@ export default function DetailsColumn({
                 placeholder="Value"
                 onCommit={(v) => onEditFactField(entryId, f.id, "value", v)}
               />
+            </span>
+            <span className={styles.actions}>
+              <button
+                type="button"
+                className={styles.deleteFact}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteFact(entryId, f.id);
+                }}
+                aria-label={`Delete ${f.key}`}
+              >
+                <DeleteIcon />
+              </button>
             </span>
           </li>
         ))}

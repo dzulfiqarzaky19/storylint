@@ -97,6 +97,7 @@ export type WikiAction =
   // EDIT_FACT          → editFact    (WIKI WRITE, inherently confirmed)
   // CREATE_ENTRY       → createEntry (WIKI WRITE, inherently confirmed)
   // CREATE_FACT        → createFact  (WIKI WRITE, inherently confirmed)
+  // DELETE_FACT        → deleteFact  (WIKI WRITE, inherently confirmed)
   | {
       type: "EDIT_ENTRY_FIELDS";
       entryId: string;
@@ -131,6 +132,13 @@ export type WikiAction =
       key: string;
       value: string;
       sortOrder: number;
+    }
+  | {
+      type: "DELETE_FACT";
+      /** The entry the fact belongs to. */
+      entryId: string;
+      /** The fact to remove. Hard removal — delete is intentional, no tombstone. */
+      factId: string;
     }
   | {
       type: "SOFT_DELETE_ENTRY";
@@ -257,6 +265,9 @@ export function wikiReducer(state: WikiState, action: WikiAction): WikiState {
 
     case "CREATE_FACT":
       return createFactInState(state, action);
+
+    case "DELETE_FACT":
+      return deleteFactInState(state, action.entryId, action.factId);
 
     case "SOFT_DELETE_ENTRY":
       return softDeleteEntryInState(state, action.entryId);
@@ -702,6 +713,25 @@ function createFactInState(
   return {
     ...state,
     byId: { ...state.byId, [action.entryId]: { ...entry, facts: [...entry.facts, fact] } },
+  };
+}
+
+/** Remove exactly ONE fact from an entry's `facts[]` (pure). Delete is an
+ * intentional removal, so the fact is dropped outright — no tombstone. Removes
+ * only the addressed `factId`, leaving every other fact on the entry intact.
+ * No-op if the entry is unknown or holds no such fact. */
+function deleteFactInState(
+  state: WikiState,
+  entryId: string,
+  factId: string,
+): WikiState {
+  const entry = state.byId[entryId];
+  if (!entry) return state;
+  const facts = entry.facts.filter((f) => f.id !== factId);
+  if (facts.length === entry.facts.length) return state; // no matching fact: no-op
+  return {
+    ...state,
+    byId: { ...state.byId, [entryId]: { ...entry, facts } },
   };
 }
 

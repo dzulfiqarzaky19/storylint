@@ -55,6 +55,8 @@ interface EntryBandProps {
   ) => void;
   /** Add a new blank fact to this entry. */
   onAddFact: (entryId: string) => void;
+  /** Delete a fact from this entry. */
+  onDeleteFact: (entryId: string, factId: string) => void;
   /** AI "suggest details" panel (optional). */
   ai?: {
     suggestions: { key: string; value: string }[];
@@ -89,6 +91,7 @@ export default function EntryBand({
   onEditEntryField,
   onEditFactField,
   onAddFact,
+  onDeleteFact,
   ai,
 }: EntryBandProps) {
   const kindLabel = kindLabelOf(entry.kind);
@@ -174,6 +177,7 @@ export default function EntryBand({
                 onDropSuggestion={onDropSuggestion}
                 onEditFactField={onEditFactField}
                 onAddFact={onAddFact}
+                onDeleteFact={onDeleteFact}
                 ai={ai}
               />
             ),

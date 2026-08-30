@@ -141,3 +141,29 @@
   color: var(--faint);
   cursor: pointer;
 }
+
+/* Per-fact delete button (mirror TiesBlock untie × affordance). */
+.actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+}
+.deleteFact {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--faint);
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.deleteFact:hover {
+  color: var(--accent);
+  background: var(--fresh);
+}
+.deleteFact:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

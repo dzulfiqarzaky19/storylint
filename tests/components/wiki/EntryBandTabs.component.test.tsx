@@ -97,6 +97,7 @@ function renderBand() {
         onEditEntryField={() => {}}
         onEditFactField={() => {}}
         onAddFact={() => {}}
+        onDeleteFact={() => {}}
       />
     </DragProvider>,
   );

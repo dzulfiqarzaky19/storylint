@@ -25,6 +25,7 @@ import {
   editFact,
   createEntry,
   createFact,
+  deleteFact,
   suggestEntryFacts,
   softDeleteEntry,
   untie,
@@ -366,6 +367,14 @@ function WikiScreenInner({
       );
     },
     [state.byId, settle],
+  );
+
+  const deleteFactCallback = useCallback(
+    (entryId: string, factId: string) => {
+      dispatch({ type: "DELETE_FACT", entryId, factId });
+      settle("deleteFact", deleteFact({ factId }));
+    },
+    [settle],
   );
 
   // ---- AI: suggest details for the focused entry (read-only until Add) ------
@@ -758,6 +767,7 @@ function WikiScreenInner({
         onEditEntryField={editEntryField}
         onEditFactField={editFactField}
         onAddFact={addFact}
+        onDeleteFact={deleteFactCallback}
         ai={{
           suggestions: aiSuggestions[selected.id] ?? [],
           busy: aiBusy,

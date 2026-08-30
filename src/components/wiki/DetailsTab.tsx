@@ -17,6 +17,7 @@ interface DetailsTabProps {
     value: string,
   ) => void;
   onAddFact: (entryId: string) => void;
+  onDeleteFact: (entryId: string, factId: string) => void;
   ai?: {
     suggestions: { key: string; value: string }[];
     busy: boolean;
@@ -35,6 +36,7 @@ export default function DetailsTab({
   onDropSuggestion,
   onEditFactField,
   onAddFact,
+  onDeleteFact,
   ai,
 }: DetailsTabProps) {
   return (
@@ -45,6 +47,7 @@ export default function DetailsTab({
         onDropSuggestion={onDropSuggestion}
         onEditFactField={onEditFactField}
         onAddFact={onAddFact}
+        onDeleteFact={onDeleteFact}
         ai={ai}
       />
       <OpenQuestions questions={openQuestions} />

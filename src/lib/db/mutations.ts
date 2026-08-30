@@ -27,6 +27,7 @@ export {
   reorderShelf,
   insertTie,
   deleteTie,
+  deleteFact,
   createEntryWithTie,
   getMaxSortOrderForShelf,
   getMaxSortOrderForFacts,

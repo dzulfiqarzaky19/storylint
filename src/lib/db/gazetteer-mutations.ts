@@ -338,6 +338,19 @@ export async function deleteTie(
 }
 
 /**
+ * WIKI WRITE (product rule 1). HARD-delete a single fact by id. A fact is a
+ * low-stakes wiki detail (no cascade), so it removes the row outright without a
+ * tombstone. Requires a confirmation token, mirroring insertFact (defence in
+ * depth on every wiki write).
+ */
+export async function deleteFact(
+  factId: string,
+  _confirmation: WikiWriteConfirmation,
+): Promise<void> {
+  await query(`DELETE FROM facts WHERE id = $1`, [factId]);
+}
+
+/**
  * WIKI WRITE (product rule 1). Create a NEW entry AND a tie to it in ONE
  * transaction (the "add a new person as <rel>-to-X" primitive). Both writes
  * share a single client/txn, so they commit together or roll back together: if
