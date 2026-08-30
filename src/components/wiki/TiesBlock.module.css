@@ -230,6 +230,14 @@
 }
 
 /* Role section: appears after an entry is picked. */
+.pickedBanner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border: 1px solid var(--rule-row); border-radius: 6px;
+  background: var(--surface); font-size: var(--text-3); font-weight: 700;
+}
+.pickedName { color: var(--ink); }
+.pickedKind { font-size: var(--text-2); color: var(--faint); }
+
 .roleSection {
   display: flex;
   flex-direction: column;

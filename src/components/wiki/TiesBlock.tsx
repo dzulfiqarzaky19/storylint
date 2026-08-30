@@ -236,7 +236,12 @@ export default function TiesBlock({
           </div>
 
           {pickedKind ? (
-            <div className={styles.roleSection}>
+            <>
+              <div className={styles.pickedBanner} aria-live="polite">
+                <span className={styles.pickedName}>{pickedId?.startsWith("__new__") ? pickedId.replace("__new__", "") : matches.find((m) => m.id === pickedId)?.name ?? "—"}</span>
+                <span className={styles.pickedKind}>· {pickedKind}</span>
+              </div>
+              <div className={styles.roleSection}>
               <span className={styles.roleLabel}>
                 Relationship to {pickedKind}:
               </span>
@@ -284,6 +289,7 @@ export default function TiesBlock({
                 }}
               />
             </div>
+            </>
           ) : (
             <p className={styles.hint}>Pick an entry above to see role suggestions.</p>
           )}
