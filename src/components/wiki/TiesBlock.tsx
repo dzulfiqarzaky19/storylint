@@ -73,6 +73,8 @@ export default function TiesBlock({
   const [adding, setAdding] = useState(false);
   const [queryText, setQueryText] = useState("");
   const [rel, setRel] = useState("");
+  const [pickedKind, setPickedKind] = useState<string | null>(null);
+  const [pickedId, setPickedId] = useState<string | null>(null);
 
   const matches = useMemo(() => {
     const q = queryText.trim().toLowerCase();
@@ -92,18 +94,13 @@ export default function TiesBlock({
     setQueryText("");
     setRel("");
     setReplacingTie(null);
+    setPickedKind(null);
+    setPickedId(null);
   }
 
-  function tieExisting(id: string) {
-    onTieExisting(id, rel.trim());
-    closeAdd();
-  }
-
-  function createTied() {
-    const name = queryText.trim();
-    if (!name) return;
-    onCreateTied(name, rel.trim());
-    closeAdd();
+  function pickCandidate(c: TieCandidate) {
+    setPickedId(c.id);
+    setPickedKind(c.kind);
   }
 
   return (
@@ -199,35 +196,16 @@ export default function TiesBlock({
 
       {adding ? (
         <div className={styles.addPanel}>
-          <div className={styles.roleChips} aria-label="Quick role chips">
-            {(ROLE_VOCAB.character as readonly string[]).slice(0, 8).map((r) => (
-              <button
-                key={r}
-                type="button"
-                className={styles.chip}
-                onClick={() => setRel(r)}
-                aria-pressed={rel === r}
-                title={`Set relationship: ${r}`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-          <input
-            type="text"
-            className={styles.relInput}
-            placeholder="Relationship (e.g. uncle)"
-            value={rel}
-            onChange={(e) => setRel(e.target.value)}
-            aria-label="Relationship label"
-          />
           <div className={styles.picker} role="listbox" aria-label="Pick an entry to tie">
             <input
               type="text"
               className={styles.pickerInput}
               placeholder="Search or name a new entry…"
               value={queryText}
-              onChange={(e) => setQueryText(e.target.value)}
+              onChange={(e) => {
+                setQueryText(e.target.value);
+                if (pickedId) { setPickedId(null); setPickedKind(null); }
+              }}
               aria-label="Search entries to tie"
             />
             {matches.map((c) => (
@@ -235,23 +213,81 @@ export default function TiesBlock({
                 key={c.id}
                 type="button"
                 role="option"
-                aria-selected={false}
-                className={styles.pickerOption}
-                onClick={() => tieExisting(c.id)}
+                aria-selected={pickedId === c.id}
+                className={`${styles.pickerOption} ${pickedId === c.id ? styles.pickerOptionPicked : ""}`}
+                onClick={() => pickCandidate(c)}
               >
                 {c.name} <span className={styles.pickerKind}>{c.kind}</span>
               </button>
             ))}
-            {queryText.trim() && (
+            {queryText.trim() && !matches.some((m) => m.name.toLowerCase() === queryText.trim().toLowerCase()) && (
               <button
                 type="button"
                 className={styles.createOption}
-                onClick={createTied}
+                onClick={() => {
+                  setPickedKind("character");
+                  setPickedId(`__new__${queryText.trim()}`);
+                }}
+                aria-pressed={pickedId === `__new__${queryText.trim()}`}
               >
                 + Create “{queryText.trim()}”
               </button>
             )}
           </div>
+
+          {pickedKind ? (
+            <div className={styles.roleSection}>
+              <span className={styles.roleLabel}>
+                Relationship to {pickedKind}:
+              </span>
+              <div className={styles.roleChips} aria-label="Quick role chips">
+                {roleVocabFor(pickedKind).slice(0, 6).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    className={styles.chip}
+                    onClick={() => {
+                      setRel(r);
+                      if (pickedId?.startsWith("__new__")) {
+                        const name = pickedId.replace("__new__", "");
+                        onCreateTied(name, r);
+                        closeAdd();
+                      } else if (pickedId) {
+                        onTieExisting(pickedId, r);
+                        closeAdd();
+                      }
+                    }}
+                    aria-pressed={rel === r}
+                    title={`Set relationship: ${r}`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                className={styles.relInput}
+                placeholder="or type a role…"
+                value={rel}
+                onChange={(e) => setRel(e.target.value)}
+                aria-label="Relationship label"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && rel.trim()) {
+                    if (pickedId?.startsWith("__new__")) {
+                      const name = pickedId.replace("__new__", "");
+                      onCreateTied(name, rel.trim());
+                    } else if (pickedId) {
+                      onTieExisting(pickedId, rel.trim());
+                    }
+                    closeAdd();
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <p className={styles.hint}>Pick an entry above to see role suggestions.</p>
+          )}
+
           <button type="button" className={styles.addCancel} onClick={closeAdd}>
             Cancel
           </button>
