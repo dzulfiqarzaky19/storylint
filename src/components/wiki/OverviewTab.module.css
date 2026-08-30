@@ -59,6 +59,21 @@
   color: var(--danger);
 }
 
+.aiBadge {
+  margin-left: 6px; padding: 1px 6px; font-size: var(--text-1); font-weight: 700;
+  color: var(--accent); border: 1px solid var(--accent); border-radius: 999px;
+}
+
+.aiProse {
+  font-size: var(--text-6); line-height: 1.5; color: var(--body-ink);
+  background: var(--tile); padding: var(--space-3); border-radius: 6px;
+  border: 1px solid var(--rule-row); text-wrap: pretty;
+}
+
+.aiHint {
+  font-size: var(--text-2); color: var(--faint); margin-top: 4px;
+}
+
 .fallback {
   font-size: var(--text-4);
   color: var(--faint);

@@ -279,6 +279,33 @@
   border-color: var(--accent);
 }
 
+.suggestedTies {
+  margin-top: 10px; padding: 10px;
+  border: 1px solid var(--rule-row); border-radius: 6px;
+  background: var(--surface);
+}
+.suggestedTitle {
+  font-size: var(--text-3); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--faint); margin-bottom: 6px;
+}
+.suggestedList { display: flex; flex-direction: column; gap: 4px; }
+.suggestedRow {
+  display: flex; align-items: center; gap: 8px; padding: 6px;
+  border-bottom: 1px solid var(--rule-row);
+}
+.suggestedName { font-weight: 700; font-size: var(--text-5); flex: 1; }
+.suggestedRel { font-size: var(--text-2); color: var(--accent); }
+.suggestedActions { display: flex; gap: 4px; }
+.suggestedAccept, .suggestedDismiss {
+  padding: 2px 8px; font-size: var(--text-1); font-weight: 600;
+  border: 1px solid var(--faint); border-radius: 4px; cursor: pointer;
+}
+.suggestedAccept { color: var(--accent); border-color: var(--accent); }
+.suggestedAccept:hover { background: var(--drop); }
+.suggestedDismiss { color: var(--muted-2); }
+.suggestedDismiss:hover { color: var(--accent-deep); }
+.suggestedHint { font-size: var(--text-2); color: var(--faint); margin-top: 4px; }
+
 .addCancel {
   align-self: flex-start;
   padding: var(--space-1) 0;

@@ -325,6 +325,36 @@ export default function TiesBlock({
           onCancel={() => setPendingUntie(null)}
         />
       )}
+
+      {/* T-WIKI-COCKPIT-4 STUB: AI-suggested ties (UI only; real action lands in lib/actions) */}
+      <section className={styles.suggestedTies} aria-label="AI-suggested ties">
+        <h3 className={styles.suggestedTitle}>Suggest ties</h3>
+        <div className={styles.suggestedList}>
+          <div className={styles.suggestedRow}>
+            <span className={styles.suggestedName}>A returning ally</span>
+            <span className={styles.suggestedRel}>ally · ch. 7</span>
+            <div className={styles.suggestedActions}>
+              <button
+                type="button"
+                className={styles.suggestedAccept}
+                onClick={() => { /* stub: calls onTieExisting / createTied later */ }}
+                aria-label="Accept suggested tie to A returning ally"
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                className={styles.suggestedDismiss}
+                onClick={() => { /* stub: dismisses suggestion */ }}
+                aria-label="Dismiss suggested tie"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+        <p className={styles.suggestedHint}>AI suggestion — confirm to turn into a live tie.</p>
+      </section>
     </div>
   );
 }

@@ -8,6 +8,8 @@ import styles from "./OverviewTab.module.css";
 interface OverviewTabProps {
   entry: EntryWithDetails;
   onEditSummary: (value: string) => void;
+  /** T-WIKI-COCKPIT-5 STUB: AI synthesis text (wired to generateOverviewSynthesis later). */
+  aiSynthesis?: string;
 }
 
 /**
@@ -19,6 +21,7 @@ interface OverviewTabProps {
 export default function OverviewTab({
   entry,
   onEditSummary,
+  aiSynthesis,
 }: OverviewTabProps) {
   // Appearances arrive sorted (sortOrder), so the newest beat is the tail.
   const latest = entry.appearances[entry.appearances.length - 1] ?? null;
@@ -62,6 +65,17 @@ export default function OverviewTab({
           <p className={styles.fallback}>Not in the manuscript yet.</p>
         )}
       </section>
+      {/* T-WIKI-COCKPIT-5 STUB: AI synthesis section (wired to generateOverviewSynthesis later) */}
+      {aiSynthesis !== undefined && (
+        <section className={styles.block}>
+          <h2 className={styles.sectionTitle}>
+            AI Synopsis
+            <span className={styles.aiBadge}>AI</span>
+          </h2>
+          <p className={styles.aiProse}>{aiSynthesis}</p>
+          <p className={styles.aiHint}>Edit the summary to override this synthesis.</p>
+        </section>
+      )}
     </div>
   );
 }

@@ -1008,3 +1008,39 @@ export async function previewCascade(input: {
     return fail(err, "wiki.previewCascade");
   }
 }
+
+// ---- T-WIKI-COCKPIT-4: AI-suggested ties (STUB) ----
+
+export interface SuggestedTie {
+  toName: string;
+  rel: string;
+  citation?: string;
+}
+
+// STUB: returns one fixed suggestion. The real implementation will scan
+// entry.appearances, detect entity co-occurrences, and propose a role+citation.
+export async function suggestEntryTies(input: {
+  entryId: string;
+}): Promise<ActionResult<{ ties: SuggestedTie[] }>> {
+  return {
+    ok: true,
+    data: { ties: [{ toName: "A returning ally", rel: "ally", citation: "ch. 7" }] },
+  };
+}
+
+// ---- T-WIKI-COCKPIT-5: Overview AI synthesis (STUB) ----
+
+// STUB: returns a fixed synopsis. The real implementation will call the AI
+// gateway over entry.appearances + entry.ties + entry.facts and persist a
+// writer-editable override.
+export async function generateOverviewSynthesis(input: {
+  entryId: string;
+}): Promise<ActionResult<{ synthesis: string }>> {
+  return {
+    ok: true,
+    data: {
+      synthesis:
+        "A synthesised overview will appear here. The real AI synthesis reads Timeline + Ties + Details and produces a 2-3 sentence synopsis the writer can edit.",
+    },
+  };
+}
