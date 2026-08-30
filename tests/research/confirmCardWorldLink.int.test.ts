@@ -5,7 +5,7 @@ import { query, closePool } from "@/lib/db/pool";
 import { getWorldTree } from "@/lib/db/queries";
 import { resolveWikiScope } from "@/app/wiki/scope";
 import { confirmCard } from "@/lib/actions/research";
-import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // TCK-E06 (RESEARCH slice) — a research-CONFIRMED new entry must be LINKED into
@@ -31,7 +31,7 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 //      entry and NO new world_entities row.
 //   3. FAIL CLOSED: mint with a blank worldId -> ok:false, NO entry, NO link.
 //   4. DEFAULT-WORLD PIN (case-a invariant guard): resolveWikiScope default ==
-//      'world-mol', AND every research_threads row grounds in a world OF its own
+//      DEFAULT_WORLD_ID, AND every research_threads row grounds in a world OF its own
 //      universe (i.e. the thread's world_id belongs to its universe_id). This REDs
 //      the instant a thread is grounded in a foreign universe's world — exactly
 //      when the snapshot loaded for that thread would be the wrong world's canon.
@@ -46,12 +46,12 @@ import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
 // SHARED-DB HYGIENE: throwaway ids `test-e06r-*`; the derived mint entry
 // (`prop-<propId>`), its world_entities links, kept_cards, and the
 // thread->turn->proposition chain are all hard-deleted in afterEach. The seed
-// universe-mol / world-mol / the baseline entries are NEVER touched.
+// default universe/world/entries are NEVER touched.
 // -----------------------------------------------------------------------------
 
 loadEnv();
 
-const DEFAULT_WORLD = "world-mol"; // the seed world resolveWikiScope defaults to
+const DEFAULT_WORLD = DEFAULT_WORLD_ID; // the seed world resolveWikiScope defaults to
 
 // Everything we create, cleaned in afterEach (FK-safe order).
 const mintedEntryIds: string[] = []; // `prop-<propId>` rows confirmCard mints
@@ -69,7 +69,7 @@ async function freshProposition(
   const turnId = `test-e06r-tn-${tag}`;
   const propId = `test-e06r-p-${tag}`;
   // world_id is NOT NULL (T-RESEARCH-2). The thread grounds in the seed's default
-  // world (world-mol); confirmCard resolves the same world for the mint.
+  // world (DEFAULT_WORLD_ID); confirmCard resolves the same world for the mint.
   await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", universeId, DEFAULT_WORLD]);
   await query(
     `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text) VALUES ($1, $2, 0, 'them', 'AI', '')`,
@@ -190,7 +190,7 @@ describe("TCK-E06 confirmCard ENRICH does not world-link (real Postgres)", () =>
 });
 
 describe("TCK-E06 default-world PIN — case-(a) invariant guard (real Postgres)", () => {
-  it("4a. resolveWikiScope default (no ?u=/?w=) resolves the seed world 'world-universe-1'", async () => {
+  it("4a. resolveWikiScope default (no ?u=/?w=) resolves the seed's default world", async () => {
     const { activeWorldId } = resolveWikiScope(await getWorldTree(), undefined, undefined);
     expect(activeWorldId).toBe(DEFAULT_WORLD);
   });

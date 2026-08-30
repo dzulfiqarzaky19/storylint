@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { loadEnv } from "@/lib/db/env";
 import { query, closePool } from "@/lib/db/pool";
 import { createEntry, createEntryTied } from "@/lib/actions/wiki";
+import { DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // TCK-E06 (wiki mint paths): a NEW entry created from /wiki MUST be LINKED to the
@@ -29,8 +30,8 @@ import { createEntry, createEntryTied } from "@/lib/actions/wiki";
 
 loadEnv();
 
-// A world that exists in the seeded DB. The MoL universe's default world id.
-const WORLD = "world-mol";
+// A world that exists in the seeded DB: the default book's world.
+const WORLD = DEFAULT_WORLD_ID;
 
 const createdEntries: string[] = [];
 

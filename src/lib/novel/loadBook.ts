@@ -198,11 +198,20 @@ export function loadBook(slug: string): LoadedBook {
   );
 
   const entityIds = new Set(ex.wiki.entities.map((e) => e.id));
-  book.ties = ex.wiki.entities.flatMap((e) =>
-    (e.ties ?? [])
-      .filter((t) => entityIds.has(t.to))
-      .map((t): [string, string, string] => [e.id, t.to, t.rel]),
-  );
+  // Extraction ties accrue per-chapter as a relationship evolves (e.g. "friend"
+  // -> "lover" -> "spouse"); the seeded id is `tie-${from}-${to}` (directional
+  // pair, no chapter component), so a (from,to) pair repeated across chapters
+  // collides on that primary key. Keep only the last-seen `rel` per pair —
+  // entities/ties are emitted in chapter order, so last-seen is the
+  // narratively current relationship state.
+  const tieByPair = new Map<string, [string, string, string]>();
+  for (const e of ex.wiki.entities) {
+    for (const t of e.ties ?? []) {
+      if (!entityIds.has(t.to)) continue;
+      tieByPair.set(`${e.id}\u0000${t.to}`, [e.id, t.to, t.rel]);
+    }
+  }
+  book.ties = [...tieByPair.values()];
 
   // Owner is the entity whose arc this is. Prefer the explicit `owner` id (so
   // antagonist/side arcs are owned by their own character); fall back to the first

@@ -5,6 +5,8 @@ import { resolve } from "node:path";
 import { Pool } from "pg";
 import { loadEnv } from "@/lib/db/env";
 import { seedWithin } from "@/lib/db/seed";
+import { discoverBooks } from "@/lib/novel/loadBook";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 loadEnv();
 
@@ -25,8 +27,11 @@ loadEnv();
 //  - B1 world INSERT: mutate it away -> world-scoped read has 0 worlds -> RED.
 //  - B2 link JOIN: mutate `e.universe_id` -> a constant/wrong universe -> per-entry
 //    membership world_id wrong -> RED (per-row, not an aggregate count).
-// Assertions here are the GREEN side: worlds=1 (world-mol), world_entities
-// count == entries count, every built-in category world_id NULL.
+// Assertions here are the GREEN side: worlds == discoverBooks().length (one world
+// per seeded book, T-ARCH-8: the seed now loads every book under src/lib/novel,
+// not just one — the old "exactly 1 world" assumption was single-book-era stale),
+// the DEFAULT world/universe pair resolves, world_entities count == entries
+// count, every built-in category world_id NULL.
 // -----------------------------------------------------------------------------
 
 const scratchDb = `ashkeld_tck011_${randomUUID().replace(/-/g, "")}`;
@@ -70,7 +75,7 @@ afterAll(async () => {
 }, 60_000);
 
 describe("TCK-011 seed backfills the world layer (real Postgres, scratch db)", () => {
-  it("db:seed lands in post-W-1 shape: 1 world, every entry linked, built-ins global", async () => {
+  it("db:seed lands in post-W-1 shape: 1 world per book, every entry linked, built-ins global", async () => {
     // Run the real seed routine in a transaction on the scratch db.
     const client = await scratchPool.connect();
     try {
@@ -84,18 +89,19 @@ describe("TCK-011 seed backfills the world layer (real Postgres, scratch db)", (
       client.release();
     }
 
-    // The seed builds ONE real hierarchy: the Mother of Learning universe with its
-    // single world (Cyoria). The world layer must exist post-seed (not 0 worlds).
+    // The seed builds one world per discovered book (src/lib/novel/*.chapters.json).
+    // The world layer must exist post-seed (not 0 worlds), and the DEFAULT
+    // universe/world pair (backing scope.ts) must be among them.
+    const expectedWorldCount = discoverBooks().length;
     const worlds = await scratchPool.query<{ id: string; universe_id: string; title: string }>(
       `SELECT id, universe_id, title FROM worlds ORDER BY id`,
     );
-    expect(worlds.rowCount).toBe(1);
-    const molWorld = worlds.rows.find((w) => w.id === "world-mol");
-    expect(molWorld).toBeDefined();
-    expect(molWorld!.universe_id).toBe("universe-mol");
+    expect(worlds.rowCount).toBe(expectedWorldCount);
+    const defaultWorld = worlds.rows.find((w) => w.id === DEFAULT_WORLD_ID);
+    expect(defaultWorld).toBeDefined();
+    expect(defaultWorld!.universe_id).toBe(DEFAULT_UNIVERSE_ID);
 
-    // Every entry is linked to its world (link count == entry count, and every
-    // link points at world-mol since the seed has one universe/world).
+    // Every entry is linked to its world (link count == entry count).
     const entryCount = (await scratchPool.query<{ n: string }>(`SELECT count(*)::text AS n FROM entries`)).rows[0]!.n;
     const linkCount = (await scratchPool.query<{ n: string }>(`SELECT count(*)::text AS n FROM world_entities`)).rows[0]!.n;
     expect(Number(entryCount)).toBeGreaterThan(0); // sanity: the seed has entries
@@ -107,13 +113,13 @@ describe("TCK-011 seed backfills the world layer (real Postgres, scratch db)", (
         WHERE NOT EXISTS (SELECT 1 FROM world_entities we WHERE we.entity_id = e.id)`,
     )).rows[0]!.n;
     expect(orphanEntries).toBe("0");
-    // Single-world seed: every membership link homes to world-mol. The load-bearing
-    // invariant is that no entry links to any OTHER world (a stray auto-world or a
-    // mis-stamped link would show up here as a non-world-mol membership row).
-    const strayLinks = (await scratchPool.query<{ n: string }>(
-      `SELECT count(*)::text AS n FROM world_entities we WHERE we.world_id <> 'world-mol'`,
+    // Every membership link points at a world that actually exists (no stray
+    // auto-world or mis-stamped link into a nonexistent world id).
+    const danglingLinks = (await scratchPool.query<{ n: string }>(
+      `SELECT count(*)::text AS n FROM world_entities we
+        WHERE NOT EXISTS (SELECT 1 FROM worlds w WHERE w.id = we.world_id)`,
     )).rows[0]!.n;
-    expect(strayLinks).toBe("0");
+    expect(danglingLinks).toBe("0");
 
     // Built-ins stay GLOBAL (world_id NULL) so a shared entity's kind resolves in
     // any world.

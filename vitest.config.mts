@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
+import { readTestDbUrl } from './tests/db/testDbUrl.mts';
 
 // Two honest tiers, split by filename suffix so the everyday `test` run never
 // touches the live Postgres:
@@ -38,7 +39,21 @@ export default defineConfig({
           name: 'int',
           include: ['tests/**/*.int.test.ts'],
           environment: 'node',
-          // Integration tests share ONE live Postgres. With file parallelism on
+          // T-ARCH-8: run against the ISOLATED test DB (db_test, :5435/
+          // ashkeld_test) that e2e already uses, never the live dev DB
+          // (:5434/ashkeld) — that DB gets reseeded/reimported by unrelated
+          // work (novel-extraction, demo data), which twice rotted these
+          // tests' DEFAULT_UNIVERSE_ID fixtures out from under a gate. `env`
+          // sets DATABASE_URL for every int-project child process; each
+          // `.int.test.ts` file's own `loadEnv()` no-ops because it only fills
+          // gaps (see src/lib/db/env.ts), so this wins.
+          env: { DATABASE_URL: readTestDbUrl() },
+          // Reset + seed the isolated DB ONCE before the whole int project
+          // runs (mirrors tests/e2e/global-setup.ts), so every file sees the
+          // same deterministic fixtures regardless of prior runs. Set
+          // INT_SKIP_SEED=1 to reuse an already-seeded DB while iterating.
+          globalSetup: ['./tests/db/int-global-setup.mts'],
+          // Integration tests share ONE Postgres. With file parallelism on
           // (the vitest default), concurrent test files seed/delete the same
           // tables and race any whole-table-count assertion. Serialize file
           // execution so the shared-DB suite is deterministic. (Per-file

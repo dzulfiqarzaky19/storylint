@@ -6,7 +6,7 @@ import { insertEntry, insertFact, softDeleteEntry } from "@/lib/db/mutations";
 import { getFactsForEntry } from "@/lib/db/queries";
 import { confirmCard } from "@/lib/actions/research";
 import { confirmWikiWrite } from "@/lib/actions/confirmation";
-import { DEFAULT_UNIVERSE_ID } from "@/lib/db/scope";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID } from "@/lib/db/scope";
 
 // -----------------------------------------------------------------------------
 // F6-S3a — enrich-vs-duplicate (INTEGRATION, real Postgres). Two locks:
@@ -48,7 +48,11 @@ async function freshProposition(title: string, body: string): Promise<string> {
   const turnId = `test-f6s3-tn-${tag}`;
   const propId = `test-f6s3-p-${tag}`;
   // world_id is NOT NULL (T-RESEARCH-2): stamp the default universe's world.
-  await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", DEFAULT_UNIVERSE_ID, `world-${DEFAULT_UNIVERSE_ID}`]);
+  // NOTE: the world id is `world-<slug>`, not `world-<universe id>` — the
+  // universe id is itself `universe-<slug>`, so building the world id FROM the
+  // universe id (as this used to) doubled the prefix into a nonexistent
+  // `world-universe-<slug>`. Use DEFAULT_WORLD_ID directly.
+  await query(`INSERT INTO research_threads (id, title, universe_id, world_id) VALUES ($1, $2, $3, $4)`, [threadId, "T", DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID]);
   await query(
     `INSERT INTO research_turns (id, thread_id, ordinal, side, who, text) VALUES ($1, $2, 0, 'them', 'AI', '')`,
     [turnId, threadId],
@@ -104,7 +108,7 @@ describe("confirmCard enrich branch (F6-S3a, real Postgres)", () => {
       enrichEntryId: targetId,
       // TCK-E06: confirmCard now requires worldId, but the enrich branch ignores it
       // (its target entry is already world-linked); any valid world satisfies the type.
-      worldId: "world-universe-1",
+      worldId: DEFAULT_WORLD_ID,
       confirmed: true,
     });
 
@@ -126,7 +130,7 @@ describe("confirmCard enrich branch (F6-S3a, real Postgres)", () => {
       enrichEntryId: targetId,
       // TCK-E06: confirmCard now requires worldId, but the enrich branch ignores it
       // (its target entry is already world-linked); any valid world satisfies the type.
-      worldId: "world-universe-1",
+      worldId: DEFAULT_WORLD_ID,
       confirmed: true,
     });
 

@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
 import { loadEnv } from "@/lib/db/env";
 import { query, closePool } from "@/lib/db/pool";
+import { DEFAULT_UNIVERSE_ID, DEFAULT_WORLD_ID, DEFAULT_BOOK_ID } from "@/lib/db/scope";
 import {
   insertWorld,
   linkEntityToWorld,
@@ -20,8 +21,8 @@ import { confirmWikiWrite } from "@/lib/actions/confirmation";
 // row, so a shared entity appears in EACH world it is linked to.
 //
 // This test stands up a THROWAWAY second world (test-tck023-w-<uuid>) INSIDE the
-// seeded universe-mol, so the seeded `mol-zorian` entry (home to universe-mol) can be
-// linked into it, and proves:
+// seeded default universe, so a seeded default-universe entry (resolved at
+// runtime, not a hardcoded id) can be linked into it, and proves:
 //   A. linkEntityToWorld inserts exactly ONE membership row, and a DOUBLE link is
 //      IDEMPOTENT (still exactly one row — ON CONFLICT DO NOTHING).
 //   B. a shared entity shows in BOTH worlds' loadWorldSnapshot (home world +
@@ -37,21 +38,26 @@ import { confirmWikiWrite } from "@/lib/actions/confirmation";
 //
 // SHARED-DB HYGIENE: the throwaway world/book use `test-tck023-*` ids and
 // are hard-deleted in afterAll in FK order (its link rows go first). The seeded
-// universe-mol / world-mol / `mol-zorian` and the baseline links are NEVER
-// mutated destructively: the only baseline row this test touches is the temporary
-// (test-world, mol-zorian) link, removed in afterAll. Restores DB to the {MoL,
-// 15 links} baseline.
+// default universe/world/entity and the baseline links are NEVER mutated
+// destructively: the only baseline row this test touches is the temporary
+// (test-world, ENTITY) link, removed in afterAll. Restores DB to its seed
+// baseline.
+//
+// IDS ARE RESOLVED FROM `@/lib/db/scope`'s DEFAULT_* constants and a live query
+// (not hardcoded literals like the old "world-mol"/"universe-mol"/"mol-zorian")
+// so this file survives a reseed that changes which book is the default.
 // -----------------------------------------------------------------------------
 
 loadEnv();
 
-const HOME_WORLD = "world-mol"; // seeded world (home to universe-mol)
-const HOME_UNIVERSE = "universe-mol";
-const HOME_BOOK = "book-mol-1"; // seeded first book (the as-of-N window anchor)
-const ENTITY = "mol-zorian"; // seeded entry, home to universe-mol
+const HOME_WORLD = DEFAULT_WORLD_ID; // seeded world (home to the default universe)
+const HOME_UNIVERSE = DEFAULT_UNIVERSE_ID;
+const HOME_BOOK = DEFAULT_BOOK_ID; // seeded first book (the as-of-N window anchor)
+// Resolved in beforeAll: a seeded entry that's a member of HOME_WORLD.
+let ENTITY: string;
 
 // Throwaway SECOND world in the SAME universe (so its snapshot window resolves to
-// its own book, and mol-zorian can be linked into it as a shared member).
+// its own book, and ENTITY can be linked into it as a shared member).
 const NEW_WORLD = `test-tck023-w-${randomUUID()}`;
 const NEW_BOOK = `test-tck023-b-${randomUUID()}`;
 // A throwaway entity linked ONLY to NEW_WORLD, to prove DELETE-on-last-link (Test E).
@@ -62,6 +68,13 @@ beforeAll(async () => {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL not set; integration test needs a live DB (.env.local).");
   }
+  const anchor = await query<{ entity_id: string }>(
+    `SELECT entity_id FROM world_entities WHERE world_id = $1 LIMIT 1`,
+    [HOME_WORLD],
+  );
+  if (!anchor.rows[0]) throw new Error("no seeded world-linked entry to anchor this test on");
+  ENTITY = anchor.rows[0].entity_id;
+
   await insertWorld({
     id: NEW_WORLD,
     universeId: HOME_UNIVERSE,
@@ -72,7 +85,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // Remove any link this test made from the NEW world (and defensively any stray
-  // test link on mol-zorian into the new world), then tear down the throwaway world
+  // test link on ENTITY into the new world), then tear down the throwaway world
   // subtree in FK order (its own links -> book -> world).
   await query(`DELETE FROM world_entities WHERE world_id = $1`, [NEW_WORLD]);
   await query(`DELETE FROM entries WHERE id = $1`, [SOLO_ENTITY]);
@@ -91,7 +104,7 @@ async function linkCount(worldId: string, entityId: string): Promise<number> {
 
 describe("TCK-023 linkEntityToWorld (real Postgres)", () => {
   it("A: a single link inserts exactly one membership row; a double link is idempotent", async () => {
-    // Precondition: mol-zorian is NOT yet a member of the new world.
+    // Precondition: ENTITY is NOT yet a member of the new world.
     expect(await linkCount(NEW_WORLD, ENTITY)).toBe(0);
 
     await linkEntityToWorld(NEW_WORLD, ENTITY);
@@ -103,7 +116,7 @@ describe("TCK-023 linkEntityToWorld (real Postgres)", () => {
   });
 
   it("B: a shared entity shows in BOTH worlds' loadWorldSnapshot", async () => {
-    // mol-zorian is now linked into the new world (from test A) AND is a seeded member
+    // ENTITY is now linked into the new world (from test A) AND is a seeded member
     // of her home world. She must render in BOTH snapshots.
     const homeSnap = await loadWorldSnapshot(HOME_WORLD, HOME_BOOK);
     const newSnap = await loadWorldSnapshot(NEW_WORLD, NEW_BOOK);
@@ -115,7 +128,7 @@ describe("TCK-023 linkEntityToWorld (real Postgres)", () => {
 
 describe("TCK-023 unlinkEntityFromWorld (real Postgres)", () => {
   it("C: unlink drops only that one link; the entity row and its home membership survive", async () => {
-    // Ensure mol-zorian is linked into the new world first (independent of test order).
+    // Ensure ENTITY is linked into the new world first (independent of test order).
     await linkEntityToWorld(NEW_WORLD, ENTITY);
     expect(await linkCount(NEW_WORLD, ENTITY)).toBe(1);
 
@@ -136,7 +149,7 @@ describe("TCK-023 unlinkEntityFromWorld (real Postgres)", () => {
   });
 
   it("D: unlink of a non-member is a no-op (0 rows removed, no throw)", async () => {
-    // mol-zorian is not a member of the new world here (test C removed her).
+    // ENTITY is not a member of the new world here (test C removed her).
     expect(await linkCount(NEW_WORLD, ENTITY)).toBe(0);
     await expect(unlinkEntityFromWorld(NEW_WORLD, ENTITY)).resolves.toBeUndefined();
     expect(await linkCount(NEW_WORLD, ENTITY)).toBe(0);
