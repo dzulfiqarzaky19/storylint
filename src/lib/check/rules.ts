@@ -8,7 +8,7 @@
  * fall out of applying these two generic rules to the seeded wiki + manuscript.
  */
 
-import type { WikiEntry, WikiSnapshot } from './index';
+import type { WikiEntry, CheckWiki } from './index';
 import { normalize } from './normalize';
 
 /**
@@ -28,7 +28,7 @@ export interface RuleContext {
   /** The recorded fact value for `factKey` on `entry` (already looked up). */
   recordedValue: string;
   /** The full wiki, for cross-entry rules. */
-  wiki: WikiSnapshot;
+  wiki: CheckWiki;
 }
 
 export interface RuleMatch {
@@ -65,13 +65,13 @@ export interface Rule {
 }
 
 /** Find an entry by id. */
-function entryById(wiki: WikiSnapshot, id: string): WikiEntry | undefined {
+function entryById(wiki: CheckWiki, id: string): WikiEntry | undefined {
   return wiki.entries.find((e) => e.id === id);
 }
 
 /** Find a fact value by (entryId, factKey). */
 function factValue(
-  wiki: WikiSnapshot,
+  wiki: CheckWiki,
   entryId: string,
   factKey: string,
 ): string | undefined {

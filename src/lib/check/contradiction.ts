@@ -7,7 +7,7 @@
  * never from a hardcoded list of the spec's marks.
  */
 
-import type { Mark, MarkAction, WikiEntry, WikiFact, WikiSnapshot } from './index';
+import type { Mark, MarkAction, WikiEntry, WikiFact, CheckWiki } from './index';
 import { rules, type Rule, type RuleContext, type RuleMatch } from './rules';
 import { normalizeQuote } from './normalize';
 import { sha1 } from './hash';
@@ -38,7 +38,7 @@ function applyRule(
 
 export function findContradictions(
   paragraphs: string[],
-  wiki: WikiSnapshot,
+  wiki: CheckWiki,
 ): Mark[] {
   const marks: Mark[] = [];
   const seen = new Set<string>();

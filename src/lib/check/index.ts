@@ -14,10 +14,10 @@
 // ---------------------------------------------------------------------------
 // Domain types
 //
-// No src/lib/domain/types.ts exists on disk yet, so the wiki-snapshot shape the
-// engine consumes is defined here. When the domain layer lands it should either
-// re-export these or these should move there; the field names below mirror the
-// seed data in (entries/facts/ties/aliases).
+// CheckWiki is the engine's lean gazetteer (id/kind/name/note/facts). The rich
+// domain WikiSnapshot (ties/appearances/byId/categories) lives in domain/types
+// and is projected in via toCheckWiki. Two names on purpose: a wiki edit of a
+// tie must not look like an engine-input change.
 // ---------------------------------------------------------------------------
 
 export type EntryKind = 'character' | 'world' | 'organization' | 'lore';
@@ -46,7 +46,7 @@ export interface WikiEntry {
  * The read-model the engine checks the manuscript against. This is the user's
  * own wiki, "read back at them" — the engine never invents anything not here.
  */
-export interface WikiSnapshot {
+export interface CheckWiki {
   entries: WikiEntry[];
 }
 
@@ -216,7 +216,7 @@ export interface Suggestion {
 /** Input to the single engine entry point. */
 export interface CheckInput {
   paragraphs: string[];
-  wiki: WikiSnapshot;
+  wiki: CheckWiki;
   focusEntryId?: string;
   /** markKeys the user already resolved; their marks are suppressed. */
   resolvedMarkKeys?: string[];

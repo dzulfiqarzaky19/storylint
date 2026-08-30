@@ -5,7 +5,7 @@
  *   1. The stored chapter body (ProseMirror doc JSON) ⇄ the engine's
  *      `paragraphs: string[]` input.
  *   2. The DB's rich domain `WikiSnapshot` → the check engine's minimal
- *      `WikiSnapshot` (entries + facts + note only).
+ *      `CheckWiki` (entries + facts + note only).
  *   3. `buildCheckInput`, which assembles the engine input for a chapter.
  *
  * There is deliberately NO editorial-copy overlay: the engine already projects
@@ -16,7 +16,7 @@
  * Kept out of the engine so `src/lib/check/` stays a pure, testable core.
  */
 
-import type { CheckInput, WikiSnapshot as CheckWiki } from '@/lib/check';
+import type { CheckInput, CheckWiki } from '@/lib/check';
 import type { WikiSnapshot as DbWiki } from '@/lib/domain/types';
 
 // ---------------------------------------------------------------------------
@@ -62,7 +62,7 @@ export function paragraphsToDoc(paragraphs: string[]): PmDoc {
 }
 
 // ---------------------------------------------------------------------------
-// 2. DB WikiSnapshot → check-engine WikiSnapshot
+// 2. DB WikiSnapshot → CheckWiki
 // ---------------------------------------------------------------------------
 
 /**

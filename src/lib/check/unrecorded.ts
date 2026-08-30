@@ -30,7 +30,7 @@
  * generated; nothing about the two marks is hardcoded.
  */
 
-import type { Mark, MarkAction, MarkImportance, WikiEntry, WikiSnapshot } from './index';
+import type { Mark, MarkAction, MarkImportance, WikiEntry, CheckWiki } from './index';
 import type { Lexicon } from './lexicon';
 import { buildLexicon } from './lexicon';
 import { normalize, normalizeQuote } from './normalize';
@@ -132,7 +132,7 @@ interface Candidate {
 }
 
 /** Index every recorded content token → the entry that records it. */
-function buildTokenOwners(wiki: WikiSnapshot): Map<string, WikiEntry> {
+function buildTokenOwners(wiki: CheckWiki): Map<string, WikiEntry> {
   const owners = new Map<string, WikiEntry>();
   const add = (raw: string, entry: WikiEntry) => {
     for (const w of raw.split(/[^\p{L}\p{N}]+/u)) {
@@ -171,7 +171,7 @@ const U2 = /\b(the)\s+([\p{L}]+)\s+(rule|oath|law|pact|rite|creed|code|watch|led
 
 export function findUnrecorded(
   paragraphs: string[],
-  wiki: WikiSnapshot,
+  wiki: CheckWiki,
   lexicon: Lexicon = buildLexicon(wiki),
   chapterCounts?: ReadonlyMap<string, number>,
 ): Mark[] {

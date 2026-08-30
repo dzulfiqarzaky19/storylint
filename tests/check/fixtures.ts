@@ -8,7 +8,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import type { WikiEntry, WikiSnapshot } from '@/lib/check';
+import type { WikiEntry, CheckWiki } from '@/lib/check';
 
 // ---------------------------------------------------------------------------
 // Wiki snapshot (subset of §6 relevant to the check engine).
@@ -81,7 +81,7 @@ const entries: WikiEntry[] = [
   },
 ];
 
-export const wiki: WikiSnapshot = { entries };
+export const wiki: CheckWiki = { entries };
 
 // ---------------------------------------------------------------------------
 // Chapter 7 manuscript — verbatim from HANDOFF §6 "Write" section.

@@ -9,33 +9,9 @@
 
 import { checkManuscript } from "@/lib/check";
 import { projectSuggestion } from "@/lib/check/suggestions";
-import type {
-  WikiSnapshot as EngineSnapshot,
-  WikiEntry as EngineEntry,
-} from "@/lib/check";
+import { toCheckWiki } from "@/lib/write/adapters";
 import type { WikiSnapshot } from "./types";
 import type { WikiSuggestion } from "@/lib/state/wikiStore";
-
-/** Adapt the DB read model into the pure engine's input snapshot. */
-export function toEngineSnapshot(snapshot: WikiSnapshot): EngineSnapshot {
-  const entries: EngineEntry[] = snapshot.entries.map((e) => ({
-    id: e.id,
-    // F9-B: entry.kind is now an open string (a category id). The check engine's
-    // EntryKind stays the fixed built-in union (out of scope to widen); every
-    // live entry's kind is still one of the built-ins, so we cast at this
-    // boundary rather than widen the engine.
-    kind: e.kind as EngineEntry["kind"],
-    name: e.name,
-    note: e.note,
-    facts: e.facts.map((f) => ({
-      id: f.id,
-      entryId: f.entryId,
-      key: f.key,
-      value: f.value,
-    })),
-  }));
-  return { entries };
-}
 
 /**
  * A suggestion's stable key. The engine's Suggestion carries `key`/`value` but
@@ -84,7 +60,7 @@ export function checkWiki(input: {
 
   const { marks, suggestions } = checkManuscript({
     paragraphs,
-    wiki: toEngineSnapshot(snapshot),
+    wiki: toCheckWiki(snapshot),
     resolvedMarkKeys,
     dismissedSuggestionKeys,
   });

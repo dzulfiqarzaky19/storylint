@@ -36,7 +36,7 @@ import type {
   Mark,
   MarkAction,
   ResolvedTarget,
-  WikiSnapshot as CheckWiki,
+  CheckWiki,
 } from '@/lib/check';
 import {
   mergeMarks,

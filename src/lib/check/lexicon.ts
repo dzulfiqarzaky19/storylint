@@ -6,7 +6,7 @@
  * anything not already recorded becomes a `missing` mark.
  */
 
-import type { WikiSnapshot } from './index';
+import type { CheckWiki } from './index';
 import { normalize } from './normalize';
 import { words } from './text';
 
@@ -15,7 +15,7 @@ export interface Lexicon {
   has: (phrase: string) => boolean;
 }
 
-export function buildLexicon(wiki: WikiSnapshot): Lexicon {
+export function buildLexicon(wiki: CheckWiki): Lexicon {
   // Set of normalized phrases known to the wiki (names, aliases, fact values).
   const phrases = new Set<string>();
   // Set of individual recorded tokens (from names, aliases, notes, fact values),
