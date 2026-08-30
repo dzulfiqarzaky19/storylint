@@ -68,14 +68,14 @@ export function getAiConfig(): AiConfig | null {
   const rawBase =
     process.env.SAAROUTERS_BASE_URL ??
     process.env.ANTHROPIC_BASE_URL ??
-    "https://saafragrance.xyz";
+    "https://9qusaeri.com/v1";
   // Normalize: strip a trailing /v1 or / so we can always append /v1/messages.
   const baseUrl = rawBase.replace(/\/+$/, "").replace(/\/v1$/, "");
 
   const model =
     process.env.SAAROUTERS_MODEL ??
     process.env.ANTHROPIC_MODEL ??
-    "SaaRouters";
+    "opus";
 
   const anthropicVersion = process.env.ANTHROPIC_VERSION ?? "2023-06-01";
 
