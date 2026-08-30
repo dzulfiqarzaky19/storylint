@@ -3,6 +3,7 @@
 import { useId, useState, type ReactNode } from "react";
 import type { EntryWithDetails, Shelf, CategoryRow } from "@/lib/domain/types";
 import { categorySingular } from "@/lib/wiki/categoryLabels";
+import { useInlineRename } from "@/components/hooks/useInlineRename";
 import { initialCollapse, resolveRename } from "./shelfState";
 import NewCategoryShelf from "./NewCategoryShelf";
 import styles from "./WikiIndex.module.css";
@@ -28,6 +29,59 @@ function Chevron({ className }: { className?: string }) {
     >
       <polyline points="6 4 10 8 6 12" />
     </svg>
+  );
+}
+
+/** T-ARCH-7: per-category click-to-rename header, wired to the shared
+ *  useInlineRename hook. Pulled into its OWN component (not left inline in
+ *  the categories.map) because a hook can't be called conditionally/per-item
+ *  inside a loop body — this gives each category its own hook instance.
+ *  Behavior is byte-identical to the pre-T-ARCH-7 inline version: blank
+ *  resets, changed renames, unchanged is a no-op, via resolveRename. */
+function CategoryTitle({
+  categoryId,
+  title,
+  onRenameCategory,
+  onResetCategory,
+}: {
+  categoryId: string;
+  title: string;
+  onRenameCategory: (categoryId: string, label: string) => void;
+  onResetCategory: (categoryId: string) => void;
+}) {
+  const rename = useInlineRename(title, {
+    onCommit: (draft) => {
+      // A blank draft is a reset (matches the reducer/backend trim ruling); a
+      // non-blank change renames. resolveRename (shelfState.ts) owns that pure
+      // decision so it stays unit-tested in the node env; this just dispatches.
+      const outcome = resolveRename(draft, title);
+      if (outcome.action === "reset") onResetCategory(categoryId);
+      else if (outcome.action === "rename") onRenameCategory(categoryId, outcome.label);
+    },
+  });
+
+  return rename.editing ? (
+    <input
+      className={styles.groupTitleInput}
+      aria-label={`Rename ${title} category`}
+      value={rename.draft}
+      autoFocus
+      onChange={(e) => rename.setDraft(e.target.value)}
+      onBlur={rename.onBlur}
+      onKeyDown={rename.onKeyDown}
+    />
+  ) : (
+    // TCK-005/007: the title is the rename affordance (click to edit
+    // inline). A real <button> keeps it keyboard-focusable.
+    <button
+      type="button"
+      className={styles.groupTitle}
+      aria-label={`Rename ${title} category`}
+      title={`Rename ${title} category`}
+      onClick={() => rename.start(title)}
+    >
+      {title}
+    </button>
   );
 }
 
@@ -100,9 +154,6 @@ export default function WikiIndex({
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(() =>
     initialCollapse(categories.map((c) => c.id)),
   );
-  // Inline rename draft, keyed by category id; null means no group is editing.
-  const [editing, setEditing] = useState<string | null>(null);
-  const [draft, setDraft] = useState("");
   // Whole-index collapse for the stacked tier. Closed by default so mobile
   // opens on the entry; the toggle is hidden on desktop where it's always open.
   const [open, setOpen] = useState(false);
@@ -110,23 +161,6 @@ export default function WikiIndex({
 
   const toggle = (id: string) =>
     setCollapsed((c) => ({ ...c, [id]: !c[id] }));
-
-  const startRename = (id: string, current: string) => {
-    setEditing(id);
-    setDraft(current);
-  };
-
-  const commitRename = (id: string, title: string) => {
-    if (editing !== id) return;
-    const value = draft;
-    setEditing(null);
-    // A blank draft is a reset (matches the reducer/backend trim ruling); a
-    // non-blank change renames. resolveRename (shelfState.ts) owns that pure
-    // decision so it stays unit-tested in the node env; this just dispatches.
-    const outcome = resolveRename(value, title);
-    if (outcome.action === "reset") onResetCategory(id);
-    else if (outcome.action === "rename") onRenameCategory(id, outcome.label);
-  };
 
   return (
     <nav
@@ -175,37 +209,12 @@ export default function WikiIndex({
                 >
                   <Chevron />
                 </button>
-                {editing === cat.id ? (
-                  <input
-                    className={styles.groupTitleInput}
-                    aria-label={`Rename ${title} category`}
-                    value={draft}
-                    autoFocus
-                    onChange={(e) => setDraft(e.target.value)}
-                    onBlur={() => commitRename(cat.id, title)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        commitRename(cat.id, title);
-                      } else if (e.key === "Escape") {
-                        e.preventDefault();
-                        setEditing(null);
-                      }
-                    }}
-                  />
-                ) : (
-                  // TCK-005/007: the title is the rename affordance (click to edit
-                  // inline). A real <button> keeps it keyboard-focusable.
-                  <button
-                    type="button"
-                    className={styles.groupTitle}
-                    aria-label={`Rename ${title} category`}
-                    title={`Rename ${title} category`}
-                    onClick={() => startRename(cat.id, title)}
-                  >
-                    {title}
-                  </button>
-                )}
+                <CategoryTitle
+                  categoryId={cat.id}
+                  title={title}
+                  onRenameCategory={onRenameCategory}
+                  onResetCategory={onResetCategory}
+                />
                 <span className={styles.groupCount}>{entries.length}</span>
 
                 {/* TCK-018: the consolidated action cluster — add / reset /

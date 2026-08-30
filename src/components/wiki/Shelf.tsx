@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
 import { useDrag } from "@/components/dnd/DragContext";
 import { categorySingular } from "@/lib/wiki/categoryLabels";
+import { useInlineRename } from "@/components/hooks/useInlineRename";
 import { isEmptyCategory } from "./shelfState";
 import EntryTile from "./EntryTile";
 import styles from "./Shelf.module.css";
@@ -60,20 +60,16 @@ export default function Shelf({
   const drag = useDrag();
   const dragging = drag.dragging;
 
-  // Inline rename draft. `editing` holds the draft label while the title is being
-  // edited; null means the static title shows. Purely local view state — the
-  // committed label lives in the reducer. (TCK-007 dropped the popover menu, so
-  // there is no longer a `menuOpen` state.)
-  const [editing, setEditing] = useState<string | null>(null);
-
-  const commitRename = () => {
-    if (editing === null) return;
-    const draft = editing;
-    setEditing(null);
-    // A blank draft is a reset (matches the reducer/backend trim ruling).
-    if (draft.trim() === "") onResetCategory(categoryId);
-    else if (draft.trim() !== title) onRenameCategory(categoryId, draft);
-  };
+  // Inline rename draft (T-ARCH-7: shared useInlineRename hook — see its
+  // header for the dedup boundary). Shelf keeps its OWN commit decision: a
+  // blank draft resets to the built-in default (matches the reducer/backend
+  // trim ruling), a changed draft renames, an unchanged draft is a no-op.
+  const rename = useInlineRename(title, {
+    onCommit: (draft) => {
+      if (draft.trim() === "") onResetCategory(categoryId);
+      else if (draft.trim() !== title) onRenameCategory(categoryId, draft);
+    },
+  });
 
   const isZoneActive =
     dragging?.type === "entry" &&
@@ -112,23 +108,15 @@ export default function Shelf({
       }}
     >
       <div className={`${styles.heading} ${isEmpty ? styles.headingEmpty : ""}`}>
-        {editing !== null ? (
+        {rename.editing ? (
           <input
             className={styles.titleInput}
             aria-label={`Rename ${title} category`}
-            value={editing}
+            value={rename.draft}
             autoFocus
-            onChange={(e) => setEditing(e.target.value)}
-            onBlur={commitRename}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                commitRename();
-              } else if (e.key === "Escape") {
-                e.preventDefault();
-                setEditing(null);
-              }
-            }}
+            onChange={(e) => rename.setDraft(e.target.value)}
+            onBlur={rename.onBlur}
+            onKeyDown={rename.onKeyDown}
           />
         ) : (
           // TCK-007: the title itself is the rename affordance — click it to edit
@@ -138,7 +126,7 @@ export default function Shelf({
             type="button"
             className={styles.title}
             aria-label={`Rename ${title} category`}
-            onClick={() => setEditing(title)}
+            onClick={() => rename.start(title)}
           >
             {title}
           </button>

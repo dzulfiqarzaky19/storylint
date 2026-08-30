@@ -8,6 +8,7 @@
 // the page. Feature parity with prototypes/plot.{html,js} (the design source).
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useInlineRename } from "@/components/hooks/useInlineRename";
 import type { PlotProgression, PlotLane, PlotBeat } from "@/lib/db/plot";
 import {
   renamePlotlineAction,
@@ -747,26 +748,34 @@ function StoryDrawer({
   edit: PlotEdit;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [renaming, setRenaming] = useState(false);
-  const [nameDraft, setNameDraft] = useState(lane.name);
+  // T-ARCH-7: shared useInlineRename hook. PlotScreen keeps its OWN commit
+  // decision, unchanged from before: a blank or unchanged trimmed draft is a
+  // no-op (no onReset — this site has no reset-to-default affordance at all).
+  const rename = useInlineRename(lane.name, {
+    onCommit: (draft) => {
+      const trimmed = draft.trim();
+      if (trimmed && trimmed !== lane.name) edit.rename(lane.id, trimmed);
+    },
+  });
   const [editingBeat, setEditingBeat] = useState<number | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       // Escape closes the drawer only when no inline editor is capturing it.
-      if (e.key === "Escape" && !renaming && editingBeat === null) onClose();
+      if (e.key === "Escape" && !rename.editing && editingBeat === null) onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [onClose, renaming, editingBeat]);
+  }, [onClose, rename.editing, editingBeat]);
   useEffect(() => {
-    if (renaming) {
-      setNameDraft(lane.name);
+    if (rename.editing) {
+      rename.setDraft(lane.name);
       nameRef.current?.focus();
       nameRef.current?.select();
     }
-  }, [renaming, lane.name]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rename.editing, lane.name]);
 
   const rows = buildStoryRows(lane, chapters);
   const status = statusLabel(lane, latestChapter);
@@ -780,11 +789,6 @@ function StoryDrawer({
           ? "stalled"
           : null;
 
-  const commitRename = () => {
-    const trimmed = nameDraft.trim();
-    if (trimmed && trimmed !== lane.name) edit.rename(lane.id, trimmed);
-    setRenaming(false);
-  };
 
   return (
     <div className={styles.scrim} onClick={onClose} data-open="true">
@@ -798,22 +802,14 @@ function StoryDrawer({
       >
         <div className={styles.dhead}>
           <div className={styles.dtitle}>
-            {renaming ? (
+            {rename.editing ? (
               <input
                 ref={nameRef}
                 className={styles.dtitleInput}
-                value={nameDraft}
-                onChange={(e) => setNameDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    commitRename();
-                  } else if (e.key === "Escape") {
-                    e.preventDefault();
-                    setRenaming(false);
-                  }
-                }}
-                onBlur={commitRename}
+                value={rename.draft}
+                onChange={(e) => rename.setDraft(e.target.value)}
+                onKeyDown={rename.onKeyDown}
+                onBlur={rename.onBlur}
                 aria-label="Plotline name"
               />
             ) : (
@@ -823,7 +819,7 @@ function StoryDrawer({
                   type="button"
                   className={styles.dedit}
                   aria-label="Rename plotline"
-                  onClick={() => setRenaming(true)}
+                  onClick={() => rename.start(lane.name)}
                   disabled={edit.pending}
                 >
                   rename
