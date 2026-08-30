@@ -272,6 +272,10 @@ export function Manuscript({
   // Register the decoration plugin once via a StarterKit-sibling extension.
   const decorationExtension = useMemo(
     () =>
+      // react-hooks/refs false-positive: it cannot see that addProseMirrorPlugins()
+      // only runs from Tiptap's own plugin lifecycle, never during React render
+      // (same latest-ref guarantee as getPluginData above).
+      // eslint-disable-next-line react-hooks/refs
       Extension.create({
         name: 'writeMarkDecorations',
         addProseMirrorPlugins() {
