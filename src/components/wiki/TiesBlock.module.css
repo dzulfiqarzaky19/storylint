@@ -176,6 +176,37 @@
   color: var(--accent);
 }
 
+.group { margin-top: 8px; }
+.groupHead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 4px 0; font-size: var(--text-2); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-2);
+  border-bottom: var(--rule-row);
+}
+.groupLabel { flex: 1; }
+.groupCount { font-size: var(--text-1); color: var(--faint); }
+.groupList { display: block; }
+
+/* Replace-tie affordance (on tombstoned rows only). */
+.replaceTie {
+  flex: 0 0 auto; align-self: center; padding: 2px 6px;
+  font-size: var(--text-2); font-weight: 600; color: var(--accent); cursor: pointer;
+  text-decoration: underline; border: none; background: none;
+}
+.replaceTie:hover { color: var(--accent-deep); }
+
+/* Role chip picker (inside add-panel). */
+.roleChips {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.chip {
+  padding: 2px 8px; font-size: var(--text-1); font-weight: 600;
+  color: var(--accent); border: 1px solid var(--faint); border-radius: 999px;
+  background: var(--surface); cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); background: var(--drop); }
+.chip[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+
 .addCancel {
   align-self: flex-start;
   padding: var(--space-1) 0;

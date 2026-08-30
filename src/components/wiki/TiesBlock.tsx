@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { ResolvedTie } from "@/lib/domain/types";
 import { resolveDanglingTies } from "@/lib/wiki/danglingTies";
+import { roleVocabFor, ROLE_VOCAB } from "@/lib/wiki/tieRoleVocab";
 import { useDrag } from "@/components/dnd/DragContext";
 import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./TiesBlock.module.css";
@@ -66,6 +67,7 @@ export default function TiesBlock({
   // delete, so it only fires from the modal's Confirm — Cancel/Escape/backdrop
   // leave the tie untouched (ConfirmModal wires those to onCancel).
   const [pendingUntie, setPendingUntie] = useState<ResolvedTie | null>(null);
+  const [replacingTie, setReplacingTie] = useState<ResolvedTie | null>(null);
 
   // Inline add-tie authoring state.
   const [adding, setAdding] = useState(false);
@@ -78,10 +80,18 @@ export default function TiesBlock({
     return tieCandidates.filter((c) => c.name.toLowerCase().includes(q));
   }, [tieCandidates, queryText]);
 
+  function openReplace(t: ResolvedTie) {
+    setReplacingTie(t);
+    setAdding(true);
+    setRel(t.rel || "");
+    setQueryText(t.toName || "");
+  }
+
   function closeAdd() {
     setAdding(false);
     setQueryText("");
     setRel("");
+    setReplacingTie(null);
   }
 
   function tieExisting(id: string) {
@@ -121,47 +131,88 @@ export default function TiesBlock({
         <span className={styles.count}>{ties.length}</span>
       </div>
       <ul className={styles.list}>
-        {resolved.map(({ tie: t, tombstoned, removedName }) =>
-          tombstoned ? (
-            <li key={t.id} className={styles.rowItem}>
-              <div className={styles.tombstone} role="note">
-                <span className={styles.tombstoneName}>{removedName}</span>
-                <span className={styles.tombstoneNote}>removed — needs replacement</span>
+        {(() => {
+          // a) Group by kind — group header + rows per group.
+          const groups = new Map<string, typeof resolved>();
+          for (const item of resolved) {
+            const kind = item.tie.toKind || "lore";
+            if (!groups.has(kind)) groups.set(kind, []);
+            groups.get(kind)!.push(item);
+          }
+          return Array.from(groups.entries()).map(([kind, items]) => (
+            <li key={kind} className={styles.group}>
+              <div className={styles.groupHead}>
+                <span className={styles.groupLabel}>{kind}</span>
+                <span className={styles.groupCount}>{items.length}</span>
               </div>
-              <button
-                type="button"
-                className={styles.untie}
-                onClick={() => setPendingUntie(t)}
-                aria-label={`Untie ${removedName}`}
-              >
-                ×
-              </button>
+              <ul className={styles.groupList}>
+                {items.map(({ tie: t, tombstoned, removedName }) =>
+                  tombstoned ? (
+                    <li key={t.id} className={styles.rowItem}>
+                      <div className={styles.tombstone} role="note">
+                        <span className={styles.tombstoneName}>{removedName}</span>
+                        <span className={styles.tombstoneNote}>removed — needs replacement</span>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.untie}
+                        onClick={() => setPendingUntie(t)}
+                        aria-label={`Untie ${removedName}`}
+                      >
+                        ×
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.replaceTie}
+                        onClick={() => openReplace(t)}
+                        aria-label={`Replace tie to ${removedName}`}
+                      >
+                        Replace tie
+                      </button>
+                    </li>
+                  ) : (
+                    <li key={t.id} className={styles.rowItem}>
+                      <button
+                        type="button"
+                        className={styles.row}
+                        onClick={() => onSelect(t.toEntryId)}
+                      >
+                        <span className={styles.name}>{t.toName}</span>
+                        <span className={styles.rel}>{t.rel}</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.untie}
+                        onClick={() => setPendingUntie(t)}
+                        aria-label={`Untie ${t.toName}`}
+                      >
+                        ×
+                      </button>
+                    </li>
+                  ),
+                )}
+              </ul>
             </li>
-          ) : (
-            <li key={t.id} className={styles.rowItem}>
-              <button
-                type="button"
-                className={styles.row}
-                onClick={() => onSelect(t.toEntryId)}
-              >
-                <span className={styles.name}>{t.toName}</span>
-                <span className={styles.rel}>{t.rel}</span>
-              </button>
-              <button
-                type="button"
-                className={styles.untie}
-                onClick={() => setPendingUntie(t)}
-                aria-label={`Untie ${t.toName}`}
-              >
-                ×
-              </button>
-            </li>
-          ),
-        )}
+          ));
+        })()}
       </ul>
 
       {adding ? (
         <div className={styles.addPanel}>
+          <div className={styles.roleChips} aria-label="Quick role chips">
+            {(ROLE_VOCAB.character as readonly string[]).slice(0, 8).map((r) => (
+              <button
+                key={r}
+                type="button"
+                className={styles.chip}
+                onClick={() => setRel(r)}
+                aria-pressed={rel === r}
+                title={`Set relationship: ${r}`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
           <input
             type="text"
             className={styles.relInput}
