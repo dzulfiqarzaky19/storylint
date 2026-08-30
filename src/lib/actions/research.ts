@@ -19,7 +19,7 @@
 //   path — the invariant is enforced at the action boundary, not just the UI.
 // =============================================================================
 
-import { confirmWikiWrite, type ActionResult } from "./confirmation";
+import { confirmWikiWrite, requireWorldId, type ActionResult } from "./confirmation";
 import {
   markKeptInWiki,
   upsertKeptCard,
@@ -196,10 +196,9 @@ export async function confirmCard(input: {
     // reject rather than write an entry no /wiki view can ever show (mirrors the
     // wiki-slice requireWorldId message). The enrich branch returns above, so it
     // never reaches here and stays worldId-agnostic.
-    const worldId = input.worldId?.trim();
-    if (!worldId) {
-      return { ok: false, error: "confirmCard: missing worldId - refusing to create a world-orphan entry" };
-    }
+    const worldGuard = requireWorldId(input.worldId, "confirmCard");
+    if (!worldGuard.ok) return worldGuard;
+    const worldId = worldGuard.worldId;
 
     // Entry + world link in ONE transaction: a bad worldId FK-throws and rolls the
     // entry INSERT back with it, so a mint is atomic (never an orphan).
@@ -460,10 +459,9 @@ export async function createThread(input?: {
     // than stamp the default (mirrors confirmCard). Input stays optional so a
     // raw createThread() / createThread({}) still type-checks — the watch test
     // locks that hole at runtime.
-    const worldId = input?.worldId?.trim();
-    if (!worldId) {
-      return { ok: false, error: "createThread: missing worldId - refusing to create a world-orphan thread" };
-    }
+    const worldGuard = requireWorldId(input?.worldId, "createThread", " - refusing to create a world-orphan thread");
+    if (!worldGuard.ok) return worldGuard;
+    const worldId = worldGuard.worldId;
     const id = randomUUID();
     // T-RESEARCH-2: order it within that world's rail and stamp its world_id
     // so it appears under the world the writer is in.

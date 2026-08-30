@@ -10,7 +10,7 @@
 // knowledge), so no confirmation token is required — same posture as wiki
 // moveEntry/reorderShelf.
 import { revalidatePath } from "next/cache";
-import { type ActionResult } from "./confirmation";
+import { requireWorldId, fail, type ActionResult } from "./confirmation";
 import {
   renamePlotline,
   setPlotlineState,
@@ -21,23 +21,6 @@ import {
   deletePlotline,
   type SettablePlotState,
 } from "../db/plot-mutations";
-
-function fail(err: unknown, where: string): { ok: false; error: string } {
-  const msg = err instanceof Error ? err.message : String(err);
-  return { ok: false, error: `${where}: ${msg}` };
-}
-
-// A NEW lane is invisible on /plot until it has a world_entities link to the
-// world being viewed (loadPlotProgression JOINs membership on the active world).
-// If the caller cannot name that world, reject rather than mint an orphan.
-function requireWorldId(
-  worldId: string | undefined,
-  where: string,
-): { ok: true; worldId: string } | { ok: false; error: string } {
-  const trimmed = worldId?.trim();
-  if (!trimmed) return { ok: false, error: `${where}: missing worldId` };
-  return { ok: true, worldId: trimmed };
-}
 
 /** Feature 3 — rename a plotline lane. */
 export async function renamePlotlineAction(input: {
@@ -125,7 +108,7 @@ export async function createPlotlineAction(input: {
   label?: string;
 }): Promise<ActionResult<{ plotlineId: string }>> {
   try {
-    const world = requireWorldId(input.worldId, "plot.createPlotline");
+    const world = requireWorldId(input.worldId, "plot.createPlotline", "");
     if (!world.ok) return world;
     if (!input.name.trim()) {
       return { ok: false, error: "plot.createPlotline: name cannot be blank" };

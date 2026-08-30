@@ -48,3 +48,35 @@ export function confirmWikiWrite(input: { confirmed: true }): WikiWriteConfirmat
 export type ActionResult<T = void> =
   | { ok: true; data: T }
   | { ok: false; error: string };
+
+// ---- Shared write-action guards (T-ARCH-5) ---------------------------------
+//
+// Hand-copied near-verbatim in wiki.ts/plot.ts (`requireWorldId`+`fail`) and
+// inline in research.ts (`errMessage` + an inline refuse). One source here;
+// callers import instead of re-deriving. Zero intended behavior change: each
+// call site keeps its EXACT prior error text via the `suffix` param.
+
+/** Wraps a caught error into the shared `ActionResult` failure envelope. */
+export function fail(err: unknown, where: string): { ok: false; error: string } {
+  const msg = err instanceof Error ? err.message : String(err);
+  return { ok: false, error: `${where}: ${msg}` };
+}
+
+// TCK-E06 FAIL CLOSED: a NEW entry/thread/lane is invisible on its screen
+// until it has a world link (loadWorldSnapshot / loadPlotProgression / the
+// research rail all JOIN membership on the active world). If the caller
+// cannot name that world we must REJECT the write rather than mint a
+// persisted-but-invisible orphan. `suffix` preserves each caller's original
+// wording (wiki's fuller phrasing is the default); pass "" for plot's
+// shorter text, or a custom suffix to match another site's existing message.
+export function requireWorldId(
+  worldId: string | undefined,
+  where: string,
+  suffix: string = " - refusing to create a world-orphan entry",
+): { ok: true; worldId: string } | { ok: false; error: string } {
+  const trimmed = worldId?.trim();
+  if (!trimmed) {
+    return { ok: false, error: `${where}: missing worldId${suffix}` };
+  }
+  return { ok: true, worldId: trimmed };
+}

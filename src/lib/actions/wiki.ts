@@ -23,7 +23,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import type { Kind, Shelf, EntryRow, EntryWithDetails, CategoryRow } from "../domain/types";
-import { confirmWikiWrite, type ActionResult } from "./confirmation";
+import { confirmWikiWrite, requireWorldId, fail, type ActionResult } from "./confirmation";
 import { completeJson, aiEnabled } from "../ai/saarouters";
 import {
   loadWikiSnapshot,
@@ -76,29 +76,6 @@ import {
 } from "../db/mutations";
 import { RETENTION_MS } from "../wiki/retention";
 import { DEFAULT_UNIVERSE_ID } from "../db/scope";
-
-// ---- Result envelope ------------------------------------------------------
-
-function fail(err: unknown, where: string): { ok: false; error: string } {
-  const msg = err instanceof Error ? err.message : String(err);
-  return { ok: false, error: `${where}: ${msg}` };
-}
-
-// TCK-E06 FAIL CLOSED: a NEW wiki entry is invisible on /wiki until it has a
-// `world_entities` link to the world the user is viewing (loadWorldSnapshot JOINs
-// membership on the active world). If the caller cannot name that world we must
-// REJECT the write rather than mint a persisted-but-invisible orphan. Returns the
-// trimmed world id when valid, or an error envelope when blank/missing.
-function requireWorldId(
-  worldId: string | undefined,
-  where: string,
-): { ok: true; worldId: string } | { ok: false; error: string } {
-  const trimmed = worldId?.trim();
-  if (!trimmed) {
-    return { ok: false, error: `${where}: missing worldId - refusing to create a world-orphan entry` };
-  }
-  return { ok: true, worldId: trimmed };
-}
 
 // ---- Read-only selection --------------------------------------------------
 
