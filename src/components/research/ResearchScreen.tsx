@@ -3,7 +3,7 @@
 import { useMemo, useReducer, useRef, useState, useTransition } from "react";
 import type { DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Kind, Shelf, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
+import type { Shelf, ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
 import {
   researchReducer,
   initResearchState,
@@ -45,8 +45,6 @@ const CHIPS = [
   "I’m stuck — ask me something",
 ];
 
-const VALID_KINDS: readonly Kind[] = ["character", "world", "organization", "lore"];
-
 // Empty-state guidance shown when a thread has no turns yet (a brand-new thread,
 // or the whole screen when there are no threads at all). Replaces the old
 // pre-written seed conversation: research now starts empty and every turn is a
@@ -54,17 +52,6 @@ const VALID_KINDS: readonly Kind[] = ["character", "world", "organization", "lor
 const EMPTY_GUIDANCE =
   "Ask me anything about your story. I draw on your entire wiki to answer, " +
   "so just start typing a question.";
-
-/**
- * Map a proposition's `asKind` to a wiki entry Kind. Non-entry kinds (`beat`,
- * `question`) become `lore` entries — the confirmation strip lets the writer
- * edit every field afterward (per the sentence copy).
- */
-function toEntryKind(asKind: string): Kind {
-  return (VALID_KINDS as readonly string[]).includes(asKind)
-    ? (asKind as Kind)
-    : "lore";
-}
 
 /** Minimal live-entry shape the enrich recommender + picker consume (F6). */
 export interface EnrichEntry {
@@ -485,9 +472,11 @@ export default function ResearchScreen({
   };
 
   // Hard-delete a thread. When the ACTIVE thread is deleted we jump to the
-  // nearest remaining thread (prefer the next one, else the previous); if none
-  // remain we open a fresh empty thread. Deleting a non-active thread just
-  // refreshes the list in place. Confirmation happens in ResearchIndex.
+  // nearest remaining thread (prefer the next one, else the previous).
+  // Deleting a non-active thread just refreshes the list in place.
+  // Confirmation happens in ResearchIndex. The last-thread floor lives in
+  // deleteLastThreadGuarded — a world's only thread is refused, so this
+  // handler never reopens via createThread (that branch was dead).
   const removeThread = (id: string) => {
     const threads = snapshot.threads;
     const idx = threads.findIndex((t) => t.id === id);
@@ -507,21 +496,11 @@ export default function ResearchScreen({
       }
       if (nextActive) {
         router.push(`/research?thread=${encodeURIComponent(nextActive.id)}`);
-      } else {
-        // T-RESEARCH-2: deleting the last thread opens a fresh one — it MUST land
-        // in the ACTIVE world (like addThread/auto-create), never silently in the
-        // default world. createThread()'s no-arg fallback is world-universe-1, so
-        // a writer in Vosk/Halen would otherwise get an Ashkeld thread invisible in
-        // their rail that grounds the AI on the wrong world.
-        const created = await createThread({ worldId: activeWorldId });
-        if (created.ok) {
-          router.push(
-            `/research?thread=${encodeURIComponent(created.data.threadId)}`,
-          );
-        } else {
-          dispatch({ type: "SET_ERROR", error: created.error });
-        }
+        return;
       }
+      // R3 floor refuses emptying a world, so ok+no-sibling is a race. Refresh
+      // rather than mint a thread the writer did not ask for.
+      router.refresh();
     });
   };
 

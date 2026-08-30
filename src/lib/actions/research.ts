@@ -454,17 +454,27 @@ export async function createThread(input?: {
   worldId?: string;
 }): Promise<ActionResult<{ threadId: string }>> {
   try {
+    // T-ARCH-4 FAIL CLOSED: a thread belongs to ONE world. A blank/missing
+    // worldId used to fall through to insertResearchThread's DEFAULT_WORLD_ID,
+    // minting a thread invisible on the writer's actual rail. Refuse rather
+    // than stamp the default (mirrors confirmCard). Input stays optional so a
+    // raw createThread() / createThread({}) still type-checks — the watch test
+    // locks that hole at runtime.
+    const worldId = input?.worldId?.trim();
+    if (!worldId) {
+      return { ok: false, error: "createThread: missing worldId - refusing to create a world-orphan thread" };
+    }
     const id = randomUUID();
-    // T-RESEARCH-2: a thread belongs to ONE world; order it within that world's
-    // rail and stamp its world_id so it appears under the world the writer is in.
-    const sortOrder = await getNextResearchThreadSortOrder(input?.worldId);
+    // T-RESEARCH-2: order it within that world's rail and stamp its world_id
+    // so it appears under the world the writer is in.
+    const sortOrder = await getNextResearchThreadSortOrder(worldId);
     const row = await insertResearchThread({
       id,
       title: input?.title?.trim() || "New thread",
       subtitle: input?.subtitle?.trim() ?? "",
       sortOrder,
       scope: input?.scope ?? "chat",
-      worldId: input?.worldId,
+      worldId,
     });
     return { ok: true, data: { threadId: row.id } };
   } catch (err) {
