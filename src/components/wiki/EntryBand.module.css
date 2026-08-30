@@ -1,14 +1,22 @@
-/* Entry band — README Screen 1 "Entry band" geometry. */
+/* Entry band — head (identity + portrait) over tab body (T-WIKI-COCKPIT-1). */
 
 .band {
-  display: flex;
-  gap: var(--space-7);
   padding: 34px var(--gutter) 0;
 }
 
-.main {
+.head {
+  display: flex;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.headMain {
   flex: 1;
   min-width: 0;
+}
+
+.headPortrait {
+  flex: 0 0 132px;
 }
 
 /* Kicker row: kind label + catalogue number, 14px gap. */
@@ -64,60 +72,22 @@
   line-height: 0.95;
   letter-spacing: -0.035em;
   text-transform: uppercase;
-  margin: var(--space-2) 0 14px;
+  margin: var(--space-2) 0 0;
 }
 
-.rule {
-  border-top: var(--rule-major);
-}
-
-.summary {
-  font-size: var(--text-9);
-  line-height: 1.5;
-  color: var(--body-ink);
-  max-width: 56ch;
-  margin-top: var(--space-4);
-  text-wrap: pretty;
-}
-
-/* "The story so far" heading row. */
-.storyHeading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-top: 30px;
-  padding-bottom: var(--space-2);
-  border-bottom: var(--rule-major);
-}
-
-.sectionTitle {
-  font-size: var(--text-3);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.meta {
-  font-size: var(--text-2);
-  color: var(--muted);
-}
-
-/* Two-column row: Details (flex:1) + Still open (300px), 36px gap. */
-.detailsRow {
-  display: flex;
-  gap: 36px;
-  margin-top: 30px;
-}
-
-@media (max-width: 1200px) {
-  .band {
-    flex-direction: column;
+@media (max-width: 900px) {
+  .head {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .headPortrait {
+    flex: 0 0 auto;
+    width: 104px;
   }
 }
 
 @media (max-width: 560px) {
   .band { padding: var(--space-5) var(--gutter) 0; }
   .name { font-size: 44px; letter-spacing: -0.03em; }
-  .summary { font-size: var(--text-6); max-width: none; }
-  .detailsRow { flex-direction: column; gap: var(--space-5); }
 }

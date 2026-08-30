@@ -3,15 +3,16 @@
 import { useState } from "react";
 import type { EntryWithDetails } from "@/lib/domain/types";
 import { kindLabelOf } from "@/lib/domain/types";
-import Timeline from "./Timeline";
-import DetailsColumn from "./DetailsColumn";
-import OpenQuestions from "./OpenQuestions";
-import EntryAside from "./EntryAside";
-import type { TieCandidate } from "./TiesBlock";
+import { resolveDanglingTies } from "@/lib/wiki/danglingTies";
+import EntryTabs from "./EntryTabs";
+import OverviewTab from "./OverviewTab";
+import TimelineTab from "./TimelineTab";
+import DetailsTab from "./DetailsTab";
+import TiesBlock, { type TieCandidate } from "./TiesBlock";
+import PortraitPlaceholder from "./PortraitPlaceholder";
 import ShareControls, { type ShareWorld } from "./ShareControls";
 import InlineText from "./InlineText";
 import ConfirmModal from "../ui/ConfirmModal";
-import { appearLine } from "@/lib/domain/derive";
 import styles from "./EntryBand.module.css";
 
 interface EntryBandProps {
@@ -64,8 +65,15 @@ interface EntryBandProps {
   };
 }
 
-// Entry band: two columns, 40px gap, 34px top padding.
-// Main column flex:1, right column fixed 340px.
+/**
+ * Focused-entry workspace. T-WIKI-COCKPIT-1 restructured this from one long
+ * scroll into a fixed head (identity + portrait) over a 4-tab body
+ * (Overview/Timeline/Details/Ties), mirroring prototypes/wiki-c-cockpit.html.
+ *
+ * The summary lives ONLY in the Overview tab, not the head: rendering the same
+ * editable field twice would give one value two inline-edit surfaces that can
+ * disagree mid-edit. Overview is the default tab, so it stays visible on load.
+ */
 export default function EntryBand({
   entry,
   liveEntryIds,
@@ -84,87 +92,110 @@ export default function EntryBand({
   ai,
 }: EntryBandProps) {
   const kindLabel = kindLabelOf(entry.kind);
-  const chapterCount = entry.appearances.length;
-  const flaggedCount = entry.appearances.filter((a) => a.flag !== null).length;
   // Guard the irreversible soft-delete behind a confirm dialog: the trigger only
   // OPENS the modal; the actual delete fires from the modal's confirm button.
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
+  // The Ties pill counts LIVE ties only — a tombstoned tie points at a deleted
+  // entry and reads as "needs replacement", not as a standing relationship.
+  const liveTieCount = resolveDanglingTies(liveEntryIds, entry.ties).filter(
+    (r) => !r.tombstoned,
+  ).length;
+  const hasFlaggedBeat = entry.appearances.some((a) => a.flag !== null);
+
   return (
     <section className={styles.band} aria-label="Entry">
-      <div className={styles.main}>
-        {/* Kicker is a flex CLUSTER (spans + ShareControls' <div>/<label> + a
-            button), not prose. It MUST be a <div>: a <div>/<label> inside a <p>
-            is invalid HTML, so the browser auto-closes the <p> and the SSR DOM
-            diverges from the client React tree -> React #418 hydration mismatch
-            on a clean /wiki load. TCK-E04. */}
-        <div className={styles.kicker}>
-          <span className={styles.kind}>{kindLabel}</span>
-          <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
-          <ShareControls
-            entryId={entry.id}
-            entryName={entry.name}
-            activeWorldId={sharing.activeWorldId}
-            worlds={sharing.worlds}
-            onError={sharing.onError}
-          />
-          <button
-            type="button"
-            className={styles.deleteEntry}
-            onClick={() => setConfirmingDelete(true)}
-            aria-label={`Delete ${entry.name}`}
-          >
-            Delete
-          </button>
+      <div className={styles.head}>
+        <div className={styles.headMain}>
+          {/* Kicker is a flex CLUSTER (spans + ShareControls' <div>/<label> + a
+              button), not prose. It MUST be a <div>: a <div>/<label> inside a <p>
+              is invalid HTML, so the browser auto-closes the <p> and the SSR DOM
+              diverges from the client React tree -> React #418 hydration mismatch
+              on a clean /wiki load. TCK-E04. */}
+          <div className={styles.kicker}>
+            <span className={styles.kind}>{kindLabel}</span>
+            <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
+            <ShareControls
+              entryId={entry.id}
+              entryName={entry.name}
+              activeWorldId={sharing.activeWorldId}
+              worlds={sharing.worlds}
+              onError={sharing.onError}
+            />
+            <button
+              type="button"
+              className={styles.deleteEntry}
+              onClick={() => setConfirmingDelete(true)}
+              aria-label={`Delete ${entry.name}`}
+            >
+              Delete
+            </button>
+          </div>
+          <h1 className={styles.name}>
+            <InlineText
+              value={entry.name}
+              ariaLabel="entry name"
+              onCommit={(v) => onEditEntryField(entry.id, "name", v)}
+            />
+          </h1>
         </div>
-        <h1 className={styles.name}>
-          <InlineText
-            value={entry.name}
-            ariaLabel="entry name"
-            onCommit={(v) => onEditEntryField(entry.id, "name", v)}
-          />
-        </h1>
-        <div className={styles.rule} />
-        <p className={styles.summary}>
-          <InlineText
-            value={entry.summary}
-            ariaLabel="entry summary"
-            multiline
-            placeholder="Add a summary"
-            onCommit={(v) => onEditEntryField(entry.id, "summary", v)}
-          />
-        </p>
-
-        <div className={styles.storyHeading}>
-          <h2 className={styles.sectionTitle}>The story so far</h2>
-          <span className={styles.meta}>
-            {appearLine(chapterCount, flaggedCount)}
-          </span>
-        </div>
-        <Timeline appearances={entry.appearances} />
-
-        <div className={styles.detailsRow}>
-          <DetailsColumn
-            entryId={entry.id}
-            facts={entry.facts}
-            onDropSuggestion={onDropSuggestion}
-            onEditFactField={onEditFactField}
-            onAddFact={onAddFact}
-            ai={ai}
-          />
-          <OpenQuestions questions={entry.openQuestions} />
+        <div className={styles.headPortrait}>
+          <PortraitPlaceholder />
         </div>
       </div>
 
-      <EntryAside
-        entry={entry}
-        liveEntryIds={liveEntryIds}
-        tieCandidates={tieCandidates}
-        onSelect={onSelect}
-        onDropOnTies={onDropOnTies}
-        onUntie={onUntie}
-        onTieExisting={onTieExisting}
-        onCreateTied={onCreateTied}
+      <EntryTabs
+        tabs={[
+          {
+            key: "overview",
+            label: "Overview",
+            panel: (
+              <OverviewTab
+                entry={entry}
+                onEditSummary={(v) => onEditEntryField(entry.id, "summary", v)}
+              />
+            ),
+          },
+          {
+            key: "timeline",
+            label: "Timeline",
+            warn: hasFlaggedBeat,
+            panel: <TimelineTab appearances={entry.appearances} />,
+          },
+          {
+            key: "details",
+            label: "Details",
+            count: entry.facts.length,
+            panel: (
+              <DetailsTab
+                entryId={entry.id}
+                facts={entry.facts}
+                openQuestions={entry.openQuestions}
+                onDropSuggestion={onDropSuggestion}
+                onEditFactField={onEditFactField}
+                onAddFact={onAddFact}
+                ai={ai}
+              />
+            ),
+          },
+          {
+            key: "ties",
+            label: "Ties",
+            count: liveTieCount,
+            panel: (
+              <TiesBlock
+                ties={entry.ties}
+                liveEntryIds={liveEntryIds}
+                tieCandidates={tieCandidates}
+                onSelect={onSelect}
+                onDropOnTies={onDropOnTies}
+                onUntie={onUntie}
+                onTieExisting={onTieExisting}
+                onCreateTied={onCreateTied}
+              />
+            ),
+          },
+        ]}
       />
 
       {confirmingDelete ? (

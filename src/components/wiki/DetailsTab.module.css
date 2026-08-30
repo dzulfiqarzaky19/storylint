@@ -1,0 +1,13 @@
+/* Details tab pane — the former EntryBand .detailsRow two-column layout. */
+
+.row {
+  display: flex;
+  gap: 36px;
+}
+
+@media (max-width: 900px) {
+  .row {
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+}

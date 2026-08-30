@@ -1,9 +1,9 @@
-/* Portrait placeholder — README Screen 1 right column. */
+/* Portrait placeholder — entry-head thumbnail (T-WIKI-COCKPIT-1). */
 
 .portrait {
   position: relative;
   width: 100%;
-  height: 210px;
+  aspect-ratio: 1;
   background: var(--rule);
   border: var(--rule-major);
   filter: grayscale(1);
@@ -12,7 +12,7 @@
 }
 
 .label {
-  padding: 10px var(--space-3);
+  padding: var(--space-2);
   font-size: var(--text-1);
   font-weight: 700;
   letter-spacing: 0.08em;

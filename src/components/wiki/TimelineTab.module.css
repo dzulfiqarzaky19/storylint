@@ -1,0 +1,26 @@
+/* Timeline tab pane — reuses EntryBand's storyHeading/sectionTitle/meta rhythm. */
+
+.tab {
+  max-width: 720px;
+}
+
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-major);
+  margin-bottom: var(--space-4);
+}
+
+.sectionTitle {
+  font-size: var(--text-3);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta {
+  font-size: var(--text-2);
+  color: var(--muted);
+}

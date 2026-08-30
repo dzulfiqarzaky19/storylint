@@ -1,0 +1,65 @@
+/* Overview tab — Summary + Latest blocks (T-WIKI-COCKPIT-1, deterministic v1). */
+
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 56ch;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sectionTitle {
+  font-size: var(--text-3);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta {
+  font-size: var(--text-2);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--muted);
+  margin-left: var(--space-2);
+}
+
+.prose {
+  font-size: var(--text-6);
+  line-height: 1.5;
+  color: var(--body-ink);
+  text-wrap: pretty;
+}
+
+.latest {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.metaRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.cite {
+  font-family: var(--font-mono);
+  font-size: var(--text-2);
+  color: var(--accent);
+}
+
+.flag {
+  font-size: var(--text-2);
+  color: var(--danger);
+}
+
+.fallback {
+  font-size: var(--text-4);
+  color: var(--faint);
+}

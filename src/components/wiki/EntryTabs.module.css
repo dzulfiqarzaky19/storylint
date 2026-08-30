@@ -1,0 +1,63 @@
+/* Tab shell — prototype's `.tabs`/`.tab`/`.panel` on-class pattern. */
+
+.shell {
+  margin-top: var(--space-4);
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: var(--rule-major);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-3);
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab.on {
+  color: var(--ink);
+  font-weight: 700;
+  border-bottom-color: var(--accent);
+}
+
+.warn {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+}
+
+.pillN {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--line2);
+  color: var(--muted);
+  border-radius: 9px;
+  padding: 1px var(--space-2);
+}
+
+.body {
+  padding-top: var(--space-6);
+}
+
+@media (max-width: 560px) {
+  .tabs {
+    overflow-x: auto;
+  }
+  .tab {
+    white-space: nowrap;
+    padding: var(--space-2) var(--space-3);
+  }
+}
