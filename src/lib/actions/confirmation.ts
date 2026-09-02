@@ -62,6 +62,29 @@ export function fail(err: unknown, where: string): { ok: false; error: string } 
   return { ok: false, error: `${where}: ${msg}` };
 }
 
+/**
+ * The write-action envelope (T-ARCH-6). Runs a server action body and routes any
+ * thrown error through `fail`, so an action collapses to its real logic:
+ *
+ *   export async function untie(input): Promise<ActionResult> {
+ *     return runAction("wiki.untie", async () => { ... });
+ *   }
+ *
+ * `where` preserves the exact prior prefix each call site passed to `fail`, so
+ * the produced error string is byte-identical to the hand-written try/catch it
+ * replaces. One seam: a change to how a failed write is shaped lives here.
+ */
+export async function runAction<T>(
+  where: string,
+  fn: () => Promise<ActionResult<T>>,
+): Promise<ActionResult<T>> {
+  try {
+    return await fn();
+  } catch (err) {
+    return fail(err, where);
+  }
+}
+
 // TCK-E06 FAIL CLOSED: a NEW entry/thread/lane is invisible on its screen
 // until it has a world link (loadWorldSnapshot / loadPlotProgression / the
 // research rail all JOIN membership on the active world). If the caller

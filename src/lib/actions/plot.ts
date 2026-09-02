@@ -10,7 +10,7 @@
 // knowledge), so no confirmation token is required — same posture as wiki
 // moveEntry/reorderShelf.
 import { revalidatePath } from "next/cache";
-import { requireWorldId, fail, type ActionResult } from "./confirmation";
+import { requireWorldId, runAction, type ActionResult } from "./confirmation";
 import {
   renamePlotline,
   setPlotlineState,
@@ -27,13 +27,11 @@ export async function renamePlotlineAction(input: {
   plotlineId: string;
   name: string;
 }): Promise<ActionResult> {
-  try {
+  return runAction("plot.renamePlotline", async () => {
     await renamePlotline(input);
     revalidatePath("/plot");
     return { ok: true, data: undefined };
-  } catch (err) {
-    return fail(err, "plot.renamePlotline");
-  }
+  });
 }
 
 /** Feature 5 — set a lane's arc state (open / resolved / abandoned). */
@@ -42,13 +40,11 @@ export async function setPlotlineStateAction(input: {
   state: SettablePlotState;
   resolvedAt: number | null;
 }): Promise<ActionResult> {
-  try {
+  return runAction("plot.setPlotlineState", async () => {
     await setPlotlineState(input);
     revalidatePath("/plot");
     return { ok: true, data: undefined };
-  } catch (err) {
-    return fail(err, "plot.setPlotlineState");
-  }
+  });
 }
 
 /** Feature 2 — create or edit the beat in a (chapter, plotline) cell. */
@@ -58,16 +54,14 @@ export async function upsertBeatAction(input: {
   chapterNumber: number;
   summary: string;
 }): Promise<ActionResult> {
-  try {
+  return runAction("plot.upsertBeat", async () => {
     if (!input.summary.trim()) {
       return { ok: false, error: "plot.upsertBeat: beat text cannot be blank" };
     }
     await upsertBeat(input);
     revalidatePath("/plot");
     return { ok: true, data: undefined };
-  } catch (err) {
-    return fail(err, "plot.upsertBeat");
-  }
+  });
 }
 
 /** Feature 2 — delete the beat in a cell. */
@@ -76,13 +70,11 @@ export async function deleteBeatAction(input: {
   plotlineId: string;
   chapterNumber: number;
 }): Promise<ActionResult> {
-  try {
+  return runAction("plot.deleteBeat", async () => {
     await deleteBeat(input);
     revalidatePath("/plot");
     return { ok: true, data: undefined };
-  } catch (err) {
-    return fail(err, "plot.deleteBeat");
-  }
+  });
 }
 
 /** Feature 1 — move a beat horizontally to another chapter in the same lane. */
@@ -92,13 +84,11 @@ export async function moveBeatAction(input: {
   fromChapterNumber: number;
   toChapterNumber: number;
 }): Promise<ActionResult> {
-  try {
+  return runAction("plot.moveBeat", async () => {
     await moveBeat(input);
     revalidatePath("/plot");
     return { ok: true, data: undefined };
-  } catch (err) {
-    return fail(err, "plot.moveBeat");
-  }
+  });
 }
 
 /** Feature 4 — create a new plotline lane in the active world. */
@@ -107,7 +97,7 @@ export async function createPlotlineAction(input: {
   name: string;
   label?: string;
 }): Promise<ActionResult<{ plotlineId: string }>> {
-  try {
+  return runAction("plot.createPlotline", async () => {
     const world = requireWorldId(input.worldId, "plot.createPlotline", "");
     if (!world.ok) return world;
     if (!input.name.trim()) {
@@ -120,20 +110,16 @@ export async function createPlotlineAction(input: {
     });
     revalidatePath("/plot");
     return { ok: true, data: { plotlineId } };
-  } catch (err) {
-    return fail(err, "plot.createPlotline");
-  }
+  });
 }
 
 /** Feature 4 — delete (soft) a plotline lane. */
 export async function deletePlotlineAction(input: {
   plotlineId: string;
 }): Promise<ActionResult> {
-  try {
+  return runAction("plot.deletePlotline", async () => {
     await deletePlotline({ plotlineId: input.plotlineId, deletedAt: Date.now() });
     revalidatePath("/plot");
     return { ok: true, data: undefined };
-  } catch (err) {
-    return fail(err, "plot.deletePlotline");
-  }
+  });
 }
