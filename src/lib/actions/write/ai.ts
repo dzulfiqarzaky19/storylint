@@ -1,275 +1,20 @@
 "use server";
 
-// =============================================================================
-// Write Server Actions
-//
-// PRODUCT RULE 1 — "Nothing enters the wiki without an explicit confirmation."
-//
-//   NONE of this file's actions write to the wiki *directly*. saveManuscript
-//   persists the chapter body; openMark is read-only UI state; resolveMark
-//   handles the three distinct note actions (§8):
-//     - 'text'  → selects the run for editing. No wiki write.
-//     - 'leave' → marks the run deliberate; persists the markKey in
-//                 resolved_marks so the engine suppresses it. No wiki write.
-//     - 'wiki'  → "the wiki is out of date": updates the fact. This MUST go
-//                 "through the same confirmation path" (§8). resolveMark does
-//                 not itself write the fact — it hands off to the confirmed
-//                 wiki path (addSuggestionAsFact / a confirmed fact update),
-//                 which is gated by confirmWikiWrite. So the only two wiki-write
-//                 paths remain addSuggestionAsFact and confirmCard.
-//
-// CONTRACT-FIRST: stable signatures; trivial bodies call the query/mutation
-// layer, otherwise a typed NOT_IMPLEMENTED stub for a later phase.
-// =============================================================================
+// ============================================================================
+// Write AI server actions (mark explain / chapter check; read-only)
+// Split out of the former monolithic write.ts (T-ARCH-9). runAction/runActionBare
+// envelopes are unchanged; only file boundaries moved.
+// ============================================================================
 
-import {
-  saveChapterBody,
-  replacePhraseMentions,
-  upsertResolvedMark,
-  insertChapter,
-  getNextChapterNumber,
-  renameChapter as renameChapterRow,
-  deleteChapter as deleteChapterRow,
-  countChaptersInBook,
-  upsertChapterCheckCache,
-} from "../db/mutations";
-import { randomUUID } from "node:crypto";
-import { completeJson, aiEnabled } from "../ai/saarouters";
-import { loadWikiSnapshot } from "../db/gazetteer";
-import { getChapter, listChapters } from "../db/chapter-queries";
-import { docToParagraphs } from "../write/adapters";
-import { extractCandidatePhrases } from "../check/unrecorded";
-import type { Mark } from "../check";
-import { aiResultToMarks, type AiCheckResponse } from "../check/ai";
-import { selectGazetteer, findRetrievalMisses } from "../check/retrieval";
-import { hashValue } from "../check/hash";
-import { type ActionResult } from "./confirmation";
-
-function messageOf(err: unknown): string {
-  return err instanceof Error ? err.message : String(err);
-}
-
-/** The three note actions offered under a mark (§8). `actionId` on resolveMark is one of these. */
-export type MarkActionId = "wiki" | "text" | "leave";
-
-/**
- * What resolveMark did, so the store and editor can react. For a 'wiki'
- * resolution the wiki write happens via the confirmed wiki path, not here.
- */
-export type ResolveMarkOutcome =
-  | { kind: "resolved"; markKey: string } // 'leave' → suppressed permanently
-  | { kind: "selectForEdit"; quote: string } // 'text' → select the run in the editor
-  | { kind: "needsConfirmation"; entryId: string; factKey: string }; // 'wiki' → hand off to confirmed path
-
-// ---- Manuscript persistence (no wiki write) -------------------------------
-
-/**
- * Persist the chapter's ProseMirror JSON body. Per-mutation write, not a
- * debounced write-behind, so a failed save surfaces (§8). Mirrors reducer
- * action `SAVE_MANUSCRIPT`.
- */
-export async function saveManuscript(input: {
-  chapterNumber: number;
-  body: unknown; // ProseMirror document JSON
-}): Promise<ActionResult> {
-  try {
-    // The writer's prose is the sacred write. saveChapterBody is the ONLY thing
-    // in this try whose failure returns ok:false — a body-save error MUST reach
-    // the user (§8), never a green ack over lost work.
-    await saveChapterBody({ number: input.chapterNumber, body: input.body });
-
-    // Tier 2: refresh this chapter's rows in the book-wide phrase index so
-    // cross-chapter recurrence ranking stays current. This is RANK data only:
-    // importanceOf reads it to rank an unrecorded mark high-vs-normal, but it
-    // NEVER gates WHAT is flagged (unrecorded.ts). So the index refresh is
-    // BEST-EFFORT and runs in its OWN try: if it fails, the body is already
-    // saved and the writer keeps their words. We do NOT put it in the same
-    // transaction as the body — that would convert a cosmetic stale-rank into
-    // DATA LOSS (a failed side-table write would block saving prose). Instead we
-    // log LOUDLY (error level, naming the chapter) so a systematic index failure
-    // screams in our server logs rather than hiding as silent staleness.
-    try {
-      const phrases = extractCandidatePhrases(docToParagraphs(input.body));
-      await replacePhraseMentions({ chapterNumber: input.chapterNumber, phrases });
-    } catch (indexErr) {
-      console.error(`saveManuscript: phrase-index refresh failed for chapter ${input.chapterNumber} (body saved; cross-chapter rank may be stale): ${messageOf(indexErr)}`);
-    }
-
-    return { ok: true, data: undefined };
-  } catch (err) {
-    // Surface, don't swallow (§8): a failed BODY save must reach the user.
-    return { ok: false, error: messageOf(err) };
-  }
-}
-
-// ---- Chapters (new chapter) — no wiki write -------------------------------
-
-/** An empty ProseMirror doc (one empty paragraph) for a fresh chapter body. */
-const EMPTY_CHAPTER_BODY = {
-  type: "doc",
-  content: [{ type: "paragraph" }],
-} as const;
-
-/**
- * Create a new, empty chapter appended after the last one. Not a wiki write, so
- * no confirmation token is needed. Returns the new chapter number so the client
- * can navigate to it (?chapter=<n>).
- */
-export async function createChapter(input?: {
-  title?: string;
-  bookId?: string;
-}): Promise<ActionResult<{ number: number }>> {
-  try {
-    // Book scope: numbering and insertion must target the active book, or
-    // "+ New chapter" on a freshly created book lands the row in
-    // DEFAULT_BOOK_ID and the new book never grows past its seeded Chapter One.
-    const number = await getNextChapterNumber(input?.bookId);
-    const title = input?.title?.trim() || "Untitled";
-    await insertChapter({
-      id: randomUUID(),
-      number,
-      title,
-      body: EMPTY_CHAPTER_BODY,
-      bookId: input?.bookId,
-    });
-    return { ok: true, data: { number } };
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
-}
-
-// ---- Chapters (rename / delete) — no wiki write ---------------------------
-
-/** Rename a chapter's title within its book. Not a wiki write. */
-export async function renameChapter(input: {
-  number: number;
-  title: string;
-  bookId?: string;
-}): Promise<ActionResult<{ number: number; title: string }>> {
-  try {
-    const title = input.title.trim();
-    if (!title) return { ok: false, error: "A chapter needs a title." };
-    await renameChapterRow({ number: input.number, title, bookId: input.bookId });
-    return { ok: true, data: { number: input.number, title } };
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
-}
-
-/**
- * Delete a chapter from its book. Guarded: a book must keep at least one
- * chapter, so deleting the last one is refused (the UI also disables the
- * affordance, but the server enforces the invariant so no client can break it).
- * Returns the surviving chapter to navigate to — the nearest lower number, else
- * the new lowest — so the caller lands the writer somewhere real. Not a wiki write.
- */
-export async function deleteChapter(input: {
-  number: number;
-  bookId?: string;
-}): Promise<ActionResult<{ next: number }>> {
-  try {
-    const remaining = await countChaptersInBook(input.bookId);
-    if (remaining <= 1) {
-      return { ok: false, error: "A book must keep at least one chapter." };
-    }
-    const res = await deleteChapterRow({ number: input.number, bookId: input.bookId });
-    if (res.deleted === 0) return { ok: false, error: "That chapter no longer exists." };
-    // Land on the nearest SURVIVING chapter: prefer the previous number, else the
-    // new lowest. The resolver clamps an unknown ?chapter= to the last chapter, so
-    // this only needs to be a real surviving number, which the page then honors.
-    const numbers = (await listChapters(input.bookId)).map((c) => c.number);
-    const next =
-      numbers.filter((n) => n < input.number).pop() ?? numbers[0] ?? 1;
-    return { ok: true, data: { next } };
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
-}
-
-// ---- Marks ----------------------------------------------------------------
-
-/**
- * Open a mark's inline note (one open at a time). Read-only UI state; clicking
- * a rail row and clicking the underline are the same action (§8). Mirrors
- * reducer action `OPEN_MARK`.
- */
-export async function openMark(markKey: string): Promise<ActionResult> {
-  void markKey;
-  // No persistence: open-mark is session state. Server action kept for uniform pairing.
-  return { ok: true, data: undefined };
-}
-
-/**
- * Resolve a mark via one of its note actions. The three actions differ in
- * production (§8) and are dispatched on `actionId`:
- *   - 'leave' → persist markKey in resolved_marks (suppress permanently).
- *   - 'text'  → return selectForEdit; the editor selects the run. No DB write.
- *   - 'wiki'  → return needsConfirmation; the UI routes into the confirmed
- *               wiki path. resolveMark never writes the wiki itself.
- *
- * Mirrors reducer action `RESOLVE_MARK`. Signature: resolveMark(markId, actionId).
- */
-/**
- * Context the client supplies alongside the markKey. `resolveMark(markId,
- * actionId)` keeps its documented primary shape; `context` carries the
- * mark-derived data the server can't recover from a markKey alone (the quote to
- * select, or the entry/fact a 'wiki' correction would touch). Optional so the
- * signature stays backward compatible.
- */
-export interface ResolveMarkContext {
-  quote?: string;
-  entryId?: string;
-  factKey?: string;
-}
-
-export async function resolveMark(
-  markId: string,
-  actionId: MarkActionId,
-  context: ResolveMarkContext = {},
-): Promise<ActionResult<ResolveMarkOutcome>> {
-  try {
-    switch (actionId) {
-      case "leave":
-        // The ONLY DB write here: suppress this mark permanently by its stable
-        // key, so it stays resolved across reloads even after the paragraph moves.
-        await upsertResolvedMark({
-          markKey: markId,
-          resolution: "leave",
-          resolvedAt: Date.now(),
-        });
-        return { ok: true, data: { kind: "resolved", markKey: markId } };
-
-      case "text":
-        // No DB write: the editor selects the run so the author can rewrite it.
-        return {
-          ok: true,
-          data: { kind: "selectForEdit", quote: context.quote ?? "" },
-        };
-
-      case "wiki":
-        // No wiki write here (product rule 1). Hand off to the confirmed wiki
-        // path; the UI opens the confirmation flow keyed by entry + fact.
-        return {
-          ok: true,
-          data: {
-            kind: "needsConfirmation",
-            entryId: context.entryId ?? "",
-            factKey: context.factKey ?? "",
-          },
-        };
-    }
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
-}
-
-// ---- AI: grounded mark explanation (read-only, NOT a wiki write) -----------
-//
-// When the engine flags a run, the writer can ask the AI to explain WHY it
-// clashes with their world and offer an optional rewrite. This is purely
-// advisory: it grounds on the wiki snapshot, writes NOTHING, and never touches
-// the manuscript. The engine remains the source of truth — with AI off the
-// note still shows the engine's own noteText + actions, unchanged.
+import { upsertChapterCheckCache } from "../../db/mutations";
+import { aiEnabled, completeJson } from "../../ai/saarouters";
+import { loadWikiSnapshot } from "../../db/gazetteer";
+import { getChapter } from "../../db/chapter-queries";
+import { type Mark } from "../../check";
+import { type AiCheckResponse, aiResultToMarks } from "../../check/ai";
+import { findRetrievalMisses, selectGazetteer } from "../../check/retrieval";
+import { hashValue } from "../../check/hash";
+import { type ActionResult, errorMessage, runActionBare } from "../confirmation";
 
 /** True when the AI gateway is configured (for UI gating on the write screen). */
 export async function isWriteAiEnabled(): Promise<boolean> {
@@ -304,7 +49,7 @@ export async function explainMark(input: {
     };
   }
 
-  try {
+  return runActionBare(async () => {
     // Ground on the wiki so the explanation stays inside the writer's world.
     const wiki = await loadWikiSnapshot();
     // SCALE (G1/G4): send only the entities this flagged run actually leans on,
@@ -383,9 +128,7 @@ export async function explainMark(input: {
         rewrite: (advice.rewrite ?? "").trim(),
       },
     };
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
+  });
 }
 
 
@@ -428,7 +171,7 @@ export async function aiCheckChapter(
 
   if (indices.length === 0) return { ok: true, data: { marks: [] } };
 
-  try {
+  return runActionBare(async () => {
     const wiki = await loadWikiSnapshot();
     // SCALE (G1/G4): retrieve only the entities the SENT paragraphs lean on so
     // the prompt cost stays flat as the wiki grows, instead of inlining the whole
@@ -489,7 +232,7 @@ export async function aiCheckChapter(
         maxTokens: 900,
       });
     } catch (err) {
-      return { ok: false, error: messageOf(err) };
+      return { ok: false, error: errorMessage(err) };
     }
 
     // SCALE (M5): retrieval can create SILENT false-negatives. If the model
@@ -550,9 +293,7 @@ export async function aiCheckChapter(
     }).filter((mk) => !resolved.has(mk.markKey));
 
     return { ok: true, data: { marks } };
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
+  });
 }
 
 // ---- T-AICACHE: persist the AI cross-check result for a chapter -----------
@@ -575,7 +316,7 @@ export async function persistChapterCheck(input: {
   body: unknown;
   marks: Mark[];
 }): Promise<ActionResult<{ cached: boolean }>> {
-  try {
+  return runActionBare<{ cached: boolean }>(async () => {
     const chapter = await getChapter(input.chapterNumber, input.bookId);
     if (!chapter) return { ok: true, data: { cached: false } };
     const wiki = await loadWikiSnapshot(input.universeId, input.bookId);
@@ -587,7 +328,5 @@ export async function persistChapterCheck(input: {
       checkedAt: Date.now(),
     });
     return { ok: true, data: { cached: true } };
-  } catch (err) {
-    return { ok: false, error: messageOf(err) };
-  }
+  });
 }

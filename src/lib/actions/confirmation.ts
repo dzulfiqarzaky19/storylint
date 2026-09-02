@@ -56,10 +56,15 @@ export type ActionResult<T = void> =
 // callers import instead of re-deriving. Zero intended behavior change: each
 // call site keeps its EXACT prior error text via the `suffix` param.
 
+/** The one error-to-string reducer. Was hand-copied as `errMessage` (research.ts)
+ * and `messageOf` (write.ts) and inline in `fail`; unified here (T-ARCH-8). */
+export function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
 /** Wraps a caught error into the shared `ActionResult` failure envelope. */
 export function fail(err: unknown, where: string): { ok: false; error: string } {
-  const msg = err instanceof Error ? err.message : String(err);
-  return { ok: false, error: `${where}: ${msg}` };
+  return { ok: false, error: `${where}: ${errorMessage(err)}` };
 }
 
 /**
@@ -82,6 +87,22 @@ export async function runAction<T>(
     return await fn();
   } catch (err) {
     return fail(err, where);
+  }
+}
+
+/**
+ * Like `runAction`, but the failure carries the BARE error message with no
+ * `where:` prefix. research.ts and write.ts surface these strings straight to
+ * the user (and tests assert them verbatim, e.g. `toBe('gateway 500')`), so the
+ * prefix must not be added. Same envelope, unprefixed shape (T-ARCH-8).
+ */
+export async function runActionBare<T>(
+  fn: () => Promise<ActionResult<T>>,
+): Promise<ActionResult<T>> {
+  try {
+    return await fn();
+  } catch (err) {
+    return { ok: false, error: errorMessage(err) };
   }
 }
 
