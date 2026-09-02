@@ -5,7 +5,7 @@ import type { ResolvedTie } from "@/lib/domain/types";
 import { resolveDanglingTies } from "@/lib/wiki/danglingTies";
 import { roleVocabFor, ROLE_VOCAB } from "@/lib/wiki/tieRoleVocab";
 import { useDrag } from "@/components/dnd/DragContext";
-import ConfirmModal from "../ui/ConfirmModal";
+import ConfirmModal from "../../ui/ConfirmModal";
 import styles from "./TiesBlock.module.css";
 
 /** A candidate the writer can tie the focused entry to (every OTHER live entry). */

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { CategoryRow, EntryWithDetails } from "@/lib/domain/types";
-import WikiIndex from "@/components/wiki/WikiIndex";
+import WikiIndex from "@/components/wiki/shelf/WikiIndex";
 
 // T-ARCH-7: WikiIndex.tsx's per-category rename now dispatches through the
 // shared useInlineRename hook (via the local CategoryTitle subcomponent —

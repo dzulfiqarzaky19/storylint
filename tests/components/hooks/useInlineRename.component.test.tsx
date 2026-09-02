@@ -3,7 +3,7 @@ import { renderHook, act } from "@testing-library/react";
 import { useInlineRename } from "@/components/hooks/useInlineRename";
 
 // T-ARCH-7 — the hook is the shared draft-state/key-dispatch shape behind
-// wiki/Shelf.tsx, wiki/WikiIndex.tsx, and plot/PlotScreen.tsx's StoryDrawer
+// wiki/shelf/Shelf.tsx, wiki/shelf/WikiIndex.tsx, and plot/PlotScreen.tsx's StoryDrawer
 // inline rename. It does NOT decide what a commit means (blank-resets vs.
 // no-op) — that stays each caller's own `onCommit`, so this only proves the
 // hook's own contract: start seeds the draft and flips editing on; typing

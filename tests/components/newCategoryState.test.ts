@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveNewCategory } from "@/components/wiki/newCategoryState";
+import { resolveNewCategory } from "@/components/wiki/shelf/newCategoryState";
 
 // TCK-019: the "New category" popup delegates its Add commit to
 // resolveNewCategory (the modal can't be rendered under vitest

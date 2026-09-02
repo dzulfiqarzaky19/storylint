@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import EntryBand from "@/components/wiki/EntryBand";
+import EntryBand from "@/components/wiki/entry/EntryBand";
 import { DragProvider } from "@/components/dnd/DragContext";
 import type { EntryWithDetails } from "@/lib/domain/types";
 

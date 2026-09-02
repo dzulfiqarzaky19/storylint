@@ -51,7 +51,7 @@ test("dismiss control ships an inline SVG (DismissIcon) wired to the aria-labell
   const { readFileSync } = require("node:fs") as typeof import("node:fs");
   const { join } = require("node:path") as typeof import("node:path");
   const src = readFileSync(
-    join(process.cwd(), "src/components/wiki/DetailsColumn.tsx"),
+    join(process.cwd(), "src/components/wiki/entry/DetailsColumn.tsx"),
     "utf8",
   );
 

@@ -1,0 +1,499 @@
+/* Wiki LEFT index sidebar — "The world" grouped, collapsible index.
+   Desktop: a standing full-height left column (own scroll). Stacked tier
+   (<=1200px): folds into a collapsible panel above the body, mirroring the
+   right-rail affordance used across the app. */
+
+.index {
+  width: 248px;
+  flex: none;
+  border-right: var(--rule);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+}
+
+.railToggle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 0 0 var(--space-2);
+  background: none;
+  border: none;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.railToggleChevron {
+  display: none;
+  margin-left: auto;
+  font-size: var(--text-7);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.railToggleChevron svg,
+.groupChevron svg {
+  display: block;
+  transition: transform 120ms ease;
+}
+
+.chevronOpen svg {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .railToggleChevron svg,
+  .groupChevron svg {
+    transition: none;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.title {
+  font-size: var(--text-7);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.count {
+  font-size: var(--text-2);
+  color: var(--muted);
+}
+
+.railTop {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--line2);
+}
+
+.railTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.railCount {
+  color: var(--faint);
+}
+
+.railSearch {
+  margin: 10px 14px 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: 6px 9px;
+}
+
+.railSearch input {
+  border: none;
+  outline: none;
+  background: none;
+  width: 100%;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-3);
+}
+
+.searchIcon {
+  font-size: var(--text-3);
+  opacity: 0.6;
+}
+
+.searchShortcut {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--faint);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.railScroll {
+  overflow: auto;
+  padding: 6px 8px 12px;
+  min-height: 0;
+  flex: 1;
+}
+
+.group {
+  margin: 8px 4px 2px;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.groupChevron {
+  font-size: var(--text-6);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+.groupTitle {
+  font-size: var(--text-2);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  flex: 1;
+}
+
+.groupTitle:hover {
+  text-decoration: underline;
+}
+
+.groupTitleInput {
+  font-size: var(--text-2);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: inherit;
+  padding: 2px var(--space-1);
+  border: var(--rule-row);
+  border-radius: var(--radius);
+  min-width: 8rem;
+  color: inherit;
+  background: var(--surface);
+}
+
+.groupCount {
+  font-size: var(--text-1);
+  color: var(--faint);
+}
+
+.groupTools {
+  margin-left: auto;
+  display: none;
+  gap: 6px;
+}
+
+.groupHead:hover .groupTools {
+  display: flex;
+}
+
+.groupTools button {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.groupTools button:hover {
+  color: var(--accent);
+}
+
+.groupAdd {
+  font-size: var(--text-6);
+  font-weight: 700;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  color: var(--accent-deep);
+}
+
+.groupAdd:hover {
+  color: var(--accent);
+}
+
+.groupReset {
+  font-size: var(--text-1);
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--accent-deep);
+}
+
+.groupReset:hover {
+  text-decoration: underline;
+}
+
+.groupDelete {
+  font-size: var(--text-3);
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.groupDelete:hover {
+  color: var(--danger);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+}
+
+.item:hover {
+  background: var(--surface);
+}
+
+.itemActive {
+  background: var(--accent-soft);
+}
+
+.itemFlag::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  position: absolute;
+  right: 6px;
+  top: 8px;
+}
+
+.itemNumber {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--faint);
+  min-width: 22px;
+}
+
+.itemName {
+  font-size: 13px;
+}
+
+.itemActive .itemName {
+  font-weight: 600;
+}
+
+.itemBadge {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--faint);
+  font-style: italic;
+}
+
+.itemCategory {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.searchResults {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.noResults {
+  padding: 12px 8px;
+  color: var(--faint);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.badgeRed {
+  color: var(--danger);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.badgeYellow {
+  color: var(--warning);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.emptyAdd {
+  width: 100%;
+  text-align: left;
+  padding: 5px 8px;
+  color: var(--accent);
+  font-size: 12px;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.emptyAdd:hover {
+  background: var(--surface);
+}
+
+.newCategory {
+  margin: 8px 6px 0;
+  width: calc(100% - 12px);
+  text-align: left;
+  padding: 7px 8px;
+  border: 1px dashed var(--rule);
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  background: none;
+  cursor: pointer;
+}
+
+.newCategory:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Trash panel (rendered via footer prop) */
+.trash {
+  margin: 12px 6px 0;
+  border-top: 1px solid var(--line2);
+  padding-top: 10px;
+}
+
+.trashHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.trashItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.trashItem button {
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 11px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.trashItem button:hover {
+  text-decoration: underline;
+}
+
+.trashPurge {
+  color: var(--danger);
+  font-size: 11px;
+}
+
+/* Stacked tier: the whole index folds behind the header toggle. Closed by
+   default (React state) so the page opens on the entry; tapping the header
+   reveals the grouped panel, which scrolls within a capped height so it can
+   never bleed over the body below. */
+@media (max-width: 1200px) {
+  .index {
+    width: 100%;
+    border-right: none;
+    border-bottom: var(--rule-major);
+    overflow-y: visible;
+    gap: 0;
+  }
+
+  .railToggle {
+    padding: var(--space-4) var(--gutter, 24px);
+    cursor: pointer;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .railToggleChevron {
+    display: inline;
+  }
+
+  .panel {
+    display: none;
+  }
+
+  .indexOpen .panel {
+    display: block;
+    overflow-y: auto;
+    max-height: 50vh;
+    padding: 0 var(--gutter, 24px) 20px;
+  }
+}
+
+/* Viewport scaling per the prototype's 5-viewport gate */
+@media (min-width: 2560px) {
+  .index {
+    width: 320px;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .index {
+    width: 288px;
+  }
+}
+
+@media (min-width: 700px) and (max-width: 1099px) {
+  .index {
+    width: 212px;
+  }
+}

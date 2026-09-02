@@ -2,7 +2,7 @@
 
 import { useId, useRef, useState } from "react";
 
-import Modal from "../ui/Modal";
+import Modal from "../../ui/Modal";
 import { resolveNewCategory } from "./newCategoryState";
 import styles from "./NewCategoryShelf.module.css";
 

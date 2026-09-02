@@ -12,7 +12,7 @@ import TiesBlock, { type TieCandidate } from "./TiesBlock";
 import PortraitPlaceholder from "./PortraitPlaceholder";
 import ShareControls, { type ShareWorld } from "./ShareControls";
 import InlineText from "./InlineText";
-import ConfirmModal from "../ui/ConfirmModal";
+import ConfirmModal from "../../ui/ConfirmModal";
 import styles from "./EntryBand.module.css";
 
 interface EntryBandProps {

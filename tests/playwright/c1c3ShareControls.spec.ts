@@ -43,7 +43,7 @@ test("C1: .unlink renders at the shared 22px height base on /wiki", async ({
 });
 
 test("C1: .select and .unlink carry identical height-determining declarations", () => {
-  const css = CSS_SRC("src/components/wiki/ShareControls.module.css");
+  const css = CSS_SRC("src/components/wiki/entry/ShareControls.module.css");
   const selectBlock = rule(css, ".select");
   const unlinkBlock = rule(css, ".unlink");
 
@@ -103,8 +103,8 @@ test("C3: Tab to .deleteEntry shows the same fill as :hover (danger)", async ({
 });
 
 test("C3: :focus-visible rules mirror :hover in both stylesheets", () => {
-  const share = CSS_SRC("src/components/wiki/ShareControls.module.css");
-  const band = CSS_SRC("src/components/wiki/EntryBand.module.css");
+  const share = CSS_SRC("src/components/wiki/entry/ShareControls.module.css");
+  const band = CSS_SRC("src/components/wiki/entry/EntryBand.module.css");
 
   const unlinkHover = rule(share, ".unlink:hover");
   const unlinkFocus = rule(share, ".unlink:focus-visible");

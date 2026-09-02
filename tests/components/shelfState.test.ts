@@ -3,7 +3,7 @@ import {
   isEmptyCategory,
   initialCollapse,
   resolveRename,
-} from "@/components/wiki/shelfState";
+} from "@/components/wiki/shelf/shelfState";
 
 // The lighter empty-category treatment in Shelf.tsx (dimmed heading + a real
 // "No entries yet" hint, controls kept) keys off THIS predicate. Shelf.tsx must

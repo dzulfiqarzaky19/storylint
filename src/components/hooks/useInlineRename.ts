@@ -4,7 +4,7 @@ import { useState } from "react";
 
 /**
  * T-ARCH-7 — dedups the inline-rename INTERACTION shape shared by
- * wiki/Shelf.tsx, wiki/WikiIndex.tsx, and plot/PlotScreen.tsx's StoryDrawer:
+ * wiki/shelf/Shelf.tsx, wiki/shelf/WikiIndex.tsx, and plot/PlotScreen.tsx's StoryDrawer:
  * click-to-edit a draft string, Enter commits, Escape cancels (reverting to
  * `currentValue`), blur commits. This is dedup, NOT unification — the hook
  * owns only the draft-state/key-dispatch shape. What "commit" MEANS (blank
