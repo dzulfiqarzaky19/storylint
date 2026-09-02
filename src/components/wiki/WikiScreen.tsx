@@ -6,9 +6,11 @@
 // is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag
 // session state lives in DragContext so dragover can read the payload.
 
-import { useReducer, useCallback, useEffect, useState, startTransition } from "react";
+import { useReducer, useCallback, useState, startTransition } from "react";
 import { useServerAction, clientErr } from "@/components/hooks/useServerAction";
-import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, EntryRow, Kind } from "@/lib/domain/types";
+import { useAiSuggest } from "./useAiSuggest";
+import { useTrashPanel } from "./useTrashPanel";
+import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
 import { KIND_SHELF, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
 import {
   initWikiState,
@@ -27,7 +29,6 @@ import {
   createEntry,
   createFact,
   deleteFact,
-  suggestEntryFacts,
   softDeleteEntry,
   untie,
   createEntryTied,
@@ -35,14 +36,10 @@ import {
   resetCategoryLabel,
   deleteCategory,
   createCategory,
-  getDeletedEntries,
-  restoreEntry,
-  purgeExpiredDeleted,
 } from "@/lib/actions/wiki";
 import { type ActionResult } from "@/lib/actions/confirmation";
 import { resolveCategoryLabel, categoryLabelById, defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
 import { kindForNewEntry } from "./createEntryKind";
-import { trashCountdown } from "@/lib/wiki/trashCountdown";
 import EntryBand from "./entry/EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./shelf/Shelf";
@@ -378,33 +375,7 @@ function WikiScreenInner({
   );
 
   // ---- AI: suggest details for the focused entry (read-only until Add) ------
-  const [aiSuggestions, setAiSuggestions] = useState<
-    Record<string, { key: string; value: string }[]>
-  >({});
-  const [aiBusy, setAiBusy] = useState(false);
-
-  const suggestFacts = useCallback(
-    (entryId: string) => {
-      if (aiBusy) return;
-      setAiBusy(true);
-      startTransition(() => {
-        suggestEntryFacts({ entryId })
-          .then((res) => {
-            if (res.ok) {
-              setAiSuggestions((prev) => ({ ...prev, [entryId]: res.data.facts }));
-            } else {
-              dispatch({ type: "SET_ERROR", error: res.error });
-            }
-          })
-          .catch((err: unknown) => {
-            const msg = clientErr(err);
-            dispatch({ type: "SET_ERROR", error: `suggestEntryFacts: ${msg}` });
-          })
-          .finally(() => setAiBusy(false));
-      });
-    },
-    [aiBusy],
-  );
+  const ai = useAiSuggest(surfaceError);
 
   // Add one AI suggestion as a real fact — routes through the SAME confirmation-
   // gated createFact path as manual authoring (product rule 1 intact).
@@ -417,20 +388,10 @@ function WikiScreenInner({
       dispatch({ type: "CREATE_FACT", entryId, factId, key, value, sortOrder });
       settle("createFact", createFact({ entryId, key, value, sortOrder }));
       // Remove the accepted suggestion from the panel.
-      setAiSuggestions((prev) => ({
-        ...prev,
-        [entryId]: (prev[entryId] ?? []).filter((s) => s.key !== key),
-      }));
+      ai.remove(entryId, key);
     },
-    [state.byId, settle],
+    [state.byId, settle, ai],
   );
-
-  const dismissSuggestedFact = useCallback((entryId: string, key: string) => {
-    setAiSuggestions((prev) => ({
-      ...prev,
-      [entryId]: (prev[entryId] ?? []).filter((s) => s.key !== key),
-    }));
-  }, []);
 
   const createEntryOnShelf = useCallback(
     (shelf: ShelfKey, categoryId?: string) => {
@@ -540,81 +501,15 @@ function WikiScreenInner({
   );
 
   // ---- Trash: recently-deleted panel (F6-S6b) --------------------------------
-  // The trash list is panel-LOCAL server state (soft-deleted entries live only
-  // in the DB, never in the reducer's live byId), so it is fetched here and
-  // re-fetched after every restore/purge. Restore ALSO dispatches RESTORE_ENTRY
-  // so the entry reappears on its shelf without a full reload; purge has no
-  // reducer (nothing live changes) and just refreshes the panel.
-  const [deleted, setDeleted] = useState<EntryRow[]>([]);
-  const [trashBusy, setTrashBusy] = useState(false);
-  const [confirmPurge, setConfirmPurge] = useState(false);
-  // Fixed at mount so the countdown labels don't reflow every render.
-  const [nowMs] = useState(() => Date.now());
-
-  const refreshTrash = useCallback(() => {
-    startTransition(() => {
-      getDeletedEntries()
-        .then((res) => {
-          if (res.ok) setDeleted(res.data.entries);
-          else dispatch({ type: "SET_ERROR", error: res.error });
-        })
-        .catch((err: unknown) => {
-          const msg = clientErr(err);
-          dispatch({ type: "SET_ERROR", error: `getDeletedEntries: ${msg}` });
-        });
-    });
-  }, []);
-
-  // Load the trash once on mount, then re-fetch it whenever a delete happens by
-  // way of the restore/purge handlers below (they call refreshTrash on settle).
-  useEffect(() => {
-    refreshTrash();
-  }, [refreshTrash]);
-
+  // Panel-local server state + restore/purge live in useTrashPanel (T-ARCH-13).
+  // Restore hands the row back so we dispatch RESTORE_ENTRY here, keeping the
+  // reducer as this component's concern.
+  const trash = useTrashPanel(surfaceError);
   const restoreDeleted = useCallback(
-    (id: string) => {
-      setTrashBusy(true);
-      startTransition(() => {
-        restoreEntry({ id })
-          .then((res) => {
-            if (res.ok) {
-              dispatch({ type: "RESTORE_ENTRY", entry: res.data.entry });
-              setDeleted((prev) => prev.filter((e) => e.id !== id));
-            } else {
-              dispatch({ type: "SET_ERROR", error: res.error });
-            }
-          })
-          .catch((err: unknown) => {
-            const msg = clientErr(err);
-            dispatch({ type: "SET_ERROR", error: `restoreEntry: ${msg}` });
-          })
-          .finally(() => setTrashBusy(false));
-      });
-    },
-    [],
+    (id: string) =>
+      trash.restore(id, (entry) => dispatch({ type: "RESTORE_ENTRY", entry })),
+    [trash],
   );
-
-  const performPurge = useCallback(() => {
-    setTrashBusy(true);
-    startTransition(() => {
-      purgeExpiredDeleted({ confirmed: true })
-        .then((res) => {
-          if (res.ok) refreshTrash();
-          else dispatch({ type: "SET_ERROR", error: res.error });
-        })
-        .catch((err: unknown) => {
-          const msg = clientErr(err);
-          dispatch({ type: "SET_ERROR", error: `purgeExpiredDeleted: ${msg}` });
-        })
-        .finally(() => setTrashBusy(false));
-    });
-  }, [refreshTrash]);
-
-  // How many trashed entries the next purge would actually remove (retention
-  // elapsed) — drives the danger-modal copy's exact count.
-  const purgeableCount = deleted.filter(
-    (e) => e.deletedAt != null && trashCountdown(e.deletedAt, nowMs).purgeable,
-  ).length;
 
   // Entries grouped per shelf, in the reducer's live order (WikiIndex still
   // groups by the fixed 4 shelves).
@@ -689,13 +584,13 @@ function WikiScreenInner({
           isRenamed={sidebarIsRenamed}
           labelFor={sidebarLabelFor}
           footer={
-            deleted.length > 0 ? (
+            trash.deleted.length > 0 ? (
               <TrashPanel
-                entries={deleted}
-                nowMs={nowMs}
-                busy={trashBusy}
+                entries={trash.deleted}
+                nowMs={trash.nowMs}
+                busy={trash.busy}
                 onRestore={restoreDeleted}
-                onRequestPurge={() => setConfirmPurge(true)}
+                onRequestPurge={() => trash.setConfirmPurge(true)}
               />
             ) : null
           }
@@ -723,13 +618,13 @@ function WikiScreenInner({
         isRenamed={sidebarIsRenamed}
         labelFor={sidebarLabelFor}
         footer={
-          deleted.length > 0 ? (
+          trash.deleted.length > 0 ? (
             <TrashPanel
-              entries={deleted}
-              nowMs={nowMs}
-              busy={trashBusy}
+              entries={trash.deleted}
+              nowMs={trash.nowMs}
+              busy={trash.busy}
               onRestore={restoreDeleted}
-              onRequestPurge={() => setConfirmPurge(true)}
+              onRequestPurge={() => trash.setConfirmPurge(true)}
             />
           ) : null
         }
@@ -769,11 +664,11 @@ function WikiScreenInner({
         onAddFact={addFact}
         onDeleteFact={deleteFactCallback}
         ai={{
-          suggestions: aiSuggestions[selected.id] ?? [],
-          busy: aiBusy,
-          onSuggest: () => suggestFacts(selected.id),
+          suggestions: ai.suggestions[selected.id] ?? [],
+          busy: ai.busy,
+          onSuggest: () => ai.suggest(selected.id),
           onAdd: (key, value) => addSuggestedFact(selected.id, key, value),
-          onDismiss: (key) => dismissSuggestedFact(selected.id, key),
+          onDismiss: (key) => ai.remove(selected.id, key),
         }}
       />
       <WorldBand entryCount={Object.keys(state.byId).length} />
@@ -825,20 +720,20 @@ function WikiScreenInner({
           onCancel={() => setConfirmDeleteKind(null)}
         />
       ) : null}
-      {confirmPurge ? (
+      {trash.confirmPurge ? (
         <ConfirmModal
           title="Empty the trash?"
-          body={`This permanently deletes ${purgeableCount} ${
-            purgeableCount === 1 ? "entry that has" : "entries that have"
+          body={`This permanently deletes ${trash.purgeableCount} ${
+            trash.purgeableCount === 1 ? "entry that has" : "entries that have"
           } been in the trash longer than 7 days, along with all their facts, ties, and appearances. This cannot be undone.`}
           confirmLabel="Empty trash"
           cancelLabel="Cancel"
           danger
           onConfirm={() => {
-            setConfirmPurge(false);
-            performPurge();
+            trash.setConfirmPurge(false);
+            trash.purge();
           }}
-          onCancel={() => setConfirmPurge(false)}
+          onCancel={() => trash.setConfirmPurge(false)}
         />
       ) : null}
     </main>
