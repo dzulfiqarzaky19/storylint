@@ -14,6 +14,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { shareEntityToWorld, unshareEntityFromWorld } from "@/lib/actions/wiki";
+import { clientErr } from "@/components/hooks/useServerAction";
 import styles from "./ShareControls.module.css";
 
 export interface ShareWorld {
@@ -64,8 +65,7 @@ export default function ShareControls({
         startTransition(() => router.refresh());
       })
       .catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : String(err);
-        onError(`${label}: ${msg}`);
+        onError(`${label}: ${clientErr(err)}`);
       })
       .finally(() => setBusy(false));
   };

@@ -6,9 +6,10 @@
 // is also EDITABLE: rename a lane, set its arc state, create/edit/delete/move a
 // beat, and create/delete a lane, each via a /plot server action that revalidates
 // the page. Feature parity with prototypes/plot.{html,js} (the design source).
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useInlineRename } from "@/components/hooks/useInlineRename";
+import { useServerAction } from "@/components/hooks/useServerAction";
 import type { PlotProgression, PlotLane, PlotBeat } from "@/lib/db/plot";
 import {
   renamePlotlineAction,
@@ -97,18 +98,14 @@ interface PlotEdit {
 
 function usePlotEdit(worldId: string, bookId: string): PlotEdit {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const { pending, run: runOne } = useServerAction(setError);
 
   // Run one action, surface its error, and refresh on success so the server
   // re-reads the grid. Kept generic so every method below is a one-liner.
   const run = (fn: () => Promise<ActionResult<unknown>>) => {
     setError(null);
-    startTransition(async () => {
-      const res = await fn();
-      if (!res.ok) setError(res.error);
-      else router.refresh();
-    });
+    runOne(fn(), { onSuccess: () => router.refresh() });
   };
 
   return {

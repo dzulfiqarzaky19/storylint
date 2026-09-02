@@ -7,6 +7,7 @@
 // session state lives in DragContext so dragover can read the payload.
 
 import { useReducer, useCallback, useEffect, useState, startTransition } from "react";
+import { useServerAction, clientErr } from "@/components/hooks/useServerAction";
 import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, EntryRow, Kind } from "@/lib/domain/types";
 import { KIND_SHELF, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
 import {
@@ -103,16 +104,15 @@ function WikiScreenInner({
   );
 
   // Surface a failed server action instead of letting the write vanish (§8).
-  const settle = useCallback((label: string, p: Promise<ActionResult<unknown>>) => {
-    startTransition(() => {
-      p.then((res) => {
-        if (!res.ok) dispatch({ type: "SET_ERROR", error: res.error });
-      }).catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : String(err);
-        dispatch({ type: "SET_ERROR", error: `${label}: ${msg}` });
-      });
-    });
-  }, []);
+  const surfaceError = useCallback(
+    (error: string) => dispatch({ type: "SET_ERROR", error }),
+    [],
+  );
+  const { run } = useServerAction(surfaceError);
+  const settle = useCallback(
+    (label: string, p: Promise<ActionResult<unknown>>) => run(p, { label }),
+    [run],
+  );
 
   // ---- Drop: tile onto tile (insert before) / onto shelf (append, regroup) --
   const dropEntry = useCallback(
@@ -397,7 +397,7 @@ function WikiScreenInner({
             }
           })
           .catch((err: unknown) => {
-            const msg = err instanceof Error ? err.message : String(err);
+            const msg = clientErr(err);
             dispatch({ type: "SET_ERROR", error: `suggestEntryFacts: ${msg}` });
           })
           .finally(() => setAiBusy(false));
@@ -531,7 +531,7 @@ function WikiScreenInner({
             else dispatch({ type: "SET_ERROR", error: res.error });
           })
           .catch((err: unknown) => {
-            const msg = err instanceof Error ? err.message : String(err);
+            const msg = clientErr(err);
             dispatch({ type: "SET_ERROR", error: `createCategory: ${msg}` });
           });
       });
@@ -559,7 +559,7 @@ function WikiScreenInner({
           else dispatch({ type: "SET_ERROR", error: res.error });
         })
         .catch((err: unknown) => {
-          const msg = err instanceof Error ? err.message : String(err);
+          const msg = clientErr(err);
           dispatch({ type: "SET_ERROR", error: `getDeletedEntries: ${msg}` });
         });
     });
@@ -585,7 +585,7 @@ function WikiScreenInner({
             }
           })
           .catch((err: unknown) => {
-            const msg = err instanceof Error ? err.message : String(err);
+            const msg = clientErr(err);
             dispatch({ type: "SET_ERROR", error: `restoreEntry: ${msg}` });
           })
           .finally(() => setTrashBusy(false));
@@ -603,7 +603,7 @@ function WikiScreenInner({
           else dispatch({ type: "SET_ERROR", error: res.error });
         })
         .catch((err: unknown) => {
-          const msg = err instanceof Error ? err.message : String(err);
+          const msg = clientErr(err);
           dispatch({ type: "SET_ERROR", error: `purgeExpiredDeleted: ${msg}` });
         })
         .finally(() => setTrashBusy(false));

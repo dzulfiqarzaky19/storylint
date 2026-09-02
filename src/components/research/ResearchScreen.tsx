@@ -28,6 +28,8 @@ import WikiTargetPicker from "@/components/wiki/WikiTargetPicker";
 import type { PickerResult } from "@/lib/research/resolvePickerTarget";
 import { resolvePickerTarget } from "@/lib/research/resolvePickerTarget";
 import { createCategory } from "@/lib/actions/wiki";
+import { useServerAction, clientErr } from "@/components/hooks/useServerAction";
+import type { ActionResult } from "@/lib/actions/confirmation";
 import { defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
 import { synthesizeResolvedTarget } from "@/lib/research/synthesizeResolvedTarget";
 import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
@@ -103,6 +105,7 @@ export default function ResearchScreen({
     initResearchState,
   );
   const [, startTransition] = useTransition();
+  const { run } = useServerAction((error) => dispatch({ type: "SET_ERROR", error }));
   const [boardActive, setBoardActive] = useState(false);
   // The card currently being dragged, so the board drop knows what to keep.
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -217,19 +220,7 @@ export default function ResearchScreen({
 
   // ---- Handlers (reducer fires immediately; server action alongside) ------
 
-  const runAction = (fn: () => Promise<{ ok: boolean; error?: string }>) => {
-    startTransition(async () => {
-      try {
-        const res = await fn();
-        if (!res.ok) dispatch({ type: "SET_ERROR", error: res.error ?? "Write failed" });
-      } catch (err) {
-        dispatch({
-          type: "SET_ERROR",
-          error: err instanceof Error ? err.message : String(err),
-        });
-      }
-    });
-  };
+  const runAction = (fn: () => Promise<ActionResult<unknown>>) => run(fn());
 
   const handleKeep = (id: string, next: boolean) => {
     dispatch({ type: "KEEP_CARD", propositionId: id, kept: next });
@@ -427,10 +418,7 @@ export default function ResearchScreen({
         // Transport failure / abort: the server persisted nothing, so remove the
         // placeholders and surface the error.
         dispatch({ type: "ROLLBACK_STREAMING_TURN", turnIds: [tempYouId, tempThemId] });
-        dispatch({
-          type: "SET_ERROR",
-          error: err instanceof Error ? err.message : String(err),
-        });
+        dispatch({ type: "SET_ERROR", error: clientErr(err) });
       } finally {
         askInFlight.current = false;
         setAsking(false);
