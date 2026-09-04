@@ -2,27 +2,23 @@
 
 import type { EntryWithDetails } from "@/lib/domain/types";
 import { chapterCitesFor } from "@/lib/wiki/chapterCite";
-import InlineText from "./InlineText";
 import styles from "./OverviewTab.module.css";
 
 interface OverviewTabProps {
   entry: EntryWithDetails;
-  onEditSummary: (value: string) => void;
   /** T-WIKI-COCKPIT-5 STUB: AI synthesis text (wired to generateOverviewSynthesis later). */
   aiSynthesis?: string;
 }
 
 /**
- * Overview tab, v1 — DETERMINISTIC (T-WIKI-COCKPIT-1 ruling). Both blocks read
- * fields that already exist: Summary is the writer's editable `entry.summary`,
- * Latest is the tail of `entry.appearances`. No AI, no new schema; the
- * AI-synthesized Summary lands in T-WIKI-COCKPIT-5.
+ * Overview tab — DETERMINISTIC. Latest is the tail of `entry.appearances`; no AI,
+ * no new schema.
+ *
+ * The writer's `entry.summary` is NOT here: it is the head blurb under the entry
+ * name (EntryBand), matching the prototype and keeping one edit surface per
+ * value. Overview's own summary slot is the deferred AI synthesis.
  */
-export default function OverviewTab({
-  entry,
-  onEditSummary,
-  aiSynthesis,
-}: OverviewTabProps) {
+export default function OverviewTab({ entry, aiSynthesis }: OverviewTabProps) {
   // Appearances arrive sorted (sortOrder), so the newest beat is the tail.
   const latest = entry.appearances[entry.appearances.length - 1] ?? null;
   const latestCite = latest
@@ -31,19 +27,6 @@ export default function OverviewTab({
 
   return (
     <div className={styles.overview}>
-      <section className={styles.block}>
-        <h2 className={styles.sectionTitle}>Summary</h2>
-        <p className={styles.prose}>
-          <InlineText
-            value={entry.summary}
-            ariaLabel="entry summary"
-            multiline
-            placeholder="Add a summary"
-            onCommit={onEditSummary}
-          />
-        </p>
-      </section>
-
       <section className={styles.block}>
         <h2 className={styles.sectionTitle}>
           Latest

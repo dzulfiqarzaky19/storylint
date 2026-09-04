@@ -89,3 +89,36 @@ agent could plausibly misread it. Discipline that maintains this file lives in
   meant to touch (non-negotiable live-browser gate, question 2). Explore via
   codescratch CLI before editing.
 
+## Chrome
+
+Three unrelated things were all called "rail" until this entry existed — a comment
+in `src/lib/check/index.ts` already warns about one of the collisions. Never say
+"rail" unqualified.
+
+- **index rail** — the LEFT standing index on /wiki, /write and /research: a mono
+  uppercase title + count, an optional filter, a scrolling per-surface list, and
+  below 1200px a chevron disclosure. The **wrapper is shared**
+  (`components/shell/IndexRail.tsx`); the **contents are per-surface** (entries /
+  chapters / threads). **/plot has no index rail** — its prototype uses a modal
+  drill-down `drawer` instead, so plot is deliberately outside this seam.
+  The component is `IndexRail`, never `Rail`, because of the collisions below.
+- **signal rail** — the RIGHT panel that surfaces findings: `OutstandingRail` on
+  /write, `KeptBoard` on /research, `PosterBand` on /wiki. Unrelated to the index
+  rail; shares none of its chrome.
+- **`Mark.rail`** — neither of the above. A *string field* on `Mark` holding the
+  short reason shown beside a mark. Distinct again from `railLabel`, which is the
+  kind LABEL rendered above that reason.
+
+## Design source
+
+- **cockpit prototype** — one standalone HTML file per surface in `prototypes/`
+  (`wiki-c-cockpit.html`, `research-c-cockpit.html`, `write-c-cockpit.html`,
+  `plot-c-cockpit.html`), each the **binding visual and interaction reference**
+  for its same-named surface. Explicitly **not** a throwaway in the sense the
+  `prototype` skill means — that skill's "commit to a branch, out of main" rule
+  does not apply here. These are the app's one look (`globals.css` tokens are
+  derived from them) and stay the reference until a surface is fully ported.
+  Every control in them is faked in-page on purpose ("no backend, so a porting
+  agent sees every control"), so a prototype control is evidence of **intent**,
+  never evidence that a backend exists.
+

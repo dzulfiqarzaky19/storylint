@@ -1,21 +1,19 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import type { EntryWithDetails, Shelf, CategoryRow } from "@/lib/domain/types";
 import { categorySingular } from "@/lib/wiki/categoryLabels";
 import { useInlineRename } from "@/components/hooks/useInlineRename";
+import IndexRail from "@/components/shell/IndexRail";
 import { initialCollapse, resolveRename } from "./shelfState";
 import NewCategoryShelf from "./NewCategoryShelf";
 import styles from "./WikiIndex.module.css";
 
-/** TCK-020: disclosure chevron. A single right-pointing SVG glyph; direction is
- *  driven by CSS (the caller adds an "open" modifier that rotates it 90deg to
- *  point down). Crisp at any font, unlike the old +/- and U+2304 text glyphs.
- *  Decorative only — the expand/collapse state lives on aria-expanded. */
-function Chevron({ className }: { className?: string }) {
+/** Disclosure chevron for a category group. Direction is driven by CSS (the
+ *  "chevronOpen" modifier rotates it 90deg); state lives on aria-expanded. */
+function Chevron() {
   return (
     <svg
-      className={className}
       viewBox="0 0 16 16"
       width="1em"
       height="1em"
@@ -32,22 +30,85 @@ function Chevron({ className }: { className?: string }) {
   );
 }
 
-/** T-ARCH-7: per-category click-to-rename header, wired to the shared
- *  useInlineRename hook. Pulled into its OWN component (not left inline in
- *  the categories.map) because a hook can't be called conditionally/per-item
- *  inside a loop body — this gives each category its own hook instance.
- *  Behavior is byte-identical to the pre-T-ARCH-7 inline version: blank
- *  resets, changed renames, unchanged is a no-op, via resolveRename. */
-function CategoryTitle({
-  categoryId,
-  title,
+function PencilIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M11.5 2.5a1.6 1.6 0 0 1 2.3 2.3L6 12.5l-3 .7.7-3z" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M2.75 4.25h10.5M6.5 4.25V3h3v1.25M4 4.25l.6 8.4a1 1 0 0 0 1 .85h4.8a1 1 0 0 0 1-.85l.6-8.4M6.5 7v4M9.5 7v4" />
+    </svg>
+  );
+}
+
+/** The rail's per-row number. Real `catalogueNo` wins; entries whose row has
+ *  never been assigned one (the importer writes "" or "—") fall back to their
+ *  1-based position within the group, which is what the prototype shows. */
+function catalogueLabel(entry: EntryWithDetails, index: number): string {
+  const real = entry.catalogueNo?.trim();
+  if (real && real !== "—") return real;
+  return String(index + 1).padStart(2, "0");
+}
+
+/** A rail row shows a flag dot when any chapter appearance carries a flag —
+ *  the entry-level rollup of the same signal the Timeline tab renders per row. */
+function isFlagged(entry: EntryWithDetails): boolean {
+  return entry.appearances.some((a) => a.flag !== null);
+}
+
+function CategoryGroup({
+  category,
+  entries,
+  collapsed,
+  onToggle,
+  selectedId,
+  onSelect,
+  onCreateEntry,
   onRenameCategory,
   onResetCategory,
+  onRequestDeleteCategory,
+  isRenamed,
+  title,
 }: {
-  categoryId: string;
-  title: string;
+  category: CategoryRow;
+  entries: EntryWithDetails[];
+  collapsed: boolean;
+  onToggle: () => void;
+  selectedId: string;
+  onSelect: (id: string) => void;
+  onCreateEntry?: (shelf: Shelf, categoryId: string) => void;
   onRenameCategory: (categoryId: string, label: string) => void;
   onResetCategory: (categoryId: string) => void;
+  onRequestDeleteCategory: (categoryId: string) => void;
+  isRenamed: boolean;
+  title: string;
 }) {
   const rename = useInlineRename(title, {
     onCommit: (draft) => {
@@ -55,33 +116,120 @@ function CategoryTitle({
       // non-blank change renames. resolveRename (shelfState.ts) owns that pure
       // decision so it stays unit-tested in the node env; this just dispatches.
       const outcome = resolveRename(draft, title);
-      if (outcome.action === "reset") onResetCategory(categoryId);
-      else if (outcome.action === "rename") onRenameCategory(categoryId, outcome.label);
+      if (outcome.action === "reset") onResetCategory(category.id);
+      else if (outcome.action === "rename")
+        onRenameCategory(category.id, outcome.label);
     },
   });
 
-  return rename.editing ? (
-    <input
-      className={styles.groupTitleInput}
-      aria-label={`Rename ${title} category`}
-      value={rename.draft}
-      autoFocus
-      onChange={(e) => rename.setDraft(e.target.value)}
-      onBlur={rename.onBlur}
-      onKeyDown={rename.onKeyDown}
-    />
-  ) : (
-    // TCK-005/007: the title is the rename affordance (click to edit
-    // inline). A real <button> keeps it keyboard-focusable.
-    <button
-      type="button"
-      className={styles.groupTitle}
-      aria-label={`Rename ${title} category`}
-      title={`Rename ${title} category`}
-      onClick={() => rename.start(title)}
-    >
-      {title}
-    </button>
+  const shelf = category.shelf as Shelf;
+  const singular = categorySingular(title);
+
+  return (
+    <section className={styles.group}>
+      <div className={styles.groupHead}>
+        {rename.editing ? (
+          <input
+            className={styles.groupTitleInput}
+            aria-label={`Rename ${title} category`}
+            value={rename.draft}
+            autoFocus
+            onChange={(e) => rename.setDraft(e.target.value)}
+            onBlur={rename.onBlur}
+            onKeyDown={rename.onKeyDown}
+          />
+        ) : (
+          <>
+            <button
+              type="button"
+              className={`${styles.groupChevron}${collapsed ? "" : ` ${styles.chevronOpen}`}`}
+              aria-label={collapsed ? `Expand ${title}` : `Collapse ${title}`}
+              aria-expanded={!collapsed}
+              onClick={onToggle}
+            >
+              <Chevron />
+            </button>
+            {/* The title text ALSO collapses the group. Renaming moved OFF the
+                title and onto the explicit Rename button beside it — a click on
+                a category name should open it, not enter an edit box. */}
+            <button
+              type="button"
+              className={styles.groupTitle}
+              aria-expanded={!collapsed}
+              onClick={onToggle}
+            >
+              {title}
+            </button>
+            <span className={styles.groupCount}>{entries.length}</span>
+            <span className={styles.groupTools}>
+              <button
+                type="button"
+                className={styles.groupIcon}
+                onClick={() => rename.start(title)}
+                aria-label={`Rename ${title} category`}
+                title={`Rename ${title} category`}
+              >
+                <PencilIcon />
+              </button>
+              {isRenamed ? (
+                <button
+                  type="button"
+                  onClick={() => onResetCategory(category.id)}
+                  aria-label={`Reset ${title} category name`}
+                >
+                  Reset
+                </button>
+              ) : null}
+              {/* Built-ins are not deletable (is_builtin invariant), so the
+                  control is absent rather than disabled for them. */}
+              {category.isBuiltin ? null : (
+                <button
+                  type="button"
+                  className={`${styles.groupIcon} ${styles.groupDelete}`}
+                  onClick={() => onRequestDeleteCategory(category.id)}
+                  aria-label={`Delete ${title} category`}
+                  title={`Delete ${title} category`}
+                >
+                  <TrashIcon />
+                </button>
+              )}
+            </span>
+          </>
+        )}
+      </div>
+
+      {!collapsed && (
+        <ul className={styles.list}>
+          {entries.map((e, i) => (
+            <li key={e.id}>
+              <button
+                type="button"
+                className={`${styles.item}${e.id === selectedId ? ` ${styles.itemActive}` : ""}${isFlagged(e) ? ` ${styles.itemFlag}` : ""}`}
+                aria-current={e.id === selectedId ? "true" : undefined}
+                onClick={() => onSelect(e.id)}
+              >
+                <span className={styles.itemNumber}>{catalogueLabel(e, i)}</span>
+                <span className={styles.itemName}>{e.name}</span>
+                {e.note ? (
+                  <span className={styles.itemBadge}>{e.note}</span>
+                ) : null}
+              </button>
+            </li>
+          ))}
+          {onCreateEntry ? (
+            <li>
+              <button
+                type="button"
+                className={styles.emptyAdd}
+                onClick={() => onCreateEntry(shelf, category.id)}
+              >
+                + New {singular}
+              </button>
+            </li>
+          ) : null}
+        </ul>
+      )}
+    </section>
   );
 }
 
@@ -96,7 +244,7 @@ export interface WikiIndexProps {
   byCategory: Map<string, EntryWithDetails[]>;
   selectedId: string;
   onSelect: (id: string) => void;
-  /** Total entry count for the header ("N entries"). */
+  /** Total entry count for the rail head ("· N"). */
   total: number;
   /** Start authoring a new ENTRY under the given category's shelf (per-group
    *  "+ New <singular>" affordance; same create path the main shelf uses). */
@@ -104,7 +252,7 @@ export interface WikiIndexProps {
   /** Create a new CATEGORY (bottom "+ New category" affordance). Mirrors the
    *  main shelf's NewCategoryShelf create path so both columns stay in sync. */
   onCreateCategory: (id: string, label: string) => void;
-  /** Rename a category's header to a custom label (click-the-name inline). */
+  /** Rename a category's header to a custom label. */
   onRenameCategory: (categoryId: string, label: string) => void;
   /** Clear a custom label, restoring the built-in shelf default. */
   onResetCategory: (categoryId: string) => void;
@@ -119,19 +267,13 @@ export interface WikiIndexProps {
 }
 
 /**
- * The Wiki LEFT sidebar — "The world" grouped index. TCK-005: brought to FULL
- * PARITY with the main shelf. It now renders EVERY category from `categories`
- * (built-in + user, including empty ones) as its own collapsible group instead
- * of the old hardcoded 4 shelves, so a user category (Guilds/Doomed) or a
- * newly-created one appears here exactly as it does in the main column.
+ * The Wiki LEFT index rail contents — one collapsible group per category, in
+ * full parity with the main shelf (built-in + user categories, including empty
+ * ones).
  *
- * Per-category controls mirror the main Shelf header (TCK-007): click the name
- * to rename inline, a trash icon to delete (hidden for built-ins, which are not
- * deletable), a "+ New <singular>" to author an entry, plus a bottom
- * "+ New category" affordance sharing the main shelf's create path.
- *
- * Standing full-height column on desktop. On the stacked tier (<=1200px) the
- * whole index folds behind a header TOGGLE; `open` only affects that tier.
+ * All rail CHROME (head, filter + "/" hotkey, scroll containment, the <=1200px
+ * fold, ARIA, viewport widths) belongs to the shared `IndexRail`; this module
+ * owns only the wiki's own list. See CONTEXT.md → Chrome → index rail.
  */
 export default function WikiIndex({
   categories,
@@ -154,156 +296,63 @@ export default function WikiIndex({
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(() =>
     initialCollapse(categories.map((c) => c.id)),
   );
-  // Whole-index collapse for the stacked tier. Closed by default so mobile
-  // opens on the entry; the toggle is hidden on desktop where it's always open.
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
+  const [query, setQuery] = useState("");
+
+  const needle = query.trim().toLowerCase();
+  const filtered = useMemo(() => {
+    if (!needle) return byCategory;
+    const next = new Map<string, EntryWithDetails[]>();
+    for (const [id, entries] of byCategory) {
+      const hits = entries.filter((e) =>
+        e.name.toLowerCase().includes(needle),
+      );
+      if (hits.length > 0) next.set(id, hits);
+    }
+    return next;
+  }, [byCategory, needle]);
 
   const toggle = (id: string) =>
     setCollapsed((c) => ({ ...c, [id]: !c[id] }));
 
+  // While filtering, a category is shown only if it still has a hit, and it is
+  // force-expanded — a collapsed group would hide the match the writer typed for.
+  const visible = needle
+    ? categories.filter((c) => filtered.has(c.id))
+    : categories;
+
   return (
-    <nav
-      className={`${styles.index} ${open ? styles.indexOpen : ""}`}
-      aria-label="The world"
+    <IndexRail
+      title="All entries"
+      count={total}
+      toggleLabel="Toggle entries"
+      filter={{
+        placeholder: "Filter entries…",
+        value: query,
+        onChange: setQuery,
+      }}
+      footer={footer}
     >
-      <button
-        type="button"
-        className={styles.railToggle}
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <span className={styles.title}>The world</span>
-        <span className={styles.count}>{total} entries</span>
-        <span
-          className={`${styles.railToggleChevron}${open ? ` ${styles.chevronOpen}` : ""}`}
-          aria-hidden="true"
-        >
-          <Chevron />
-        </span>
-      </button>
-
-      <div id={panelId} className={styles.panel}>
-        {categories.map((cat) => {
-          const entries = byCategory.get(cat.id) ?? [];
-          const isCollapsed = collapsed[cat.id] ?? false;
-          const title = labelFor(cat.id);
-          const shelf = cat.shelf as Shelf;
-          return (
-            <section key={cat.id} className={styles.group}>
-              {/* TCK-018: ONE consolidated control cluster per category. The
-                  organize/"filter" axis (collapse + title-as-rename + count)
-                  sits on the left; ALL actions on this category (+ entry, Reset,
-                  delete) are gathered into a single right-aligned action group
-                  instead of being split across the head and the list bottom. */}
-              <div className={styles.groupHead}>
-                <button
-                  type="button"
-                  className={`${styles.groupChevron}${!isCollapsed ? ` ${styles.chevronOpen}` : ""}`}
-                  aria-label={
-                    isCollapsed ? `Expand ${title}` : `Collapse ${title}`
-                  }
-                  aria-expanded={!isCollapsed}
-                  onClick={() => toggle(cat.id)}
-                >
-                  <Chevron />
-                </button>
-                <CategoryTitle
-                  categoryId={cat.id}
-                  title={title}
-                  onRenameCategory={onRenameCategory}
-                  onResetCategory={onResetCategory}
-                />
-                <span className={styles.groupCount}>{entries.length}</span>
-
-                {/* TCK-018: the consolidated action cluster — add / reset /
-                    delete, right-aligned as one group. Previously the "+ New"
-                    lived at the BOTTOM of the entry list, apart from edit/delete;
-                    it now sits with them so filter + add + edit + delete read as
-                    one control. */}
-                <div className={styles.groupActions}>
-                  {onCreateEntry ? (
-                    <button
-                      type="button"
-                      className={styles.groupAdd}
-                      aria-label={`Add new ${categorySingular(title)}`}
-                      title={`Add new ${categorySingular(title)}`}
-                      onClick={() => onCreateEntry(shelf, cat.id)}
-                    >
-                      {"+"}
-                    </button>
-                  ) : null}
-                  {isRenamed(cat.id) ? (
-                    <button
-                      type="button"
-                      className={styles.groupReset}
-                      onClick={() => onResetCategory(cat.id)}
-                    >
-                      Reset
-                    </button>
-                  ) : null}
-                  {/* TCK-005/007: trash icon deletes the whole category (opens the
-                      danger confirm in the CALLER via onRequestDeleteCategory —
-                      no inline confirm here). Built-ins are not deletable
-                      (is_builtin invariant), so the icon is hidden for them. */}
-                  {cat.isBuiltin ? null : (
-                    <button
-                      type="button"
-                      className={styles.groupDelete}
-                      aria-label={`Delete ${title} category`}
-                      title={`Delete ${title} category`}
-                      onClick={() => onRequestDeleteCategory(cat.id)}
-                    >
-                      {"\u{1F5D1}"}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {!isCollapsed && (
-                <ul className={styles.list}>
-                  {entries.map((e) => (
-                    <li key={e.id}>
-                      <button
-                        type="button"
-                        className={
-                          e.id === selectedId
-                            ? `${styles.item} ${styles.itemActive}`
-                            : styles.item
-                        }
-                        aria-current={e.id === selectedId ? "true" : undefined}
-                        onClick={() => onSelect(e.id)}
-                      >
-                        <span className={styles.itemName}>{e.name}</span>
-                        {e.note ? (
-                          <span className={styles.itemNote}>{e.note}</span>
-                        ) : null}
-                      </button>
-                    </li>
-                  ))}
-                  {entries.length === 0 && onCreateEntry ? (
-                    <li>
-                      <button
-                        type="button"
-                        className={styles.emptyAdd}
-                        onClick={() => onCreateEntry(shelf, cat.id)}
-                      >
-                        + New {categorySingular(title)}
-                      </button>
-                    </li>
-                  ) : null}
-                </ul>
-              )}
-            </section>
-          );
-        })}
-        {/* TCK-005: create a new top-level SIBLING category from the sidebar,
-            sharing the main shelf's NewCategoryShelf create path so both columns
-            stay in sync. */}
-        <NewCategoryShelf onCreate={onCreateCategory} />
-        {footer}
-      </div>
-    </nav>
+      {visible.map((cat) => (
+        <CategoryGroup
+          key={cat.id}
+          category={cat}
+          entries={filtered.get(cat.id) ?? []}
+          collapsed={needle ? false : (collapsed[cat.id] ?? false)}
+          onToggle={() => toggle(cat.id)}
+          selectedId={selectedId}
+          onSelect={onSelect}
+          onCreateEntry={needle ? undefined : onCreateEntry}
+          onRenameCategory={onRenameCategory}
+          onResetCategory={onResetCategory}
+          onRequestDeleteCategory={onRequestDeleteCategory}
+          isRenamed={isRenamed(cat.id)}
+          title={labelFor(cat.id)}
+        />
+      ))}
+      {needle && visible.length === 0 ? (
+        <p className={styles.noResults}>No entries match &ldquo;{query}&rdquo;.</p>
+      ) : null}
+      {needle ? null : <NewCategoryShelf onCreate={onCreateCategory} />}
+    </IndexRail>
   );
 }

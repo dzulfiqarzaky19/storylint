@@ -5,11 +5,12 @@
   top: 0;
   z-index: 10;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  padding: 14px var(--gutter);
-  background: var(--ground);
-  border-bottom: var(--rule-major);
+  padding: 14px 26px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: 0 1px 0 var(--line2);
 }
 
 .brand {
@@ -33,25 +34,34 @@
 
 .nav {
   display: flex;
-  align-items: baseline;
-  gap: 26px;
+  align-items: center;
+  gap: 30px;
 }
 
 .navItem,
 .navActive {
-  font-size: var(--text-3);
-  font-weight: 600;
-  text-transform: lowercase;
-  padding-bottom: 2px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 0 8px;
   border-bottom: 2px solid transparent;
+  text-decoration: none;
+  transition: color 0.12s;
 }
 
 .navItem {
   color: var(--muted);
 }
 
+.navItem:hover {
+  color: var(--ink);
+}
+
 .navActive {
-  color: var(--accent);
+  color: var(--ink);
+  font-weight: 600;
   border-bottom-color: var(--accent);
 }
 

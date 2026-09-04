@@ -1,21 +1,37 @@
-/* Portrait placeholder — entry-head thumbnail (T-WIKI-COCKPIT-1). */
+/* Portrait placeholder — the entry-head drop target. A 104px dashed square on
+   the paper ground, per the prototype's .portrait; 10px is a shape radius on a
+   tile, so it stays literal against --radius. */
 
 .portrait {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  background: var(--rule);
-  border: var(--rule-major);
-  filter: grayscale(1);
+  width: 104px;
+  height: 104px;
+  border: 1px dashed var(--rule);
+  border-radius: 10px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--ground);
+  cursor: pointer;
+}
+
+.portrait:hover {
+  border-color: var(--accent);
+}
+
+.portrait:hover .label {
+  color: var(--accent);
 }
 
 .label {
-  padding: var(--space-2);
-  font-size: var(--text-1);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
+  padding: 0 8px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+@media (min-width: 1920px) {
+  .portrait {
+    width: 132px;
+    height: 132px;
+  }
 }

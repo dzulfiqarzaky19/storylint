@@ -48,20 +48,19 @@
    gutter edge so the wordmark still reads as the brand anchor. */
 .pill {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
   font: inherit;
-  padding: var(--space-1) 10px;
-  margin-left: -10px;
+  padding: 7px 0 8px;
   border: none;
-  border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--on-ink);
+  border-bottom: 2px solid var(--accent);
+  background: transparent;
+  color: var(--ink);
   cursor: pointer;
 }
 
-.pill:hover:not(:disabled) {
-  background: var(--accent-deep);
+.pill:hover:not(:disabled) .world {
+  color: var(--accent);
 }
 
 .pill:focus-visible {
@@ -74,21 +73,29 @@
   cursor: not-allowed;
 }
 
+/* Universe kicker: a small mono label ABOVE/before the world name, not a second
+   copy of it at the same weight. Universe and world are 1:1 today, so rendering
+   both at display weight reads as the same name printed twice. */
 .wordmark {
-  font-size: var(--text-5);
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--faint);
 }
 
 .world {
-  font-size: var(--text-3);
-  opacity: 0.66;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
 }
 
 .caret {
   font-size: 10px;
-  opacity: 0.66;
+  color: var(--accent);
 }
 
 /* Phone tier: keep the pill a 44px WCAG tap target (matches Header's nav). */

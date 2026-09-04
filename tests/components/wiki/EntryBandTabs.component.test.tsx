@@ -114,7 +114,10 @@ describe("EntryBand tab shell", () => {
       screen.getByRole("tab", { name: /Overview/ }).getAttribute("aria-selected"),
     ).toBe("true");
     // Overview's own content is on screen; the other panels are not mounted.
-    expect(screen.getByRole("heading", { name: "Summary" })).toBeTruthy();
+    // "Summary" is NOT a heading here: the writer's summary is the head blurb
+    // under the entry name, not an Overview section (one edit surface per value).
+    expect(screen.getByRole("heading", { name: /^Latest/ })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Summary" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "The story so far" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "Still open" })).toBeNull();
   });
@@ -125,7 +128,7 @@ describe("EntryBand tab shell", () => {
 
     await user.click(screen.getByRole("tab", { name: /Timeline/ }));
     expect(screen.getByRole("heading", { name: "The story so far" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Summary" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: /^Latest/ })).toBeNull();
 
     await user.click(screen.getByRole("tab", { name: /Details/ }));
     expect(screen.getByRole("heading", { name: "Details" })).toBeTruthy();

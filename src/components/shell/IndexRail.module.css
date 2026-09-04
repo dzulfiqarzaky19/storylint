@@ -1,0 +1,196 @@
+/* Shared LEFT index rail chrome for /wiki, /write and /research. Lifted from the
+   three copies that had drifted in WikiIndex / WriteIndex / ResearchIndex.
+   Desktop: a standing full-height column with its own scroll. Stacked tier
+   (<=1200px): folds into a disclosure panel above the body. */
+
+.index {
+  width: 248px;
+  flex: none;
+  /* --rule is a COLOR, so the bare `border-right: var(--rule)` that WikiIndex
+     still carries resolves to style:none and paints nothing. --rule-major is the
+     1px-solid shorthand, which is what write/research already use. */
+  border-right: var(--rule-major);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+}
+
+/* On desktop this is a static head, not a control (cursor: default, and the
+   chevron is hidden) — it only becomes the disclosure below 1200px. */
+.railToggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--line2);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.railHead {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.railTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.railCount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+}
+
+/* Right-hand slot in the head (write/research use it; wiki does not). */
+.railAction {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.railToggleChevron {
+  display: none;
+  margin-left: auto;
+  font-size: var(--text-7);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.railToggleChevron svg {
+  display: block;
+  transition: transform 120ms ease;
+}
+
+.chevronOpen svg {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .railToggleChevron svg {
+    transition: none;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 7px/4px are shape radii (a field, a key cap), not chrome corners, so they stay
+   literal against --radius exactly as globals.css prescribes. */
+.railSearch {
+  margin: 10px 14px 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: 6px 9px;
+}
+
+.railSearch input {
+  border: none;
+  outline: none;
+  background: none;
+  width: 100%;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-3);
+}
+
+.railSearch input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchIcon {
+  font-size: var(--text-3);
+  opacity: 0.6;
+}
+
+.searchShortcut {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--faint);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.railScroll {
+  overflow: auto;
+  padding: 6px 8px 12px;
+  min-height: 0;
+  flex: 1;
+}
+
+/* Stacked tier: the whole index folds behind the head. Closed by default so the
+   page opens on the content; the panel scrolls within a capped height so it can
+   never bleed over the body below. */
+@media (max-width: 1200px) {
+  .index {
+    width: 100%;
+    border-right: none;
+    border-bottom: var(--rule-major);
+    overflow-y: visible;
+    gap: 0;
+  }
+
+  .railToggle {
+    padding: var(--space-4) var(--gutter, 24px);
+    cursor: pointer;
+    min-height: 44px;
+  }
+
+  .railToggleChevron {
+    display: inline;
+  }
+
+  .panel {
+    display: none;
+  }
+
+  .indexOpen .panel {
+    display: block;
+    overflow-y: auto;
+    max-height: 50vh;
+    padding: 0 var(--gutter, 24px) 20px;
+  }
+}
+
+/* Viewport scaling per the prototype's 5-viewport gate. */
+@media (min-width: 2560px) {
+  .index {
+    width: 320px;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .index {
+    width: 288px;
+  }
+}
+
+@media (min-width: 700px) and (max-width: 1099px) {
+  .index {
+    width: 212px;
+  }
+}

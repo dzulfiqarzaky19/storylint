@@ -76,7 +76,7 @@
      restate it in one place instead of overriding ~40 hardcoded zeros. Shape
      radii that are not chrome (a round status dot at 50%, a stadium count pill)
      stay literal at their call site and do not track this token. */
-  --radius: 9px;
+  --radius: 0;
 
   /* Type scale. A theme restates reading density in one place, the same way
      --space-* restates spatial rhythm. Rungs 1-7 are the original body cluster
@@ -138,6 +138,20 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Scroll works, scrollbar hidden everywhere — the cockpit prototypes' house
+   rule. Panels and rails carry their own rules and counts as the depth cue, so
+   a platform scrollbar only adds a grey gutter that breaks the paper ground. */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 /* Header + screen share one column so a full-height (100vh) screen does not

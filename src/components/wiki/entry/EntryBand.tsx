@@ -72,9 +72,10 @@ interface EntryBandProps {
  * scroll into a fixed head (identity + portrait) over a 4-tab body
  * (Overview/Timeline/Details/Ties), mirroring prototypes/wiki-c-cockpit.html.
  *
- * The summary lives ONLY in the Overview tab, not the head: rendering the same
- * editable field twice would give one value two inline-edit surfaces that can
- * disagree mid-edit. Overview is the default tab, so it stays visible on load.
+ * The summary is the head blurb under the name, as the prototype has it — and it
+ * lives there ONLY. Rendering the same editable field twice would give one value
+ * two inline-edit surfaces that can disagree mid-edit, so Overview does not
+ * repeat it; Overview's own summary slot is the deferred AI synthesis.
  */
 export default function EntryBand({
   entry,
@@ -105,35 +106,49 @@ export default function EntryBand({
     (r) => !r.tombstoned,
   ).length;
   const hasFlaggedBeat = entry.appearances.some((a) => a.flag !== null);
+  // "No. 05 · Ashkeld world". The importer leaves catalogue_no as "" or "—" on
+  // rows it never numbered, so the number half is dropped rather than rendering
+  // a bare "No." with nothing after it.
+  const activeWorld = sharing.worlds.find((w) => w.id === sharing.activeWorldId);
+  const catalogueNo = entry.catalogueNo?.trim();
+  const catalogueLine = [
+    catalogueNo && catalogueNo !== "—" ? `No. ${catalogueNo}` : null,
+    activeWorld ? `${activeWorld.title} world` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <section className={styles.band} aria-label="Entry">
+      {/* Kicker is a flex CLUSTER (spans + ShareControls' <div>/<label> + a
+          button), not prose. It MUST be a <div>: a <div>/<label> inside a <p>
+          is invalid HTML, so the browser auto-closes the <p> and the SSR DOM
+          diverges from the client React tree -> React #418 hydration mismatch
+          on a clean /wiki load. TCK-E04. */}
+      <div className={styles.kicker}>
+        <span className={styles.kind}>{kindLabel}</span>
+        <span className={styles.catalogueNo}>{catalogueLine}</span>
+        <ShareControls
+          entryId={entry.id}
+          entryName={entry.name}
+          activeWorldId={sharing.activeWorldId}
+          worlds={sharing.worlds}
+          onError={sharing.onError}
+        />
+        <button
+          type="button"
+          className={styles.deleteEntry}
+          onClick={() => setConfirmingDelete(true)}
+          aria-label={`Delete ${entry.name}`}
+        >
+          Delete
+        </button>
+      </div>
       <div className={styles.head}>
+        <div className={styles.headPortrait}>
+          <PortraitPlaceholder />
+        </div>
         <div className={styles.headMain}>
-          {/* Kicker is a flex CLUSTER (spans + ShareControls' <div>/<label> + a
-              button), not prose. It MUST be a <div>: a <div>/<label> inside a <p>
-              is invalid HTML, so the browser auto-closes the <p> and the SSR DOM
-              diverges from the client React tree -> React #418 hydration mismatch
-              on a clean /wiki load. TCK-E04. */}
-          <div className={styles.kicker}>
-            <span className={styles.kind}>{kindLabel}</span>
-            <span className={styles.catalogueNo}>No. {entry.catalogueNo}</span>
-            <ShareControls
-              entryId={entry.id}
-              entryName={entry.name}
-              activeWorldId={sharing.activeWorldId}
-              worlds={sharing.worlds}
-              onError={sharing.onError}
-            />
-            <button
-              type="button"
-              className={styles.deleteEntry}
-              onClick={() => setConfirmingDelete(true)}
-              aria-label={`Delete ${entry.name}`}
-            >
-              Delete
-            </button>
-          </div>
           <h1 className={styles.name}>
             <InlineText
               value={entry.name}
@@ -141,9 +156,15 @@ export default function EntryBand({
               onCommit={(v) => onEditEntryField(entry.id, "name", v)}
             />
           </h1>
-        </div>
-        <div className={styles.headPortrait}>
-          <PortraitPlaceholder />
+          <p className={styles.summary}>
+            <InlineText
+              value={entry.summary}
+              ariaLabel="entry summary"
+              multiline
+              placeholder="Add a summary"
+              onCommit={(v) => onEditEntryField(entry.id, "summary", v)}
+            />
+          </p>
         </div>
       </div>
 
@@ -153,10 +174,7 @@ export default function EntryBand({
             key: "overview",
             label: "Overview",
             panel: (
-              <OverviewTab
-                entry={entry}
-                onEditSummary={(v) => onEditEntryField(entry.id, "summary", v)}
-              />
+              <OverviewTab entry={entry} />
             ),
           },
           {
