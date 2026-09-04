@@ -14,28 +14,17 @@
 // =============================================================================
 
 import { Manuscript } from '@/components/write/Manuscript';
-import { checkManuscript } from '@/lib/check';
-import type { Mark } from '@/lib/check';
-import { chapterSeverity, buildSeverityByNumber } from '@/lib/check/severity';
-import { resolveChapterMarks } from '@/lib/check/resolve';
-import type { ChapterCheckCacheRow } from '@/lib/domain/types';
 import {
   getChapter,
-  getChapterCheckCache,
-  getChaptersForBook,
-  getPhraseChapterCounts,
   getCategories,
-  getResolvedMarkKeys,
   getWorldEntries,
   getWorldTree,
   listChapters,
-  loadWikiSnapshot,
 } from '@/lib/db/queries';
 import { resolveWriteScope } from './scope';
-import { buildCheckInput, docToParagraphs, paragraphsToDoc, toCheckWiki } from '@/lib/write/adapters';
-import { extractCandidatePhrases } from '@/lib/check/unrecorded';
+import { paragraphsToDoc } from '@/lib/write/adapters';
+import { loadChapterMarks } from '@/lib/write/chapterMarks';
 import { aiEnabled } from '@/lib/ai/saarouters';
-import { hashValue } from '@/lib/check/hash';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,12 +54,7 @@ export default async function WritePage({
   const chapterNumber =
     chapters.some((c) => c.number === requested) ? requested : lastNumber;
 
-  const [chapter, wiki, resolvedMarkKeys] = await Promise.all([
-    getChapter(chapterNumber, activeBookId),
-    loadWikiSnapshot(activeUniverseId, activeBookId),
-    getResolvedMarkKeys(),
-  ]);
-
+  const chapter = await getChapter(chapterNumber, activeBookId);
   const body = chapter?.body ?? EMPTY_BODY;
   const title = chapter?.title ?? 'Low Water';
 
@@ -84,73 +68,16 @@ export default async function WritePage({
     getCategories(),
   ]);
 
-  // Tier 2 recurrence ranking: fetch DISTINCT-chapter counts ONLY for the
-  // phrases actually on THIS chapter (extractCandidatePhrases keys are the same
-  // canonical phraseIndexKey form the engine looks up), instead of serializing
-  // the entire book-wide index to the client every load. The count itself stays
-  // book-wide (a phrase in ch3 + ch7 still reports 2). Depends on body, so it
-  // runs after the load above rather than inside that Promise.all.
-  const chapterCounts = await getPhraseChapterCounts([
-    ...extractCandidatePhrases(docToParagraphs(body)).keys(),
-  ]);
-
-  // Run the engine at load over the real manuscript + wiki (not fixtures).
-  const { marks } = checkManuscript(
-    buildCheckInput({ body, db: wiki, resolvedMarkKeys, chapterCounts }),
-  );
-
-  // Feature 1: left-index severity dots. Each chapter's dot must reflect the
-  // SAME mark set the writer sees in the rail on open, or the index lies ("a dot,
-  // but nothing to check" - the bug this ticket fixes). So the dot derives from
-  // resolveChapterMarks, the ONE resolver the active rail also reads (regex plus
-  // that chapter's fresh AI-cache marks). The ACTIVE chapter is still forced to
-  // null (buildSeverityByNumber) so its redundant dot never shows.
-  const bookChapters = await getChaptersForBook(activeBookId);
-
-  // Per-chapter AI-cache rows for the resolver's freshness gate. Fetched only
-  // when AI is on (else every resolve is a pure-regex fallback and the rows would
-  // go unused). One bounded query per chapter in the active book, run in
-  // parallel; reuses the existing getChapterCheckCache, no new DB function.
-  const aiOn = aiEnabled();
-  const cacheRowByNumber = new Map<number, ChapterCheckCacheRow | null>();
-  if (aiOn) {
-    await Promise.all(
-      bookChapters.map(async (c) => {
-        cacheRowByNumber.set(c.number, await getChapterCheckCache(c.id));
-      }),
-    );
-  }
-  const severityByNumber = buildSeverityByNumber(
-    bookChapters,
+  // Every mark this screen renders — the open chapter's deterministic run, its
+  // fresh cached AI marks, and each sibling chapter's left-index dot — resolved
+  // together against one wiki snapshot and one freshness gate, so a dot and the
+  // rail it opens onto can never disagree.
+  const marks = await loadChapterMarks({
+    universeId: activeUniverseId,
+    bookId: activeBookId,
     chapterNumber,
-    (chapterBody, chapterNum) =>
-      chapterSeverity(
-        resolveChapterMarks({
-          body: chapterBody,
-          db: wiki,
-          resolvedMarkKeys,
-          aiEnabled: aiOn,
-          cacheRow: cacheRowByNumber.get(chapterNum) ?? null,
-        }),
-      ),
-  );
-
-  // T-AICACHE: rehydrate the last AI cross-check from cache when it is still
-  // FRESH. The cached row is valid only while BOTH the body it was checked
-  // against and the wiki snapshot the AI grounded in are unchanged (hash match).
-  // On a hit we pass the stored AI marks so the rail shows them from first paint
-  // with NO gateway call; on a miss/stale row the client re-runs the AI as before.
-  let initialAiMarks: Mark[] = [];
-  if (aiEnabled() && chapter) {
-    const cache = await getChapterCheckCache(chapter.id);
-    if (
-      cache &&
-      cache.bodyHash === hashValue(body) &&
-      cache.wikiHash === hashValue(wiki)
-    ) {
-      initialAiMarks = cache.marks as Mark[];
-    }
-  }
+    body,
+  });
 
   return (
     <Manuscript
@@ -158,14 +85,14 @@ export default async function WritePage({
       chapterNumber={chapterNumber}
       chapterTitle={title}
       initialBody={body}
-      initialMarks={marks}
-      wiki={toCheckWiki(wiki)}
-      resolvedMarkKeys={resolvedMarkKeys}
-      chapterCounts={[...chapterCounts]}
+      initialMarks={marks.marks}
+      wiki={marks.wiki}
+      resolvedMarkKeys={marks.resolvedMarkKeys}
+      chapterCounts={marks.chapterCounts}
       chapters={chapters.map((c) => ({
         number: c.number,
         title: c.title,
-        severity: severityByNumber.get(c.number) ?? null,
+        severity: marks.severityByNumber.get(c.number) ?? null,
       }))}
       aiEnabled={aiEnabled()}
       activeBookId={activeBookId}
@@ -173,7 +100,7 @@ export default async function WritePage({
       activeWorldId={activeWorldId}
       pickerEntries={pickerEntries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
       pickerCategories={pickerCategories.map((c) => ({ id: c.id, label: c.label }))}
-      initialAiMarks={initialAiMarks}
+      initialAiMarks={marks.aiMarks}
     />
   );
 }
