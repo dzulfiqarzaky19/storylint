@@ -16,19 +16,29 @@
   background: var(--panel);
 }
 
-/* On desktop this is a static head, not a control (cursor: default, and the
-   chevron is hidden) — it only becomes the disclosure below 1200px. */
+/* The head row owns the rule and the padding so that the toggle inside it can be
+   swapped between a <div> (desktop) and a <button> (stacked) without the chrome
+   moving, and so a caller's `action` control can sit BESIDE the toggle rather
+   than inside it — a button may not contain another button. */
+.railHeadRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--line2);
+}
+
+/* On desktop this is a static head, not a control — it renders as a <div> and
+   only becomes the disclosure <button> below 1200px. */
 .railToggle {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
-  padding: 14px 14px 10px;
-  border-bottom: 1px solid var(--line2);
+  flex: 1;
+  min-width: 0;
+  padding: 0;
   background: none;
-  border-left: none;
-  border-right: none;
-  border-top: none;
+  border: none;
   text-align: left;
   color: inherit;
   font: inherit;
@@ -41,9 +51,14 @@
   gap: 6px;
 }
 
+/* Title and count are BOTH --muted. On this cream paper there is no second,
+   quieter text tone available — anything lighter than --muted drops under the
+   4.5:1 floor (that is what --faint was doing) — so the count is set apart by
+   weight and by its "·" separator instead of by colour. */
 .railTitle {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--text-1);
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -51,9 +66,9 @@
 
 .railCount {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--text-1);
   letter-spacing: 0.12em;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 /* Right-hand slot in the head (write/research use it; wiki does not). */
@@ -63,18 +78,19 @@
   align-items: center;
 }
 
+/* The glyph is an SVG sized at 1em, so font-size is what scales it (font-weight
+   would do nothing — the stroke is set on the icon). */
 .railToggleChevron {
   display: none;
   margin-left: auto;
   font-size: var(--text-7);
-  font-weight: 700;
   line-height: 1;
   color: var(--muted);
 }
 
 .railToggleChevron svg {
   display: block;
-  transition: transform 120ms ease;
+  transition: transform var(--dur-short) var(--ease-out);
 }
 
 .chevronOpen svg {
@@ -103,7 +119,7 @@
   gap: 6px;
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   padding: 6px 9px;
 }
 
@@ -121,17 +137,22 @@
   display: none;
 }
 
+/* Wraps the shared SearchIcon SVG (1em box), so font-size is its scale. It takes
+   a real token rather than an opacity knock-down, which is what the emoji it
+   replaced needed. */
 .searchIcon {
-  font-size: var(--text-3);
-  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-4);
+  color: var(--muted);
 }
 
 .searchShortcut {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--faint);
+  font-size: var(--text-0);
+  color: var(--muted);
   border: 1px solid var(--rule);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   padding: 0 4px;
 }
 
@@ -154,8 +175,11 @@
     gap: 0;
   }
 
-  .railToggle {
+  .railHeadRow {
     padding: var(--space-4) var(--gutter, 24px);
+  }
+
+  .railToggle {
     cursor: pointer;
     min-height: 44px;
   }

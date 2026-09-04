@@ -17,6 +17,7 @@
 import { useId, useState } from 'react';
 import type { Mark } from '@/lib/check';
 import { railLabel, importanceRank } from '@/lib/check';
+import { Chevron } from '@/components/shell/RowIcons';
 import styles from './Manuscript.module.css';
 
 export interface OutstandingRailProps {
@@ -60,14 +61,21 @@ export function OutstandingRail({
         aria-controls={bodyId}
         onClick={() => setOpen((v) => !v)}
       >
+        {/* "Outstanding", not "Two signals": that is the rail's name in its
+            landmark and in its desktop head, and a panel that renames itself
+            between tiers reads as two different panels. "Two signals" stays
+            where it belongs \u2014 as the LEGEND's own heading, just below. */}
         <span className={styles.railToggleLabel}>
-          Two signals
+          Outstanding
           {marks.length > 0 ? (
             <span className={styles.railToggleCount}>{marks.length}</span>
           ) : null}
         </span>
-        <span className={styles.railToggleChevron} aria-hidden>
-          {open ? '\u2013' : '+'}
+        <span
+          className={`${styles.railToggleChevron}${open ? ` ${styles.chevronOpen}` : ''}`}
+          aria-hidden
+        >
+          <Chevron />
         </span>
       </button>
 

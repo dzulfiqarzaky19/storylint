@@ -29,7 +29,11 @@ const icons = readFileSync(
 
 describe("research delete button ships an inline SVG (TrashIcon)", () => {
   it("keeps both accessible-name carriers and renders the icon, not an emoji", () => {
-    expect(src).toMatch(/aria-label=\{`Delete thread "\$\{t\.title\}"`\}/);
+    // `thread.title`, not `t.title`: the rows moved into their own ThreadRow
+    // component when /research adopted the shared useInlineRename hook. The
+    // accessible NAME this locks is byte-unchanged — only the local binding
+    // it reads from was renamed.
+    expect(src).toMatch(/aria-label=\{`Delete thread "\$\{thread\.title\}"`\}/);
     expect(src).toMatch(/title="Delete thread"/);
     expect(src).toMatch(/<TrashIcon\s*\/>/);
   });

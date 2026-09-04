@@ -116,6 +116,7 @@ function CategoryGroup({
               {isRenamed ? (
                 <button
                   type="button"
+                  className={styles.groupReset}
                   onClick={() => onResetCategory(category.id)}
                   aria-label={`Reset ${title} category name`}
                 >

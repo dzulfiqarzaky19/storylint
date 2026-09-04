@@ -12,11 +12,11 @@
 .select {
   min-height: 22px;
   padding: 4px 7px;
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
@@ -28,11 +28,11 @@
 .unlink {
   min-height: 22px;
   padding: 4px 9px;
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 

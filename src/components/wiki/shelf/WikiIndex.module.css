@@ -7,7 +7,7 @@
 
 .groupChevron svg {
   display: block;
-  transition: transform 120ms ease;
+  transition: transform var(--dur-short) var(--ease-out);
 }
 
 .chevronOpen svg {
@@ -31,7 +31,7 @@
   padding: 4px 6px;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -49,7 +49,7 @@
 
 .groupTitle {
   font-size: var(--text-2);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   background: none;
@@ -66,7 +66,7 @@
 
 .groupTitleInput {
   font-size: var(--text-2);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-family: inherit;
@@ -80,27 +80,64 @@
 
 .groupCount {
   font-size: var(--text-1);
-  color: var(--faint);
+  color: var(--muted);
 }
 
+/* Hidden until the group head is hovered or something inside it takes focus —
+   the same reveal the write and research rails use, and for the same reason (a
+   long category list reads as calm running text).
+   It must be OPACITY, never `display: none`: display removes the buttons from
+   the tab order, so renaming or deleting a category was unreachable by keyboard
+   entirely. `pointer-events` is what keeps the invisible buttons from swallowing
+   clicks meant for the row behind them. */
 .groupTools {
   margin-left: auto;
-  display: none;
-  gap: 6px;
-}
-
-.groupHead:hover .groupTools {
   display: flex;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-short) var(--ease-out);
 }
 
+.groupHead:hover .groupTools,
+.groupHead:focus-within .groupTools {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* No hover on touch, so the tools could never be revealed by pointing — they go
+   permanently visible there. Without this the category rename/delete had no
+   touch path at all. */
+@media (hover: none) {
+  .groupTools {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .groupTools {
+    transition: none;
+  }
+}
+
+/* The same 40px height floor the write/research row actions carry. These used to
+   be `padding: 0` around a 13px glyph — a ~13px tap target in a rail whose
+   siblings guarantee 40px. */
 .groupTools button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 40px;
   font-family: var(--font-sans);
-  font-size: 10px;
+  font-size: var(--text-0);
   color: var(--muted);
   text-transform: none;
   letter-spacing: 0;
   background: none;
   border: none;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   padding: 0;
 }
@@ -141,9 +178,13 @@
 .groupIcon {
   display: inline-flex;
   align-items: center;
-  font-size: 13px;
+  justify-content: center;
+  font-size: var(--text-3);
   line-height: 1;
-  padding: 2px;
+}
+
+.groupIcon:hover {
+  color: var(--accent);
 }
 
 .groupDelete {
@@ -151,7 +192,6 @@
   line-height: 1;
   background: none;
   border: none;
-  padding: 0 2px;
   cursor: pointer;
   color: var(--muted);
 }
@@ -168,12 +208,16 @@
   flex-direction: column;
 }
 
+/* min-height is the app's 40px touch-target floor (TCK-HF4), the same one the
+   write and research rails enforce on their rows. The wiki rail sat at ~23px
+   until the three rails were reconciled. */
 .item {
   display: flex;
   align-items: baseline;
   gap: 7px;
-  padding: 5px 8px;
-  border-radius: 6px;
+  padding: 9px 8px;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   position: relative;
   background: none;
@@ -204,13 +248,13 @@
 
 .itemNumber {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--faint);
+  font-size: var(--text-0);
+  color: var(--muted);
   min-width: 22px;
 }
 
 .itemName {
-  font-size: 13px;
+  font-size: var(--text-3);
 }
 
 .itemActive .itemName {
@@ -219,15 +263,15 @@
 
 .itemBadge {
   margin-left: auto;
-  font-size: 10px;
-  color: var(--faint);
+  font-size: var(--text-0);
+  color: var(--muted);
   font-style: italic;
 }
 
 .itemCategory {
   margin-left: auto;
-  font-size: 10px;
-  color: var(--faint);
+  font-size: var(--text-0);
+  color: var(--muted);
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -243,8 +287,8 @@
 
 .noResults {
   padding: 12px 8px;
-  color: var(--faint);
-  font-size: 12px;
+  color: var(--muted);
+  font-size: var(--text-2);
   font-style: italic;
 }
 
@@ -265,8 +309,8 @@
   text-align: left;
   padding: 5px 8px;
   color: var(--accent);
-  font-size: 12px;
-  border-radius: 6px;
+  font-size: var(--text-2);
+  border-radius: var(--radius-sm);
   background: none;
   border: none;
   cursor: pointer;
@@ -282,9 +326,9 @@
   text-align: left;
   padding: 7px 8px;
   border: 1px dashed var(--rule);
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-2);
   background: none;
   cursor: pointer;
 }
@@ -307,7 +351,7 @@
   gap: 6px;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -317,14 +361,14 @@
   align-items: center;
   gap: 6px;
   padding: 5px 8px;
-  font-size: 12px;
+  font-size: var(--text-2);
   color: var(--muted);
 }
 
 .trashItem button {
   margin-left: auto;
   color: var(--accent);
-  font-size: 11px;
+  font-size: var(--text-1);
   background: none;
   border: none;
   cursor: pointer;
@@ -336,5 +380,5 @@
 
 .trashPurge {
   color: var(--danger);
-  font-size: 11px;
+  font-size: var(--text-1);
 }

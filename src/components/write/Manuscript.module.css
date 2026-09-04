@@ -40,16 +40,16 @@
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .title {
   font-family: var(--font-serif);
-  font-size: 34px;
+  font-size: var(--text-display);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.12;
@@ -58,12 +58,12 @@
   overflow-wrap: anywhere;
 }
 
-/* The chapter title is click-to-edit; 5px is a shape radius on the caret box,
-   so it stays literal against --radius. */
+/* The chapter title is click-to-edit; the caret box takes the small shape rung,
+   not the chrome --radius. */
 .title:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--accent);
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   padding: 0 3px;
   margin-left: -3px;
 }
@@ -93,10 +93,10 @@
 
 .saveState {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
   margin-top: var(--space-6);
   min-height: 1.4em;
 }
@@ -121,7 +121,7 @@
   border-bottom: 2px solid var(--danger);
   background: linear-gradient(var(--danger-soft), var(--danger-soft)) no-repeat;
   background-size: 100% 0;
-  transition: background-size 120ms ease;
+  transition: background-size var(--dur-short) var(--ease-out);
 }
 
 .editor :global(.write-underline-conflict):hover {
@@ -137,7 +137,7 @@
   border-bottom: 2px dotted var(--warning);
   background: linear-gradient(var(--warning-soft), var(--warning-soft)) no-repeat;
   background-size: 100% 0;
-  transition: background-size 120ms ease;
+  transition: background-size var(--dur-short) var(--ease-out);
 }
 
 .editor :global(.write-underline-unrecorded):hover {
@@ -153,30 +153,31 @@
 
 /* ---- Inline note (widget under the paragraph) --------------------------- */
 
-/* A card that LIFTS off the page, marked on its leading edge by the signal's own
-   colour, rather than a full-width band ruled off the top. 12px/7px are shape
-   radii on a card and its buttons, so they stay literal against --radius. */
+/* A card that LIFTS off the page, ringed in the signal's own colour, rather than
+   a full-width band ruled off the top. The ring is a full hairline, not a thick
+   leading stripe: an asymmetric coloured edge on a card is the side-stripe tell,
+   and the signal reads just as clearly all the way round. */
 .note {
   margin: 14px 0 var(--space-5);
   padding: 15px 16px;
   background: var(--panel);
   border: 1px solid var(--rule);
-  border-radius: 12px;
-  box-shadow: 0 8px 26px rgba(28, 26, 20, 0.09);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   font-family: var(--font-sans);
 }
 
 .noteConflict {
-  border-left: 3px solid var(--danger);
+  border-color: var(--danger);
 }
 
 .noteUnrecorded {
-  border-left: 3px solid var(--warning);
+  border-color: var(--warning);
 }
 
 .noteKind {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-0);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -211,7 +212,7 @@
   cursor: pointer;
   background: none;
   border: 1px solid var(--rule);
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   color: var(--ink);
   font-family: inherit;
 }
@@ -324,7 +325,7 @@
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: var(--text-2);
-  color: var(--faint);
+  color: var(--muted);
 }
 
 /* Collapsible toggle: hidden on desktop, shown in the stacked layout. */
@@ -392,21 +393,20 @@
 }
 
 /* Each mark is a CARD, not a ruled row — the rail is a stack of things to act
-   on, and a card carries the click affordance a hairline rule does not. 9px is
-   a shape radius on a card, so it stays literal against --radius. */
+   on, and a card carries the click affordance a hairline rule does not. */
 .railRow {
   padding: 10px 11px;
   cursor: pointer;
   background: var(--ground);
   border: 1px solid var(--rule);
-  border-radius: 9px;
+  border-radius: var(--radius-md);
   min-height: 40px;
   width: 100%;
   text-align: left;
   font-family: inherit;
   color: inherit;
   display: block;
-  transition: border-color 120ms ease;
+  transition: border-color var(--dur-short) var(--ease-out);
 }
 
 .railRow:hover {
@@ -416,19 +416,27 @@
 .railRowOpen {
   border-color: var(--accent);
   background: var(--surface);
-  box-shadow: 0 4px 14px rgba(28, 26, 20, 0.07);
+  box-shadow: var(--shadow-lift);
 }
 
-/* A phrase the manuscript leans on (recurs, or the AI judged it pivotal). An
-   inset leading accent marks it without shifting the card's own border. */
-.railRowImportant {
-  box-shadow: inset 3px 0 0 var(--accent);
+/* A phrase the manuscript leans on (recurs, or the AI judged it pivotal). Marked
+   by a small accent square set against the kind label, NOT by a thick leading
+   edge on the card — an asymmetric coloured stripe is the side-stripe tell, and
+   it also collided with .railRowOpen's own border treatment. */
+.railRowImportant .railKind::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  vertical-align: baseline;
+  background: var(--accent);
 }
 
 .railKind {
   display: block;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-0);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -464,7 +472,7 @@
 .railEmpty {
   font-size: var(--text-2);
   line-height: 1.6;
-  color: var(--faint);
+  color: var(--muted);
   padding: 14px 6px;
 }
 
@@ -588,7 +596,7 @@
     align-items: center;
     gap: 10px;
     font-size: var(--text-3);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -600,19 +608,37 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    border-radius: 11px;
+    border-radius: var(--radius-pill);
     background: var(--accent);
     color: var(--on-accent);
     font-size: var(--text-2);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0;
   }
 
+  /* The shared Chevron SVG at a 1em box, rotated open — the same glyph and the
+     same gesture the left IndexRail uses. It used to be a literal "+" / en-dash
+     pair, which matched neither the icon set nor the other rail. */
   .railToggleChevron {
+    display: inline-flex;
     font-size: var(--text-7);
-    font-weight: 700;
     line-height: 1;
     color: var(--muted);
+  }
+
+  .railToggleChevron svg {
+    display: block;
+    transition: transform var(--dur-short) var(--ease-out);
+  }
+
+  .chevronOpen svg {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .railToggleChevron svg {
+      transition: none;
+    }
   }
 
   .railBody {
@@ -641,7 +667,6 @@
 @media (max-width: 560px) {
   .manuscriptScroll { padding: 22px var(--gutter) 28px; }
   .manuscript { max-width: 100%; }
-  .title { font-size: 32px; }
 
   .editor :global(.ProseMirror) { font-size: var(--text-8); }
 

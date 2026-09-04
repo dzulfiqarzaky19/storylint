@@ -16,7 +16,7 @@
 
 .title {
   font-size: var(--text-3);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -204,7 +204,7 @@
 
 .groupCount {
   font-size: var(--text-1);
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .groupList {
@@ -232,11 +232,11 @@
 /* Role section: appears after an entry is picked. */
 .pickedBanner {
   display: flex; align-items: center; gap: 8px;
-  padding: 8px 10px; border: 1px solid var(--rule-row); border-radius: 6px;
+  padding: 8px 10px; border: 1px solid var(--rule-row); border-radius: var(--radius-sm);
   background: var(--surface); font-size: var(--text-3); font-weight: 700;
 }
 .pickedName { color: var(--ink); }
-.pickedKind { font-size: var(--text-2); color: var(--faint); }
+.pickedKind { font-size: var(--text-2); color: var(--muted); }
 
 .roleSection {
   display: flex;
@@ -263,7 +263,7 @@
   font-weight: 600;
   color: var(--accent);
   border: 1px solid var(--faint);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface);
   cursor: pointer;
 }
@@ -281,12 +281,12 @@
 
 .suggestedTies {
   margin-top: 10px; padding: 10px;
-  border: 1px solid var(--rule-row); border-radius: 6px;
+  border: 1px solid var(--rule-row); border-radius: var(--radius-sm);
   background: var(--surface);
 }
 .suggestedTitle {
   font-size: var(--text-3); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.06em; color: var(--faint); margin-bottom: 6px;
+  letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px;
 }
 .suggestedList { display: flex; flex-direction: column; gap: 4px; }
 .suggestedRow {
@@ -298,13 +298,13 @@
 .suggestedActions { display: flex; gap: 4px; }
 .suggestedAccept, .suggestedDismiss {
   padding: 2px 8px; font-size: var(--text-1); font-weight: 600;
-  border: 1px solid var(--faint); border-radius: 4px; cursor: pointer;
+  border: 1px solid var(--faint); border-radius: var(--radius-sm); cursor: pointer;
 }
 .suggestedAccept { color: var(--accent); border-color: var(--accent); }
 .suggestedAccept:hover { background: var(--drop); }
 .suggestedDismiss { color: var(--muted-2); }
 .suggestedDismiss:hover { color: var(--accent-deep); }
-.suggestedHint { font-size: var(--text-2); color: var(--faint); margin-top: 4px; }
+.suggestedHint { font-size: var(--text-2); color: var(--muted); margin-top: 4px; }
 
 .addCancel {
   align-self: flex-start;

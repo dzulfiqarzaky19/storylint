@@ -10,7 +10,7 @@
   border-radius: var(--radius);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  transition: background 0.12s ease, box-shadow 0.12s ease;
+  transition: background var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
 }
 .static:hover {
   background: var(--hover);

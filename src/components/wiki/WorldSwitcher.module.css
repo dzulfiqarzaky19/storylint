@@ -56,7 +56,7 @@
 
 .crumbWorld {
   font-size: var(--text-5);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
 }
 
@@ -92,7 +92,7 @@
 .groupHead {
   padding: var(--space-2) 14px var(--space-1);
   font-size: var(--text-1);
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
@@ -127,7 +127,7 @@
 }
 
 .itemActive {
-  font-weight: 800;
+  font-weight: 700;
   background: var(--hover);
 }
 
@@ -191,7 +191,7 @@
    <Modal>; only the panel-content styles below are dialog-specific. */
 .promptTitle {
   font-size: var(--text-7);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
 }
 

@@ -9,7 +9,7 @@
 
 .headline {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
   max-width: 30ch;
 }
@@ -31,7 +31,7 @@
 
 .source {
   font-size: var(--text-1);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-deep);
@@ -107,7 +107,7 @@
 
   .toggleLabel {
     font-size: var(--text-6);
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.15;
   }
 

@@ -22,8 +22,8 @@
   width: 100%;
   min-width: 0;
   padding: 4px 6px 4px 4px;
-  border-radius: 9px;
-  transition: background 120ms ease;
+  border-radius: var(--radius-md);
+  transition: background var(--dur-short) var(--ease-out);
 }
 
 .itemRow:hover {
@@ -41,7 +41,7 @@
   padding: 6px;
   background: none;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   text-align: left;
   color: var(--ink);
@@ -57,13 +57,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow-wrap: anywhere;
 }
 
 .itemNote {
   display: block;
   font-size: var(--text-1);
-  color: var(--faint);
+  color: var(--muted);
   margin-top: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -82,7 +81,7 @@
   min-width: 0;
   padding: 6px;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: var(--surface);
   color: inherit;
   font-family: var(--font-serif);
@@ -101,18 +100,23 @@
    focus, so the list reads as calm running text; always shown where there is no
    hover (touch). They are narrower than the 40px floor but taller than it — the
    HF4 gate measures HEIGHT, and a 40px-wide pair would eat a sixth of the rail. */
+/* pointer-events is not decoration here: at opacity 0 the delete button still
+   took clicks across its whole 30x40 box, so a click near the row's right edge
+   could open the delete dialog with nothing visible under the cursor. */
 .rowActions {
   display: flex;
   align-items: center;
   gap: 2px;
   flex-shrink: 0;
   opacity: 0;
-  transition: opacity 120ms ease;
+  pointer-events: none;
+  transition: opacity var(--dur-short) var(--ease-out);
 }
 
 .itemRow:hover .rowActions,
 .itemRow:focus-within .rowActions {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .rowAction {
@@ -124,7 +128,7 @@
   padding: 0;
   background: none;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: var(--text-5);
   line-height: 1;
@@ -143,6 +147,7 @@
 @media (hover: none) {
   .rowActions {
     opacity: 1;
+    pointer-events: auto;
   }
 }
 
@@ -154,14 +159,14 @@
   min-height: 40px;
   background: none;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   text-align: left;
   font-family: var(--font-mono);
   font-size: var(--text-2);
   letter-spacing: 0.04em;
   color: var(--accent);
-  transition: background 120ms ease;
+  transition: background var(--dur-short) var(--ease-out);
 }
 
 .add:hover {

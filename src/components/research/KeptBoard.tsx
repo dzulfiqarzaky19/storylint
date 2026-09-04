@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import type { DragEvent } from "react";
 import KeptItem from "./KeptItem";
+import { Chevron } from "@/components/shell/RowIcons";
 import styles from "./ResearchScreen.module.css";
 
 export interface KeptEntry {
@@ -130,8 +131,13 @@ export default function KeptBoard({
             <span className={styles.boardToggleCount}>{items.length}</span>
           ) : null}
         </span>
-        <span className={styles.boardToggleChevron} aria-hidden>
-          {open ? "\u2013" : "+"}
+        {/* The shared Chevron, not a literal "+" / en-dash pair: the app has one
+            disclosure glyph and both rails now draw it. */}
+        <span
+          className={`${styles.boardToggleChevron}${open ? ` ${styles.chevronOpen}` : ""}`}
+          aria-hidden
+        >
+          <Chevron />
         </span>
       </button>
     </aside>

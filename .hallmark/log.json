@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-09-05",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "light / high-contrast-serif / warm",
+    "vibe": "cockpit paper, warm cream, amber accent",
+    "enrichment": "none",
+    "brief": "storylint app-wide audit fixes + system lock (design.md)"
+  }
+]

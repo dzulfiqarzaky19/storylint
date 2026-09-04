@@ -17,6 +17,10 @@
   --slate: #3f5a6b;
   --muted: #6f6b60;
   --muted-2: #a49e90;
+  /* --faint is a HAIRLINE tone, never a text colour: at 2.53:1 on --panel it
+     fails the WCAG AA 4.5:1 floor, and every quiet-meta line that used to read
+     in it (kickers, counts, rail notes) now reads in --muted at 5.09:1. Keep it
+     for borders and dividers that want to sit under --rule. */
   --faint: #a49e90;
   --rule: #ddd6c6;
   --line2: #e8e2d4;
@@ -47,6 +51,12 @@
   --on-ink-muted: #bcb8ad;
   /* Modal backdrop scrim (dims the page behind a confirm dialog). */
   --scrim: rgba(28, 26, 20, 0.5);
+
+  /* Elevation. Two rungs only, both tinted with the ink hue rather than neutral
+     black so a lifted surface still reads as paper. A raw rgba() at a call site
+     is the same violation as a raw hex — it belongs here. */
+  --shadow-card: 0 8px 26px rgba(28, 26, 20, 0.09);
+  --shadow-lift: 0 4px 14px rgba(28, 26, 20, 0.07);
 
   /* Plot lane hues, cycled by lane.colorIndex. Six low-chroma arc colors kept
      inside the palette so the plot grid never turns into a rainbow. Tokenized so
@@ -83,6 +93,31 @@
      stay literal at their call site and do not track this token. */
   --radius: 0;
 
+  /* Shape radii. The "0 is the house design" rule above governs CHROME (the
+     panels, rails and page furniture that carry the paper ground). Tiles inside
+     that chrome — rows, cards, fields, icon buttons, pills — are shapes, and
+     they round. They used to round to nine different literals; these four rungs
+     are the whole vocabulary now, and a literal radius is a bug.
+       sm   : icon buttons, key caps, caret boxes, chips inside a row
+       md   : list rows, inputs, buttons, kept/mark cards
+       lg   : a card that LIFTS off the page (the inline note)
+       pill : stadium shapes — filter chips, count badges */
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* Motion. Durations and easings are tokens for the same reason colours are:
+     the bare `ease` keyword is the browser default and reads as the generic
+     transition every generated UI ships. --ease-out is the house curve (fast
+     departure, soft arrival); --ease-in-out is for loops that return to rest.
+     Focus rings are NEVER transitioned — they appear instantly. */
+  --dur-short: 120ms;
+  --dur-base: 200ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
   /* Type scale. A theme restates reading density in one place, the same way
      --space-* restates spatial rhythm. Rungs 1-7 are the original body cluster
      (11-16px) plus the 20px subhead the app already adopted; 8-12 fill the
@@ -94,6 +129,10 @@
      28-32px) and optical half-steps (12.5px) are art direction, not a reading
      step, so they stay literal at their call site, exactly as an 11px pill
      radius stays literal against --radius. */
+  /* Rung 0 is the floor. Mono kickers and counts used to strand at literal 9px
+     and 10px; 9px uppercase at 0.14em tracking was under-set for a reading UI,
+     so the two collapsed into one 10px rung rather than being tokenized apart. */
+  --text-0: 10px;
   --text-1: 11px;
   --text-2: 12px;
   --text-3: 13px;
@@ -106,6 +145,13 @@
   --text-10: 19px;
   --text-11: 22px;
   --text-12: 24px;
+  /* The screen H1 — a chapter's title on /write, a thread's question on
+     /research. It is one rung because it is one ROLE: the two used to sit at
+     34px and 22px, and the phone tier moved them in opposite directions. The
+     phone step is restated once at the bottom of this file, the way --gutter is,
+     so no surface carries its own display breakpoint. Band headings inside a
+     screen (26-40px) are art direction and stay literal at their call site. */
+  --text-display: 34px;
 
   /* Type roles. Faces are wired via next/font in layout.tsx and exposed as the
      --font-* CSS vars below; components read the ROLE (serif/sans/mono), never a
@@ -237,5 +283,9 @@ body {
 @media (max-width: 560px) {
   :root {
     --gutter: 18px;
+    /* The screen H1 steps DOWN on a phone, on every surface. Restating it here
+       rather than per-module is what keeps /write and /research from drifting
+       apart again. */
+    --text-display: 32px;
   }
 }

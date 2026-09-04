@@ -37,8 +37,16 @@ export interface UseInlineRename {
   setDraft: (value: string) => void;
   /** Wire directly to the input's onKeyDown. */
   onKeyDown: (e: { key: string; preventDefault: () => void }) => void;
-  /** Wire directly to the input's onBlur. */
+  /** Wire directly to the input's onBlur — this COMMITS, matching the sites that
+   *  treat a click-away as an implicit confirm. */
   onBlur: () => void;
+  /**
+   * Abandon the edit without committing. Same thing Escape does, exposed so a
+   * caller can choose cancel-on-blur instead: /research treats a click-away as
+   * "I changed my mind", so a half-typed thread name is never written. Wire it to
+   * onBlur INSTEAD of `onBlur` above — never both.
+   */
+  cancel: () => void;
 }
 
 /**
@@ -82,5 +90,6 @@ export function useInlineRename(
       }
     },
     onBlur: commit,
+    cancel,
   };
 }

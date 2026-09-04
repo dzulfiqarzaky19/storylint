@@ -63,5 +63,5 @@
 .digest {
   margin-top: 1.25rem;
   font-size: 0.75rem;
-  color: var(--faint);
+  color: var(--muted);
 }

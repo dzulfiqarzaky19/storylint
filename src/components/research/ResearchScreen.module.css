@@ -38,7 +38,7 @@
 
 .question {
   font-family: var(--font-serif);
-  font-size: var(--text-11);
+  font-size: var(--text-display);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0;
@@ -48,10 +48,10 @@
 
 .questionMeta {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
   margin-top: 6px;
 }
 
@@ -94,7 +94,7 @@
 
 .who {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -106,7 +106,7 @@
 }
 
 .whoYou {
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .turnText {
@@ -139,7 +139,7 @@
   border-radius: 50%;
   background: var(--accent);
   opacity: 0.35;
-  animation: thinkingPulse 1.2s ease-in-out infinite;
+  animation: thinkingPulse 1.2s var(--ease-in-out) infinite;
 }
 
 .thinking span:nth-child(2) { animation-delay: 0.2s; }
@@ -151,7 +151,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .thinking span { animation: thinkingFade 1.2s ease-in-out infinite; transform: none; }
+  .thinking span { animation: thinkingFade 1.2s var(--ease-in-out) infinite; transform: none; }
   @keyframes thinkingFade {
     0%, 100% { opacity: 0.3; }
     50% { opacity: 0.9; }
@@ -174,7 +174,7 @@
   flex-direction: column;
   border: 1px solid var(--line2);
   background: var(--panel);
-  border-radius: 11px;
+  border-radius: var(--radius-lg);
   padding: 13px 14px;
   cursor: grab;
 }
@@ -194,11 +194,11 @@
    information, so it must not out-shout what the proposition actually says. */
 .cardKicker {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-0);
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .cardTitle {
@@ -231,7 +231,7 @@
   font-weight: 400;
   padding: 6px 11px;
   border: 1px solid var(--rule);
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink);
   cursor: pointer;
@@ -259,7 +259,7 @@
   font-weight: 600;
   padding: 6px 12px;
   border: 1px solid var(--slate);
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: var(--slate);
   color: var(--on-accent);
   cursor: pointer;
@@ -274,7 +274,7 @@
   border-color: transparent;
   padding: 6px 0;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   letter-spacing: 0.06em;
   color: var(--accent-deep);
   cursor: default;
@@ -398,7 +398,7 @@
   padding: 9px 12px;
   background: var(--danger-soft);
   border: 1px solid var(--rule);
-  border-radius: 9px;
+  border-radius: var(--radius-md);
   color: var(--danger);
   font-size: var(--text-3);
 }
@@ -416,14 +416,14 @@
   background: transparent;
   color: var(--danger);
   border: 1px solid var(--danger);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
 /* Shown instead of the ask box when the AI gateway is not configured. */
 .composerPlaceholder {
   font-size: var(--text-4);
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .chips {
@@ -451,12 +451,12 @@
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: 9px;
+  border-radius: var(--radius-md);
   padding: 11px 13px;
   outline: none;
 }
 .aiInput::placeholder {
-  color: var(--faint);
+  color: var(--muted);
   font-weight: 400;
 }
 .aiInput:focus {
@@ -477,7 +477,7 @@
   padding: 0 18px;
   min-height: 40px;
   border: none;
-  border-radius: 9px;
+  border-radius: var(--radius-md);
   background: var(--accent);
   color: var(--on-accent);
   cursor: pointer;
@@ -502,7 +502,7 @@
   font-weight: 400;
   padding: 6px 13px;
   border: 1px solid var(--rule);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   background: var(--ground);
   color: var(--muted);
   cursor: pointer;
@@ -543,8 +543,12 @@
   padding: 10px 12px 16px;
 }
 
+/* Drag-over state. A dashed ring reads as "drop here" the way a leading stripe
+   never did — and the stripe was the same 3px inset the mark cards used for an
+   unrelated meaning, so the two signals collided. */
 .boardActive {
-  box-shadow: inset 3px 0 0 var(--accent);
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
   background: var(--drop);
 }
 
@@ -571,24 +575,24 @@
 .boardCount {
   font-family: var(--font-mono);
   font-size: var(--text-2);
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .boardEmpty {
   font-size: var(--text-2);
   line-height: 1.5;
-  color: var(--faint);
+  color: var(--muted);
   padding: 14px 6px;
 }
 
 .keptItem {
   border: 1px solid var(--rule);
   background: var(--ground);
-  border-radius: 9px;
+  border-radius: var(--radius-md);
   padding: 10px 11px;
   margin-top: 8px;
   cursor: pointer;
-  transition: border-color 120ms ease;
+  transition: border-color var(--dur-short) var(--ease-out);
 }
 
 .keptItem:hover {
@@ -608,11 +612,11 @@ button.keptItem {
 
 .keptKind {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-0);
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
 }
 
 .keptTitle {
@@ -627,19 +631,19 @@ button.keptItem {
    in the world, so each row names its origin. */
 .keptFrom {
   font-size: var(--text-1);
-  color: var(--faint);
+  color: var(--muted);
   line-height: 1.4;
 }
 
 .keptState {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-0);
   letter-spacing: 0.06em;
   margin-top: 6px;
 }
 
 .keptStateBoard {
-  color: var(--faint);
+  color: var(--muted);
 }
 
 /* Kept filter tabs (Wiki / Plot / Write). Wiki is the populated surface; the
@@ -655,14 +659,14 @@ button.keptItem {
   appearance: none;
   background: none;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   padding: 6px 10px;
   font: inherit;
   font-family: var(--font-mono);
   font-size: var(--text-1);
   font-weight: 400;
   letter-spacing: 0.06em;
-  color: var(--faint);
+  color: var(--muted);
   cursor: pointer;
 }
 
@@ -739,7 +743,7 @@ button.keptItem {
     align-items: center;
     gap: 10px;
     font-size: var(--text-3);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -751,19 +755,36 @@ button.keptItem {
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    border-radius: 11px;
+    border-radius: var(--radius-pill);
     background: var(--accent);
     color: var(--on-accent);
     font-size: var(--text-2);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0;
   }
 
+  /* The shared Chevron SVG at a 1em box, rotated open — one disclosure glyph
+     across both rails and the left index. */
   .boardToggleChevron {
+    display: inline-flex;
     font-size: var(--text-7);
-    font-weight: 700;
     line-height: 1;
     color: var(--muted);
+  }
+
+  .boardToggleChevron svg {
+    display: block;
+    transition: transform var(--dur-short) var(--ease-out);
+  }
+
+  .chevronOpen svg {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .boardToggleChevron svg {
+      transition: none;
+    }
   }
 
   .boardBody {
@@ -791,8 +812,12 @@ button.keptItem {
      single-column (parity with every other surface), so the 130px .who column
      stops crowding .turnText on mid-range widths (561-1200px). The phone tier
      inherits this and only adds its own font-size bump. */
+  /* .turnRow is a GRID (see its base rule), so the `flex-direction: column`
+     this used to carry was inert and the 120px speaker column survived at every
+     width — the exact crowding the comment above describes. Collapsing the
+     template is what actually stacks it. */
   .turnRow {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: var(--space-1);
   }
 
@@ -805,11 +830,18 @@ button.keptItem {
     font-family: var(--font-serif);
     max-width: none;
   }
+
+  /* The 136px card indent aligns cards under the turn TEXT column. With the
+     speaker column collapsed above there is no column to align to, and the
+     indent only pushed the cards off the right edge. */
+  .cards {
+    margin-left: 0;
+  }
 }
 
 /* ---- Phone tier (<=560px) ------------------------------------------------ */
 @media (max-width: 560px) {
-  .question { font-size: 30px; max-width: none; }
+  .question { max-width: none; }
 
   .turnText { font-size: var(--text-8); }
 

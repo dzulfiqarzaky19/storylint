@@ -56,6 +56,31 @@ export function PencilIcon({ className }: { className?: string }) {
   );
 }
 
+/** Filter/search. Replaced a U+1F50E magnifier EMOJI in the IndexRail's filter
+ *  field — the same reason the trash glyph below stopped being one: an emoji is
+ *  painted by the platform, so it can neither take the field's --muted token nor
+ *  match the stroke weight of the chevron sitting a few pixels away. */
+export function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      width="1em"
+      height="1em"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="7" cy="7" r="4.25" />
+      <path d="M10.2 10.2 L13.5 13.5" />
+    </svg>
+  );
+}
+
 // TCK-HF2W-A2: this replaced a U+1F5D1 trash EMOJI. An emoji renders in the
 // platform's own colour and shape, so it could neither inherit the row's colour
 // token nor stay crisp at the sizes these buttons use.

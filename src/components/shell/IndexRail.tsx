@@ -8,8 +8,38 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Chevron } from "./RowIcons";
+import { Chevron, SearchIcon } from "./RowIcons";
 import styles from "./IndexRail.module.css";
+
+/** The width at which the rail stops being a standing column and folds behind a
+ *  disclosure. Mirrors the 1200px breakpoint in IndexRail.module.css — the two
+ *  must agree, because above it the head is not a control at all. */
+const STACKED = "(max-width: 1200px)";
+
+/**
+ * True while the rail is in its stacked (folding) tier.
+ *
+ * The head can only be a BUTTON on that tier: above 1200px the panel is always
+ * open, so a button there would be a focusable control announcing an expanded
+ * state that never changes — a keyboard user tabs onto it, presses it, and
+ * nothing happens. Starts false so the server renders the desktop (non-control)
+ * head and hydration has nothing to reconcile.
+ */
+function useStacked(): boolean {
+  const [stacked, setStacked] = useState(false);
+  useEffect(() => {
+    // Guarded: matchMedia is absent in the component-test DOM (and in any
+    // non-browser renderer). Without it the rail simply stays in its desktop
+    // shape, which is the safe default — a static head, never a dead control.
+    if (typeof window.matchMedia !== "function") return;
+    const mq = window.matchMedia(STACKED);
+    const sync = () => setStacked(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return stacked;
+}
 
 /** sessionStorage key for one rail's scroll offset, namespaced by its landmark. */
 function scrollKey(name: string): string {
@@ -92,6 +122,7 @@ export default function IndexRail({
   children,
 }: IndexRailProps) {
   const [open, setOpen] = useState(false);
+  const stacked = useStacked();
   const panelId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -160,39 +191,57 @@ export default function IndexRail({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [filter]);
 
+  // The head's CONTENTS are the same either way; only the element around them
+  // changes with the tier, so they are built once. `action` is deliberately NOT
+  // in here: it is a caller-supplied control, and on the stacked tier this markup
+  // is wrapped in a <button>, which may not contain another one.
+  const head = (
+    <>
+      <span className={styles.railHead}>
+        <span className={styles.railTitle}>{title}</span>
+        {count !== undefined && (
+          <span className={styles.railCount}>{`· ${count}`}</span>
+        )}
+      </span>
+      <span
+        className={`${styles.railToggleChevron}${open ? ` ${styles.chevronOpen}` : ""}`}
+        aria-hidden="true"
+      >
+        <Chevron />
+      </span>
+    </>
+  );
+
   return (
     <nav
       className={`${styles.index} ${open ? styles.indexOpen : ""}`}
       aria-label={ariaLabel ?? title}
     >
-      <button
-        type="button"
-        className={styles.railToggle}
-        aria-label={toggleLabel}
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <span className={styles.railHead}>
-          <span className={styles.railTitle}>{title}</span>
-          {count !== undefined && (
-            <span className={styles.railCount}>{`· ${count}`}</span>
-          )}
-        </span>
+      <div className={styles.railHeadRow}>
+        {stacked ? (
+          <button
+            type="button"
+            className={styles.railToggle}
+            aria-label={toggleLabel}
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {head}
+          </button>
+        ) : (
+          // Above the fold breakpoint the head is a static label, not a control —
+          // there is nothing to expand, so there is nothing to put in the tab order.
+          <div className={styles.railToggle}>{head}</div>
+        )}
         {action ? <span className={styles.railAction}>{action}</span> : null}
-        <span
-          className={`${styles.railToggleChevron}${open ? ` ${styles.chevronOpen}` : ""}`}
-          aria-hidden="true"
-        >
-          <Chevron />
-        </span>
-      </button>
+      </div>
 
       <div id={panelId} className={styles.panel}>
         {filter ? (
           <div className={styles.railSearch}>
             <span className={styles.searchIcon} aria-hidden="true">
-              {"\u{1F50E}"}
+              <SearchIcon />
             </span>
             <input
               ref={inputRef}

@@ -42,12 +42,22 @@ function numberWord(n: number): string {
 }
 
 /**
- * A chapter's title, rendered click-to-edit. It lives INSIDE the row button, so
- * every pointer/key event that drives editing must stopPropagation — otherwise
- * the row's select handler fires and the caret is stolen. Enter commits and
- * blurs; Escape reverts to the saved title. Blur commits too (a click-away is an
- * implicit confirm). Committing an empty/whitespace title is refused (reverts),
- * so a chapter never loses its name.
+ * A chapter's title, rendered click-to-edit.
+ *
+ * It is a SIBLING of the row's select button, never a child of it. A
+ * contenteditable element is interactive content, and `<button>` may not contain
+ * interactive content: nested, assistive tech announced the button and swallowed
+ * the editable region entirely, and the row needed four stopPropagation handlers
+ * to keep the caret from being stolen. The select button is now a stretched
+ * overlay behind the row (see `.itemSelect`), the title sits above it with its
+ * own pointer-events, and the propagation fight is gone.
+ *
+ * Enter commits and blurs; Escape reverts to the saved title. Blur commits too (a
+ * click-away is an implicit confirm) — which is the opposite of /research, where
+ * a click-away cancels. The two differ on purpose: this title mirrors the
+ * manuscript's own H1, which is a live editing surface, not a form field.
+ * Committing an empty/whitespace title is refused (reverts), so a chapter never
+ * loses its name.
  */
 function EditableTitle({
   number,
@@ -118,10 +128,7 @@ function EditableTitle({
       contentEditable
       suppressContentEditableWarning
       spellCheck={false}
-      onMouseDown={(e) => e.stopPropagation()}
-      onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => {
-        e.stopPropagation();
         if (e.key === "Enter") {
           e.preventDefault();
           ref.current?.blur();
@@ -181,42 +188,48 @@ export default function WriteIndex({
                     : styles.itemRow
                 }
               >
+                {/* The select target is a stretched, EMPTY overlay covering the
+                    whole row. Empty because the row's content includes an
+                    editable title, and a <button> may not contain interactive
+                    content — so the content sits above the button rather than
+                    inside it. Clicking anywhere in the row still selects; only
+                    the title itself takes its own clicks (see .itemName). */}
                 <button
                   type="button"
-                  className={styles.item}
+                  className={styles.itemSelect}
                   aria-current={isActive ? "true" : undefined}
+                  aria-label={`Chapter ${c.number}: ${c.title}`}
                   onClick={() => onSelect(c.number)}
-                >
-                  <span className={styles.itemBody}>
-                    <span className={styles.itemNote}>
-                      Chapter {numberWord(c.number)}
-                    </span>
-                    {editable && onRename ? (
-                      <EditableTitle
-                        number={c.number}
-                        title={c.title}
-                        active={isActive}
-                        claimFocus={editingNumber === c.number}
-                        onRename={onRename}
-                        onDone={() => setEditingNumber(null)}
-                      />
-                    ) : (
-                      <span className={styles.itemName}>{c.title}</span>
-                    )}
+                />
+                <span className={styles.itemBody}>
+                  <span className={styles.itemNote}>
+                    Chapter {numberWord(c.number)}
                   </span>
-                  {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
-                    <span
-                      className={`${styles.dot} ${
-                        c.severity === "red" ? styles.dotRed : styles.dotYellow
-                      }`}
-                      aria-label={
-                        c.severity === "red"
-                          ? "Has a contradiction"
-                          : "Has an unrecorded detail"
-                      }
+                  {editable && onRename ? (
+                    <EditableTitle
+                      number={c.number}
+                      title={c.title}
+                      active={isActive}
+                      claimFocus={editingNumber === c.number}
+                      onRename={onRename}
+                      onDone={() => setEditingNumber(null)}
                     />
-                  ) : null}
-                </button>
+                  ) : (
+                    <span className={styles.itemName}>{c.title}</span>
+                  )}
+                </span>
+                {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
+                  <span
+                    className={`${styles.dot} ${
+                      c.severity === "red" ? styles.dotRed : styles.dotYellow
+                    }`}
+                    aria-label={
+                      c.severity === "red"
+                        ? "Has a contradiction"
+                        : "Has an unrecorded detail"
+                    }
+                  />
+                ) : null}
 
                 {onRename || onRequestDelete ? (
                   <div className={styles.rowActions}>

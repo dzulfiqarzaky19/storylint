@@ -17,14 +17,19 @@
    every chapter title ("Good Morning ...") for two buttons that are invisible
    most of the time. It inherits the row's own fill, so when it does appear it
    masks the tail of the title cleanly instead of printing over it. */
+/* The row itself now carries the box (padding, gap, the 40px floor) that used to
+   live on the select button: the button became a stretched overlay with no
+   content of its own, so it can no longer size the row. */
 .itemRow {
   position: relative;
   display: flex;
   align-items: center;
+  gap: 10px;
   width: 100%;
-  padding: 4px 6px 4px 4px;
-  border-radius: 9px;
-  transition: background 120ms ease;
+  padding: 11px 6px 11px 10px;
+  min-height: 40px;
+  border-radius: var(--radius-md);
+  transition: background var(--dur-short) var(--ease-out);
   background-color: var(--panel);
 }
 
@@ -36,48 +41,55 @@
   background: var(--accent-soft);
 }
 
-.item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
-  padding: 7px 6px;
-  /* TCK-HF4 desktop touch-target floor. */
-  min-height: 40px;
+/* The chapter-select target: a stretched overlay filling the row, sitting BEHIND
+   the row's content. It is empty on purpose — the row's title is contenteditable,
+   which is interactive content, and a <button> may not contain any. Everything
+   above it is pointer-transparent except the title, so a click lands here from
+   anywhere in the row and the title still takes its own caret. */
+.itemSelect {
+  position: absolute;
+  inset: 0;
   background: none;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  text-align: left;
-  color: var(--ink);
+  /* TCK-HF4 desktop touch-target floor — the row guarantees the height, this
+     just inherits it by filling the row. */
 }
 
 /* The eyebrow and the title are their own LINES — "chapter eight" is filing
    information about the row, not part of the chapter's name, so it never shares
    a line with it however short the title is. */
+/* Sits above the stretched select button but lets clicks fall THROUGH to it, so
+   the eyebrow and the row's empty space still select the chapter. Only .itemName
+   takes its clicks back (below) — that is what makes the title editable in place
+   without stealing the row's own affordance. */
 .itemBody {
+  position: relative;
   flex: 1;
   min-width: 0;
+  pointer-events: none;
 }
 
 .itemNote {
   display: block;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-0);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
 }
 
-.itemActive .itemNote,
 .itemRowActive .itemNote {
   color: var(--muted);
 }
 
+/* Takes back the pointer-events .itemBody gives up: clicking the title places a
+   caret in it, clicking anywhere else in the row selects the chapter. */
 .itemName {
   display: block;
   max-width: 100%;
+  pointer-events: auto;
   font-family: var(--font-serif);
   font-size: var(--text-5);
   font-weight: 600;
@@ -92,7 +104,7 @@
 .itemName[contenteditable]:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--accent);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   /* An editing title must show the WHOLE name, ellipsis be damned — you cannot
      edit text you cannot see. */
   overflow: visible;
@@ -136,10 +148,10 @@
   padding-left: var(--space-2);
   /* Takes the row's own fill so the revealed buttons mask the title's tail. */
   background-color: inherit;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 120ms ease;
+  transition: opacity var(--dur-short) var(--ease-out);
 }
 
 .itemRow:hover .rowActions,
@@ -157,7 +169,7 @@
   padding: 0;
   background: none;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: var(--text-5);
   line-height: 1;
@@ -177,7 +189,7 @@
    rather than absent — the affordance stays where the writer expects it and
    explains itself by being unavailable. */
 .rowAction:disabled {
-  color: var(--faint);
+  color: var(--muted);
   cursor: default;
 }
 
@@ -201,14 +213,14 @@
   min-height: 40px;
   background: none;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   text-align: left;
   font-family: var(--font-mono);
   font-size: var(--text-2);
   letter-spacing: 0.04em;
   color: var(--accent);
-  transition: background 120ms ease;
+  transition: background var(--dur-short) var(--ease-out);
 }
 
 .add:hover {
