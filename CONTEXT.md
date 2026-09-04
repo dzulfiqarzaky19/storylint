@@ -30,17 +30,40 @@ agent could plausibly misread it. Discipline that maintains this file lives in
   the *feature*; a schema/query change that merely *enables* it is not the feature
   (non-negotiable #6). If a level the user named is dropped, that's a surfaced
   narrowing, not a silent amputation.
+- **active scope** — the universe + world + book the writer is currently working
+  in, resolved from the URL (`?u=`/`?w=`/`?book=`) against the world tree, with a
+  fallback ladder on each axis. There is no cookie or storage behind it: the URL
+  *is* the scope, so a link that drops an axis silently re-scopes its destination.
+  One resolver and one href builder own both halves (`lib/scope/activeScope.ts`).
+- **cascade** — deleting a universe, world or book together with everything it
+  owns. Expressed as an ordered *plan* (`lib/db/cascade.ts`) that the danger modal
+  runs as COUNTs and the delete runs as DELETEs, so the previewed blast radius and
+  the rows actually removed are the same predicates by construction.
+- **last-child guard** — a universe must keep at least one world, a world at least
+  one book (else shared entities have no world to be reclaimed in, and chapters no
+  home). Enforced server-side by `editWorldStructure`; a disabled affordance is
+  only the advisory hint.
 
 ## Wiki nouns
 
 - **gazetteer** — the wiki as the author's recorded canon of entities. The
-  user-facing name for /wiki ("Back to the gazetteer"). Not the research helper
-  `buildGazetteer()`.
+  user-facing name for /wiki ("Back to the gazetteer"). Not the prompt block the
+  AI grounds on — see **grounding**.
 - **entry** — one wiki entity (person, place, order, lore, or plotline). Row in
   `entries`. Soft-deleted (`deleted_at`); child facts/ties/appearances survive
   as tombstones.
 - **fact** — a key/value detail on one entry (`facts`).
 - **tie** — a named directional relationship from one entry to another (`ties`).
+- **write-through** — how a gazetteer mutation reaches the database: an optimistic
+  reducer action fired ALONGSIDE its persist, both carrying the SAME client-minted
+  id so the session row and the persisted row are one row. `commit(intent)`
+  (`components/wiki/useWikiCommit.ts`) is the only write-through; a screen states
+  an intent and never learns ids, append positions, or the confirmation flag.
+- **confirmed picker write** — what the "Add to the wiki" modal's confirm does:
+  ENRICH a live entry (fold a fact onto it, CORRECTING the contradicted fact when
+  the origin is a conflict mark) or MINT a new entry. One module for /write and
+  /research alike (`writeConfirmedTarget`); the origin — a mark or a research card
+  — decides the idempotent ids and whether the source card flips to "in the wiki".
 
 ## Manuscript
 
@@ -66,7 +89,15 @@ agent could plausibly misread it. Discipline that maintains this file lives in
 - **freshness / hash gate** — the resolver reuses a single `hashValue` over the
   wiki snapshot to decide whether a chapter's cached AI marks are still valid; a
   hash change means stale, so re-check (`src/lib/check/resolve.ts`). The resolver
-  *only* decides freshness and merges — it does not itself run the checker.
+  *only* decides freshness and merges. It is not reachable on its own: it lives
+  inside `loadChapterMarks` (`lib/write/chapterMarks.ts`), because when it was a
+  separate pure module its caller hand-wrote a second copy of the same gate.
+- **grounding** — putting the writer's own entities in front of the model so an
+  answer stays inside their world. Rendered in one house style
+  (`lib/ai/groundedAsk.ts`); the *addressable* form prefixes each entity with its
+  bracketed `[id]`, which is the only reason a check response can echo an
+  `entryId` back that the server can resolve. Grounding is what makes the AI
+  **recall** rather than a **ghostwriter**.
 
 ## Surfaces
 
