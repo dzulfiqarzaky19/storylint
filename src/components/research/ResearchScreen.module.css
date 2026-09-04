@@ -17,79 +17,88 @@
   min-height: 0;
 }
 
+/* Fixed head + scrolling chat + fixed composer, so neither the question nor the
+   ask box can be scrolled off the screen by a long thread. */
 .body {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
-/* ---- 1. Question block (padding 30px 40px 0) --------------------------- */
+/* ---- 1. Thread head ---------------------------------------------------- */
 
 .questionBlock {
-  padding: 30px var(--gutter) 0;
-}
-
-.kicker {
-  font-family: var(--font-mono);
-  font-size: var(--text-2);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
+  flex: none;
+  padding: var(--space-4) 32px 10px;
+  border-bottom: 1px solid var(--line2);
 }
 
 .question {
   font-family: var(--font-serif);
-  font-size: 46px;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  max-width: 24ch;
-  margin: 10px 0 var(--space-4);
+  font-size: var(--text-11);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  margin: 0;
   text-wrap: pretty;
 }
 
-.majorRule {
-  height: 2px;
-  background: var(--ink);
+.questionMeta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: 6px;
 }
 
-/* ---- 2. Thread (padding 22px 40px 0) ---------------------------------- */
+/* ---- 2. Thread --------------------------------------------------------- */
+
+.chatScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 32px 8px;
+}
 
 .thread {
-  padding: 22px var(--gutter) 0;
+  padding: 0;
 }
 
 .guidance {
   font-family: var(--font-serif);
-  margin: 0;
-  max-width: 46ch;
+  margin: var(--space-2) 0 0;
+  max-width: 52ch;
   color: var(--muted);
-  font-size: var(--text-5);
-  line-height: 1.6;
+  font-size: var(--text-9);
+  line-height: 1.55;
 }
 
+/* Turns are separated by whitespace, not rules — the transcript reads as a
+   conversation, and a hairline between every line makes it read as a table. */
 .turn {
-  padding: 20px 0;
-  border-top: var(--rule-row);
+  padding: 0;
+  border-top: none;
+  margin-bottom: var(--space-5);
 }
 
 .turnRow {
-  display: flex;
+  display: grid;
+  grid-template-columns: 120px 1fr;
   gap: var(--space-4);
-  align-items: baseline;
+  align-items: start;
 }
 
 .who {
   font-family: var(--font-mono);
-  width: 130px;
-  flex: none;
-  font-size: var(--text-2);
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  padding-top: 4px;
 }
 
 .whoThem {
@@ -102,16 +111,16 @@
 
 .turnText {
   font-family: var(--font-serif);
-  flex: 1;
-  font-size: var(--text-7);
-  line-height: 1.4;
-  max-width: 62ch;
-  letter-spacing: -0.01em;
+  font-size: var(--text-8);
+  line-height: 1.5;
+  max-width: 64ch;
+  letter-spacing: 0;
+  color: var(--ink);
 }
 
-/* The writer's own lines are weight 700 (README §Screen 2 / §8). */
+/* The writer's own lines carry the weight — they are the spine of the thread. */
 .turnTextYou {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Streaming placeholder: the collaborator turn is empty until the first delta
@@ -149,11 +158,13 @@
   }
 }
 
+/* Indented to start under the turn TEXT column (120px `who` + 16px gap), so a
+   card reads as belonging to the collaborator's answer rather than to the row. */
 .cards {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: var(--space-4);
+  margin: var(--space-3) 0 0 136px;
 }
 
 /* ---- 3. Proposition card (column stack under the turn) ---------------- */
@@ -179,47 +190,47 @@
   outline-offset: 2px;
 }
 
+/* A quiet mono label. The card's TITLE carries the weight; the kind is filing
+   information, so it must not out-shout what the proposition actually says. */
 .cardKicker {
   font-family: var(--font-mono);
-  font-size: var(--text-1);
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent-deep);
-  padding-bottom: var(--space-2);
-  border-bottom: var(--rule-major);
+  color: var(--faint);
 }
 
 .cardTitle {
   font-family: var(--font-serif);
-  font-size: var(--text-7);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-6);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0;
+  margin: 3px 0 2px;
 }
 
 /* flex:1 so all cards in a row align their action rows. */
 .cardBody {
-  font-size: var(--text-4);
-  line-height: 1.45;
-  color: var(--card-body);
+  font-size: var(--text-3);
+  line-height: 1.5;
+  color: var(--muted);
   flex: 1;
 }
 
 .cardActions {
   display: flex;
-  gap: 10px;
-  margin-top: 14px;
+  gap: var(--space-2);
+  margin-top: 11px;
   align-items: center;
 }
 
 .keep {
   min-height: 40px;
   font-size: var(--text-2);
-  font-weight: 700;
+  font-weight: 400;
   padding: 6px 11px;
-  border: 1px solid var(--line2);
+  border: 1px solid var(--rule);
   border-radius: 7px;
   background: transparent;
   color: var(--ink);
@@ -238,18 +249,33 @@
   font-weight: 600;
 }
 
-/* "Make it an entry" (reads "In the wiki" once written) — text only. */
+/* "Make it an entry" is the CONFIRM path — the one action on this card that
+   writes to the wiki — so it takes the filled slate treatment the app reserves
+   for that, distinct from Keep's outline. Once written it reads "In the wiki"
+   and drops to a quiet teal-free tag (see .proposeInWiki). */
 .propose {
+  min-height: 40px;
   font-size: var(--text-2);
   font-weight: 600;
-  color: var(--muted);
-  background: transparent;
-  border: none;
-  padding: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--slate);
+  border-radius: 7px;
+  background: var(--slate);
+  color: var(--on-accent);
   cursor: pointer;
 }
 
+.propose:hover:not(.proposeInWiki) {
+  filter: brightness(1.08);
+}
+
 .proposeInWiki {
+  background: transparent;
+  border-color: transparent;
+  padding: 6px 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
   color: var(--accent-deep);
   cursor: default;
 }
@@ -345,13 +371,10 @@
 /* ---- 5. Composer (2px ink top rule) ----------------------------------- */
 
 .footer {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  margin-top: auto;
-  padding: 18px var(--gutter);
-  background: var(--ground);
-  border-top: var(--rule-major);
+  flex: none;
+  padding: 14px 32px 18px;
+  background: var(--panel);
+  border-top: 1px solid var(--line2);
 }
 
 .composer {
@@ -363,17 +386,21 @@
    on the next ask (APPEND_STREAMING_TURN), so this auto-clears on a good ask.
    Sits above the composer inside the sticky footer, accent-filled to read as a
    loud failure banner (parity with the wiki errorBar). */
+/* 9px/6px are shape radii on a bar and its button, so they stay literal against
+   --radius. The failure reads in danger red on a danger wash — an ask that did
+   not come back is a fault, not an accent-coloured announcement. */
 .errorBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-bottom: 14px;
-  padding: 10px 14px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: var(--text-4);
-  font-weight: 600;
+  margin-bottom: 10px;
+  padding: 9px 12px;
+  background: var(--danger-soft);
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  color: var(--danger);
+  font-size: var(--text-3);
 }
 
 .errorText {
@@ -383,59 +410,57 @@
 
 .errorDismiss {
   flex: none;
-  font-size: var(--text-2);
-  font-weight: 700;
-  padding: 5px 10px;
-  background: var(--on-accent);
-  color: var(--accent-deep);
-  border: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-1);
+  padding: 4px 9px;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 6px;
   cursor: pointer;
 }
 
-/* Placeholder rendered as 24px/700 faint text (no real input in the prototype). */
+/* Shown instead of the ask box when the AI gateway is not configured. */
 .composerPlaceholder {
-  font-size: var(--text-12);
-  font-weight: 700;
+  font-size: var(--text-4);
   color: var(--faint);
-  letter-spacing: -0.01em;
 }
 
 .chips {
   display: flex;
-  gap: 10px;
-  margin-top: var(--space-4);
+  gap: var(--space-2);
+  margin-top: 10px;
   flex-wrap: wrap;
 }
 
-/* AI ask box — a real input that replaces the static placeholder when the AI
-   gateway is configured. Sits on the same 24px/700 baseline as the placeholder. */
+/* AI ask box — a bordered field on the panel, so it reads as somewhere to TYPE
+   rather than as a heading with a rule under it. */
 .aiRow {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--space-2);
 }
 
 .aiInput {
   flex: 1;
   min-width: 0;
   font-family: var(--font-sans);
-  font-size: var(--text-12);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: var(--text-4);
+  font-weight: 400;
+  letter-spacing: 0;
   color: var(--ink);
-  background: transparent;
-  border: none;
-  border-bottom: var(--rule-major);
-  padding: var(--space-1) 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  padding: 11px 13px;
   outline: none;
 }
 .aiInput::placeholder {
   color: var(--faint);
-  font-weight: 700;
+  font-weight: 400;
 }
 .aiInput:focus {
-  border-bottom-color: var(--accent);
+  border-color: var(--accent);
 }
 .aiInput:focus-visible {
   outline: 2px solid var(--accent);
@@ -447,10 +472,12 @@
 }
 
 .aiSend {
-  font-size: var(--text-4);
-  font-weight: 700;
-  padding: 10px 18px;
+  font-size: var(--text-3);
+  font-weight: 600;
+  padding: 0 18px;
+  min-height: 40px;
   border: none;
+  border-radius: 9px;
   background: var(--accent);
   color: var(--on-accent);
   cursor: pointer;
@@ -458,39 +485,44 @@
 }
 @media (hover: hover) {
   .aiSend:hover:not(:disabled) {
-    background: var(--accent-deep);
+    filter: brightness(1.06);
   }
 }
 .aiSend:active:not(:disabled) {
   transform: translateY(1px);
 }
 .aiSend:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: default;
 }
 
 .chip {
   min-height: 40px;
-  font-size: var(--text-3);
-  font-weight: 600;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--line2);
+  font-size: var(--text-2);
+  font-weight: 400;
+  padding: 6px 13px;
+  border: 1px solid var(--rule);
   border-radius: 20px;
-  background: var(--panel);
+  background: var(--ground);
   color: var(--muted);
   cursor: pointer;
 }
 
-/* Kept rail (340px right column, mirrors the Write "Two signals" rail): the
-   panel fill + left hairline live on this full-width wrap so the rail reads as
-   one joined column. On desktop the collapsible toggle is hidden. */
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Kept rail (300px right column, mirrors the Write Outstanding rail): the panel
+   fill + left hairline live on this full-width wrap so the rail reads as one
+   joined column. On desktop the collapsible toggle is hidden. */
 .boardWrap {
-  width: 340px;
+  width: 300px;
   flex: none;
+  min-height: 0;
   background: var(--panel);
   border-left: var(--rule-major);
   overflow-y: auto;
-  padding: var(--space-4) 0;
   display: flex;
   flex-direction: column;
 }
@@ -505,7 +537,10 @@
 }
 
 .board {
-  padding: var(--space-2) var(--space-4);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px 16px;
 }
 
 .boardActive {
@@ -515,18 +550,18 @@
 
 .boardHead {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
-  padding-bottom: var(--space-2);
-  border-bottom: var(--rule-major);
+  padding: 15px 16px 6px;
 }
 
 .boardTitle {
   font-family: var(--font-mono);
-  font-size: var(--text-3);
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-size: var(--text-1);
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--muted);
 }
 
 .boardSpacer {
@@ -536,24 +571,24 @@
 .boardCount {
   font-family: var(--font-mono);
   font-size: var(--text-2);
-  color: var(--muted);
+  color: var(--faint);
 }
 
 .boardEmpty {
-  font-size: var(--text-3);
+  font-size: var(--text-2);
   line-height: 1.5;
-  color: var(--muted-2);
-  padding: var(--space-3) 0;
+  color: var(--faint);
+  padding: 14px 6px;
 }
 
 .keptItem {
-  border: 1px solid var(--line2);
-  background: var(--panel);
+  border: 1px solid var(--rule);
+  background: var(--ground);
   border-radius: 9px;
   padding: 10px 11px;
   margin-top: 8px;
   cursor: pointer;
-  transition: border-color 0.12s;
+  transition: border-color 120ms ease;
 }
 
 .keptItem:hover {
@@ -573,40 +608,38 @@ button.keptItem {
 
 .keptKind {
   font-family: var(--font-mono);
-  font-size: var(--text-1);
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted-2);
+  color: var(--faint);
 }
 
 .keptTitle {
   font-family: var(--font-serif);
-  font-size: var(--text-5);
-  font-weight: 700;
+  font-size: var(--text-4);
+  font-weight: 600;
   line-height: 1.25;
-  margin-top: var(--space-1);
+  margin: 2px 0;
 }
 
 /* "from <thread>" source-thread attribution — the board aggregates every thread
    in the world, so each row names its origin. */
 .keptFrom {
-  font-family: var(--font-mono);
-  font-size: var(--text-2);
-  font-weight: 600;
-  color: var(--muted-2);
-  margin-top: var(--space-1);
+  font-size: var(--text-1);
+  color: var(--faint);
+  line-height: 1.4;
 }
 
 .keptState {
   font-family: var(--font-mono);
-  font-size: var(--text-2);
-  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.06em;
   margin-top: 6px;
 }
 
 .keptStateBoard {
-  color: var(--muted-2);
+  color: var(--faint);
 }
 
 /* Kept filter tabs (Wiki / Plot / Write). Wiki is the populated surface; the
@@ -614,8 +647,8 @@ button.keptItem {
 .boardTabs {
   display: flex;
   gap: var(--space-1);
-  margin: var(--space-1) 0 var(--space-2);
-  border-bottom: var(--rule-row);
+  padding: 2px 12px 10px;
+  border-bottom: 1px solid var(--line2);
 }
 
 .boardTab {
@@ -626,10 +659,15 @@ button.keptItem {
   padding: 6px 10px;
   font: inherit;
   font-family: var(--font-mono);
-  font-size: var(--text-2);
-  font-weight: 700;
+  font-size: var(--text-1);
+  font-weight: 400;
+  letter-spacing: 0.06em;
   color: var(--faint);
   cursor: pointer;
+}
+
+.boardTab:hover {
+  color: var(--ink);
 }
 
 .boardTabActive {

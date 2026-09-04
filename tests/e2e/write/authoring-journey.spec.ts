@@ -36,11 +36,14 @@ function chaptersNav(page: Page): Locator {
   return page.locator(CHAPTERS_NAV);
 }
 
-/** The chapter-select rows (exclude the +New and Delete control buttons). */
+/**
+ * The chapter-select rows. Selected STRUCTURALLY (each row is
+ * `li > div > button:first-child`) rather than by negating the control buttons'
+ * text: the per-row rename/delete affordances are icon buttons with no text at
+ * all, so a `hasNotText` filter would silently count them as chapters.
+ */
 function chapterRows(page: Page): Locator {
-  return chaptersNav(page)
-    .locator("button")
-    .filter({ hasNotText: /^Chapters|\+ New chapter|Delete this chapter/ });
+  return chaptersNav(page).locator("ul > li > div > button:first-child");
 }
 
 /** The ACTIVE chapter row (the button carries aria-current="true"). */
@@ -218,11 +221,11 @@ test.describe("2.5 authoring journey", () => {
         .click();
       await expect(chapterRows(page)).toHaveCount(2);
 
-      // The delete control's accessible name is its aria-label ("Delete
-      // chapter N: Title"), not the visible "Delete this chapter" text.
-      const del = chaptersNav(page).getByRole("button", {
-        name: /^Delete chapter \d+/,
-      });
+      // The per-row delete is an icon button, so its accessible name comes
+      // entirely from its aria-label ("Delete chapter N: Title").
+      const del = chaptersNav(page)
+        .getByRole("button", { name: /^Delete chapter \d+/ })
+        .first();
       await expect(del).toBeEnabled();
       await del.click();
       // The confirm dialog's primary action is the "Delete chapter" button.

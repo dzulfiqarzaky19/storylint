@@ -1,15 +1,30 @@
 import styles from "./ResearchScreen.module.css";
 
 /**
- * The question the writer is turning over. Kicker + 46px/800 question + 2px rule.
- * README §Screen 2.1.
+ * The thread head — the question the writer is turning over, over a mono meta
+ * line ("8 TURNS · ASHKELD WORLD"). Fixed above the scrolling chat, so a long
+ * thread never pushes the question out of view.
  */
-export default function QuestionBlock({ question }: { question: string }) {
+export default function QuestionBlock({
+  question,
+  turnCount,
+  worldName,
+}: {
+  question: string;
+  turnCount: number;
+  worldName?: string;
+}) {
+  const meta = [
+    `${turnCount} ${turnCount === 1 ? "turn" : "turns"}`,
+    worldName ? `${worldName} world` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <section className={styles.questionBlock}>
-      <div className={styles.kicker}>You</div>
       <h1 className={styles.question}>{question}</h1>
-      <div className={styles.majorRule} />
+      <div className={styles.questionMeta}>{meta}</div>
     </section>
   );
 }

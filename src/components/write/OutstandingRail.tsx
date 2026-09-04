@@ -1,8 +1,9 @@
 'use client';
 
 /**
- * OutstandingRail — the 360px right rail:
- *   - "Two signals" legend (two swatches, never merged).
+ * OutstandingRail — the 300px right rail:
+ *   - An "Outstanding · N" head (desktop) over the two-signals legend (two
+ *     swatches, never merged).
  *   - The outstanding-marks list (one row per live mark). Clicking a row is the
  *     SAME action as clicking the underline (opens/closes the note). One open at
  *     a time; the open row fills `--hover`.
@@ -71,6 +72,12 @@ export function OutstandingRail({
       </button>
 
       <div id={bodyId} className={styles.railBody}>
+      {/* Desktop head. Hidden on the stacked tier, where .railToggle above is
+          the rail's only heading (and keeps its own "Two signals" copy). */}
+      <div className={styles.boardHead}>
+        <span className={styles.boardTitle}>Outstanding</span>
+        <span className={styles.boardCount}>{marks.length}</span>
+      </div>
       <div className={styles.legend}>
         <div className={styles.legendTitle}>Two signals</div>
         <div className={styles.legendRow}>

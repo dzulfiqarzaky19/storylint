@@ -3,31 +3,41 @@
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type ReactNode,
 } from "react";
+import { Chevron } from "./RowIcons";
 import styles from "./IndexRail.module.css";
 
-/** Disclosure chevron. A right-pointing glyph; direction is driven by CSS (the
- *  "open" modifier rotates it 90deg). Decorative — state lives on aria-expanded. */
-function Chevron() {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      width="1em"
-      height="1em"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <polyline points="6 4 10 8 6 12" />
-    </svg>
-  );
+/** sessionStorage key for one rail's scroll offset, namespaced by its landmark. */
+function scrollKey(name: string): string {
+  return `indexrail:scroll:${name}`;
+}
+
+/**
+ * Read a rail's remembered scroll offset. Wrapped because sessionStorage THROWS
+ * (not returns null) in a private window or with site data blocked, and a rail
+ * that cannot remember where it was must still render.
+ */
+function readOffset(name: string): number | null {
+  try {
+    const raw = sessionStorage.getItem(scrollKey(name));
+    if (raw === null) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeOffset(name: string, top: number): void {
+  try {
+    sessionStorage.setItem(scrollKey(name), String(top));
+  } catch {
+    // Storage unavailable — the rail just forgets its place. Not worth failing.
+  }
 }
 
 export interface IndexRailFilter {
@@ -41,6 +51,10 @@ export interface IndexRailProps {
   title: string;
   /** Rendered after the title as "· N". Omit to show the title alone. */
   count?: number;
+  /** Accessible name for the <nav> landmark. Defaults to `title`; pass this when
+   *  the surface's landmark name is not the visible head label (the wiki rail
+   *  reads "All entries" but has always been announced as "The world"). */
+  ariaLabel?: string;
   /** aria-label for the stacked-tier disclosure, e.g. "Toggle entries". */
   toggleLabel: string;
   /** Omit for a rail with no filter (write, research). Supplying it also arms
@@ -70,6 +84,7 @@ export interface IndexRailProps {
 export default function IndexRail({
   title,
   count,
+  ariaLabel,
   toggleLabel,
   filter,
   action,
@@ -79,6 +94,53 @@ export default function IndexRail({
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const landmark = ariaLabel ?? title;
+
+  // Keep the rail's place across a REMOUNT. /write keys its screen by chapter
+  // number, so selecting a chapter tears the whole subtree down and builds it
+  // again — a brand-new scroll container starts at 0, and a writer on chapter 88
+  // was thrown back to chapter 1 every time they moved. The offset is restored
+  // in a LAYOUT effect (before paint), so the rail never visibly jumps.
+  //
+  // With nothing remembered — a cold load, or a deep link — the rail instead
+  // brings the current row into view, which is the same intent: show the writer
+  // where they are, not the top of a list of 108.
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const saved = readOffset(landmark);
+    if (saved !== null) {
+      el.scrollTop = saved;
+      return;
+    }
+    const current = el.querySelector('[aria-current="true"]');
+    if (!current) return;
+    // Centred by arithmetic, not scrollIntoView: that method walks up and
+    // scrolls every ancestor too, which would yank the whole page.
+    const offset = current.getBoundingClientRect().top - el.getBoundingClientRect().top;
+    el.scrollTop += offset - (el.clientHeight - current.clientHeight) / 2;
+  }, [landmark]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // Coalesced to one write per frame: scroll fires far faster than that, and
+    // sessionStorage is a synchronous write.
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        writeOffset(landmark, el.scrollTop);
+      });
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      el.removeEventListener("scroll", onScroll);
+    };
+  }, [landmark]);
 
   // "/" focuses the filter, matching the prototype's shortcut chip. Ignored while
   // the caret is already in a field (or a ProseMirror surface on /write), so the
@@ -101,7 +163,7 @@ export default function IndexRail({
   return (
     <nav
       className={`${styles.index} ${open ? styles.indexOpen : ""}`}
-      aria-label={title}
+      aria-label={ariaLabel ?? title}
     >
       <button
         type="button"
@@ -154,7 +216,7 @@ export default function IndexRail({
         {/* The footer sits INSIDE the scroll area, as the prototype has it. As a
             sibling of railScroll it competes for height and, being unbounded (31
             deleted entries), starves the flex:1 list down to zero. */}
-        <div className={styles.railScroll}>
+        <div ref={scrollRef} className={styles.railScroll}>
           {children}
           {footer}
         </div>

@@ -31,11 +31,16 @@
      a danger action never read as the same thing. */
   --danger: #a8322a;
   --danger-deep: #83271f;
+  /* Wash tints for the two write signals. A mark's underline is the SIGNAL; the
+     wash is only the hover/open fill behind it, so it must stay light enough
+     that body text over it keeps its contrast. */
+  --danger-soft: #f2dcd7;
   --body-ink: #2d2b26;
   --card-body: #4a4640;
   /* Unrecorded-chapter severity dot (amber). Distinct from --danger (red dot)
      so "has unrecorded objects" never reads as "has a contradiction". */
   --warning: #8a6a1a;
+  --warning-soft: #f2e6c6;
   /* Muted text on an --ink (dark) surface: e.g. the secondary note under an
      active rail item. A warm light tint kept above the WCAG AA 4.5:1 contrast
      floor against --ink. */

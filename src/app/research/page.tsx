@@ -20,7 +20,13 @@ export default async function ResearchPage({
   // T-RESEARCH-2: resolve the ACTIVE world from ?u=/?w= (same resolver /wiki
   // uses) and scope the thread list + selected thread to it, so switching worlds
   // in the header shows THAT world's threads.
-  const { activeWorldId } = resolveWikiScope(await getWorldTree(), u, w);
+  const tree = await getWorldTree();
+  const { activeUniverseId, activeWorldId } = resolveWikiScope(tree, u, w);
+  // The thread head names the world the thread belongs to, so the writer can
+  // tell at a glance which world's canon the collaborator is reading from.
+  const activeWorldName = tree
+    .find((x) => x.id === activeUniverseId)
+    ?.worlds.find((x) => x.id === activeWorldId)?.title;
   const snapshot = await loadResearchSnapshot(thread, activeWorldId);
   // T-RES-E2E-KEPT: the Kept board is WORLD-WIDE, so it seeds from every kept
   // card in the active world (with its source thread for attribution + click-
@@ -54,6 +60,7 @@ export default async function ResearchPage({
       entries={entries}
       categories={categories}
       activeWorldId={activeWorldId}
+      activeWorldName={activeWorldName}
       worldKept={worldKept}
       focusPropositionId={focus}
     />

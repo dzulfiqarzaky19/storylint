@@ -32,11 +32,14 @@ function chaptersNav(page: Page): Locator {
   return page.locator(CHAPTERS_NAV);
 }
 
-/** The chapter-select rows (the aria-current-bearing buttons, not +New). */
+/**
+ * The chapter-select rows. Selected STRUCTURALLY (each row is
+ * `li > div > button:first-child`) rather than by negating the control buttons'
+ * text: the per-row rename/delete affordances are icon buttons with no text at
+ * all, so a `hasNotText` filter would silently count them as chapters.
+ */
 function chapterRows(page: Page): Locator {
-  return chaptersNav(page)
-    .locator("button")
-    .filter({ hasNotText: /^Chapters|\+ New chapter/ });
+  return chaptersNav(page).locator("ul > li > div > button:first-child");
 }
 
 /** Ensure the Chapters panel is expanded (it collapses at <=1200px). */

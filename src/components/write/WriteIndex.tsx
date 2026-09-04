@@ -1,42 +1,11 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import IndexRail from "@/components/shell/IndexRail";
+import { PencilIcon, TrashIcon } from "@/components/shell/RowIcons";
 import styles from "./WriteIndex.module.css";
 import type { ChapterSeverity } from "@/lib/check/severity";
 import { shouldShowChapterDot } from "@/lib/check/severity";
-
-/** The stacked-tier breakpoint — mirrors @media(max-width:1200px) in the CSS. */
-const STACKED_QUERY = "(max-width: 1200px)";
-
-/**
- * True only on the stacked tier (<=1200px), where the chapter `.panel` folds
- * behind the header toggle. Above 1200px the panel is ALWAYS shown, so the
- * header must NOT masquerade as a collapse control (see WriteIndex). SSR-safe
- * via useSyncExternalStore: the server snapshot is `false` (desktop, plain
- * heading — no focusable no-op button in the pre-hydration HTML), then the
- * client subscribes to the live media query.
- */
-function useIsStackedTier(): boolean {
-  const subscribe = useCallback((onChange: () => void) => {
-    if (typeof window === "undefined" || !window.matchMedia) return () => {};
-    const mql = window.matchMedia(STACKED_QUERY);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
-  const getSnapshot = () =>
-    typeof window !== "undefined" && !!window.matchMedia
-      ? window.matchMedia(STACKED_QUERY).matches
-      : false;
-  const getServerSnapshot = () => false;
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-}
 
 export interface WriteIndexChapter {
   number: number;
@@ -57,7 +26,7 @@ export interface WriteIndexProps {
   onSelect: (n: number) => void;
   /** Append a new empty chapter. */
   onCreate?: () => void;
-  /** Commit a new title for a chapter (inline rename of the active row). */
+  /** Commit a new title for a chapter (inline rename of the row). */
   onRename?: (n: number, title: string) => void;
   /** Ask to delete a chapter (opens the caller's confirm modal). */
   onRequestDelete?: (n: number) => void;
@@ -73,21 +42,30 @@ function numberWord(n: number): string {
 }
 
 /**
- * The active chapter's title, rendered click-to-edit (same affordance as the
- * wiki). It lives INSIDE the row button, so every pointer/key event that drives
- * editing must stopPropagation — otherwise the row's select handler fires and
- * the caret is stolen. Enter commits and blurs; Escape reverts to the saved
- * title. Blur commits too (a click-away is an implicit confirm). Committing an
- * empty/whitespace title is refused (reverts), so a chapter never loses its name.
+ * A chapter's title, rendered click-to-edit. It lives INSIDE the row button, so
+ * every pointer/key event that drives editing must stopPropagation — otherwise
+ * the row's select handler fires and the caret is stolen. Enter commits and
+ * blurs; Escape reverts to the saved title. Blur commits too (a click-away is an
+ * implicit confirm). Committing an empty/whitespace title is refused (reverts),
+ * so a chapter never loses its name.
  */
 function EditableTitle({
   number,
   title,
+  active,
+  claimFocus,
   onRename,
+  onDone,
 }: {
   number: number;
   title: string;
+  /** Only the ACTIVE row's title carries aria-current — a nav-state selector
+   *  reaches through it to find the open chapter, so it must stay unique. */
+  active: boolean;
+  /** True when the row's pencil was just clicked: take the caret and select all. */
+  claimFocus: boolean;
   onRename?: (n: number, title: string) => void;
+  onDone?: () => void;
 }) {
   const ref = useRef<HTMLSpanElement | null>(null);
 
@@ -101,8 +79,23 @@ function EditableTitle({
     }
   }, [title]);
 
+  // The pencil is a rename affordance, so it must land the writer IN the field
+  // with the old name selected — otherwise they still have to click the text and
+  // clear it by hand, and the button saved them nothing.
+  useEffect(() => {
+    const el = ref.current;
+    if (!claimFocus || !el) return;
+    el.focus();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  }, [claimFocus]);
+
   const commit = useCallback(() => {
     const el = ref.current;
+    onDone?.();
     if (!el) return;
     const next = (el.textContent ?? "").trim();
     if (!next || next === title) {
@@ -111,7 +104,7 @@ function EditableTitle({
       return;
     }
     onRename?.(number, next);
-  }, [number, title, onRename]);
+  }, [number, title, onRename, onDone]);
 
   return (
     <span
@@ -121,7 +114,7 @@ function EditableTitle({
       // repeats it so a descendant selector (filter has [aria-current]) can reach
       // INTO the active row for the editable title, which a button-only attribute
       // can't satisfy.
-      aria-current="true"
+      aria-current={active ? "true" : undefined}
       contentEditable
       suppressContentEditableWarning
       spellCheck={false}
@@ -146,11 +139,13 @@ function EditableTitle({
 }
 
 /**
- * The Write LEFT sidebar — the chapter list. One flat, ordered list; clicking a
- * chapter loads it. Shares the Wiki/Research index visual language (300px
- * standing rail on desktop; on the stacked tier <=1200px the whole list folds
- * behind a header toggle) so all three screens read as one app. The `open`
- * state only affects the stacked tier — on desktop `.panel` is always shown.
+ * The Write LEFT index rail CONTENTS — the chapter list. One flat, ordered list;
+ * clicking a chapter loads it, and each row carries the same hover-revealed
+ * rename/delete pair the wiki's category rows do (shared glyphs, shell/RowIcons).
+ *
+ * All rail CHROME (head, scroll containment, the <=1200px fold, ARIA, viewport
+ * widths) belongs to the shared `IndexRail`; this module owns only the chapter
+ * rows and the "+ New chapter" tail. See CONTEXT.md → Chrome → index rail.
  */
 export default function WriteIndex({
   chapters,
@@ -160,89 +155,98 @@ export default function WriteIndex({
   onRename,
   onRequestDelete,
 }: WriteIndexProps) {
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
-  const stacked = useIsStackedTier();
-
-  const active = chapters.find((c) => c.number === selectedNumber);
-  // Deleting the last chapter would leave a book with none, so the affordance is
-  // disabled at one chapter (the server enforces the same invariant). One delete
-  // button targets the ACTIVE chapter, kept out of the row list so it never
-  // inflates the chapter-row count the way a per-row button would.
+  // The row whose pencil was just pressed, so its title can claim the caret.
+  // Cleared on commit/cancel; the ACTIVE row is always editable regardless.
+  const [editingNumber, setEditingNumber] = useState<number | null>(null);
+  // Deleting the last chapter would leave a book with none, so every row's
+  // delete is disabled at one chapter (the server enforces the same invariant).
   const canDelete = chapters.length > 1;
 
-  // Header content is identical across tiers; only its SEMANTICS differ.
-  const headerInner = (
-    <>
-      <span className={styles.title}>Chapters</span>
-      <span className={styles.count}>{chapters.length}</span>
-    </>
-  );
-
   return (
-    <nav
-      className={`${styles.index} ${open ? styles.indexOpen : ""}`}
-      aria-label="Chapters"
+    <IndexRail
+      title="Chapters"
+      count={chapters.length}
+      toggleLabel="Toggle chapters"
     >
-      {stacked ? (
-        // Stacked tier (<=1200px): the panel folds, so the header is a REAL
-        // collapse toggle with an honest aria-expanded/aria-controls.
-        <button
-          type="button"
-          className={styles.railToggle}
-          aria-expanded={open}
-          aria-controls={panelId}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {headerInner}
-          <span className={styles.railToggleChevron} aria-hidden="true">
-            {open ? "\u2212" : "+"}
-          </span>
-        </button>
-      ) : (
-        // Desktop (>1200px): the panel is always shown, so the header is a plain
-        // heading — no button role, no (lying) aria-expanded, not focusable.
-        <h2 className={styles.railToggle}>{headerInner}</h2>
-      )}
-
-      <ul id={panelId} className={styles.panel}>
+      <ul className={styles.list}>
         {chapters.map((c) => {
           const isActive = c.number === selectedNumber;
+          const editable = isActive || editingNumber === c.number;
           return (
             <li key={c.number}>
-              <button
-                type="button"
+              <div
                 className={
-                  isActive ? `${styles.item} ${styles.itemActive}` : styles.item
+                  isActive
+                    ? `${styles.itemRow} ${styles.itemRowActive}`
+                    : styles.itemRow
                 }
-                aria-current={isActive ? "true" : undefined}
-                onClick={() => onSelect(c.number)}
               >
-                <span className={styles.itemNote}>
-                  Chapter {numberWord(c.number)}
-                </span>
-                {isActive ? (
-                  <EditableTitle
-                    number={c.number}
-                    title={c.title}
-                    onRename={onRename}
-                  />
-                ) : (
-                  <span className={styles.itemName}>{c.title}</span>
-                )}
-                {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
-                  <span
-                    className={`${styles.dot} ${
-                      c.severity === "red" ? styles.dotRed : styles.dotYellow
-                    }`}
-                    aria-label={
-                      c.severity === "red"
-                        ? "Has a contradiction"
-                        : "Has an unrecorded detail"
-                    }
-                  />
+                <button
+                  type="button"
+                  className={styles.item}
+                  aria-current={isActive ? "true" : undefined}
+                  onClick={() => onSelect(c.number)}
+                >
+                  <span className={styles.itemBody}>
+                    <span className={styles.itemNote}>
+                      Chapter {numberWord(c.number)}
+                    </span>
+                    {editable && onRename ? (
+                      <EditableTitle
+                        number={c.number}
+                        title={c.title}
+                        active={isActive}
+                        claimFocus={editingNumber === c.number}
+                        onRename={onRename}
+                        onDone={() => setEditingNumber(null)}
+                      />
+                    ) : (
+                      <span className={styles.itemName}>{c.title}</span>
+                    )}
+                  </span>
+                  {shouldShowChapterDot(c.severity, c.number, selectedNumber) ? (
+                    <span
+                      className={`${styles.dot} ${
+                        c.severity === "red" ? styles.dotRed : styles.dotYellow
+                      }`}
+                      aria-label={
+                        c.severity === "red"
+                          ? "Has a contradiction"
+                          : "Has an unrecorded detail"
+                      }
+                    />
+                  ) : null}
+                </button>
+
+                {onRename || onRequestDelete ? (
+                  <div className={styles.rowActions}>
+                    {onRename ? (
+                      <button
+                        type="button"
+                        className={styles.rowAction}
+                        data-slot="rename"
+                        aria-label={`Rename chapter ${c.number}: ${c.title}`}
+                        title="Rename chapter"
+                        onClick={() => setEditingNumber(c.number)}
+                      >
+                        <PencilIcon />
+                      </button>
+                    ) : null}
+                    {onRequestDelete ? (
+                      <button
+                        type="button"
+                        className={`${styles.rowAction} ${styles.rowDelete}`}
+                        disabled={!canDelete}
+                        aria-label={`Delete chapter ${c.number}: ${c.title}`}
+                        title="Delete chapter"
+                        onClick={() => onRequestDelete(c.number)}
+                      >
+                        <TrashIcon />
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
-              </button>
+              </div>
             </li>
           );
         })}
@@ -253,20 +257,7 @@ export default function WriteIndex({
             </button>
           </li>
         ) : null}
-        {active && onRequestDelete ? (
-          <li>
-            <button
-              type="button"
-              className={styles.delete}
-              disabled={!canDelete}
-              aria-label={`Delete chapter ${active.number}: ${active.title}`}
-              onClick={() => onRequestDelete(active.number)}
-            >
-              Delete this chapter
-            </button>
-          </li>
-        ) : null}
       </ul>
-    </nav>
+    </IndexRail>
   );
 }

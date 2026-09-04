@@ -67,6 +67,7 @@ export default function ResearchScreen({
   entries = [],
   categories = [],
   activeWorldId,
+  activeWorldName,
   worldKept = [],
   focusPropositionId,
 }: {
@@ -80,6 +81,8 @@ export default function ResearchScreen({
    * newly-minted entry is linked into this world (else it is invisible on /wiki).
    */
   activeWorldId: string;
+  /** That world's display title, for the thread head's meta line. */
+  activeWorldName?: string;
   /**
    * T-RES-E2E-KEPT: every kept card in the ACTIVE world, with its source thread.
    * The Kept board is WORLD-WIDE — it aggregates kept propositions across every
@@ -390,14 +393,22 @@ export default function ResearchScreen({
           onRename={renameThreadTitle}
         />
         <main className={styles.body}>
+          {/* The head is FIXED and the turns scroll under it: a long thread must
+              never push the question the writer is working on off the top. */}
+          {visibleTurns.length > 0 && (
+            <QuestionBlock
+              question={state.question}
+              turnCount={visibleTurns.length}
+              worldName={activeWorldName}
+            />
+          )}
+          <div className={styles.chatScroll}>
           {visibleTurns.length === 0 ? (
             <section className={styles.thread}>
               <p className={styles.guidance}>{EMPTY_GUIDANCE}</p>
             </section>
           ) : (
             <>
-              <QuestionBlock question={state.question} />
-
               <section className={styles.thread}>
                 {visibleTurns.map((turn) => (
               <Turn
@@ -424,6 +435,7 @@ export default function ResearchScreen({
               </section>
             </>
           )}
+          </div>
 
           {pendingCard && resolvedTarget && (
             <WikiTargetPicker

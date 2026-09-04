@@ -81,11 +81,16 @@ test("3a switcher + 3c manage: create, switch, rename, type-the-name delete", as
   await expect(switcherButton(page)).toContainText(unique);
 
   // BUG-GUARD (TCK-E02, no snap-back): the new world's gazetteer is EMPTY — the
-  // index header reads "0 entries", proving the switch landed on the new world
-  // and not on the populated ASHKELD WORLD wiki. DB read-back: zero membership links.
+  // index rail head reads "All entries · 0", proving the switch landed on the new
+  // world and not on the populated ASHKELD WORLD wiki. (The head copy moved from
+  // "The world / N entries" to the cockpit prototype's "ALL ENTRIES · N" when the
+  // rail became the shared IndexRail; the LANDMARK name is unchanged.) DB
+  // read-back: zero membership links.
   await expect(
-    page.locator('nav[aria-label="The world"]').getByText(/\b0 entries\b/),
-  ).toBeVisible();
+    page
+      .locator('nav[aria-label="The world"] button[aria-expanded]')
+      .first(),
+  ).toContainText(/All entries\s*·\s*0/);
   expect(await countRows("world_entities", "world_id = $1", [worldId])).toBe(0);
 
   // ---- 3c RENAME: change the world's title; DB reflects it. -----------------

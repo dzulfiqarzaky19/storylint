@@ -1,123 +1,114 @@
-/* Write LEFT index — chapter list. Shares the Wiki/Research index visual
-   language (300px standing rail on desktop, collapsible panel <=1200px) so all
-   three screens read as one app. */
+/* Write LEFT index — chapter list CONTENTS only. The rail chrome (head, fold,
+   scroll, widths) is the shared components/shell/IndexRail. Skinned from
+   prototypes/write-c-cockpit.html (.ch / .newChapter), with the same
+   hover-revealed rename/delete pair the wiki and research rails carry.
 
-.index {
-  width: 300px;
-  flex: none;
-  border-right: var(--rule-major, 2px solid var(--ink));
-  overflow-y: auto;
-  padding: 26px 20px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
+   The row/button radii here are SHAPE radii on a tile, so they stay literal
+   against --radius exactly as globals.css prescribes. */
 
-/* Header row doubles as the mobile collapse toggle: static header on desktop
-   (no pointer, chevron hidden), interactive toggle <=1200px. */
-.railToggle {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  width: 100%;
-  margin: 0;
-  padding: 0 0 var(--space-2);
-  background: none;
-  border: none;
-  text-align: left;
-  color: inherit;
-  font: inherit;
-  cursor: default;
-}
-
-.railToggleChevron {
-  display: none;
-  margin-left: auto;
-  font-size: var(--text-7);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--muted);
-}
-
-/* The chapter list. Always shown on desktop; collapses behind the toggle on
-   the stacked tier (see the media query). */
-.panel {
+.list {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Row wrapper. The rename/delete cluster OVERLAYS the row's right edge rather
+   than taking a column of its own: reserving ~58px of a 248px rail truncated
+   every chapter title ("Good Morning ...") for two buttons that are invisible
+   most of the time. It inherits the row's own fill, so when it does appear it
+   masks the tail of the title cleanly instead of printing over it. */
+.itemRow {
+  position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 4px 6px 4px 4px;
+  border-radius: 9px;
+  transition: background 120ms ease;
+  background-color: var(--panel);
 }
 
-.title {
-  font-size: var(--text-7);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+.itemRow:hover {
+  background: var(--surface);
 }
 
-.count {
-  font-size: var(--text-2);
-  color: var(--muted);
+.itemRowActive {
+  background: var(--accent-soft);
 }
 
 .item {
   display: flex;
-  flex-direction: column;
-  gap: 1px;
-  position: relative;
-  width: 100%;
-  padding: 9px var(--space-2);
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 7px 6px;
+  /* TCK-HF4 desktop touch-target floor. */
   min-height: 40px;
   background: none;
   border: none;
-  border-left: 2px solid transparent;
-  border-top: var(--rule-row);
+  border-radius: 7px;
   cursor: pointer;
   text-align: left;
-  color: inherit;
+  color: var(--ink);
 }
 
-.item:hover {
-  background: var(--surface);
-}
-
-.itemActive {
-  background: var(--ink);
-  border-left-color: var(--accent);
-}
-
-.itemActive .itemName {
-  color: var(--on-ink);
-}
-
-.itemActive .itemNote {
-  color: var(--on-ink-muted);
+/* The eyebrow and the title are their own LINES — "chapter eight" is filing
+   information about the row, not part of the chapter's name, so it never shares
+   a line with it however short the title is. */
+.itemBody {
+  flex: 1;
+  min-width: 0;
 }
 
 .itemNote {
-  font-size: var(--text-1);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--faint);
+}
+
+.itemActive .itemNote,
+.itemRowActive .itemNote {
   color: var(--muted);
 }
 
 .itemName {
-  font-size: var(--text-4);
-  font-weight: 700;
+  display: block;
+  max-width: 100%;
+  font-family: var(--font-serif);
+  font-size: var(--text-5);
+  font-weight: 600;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Per-chapter severity dot (Feature 1). Anchored top-right of the item; a
-   contradiction is red, an unrecorded-only chapter is yellow. Absent element =
-   clean chapter (or the active chapter, which shows its marks in the rail). */
+/* The title is contenteditable; the focus ring is a soft inset rather than the
+   global 2px outline so the caret box stays inside the row. */
+.itemName[contenteditable]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+  border-radius: 4px;
+  /* An editing title must show the WHOLE name, ellipsis be damned — you cannot
+     edit text you cannot see. */
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+/* Per-chapter severity dot (Feature 1). Red is a contradiction, yellow is
+   unrecorded-only. Absent element = clean chapter (or the active chapter, which
+   shows its marks in the right rail). It TRAILS the text in normal flow rather
+   than floating, so it can never land under the hover-revealed action buttons.
+   50% is a shape radius on a dot, so it stays literal against --radius. */
 .dot {
-  position: absolute;
-  top: 10px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
   flex: none;
 }
 
@@ -129,85 +120,97 @@
   background: var(--warning);
 }
 
-.itemActive .dot {
-  display: none;
+/* Rename + delete. Hidden until the row is hovered or a button inside it takes
+   focus, so a long chapter list reads as calm running text; always shown where
+   there is no hover (touch). They are narrower than the 40px touch floor but
+   taller than it — the HF4 gate measures HEIGHT, and a 40px-wide pair would eat
+   a quarter of the rail. */
+.rowActions {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: var(--space-2);
+  /* Takes the row's own fill so the revealed buttons mask the title's tail. */
+  background-color: inherit;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
 }
 
-.add {
-  width: 100%;
-  padding: 9px var(--space-2);
-  min-height: 40px;
-  margin-top: 2px;
+.itemRow:hover .rowActions,
+.itemRow:focus-within .rowActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.rowAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 40px;
+  padding: 0;
   background: none;
   border: none;
-  border-top: var(--rule-row);
+  border-radius: 6px;
   cursor: pointer;
-  text-align: left;
-  font-size: var(--text-3);
-  font-weight: 600;
-  color: var(--accent-deep, var(--accent));
+  font-size: var(--text-5);
+  line-height: 1;
+  color: var(--muted);
 }
 
-.add:hover {
-  text-decoration: underline;
+.rowAction:hover:not(:disabled) {
+  background: var(--ground);
+  color: var(--accent);
 }
 
-.delete {
-  width: 100%;
-  padding: 9px var(--space-2);
-  min-height: 40px;
-  margin-top: 2px;
-  background: none;
-  border: none;
-  border-top: var(--rule-row);
-  cursor: pointer;
-  text-align: left;
-  font-size: var(--text-3);
-  font-weight: 600;
+.rowDelete:hover:not(:disabled) {
   color: var(--danger);
 }
 
-.delete:hover:not(:disabled) {
-  text-decoration: underline;
+/* A book keeps at least one chapter, so the last row's delete is disabled
+   rather than absent — the affordance stays where the writer expects it and
+   explains itself by being unavailable. */
+.rowAction:disabled {
+  color: var(--faint);
+  cursor: default;
 }
 
-.delete:disabled {
-  color: var(--muted);
-  cursor: not-allowed;
+/* No hover on touch, so the actions can never be revealed by pointing. They go
+   permanently visible and the row gives up the space they need. */
+@media (hover: none) {
+  .rowActions {
+    position: static;
+    transform: none;
+    padding-left: 0;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
-/* Stacked tier: the whole chapter list folds behind the header toggle. Closed
-   by default (React state) so the page opens on the manuscript; the revealed
-   panel scrolls within a capped height so it can never bleed over the body. */
-@media (max-width: 1200px) {
-  .index {
-    width: 100%;
-    border-right: none;
-    border-bottom: var(--rule-major, 2px solid var(--ink));
-    overflow-y: visible;
-    padding: 0;
-    gap: 0;
-  }
+.add {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 10px;
+  min-height: 40px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--text-2);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  transition: background 120ms ease;
+}
 
-  .railToggle {
-    padding: var(--space-4) var(--gutter, 24px);
-    cursor: pointer;
-    min-height: 44px;
-    align-items: center;
-  }
-
-  .railToggleChevron {
-    display: inline;
-  }
-
-  .panel {
-    display: none;
-  }
-
-  .indexOpen .panel {
-    display: flex;
-    overflow-y: auto;
-    max-height: 50vh;
-    padding: 0 var(--gutter, 24px) 20px;
-  }
+.add:hover {
+  background: var(--surface);
 }

@@ -5,68 +5,10 @@ import type { EntryWithDetails, Shelf, CategoryRow } from "@/lib/domain/types";
 import { categorySingular } from "@/lib/wiki/categoryLabels";
 import { useInlineRename } from "@/components/hooks/useInlineRename";
 import IndexRail from "@/components/shell/IndexRail";
+import { Chevron, PencilIcon, TrashIcon } from "@/components/shell/RowIcons";
 import { initialCollapse, resolveRename } from "./shelfState";
 import NewCategoryShelf from "./NewCategoryShelf";
 import styles from "./WikiIndex.module.css";
-
-/** Disclosure chevron for a category group. Direction is driven by CSS (the
- *  "chevronOpen" modifier rotates it 90deg); state lives on aria-expanded. */
-function Chevron() {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      width="1em"
-      height="1em"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <polyline points="6 4 10 8 6 12" />
-    </svg>
-  );
-}
-
-function PencilIcon() {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      width="1em"
-      height="1em"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M11.5 2.5a1.6 1.6 0 0 1 2.3 2.3L6 12.5l-3 .7.7-3z" />
-    </svg>
-  );
-}
-
-function TrashIcon() {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      width="1em"
-      height="1em"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M2.75 4.25h10.5M6.5 4.25V3h3v1.25M4 4.25l.6 8.4a1 1 0 0 0 1 .85h4.8a1 1 0 0 0 1-.85l.6-8.4M6.5 7v4M9.5 7v4" />
-    </svg>
-  );
-}
 
 /** The rail's per-row number. Real `catalogueNo` wins; entries whose row has
  *  never been assigned one (the importer writes "" or "—") fall back to their
@@ -324,6 +266,7 @@ export default function WikiIndex({
     <IndexRail
       title="All entries"
       count={total}
+      ariaLabel="The world"
       toggleLabel="Toggle entries"
       filter={{
         placeholder: "Filter entries…",

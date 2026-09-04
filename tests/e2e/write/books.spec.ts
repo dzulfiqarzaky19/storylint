@@ -110,12 +110,12 @@ test.describe("1.2 book CRUD", () => {
 
       // TARGET: the new book shows exactly one chapter, "Chapter One", ready to
       // write — persisted, not a UI placeholder. (RED until create seeds a row.)
-      // Chapter-row buttons only: the nav also holds two control buttons
-      // ("+ New chapter" and the active row's "Delete this chapter"), which
-      // are excluded so the count reflects real chapters, not affordances.
-      const rows = page
-        .locator('nav[aria-label="Chapters"] button')
-        .filter({ hasNotText: /^Chapters|\+ New chapter|Delete this chapter/ });
+      // Chapter-row buttons only, selected structurally (`li > div >
+      // button:first-child`): the nav also holds the head, "+ New chapter", and
+      // a textless rename/delete icon pair per row, none of which are chapters.
+      const rows = page.locator(
+        'nav[aria-label="Chapters"] ul > li > div > button:first-child',
+      );
       await expect(
         rows,
         "a freshly created book has exactly one chapter row",
