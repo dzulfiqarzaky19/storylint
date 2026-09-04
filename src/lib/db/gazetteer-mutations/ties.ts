@@ -28,8 +28,17 @@ export async function insertTie(
   _confirmation: WikiWriteConfirmation,
 ): Promise<TieRow> {
   const res = await one<TieRow>(
+    // Idempotent on id (mirrors insertFact): the tie id is minted by the CALLER
+    // (the wiki commit module mints it once, dispatches the optimistic LINK_ENTRY
+    // with it, and sends the same id here), so a double-fired transition updates
+    // the row in place instead of PK-violating.
     `INSERT INTO ties (id, from_entry_id, to_entry_id, rel, book_id)
      VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (id) DO UPDATE SET
+       from_entry_id = EXCLUDED.from_entry_id,
+       to_entry_id   = EXCLUDED.to_entry_id,
+       rel           = EXCLUDED.rel,
+       book_id       = EXCLUDED.book_id
      RETURNING id,
                from_entry_id AS "fromEntryId",
                to_entry_id   AS "toEntryId",

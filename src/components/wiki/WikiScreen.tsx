@@ -6,40 +6,19 @@
 // is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag
 // session state lives in DragContext so dragover can read the payload.
 
-import { useReducer, useCallback, useState, startTransition } from "react";
-import { useServerAction, clientErr } from "@/components/hooks/useServerAction";
+import { useReducer, useCallback, useState } from "react";
 import { useAiSuggest } from "./useAiSuggest";
 import { useTrashPanel } from "./useTrashPanel";
 import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
-import { KIND_SHELF, KIND_FOR_SHELF, KIND_LABEL } from "@/lib/domain/types";
+import { KIND_SHELF } from "@/lib/domain/types";
 import {
   initWikiState,
   wikiReducer,
   type WikiSuggestion,
 } from "@/lib/state/wikiStore";
 import { DragProvider, useDrag } from "@/components/dnd/DragContext";
-import {
-  moveEntry,
-  linkEntry,
-  moveFact,
-  addSuggestionAsFact,
-  dismissSuggestion,
-  editEntry,
-  editFact,
-  createEntry,
-  createFact,
-  deleteFact,
-  softDeleteEntry,
-  untie,
-  createEntryTied,
-  renameCategory,
-  resetCategoryLabel,
-  deleteCategory,
-  createCategory,
-} from "@/lib/actions/wiki";
-import { type ActionResult } from "@/lib/actions/confirmation";
-import { resolveCategoryLabel, categoryLabelById, defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
-import { kindForNewEntry } from "./createEntryKind";
+import { useWikiCommit } from "./useWikiCommit";
+import { categoryLabelById } from "@/lib/wiki/categoryLabels";
 import EntryBand from "./entry/EntryBand";
 import WorldBand from "./WorldBand";
 import Shelf from "./shelf/Shelf";
@@ -51,8 +30,6 @@ import ConfirmModal from "../ui/ConfirmModal";
 import styles from "./WikiScreen.module.css";
 
 const SHELF_ORDER: ShelfKey[] = ["people", "places", "orders", "lore"];
-/** Relationship label for a tie created by dropping a tile onto the Ties block. */
-const LINKED_REL = "linked";
 
 interface WikiScreenProps {
   snapshot: WikiSnapshot;
@@ -105,400 +82,134 @@ function WikiScreenInner({
     (error: string) => dispatch({ type: "SET_ERROR", error }),
     [],
   );
-  const { run } = useServerAction(surfaceError);
-  const settle = useCallback(
-    (label: string, p: Promise<ActionResult<unknown>>) => run(p, { label }),
-    [run],
-  );
 
-  // ---- Drop: tile onto tile (insert before) / onto shelf (append, regroup) --
-  const dropEntry = useCallback(
-    (toShelf: ShelfKey, beforeId: string | null) => {
-      const item = drag.dragging;
-      if (!item || item.type !== "entry") return;
-      const entry = state.byId[item.id];
-      if (!entry) return;
-      const fromShelf = entry.shelf as ShelfKey;
-      if (item.id === beforeId) return; // dropped on itself
+  // THE write-through. Every gazetteer mutation on this screen is one `commit`
+  // of an intent; ids, append positions, the product-rule-1 confirmation, the
+  // active world, the error label, and the optimistic/persist pairing all live
+  // inside it. This screen no longer knows any of them.
+  const commit = useWikiCommit({ state, dispatch, worldId: activeWorldId });
 
-      dispatch({ type: "MOVE_ENTRY", entryId: item.id, toShelf, beforeId });
-
-      // Compute the resulting orders the same way the reducer does, so the
-      // server persists exactly what the UI now shows.
-      const withoutFrom = (shelf: ShelfKey) =>
-        state.order[shelf].filter((id) => id !== item.id);
-      const toOrder = withoutFrom(toShelf);
-      const at = beforeId ? toOrder.indexOf(beforeId) : -1;
-      if (at >= 0) toOrder.splice(at, 0, item.id);
-      else toOrder.push(item.id);
-      const fromOrder =
-        fromShelf === toShelf ? toOrder : withoutFrom(fromShelf);
-
-      settle(
-        "moveEntry",
-        moveEntry({
-          entryId: item.id,
-          toShelf,
-          toShelfOrder: toOrder,
-          fromShelf,
-          fromShelfOrder: fromOrder,
-        }),
-      );
-    },
-    [drag.dragging, state.byId, state.order, settle],
-  );
-
-  // ---- Drop: fact row onto a tile (move fact between entries) ----------------
-  const dropFactOnEntry = useCallback(
-    (toEntryId: string) => {
-      const item = drag.dragging;
-      if (!item || item.type !== "fact") return;
-      const fromEntryId = item.from;
-      if (fromEntryId === toEntryId) return;
-      const to = state.byId[toEntryId];
-      if (!to) return;
-      dispatch({ type: "MOVE_FACT", factId: item.id, fromEntryId, toEntryId });
-      settle(
-        "moveFact",
-        moveFact({ factId: item.id, toEntryId, sortOrder: to.facts.length }),
-      );
-    },
-    [drag.dragging, state.byId, settle],
-  );
-
-  // ---- Drop: tile onto Ties block (create a `linked` tie) --------------------
   const selected = state.selectedEntryId
     ? state.byId[state.selectedEntryId]
     : undefined;
 
+  // ---- Drops. The screen owns only the DRAG SESSION: read the payload, decide
+  // which intent it means, and commit it. ------------------------------------
+  const dropEntry = useCallback(
+    (toShelf: ShelfKey, beforeId: string | null) => {
+      const item = drag.dragging;
+      if (!item || item.type !== "entry") return;
+      commit({ type: "entry.move", entryId: item.id, toShelf, beforeId });
+    },
+    [drag.dragging, commit],
+  );
+
+  const dropFactOnEntry = useCallback(
+    (toEntryId: string) => {
+      const item = drag.dragging;
+      if (!item || item.type !== "fact") return;
+      commit({ type: "fact.move", factId: item.id, fromEntryId: item.from, toEntryId });
+    },
+    [drag.dragging, commit],
+  );
+
   const dropOnTies = useCallback(() => {
     const item = drag.dragging;
-    if (!item || item.type !== "entry" || !selected) return;
-    if (item.id === selected.id) return; // don't tie an entry to itself
-    const tieId =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : `tie-${selected.id}-${item.id}-${Date.now()}`;
-    dispatch({
-      type: "LINK_ENTRY",
-      tieId,
-      fromEntryId: selected.id,
-      toEntryId: item.id,
-      rel: LINKED_REL,
-    });
-    settle(
-      "linkEntry",
-      linkEntry({ fromEntryId: selected.id, toEntryId: item.id, rel: LINKED_REL }),
-    );
-  }, [drag.dragging, selected, settle]);
+    if (!item || item.type !== "entry") return;
+    commit({ type: "tie.link", toEntryId: item.id });
+  }, [drag.dragging, commit]);
 
-  // ---- Ties block authoring: untie / tie-existing / create-new-and-tie -------
-  // Each dispatches the reducer action ALONGSIDE its confirmation-gated server
-  // action (untie is a HARD delete, gated behind the TiesBlock danger confirm;
-  // the guard lives in TiesBlock, this just performs the removal).
-  const untieFromSelected = useCallback(
-    (tieId: string) => {
-      if (!selected) return;
-      dispatch({ type: "UNTIE", fromEntryId: selected.id, tieId });
-      settle("untie", untie({ tieId }));
-    },
-    [selected, settle],
-  );
-
-  // Tie the focused entry to an EXISTING entry, with the writer's rel label.
-  const tieExistingToSelected = useCallback(
-    (toEntryId: string, rel: string) => {
-      if (!selected || toEntryId === selected.id) return;
-      const tieId = newId();
-      const label = rel.trim() || LINKED_REL;
-      dispatch({
-        type: "LINK_ENTRY",
-        tieId,
-        fromEntryId: selected.id,
-        toEntryId,
-        rel: label,
-      });
-      settle(
-        "linkEntry",
-        linkEntry({ fromEntryId: selected.id, toEntryId, rel: label }),
-      );
-    },
-    [selected, settle],
-  );
-
-  // Create a NEW entry (on the focused entry's shelf/kind) and tie it in, both
-  // in one confirmation-gated transaction (createEntryTied). The reducer mirrors
-  // it optimistically with the same ids so the DB and session agree.
-  const createTiedToSelected = useCallback(
-    (name: string, rel: string) => {
-      if (!selected) return;
-      const trimmed = name.trim();
-      if (!trimmed) return;
-      const shelf = selected.shelf as ShelfKey;
-      const kind: Kind = KIND_FOR_SHELF[shelf];
-      const entryId = newId();
-      const tieId = newId();
-      const label = rel.trim() || LINKED_REL;
-      dispatch({
-        type: "CREATE_TIED",
-        entryId,
-        tieId,
-        kind,
-        shelf,
-        name: trimmed,
-        toEntryId: selected.id,
-        rel: label,
-      });
-      settle(
-        "createEntryTied",
-        createEntryTied({
-          name: trimmed,
-          kind,
-          shelf,
-          toEntryId: selected.id,
-          rel: label,
-          confirmed: true,
-          worldId: activeWorldId,
-        }),
-      );
-    },
-    [selected, settle, activeWorldId],
-  );
-
-  // Shared: write a suggestion as a fresh fact (drop OR "Write it in" button).
-  const writeSuggestion = useCallback(
-    (s: WikiSuggestion) => {
-      const entry = state.byId[s.entryId] ?? selected;
-      if (!entry) return;
-      const factId =
-        typeof crypto !== "undefined" && "randomUUID" in crypto
-          ? crypto.randomUUID()
-          : `fact-${s.suggestionKey}-${Date.now()}`;
-      const sortOrder = entry.facts.length;
-      dispatch({
-        type: "ADD_SUGGESTION_AS_FACT",
-        suggestionKey: s.suggestionKey,
-        entryId: entry.id,
-        factId,
-        key: s.key,
-        value: s.value,
-        sortOrder,
-      });
-      settle(
-        "addSuggestionAsFact",
-        addSuggestionAsFact({
-          suggestionKey: s.suggestionKey,
-          entryId: entry.id,
-          key: s.key,
-          value: s.value,
-          sortOrder,
-          confirmed: true,
-        }),
-      );
-    },
-    [state.byId, selected, settle],
-  );
-
-  // ---- Drop: suggestion onto Details column (add as a fresh fact) ------------
   const addSuggestionToDetails = useCallback(
     (suggestionKey: string) => {
       const item = drag.dragging;
       if (!item || item.type !== "card") return;
       const s = state.suggestions.find((x) => x.suggestionKey === suggestionKey);
       if (!s) return;
-      writeSuggestion(s);
+      commit({ type: "suggestion.write", suggestion: s });
     },
-    [drag.dragging, state.suggestions, writeSuggestion],
-  );
-
-  const leaveSuggestion = useCallback(
-    (s: WikiSuggestion) => {
-      dispatch({ type: "DISMISS_SUGGESTION", suggestionKey: s.suggestionKey });
-      settle("dismissSuggestion", dismissSuggestion(s.suggestionKey));
-    },
-    [settle],
-  );
-
-  // ---- Manual authoring (Track A) — edit in place + create ------------------
-  // Hoisted function (not a const arrow) so the tie-authoring callbacks declared
-  // ABOVE the manual-authoring section can call it without a TDZ error.
-  function newId() {
-    return typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : `id-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  }
-
-  const editEntryField = useCallback(
-    (entryId: string, field: "name" | "summary" | "note", value: string) => {
-      dispatch({ type: "EDIT_ENTRY_FIELDS", entryId, [field]: value });
-      settle("editEntry", editEntry({ entryId, [field]: value }));
-    },
-    [settle],
-  );
-
-  const editFactField = useCallback(
-    (entryId: string, factId: string, field: "key" | "value", value: string) => {
-      dispatch({ type: "EDIT_FACT", entryId, factId, [field]: value });
-      settle("editFact", editFact({ factId, [field]: value }));
-    },
-    [settle],
-  );
-
-  const addFact = useCallback(
-    (entryId: string) => {
-      const entry = state.byId[entryId];
-      if (!entry) return;
-      const factId = newId();
-      const sortOrder = entry.facts.length;
-      dispatch({
-        type: "CREATE_FACT",
-        entryId,
-        factId,
-        key: "Detail",
-        value: "",
-        sortOrder,
-      });
-      settle(
-        "createFact",
-        createFact({ entryId, key: "Detail", value: "", sortOrder }),
-      );
-    },
-    [state.byId, settle],
-  );
-
-  const deleteFactCallback = useCallback(
-    (entryId: string, factId: string) => {
-      dispatch({ type: "DELETE_FACT", entryId, factId });
-      settle("deleteFact", deleteFact({ factId }));
-    },
-    [settle],
+    [drag.dragging, state.suggestions, commit],
   );
 
   // ---- AI: suggest details for the focused entry (read-only until Add) ------
   const ai = useAiSuggest(surfaceError);
 
-  // Add one AI suggestion as a real fact — routes through the SAME confirmation-
-  // gated createFact path as manual authoring (product rule 1 intact).
+  // Accepting an AI suggestion is the SAME confirmed fact write as manual
+  // authoring (product rule 1 intact); the only extra is clearing the panel row.
   const addSuggestedFact = useCallback(
     (entryId: string, key: string, value: string) => {
-      const entry = state.byId[entryId];
-      if (!entry) return;
-      const factId = newId();
-      const sortOrder = entry.facts.length;
-      dispatch({ type: "CREATE_FACT", entryId, factId, key, value, sortOrder });
-      settle("createFact", createFact({ entryId, key, value, sortOrder }));
-      // Remove the accepted suggestion from the panel.
+      commit({ type: "fact.create", entryId, key, value });
       ai.remove(entryId, key);
     },
-    [state.byId, settle, ai],
+    [commit, ai],
   );
 
+  // Poster-band "Write it in" / "Leave it".
+  const writeSuggestion = useCallback(
+    (s: WikiSuggestion) => commit({ type: "suggestion.write", suggestion: s }),
+    [commit],
+  );
+  const leaveSuggestion = useCallback(
+    (s: WikiSuggestion) => commit({ type: "suggestion.dismiss", suggestionKey: s.suggestionKey }),
+    [commit],
+  );
+
+  // ---- Child prop adapters. Each is ONE intent; the children keep their own
+  // callback shapes, and nothing about ids/ordering/confirmation leaks into them.
   const createEntryOnShelf = useCallback(
-    (shelf: ShelfKey, categoryId?: string) => {
-      const kind = kindForNewEntry(shelf, categoryId);
-      const name = `New ${KIND_LABEL[kindForNewEntry(shelf) as Kind].toLowerCase()}`;
-      const entryId = newId();
-      // Client-generated id is passed to the server so the reducer row and the
-      // persisted row share one id — no reconciliation needed. sortOrder just
-      // appends to the shelf.
-      const sortOrder = state.order[shelf].length;
-      dispatch({
-        type: "CREATE_ENTRY",
-        entryId,
-        kind,
-        shelf,
-        name,
-        note: "",
-        summary: "",
-        sortOrder,
-      });
-      settle(
-        "createEntry",
-        createEntry({ id: entryId, kind, shelf, name, worldId: activeWorldId }),
-      );
-    },
-    [state.order, settle, activeWorldId],
+    (shelf: ShelfKey, categoryId?: string) =>
+      commit({ type: "entry.create", shelf, categoryId }),
+    [commit],
   );
-
-  // Soft-delete an entry: optimistically drop it from the session (index +
-  // selection), then persist the deleted_at stamp. Its ties from other entries
-  // become dangling "removed" tombstones on next render.
-  const deleteEntry = useCallback(
-    (entryId: string) => {
-      dispatch({ type: "SOFT_DELETE_ENTRY", entryId });
-      settle("softDeleteEntry", softDeleteEntry({ id: entryId }));
-    },
-    [settle],
+  const createCategoryOnShelf = useCallback(
+    (id: string, label: string) => commit({ type: "category.create", id, label }),
+    [commit],
   );
-
-  // ---- Category headers (F6-S5b; F9-B S3): rename / reset / delete / create ---
-  // Each optimistic reducer action fires ALONGSIDE its server action, per the
-  // §8 write-through pattern. Rename/reset touch only the label (no confirm).
-  // Deleting a whole category soft-deletes EVERY live entry of the category, so
-  // it is gated behind the danger ConfirmModal below. F9-B S3: `kind` is a
-  // CATEGORY ID (string) — built-ins keep their legacy Kind-string ids, user
-  // categories are UUIDs — so rename/reset/delete work on ANY category.
   const renameCategoryLabel = useCallback(
-    (kind: string, label: string) => {
-      dispatch({ type: "RENAME_CATEGORY", kind, label });
-      settle("renameCategory", renameCategory({ kind, label }));
-    },
-    [settle],
+    (categoryId: string, label: string) =>
+      commit({ type: "category.rename", categoryId, label }),
+    [commit],
   );
-
   const resetCategory = useCallback(
-    (kind: string) => {
-      dispatch({ type: "RESET_CATEGORY", kind });
-      settle("resetCategoryLabel", resetCategoryLabel({ kind }));
-    },
-    [settle],
+    (categoryId: string) => commit({ type: "category.reset", categoryId }),
+    [commit],
+  );
+  const deleteEntry = useCallback(
+    (entryId: string) => commit({ type: "entry.delete", entryId }),
+    [commit],
+  );
+  const untieFromSelected = useCallback(
+    (tieId: string) => commit({ type: "tie.untie", tieId }),
+    [commit],
+  );
+  const tieExistingToSelected = useCallback(
+    (toEntryId: string, rel: string) => commit({ type: "tie.link", toEntryId, rel }),
+    [commit],
+  );
+  const createTiedToSelected = useCallback(
+    (name: string, rel: string) => commit({ type: "tie.createEntry", name, rel }),
+    [commit],
+  );
+  const editEntryField = useCallback(
+    (entryId: string, field: "name" | "summary" | "note", value: string) =>
+      commit({ type: "entry.edit", entryId, field, value }),
+    [commit],
+  );
+  const editFactField = useCallback(
+    (entryId: string, factId: string, field: "key" | "value", value: string) =>
+      commit({ type: "fact.edit", entryId, factId, field, value }),
+    [commit],
+  );
+  const addFact = useCallback(
+    (entryId: string) => commit({ type: "fact.create", entryId, key: "Detail", value: "" }),
+    [commit],
+  );
+  const deleteFactCallback = useCallback(
+    (entryId: string, factId: string) => commit({ type: "fact.delete", entryId, factId }),
+    [commit],
   );
 
   // The category id whose whole-category delete awaits confirmation (null = none).
   const [confirmDeleteKind, setConfirmDeleteKind] = useState<string | null>(null);
-
-  const performDeleteCategory = useCallback(
-    (kind: string) => {
-      dispatch({ type: "DELETE_CATEGORY", kind });
-      settle("deleteCategory", deleteCategory({ kind, confirmed: true }));
-    },
-    [settle],
-  );
-
-  // F9-B S3: create a brand-new user category on a shelf. The child
-  // NewCategoryShelf mints a client id ONCE per form-open (TCK-010) and passes
-  // it in, so a double-invoked commit reuses the same id; the server INSERT has
-  // ON CONFLICT (id) DO NOTHING, collapsing a double-fire to exactly one row.
-  // The reducer appends the returned row (CREATE_CATEGORY) so it appears as its
-  // own group immediately. A blank label is ignored here (the server also
-  // rejects it) so the cancel path is a harmless no-op.
-  const createCategoryOnShelf = useCallback(
-    (id: string, label: string) => {
-      const trimmed = label.trim();
-      if (trimmed === "") return;
-      // TCK-009: the affordance no longer prompts for a shelf (categories are
-      // SIBLINGS, not nested under a shelf), but `categories.shelf` is NOT-NULL
-      // and still drives the internal SHELF_ORDER sort bucket — a
-      // dead-but-load-bearing internal, no longer a user concept. Default it via
-      // the pure defaultCategoryShelf() seam ("lore" catch-all; see its doc).
-      const shelf = defaultCategoryShelf();
-      // `id` is minted once per form-open by NewCategoryShelf and reused across
-      // a double-invoked commit, so the create is idempotent (server INSERT ...
-      // ON CONFLICT (id) DO NOTHING) and one click writes exactly one row.
-      startTransition(() => {
-        createCategory({ id, label: trimmed, shelf })
-          .then((res) => {
-            if (res.ok) dispatch({ type: "CREATE_CATEGORY", category: res.data });
-            else dispatch({ type: "SET_ERROR", error: res.error });
-          })
-          .catch((err: unknown) => {
-            const msg = clientErr(err);
-            dispatch({ type: "SET_ERROR", error: `createCategory: ${msg}` });
-          });
-      });
-    },
-    [],
-  );
 
   // ---- Trash: recently-deleted panel (F6-S6b) --------------------------------
   // Panel-local server state + restore/purge live in useTrashPanel (T-ARCH-13).
@@ -713,9 +424,9 @@ function WikiScreenInner({
           cancelLabel="Cancel"
           danger
           onConfirm={() => {
-            const kind = confirmDeleteKind;
+            const categoryId = confirmDeleteKind;
             setConfirmDeleteKind(null);
-            performDeleteCategory(kind);
+            commit({ type: "category.delete", categoryId });
           }}
           onCancel={() => setConfirmDeleteKind(null)}
         />

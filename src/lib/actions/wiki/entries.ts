@@ -64,9 +64,17 @@ export async function moveEntry(input: {
 /**
  * Record a directional tie between two existing entries (drag a tile onto the
  * Ties block). Does not create entries or facts. Mirrors reducer `LINK_ENTRY`.
- * Returns the new tie id so the reducer and DB agree.
+ * Returns the tie id so the reducer and DB agree.
+ *
+ * `id` is CALLER-OWNED (see createFact's `id`): the wiki commit module mints it
+ * once, dispatches the optimistic LINK_ENTRY with it, and sends the same id
+ * here, so the session row and the persisted row share one identity and a later
+ * `untie` in the same session actually deletes the row. Omitted -> a fresh uuid
+ * (server-owned), the pre-existing behavior for callers that discard the id.
+ * insertTie is ON CONFLICT (id) DO UPDATE, so a re-send is idempotent.
  */
 export async function linkEntry(input: {
+  id?: string;
   fromEntryId: string;
   toEntryId: string;
   rel: string;
@@ -75,7 +83,7 @@ export async function linkEntry(input: {
     // A tie between existing entries is an arrangement, but insertTie demands a
     // confirmation token (product rule 1, defence in depth) — mint it here.
     const confirmation = confirmWikiWrite({ confirmed: true });
-    const id = randomUUID();
+    const id = input.id ?? randomUUID();
     const tie = await insertTie(
       {
         id,
@@ -113,8 +121,12 @@ export async function untie(input: { tieId: string }): Promise<ActionResult> {
  * reducer and DB agree. REQUIRES an explicit confirmation.
  *
  * @param input.confirmed must be the literal `true` — the confirmation gate.
+ * @param input.entryId CALLER-OWNED id (see linkEntry's `id`); omitted -> server-minted.
+ * @param input.tieId   CALLER-OWNED id (see linkEntry's `id`); omitted -> server-minted.
  */
 export async function createEntryTied(input: {
+  entryId?: string;
+  tieId?: string;
   name: string;
   kind: Kind;
   shelf: Shelf;
@@ -129,8 +141,8 @@ export async function createEntryTied(input: {
     const world = requireWorldId(input.worldId, "wiki.createEntryTied");
     if (!world.ok) return world;
     const confirmation = confirmWikiWrite({ confirmed: input.confirmed });
-    const entryId = randomUUID();
-    const tieId = randomUUID();
+    const entryId = input.entryId ?? randomUUID();
+    const tieId = input.tieId ?? randomUUID();
     await createEntryWithTie(
       {
         entry: {
@@ -181,8 +193,10 @@ export async function moveFact(input: {
  * --fresh row background). Returns the generated fact id.
  *
  * @param input.confirmed must be the literal `true` — the confirmation gate.
+ * @param input.factId CALLER-OWNED id (see createFact's `id`); omitted -> server-minted.
  */
 export async function addSuggestionAsFact(input: {
+  factId?: string;
   suggestionKey: string;
   entryId: string;
   key: string;
@@ -193,7 +207,7 @@ export async function addSuggestionAsFact(input: {
   return runAction("wiki.addSuggestionAsFact", async () => {
     // Mint the token; a caller that omits `confirmed: true` fails to type-check.
     const confirmation = confirmWikiWrite({ confirmed: input.confirmed });
-    const id = randomUUID();
+    const id = input.factId ?? randomUUID();
     const fact = await insertFact(
       {
         id,
