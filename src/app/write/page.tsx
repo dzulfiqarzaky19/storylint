@@ -24,6 +24,7 @@ import {
 import { resolveActiveScope } from '@/lib/scope/activeScope';
 import { paragraphsToDoc } from '@/lib/write/adapters';
 import { loadChapterMarks } from '@/lib/write/chapterMarks';
+import { dbChapterMarksReader } from '@/lib/write/chapterMarksReader';
 import { aiEnabled } from '@/lib/ai/saarouters';
 
 export const dynamic = 'force-dynamic';
@@ -72,12 +73,15 @@ export default async function WritePage({
   // fresh cached AI marks, and each sibling chapter's left-index dot — resolved
   // together against one wiki snapshot and one freshness gate, so a dot and the
   // rail it opens onto can never disagree.
-  const marks = await loadChapterMarks({
-    universeId: scope.universeId,
-    bookId: scope.bookId,
-    chapterNumber,
-    body,
-  });
+  const marks = await loadChapterMarks(
+    {
+      universeId: scope.universeId,
+      bookId: scope.bookId,
+      chapterNumber,
+      body,
+    },
+    dbChapterMarksReader,
+  );
 
   return (
     <Manuscript

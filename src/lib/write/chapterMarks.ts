@@ -8,19 +8,20 @@
 // write the freshness gate a SECOND time to use it. Two copies of one formula,
 // in the module documented as "ONE source of truth" and in its only caller.
 //
-// So the module now owns the whole question. It loads the wiki snapshot at the
-// scope the marks must be resolved against, the book's chapters, the per-chapter
-// AI-cache rows (only when AI is on), and the recurrence counts for the open
-// chapter — then resolves every chapter's marks through ONE freshness gate and
-// ONE merge. The caller states which chapter is open and gets back everything
-// the Write screen renders marks from.
+// So the module owns the whole question: the scope the snapshot is loaded at,
+// the load ordering, the per-chapter AI-cache rows (only when AI is on), the
+// recurrence counts for the open chapter — then resolves every chapter's marks
+// through ONE freshness gate and ONE merge.
 //
-// What the caller no longer knows: the freshness formula, the nine-step load
-// ordering, that the wiki snapshot must be loaded at (universe, book) scope,
-// that cache rows are worth fetching only when AI is enabled, that the engine
-// input is assembled by buildCheckInput, that the client's copy of the snapshot
-// is the toCheckWiki projection, and that the active chapter's index dot is
-// forced null.
+// What the caller no longer knows: the freshness formula, the load ordering,
+// that the wiki snapshot must be read at (universe, book) scope, that cache rows
+// are worth fetching only when AI is enabled, that the engine input is assembled
+// by buildCheckInput, that the client's copy of the snapshot is the toCheckWiki
+// projection, and that the active chapter's index dot is forced null.
+//
+// Reads arrive through ONE injected port (`ChapterMarksReader`), so this module
+// imports no database and no gateway and the whole resolution is exercisable
+// against a fake. The production adapter is `./chapterMarksReader`.
 //
 // Freshness reuses the SAME `hashValue` over the SAME inputs that `write.ts`
 // stamps the cache row from, so this gate is byte-identical to the persisted
@@ -38,19 +39,37 @@ import { mergeMarks } from "@/lib/check/ai";
 import { hashValue } from "@/lib/check/hash";
 import type { ChapterSeverity } from "@/lib/check/severity";
 import { extractCandidatePhrases } from "@/lib/check/unrecorded";
-import { aiEnabled } from "@/lib/ai/saarouters";
-import {
-  getChapterCheckCache,
-  getChaptersForBook,
-  getPhraseChapterCounts,
-  getResolvedMarkKeys,
-  loadWikiSnapshot,
-} from "@/lib/db/queries";
 import type { ChapterCheckCacheRow, WikiSnapshot as DbWiki } from "@/lib/domain/types";
 import { buildCheckInput, docToParagraphs, toCheckWiki } from "./adapters";
 
+/** One chapter of the active book, as this module needs to see it. */
+export interface ChapterBody {
+  id: string;
+  number: number;
+  body: unknown;
+}
+
+/**
+ * Everything this module reads, as ONE port. The production adapter wraps the
+ * query layer and the gateway check (`./chapterMarksReader`); a test passes a
+ * fake and exercises the gate, the merge and the dot rules without a database.
+ */
+export interface ChapterMarksReader {
+  /** The snapshot marks are resolved against — the scope IS part of the answer. */
+  wikiSnapshot(universeId: string, bookId: string): Promise<DbWiki>;
+  /** Book-wide dismissed mark keys. */
+  resolvedMarkKeys(): Promise<string[]>;
+  /** Every chapter of the active book, for the left-index dots. */
+  bookChapters(bookId: string): Promise<ChapterBody[]>;
+  /** Tier-2 recurrence counts for the open chapter's candidate phrases. */
+  phraseChapterCounts(phrases: string[]): Promise<ReadonlyMap<string, number>>;
+  /** A chapter's persisted AI-check row, or null when none is cached. */
+  checkCache(chapterId: string): Promise<ChapterCheckCacheRow | null>;
+  /** Whether the AI gateway is configured for this request. */
+  aiEnabled(): boolean;
+}
+
 export interface ChapterMarksArgs {
-  /** Scope the wiki snapshot is loaded at — marks are only meaningful against it. */
   universeId: string;
   bookId: string;
   /** The chapter the writer has open. */
@@ -126,31 +145,34 @@ function severityOf(marks: Mark[]): ChapterSeverity {
  * the same resolution over the same inputs — the bug this module exists to make
  * unrepresentable was a chapter showing a dot and then opening to an empty rail.
  */
-export async function loadChapterMarks(args: ChapterMarksArgs): Promise<ChapterMarks> {
+export async function loadChapterMarks(
+  args: ChapterMarksArgs,
+  read: ChapterMarksReader,
+): Promise<ChapterMarks> {
   const { universeId, bookId, chapterNumber, body } = args;
 
   const [db, resolvedMarkKeys, bookChapters] = await Promise.all([
-    loadWikiSnapshot(universeId, bookId),
-    getResolvedMarkKeys(),
-    getChaptersForBook(bookId),
+    read.wikiSnapshot(universeId, bookId),
+    read.resolvedMarkKeys(),
+    read.bookChapters(bookId),
   ]);
 
   // Tier-2 recurrence ranking, for the OPEN chapter only: DISTINCT-chapter counts
   // for the phrases actually on this chapter, rather than shipping the whole
   // book-wide index to the client. Depends on `body`, so it cannot join the load
   // above. The count itself stays book-wide (a phrase in ch3 + ch7 reports 2).
-  const chapterCounts = await getPhraseChapterCounts([
+  const chapterCounts = await read.phraseChapterCounts([
     ...extractCandidatePhrases(docToParagraphs(body)).keys(),
   ]);
 
   // Cache rows are worth a query only when AI is on; otherwise every resolve is
   // a deterministic-only fallback and the rows would go unread.
-  const aiOn = aiEnabled();
+  const aiOn = read.aiEnabled();
   const cacheByNumber = new Map<number, ChapterCheckCacheRow | null>();
   if (aiOn) {
     await Promise.all(
       bookChapters.map(async (c) => {
-        cacheByNumber.set(c.number, await getChapterCheckCache(c.id));
+        cacheByNumber.set(c.number, await read.checkCache(c.id));
       }),
     );
   }
