@@ -10,7 +10,13 @@ import { type ActionResult, runActionBare } from "../confirmation";
 import { insertResearchTurnPair } from "../../db/research-mutations";
 import { randomUUID } from "node:crypto";
 import { type ResearchTurnWithCards } from "../../domain/types";
-import { aiEnabled, complete, completeJson } from "../../ai/saarouters";
+import { aiEnabled } from "../../ai/saarouters";
+import {
+  AI_OFF,
+  askGroundedJson,
+  askGroundedText,
+  type PromptPart,
+} from "../../ai/groundedAsk";
 import { loadWikiSnapshot, loadWorldSnapshot } from "../../db/gazetteer";
 import { getResearchThreadWorldId } from "../../db/research-queries";
 import { deriveThreadTitle } from "../../research/title";
@@ -51,9 +57,7 @@ export async function askResearchAi(input: {
   // bare text with no FK to research_threads).
   const threadId = (input.threadId ?? "").trim();
   if (!threadId) return { ok: false, error: "No active thread to write to." };
-  if (!aiEnabled()) {
-    return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
-  }
+  if (!aiEnabled()) return { ok: false, error: AI_OFF };
 
   return runActionBare(async () => {
     // T-RESEARCH-2 (LOAD-BEARING): ground on the thread's OWN world, not the
@@ -66,14 +70,7 @@ export async function askResearchAi(input: {
     const wiki = threadWorldId
       ? await loadWorldSnapshot(threadWorldId)
       : await loadWikiSnapshot();
-    const gazetteer = wiki.entries
-      .map((e) => {
-        const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
-        return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
-      })
-      .join("\n");
-
-    const system = [
+    const system: string[] = [
       "You are a story-consistency collaborator for a fiction writer.",
       "You help them think through their own world. Ground every answer ONLY in the gazetteer provided; never invent contradicting facts.",
       "Reply as a thoughtful writing partner in 2-4 sentences, then propose 2-3 concrete 'cards' the writer could keep.",
@@ -81,26 +78,21 @@ export async function askResearchAi(input: {
       '{"reply": string, "cards": [{"kind": "character|world|organization|lore|beat|question", "title": string, "body": string, "asKind": "character|world|organization|lore", "forEntry": string}]}',
       "title: <=6 words. body: one or two sentences. asKind: the wiki kind this card would become if written in.",
       "forEntry: if a card describes a trait, curse, relationship, or detail that BELONGS TO an entry already listed in the gazetteer, you MUST set forEntry to that entry's EXACT name, copied verbatim from the gazetteer list, so it attaches to that entry instead of minting a duplicate. Omit forEntry entirely ONLY when the card introduces a genuinely NEW subject not in the gazetteer.",
-    ].join("\n");
+    ];
 
-    const user = [
-      input.threadTitle ? `Thread: ${input.threadTitle}` : "",
-      gazetteer ? `Gazetteer (the writer's wiki):\n${gazetteer}` : "Gazetteer: (empty)",
-      "",
-      `Writer asks: ${question}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    const wikiGround: PromptPart = {
+      heading: "Gazetteer (the writer's wiki):",
+      entries: wiki.entries,
+      whenEmpty: "Gazetteer: (empty)",
+    };
 
-    let answer: AiAnswer;
     // F10: real web search. Retrieve + read full-body pages for this question,
     // then append them as grounded prompt context and hold the reply's citations
     // to exactly the URLs we read. Fail-soft: any engine error yields no web
     // context and the answer falls back to wiki-only grounding. Opt-in
     // ACTIVATION: only run live retrieval when web search is CONFIGURED, so a
     // fresh clone boots green with zero surprise network egress.
-    let webSystem = system;
-    let webUser = user;
+    let webContext = "";
     let allowedUrls: string[] = [];
     try {
       const cfg = loadWebSearchConfig(process.env);
@@ -111,33 +103,46 @@ export async function askResearchAi(input: {
         });
         const context = renderWebContext(retrieval);
         allowedUrls = collectAllowedUrls(retrieval);
-        if (context) {
-          webUser = `${user}\n\n${context}`;
-          webSystem = `${system}\nWeb sources are provided below as CONTEXT blocks with URLs. You MAY ground answers in them and cite their exact URLs; never cite a URL not provided.`;
-        }
+        if (context) webContext = context;
       }
     } catch {
       // Fail-soft: keep wiki-only prompt, no allowed citations.
-      webSystem = system;
-      webUser = user;
+      webContext = "";
       allowedUrls = [];
     }
-    try {
-      answer = await completeJson<AiAnswer>({
-        system: webSystem,
-        messages: [{ role: "user", content: webUser }],
-        maxTokens: 900,
+
+    const user: PromptPart[] = [
+      input.threadTitle ? `Thread: ${input.threadTitle}` : false,
+      wikiGround,
+      `Writer asks: ${question}`,
+      webContext ? `\n${webContext}` : false,
+    ];
+    const webRule = webContext
+      ? "Web sources are provided below as CONTEXT blocks with URLs. You MAY ground answers in them and cite their exact URLs; never cite a URL not provided."
+      : false;
+
+    const asked = await askGroundedJson<AiAnswer>({
+      system: webRule ? [...system, webRule] : system,
+      user,
+      budget: "full",
+      temperature: 0.7,
+    });
+
+    let answer: AiAnswer;
+    if (asked.ok) {
+      answer = asked.data;
+    } else {
+      // Fallback: strict JSON failed, so take a plain reply with no cards.
+      const plain = await askGroundedText({
+        system: [
+          "You are a story-consistency collaborator. Answer in 2-4 sentences, grounded in the writer's world.",
+        ],
+        user,
+        budget: "brief",
         temperature: 0.7,
       });
-    } catch {
-      // Fallback: if strict JSON failed, take a plain reply with no cards.
-      const reply = await complete({
-        system: "You are a story-consistency collaborator. Answer in 2-4 sentences, grounded in the writer's world.",
-        messages: [{ role: "user", content: webUser }],
-        maxTokens: 400,
-        temperature: 0.7,
-      });
-      answer = { reply, cards: [] };
+      if (!plain.ok) return { ok: false, error: plain.error };
+      answer = { reply: plain.data, cards: [] };
     }
 
     const reply = enforceCitations((answer.reply ?? "").trim() || "Here's a thought.", allowedUrls);

@@ -21,6 +21,15 @@ export interface AiMessage {
   content: string;
 }
 
+/**
+ * The ONE network call this module makes, as an injectable seam — the same
+ * `fetchImpl` discipline `lib/websearch` already uses for its readers. Without
+ * it nothing downstream of a prompt can be exercised without a live gateway:
+ * the retry classification, the empty-200 case, the SSE assembly and every
+ * prompt built on top were all reachable only over the wire.
+ */
+export type GatewayFetch = (url: string, init: RequestInit) => Promise<Response>;
+
 export interface AiCompletionOptions {
   /** System prompt (Anthropic top-level `system`). */
   system?: string;
@@ -29,6 +38,8 @@ export interface AiCompletionOptions {
   temperature?: number;
   /** Abort if the upstream takes longer than this (ms). Default 30s. */
   timeoutMs?: number;
+  /** Override the gateway transport. Defaults to global `fetch`. */
+  fetchImpl?: GatewayFetch;
 }
 
 export interface AiConfig {
@@ -117,6 +128,7 @@ async function completeOnce(
     maxTokens = 1024,
     temperature,
     timeoutMs = 30_000,
+    fetchImpl = fetch,
   } = options;
 
   const controller = new AbortController();
@@ -124,7 +136,7 @@ async function completeOnce(
 
   let res: Response;
   try {
-    res = await fetch(`${config.baseUrl}/v1/messages`, {
+    res = await fetchImpl(`${config.baseUrl}/v1/messages`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -279,11 +291,18 @@ export async function* streamComplete(
     );
   }
 
-  const { system, messages, maxTokens = 1024, temperature, signal } = options;
+  const {
+    system,
+    messages,
+    maxTokens = 1024,
+    temperature,
+    signal,
+    fetchImpl = fetch,
+  } = options;
 
   let res: Response;
   try {
-    res = await fetch(`${config.baseUrl}/v1/messages`, {
+    res = await fetchImpl(`${config.baseUrl}/v1/messages`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

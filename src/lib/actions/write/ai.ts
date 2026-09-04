@@ -7,14 +7,15 @@
 // ============================================================================
 
 import { upsertChapterCheckCache } from "../../db/mutations";
-import { aiEnabled, completeJson } from "../../ai/saarouters";
+import { aiEnabled } from "../../ai/saarouters";
+import { AI_OFF, askGroundedJson } from "../../ai/groundedAsk";
 import { loadWikiSnapshot } from "../../db/gazetteer";
 import { getChapter } from "../../db/chapter-queries";
 import { type Mark } from "../../check";
 import { type AiCheckResponse, aiResultToMarks } from "../../check/ai";
 import { findRetrievalMisses, selectGazetteer } from "../../check/retrieval";
 import { hashValue } from "../../check/hash";
-import { type ActionResult, errorMessage, runActionBare } from "../confirmation";
+import { type ActionResult, runActionBare } from "../confirmation";
 
 /** True when the AI gateway is configured (for UI gating on the write screen). */
 export async function isWriteAiEnabled(): Promise<boolean> {
@@ -42,12 +43,9 @@ export async function explainMark(input: {
 }): Promise<ActionResult<{ explanation: string; rewrite: string }>> {
   const quote = input.quote.trim();
   if (!quote) return { ok: false, error: "No text to explain." };
-  if (!aiEnabled()) {
-    return {
-      ok: false,
-      error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local.",
-    };
-  }
+  // Bail before the snapshot load: with no gateway the fallback below would
+  // silently return the engine note as if the AI had answered.
+  if (!aiEnabled()) return { ok: false, error: AI_OFF };
 
   return runActionBare(async () => {
     // Ground on the wiki so the explanation stays inside the writer's world.
@@ -65,15 +63,9 @@ export async function explainMark(input: {
       ? [input.entityId.trim()]
       : undefined;
     const selection = selectGazetteer(wiki, { text: retrievalText, focusEntityIds });
-    const gazetteer = selection.entries
-      .map((e) => {
-        const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
-        return `- ${e.name} (${e.kind})${e.summary ? ` — ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
-      })
-      .join("\n");
 
     const isConflict = input.kind === "conflict";
-    const system = [
+    const system: string[] = [
       "You are a story-consistency collaborator for a fiction writer.",
       "The writer's consistency engine has flagged a run of their manuscript.",
       isConflict
@@ -92,34 +84,31 @@ export async function explainMark(input: {
         : "Then offer ONE optional rewrite that REPLACES ONLY the flagged run in place. It must read grammatically when substituted verbatim for the flagged run and repeat none of the words around it. If no clean in-place rewrite fits, return an empty rewrite.",
       "Return STRICT JSON only, no prose outside JSON, shaped exactly as:",
       '{"explanation": string, "rewrite": string}',
-    ].join("\n");
+    ];
 
-    const user = [
-      gazetteer ? `Gazetteer (the writer's wiki):\n${gazetteer}` : "Gazetteer: (empty)",
-      "",
-      `Engine note: ${input.noteText}`,
-      input.paragraph ? `Paragraph: ${input.paragraph}` : "",
-      `Flagged run: "${quote}"`,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    const asked = await askGroundedJson<AiMarkAdvice>({
+      system,
+      user: [
+        {
+          heading: "Gazetteer (the writer's wiki):",
+          entries: selection.entries,
+          whenEmpty: "Gazetteer: (empty)",
+        },
+        `Engine note: ${input.noteText}`,
+        input.paragraph ? `Paragraph: ${input.paragraph}` : false,
+        `Flagged run: "${quote}"`,
+      ],
+      budget: "standard",
+    });
 
-    let advice: AiMarkAdvice;
-    try {
-      advice = await completeJson<AiMarkAdvice>({
-        system,
-        messages: [{ role: "user", content: user }],
-        maxTokens: 500,
-      });
-    } catch {
-      // SCALE (G5): the JSON call already failed and BILLED. A second full AI
-      // call here (same large grounded prompt) double-bills for a strictly worse
-      // result. Degrade for FREE to the engine's own note instead: the
-      // deterministic engine is the source of truth and its noteText already
-      // explains the clash. No rewrite is offered on the fallback (that needed
-      // the model).
-      advice = { explanation: input.noteText, rewrite: "" };
-    }
+    // SCALE (G5): the call already failed and BILLED. A second full AI call here
+    // (same large grounded prompt) double-bills for a strictly worse result.
+    // Degrade for FREE to the engine's own note instead: the deterministic
+    // engine is the source of truth and its noteText already explains the clash.
+    // No rewrite is offered on the fallback (that needed the model).
+    const advice: AiMarkAdvice = asked.ok
+      ? asked.data
+      : { explanation: input.noteText, rewrite: "" };
 
     return {
       ok: true,
@@ -156,9 +145,7 @@ interface AiCheckInput {
 export async function aiCheckChapter(
   input: AiCheckInput,
 ): Promise<ActionResult<{ marks: Mark[] }>> {
-  if (!aiEnabled()) {
-    return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
-  }
+  if (!aiEnabled()) return { ok: false, error: AI_OFF };
 
   const paragraphs = input.paragraphs ?? [];
   // Which paragraphs to actually send. Empty changedIndices => check all.
@@ -179,12 +166,6 @@ export async function aiCheckChapter(
     // full manuscript, so retrieval tracks what the model actually sees.
     const sentText = indices.map((i) => paragraphs[i]).join("\n\n");
     const selection = selectGazetteer(wiki, { text: sentText });
-    const gazetteer = selection.entries
-      .map((e) => {
-        const facts = e.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
-        return `- [${e.id}] ${e.name} — ${e.kind}${e.summary ? `: ${e.summary}` : ""}${facts ? ` [${facts}]` : ""}`;
-      })
-      .join("\n");
 
     // Send only the changed paragraphs, tagged with their real index so the
     // model can echo it back and we can anchor positions correctly.
@@ -192,7 +173,7 @@ export async function aiCheckChapter(
       .map((i) => `[[P${i}]] ${paragraphs[i]}`)
       .join("\n\n");
 
-    const system = [
+    const system: string[] = [
       "You are the consistency engine for a fiction writer. You are given the writer's GAZETTEER (their wiki of characters, places, lore and facts) and one or more MANUSCRIPT PARAGRAPHS.",
       "Cross-check every factual claim in the paragraphs against the gazetteer.",
       "Report THREE kinds of finding:",
@@ -212,28 +193,21 @@ export async function aiCheckChapter(
       "- newEntity.name is the proposed short display name for the entry (e.g. \"Saint Osk\").",
       "Return STRICT JSON only, no prose, shaped exactly:",
       '{"conflicts":[{"quote":string,"entryId":string,"factKey":string,"recorded":string,"suggested":string,"reason":string,"paragraph":number}],"missing":[{"quote":string,"entryId":string,"reason":string,"key":string,"value":string,"paragraph":number}],"newEntity":[{"quote":string,"name":string,"kind":string,"reason":string,"paragraph":number}]}',
-    ].join("\n");
+    ];
 
-    const user = [
-      `GAZETTEER:\n${gazetteer || "(empty)"}`,
-      "",
-      `MANUSCRIPT PARAGRAPHS (each prefixed with its index [[Pn]]):\n${numbered}`,
-    ].join("\n");
-
-    let parsed: AiCheckResponse;
-    try {
-      // NOTE: no `temperature`. The SaaRouters proxy returns an EMPTY completion
-      // (200, stop=end_turn, 0 output tokens) when a `temperature` is sent with a
-      // larger prompt like this one. Omitting it makes the gateway reliably return
-      // JSON. Verified live 2026-08-09: with temperature 0.2 -> empty; without -> ok.
-      parsed = await completeJson<AiCheckResponse>({
-        system,
-        messages: [{ role: "user", content: user }],
-        maxTokens: 900,
-      });
-    } catch (err) {
-      return { ok: false, error: errorMessage(err) };
-    }
+    // `addressable` is load-bearing here and nowhere else: the response echoes an
+    // entryId back, and only the bracketed form gives the model an id to echo.
+    const asked = await askGroundedJson<AiCheckResponse>({
+      system,
+      user: [
+        { heading: "GAZETTEER:", entries: selection.entries, whenEmpty: "GAZETTEER:\n(empty)", addressable: true },
+        "",
+        `MANUSCRIPT PARAGRAPHS (each prefixed with its index [[Pn]]):\n${numbered}`,
+      ],
+      budget: "full",
+    });
+    if (!asked.ok) return { ok: false, error: asked.error };
+    const parsed = asked.data;
 
     // SCALE (M5): retrieval can create SILENT false-negatives. If the model
     // echoes an entryId that was NOT in the pruned gazetteer we sent, retrieval

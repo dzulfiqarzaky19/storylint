@@ -36,7 +36,7 @@ import { insertResearchTurnPair } from "@/lib/db/mutations";
 import { deriveThreadTitle } from "@/lib/research/title";
 import { visibleProsePrefix } from "@/lib/research/streamParse";
 import { finalizeStreamedAnswer } from "@/lib/research/finalizeStream";
-import { buildGazetteer } from "@/lib/research/gazetteer";
+import { renderGrounding } from "@/lib/ai/groundedAsk";
 import { buildResearchPrompt } from "@/lib/research/buildResearchPrompt";
 import { loadWebSearchConfig } from "@/lib/websearch/search/config";
 import { retrieve, buildSearchImpl } from "@/lib/websearch/retrieve";
@@ -89,14 +89,14 @@ export async function POST(req: NextRequest) {
   // thread's OWN world, not the whole universe. This is the route the UI actually
   // hits, so it is the one that makes a Blackspade thread stop seeing Ashkeld
   // canon. loadWorldSnapshot(threadWorldId) returns only that world's entities;
-  // buildGazetteer then renders exactly that world. Falls back to the whole-wiki
+  // renderGrounding then renders exactly that world. Falls back to the whole-wiki
   // snapshot only when the thread has no world (legacy), which the NOT NULL
   // migration makes impossible for new rows.
   const threadWorldId = await getResearchThreadWorldId(threadId);
   const wiki = threadWorldId
     ? await loadWorldSnapshot(threadWorldId)
     : await loadWikiSnapshot();
-  const gazetteer = buildGazetteer(wiki.entries);
+  const gazetteer = renderGrounding(wiki.entries);
   // MEMORY: load the thread's prior turns so the Collaborator REMEMBERS the
   // conversation instead of answering statelessly. The current turn is NOT
   // persisted yet (finalizeStreamedAnswer writes on clean completion), so this

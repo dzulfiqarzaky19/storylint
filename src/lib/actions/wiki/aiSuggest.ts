@@ -7,7 +7,8 @@
 // ============================================================================
 
 import { type ActionResult, runAction } from "../confirmation";
-import { aiEnabled, completeJson } from "../../ai/saarouters";
+import { aiEnabled } from "../../ai/saarouters";
+import { AI_OFF, askGroundedJson } from "../../ai/groundedAsk";
 import { loadWikiSnapshot } from "../../db/gazetteer";
 import { type CascadeCount } from "../../db/mutations";
 
@@ -33,45 +34,41 @@ interface AiFactsResponse {
 export async function suggestEntryFacts(input: {
   entryId: string;
 }): Promise<ActionResult<{ facts: SuggestedFact[] }>> {
-  if (!aiEnabled()) {
-    return { ok: false, error: "AI is not configured. Add SAAROUTERS_API_KEY to .env.local." };
-  }
+  if (!aiEnabled()) return { ok: false, error: AI_OFF };
   return runAction("wiki.suggestEntryFacts", async () => {
     const wiki = await loadWikiSnapshot();
     const entry = wiki.byId[input.entryId];
     if (!entry) return { ok: false, error: `Unknown entry: ${input.entryId}` };
 
     const existing = entry.facts.map((f) => `${f.key}: ${f.value}`).join("; ");
+    // Cheap surrounding context: names and summaries only, no facts — this block
+    // is scene-setting, not the material the answer must be checked against.
     const world = wiki.entries
       .filter((e) => e.id !== entry.id)
       .slice(0, 40)
-      .map((e) => `- ${e.name} (${e.kind})${e.summary ? `: ${e.summary}` : ""}`)
-      .join("\n");
+      .map((e) => ({ id: e.id, name: e.name, kind: e.kind, summary: e.summary, facts: [] }));
 
-    const system = [
+    const system: string[] = [
       "You help a fiction writer flesh out their own story wiki (gazetteer).",
       "Given one entry and the surrounding world, propose 3-5 SHORT candidate details (facts) that are consistent with what already exists.",
       "Never contradict existing facts. Prefer concrete, gazetteer-style details (e.g. Eyes: Grey, Allegiance: Quiet Sept).",
       "Do NOT repeat details the entry already has.",
       'Return STRICT JSON only: {"facts": [{"key": string, "value": string}]}. key <= 3 words, value <= 8 words.',
-    ].join("\n");
+    ];
 
-    const user = [
-      `Entry: ${entry.name} (${entry.kind})`,
-      entry.summary ? `Summary: ${entry.summary}` : "",
-      existing ? `Existing details: ${existing}` : "Existing details: (none)",
-      "",
-      world ? `Elsewhere in the world:\n${world}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    const res = await completeJson<AiFactsResponse>({
+    const asked = await askGroundedJson<AiFactsResponse>({
       system,
-      messages: [{ role: "user", content: user }],
-      maxTokens: 500,
+      user: [
+        `Entry: ${entry.name} (${entry.kind})`,
+        entry.summary ? `Summary: ${entry.summary}` : false,
+        existing ? `Existing details: ${existing}` : "Existing details: (none)",
+        { heading: "Elsewhere in the world:", entries: world, whenEmpty: "" },
+      ],
+      budget: "standard",
       temperature: 0.6,
     });
+    if (!asked.ok) return { ok: false, error: asked.error };
+    const res = asked.data;
 
     const existingKeys = new Set(entry.facts.map((f) => f.key.trim().toLowerCase()));
     const facts = (res.facts ?? [])
