@@ -28,7 +28,7 @@ import {
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
-import { createUniverse, createWorld } from "@/lib/actions/wiki";
+import { editWorldStructure } from "@/lib/actions/wiki";
 import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
 import Modal from "../ui/Modal";
 import { canSubmitName } from "../wiki/nameGate";
@@ -124,7 +124,7 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
       title: "Name the new universe",
       onSubmit: (name) =>
         void runCreate(
-          () => createUniverse({ universeName: name }),
+          () => editWorldStructure({ op: "create", level: "universe", name }),
           () => router.refresh(),
         ),
     });
@@ -136,7 +136,13 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
       title: "Name the new world",
       onSubmit: (name) =>
         void runCreate(
-          () => createWorld({ worldName: name, universeId: activeUniverseId }),
+          () =>
+            editWorldStructure({
+              op: "create",
+              level: "world",
+              name,
+              universeId: activeUniverseId,
+            }),
           // TCK-E02: land ON the new (empty) world via ?w=, not the universe's
           // first world (a bare refresh snaps back to worlds[0]).
           ({ worldId }) =>

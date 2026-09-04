@@ -12,17 +12,18 @@
 //
 // Wiring: the layout supplies the `tree` (getWorldTree, server-side). The active
 // scope is URL-driven — this client reads ?u/?w/?book itself and resolves it with
-// the SAME pure resolveWriteScope the /write server page uses (one resolver, no
-// drift). Create/rename/delete reuse the EXISTING structural actions
-// (createBook / renameBook / deleteBook + previewCascade), so there is no new
-// backend beyond renameBook. Delete goes through the shared danger ConfirmModal in
-// its type-the-name variant, and the LAST book in a world can't be deleted (a
-// world must keep a home for chapters — mirrors the last-world guard).
+// the SAME resolveActiveScope every surface uses (one resolver, no
+// drift). Create/rename/delete are all one `editWorldStructure` intent. Delete
+// goes through the shared danger ConfirmModal in its type-the-name variant, and
+// the LAST book in a world can't be deleted (a world must keep a home for
+// chapters) — the SERVER refuses that, and lastChildHint disables the affordance
+// in the server's own words.
 
 import { useEffect, useRef, useState, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
-import { createBook, renameBook, deleteBook, previewCascade } from "@/lib/actions/wiki";
+import { editWorldStructure, previewStructureDelete } from "@/lib/actions/wiki";
+import { lastChildHint } from "@/lib/wiki/structureEdit";
 import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
 import Modal from "../ui/Modal";
 import ConfirmModal from "../ui/ConfirmModal";
@@ -71,9 +72,9 @@ export default function BookPill({ tree }: BookPillProps) {
   const world = universe?.worlds.find((w) => w.id === activeWorldId);
   const books = world?.books ?? [];
   const activeBook = books.find((b) => b.id === activeBookId) ?? null;
-  // Last-book guard: a world must keep at least one book (a home for chapters),
-  // mirroring the last-world guard on /wiki/manage.
-  const canDeleteBook = books.length > 1;
+  // Last-book guard: a world must keep at least one book (a home for chapters).
+  // The SERVER refuses that delete; this is the advisory hint, in its own words.
+  const bookBlock = lastChildHint("book", books.length);
 
   // ---- Menu dismissal: outside-click + Escape ------------------------------
   useEffect(() => {
@@ -128,11 +129,16 @@ export default function BookPill({ tree }: BookPillProps) {
       onSubmit: (name) =>
         void run(
           async () => {
-            const res = await createBook({ name, worldId: activeWorldId });
+            const res = await editWorldStructure({
+              op: "create",
+              level: "book",
+              name,
+              worldId: activeWorldId,
+            });
             if (!res.ok) return res;
             // Land ON the new book so the writer sees its (empty) chapter set.
             startTransition(() => {
-              router.push(scopedHref("/write", { ...scope, bookId: res.data.bookId }));
+              router.push(scopedHref("/write", { ...scope, bookId: res.data.bookId! }));
               router.refresh();
             });
             return res;
@@ -149,17 +155,20 @@ export default function BookPill({ tree }: BookPillProps) {
       title: "Rename book",
       initial: activeBook.name,
       confirmLabel: "Rename",
-      onSubmit: (name) => void run(() => renameBook({ bookId: activeBook.id, name })),
+      onSubmit: (name) =>
+        void run(() =>
+          editWorldStructure({ op: "rename", level: "book", id: activeBook.id, name }),
+        ),
     });
   };
 
   const openDelete = async () => {
-    if (!activeBook || !canDeleteBook) return;
+    if (!activeBook || bookBlock !== null) return;
     setOpen(false);
     setError(null);
     setPendingCount(null);
     setDeleteTarget({ id: activeBook.id, name: activeBook.name });
-    const res = await previewCascade({ level: "book", id: activeBook.id });
+    const res = await previewStructureDelete({ level: "book", id: activeBook.id });
     if (res.ok) setPendingCount(res.data.total);
     else setError(res.error);
   };
@@ -172,7 +181,7 @@ export default function BookPill({ tree }: BookPillProps) {
     setDeleteTarget(null);
     setPendingCount(null);
     await run(
-      () => deleteBook({ bookId: target.id, confirmed: true }),
+      () => editWorldStructure({ op: "delete", level: "book", id: target.id, confirmed: true }),
       () => {
         startTransition(() => {
           // No surviving book means no book axis to carry, so /write resolves one.
@@ -279,8 +288,8 @@ export default function BookPill({ tree }: BookPillProps) {
               role="menuitem"
               className={switcher.footerAction}
               onClick={() => void openDelete()}
-              disabled={busy || !canDeleteBook}
-              title={canDeleteBook ? undefined : "A world must keep at least one book"}
+              disabled={busy || bookBlock !== null}
+              title={bookBlock ?? undefined}
             >
               Delete book
             </button>

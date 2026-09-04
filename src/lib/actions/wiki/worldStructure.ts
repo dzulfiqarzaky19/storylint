@@ -1,19 +1,37 @@
 "use server";
 
-// ============================================================================
-// World-structure server actions (universe / world / book)
-// Split out of the former monolithic wiki.ts (T-ARCH-7). Product rule 1 and the
-// runAction envelope are unchanged; only file boundaries moved.
-// ============================================================================
+// =============================================================================
+// Editing the world skeleton — ONE action (T-DEEP-7).
+//
+// Creating, renaming and deleting a universe / world / book was nine server
+// actions, and three different screens picked among them. Each screen therefore
+// had to know three things that are not its business:
+//
+//   1. THE LAST-CHILD GUARD. A universe must keep a world; a world must keep a
+//      book. That was enforced by DISABLING A BUTTON — `u.worlds.length > 1` in
+//      WikiManage, `books.length > 1` in BookPill — while the server action's
+//      doc comment asked the caller to please not do it. An invariant guarded by
+//      a `disabled` attribute is not guarded. The server refuses now, in the
+//      same words the tooltip uses (lib/wiki/structureEdit.ts).
+//   2. WHICH PATH TO REVALIDATE. A book edit invalidates /write, a universe or
+//      world edit /wiki — hand-picked per action, and omitted entirely on the
+//      creates and deletes, which leaned on the caller remembering to refresh.
+//   3. THE ID SCHEME. A universe create mints three ids (universe + world +
+//      book) so a fresh universe has a home for chapters; a world create mints
+//      two. Every caller had to know which came back.
+//
+// STRUCTURAL, not wiki content: this shapes the skeleton and never writes an
+// entry, fact, tie or facet, so product rule 1 does not apply and no
+// WikiWriteConfirmation token is minted here. The DELETES are destructive, so
+// they stay gated on an explicit `confirmed: true` and return the authoritative
+// CascadeCount (total === rows removed).
+// =============================================================================
 
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { type ActionResult, runAction } from "../confirmation";
-import {
-  type CascadeCount,
-  deleteCascade,
-  previewCascade as previewCascadeRows,
-} from "../../db/cascade";
+import { type CascadeCount, deleteCascade, previewCascade as previewCascadeRows } from "../../db/cascade";
+import { countStructureSiblings } from "../../db/queries";
 import {
   linkEntityToWorld as linkEntityToWorldRow,
   unlinkEntityFromWorld as unlinkEntityFromWorldRow,
@@ -27,141 +45,148 @@ import {
   renameWorld as renameWorldRow,
 } from "../../db/mutations";
 import { DEFAULT_UNIVERSE_ID } from "../../db/scope";
+import { LAST_CHILD_BLOCK, type StructureEdit, type StructureLevel } from "../../wiki/structureEdit";
 
-/**
- * CONTINUATION: add a new book under an existing WORLD (W-6: books.world_id;
- * reuses that world's universe canon by construction). Structural — no wiki token.
- */
-export async function createBook(input: {
-  name: string;
-  worldId: string;
-  sortOrder?: number;
-}): Promise<ActionResult<{ bookId: string }>> {
-  return runAction("wiki.createBook", async () => {
-    const id = randomUUID();
-    // A user-created book seeds its first chapter atomically so the writer lands
-    // on a real "Chapter One" row (persisted, not a UI placeholder) ready to type
-    // in. insertBookWithFirstChapter rolls back the book if the chapter fails.
-    await insertBookWithFirstChapter({
-      id,
-      name: input.name,
-      worldId: input.worldId,
-      sortOrder: input.sortOrder,
-      firstChapterId: randomUUID(),
-      firstChapterTitle: "Chapter One",
-      firstChapterBody: { type: "doc", content: [{ type: "paragraph" }] },
-    });
-    return { ok: true, data: { bookId: id } };
-  });
-}
-
-/**
- * FRESH world: a NEW universe with its first world + first book, in one
- * transaction. The new universe's wiki starts EMPTY (no entries carry its
- * universe_id). W-6: mints universe + world + book (series is gone). Structural —
- * no wiki token.
- */
-export async function createUniverse(input: {
-  universeName: string;
-  worldName?: string;
-  bookName?: string;
-}): Promise<ActionResult<{ universeId: string; worldId: string; bookId: string }>> {
-  return runAction("wiki.createUniverse", async () => {
-    const universeId = randomUUID();
-    const worldId = randomUUID();
-    const bookId = randomUUID();
-    await createFreshUniverseRow({
-      universeId,
-      worldId,
-      bookId,
-      universeName: input.universeName,
-      worldName: input.worldName,
-      bookName: input.bookName,
-    });
-    return { ok: true, data: { universeId, worldId, bookId } };
-  });
-}
-
-/**
- * TCK-022 (W-4a): create a SECOND (or Nth) world inside an EXISTING universe (the
- * `+ world` affordance on the World switcher). Mints the world/book ids and calls
- * insertWorld, which lands them in one transaction so the new world always has a
- * home for chapters and one default research thread (R2). W-6: the book hangs off
- * the world directly, no series.
- * Defaults to the active universe when none is passed. Structural — no wiki token.
- */
-export async function createWorld(input: {
-  worldName: string;
+/** What an edit produced: minted ids on a create, removed rows on a delete. */
+export interface StructureEditResult {
   universeId?: string;
-}): Promise<ActionResult<{ worldId: string }>> {
-  return runAction("wiki.createWorld", async () => {
-    const worldId = randomUUID();
-    const bookId = randomUUID();
-    await insertWorldRow({
-      id: worldId,
-      universeId: input.universeId ?? DEFAULT_UNIVERSE_ID,
-      title: input.worldName,
-      bookId,
-    });
-    return { ok: true, data: { worldId } };
-  });
+  worldId?: string;
+  bookId?: string;
+  removed?: CascadeCount;
 }
 
+/** A book edit re-renders /write; universe and world edits re-render /wiki. */
+const SURFACE_OF: Record<StructureLevel, string> = {
+  universe: "/wiki",
+  world: "/wiki",
+  book: "/write",
+};
+
 /**
- * Rename a world (the manage-screen Rename affordance). Structural — no wiki
- * token. The DB helper trims and treats a blank as a no-op, so a whitespace-only
- * rename never blanks the world's name. Revalidates /wiki so the switcher and
- * every world-scoped view re-render with the new title.
+ * Apply one structural edit to the universe -> world -> book skeleton.
+ *
+ * Creates mint their own ids and return them, so a caller can navigate onto what
+ * it just made. Renames trim and treat a blank as a no-op (a whitespace-only
+ * rename never blanks a name). Deletes enforce the last-child guard, then run the
+ * cascade in one transaction. Every edit revalidates the surface that shows it.
  */
-export async function renameWorld(input: {
-  worldId: string;
-  title: string;
-}): Promise<ActionResult> {
-  return runAction("wiki.renameWorld", async () => {
-    await renameWorldRow({ id: input.worldId, title: input.title });
-    revalidatePath("/wiki");
-    return { ok: true, data: undefined };
+export async function editWorldStructure(
+  edit: StructureEdit,
+): Promise<ActionResult<StructureEditResult>> {
+  return runAction(`wiki.${edit.op}${edit.level[0]!.toUpperCase()}${edit.level.slice(1)}`, async () => {
+    const result = await applyEdit(edit);
+    if (!result.ok) return result;
+    revalidatePath(SURFACE_OF[edit.level]);
+    return result;
   });
 }
 
+async function applyEdit(edit: StructureEdit): Promise<ActionResult<StructureEditResult>> {
+  switch (edit.op) {
+    case "create":
+      return createLevel(edit);
+    case "rename":
+      return renameLevel(edit);
+    case "delete":
+      return deleteLevel(edit);
+  }
+}
+
+async function createLevel(
+  edit: Extract<StructureEdit, { op: "create" }>,
+): Promise<ActionResult<StructureEditResult>> {
+  switch (edit.level) {
+    case "universe": {
+      // A fresh universe is minted with a world AND a book in one transaction, so
+      // it always has a home for chapters. Its wiki starts EMPTY (no entry
+      // carries the new universe_id).
+      const ids = { universeId: randomUUID(), worldId: randomUUID(), bookId: randomUUID() };
+      await createFreshUniverseRow({ ...ids, universeName: edit.name });
+      return { ok: true, data: ids };
+    }
+    case "world": {
+      // The book hangs off the world directly (W-6, no series), landed in one
+      // transaction with a default research thread so the world is usable at once.
+      const worldId = randomUUID();
+      const bookId = randomUUID();
+      await insertWorldRow({
+        id: worldId,
+        universeId: edit.universeId ?? DEFAULT_UNIVERSE_ID,
+        title: edit.name,
+        bookId,
+      });
+      return { ok: true, data: { worldId, bookId } };
+    }
+    case "book": {
+      // Seed the first chapter atomically so the writer lands on a real "Chapter
+      // One" row ready to type in, not a UI placeholder.
+      const bookId = randomUUID();
+      await insertBookWithFirstChapter({
+        id: bookId,
+        name: edit.name,
+        worldId: edit.worldId,
+        firstChapterId: randomUUID(),
+        firstChapterTitle: "Chapter One",
+        firstChapterBody: { type: "doc", content: [{ type: "paragraph" }] },
+      });
+      return { ok: true, data: { bookId } };
+    }
+  }
+}
+
+async function renameLevel(
+  edit: Extract<StructureEdit, { op: "rename" }>,
+): Promise<ActionResult<StructureEditResult>> {
+  // Each helper trims and treats a blank as a no-op.
+  if (edit.level === "universe") await renameUniverseRow({ id: edit.id, name: edit.name });
+  else if (edit.level === "world") await renameWorldRow({ id: edit.id, title: edit.name });
+  else await renameBookRow({ id: edit.id, name: edit.name });
+  return { ok: true, data: {} };
+}
+
+async function deleteLevel(
+  edit: Extract<StructureEdit, { op: "delete" }>,
+): Promise<ActionResult<StructureEditResult>> {
+  if (edit.confirmed !== true) {
+    return { ok: false, error: `wiki.delete${edit.level}: not confirmed` };
+  }
+  // The last-child guard, enforced where it cannot be bypassed. A universe has no
+  // parent to be the last child of, so it is exempt.
+  if (edit.level !== "universe") {
+    const siblings = await countStructureSiblings(edit.level, edit.id);
+    if (siblings <= 1) return { ok: false, error: LAST_CHILD_BLOCK[edit.level] };
+  }
+  const removed = await deleteCascade({ kind: edit.level, id: edit.id });
+  return { ok: true, data: { removed } };
+}
+
 /**
- * Rename a universe (the manage-screen Rename affordance). Structural — no wiki
- * token. Same trim + blank-is-no-op contract as renameWorld. Revalidates /wiki.
+ * ADVISORY: how many rows a delete would remove (the danger modal's preview).
+ * Read-only, and it runs the SAME plan the delete runs, so the number the writer
+ * is shown is the number that will be removed.
  */
-export async function renameUniverse(input: {
-  universeId: string;
-  name: string;
-}): Promise<ActionResult> {
-  return runAction("wiki.renameUniverse", async () => {
-    await renameUniverseRow({ id: input.universeId, name: input.name });
-    revalidatePath("/wiki");
-    return { ok: true, data: undefined };
+export async function previewStructureDelete(input: {
+  level: StructureLevel;
+  id: string;
+}): Promise<ActionResult<CascadeCount>> {
+  return runAction("wiki.previewStructureDelete", async () => {
+    const preview = await previewCascadeRows({ kind: input.level, id: input.id });
+    return { ok: true, data: preview };
   });
 }
 
-/**
- * T-SCOPE-2: rename a BOOK (the /write book dropdown Rename affordance).
- * Structural — no wiki token. Same trim + blank-is-no-op contract as
- * renameWorld/renameUniverse. Revalidates /write so the book pill + chapter list
- * re-render with the new name.
- */
-export async function renameBook(input: {
-  bookId: string;
-  name: string;
-}): Promise<ActionResult> {
-  return runAction("wiki.renameBook", async () => {
-    await renameBookRow({ id: input.bookId, name: input.name });
-    revalidatePath("/write");
-    return { ok: true, data: undefined };
-  });
-}
+// ---- Entity membership (TCK-023, W-4b) ------------------------------------
+//
+// Sharing an entity into a world is world MEMBERSHIP, not skeleton shape: it
+// adds a world_entities junction row and no wiki content, so — like the edits
+// above — it carries no confirmation token. Kept separate from
+// `editWorldStructure` because it edits which entities a world holds, not which
+// worlds exist.
 
 /**
- * TCK-023 (W-4b): SHARE an existing entity into a world — link it so it appears
- * in that world's gazetteer as an additive member. Idempotent (the DB helper's
- * ON CONFLICT DO NOTHING), so re-sharing is harmless. Structural — no wiki token
- * (mirrors createWorld). Revalidates /wiki so the server re-renders the target
- * world's snapshot with the newly-linked entity.
+ * SHARE an existing entity into a world, so it appears in that world's gazetteer
+ * as an additive member. Idempotent (ON CONFLICT DO NOTHING), so re-sharing is
+ * harmless.
  */
 export async function shareEntityToWorld(input: {
   worldId: string;
@@ -175,10 +200,8 @@ export async function shareEntityToWorld(input: {
 }
 
 /**
- * TCK-023 (W-4b): UNSHARE an entity from a world — drop ONLY that membership link.
- * The entity row and its home-world membership survive (orphan = LEAVE); unlink of
- * a non-member is a no-op. Structural — no wiki token. Revalidates /wiki so the
- * world's snapshot re-renders without the unlinked entity.
+ * UNSHARE an entity from a world — drop ONLY that membership link. The entity row
+ * and its other memberships survive; unlinking a non-member is a no-op.
  */
 export async function unshareEntityFromWorld(input: {
   worldId: string;
@@ -188,80 +211,5 @@ export async function unshareEntityFromWorld(input: {
     await unlinkEntityFromWorldRow(input.worldId, input.entityId);
     revalidatePath("/wiki");
     return { ok: true, data: undefined };
-  });
-}
-
-/**
- * DANGER: delete a universe and its ENTIRE subtree (worlds' books, chapters,
- * entries, canon + book-scoped facts/ties/facets, appearances, open questions,
- * research threads). Gated on `confirmed: true`. Returns the authoritative
- * CascadeCount (total === rows removed).
- */
-export async function deleteUniverse(input: {
-  universeId: string;
-  confirmed: true;
-}): Promise<ActionResult<CascadeCount>> {
-  return runAction("wiki.deleteUniverse", async () => {
-    if (input.confirmed !== true) {
-      return { ok: false, error: "wiki.deleteUniverse: not confirmed" };
-    }
-    const count = await deleteCascade({ kind: "universe", id: input.universeId });
-    return { ok: true, data: count };
-  });
-}
-
-/**
- * DANGER: delete a single book and its book-scoped content (chapters,
- * appearances, book-scoped facts/ties/facets). NULL-canon rows, sibling books,
- * and entries SURVIVE. Gated on `confirmed: true`. Returns the CascadeCount.
- */
-export async function deleteBook(input: {
-  bookId: string;
-  confirmed: true;
-}): Promise<ActionResult<CascadeCount>> {
-  return runAction("wiki.deleteBook", async () => {
-    if (input.confirmed !== true) {
-      return { ok: false, error: "wiki.deleteBook: not confirmed" };
-    }
-    const count = await deleteCascade({ kind: "book", id: input.bookId });
-    return { ok: true, data: count };
-  });
-}
-
-/**
- * DANGER: delete a WORLD and its world-owned data WITHOUT destroying entities or
- * universe-canon (orphan=LEAVE). Unlinks the world's world_entities membership
- * (the entity ROWS survive, reclaimable), drops the world's user categories
- * (built-ins are global and survive), and removes the world row. Sibling worlds,
- * books (universe-owned), and entries SURVIVE. Gated on `confirmed: true`.
- * Returns the CascadeCount (total === rows removed). The CALLER must never delete
- * a universe's LAST world (that would orphan every shared entity with no world to
- * reclaim it in); the WorldSwitcher disables the affordance in that case.
- */
-export async function deleteWorld(input: {
-  worldId: string;
-  confirmed: true;
-}): Promise<ActionResult<CascadeCount>> {
-  return runAction("wiki.deleteWorld", async () => {
-    if (input.confirmed !== true) {
-      return { ok: false, error: "wiki.deleteWorld: not confirmed" };
-    }
-    const count = await deleteCascade({ kind: "world", id: input.worldId });
-    return { ok: true, data: count };
-  });
-}
-
-/**
- * ADVISORY: how many rows a delete would remove (the danger modal's preview).
- * Read-only; the authoritative count is still the delete action's return. The S5
- * gate asserts preview.total === delete count === rows actually removed.
- */
-export async function previewCascade(input: {
-  level: "universe" | "book" | "world";
-  id: string;
-}): Promise<ActionResult<CascadeCount>> {
-  return runAction("wiki.previewCascade", async () => {
-    const preview = await previewCascadeRows({ kind: input.level, id: input.id });
-    return { ok: true, data: preview };
   });
 }

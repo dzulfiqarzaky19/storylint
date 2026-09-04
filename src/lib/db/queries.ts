@@ -128,3 +128,22 @@ export async function getBook(bookId: string): Promise<{ title: string } | null>
     [bookId],
   );
 }
+
+/**
+ * How many siblings the given world/book shares its parent with, counting itself.
+ * Backs the last-child guard: a universe must keep at least one world, a world at
+ * least one book. Returns 0 when the id matches nothing.
+ */
+export async function countStructureSiblings(
+  level: "world" | "book",
+  id: string,
+): Promise<number> {
+  const sql =
+    level === "world"
+      ? `SELECT COUNT(*) AS n FROM worlds
+          WHERE universe_id = (SELECT universe_id FROM worlds WHERE id = $1)`
+      : `SELECT COUNT(*) AS n FROM books
+          WHERE world_id = (SELECT world_id FROM books WHERE id = $1)`;
+  const r = await one<{ n: string }>(sql, [id]);
+  return r ? Number(r.n) : 0;
+}

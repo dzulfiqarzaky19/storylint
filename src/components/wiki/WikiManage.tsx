@@ -3,34 +3,26 @@
 // /wiki/manage — the shared "manage universes & worlds" screen (design 3c). One
 // place to CREATE, RENAME, and DELETE universes and worlds, kept off the wiki
 // header so the breadcrumb switcher (design 3a) stays a lean switch-and-create
-// control. Everything here wires EXISTING structural server actions
-// (createUniverse / createWorld / deleteUniverse / deleteWorld) plus the two new
-// rename actions (renameUniverse / renameWorld). No new backend.
+// control. Every affordance here is one `editWorldStructure` intent; the minted
+// ids, the revalidate target and the last-child guard live behind it.
 //
 // Deletes go through the danger ConfirmModal in its type-the-name variant
 // (requireTypeToConfirm): the writer must retype the exact universe/world name,
-// matching the app-wide "irreversible actions are gated" rule. The real
-// cascade row-count is fetched (previewCascade) so the modal states the true
-// blast radius before the writer confirms.
+// matching the app-wide "irreversible actions are gated" rule. The row-count is
+// fetched from previewStructureDelete, which runs the SAME cascade plan the
+// delete runs, so the stated blast radius is the real one.
 //
 // Last-world safety: a universe must keep at least one world (deleting the last
-// would orphan every shared entity with no world to reclaim it in), so the
-// world Delete affordance is disabled when a universe has a single world —
-// mirrors the guard the old toolbar switcher enforced.
+// would orphan every shared entity with no world to reclaim it in). The SERVER
+// refuses that delete; the disabled affordance below is the advisory hint, in the
+// server's own words (lastChildHint).
 
 import { useCallback, useState, startTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
-import {
-  createUniverse,
-  createWorld,
-  deleteUniverse,
-  deleteWorld,
-  renameUniverse,
-  renameWorld,
-  previewCascade,
-} from "@/lib/actions/wiki";
+import { editWorldStructure, previewStructureDelete } from "@/lib/actions/wiki";
+import { lastChildHint } from "@/lib/wiki/structureEdit";
 import ConfirmModal from "../ui/ConfirmModal";
 import Modal from "../ui/Modal";
 import { canSubmitName } from "./nameGate";
@@ -89,7 +81,8 @@ export default function WikiManage({ tree }: WikiManageProps) {
       title: "Name the new universe",
       initial: "",
       confirmLabel: "Create",
-      onSubmit: (name) => void run(() => createUniverse({ universeName: name })),
+      onSubmit: (name) =>
+        void run(() => editWorldStructure({ op: "create", level: "universe", name })),
     });
   }, [run]);
 
@@ -99,7 +92,10 @@ export default function WikiManage({ tree }: WikiManageProps) {
         title: "Name the new world",
         initial: "",
         confirmLabel: "Create",
-        onSubmit: (name) => void run(() => createWorld({ worldName: name, universeId })),
+        onSubmit: (name) =>
+          void run(() =>
+            editWorldStructure({ op: "create", level: "world", name, universeId }),
+          ),
       });
     },
     [run],
@@ -112,7 +108,8 @@ export default function WikiManage({ tree }: WikiManageProps) {
         title: "Rename universe",
         initial: current,
         confirmLabel: "Rename",
-        onSubmit: (name) => void run(() => renameUniverse({ universeId: id, name })),
+        onSubmit: (name) =>
+          void run(() => editWorldStructure({ op: "rename", level: "universe", id, name })),
       });
     },
     [run],
@@ -124,7 +121,8 @@ export default function WikiManage({ tree }: WikiManageProps) {
         title: "Rename world",
         initial: current,
         confirmLabel: "Rename",
-        onSubmit: (name) => void run(() => renameWorld({ worldId: id, title: name })),
+        onSubmit: (name) =>
+          void run(() => editWorldStructure({ op: "rename", level: "world", id, name })),
       });
     },
     [run],
@@ -135,7 +133,7 @@ export default function WikiManage({ tree }: WikiManageProps) {
     setError(null);
     setPendingCount(null);
     setDeleteTarget(target);
-    const res = await previewCascade({ level: target.level, id: target.id });
+    const res = await previewStructureDelete({ level: target.level, id: target.id });
     if (res.ok) setPendingCount(res.data.total);
     else setError(res.error);
   }, []);
@@ -146,9 +144,7 @@ export default function WikiManage({ tree }: WikiManageProps) {
     setDeleteTarget(null);
     setPendingCount(null);
     await run(() =>
-      target.level === "world"
-        ? deleteWorld({ worldId: target.id, confirmed: true })
-        : deleteUniverse({ universeId: target.id, confirmed: true }),
+      editWorldStructure({ op: "delete", level: target.level, id: target.id, confirmed: true }),
     );
   }, [deleteTarget, run]);
 
@@ -189,7 +185,7 @@ export default function WikiManage({ tree }: WikiManageProps) {
 
       <ul className={styles.universes}>
         {tree.map((u) => {
-          const canDeleteWorld = u.worlds.length > 1;
+          const worldBlock = lastChildHint("world", u.worlds.length);
           return (
             <li key={u.id} className={styles.universe}>
               <div className={styles.universeHead}>
@@ -231,8 +227,8 @@ export default function WikiManage({ tree }: WikiManageProps) {
                         type="button"
                         className={styles.danger}
                         // Never orphan the last world (see file header).
-                        disabled={busy || !canDeleteWorld}
-                        title={canDeleteWorld ? undefined : "A universe must keep at least one world"}
+                        disabled={busy || worldBlock !== null}
+                        title={worldBlock ?? undefined}
                         onClick={() => void openDelete({ level: "world", id: w.id, name: w.title })}
                       >
                         Delete
