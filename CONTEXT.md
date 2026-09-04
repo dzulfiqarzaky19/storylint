@@ -86,8 +86,8 @@ agent could plausibly misread it. Discipline that maintains this file lives in
 - **queries.ts** — the shared read/write data layer fanned across /wiki,
   /research, /write, and /plot. A change here has all four as its blast radius:
   any edit is driven live on every surface that reads it, never just the one you
-  meant to touch (non-negotiable live-browser gate, question 2). Explore via
-  codescratch CLI before editing.
+  meant to touch (non-negotiable live-browser gate, question 2). Load `/codescratch`, then
+  `codescratch explore` before editing.
 
 ## Chrome
 
