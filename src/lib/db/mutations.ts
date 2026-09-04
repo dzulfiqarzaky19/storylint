@@ -22,11 +22,10 @@ export {
   insertBookWithFirstChapter,
   createFreshUniverse,
   insertWorld,
-  deleteUniverseCascade,
-  deleteBookCascade,
-  deleteWorldCascade,
 } from "./structure-mutations";
-export type { UniverseRow, BookRow, WorldRow, CascadeCount } from "./structure-mutations";
+export type { UniverseRow, BookRow, WorldRow } from "./structure-mutations";
+export { previewCascade, deleteCascade } from "./cascade";
+export type { CascadeCount, CascadeTarget } from "./cascade";
 
 // ---- Gazetteer (T-ARCH-2 shim; SQL lives in gazetteer-mutations.ts) ----
 export {

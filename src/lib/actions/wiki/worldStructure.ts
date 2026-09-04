@@ -10,21 +10,16 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { type ActionResult, runAction } from "../confirmation";
 import {
-  type CascadePreview,
-  previewBookCascade,
-  previewUniverseCascade,
-  previewWorldCascade,
-} from "../../db/queries";
+  type CascadeCount,
+  deleteCascade,
+  previewCascade as previewCascadeRows,
+} from "../../db/cascade";
 import {
   linkEntityToWorld as linkEntityToWorldRow,
   unlinkEntityFromWorld as unlinkEntityFromWorldRow,
 } from "../../db/gazetteer-mutations";
 import {
-  type CascadeCount,
   createFreshUniverse as createFreshUniverseRow,
-  deleteBookCascade,
-  deleteUniverseCascade,
-  deleteWorldCascade,
   insertBookWithFirstChapter,
   insertWorld as insertWorldRow,
   renameBook as renameBookRow,
@@ -210,7 +205,7 @@ export async function deleteUniverse(input: {
     if (input.confirmed !== true) {
       return { ok: false, error: "wiki.deleteUniverse: not confirmed" };
     }
-    const count = await deleteUniverseCascade(input.universeId);
+    const count = await deleteCascade({ kind: "universe", id: input.universeId });
     return { ok: true, data: count };
   });
 }
@@ -228,7 +223,7 @@ export async function deleteBook(input: {
     if (input.confirmed !== true) {
       return { ok: false, error: "wiki.deleteBook: not confirmed" };
     }
-    const count = await deleteBookCascade(input.bookId);
+    const count = await deleteCascade({ kind: "book", id: input.bookId });
     return { ok: true, data: count };
   });
 }
@@ -251,7 +246,7 @@ export async function deleteWorld(input: {
     if (input.confirmed !== true) {
       return { ok: false, error: "wiki.deleteWorld: not confirmed" };
     }
-    const count = await deleteWorldCascade(input.worldId);
+    const count = await deleteCascade({ kind: "world", id: input.worldId });
     return { ok: true, data: count };
   });
 }
@@ -264,14 +259,9 @@ export async function deleteWorld(input: {
 export async function previewCascade(input: {
   level: "universe" | "book" | "world";
   id: string;
-}): Promise<ActionResult<CascadePreview>> {
+}): Promise<ActionResult<CascadeCount>> {
   return runAction("wiki.previewCascade", async () => {
-    const preview =
-      input.level === "universe"
-        ? await previewUniverseCascade(input.id)
-        : input.level === "book"
-          ? await previewBookCascade(input.id)
-          : await previewWorldCascade(input.id);
+    const preview = await previewCascadeRows({ kind: input.level, id: input.id });
     return { ok: true, data: preview };
   });
 }
