@@ -4,7 +4,7 @@
 // header world switch re-scopes the arcs to that world.
 import { getWorldTree } from "@/lib/db/queries";
 import { loadPlotProgression } from "@/lib/db/plot";
-import { resolveWikiScope } from "@/app/wiki/scope";
+import { resolveActiveScope } from "@/lib/scope/activeScope";
 import PlotScreen from "@/components/plot/PlotScreen";
 
 export const dynamic = "force-dynamic";
@@ -15,19 +15,15 @@ export default async function PlotPage({
   searchParams: Promise<{ u?: string; w?: string }>;
 }) {
   const sp = await searchParams;
-  const { activeWorldId, activeBookId } = resolveWikiScope(
-    await getWorldTree(),
-    sp.u,
-    sp.w,
-  );
-  const progression = await loadPlotProgression(activeWorldId, activeBookId);
+  const scope = resolveActiveScope(await getWorldTree(), sp);
+  const progression = await loadPlotProgression(scope.worldId, scope.bookId);
   // Key on the world so switching worlds remounts the grid with the new arcs.
   return (
     <PlotScreen
-      key={activeWorldId}
+      key={scope.worldId}
       progression={progression}
-      worldId={activeWorldId}
-      bookId={activeBookId}
+      worldId={scope.worldId}
+      bookId={scope.bookId}
     />
   );
 }

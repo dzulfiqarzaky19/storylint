@@ -26,7 +26,7 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Extension } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -61,6 +61,7 @@ import {
   persistChapterCheck,
 } from '@/lib/actions/write';
 import { writeConfirmedTarget } from '@/lib/actions/wiki';
+import { scopedHref } from '@/lib/scope/activeScope';
 import WikiTargetPicker from '@/components/wiki/WikiTargetPicker';
 import type { PickerResult } from '@/lib/wiki/pickedTarget';
 import { docToParagraphs } from '@/lib/write/adapters';
@@ -164,19 +165,22 @@ export function Manuscript({
   pickerCategories,
 }: ManuscriptProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  // Preserve the active scope (u/w/book) when switching chapters. Selecting a
-  // chapter must NOT drop the world/book — a bare /write?chapter=N resets the
-  // page resolver to the default (Ashkeld) world, snapping the header + wiki off
-  // the book the writer is actually in. Keep every existing param, override only
-  // ?chapter=.
+  // Selecting a chapter must NOT drop the world/book — a bare /write?chapter=N
+  // resets the page resolver to the default world, snapping the header and wiki
+  // off the book the writer is actually in. scopedHref carries every axis /write
+  // understands; the chapter rides alongside as a surface param, not as scope.
   const writeChapterHref = useCallback(
-    (n: number) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('chapter', String(n));
-      return `/write?${params.toString()}`;
-    },
-    [searchParams],
+    (n: number) =>
+      scopedHref(
+        '/write',
+        {
+          universeId: activeUniverseId,
+          worldId: activeWorldId,
+          bookId: activeBookId,
+        },
+        { chapter: String(n) },
+      ),
+    [activeUniverseId, activeWorldId, activeBookId],
   );
   // Rebuild the serializable entries into a Map once; used by every live check.
   const chapterCountsMap = useMemo(

@@ -6,7 +6,7 @@ import { loadResearchSnapshot } from "@/lib/db/research";
 import { getWorldEntries, getCategories } from "@/lib/db/gazetteer";
 import { getWorldTree } from "@/lib/db/queries";
 import { getWorldKeptCards } from "@/lib/db/research-queries";
-import { resolveWikiScope } from "@/app/wiki/scope";
+import { resolveActiveScope } from "@/lib/scope/activeScope";
 import ResearchScreen from "@/components/research/ResearchScreen";
 
 export const dynamic = "force-dynamic";
@@ -21,22 +21,22 @@ export default async function ResearchPage({
   // uses) and scope the thread list + selected thread to it, so switching worlds
   // in the header shows THAT world's threads.
   const tree = await getWorldTree();
-  const { activeUniverseId, activeWorldId } = resolveWikiScope(tree, u, w);
+  const scope = resolveActiveScope(tree, { u, w });
   // The thread head names the world the thread belongs to, so the writer can
   // tell at a glance which world's canon the collaborator is reading from.
   const activeWorldName = tree
-    .find((x) => x.id === activeUniverseId)
-    ?.worlds.find((x) => x.id === activeWorldId)?.title;
-  const snapshot = await loadResearchSnapshot(thread, activeWorldId);
+    .find((x) => x.id === scope.universeId)
+    ?.worlds.find((x) => x.id === scope.worldId)?.title;
+  const snapshot = await loadResearchSnapshot(thread, scope.worldId);
   // T-RES-E2E-KEPT: the Kept board is WORLD-WIDE, so it seeds from every kept
   // card in the active world (with its source thread for attribution + click-
   // through), not just the open thread's cards.
-  const worldKept = await getWorldKeptCards(activeWorldId);
+  const worldKept = await getWorldKeptCards(scope.worldId);
   // Live wiki entries scoped to the ACTIVE world (getWorldEntries joins
   // world_entities, same membership /wiki shows, soft-delete-filtered) so the
   // wiki-target picker recommends/lists only THIS world's entries, never a
   // sibling world's. Mapped to the minimal shape the recommender + picker need.
-  const entries = (await getWorldEntries(activeWorldId)).map((e) => ({
+  const entries = (await getWorldEntries(scope.worldId)).map((e) => ({
     id: e.id,
     name: e.name,
     kind: e.kind,
@@ -49,7 +49,7 @@ export default async function ResearchPage({
     label: c.label,
   }));
   // Key by thread id so switching threads remounts the reducer with fresh state.
-  // activeWorldId (resolved above) is threaded into confirmCard so a
+  // The active world (resolved above) is threaded into the confirmed picker write so a
   // research-minted entry is linked into the ACTIVE world (else invisible on
   // /wiki) AND into the composer so a first-message auto-create (T-RESEARCH-1)
   // lands the default thread in the world the writer is viewing.
@@ -59,7 +59,7 @@ export default async function ResearchPage({
       snapshot={snapshot}
       entries={entries}
       categories={categories}
-      activeWorldId={activeWorldId}
+      activeWorldId={scope.worldId}
       activeWorldName={activeWorldName}
       worldKept={worldKept}
       focusPropositionId={focus}

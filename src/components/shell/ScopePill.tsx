@@ -11,7 +11,7 @@
 // Wiring (path a): the surface layout supplies the `tree` (loaded server-side by
 // getWorldTree). The ACTIVE scope is still URL-driven, so this client component
 // reads ?u/?w itself via useSearchParams and resolves it with the SAME pure
-// resolveWikiScope the /wiki server page uses — one resolver, no drift. Picking a
+// resolveActiveScope every surface uses — one resolver, no drift. Picking a
 // world navigates to /wiki?u=&w= (server re-renders loadWorldSnapshot), which is
 // why Vosk Reach + Halen City are now reachable from the menu, not only by URL.
 //
@@ -29,10 +29,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import { createUniverse, createWorld } from "@/lib/actions/wiki";
-import { resolveWikiScope } from "@/app/wiki/scope";
+import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
 import Modal from "../ui/Modal";
 import { canSubmitName } from "../wiki/nameGate";
-import { scopeHref } from "../wiki/scopeHref";
 import { flattenSwitcher, breadcrumbLabel } from "../wiki/switcherMenu";
 import styles from "../wiki/WorldSwitcher.module.css";
 import pill from "./ScopePill.module.css";
@@ -64,14 +63,13 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
 
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Active scope is URL-driven; resolve it with the SAME pure helper the /wiki
-  // server page uses so the pill and the page never disagree on which world is
-  // active (a layout can't read searchParams, so we read them here).
-  const { activeUniverseId, activeWorldId } = resolveWikiScope(
-    tree,
-    searchParams.get("u") ?? undefined,
-    searchParams.get("w") ?? undefined,
-  );
+  // Active scope is URL-driven; resolve it with the ONE resolver every surface
+  // uses so the pill and the page never disagree on which world is active (a
+  // layout can't read searchParams, so we read them here).
+  const { universeId: activeUniverseId, worldId: activeWorldId } = resolveActiveScope(tree, {
+    u: searchParams.get("u") ?? undefined,
+    w: searchParams.get("w") ?? undefined,
+  });
 
   // Pure model (unit-tested in switcherMenu.test.ts).
   const items = flattenSwitcher(tree, activeUniverseId, activeWorldId);
@@ -102,7 +100,7 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
   // trips react-hooks/preserve-manual-memoization. Let the compiler own it.
   const go = (u: string, w?: string) => {
     setOpen(false);
-    startTransition(() => router.push(scopeHref(u, w, basePath)));
+    startTransition(() => router.push(scopedHref(basePath, { universeId: u, worldId: w })));
   };
 
   const runCreate = async <T,>(
@@ -143,7 +141,7 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
           // first world (a bare refresh snaps back to worlds[0]).
           ({ worldId }) =>
             startTransition(() => {
-              router.push(scopeHref(activeUniverseId, worldId, basePath));
+              router.push(scopedHref(basePath, { universeId: activeUniverseId, worldId }));
               router.refresh();
             }),
         ),

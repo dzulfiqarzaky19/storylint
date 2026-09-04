@@ -23,7 +23,7 @@ import { useEffect, useRef, useState, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { WorldUniverseNode } from "@/lib/db/queries";
 import { createBook, renameBook, deleteBook, previewCascade } from "@/lib/actions/wiki";
-import { resolveWriteScope } from "@/app/write/scope";
+import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
 import Modal from "../ui/Modal";
 import ConfirmModal from "../ui/ConfirmModal";
 import { canSubmitName } from "../wiki/nameGate";
@@ -58,14 +58,14 @@ export default function BookPill({ tree }: BookPillProps) {
 
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Active scope is URL-driven; resolve it with the SAME pure helper the /write
-  // server page uses so the pill and the page never disagree on the active book.
-  const { activeUniverseId, activeWorldId, activeBookId } = resolveWriteScope(
-    tree,
-    searchParams.get("u") ?? undefined,
-    searchParams.get("w") ?? undefined,
-    searchParams.get("book") ?? undefined,
-  );
+  // Active scope is URL-driven; resolve it with the ONE resolver every surface
+  // uses so the pill and the page never disagree on the active book.
+  const scope = resolveActiveScope(tree, {
+    u: searchParams.get("u") ?? undefined,
+    w: searchParams.get("w") ?? undefined,
+    book: searchParams.get("book") ?? undefined,
+  });
+  const { universeId: activeUniverseId, worldId: activeWorldId, bookId: activeBookId } = scope;
 
   const universe = tree.find((u) => u.id === activeUniverseId);
   const world = universe?.worlds.find((w) => w.id === activeWorldId);
@@ -98,8 +98,7 @@ export default function BookPill({ tree }: BookPillProps) {
   // listChapters(activeBookId), so the left index re-scopes to that book.
   const goBook = (bookId: string) => {
     setOpen(false);
-    const params = new URLSearchParams({ u: activeUniverseId, w: activeWorldId, book: bookId });
-    startTransition(() => router.push(`/write?${params.toString()}`));
+    startTransition(() => router.push(scopedHref("/write", { ...scope, bookId })));
   };
 
   // Shared runner for create/rename/delete: busy + error handling, then re-render
@@ -132,13 +131,8 @@ export default function BookPill({ tree }: BookPillProps) {
             const res = await createBook({ name, worldId: activeWorldId });
             if (!res.ok) return res;
             // Land ON the new book so the writer sees its (empty) chapter set.
-            const params = new URLSearchParams({
-              u: activeUniverseId,
-              w: activeWorldId,
-              book: res.data.bookId,
-            });
             startTransition(() => {
-              router.push(`/write?${params.toString()}`);
+              router.push(scopedHref("/write", { ...scope, bookId: res.data.bookId }));
               router.refresh();
             });
             return res;
@@ -180,10 +174,9 @@ export default function BookPill({ tree }: BookPillProps) {
     await run(
       () => deleteBook({ bookId: target.id, confirmed: true }),
       () => {
-        const params = new URLSearchParams({ u: activeUniverseId, w: activeWorldId });
-        if (nextBook) params.set("book", nextBook.id);
         startTransition(() => {
-          router.push(`/write?${params.toString()}`);
+          // No surviving book means no book axis to carry, so /write resolves one.
+          router.push(scopedHref("/write", { ...scope, bookId: nextBook?.id }));
           router.refresh();
         });
       },

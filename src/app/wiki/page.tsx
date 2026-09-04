@@ -6,13 +6,13 @@
 // World. Series and Book are no longer surfaced here — book handling lives on
 // /write. The ACTIVE universe still comes from the URL (?u=); the active WORLD is
 // derived 1:1 from it (`world-${universeId}`). Scope resolution is the PURE
-// resolveWikiScope helper (see ./scope.ts) so its defaults are unit-testable.
+// resolveActiveScope (see lib/scope/activeScope.ts) so its ladder lives in one place.
 import { loadWorldSnapshot } from "@/lib/db/gazetteer";
 import { getChaptersForBook, getDismissedSuggestionKeys, getResolvedMarkKeys } from "@/lib/db/chapter-queries";
 import { getWorldTree } from "@/lib/db/queries";
 import { checkWikiBook } from "@/lib/domain/wikiCheck";
 import WikiScreen from "@/components/wiki/WikiScreen";
-import { resolveWikiScope } from "./scope";
+import { resolveActiveScope } from "@/lib/scope/activeScope";
 
 export const dynamic = "force-dynamic";
 
@@ -24,19 +24,15 @@ export default async function WikiPage({
   const sp = await searchParams;
   const tree = await getWorldTree();
 
-  const { activeUniverseId, activeWorldId, activeBookId } = resolveWikiScope(
-    tree,
-    sp.u,
-    sp.w,
-  );
+  const scope = resolveActiveScope(tree, sp);
 
   const [snapshot, chapters, dismissedSuggestionKeys, resolvedMarkKeys] =
     await Promise.all([
-      loadWorldSnapshot(activeWorldId, activeBookId),
+      loadWorldSnapshot(scope.worldId, scope.bookId),
       // Poster band derives from the ACTIVE book's chapters (every chapter), so a
       // not-recorded detail the writer mentioned in ANY chapter surfaces here.
       // Replaces the DUMMY single-chapter-7-of-default-book read.
-      getChaptersForBook(activeBookId),
+      getChaptersForBook(scope.bookId),
       getDismissedSuggestionKeys(),
       getResolvedMarkKeys(),
     ]);
@@ -62,12 +58,12 @@ export default async function WikiPage({
         // even though the server sent the new (empty) snapshot — the visible
         // "snap-back". Remounting on world id re-runs the initializer with the
         // new snapshot.
-        key={activeWorldId}
+        key={scope.worldId}
         snapshot={snapshot}
         suggestions={suggestions}
         contradictionEntryIds={contradictionEntryIds}
         worlds={worlds}
-        activeWorldId={activeWorldId}
+        activeWorldId={scope.worldId}
       />
   );
 }

@@ -21,7 +21,7 @@ import {
   getWorldTree,
   listChapters,
 } from '@/lib/db/queries';
-import { resolveWriteScope } from './scope';
+import { resolveActiveScope } from '@/lib/scope/activeScope';
 import { paragraphsToDoc } from '@/lib/write/adapters';
 import { loadChapterMarks } from '@/lib/write/chapterMarks';
 import { aiEnabled } from '@/lib/ai/saarouters';
@@ -39,14 +39,14 @@ export default async function WritePage({
 }) {
   const { chapter: chapterParam, u: uParam, w: wParam, book: bookParam } = await searchParams;
 
-  // T-SCOPE-2: resolve the active WORLD + BOOK from the URL with the SAME pure
-  // resolver the BookPill uses, so the header and the chapter list never disagree
-  // on which book is active. listChapters is now SCOPED to that book, so the left
-  // index shows exactly the active book's chapters (not all 42 across six books).
+  // The active scope, resolved by the ONE resolver every surface and pill uses,
+  // so the header and the chapter list never disagree on which book is active.
+  // listChapters is SCOPED to that book, so the left index shows exactly the
+  // active book's chapters (not all 42 across six books).
   const tree = await getWorldTree();
-  const { activeUniverseId, activeWorldId, activeBookId } = resolveWriteScope(tree, uParam, wParam, bookParam);
+  const scope = resolveActiveScope(tree, { u: uParam, w: wParam, book: bookParam });
 
-  const chapters = await listChapters(activeBookId);
+  const chapters = await listChapters(scope.bookId);
   // Default to the last chapter (the working edge); an unknown/absent param also
   // falls back to it so a stale URL never lands on nothing.
   const lastNumber = chapters.length > 0 ? chapters[chapters.length - 1]!.number : 1;
@@ -54,7 +54,7 @@ export default async function WritePage({
   const chapterNumber =
     chapters.some((c) => c.number === requested) ? requested : lastNumber;
 
-  const chapter = await getChapter(chapterNumber, activeBookId);
+  const chapter = await getChapter(chapterNumber, scope.bookId);
   const body = chapter?.body ?? EMPTY_BODY;
   const title = chapter?.title ?? 'Low Water';
 
@@ -64,7 +64,7 @@ export default async function WritePage({
   // is soft-delete-filtered and bounded to the active world, so the modal never
   // offers a sibling world's entry.
   const [pickerEntries, pickerCategories] = await Promise.all([
-    getWorldEntries(activeWorldId),
+    getWorldEntries(scope.worldId),
     getCategories(),
   ]);
 
@@ -73,8 +73,8 @@ export default async function WritePage({
   // together against one wiki snapshot and one freshness gate, so a dot and the
   // rail it opens onto can never disagree.
   const marks = await loadChapterMarks({
-    universeId: activeUniverseId,
-    bookId: activeBookId,
+    universeId: scope.universeId,
+    bookId: scope.bookId,
     chapterNumber,
     body,
   });
@@ -95,9 +95,9 @@ export default async function WritePage({
         severity: marks.severityByNumber.get(c.number) ?? null,
       }))}
       aiEnabled={aiEnabled()}
-      activeBookId={activeBookId}
-      activeUniverseId={activeUniverseId}
-      activeWorldId={activeWorldId}
+      activeBookId={scope.bookId}
+      activeUniverseId={scope.universeId}
+      activeWorldId={scope.worldId}
       pickerEntries={pickerEntries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
       pickerCategories={pickerCategories.map((c) => ({ id: c.id, label: c.label }))}
       initialAiMarks={marks.aiMarks}
