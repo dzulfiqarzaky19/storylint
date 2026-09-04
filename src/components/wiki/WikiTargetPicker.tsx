@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { ResolvedTarget, CheckedAgainst } from "@/lib/check";
-import type { PickerResult } from "@/lib/research/resolvePickerTarget";
+import type { PickerResult } from "@/lib/wiki/pickedTarget";
 import styles from "./WikiTargetPicker.module.css";
 
 /** A live category pill (built-in or user-created). */
@@ -132,7 +132,7 @@ export default function WikiTargetPicker({
   // the signal. In that case the modal LOCKS the category and entry to that target
   // — there is nothing to pick, only the value to fix — so the writer can't misfile
   // a correction onto the wrong entry. Gated on the resolved factId so the modal
-  // shows EDIT exactly when resolveWikiWriteMode can actually edit that row in place
+  // shows EDIT exactly when writeConfirmedTarget can actually correct that row in place
   // (both AI conflicts and the deterministic rules now resolve it); an AI conflict
   // the server never matched to a row, and /research and not-written-down signals,
   // carry no factId and stay in the free-pick add flow untouched.

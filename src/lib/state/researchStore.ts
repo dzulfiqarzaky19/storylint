@@ -40,7 +40,7 @@ export interface ResearchState {
 export type ResearchAction =
   | { type: "KEEP_CARD"; propositionId: string; kept: boolean }
   | { type: "PROPOSE_CARD"; propositionId: string }
-  | { type: "CONFIRM_CARD"; propositionId: string; entryId: string }
+  | { type: "CONFIRM_CARD"; propositionId: string }
   | { type: "CANCEL_PENDING" }
   // AI (session-only): append the writer's question and the AI's answer as two
   // new turns, both immediately visible. Cards are proposition-shaped so they

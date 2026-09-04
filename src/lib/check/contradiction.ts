@@ -75,7 +75,7 @@ export function findContradictions(
 
           // A deterministic contradiction is READ FROM a real recorded fact, so it
           // carries the same write-target seams an AI conflict does: checkedAgainst
-          // pins the exact facts row (so resolveWikiWriteMode edits it in place
+          // pins the exact facts row (so writeConfirmedTarget corrects it in place
           // instead of appending a second, still-contradicting fact), and
           // resolvedTarget opens the "change it" modal locked to that entry+fact
           // with the corrected value pre-filled when the rule named one.

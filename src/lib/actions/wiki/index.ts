@@ -5,3 +5,4 @@ export * from "./categories";
 export * from "./trash";
 export * from "./aiSuggest";
 export * from "./worldStructure";
+export * from "./writeConfirmedTarget";

@@ -60,15 +60,9 @@ import {
   aiCheckChapter,
   persistChapterCheck,
 } from '@/lib/actions/write';
-import { createEntry, createFact, createCategory, editFact } from '@/lib/actions/wiki';
-import { resolveWikiWriteMode } from '@/lib/write/resolveWikiWriteMode';
-import { KIND_SHELF, type Shelf } from '@/lib/domain/types';
-import { defaultCategoryShelf } from '@/lib/wiki/categoryLabels';
+import { writeConfirmedTarget } from '@/lib/actions/wiki';
 import WikiTargetPicker from '@/components/wiki/WikiTargetPicker';
-import {
-  resolvePickerTarget,
-  type PickerResult,
-} from '@/lib/research/resolvePickerTarget';
+import type { PickerResult } from '@/lib/wiki/pickedTarget';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {
   createMarkDecorationPlugin,
@@ -534,14 +528,11 @@ export function Manuscript({
     if (mark) dispatch({ type: 'OPEN_MARK', markKey: mark.markKey });
   }, [pendingPickerMark]);
 
-  // The modal's confirm IS the wiki-write gate (product rule 1). The writer's
-  // PickerResult maps through the SAME pure resolvePickerTarget /research uses;
-  // the one bit it carries (entryId present) routes ENRICH vs MINT. /write has a
-  // Mark, not a proposition, so it drives the manual-authoring actions directly
-  // (createFact / createEntry) rather than /research's proposition-coupled
-  // confirmCard. Mark-keyed ids make a double-confirm idempotent: insertFact and
-  // insertEntry are both ON CONFLICT (id) DO UPDATE, so re-confirming the same
-  // mark updates in place instead of stacking a duplicate.
+  // The modal's confirm IS the wiki-write gate (product rule 1). What the writer
+  // confirmed, plus the mark it came from, is the whole story: enrich-vs-mint,
+  // the correction rule for a contradiction, the idempotent mark-keyed ids, the
+  // category-before-entry ordering and the removed-target rejection all live in
+  // writeConfirmedTarget, shared verbatim with /research.
   const handlePickerConfirm = useCallback(
     async (result: PickerResult) => {
       const mark = pendingPickerMark;
@@ -550,61 +541,15 @@ export function Manuscript({
       setPendingPickerMark(null);
       setBusy(true);
       try {
-        const args = resolvePickerTarget(result);
-        if (args.enrichEntryId) {
-          // Resolving a CONTRADICTION corrects the fact it contradicts in place;
-          // any other enrich appends a new fact. Editing keeps the wiki from
-          // holding both the old value and its correction (which re-flags).
-          const writeMode = resolveWikiWriteMode(mark);
-          const res =
-            writeMode.mode === 'edit'
-              ? await editFact({
-                  factId: writeMode.factId,
-                  key: args.entry.name,
-                  value: args.entry.summary,
-                })
-              : await createFact({
-                  id: `mark-fact-${markKey}`,
-                  entryId: args.enrichEntryId,
-                  key: args.entry.name,
-                  value: args.entry.summary,
-                });
-          if (!res.ok) {
-            dispatch({ type: 'SET_ERROR', error: res.error });
-            return;
-          }
-        } else {
-          // MINT. A brand-new category is a real categories row: mint it FIRST so
-          // the entry's kind is that real category id, not the lore fallback. The
-          // proposed NAME's presence is what routes to a category mint.
-          const newCategoryName = result.proposeCategoryName?.trim();
-          let kind: string = args.entry.kind;
-          let shelf: Shelf = KIND_SHELF[args.entry.kind];
-          if (newCategoryName) {
-            const cat = await createCategory({
-              id: `cat-${markKey}`,
-              label: newCategoryName,
-              shelf: defaultCategoryShelf(),
-            });
-            if (!cat.ok) {
-              dispatch({ type: 'SET_ERROR', error: cat.error });
-              return;
-            }
-            kind = cat.data.id;
-            shelf = cat.data.shelf as Shelf;
-          }
-          const entry = await createEntry({
-            id: `mint-${markKey}`,
-            kind,
-            shelf,
-            name: args.entry.name,
-            summary: args.entry.summary,
-            worldId: activeWorldId,
-          });
-          if (!entry.ok) {
-            dispatch({ type: 'SET_ERROR', error: entry.error });
-            return;
-          }
+        const res = await writeConfirmedTarget({
+          result,
+          origin: { from: 'mark', mark },
+          worldId: activeWorldId,
+          confirmed: true,
+        });
+        if (!res.ok) {
+          dispatch({ type: 'SET_ERROR', error: res.error });
+          return;
         }
         // Written -> resolve the mark locally so it drops off the rail and
         // survives reload (the wiki now records what the mark flagged).

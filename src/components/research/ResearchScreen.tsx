@@ -13,7 +13,6 @@ import {
   keepCard,
   proposeCard,
   cancelPending,
-  confirmCard,
   createThread,
   deleteThread,
   renameThread,
@@ -23,13 +22,11 @@ import QuestionBlock from "./QuestionBlock";
 import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
 import WikiTargetPicker from "@/components/wiki/WikiTargetPicker";
-import type { PickerResult } from "@/lib/research/resolvePickerTarget";
-import { resolvePickerTarget } from "@/lib/research/resolvePickerTarget";
-import { createCategory } from "@/lib/actions/wiki";
+import type { PickerResult } from "@/lib/wiki/pickedTarget";
+import { writeConfirmedTarget } from "@/lib/actions/wiki";
 import { useServerAction } from "@/components/hooks/useServerAction";
 import { useResearchAsk } from "./useResearchAsk";
 import type { ActionResult } from "@/lib/actions/confirmation";
-import { defaultCategoryShelf } from "@/lib/wiki/categoryLabels";
 import { synthesizeResolvedTarget } from "@/lib/research/synthesizeResolvedTarget";
 import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
 import Composer from "./Composer";
@@ -237,48 +234,24 @@ export default function ResearchScreen({
     runAction(() => cancelPending());
   };
 
-  // The modal's confirm IS the wiki-write gate (product rule 1). Its PickerResult
-  // maps to confirmCard's EXISTING arguments via the pure resolvePickerTarget —
-  // the write contract is reused unchanged. ENRICH vs MINT is carried solely by
-  // whether the writer landed on an existing entry (result.entryId set).
+  // The modal's confirm IS the wiki-write gate (product rule 1). What the writer
+  // confirmed, plus the card it came from, is the whole story: the id scheme,
+  // the category-before-entry ordering, the removed-target rejection and the
+  // flip of this card to "in the wiki" all live in writeConfirmedTarget, shared
+  // verbatim with /write.
   const handleConfirm = (result: PickerResult) => {
     if (!pendingCard) return;
     const card = pendingCard;
-    const args = resolvePickerTarget(result);
-    // Enrich -> the existing entry's id; mint -> the derived prop- id. This is the
-    // id the optimistic reducer flips to in_wiki, matching confirmCard's return.
-    const entryId = args.enrichEntryId ?? `prop-${card.id}`;
     // Optimistic: reflect the write locally (kept + inWiki, modal closes).
-    dispatch({ type: "CONFIRM_CARD", propositionId: card.id, entryId });
-    // A brand-new category is a real categories row: mint it FIRST, then hand
-    // confirmCard the created {id, shelf} so the entry's kind is that real
-    // category (not the lore fallback). The proposed NAME's presence is what
-    // routes to a category mint - no separate flag.
-    const newCategoryName = result.proposeCategoryName?.trim();
-    runAction(async () => {
-      let category: { id: string; shelf: Shelf } | undefined;
-      if (newCategoryName) {
-        // A stable id keyed to the card makes the mint idempotent: React strict
-        // mode (and any double-fire / retry) invokes this twice, and createCategory
-        // ON CONFLICT collapses the second into the first instead of minting a
-        // duplicate category row. A fresh randomUUID() per call would defeat that.
-        const created = await createCategory({
-          id: `cat-${card.id}`,
-          label: newCategoryName,
-          shelf: defaultCategoryShelf(),
-        });
-        if (!created.ok) return created;
-        category = { id: created.data.id, shelf: created.data.shelf as Shelf };
-      }
-      return confirmCard({
-        propositionId: card.id,
-        entry: args.entry,
-        enrichEntryId: args.enrichEntryId,
+    dispatch({ type: "CONFIRM_CARD", propositionId: card.id });
+    runAction(() =>
+      writeConfirmedTarget({
+        result,
+        origin: { from: "card", propositionId: card.id },
         worldId: activeWorldId,
-        category,
         confirmed: true,
-      });
-    });
+      }),
+    );
   };
 
   // Ask box: send the trimmed draft as the question.
