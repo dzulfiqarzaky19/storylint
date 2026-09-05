@@ -1,11 +1,11 @@
 "use client";
 
 // F6-S6b — the "Recently deleted" trash panel. Purely presentational: it renders
-// the soft-deleted entries the orchestrator (WikiScreen) fetched, and wires each
-// Restore button + the single "Empty trash" purge button to callbacks the caller
-// owns. It holds NO server-action or reducer logic — restore/purge/refetch all
-// live in WikiScreen (§8 write-through). The one decision it consumes is
-// trashCountdown (pure, unit-locked in trashCountdown.test.ts).
+// the soft-deleted entries the caller fetched, and wires each Restore button +
+// the single "Empty trash" purge button to callbacks the caller owns. It holds
+// NO server-action or reducer logic — restore/purge/refetch all live in
+// useTrashPanel. The one decision it consumes is trashCountdown (pure,
+// unit-locked in trashCountdown.test.ts).
 //
 // The whole panel is HIDDEN when the trash is empty (no empty-state chrome): the
 // caller renders <TrashPanel> only when entries.length > 0.

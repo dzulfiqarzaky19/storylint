@@ -2,10 +2,10 @@
 // Research store — useReducer state shape + action union + reducer.
 //
 // Reducer is the session source of truth; each action fires alongside its
-// matching Server Action (src/lib/actions/research.ts). Pure reducer.
+// matching persist through commit(intent) (planResearchWrite). Pure reducer.
 //
 // Product rule 1 note: only CONFIRM_CARD corresponds to a wiki write, and only
-// via the confirmed confirmCard server action. PROPOSE_CARD merely reveals the
+// via the confirmed writeConfirmedTarget server action. PROPOSE_CARD merely reveals the
 // confirmation strip; CANCEL_PENDING writes nothing.
 // =============================================================================
 
@@ -33,7 +33,7 @@ export interface ResearchState {
 // action type      →  matching Server Action (actions/research.ts)
 // KEEP_CARD        →  keepCard
 // PROPOSE_CARD     →  proposeCard        (reveals strip; no write)
-// CONFIRM_CARD     →  confirmCard        (WIKI WRITE, confirmed)
+// CONFIRM_CARD     →  writeConfirmedTarget (WIKI WRITE, confirmed)
 // CANCEL_PENDING   →  cancelPending      (writes nothing)
 // SET_ERROR        →  (none — surfaces a failed server action)
 

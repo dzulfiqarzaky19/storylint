@@ -10,9 +10,6 @@ import {
 } from "@/lib/state/researchStore";
 import type { ResearchSnapshot } from "@/lib/db/research";
 import {
-  keepCard,
-  proposeCard,
-  cancelPending,
   createThread,
   deleteThread,
   renameThread,
@@ -23,10 +20,8 @@ import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
 import WikiTargetPicker from "@/components/wiki/WikiTargetPicker";
 import type { PickerResult } from "@/lib/wiki/pickedTarget";
-import { writeConfirmedTarget } from "@/lib/actions/wiki";
-import { useServerAction } from "@/components/hooks/useServerAction";
 import { useResearchAsk } from "./useResearchAsk";
-import type { ActionResult } from "@/lib/actions/confirmation";
+import { useResearchCommit } from "./useResearchCommit";
 import { synthesizeResolvedTarget } from "@/lib/research/synthesizeResolvedTarget";
 import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
 import Composer from "./Composer";
@@ -104,7 +99,7 @@ export default function ResearchScreen({
     initResearchState,
   );
   const [, startTransition] = useTransition();
-  const { run } = useServerAction((error) => dispatch({ type: "SET_ERROR", error }));
+  const commit = useResearchCommit({ dispatch, worldId: activeWorldId });
   const [boardActive, setBoardActive] = useState(false);
   // The card currently being dragged, so the board drop knows what to keep.
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -215,43 +210,32 @@ export default function ResearchScreen({
     [pendingCard, enrichRecommendation],
   );
 
-  // ---- Handlers (reducer fires immediately; server action alongside) ------
-
-  const runAction = (fn: () => Promise<ActionResult<unknown>>) => run(fn());
+  // ---- Handlers. The screen states intent; pairing lives in commit. ------
 
   const handleKeep = (id: string, next: boolean) => {
-    dispatch({ type: "KEEP_CARD", propositionId: id, kept: next });
-    runAction(() => keepCard(id, next));
+    commit({ type: "card.keep", propositionId: id, kept: next });
   };
 
   const handlePropose = (id: string) => {
-    dispatch({ type: "PROPOSE_CARD", propositionId: id });
-    runAction(() => proposeCard(id));
+    commit({ type: "card.propose", propositionId: id });
   };
 
   const handleCancel = () => {
-    dispatch({ type: "CANCEL_PENDING" });
-    runAction(() => cancelPending());
+    commit({ type: "card.cancel" });
   };
 
   // The modal's confirm IS the wiki-write gate (product rule 1). What the writer
   // confirmed, plus the card it came from, is the whole story: the id scheme,
   // the category-before-entry ordering, the removed-target rejection and the
   // flip of this card to "in the wiki" all live in writeConfirmedTarget, shared
-  // verbatim with /write.
+  // verbatim with /write. The screen no longer spells that envelope.
   const handleConfirm = (result: PickerResult) => {
     if (!pendingCard) return;
-    const card = pendingCard;
-    // Optimistic: reflect the write locally (kept + inWiki, modal closes).
-    dispatch({ type: "CONFIRM_CARD", propositionId: card.id });
-    runAction(() =>
-      writeConfirmedTarget({
-        result,
-        origin: { from: "card", propositionId: card.id },
-        worldId: activeWorldId,
-        confirmed: true,
-      }),
-    );
+    commit({
+      type: "card.confirm",
+      propositionId: pendingCard.id,
+      result,
+    });
   };
 
   // Ask box: send the trimmed draft as the question.

@@ -212,15 +212,10 @@ function WikiScreenInner({
   const [confirmDeleteKind, setConfirmDeleteKind] = useState<string | null>(null);
 
   // ---- Trash: recently-deleted panel (F6-S6b) --------------------------------
-  // Panel-local server state + restore/purge live in useTrashPanel (T-ARCH-13).
-  // Restore hands the row back so we dispatch RESTORE_ENTRY here, keeping the
-  // reducer as this component's concern.
-  const trash = useTrashPanel(surfaceError);
-  const restoreDeleted = useCallback(
-    (id: string) =>
-      trash.restore(id, (entry) => dispatch({ type: "RESTORE_ENTRY", entry })),
-    [trash],
-  );
+  // Panel-local server state + restore/purge live in useTrashPanel. Restore
+  // awaits the live row then dispatches RESTORE_ENTRY inside the panel, so this
+  // screen never learns that action.
+  const trash = useTrashPanel(dispatch);
 
   // Entries grouped per shelf, in the reducer's live order (WikiIndex still
   // groups by the fixed 4 shelves).
@@ -300,7 +295,7 @@ function WikiScreenInner({
                 entries={trash.deleted}
                 nowMs={trash.nowMs}
                 busy={trash.busy}
-                onRestore={restoreDeleted}
+                onRestore={trash.restore}
                 onRequestPurge={() => trash.setConfirmPurge(true)}
               />
             ) : null
@@ -334,7 +329,7 @@ function WikiScreenInner({
               entries={trash.deleted}
               nowMs={trash.nowMs}
               busy={trash.busy}
-              onRestore={restoreDeleted}
+              onRestore={trash.restore}
               onRequestPurge={() => trash.setConfirmPurge(true)}
             />
           ) : null

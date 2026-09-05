@@ -54,11 +54,12 @@ agent could plausibly misread it. Discipline that maintains this file lives in
   as tombstones.
 - **fact** — a key/value detail on one entry (`facts`).
 - **tie** — a named directional relationship from one entry to another (`ties`).
-- **write-through** — how a gazetteer mutation reaches the database: an optimistic
+- **write-through** — how a gazetteer or research-card mutation reaches the database: an optimistic
   reducer action fired ALONGSIDE its persist, both carrying the SAME client-minted
-  id so the session row and the persisted row are one row. `commit(intent)`
-  (`components/wiki/useWikiCommit.ts`) is the only write-through; a screen states
-  an intent and never learns ids, append positions, or the confirmation flag.
+  id so the session row and the persisted row are one row. `commit(intent)` is the
+  only write-through — wiki (`components/wiki/useWikiCommit.ts`) and research cards
+  (`components/research/useResearchCommit.ts`). A screen states intent and never
+  learns ids, append positions, the confirmation flag, or the pairing.
 - **confirmed picker write** — what the "Add to the wiki" modal's confirm does:
   ENRICH a live entry (fold a fact onto it, CORRECTING the contradicted fact when
   the origin is a conflict mark) or MINT a new entry. One module for /write and
