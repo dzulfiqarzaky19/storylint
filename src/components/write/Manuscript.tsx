@@ -62,7 +62,7 @@ import {
 } from '@/lib/actions/write';
 import { writeConfirmedTarget } from '@/lib/actions/wiki';
 import { scopedHref } from '@/lib/scope/activeScope';
-import WikiTargetPicker from '@/components/wiki/WikiTargetPicker';
+import WikiTargetPicker from '@/components/WikiTargetPicker';
 import type { PickerResult } from '@/lib/wiki/pickedTarget';
 import { docToParagraphs } from '@/lib/write/adapters';
 import {

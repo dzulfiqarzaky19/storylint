@@ -1,0 +1,9 @@
+/* Focused-entry workspace shell. Identity lives in Profile. */
+
+.band {
+  padding: 34px var(--gutter) 0;
+}
+
+@media (max-width: 560px) {
+  .band { padding: var(--space-5) var(--gutter) 0; }
+}

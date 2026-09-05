@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Modal from "./Modal";
 import { createOneShot } from "./oneShot";
-import { matchesDeleteName } from "../wiki/confirmNameGate";
+import { matchesDeleteName } from "./confirmNameGate";
 import styles from "./ConfirmModal.module.css";
 
 export interface ConfirmModalProps {

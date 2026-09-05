@@ -11,7 +11,7 @@ import { loadWorldSnapshot } from "@/lib/db/gazetteer";
 import { getChaptersForBook, getDismissedSuggestionKeys, getResolvedMarkKeys } from "@/lib/db/chapter-queries";
 import { getWorldTree } from "@/lib/db/queries";
 import { checkWikiBook } from "@/lib/domain/wikiCheck";
-import WikiScreen from "@/components/wiki/WikiScreen";
+import Wiki from "@/features/wiki/Wiki";
 import { resolveActiveScope } from "@/lib/scope/activeScope";
 
 export const dynamic = "force-dynamic";
@@ -50,9 +50,9 @@ export default async function WikiPage({
   const worlds = tree.flatMap((u) => u.worlds.map((w) => ({ id: w.id, title: w.title })));
 
   return (
-    <WikiScreen
+    <Wiki
         // TCK-E02: key on the active world so switching worlds REMOUNTS the
-        // screen. WikiScreen seeds its reducer from `snapshot` in a once-only
+        // screen. Wiki seeds its reducer from `snapshot` in a once-only
         // initializer (no prop-sync effect), so without a changing key a
         // client-side world switch keeps the previous world's entries on screen
         // even though the server sent the new (empty) snapshot — the visible

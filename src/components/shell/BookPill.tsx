@@ -27,8 +27,8 @@ import { lastChildHint } from "@/lib/wiki/structureEdit";
 import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
 import Modal from "../ui/Modal";
 import ConfirmModal from "../ui/ConfirmModal";
-import { canSubmitName } from "../wiki/nameGate";
-import switcher from "../wiki/WorldSwitcher.module.css";
+import { canSubmitName } from "@/lib/nameGate";
+import switcher from "./SwitcherMenu.module.css";
 import pill from "./ScopePill.module.css";
 
 interface BookPillProps {

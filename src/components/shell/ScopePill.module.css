@@ -1,7 +1,7 @@
 /* ScopePill — design 3a: the scope switcher folded into the header wordmark.
    On-system Ashkeld tokens only (globals.css owns hex), border-radius 0. The
    pill sits where the static wordmark used to; the dropdown itself reuses
-   WorldSwitcher.module.css (.menu and below), so only the pill face lives here. */
+   SwitcherMenu.module.css (.menu and below), so only the pill face lives here. */
 
 .root {
   position: relative;

@@ -57,7 +57,7 @@ agent could plausibly misread it. Discipline that maintains this file lives in
 - **write-through** — how a gazetteer or research-card mutation reaches the database: an optimistic
   reducer action fired ALONGSIDE its persist, both carrying the SAME client-minted
   id so the session row and the persisted row are one row. `commit(intent)` is the
-  only write-through — wiki (`components/wiki/useWikiCommit.ts`) and research cards
+  only write-through — wiki (`features/wiki/hooks/useWikiCommit.ts`) and research cards
   (`components/research/useResearchCommit.ts`). A screen states intent and never
   learns ids, append positions, the confirmation flag, or the pairing.
 - **confirmed picker write** — what the "Add to the wiki" modal's confirm does:

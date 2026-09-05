@@ -31,9 +31,9 @@ import type { WorldUniverseNode } from "@/lib/db/queries";
 import { editWorldStructure } from "@/lib/actions/wiki";
 import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
 import Modal from "../ui/Modal";
-import { canSubmitName } from "../wiki/nameGate";
-import { flattenSwitcher, breadcrumbLabel } from "../wiki/switcherMenu";
-import styles from "../wiki/WorldSwitcher.module.css";
+import { canSubmitName } from "@/lib/nameGate";
+import { flattenSwitcher, breadcrumbLabel } from "./switcherMenu";
+import styles from "./SwitcherMenu.module.css";
 import pill from "./ScopePill.module.css";
 
 interface ScopePillProps {

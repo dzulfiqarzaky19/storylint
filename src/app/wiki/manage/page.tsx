@@ -4,7 +4,7 @@
 // actions. The active scope isn't needed here (manage operates on the whole
 // tree), so this is a plain tree load with no scope resolution.
 import { getWorldTree } from "@/lib/db/queries";
-import WikiManage from "@/components/wiki/WikiManage";
+import WikiManage from "@/features/wiki-manage/WikiManage";
 
 export const dynamic = "force-dynamic";
 

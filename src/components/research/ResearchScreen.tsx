@@ -18,7 +18,7 @@ import ResearchIndex from "./ResearchIndex";
 import QuestionBlock from "./QuestionBlock";
 import Turn from "./Turn";
 import PropositionCard from "./PropositionCard";
-import WikiTargetPicker from "@/components/wiki/WikiTargetPicker";
+import WikiTargetPicker from "@/components/WikiTargetPicker";
 import type { PickerResult } from "@/lib/wiki/pickedTarget";
 import { useResearchAsk } from "./useResearchAsk";
 import { useResearchCommit } from "./useResearchCommit";
