@@ -1,4 +1,4 @@
-// Pure /plot grid model — no React, no server deps. Extracted from PlotScreen
+// Pure /plot grid model — no React, no server deps. Extracted from Plot
 // (T-ARCH-11) so the lane-status / gap / story-row logic is unit-testable without
 // mounting the grid. The screen and its sub-components import from here.
 import type { PlotProgression, PlotLane, PlotBeat } from "@/lib/db/plot";

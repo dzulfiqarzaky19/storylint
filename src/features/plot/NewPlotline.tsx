@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { PlotEdit } from "./usePlotEdit";
-import styles from "./PlotScreen.module.css";
+import type { PlotEdit } from "./hooks/usePlotEdit";
+import styles from "./NewPlotline.module.css";
 
 /** The "+ new plotline" affordance (feature 4, create). Collapsed to a button;
  *  clicking reveals a one-field inline form. Empty/blank name is rejected by the
  *  action, so the button just needs a non-empty submit. */
-export function NewPlotlineButton({ edit }: { edit: PlotEdit }) {
+export function NewPlotline({ edit }: { edit: PlotEdit }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);

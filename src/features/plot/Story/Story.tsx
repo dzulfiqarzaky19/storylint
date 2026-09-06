@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { PlotProgression, PlotLane } from "@/lib/db/plot";
 import { useInlineRename } from "@/components/hooks/useInlineRename";
-import type { PlotEdit } from "./usePlotEdit";
-import { laneColor, statusLabel, buildStoryRows } from "./plotModel";
-import { BeatEditor } from "./BeatEditor";
-import styles from "./PlotScreen.module.css";
+import type { PlotEdit } from "../hooks/usePlotEdit";
+import { laneColor, statusLabel, buildStoryRows } from "../lib/plotModel";
+import { BeatEditor } from "../components/BeatEditor";
+import styles from "./Story.module.css";
 
-export function StoryDrawer({
+export function Story({
   lane,
   chapters,
   latestChapter,
@@ -22,7 +22,7 @@ export function StoryDrawer({
   edit: PlotEdit;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
-  // T-ARCH-7: shared useInlineRename hook. PlotScreen keeps its OWN commit
+  // T-ARCH-7: shared useInlineRename hook. Plot keeps its OWN commit
   // decision, unchanged from before: a blank or unchanged trimmed draft is a
   // no-op (no onReset — this site has no reset-to-default affordance at all).
   const rename = useInlineRename(lane.name, {

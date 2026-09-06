@@ -1,9 +1,9 @@
 "use client";
 
 import type { PlotProgression } from "@/lib/db/plot";
-import styles from "./PlotScreen.module.css";
+import styles from "./Meter.module.css";
 
-export function CompletionMeter({
+export function Meter({
   completion,
 }: {
   completion: PlotProgression["completion"];

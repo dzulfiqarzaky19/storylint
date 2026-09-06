@@ -1,0 +1,241 @@
+/* Story — lane drawer over the Grid. */
+
+.broken {
+  border-left-color: var(--accent);
+}
+.glyph {
+  font-weight: 700;
+}
+/* ---- drawer: one arc's chapter-ordered "story so far" ----------------- */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  z-index: 50;
+  display: flex;
+  justify-content: flex-end;
+}
+.drawer {
+  width: min(460px, 92vw);
+  height: 100%;
+  background: var(--ground);
+  border-left: var(--rule-major);
+  border-top: 5px solid var(--lane);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.dhead {
+  padding: 20px var(--gutter) var(--space-4);
+  border-bottom: var(--rule-major);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.dtitle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.dtitle h2 {
+  font-size: var(--text-11);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.dclose {
+  font-size: var(--text-11);
+  line-height: 1;
+  color: var(--muted-2);
+  padding: 2px 6px;
+  background: none;
+  cursor: pointer;
+}
+.dclose:hover {
+  color: var(--accent);
+}
+.dkind {
+  font-size: var(--text-1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.dsub {
+  font-size: var(--text-2);
+  color: var(--muted);
+}
+.pill {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1.5px solid currentColor;
+  padding: 1px 7px;
+  margin-right: var(--space-2);
+}
+.beatlist {
+  overflow-y: auto;
+  padding: var(--space-2) var(--gutter) var(--space-7);
+}
+.beatrow {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: var(--space-3);
+  padding: 14px 0;
+  border-bottom: var(--rule-row);
+}
+.rowCh {
+  font-weight: 700;
+  font-size: var(--text-3);
+  color: var(--ink);
+}
+.rowCh small {
+  display: block;
+  font-weight: 400;
+  font-size: var(--text-1);
+  color: var(--muted-2);
+}
+.rowBody {
+  font-size: var(--text-4);
+  line-height: 1.5;
+  color: var(--body-ink);
+}
+.beatrow.broken .rowCh {
+  color: var(--accent-deep);
+}
+.rowWarn {
+  margin-top: 7px;
+  font-size: 12.5px;
+  color: var(--accent-deep);
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+.beatrow.stall {
+  opacity: 0.72;
+}
+.beatrow.stall .rowBody {
+  font-style: italic;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .scrim {
+    align-items: flex-end;
+  }
+  .drawer {
+    width: 100vw;
+    height: auto;
+    max-height: 86vh;
+    border-left: none;
+  }
+}
+/* inline error banner for any failed edit action */
+.editError {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-3);
+  color: var(--ground);
+  background: var(--accent-deep, var(--accent));
+  border: var(--rule-major);
+}
+
+/* drawer: rename input + inline "rename" trigger */
+.dtitleInput {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: var(--text-10);
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--ground);
+  border: var(--rule-major);
+}
+.dtitleInput:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.dedit {
+  margin-left: 10px;
+  padding: 2px var(--space-2);
+  font-size: var(--text-2);
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--muted-2);
+  background: none;
+  border: var(--rule-row);
+  cursor: pointer;
+  vertical-align: middle;
+}
+.dedit:hover {
+  color: var(--ink);
+}
+
+/* drawer: arc-state + delete controls */
+.dactions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: 14px;
+}
+.dactionLabel {
+  font-size: var(--text-2);
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.stateBtn {
+  padding: 5px var(--space-3);
+  font-size: var(--text-2);
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--muted-2);
+  background: none;
+  border: var(--rule-major);
+  cursor: pointer;
+}
+.stateBtn:hover {
+  color: var(--ink);
+}
+.stateOn {
+  background: var(--ink);
+  color: var(--ground);
+}
+.stateBtn:disabled {
+  cursor: default;
+}
+
+/* drawer: per-beat edit/delete row */
+.rowActions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.rowEdit,
+.rowDelete {
+  padding: 2px var(--space-2);
+  font-size: var(--text-1);
+  font-weight: 600;
+  font-family: inherit;
+  background: none;
+  border: var(--rule-row);
+  cursor: pointer;
+}
+.rowEdit {
+  color: var(--muted-2);
+}
+.rowEdit:hover {
+  color: var(--ink);
+}
+.rowDelete {
+  color: var(--accent-deep, var(--accent));
+}
+.rowDelete:hover {
+  color: var(--ground);
+  background: var(--accent-deep, var(--accent));
+  border-color: var(--accent-deep, var(--accent));
+}

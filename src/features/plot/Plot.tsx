@@ -9,18 +9,18 @@
 //
 // T-ARCH-11: this file is now composition only. The grid, drawer, beat card/editor,
 // new-plotline button, completion meter, the usePlotEdit hook, and the pure grid
-// model (plotModel.ts) each live in their own sibling module.
+// model (lib/plotModel.ts) each live in their own sibling module.
 import { useMemo, useState } from "react";
 import type { PlotProgression } from "@/lib/db/plot";
-import { LANE_COLORS, type Projection } from "./plotModel";
-import { usePlotEdit } from "./usePlotEdit";
-import { NewPlotlineButton } from "./NewPlotlineButton";
-import { CompletionMeter } from "./CompletionMeter";
-import { PlotGrid } from "./PlotGrid";
-import { StoryDrawer } from "./StoryDrawer";
-import styles from "./PlotScreen.module.css";
+import { LANE_COLORS, type Projection } from "./lib/plotModel";
+import { usePlotEdit } from "./hooks/usePlotEdit";
+import { NewPlotline } from "./NewPlotline";
+import { Meter } from "./Meter";
+import { Grid } from "./Grid/Grid";
+import { Story } from "./Story/Story";
+import styles from "./Plot.module.css";
 
-export default function PlotScreen({
+export default function Plot({
   progression,
   worldId,
   bookId,
@@ -67,7 +67,7 @@ export default function PlotScreen({
             This world has no plotlines. Add a beat to a chapter and it appears
             here as an arc across the grid.
           </p>
-          <NewPlotlineButton edit={edit} />
+          <NewPlotline edit={edit} />
           {edit.error ? (
             <p className={styles.editError} role="alert">
               {edit.error}
@@ -101,7 +101,7 @@ export default function PlotScreen({
           </div>
         </div>
 
-        <CompletionMeter completion={completion} />
+        <Meter completion={completion} />
 
         <div className={styles.legend}>
           <span>
@@ -115,7 +115,7 @@ export default function PlotScreen({
           </span>
         </div>
 
-        <NewPlotlineButton edit={edit} />
+        <NewPlotline edit={edit} />
       </div>
 
       {edit.error ? (
@@ -128,7 +128,7 @@ export default function PlotScreen({
       ) : null}
 
       <section className={styles.board} aria-label="Plot timeline">
-        <PlotGrid
+        <Grid
           lanes={lanes}
           chapters={orderedChapters}
           latestChapter={latestChapter}
@@ -139,7 +139,7 @@ export default function PlotScreen({
       </section>
 
       {openLane ? (
-        <StoryDrawer
+        <Story
           lane={openLane}
           chapters={chapters}
           latestChapter={latestChapter}

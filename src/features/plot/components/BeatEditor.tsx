@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import styles from "./PlotScreen.module.css";
+import styles from "./BeatEditor.module.css";
 
 /** Inline beat text editor (feature 2 create + edit). A small textarea with
  *  save/cancel; Enter (no shift) saves, Escape cancels. Blank text can't save.

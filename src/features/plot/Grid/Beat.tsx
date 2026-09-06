@@ -1,9 +1,9 @@
 "use client";
 
 import type { PlotBeat } from "@/lib/db/plot";
-import styles from "./PlotScreen.module.css";
+import styles from "./Beat.module.css";
 
-export function BeatCard({
+export function Beat({
   beat,
   kind,
   color,

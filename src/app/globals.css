@@ -60,7 +60,7 @@
 
   /* Plot lane hues, cycled by lane.colorIndex. Six low-chroma arc colors kept
      inside the palette so the plot grid never turns into a rainbow. Tokenized so
-     a theme can restate them; PlotScreen reads var(--lane-1..6), never a hex. */
+     a theme can restate them; Plot reads var(--lane-1..6), never a hex. */
   --lane-1: #2f6d5f;
   --lane-2: #b5561f;
   --lane-3: #3f5a6b;

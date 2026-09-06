@@ -1,0 +1,158 @@
+/* Plot — timeline shell: toolbar, board, empty state. */
+
+/* /plot screen — Ashkeld tokens only (globals.css custom props); radius 0;
+   no shadows. Column widths are custom props so the responsive block can retune
+   density per viewport in one place. Feature parity with prototypes/plot.*. */
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* Beat cards carry prose, so the whole board is wider than v1's dot grid. The
+     board itself scrolls horizontally; the screen fills its shell column. */
+  --lane-col: 210px;
+  /* Square beat cells: the beat column width equals the row height, so every
+     grid cell is a square. Long beat text truncates inside the card (see
+     .beatText line-clamp) rather than stretching the cell out of square. */
+  --cell-size: 168px;
+  --beat-col: var(--cell-size);
+  --row-h: var(--cell-size);
+}
+
+/* ---- toolbar: projection toggle + completion meter + legend ----------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: var(--space-4) var(--gutter);
+  border-bottom: var(--rule-row);
+  flex-wrap: wrap;
+}
+
+.proj {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-3);
+  color: var(--muted);
+}
+
+.projLabel {
+  white-space: nowrap;
+}
+
+.seg {
+  display: inline-flex;
+  border: var(--rule-major);
+}
+.seg button {
+  padding: 7px 15px;
+  font-size: var(--text-3);
+  font-weight: 600;
+  color: var(--muted-2);
+  background: none;
+  cursor: pointer;
+}
+.seg button + button {
+  border-left: var(--rule-major);
+}
+.seg button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--ground);
+}
+.seg button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.legend {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.legendBar {
+  width: 22px;
+  height: 3px;
+  display: inline-block;
+}
+.legendWarn {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  background: var(--accent);
+}
+.legendGap {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border: 1px dashed var(--muted-2);
+}
+
+.empty {
+  font-size: var(--text-6);
+  color: var(--muted);
+  max-width: 46ch;
+  margin-top: 6px;
+}
+.head {
+  padding: 30px var(--gutter) 0;
+}
+.kicker {
+  font-size: var(--text-2);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.title {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 10px 0 var(--space-2);
+  text-wrap: pretty;
+}
+
+/* ---- board + grid ----------------------------------------------------- */
+
+.board {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+/* ---- responsive ------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+  .screen {
+    --lane-col: 190px;
+    --cell-size: 156px;
+  }
+}
+@media (max-width: 640px) {
+  .screen {
+    --lane-col: 148px;
+    --cell-size: 138px;
+  }
+  .toolbar {
+    padding: 14px 20px;
+  }
+}
+/* inline error banner for any failed edit action */
+.editError {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-3);
+  color: var(--ground);
+  background: var(--accent-deep, var(--accent));
+  border: var(--rule-major);
+}

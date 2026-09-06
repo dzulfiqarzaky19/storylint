@@ -5,7 +5,7 @@
 import { getWorldTree } from "@/lib/db/queries";
 import { loadPlotProgression } from "@/lib/db/plot";
 import { resolveActiveScope } from "@/lib/scope/activeScope";
-import PlotScreen from "@/components/plot/PlotScreen";
+import Plot from "@/features/plot/Plot";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,7 @@ export default async function PlotPage({
   const progression = await loadPlotProgression(scope.worldId, scope.bookId);
   // Key on the world so switching worlds remounts the grid with the new arcs.
   return (
-    <PlotScreen
+    <Plot
       key={scope.worldId}
       progression={progression}
       worldId={scope.worldId}

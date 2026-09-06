@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from "react";
 import type { PlotProgression, PlotLane } from "@/lib/db/plot";
-import type { PlotEdit } from "./usePlotEdit";
-import { LANE_COLORS, laneColor, statusLabel, longGapChapters, type Projection } from "./plotModel";
-import { BeatCard } from "./BeatCard";
-import { BeatEditor } from "./BeatEditor";
-import styles from "./PlotScreen.module.css";
+import type { PlotEdit } from "../hooks/usePlotEdit";
+import { LANE_COLORS, laneColor, statusLabel, longGapChapters, type Projection } from "../lib/plotModel";
+import { Beat } from "./Beat";
+import { BeatEditor } from "../components/BeatEditor";
+import styles from "./Grid.module.css";
 
-export function PlotGrid({
+export function Grid({
   lanes,
   chapters,
   latestChapter,
@@ -160,7 +160,7 @@ export function PlotGrid({
                         onCancel={() => setAdding(null)}
                       />
                     ) : (
-                      <BeatCard
+                      <Beat
                         beat={beat}
                         kind={lane.label}
                         color={color}
