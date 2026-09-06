@@ -15,7 +15,7 @@ interface OverviewProps {
  * no new schema.
  *
  * The writer's `entry.summary` is NOT here: it is the head blurb under the entry
- * name (EntryBand), matching the prototype and keeping one edit surface per
+ * name (Profile), matching the prototype and keeping one edit surface per
  * value. Overview's own summary slot is the deferred AI synthesis.
  */
 export default function Overview({ entry, aiSynthesis }: OverviewProps) {

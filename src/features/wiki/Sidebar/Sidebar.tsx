@@ -193,7 +193,7 @@ export interface SidebarProps {
    *  "+ New <singular>" affordance; same create path the main shelf uses). */
   onCreateEntry?: (shelf: Shelf, categoryId: string) => void;
   /** Create a new CATEGORY (bottom "+ New category" affordance). Mirrors the
-   *  main shelf's NewCategoryShelf create path so both columns stay in sync. */
+   *  main CategoryList's NewCategory create path so both columns stay in sync. */
   onCreateCategory: (id: string, label: string) => void;
   /** Rename a category's header to a custom label. */
   onRenameCategory: (categoryId: string, label: string) => void;

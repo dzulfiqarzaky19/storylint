@@ -83,7 +83,7 @@ export function categoryLabelById(categories: CategoryRow[], id: string): string
  *
  * Naive-but-sufficient English singularization: drop ONE trailing "s" and
  * lowercase, matching the existing sidebar add-entry label
- * (WikiIndex.tsx: resolveCategoryLabel(...).replace(/s$/, "").toLowerCase()).
+ * (Sidebar.tsx: resolveCategoryLabel(...).replace(/s$/, "").toLowerCase()).
  * A label with no trailing "s" is returned lowercased unchanged. Pure and
  * non-mutating; the ONE place the add-entry singular is decided, so the main
  * shelf and the sidebar share the same ruling.

@@ -6,7 +6,7 @@ import InlineText from "../components/InlineText";
 import styles from "./Facts.module.css";
 
 // TCK-HF2W-A1: replace the two text glyphs (U+2726 sparkle, U+2715 x) with inline
-// SVGs in the same register as WikiIndex's Chevron (viewBox 0 0 16 16, 1em box,
+// SVGs in the same register as Sidebar's Chevron (viewBox 0 0 16 16, 1em box,
 // stroke=currentColor, aria-hidden + focusable=false so they inherit colour and
 // stay decorative — the visible label / aria-label carries the meaning). Crisp at
 // any size, unlike font glyphs whose shape/baseline vary by platform font.

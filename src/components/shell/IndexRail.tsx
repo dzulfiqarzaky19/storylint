@@ -109,7 +109,7 @@ export interface IndexRailProps {
  * the <=1200px fold behind a disclosure, ARIA wiring, viewport width steps) so a
  * surface supplies only its own list. Name is `IndexRail`, never `Rail`: this repo
  * already uses "rail" for the RIGHT signal panels (OutstandingRail, KeptBoard,
- * PosterBand) and for the `Mark.rail` string field.
+ * Suggestions) and for the `Mark.rail` string field.
  */
 export default function IndexRail({
   title,

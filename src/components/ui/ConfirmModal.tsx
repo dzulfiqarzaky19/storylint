@@ -70,7 +70,7 @@ export default function ConfirmModal({
   requireTypeToConfirm,
 }: ConfirmModalProps) {
   // One-shot double-submit guard. A destructive confirm whose onConfirm is async
-  // (e.g. WorldSwitcher's delete: setBusy -> await -> unmount AFTER the await)
+  // (e.g. WikiManage's delete: setBusy -> await -> unmount AFTER the await)
   // has a real window where a fast SECOND click fires onConfirm twice before the
   // modal unmounts. The latch (createOneShot) lets the first click through and
   // swallows the rest; `submitted` mirrors it into render state so the button can

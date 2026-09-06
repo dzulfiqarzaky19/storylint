@@ -6,7 +6,7 @@
 // minted with THAT category's id — otherwise it lands in the wrong category and
 // persists there on reload.
 //
-// Extracted from WikiScreen.createEntryOnShelf as a pure seam so the decision is
+// Extracted from Wiki.createEntryOnShelf as a pure seam so the decision is
 // unit-testable and mutation-provable without a running client component.
 
 import type { Shelf } from "@/lib/domain/types";

@@ -52,7 +52,7 @@ export function useResearchAsk(
     // ids to the persisted ids (and folds any card kept/inWiki flags).
     // `ask` runs only on a user action (ask box submit / prompt chip), never
     // during render, so a one-off `Date.now()` temp id is intentional and stable
-    // for this call (same pattern as WikiScreen's handler id-gen).
+    // for this call (same pattern as Wiki's handler id-gen).
     const stamp = Date.now();
     const tempYouId = `stream-you-${stamp}`;
     const tempThemId = `stream-them-${stamp}`;

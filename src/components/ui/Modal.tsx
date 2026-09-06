@@ -11,7 +11,7 @@
 //
 // Purely presentational: it owns no business decision. onClose fires on Escape,
 // a backdrop click, or the close affordance; the caller decides what closing
-// means. Consumers (ConfirmModal, WorldSwitcher) migrate onto this in
+// means. Consumers (ConfirmModal, WikiManage) migrate onto this in
 // TCK-002 / TCK-003.
 
 import { useCallback, useEffect, useRef } from "react";

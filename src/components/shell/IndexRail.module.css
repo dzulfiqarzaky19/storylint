@@ -1,12 +1,12 @@
 /* Shared LEFT index rail chrome for /wiki, /write and /research. Lifted from the
-   three copies that had drifted in WikiIndex / WriteIndex / ResearchIndex.
+   three copies that had drifted in Sidebar / WriteIndex / ResearchIndex.
    Desktop: a standing full-height column with its own scroll. Stacked tier
    (<=1200px): folds into a disclosure panel above the body. */
 
 .index {
   width: 248px;
   flex: none;
-  /* --rule is a COLOR, so the bare `border-right: var(--rule)` that WikiIndex
+  /* --rule is a COLOR, so the bare `border-right: var(--rule)` that Sidebar
      still carries resolves to style:none and paints nothing. --rule-major is the
      1px-solid shorthand, which is what write/research already use. */
   border-right: var(--rule-major);

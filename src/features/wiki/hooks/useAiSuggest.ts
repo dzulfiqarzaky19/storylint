@@ -16,7 +16,7 @@ export interface AiSuggestApi {
 }
 
 /**
- * AI fact-suggestion side-feature for /wiki, lifted out of WikiScreen (T-ARCH-13).
+ * AI fact-suggestion side-feature for /wiki, lifted out of Wiki (T-ARCH-13).
  * READ-ONLY: it only fetches candidate facts and holds them panel-local; turning
  * a suggestion into a real fact is the CALLER's job (via the confirmation-gated
  * createFact path), so this hook never writes. `onError` surfaces a failed fetch.

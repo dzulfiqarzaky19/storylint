@@ -180,7 +180,7 @@ export default function Category({
           ))
         )}
         {/* TCK-006: add-entry affordance on the MAIN shelf, mirroring the
-            sidebar's "+ New <singular>" (WikiIndex). Same create path via
+            sidebar's "+ New <singular>" (Sidebar). Same create path via
             onCreate(shelf); the singular label routes through the shared
             categorySingular seam so both surfaces agree. */}
         {onCreate ? (

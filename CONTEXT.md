@@ -135,7 +135,7 @@ in `src/lib/check/index.ts` already warns about one of the collisions. Never say
   drill-down `drawer` instead, so plot is deliberately outside this seam.
   The component is `IndexRail`, never `Rail`, because of the collisions below.
 - **signal rail** — the RIGHT panel that surfaces findings: `OutstandingRail` on
-  /write, `KeptBoard` on /research, `PosterBand` on /wiki. Unrelated to the index
+  /write, `KeptBoard` on /research, `Suggestions` on /wiki. Unrelated to the index
   rail; shares none of its chrome.
 - **`Mark.rail`** — neither of the above. A *string field* on `Mark` holding the
   short reason shown beside a mark. Distinct again from `railLabel`, which is the

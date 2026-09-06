@@ -1,7 +1,7 @@
 /* Base Modal primitive (TCK-001). Fully resets the native <dialog> default
    chrome so the dialog reads as an Ashkeld surface, and styles ::backdrop as
    the app scrim. Square corners, tokened border, centered panel. Consumers
-   (ConfirmModal, WorldSwitcher) render their content into the slot. */
+   (ConfirmModal, WikiManage) render their content into the slot. */
 
 .dialog {
   /* Reset the browser default <dialog> box: no auto-centering margins, no

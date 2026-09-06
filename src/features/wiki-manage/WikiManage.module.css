@@ -203,7 +203,7 @@
   background: transparent;
 }
 
-/* ---- Naming dialog (create / rename), mirrors WorldSwitcher's prompt ---- */
+/* ---- Naming dialog (create / rename), mirrors ScopePill's prompt ---- */
 .promptTitle {
   font-size: var(--text-7);
   font-weight: 700;

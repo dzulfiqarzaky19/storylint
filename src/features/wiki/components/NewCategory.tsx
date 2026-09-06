@@ -15,12 +15,12 @@ interface NewCategoryProps {
    * TCK-009: no `shelf` argument — categories are all SIBLINGS (World >
    * Categories > Items) and the affordance no longer prompts for a shelf. The
    * NOT-NULL `categories.shelf` sort bucket is defaulted by the caller
-   * (WikiScreen createCategoryOnShelf via defaultCategoryShelf()).
+   * (Wiki createCategoryOnShelf via defaultCategoryShelf()).
    */
   onCreate: (id: string, label: string) => void;
   /**
    * Where the trigger is rendered. The main "panel" insets the trigger by the
-   * shared gutter so "+ New category" lines up with the gutter-padded Shelf
+   * shared gutter so "+ New category" lines up with the gutter-padded Category
    * blocks above it; the "sidebar" (default) sits flush like the other flat
    * "+ New …" create rows. The popup itself is identical either way.
    */
@@ -29,7 +29,7 @@ interface NewCategoryProps {
 
 // F9-B S3 / TCK-009 / TCK-019: the "+ New category" affordance rendered after
 // the last category group, shared by BOTH the main shelf and the sidebar
-// (WikiIndex). TCK-019 replaced the old inline-expand form with a POPUP: the
+// (Sidebar). TCK-019 replaced the old inline-expand form with a POPUP: the
 // trigger is a flat "+ New category" button (matching "+ New thread"/"+ New
 // chapter"); clicking it mints the category id once and opens a labelled
 // <Modal> with a name input + Add/Cancel. Committing a non-blank label creates

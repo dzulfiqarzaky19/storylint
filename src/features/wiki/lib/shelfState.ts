@@ -1,9 +1,9 @@
-/* Pure view-state helpers for a wiki Shelf group. Extracted so the
+/* Pure view-state helpers for a wiki Category group. Extracted so the
    empty-category decision is unit-testable in the node test env (the repo has
    no DOM test environment; wiki DOM behavior is covered by Playwright e2e). */
 
 /** True when a category has no entries. Drives the lighter empty-category
- *  treatment in Shelf.tsx (dimmed heading + a real-text "No entries yet" hint)
+ *  treatment in Category.tsx (dimmed heading + a real-text "No entries yet" hint)
  *  while the Rename / options / delete controls stay available so the user can
  *  still remove an empty category. */
 export function isEmptyCategory(entryCount: number): boolean {
@@ -12,7 +12,7 @@ export function isEmptyCategory(entryCount: number): boolean {
 
 /** TCK-018 — the outcome of committing a category-header rename draft. Pure so
  *  the reset-vs-rename-vs-noop decision is unit-testable in the node test env;
- *  WikiIndex.tsx's commitRename calls THIS and dispatches the matching callback,
+ *  Sidebar.tsx's commitRename calls THIS and dispatches the matching callback,
  *  so a regression here moves the UI. Mirrors the reducer/backend trim ruling:
  *  a BLANK draft resets to the built-in default, a changed draft renames (with
  *  the RAW, untrimmed label — the backend trims), and an unchanged draft is a
