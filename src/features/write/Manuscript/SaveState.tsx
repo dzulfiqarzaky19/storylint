@@ -1,6 +1,6 @@
 import styles from "./Manuscript.module.css";
 
-export interface SaveStateFooterProps {
+export interface SaveStateProps {
   /** A failed body save (§8 lost-work message). When set, this branch wins. */
   error: string | null;
   /** True while an unsaved edit is pending (debounced save in flight). */
@@ -17,11 +17,11 @@ export interface SaveStateFooterProps {
  * Extracted from Manuscript so this branch is provable without mounting the
  * whole editor (the CSS presentation stays live-browser territory).
  */
-export default function SaveStateFooter({
+export default function SaveState({
   error,
   dirty,
   aiChecking,
-}: SaveStateFooterProps) {
+}: SaveStateProps) {
   if (error) {
     return (
       <p className={`${styles.saveState} ${styles.saveError}`} role="alert">

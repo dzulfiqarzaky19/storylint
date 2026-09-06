@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import IndexRail from "@/components/shell/IndexRail";
 import { PencilIcon, TrashIcon } from "@/components/shell/RowIcons";
-import styles from "./WriteIndex.module.css";
+import styles from "./Chapters.module.css";
 import type { ChapterSeverity } from "@/lib/check/severity";
 import { shouldShowChapterDot } from "@/lib/check/severity";
 
-export interface WriteIndexChapter {
+export interface ChaptersChapter {
   number: number;
   title: string;
   /**
@@ -19,8 +19,8 @@ export interface WriteIndexChapter {
   severity?: ChapterSeverity;
 }
 
-export interface WriteIndexProps {
-  chapters: WriteIndexChapter[];
+export interface ChaptersProps {
+  chapters: ChaptersChapter[];
   selectedNumber: number;
   /** Navigate to a chapter (URL-driven; the screen pushes ?chapter=<n>). */
   onSelect: (n: number) => void;
@@ -154,14 +154,14 @@ function EditableTitle({
  * widths) belongs to the shared `IndexRail`; this module owns only the chapter
  * rows and the "+ New chapter" tail. See CONTEXT.md → Chrome → index rail.
  */
-export default function WriteIndex({
+export default function Chapters({
   chapters,
   selectedNumber,
   onSelect,
   onCreate,
   onRename,
   onRequestDelete,
-}: WriteIndexProps) {
+}: ChaptersProps) {
   // The row whose pencil was just pressed, so its title can claim the caret.
   // Cleared on commit/cancel; the ACTIVE row is always editable regardless.
   const [editingNumber, setEditingNumber] = useState<number | null>(null);

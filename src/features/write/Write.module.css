@@ -1,0 +1,48 @@
+/* Write — three-column shell: Chapters · Manuscript · Outstanding. */
+
+/* Write screen (HANDOFF §6/§8) — "marginalia on a proof sheet" (Direction B).
+   Colours come only from globals.css custom properties. The two underline
+   styles are defined here and MUST NOT be merged (product rule 2). */
+
+/* ---- Layout ------------------------------------------------------------- */
+
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---- Responsive: single breakpoint at 1200px (HANDOFF §8) --------------- */
+/* The Write rail stacks BELOW the manuscript column instead of shrinking. */
+@media (max-width: 1200px) {
+  /* Stacked layout. The header is a sticky 74px bar in normal flow, so a
+     100vh .screen overflowed the viewport and pushed the rail's toggle below
+     the fold (the open/close control was unreachable without scrolling to the
+     end of the chapter). On this tier we let the page scroll as one document
+     and pin the rail to the bottom of the viewport, so its toggle is always
+     visible. */
+  .screen {
+    /* Mobile/tablet: body is normal block flow here (the flex column is
+       desktop-only), so the page scrolls as one document and the screen can be
+       auto height. min-height:100dvh keeps the sticky rail context so its
+       toggle pins to the viewport bottom. */
+    flex: none;
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .body {
+    flex-direction: column;
+  }
+
+}

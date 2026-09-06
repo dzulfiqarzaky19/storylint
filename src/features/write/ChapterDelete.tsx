@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import styles from "./ChapterDeleteDialog.module.css";
+import styles from "./ChapterDelete.module.css";
 
-export interface ChapterDeleteDialogProps {
+export interface ChapterDeleteProps {
   /** The chapter number being deleted (drives the confirm copy). */
   number: number;
   /** The chapter title, shown so the writer confirms the right one. */
@@ -21,13 +21,13 @@ export interface ChapterDeleteDialogProps {
  * silently erase a chapter. Escape and the Cancel button both back out writing
  * nothing; only the explicit Delete confirms.
  */
-export default function ChapterDeleteDialog({
+export default function ChapterDelete({
   number,
   title,
   busy,
   onConfirm,
   onCancel,
-}: ChapterDeleteDialogProps) {
+}: ChapterDeleteProps) {
   const confirmRef = useRef<HTMLButtonElement | null>(null);
 
   // Land focus on the confirm so a keyboard user can act without hunting, and

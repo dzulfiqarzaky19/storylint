@@ -1,6 +1,6 @@
 /* TCK-019: the "+ New category" affordance, shared by the main shelf and the
    sidebar. The trigger is now a FLAT button matching "+ New thread" / "+ New
-   chapter" (Threads/WriteIndex .add): full-width, no box, a rule-row
+   chapter" (Threads/Chapters .add): full-width, no box, a rule-row
    top border, accent-deep label, underline on hover. The create form moved
    into the base <Modal>, so this module styles the trigger plus the modal's
    slot content (heading, input, actions), mirroring ConfirmModal's tokens. */

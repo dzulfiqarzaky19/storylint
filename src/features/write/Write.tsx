@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Manuscript — the full Write screen client.
+ * Write — three-column shell: Chapters · Manuscript · Outstanding.
  *
  * Owns:
  *   - The Tiptap v3 editor (StarterKit, paragraphs only) rendering the chapter
@@ -12,8 +12,7 @@
  *     the server. NOT fixtures.
  *   - The decoration plugin (two underline styles + a note-host widget) via a
  *     ref the plugin reads each recompute.
- *   - The InlineNote portalled into the widget host under the open paragraph.
- *   - The OutstandingRail; a rail-row click and an underline click are the same
+ *   - Outstanding; a rail-row click and an underline click are the same
  *     action (open/close, one at a time).
  *   - The three DIFFERENTIATED note actions wired to the server:
  *       leave → upsertResolvedMark (persists; survives reload)
@@ -25,9 +24,8 @@
  */
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { useEditor } from '@tiptap/react';
 import { Extension } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 
@@ -43,7 +41,6 @@ import {
   hashParagraphs,
   changedParagraphIndices,
   reconcileAiMarks,
-  AI_CONFLICT_RULE_ID,
 } from '@/lib/check/ai';
 import {
   writeReducer,
@@ -70,19 +67,17 @@ import {
   resolveMarkRange,
   resolveSentenceRange,
   type MarkDecorationData,
-} from './markDecorations';
-import { InlineNote } from './InlineNote';
-import { OutstandingRail } from './OutstandingRail';
-import SaveStateFooter from './SaveStateFooter';
-import WriteIndex, { type WriteIndexChapter } from './WriteIndex';
-import ChapterDeleteDialog from './ChapterDeleteDialog';
-import EditableChapterTitle from './EditableChapterTitle';
-import styles from './Manuscript.module.css';
+} from './Manuscript/markDecorations';
+import Manuscript from './Manuscript/Manuscript';
+import Outstanding from './Outstanding';
+import Chapters, { type ChaptersChapter } from './Chapters';
+import ChapterDelete from './ChapterDelete';
+import styles from './Write.module.css';
 
 const CHECK_DEBOUNCE_MS = 300;
 const SAVE_DEBOUNCE_MS = 800;
 
-export interface ManuscriptProps {
+export interface WriteProps {
   chapterNumber: number;
   chapterTitle: string;
   /** ProseMirror doc JSON loaded from the DB. */
@@ -101,7 +96,7 @@ export interface ManuscriptProps {
    */
   chapterCounts?: [string, number][];
   /** All chapters, for the LEFT index (Track C). Ordered by number. */
-  chapters: WriteIndexChapter[];
+  chapters: ChaptersChapter[];
   /** The active book id (resolved by page.tsx), for the chapter export link. */
   activeBookId: string;
   /** The active universe id (resolved by page.tsx), for persisting the AI cache. */
@@ -147,7 +142,7 @@ function resolutionIdOf(action: MarkAction): 'wiki' | 'text' | 'leave' {
   }
 }
 
-export function Manuscript({
+export default function Write({
   chapterNumber,
   chapterTitle,
   initialBody,
@@ -163,7 +158,7 @@ export function Manuscript({
   activeWorldId,
   pickerEntries,
   pickerCategories,
-}: ManuscriptProps) {
+}: WriteProps) {
   const router = useRouter();
   // Selecting a chapter must NOT drop the world/book — a bare /write?chapter=N
   // resets the page resolver to the default world, snapping the header and wiki
@@ -639,7 +634,7 @@ export function Manuscript({
   return (
     <div className={styles.screen}>
       <div className={styles.body}>
-        <WriteIndex
+        <Chapters
           chapters={chapters}
           selectedNumber={chapterNumber}
           onSelect={selectChapter}
@@ -647,35 +642,27 @@ export function Manuscript({
           onRename={handleRename}
           onRequestDelete={requestDeleteChapter}
         />
-        <div className={styles.manuscriptScroll}>
-          <div className={styles.manuscript}>
-            <div className={styles.eyebrow}>Chapter {numberWord(chapterNumber)}</div>
-            <EditableChapterTitle
-              number={chapterNumber}
-              title={chapterTitle}
-              onRename={handleRename}
-              className={styles.title}
-            />
-            <a
-              className={styles.exportLink}
-              href={`/api/export/${activeBookId}/chapter/${chapterNumber}`}
-              data-testid="export-chapter"
-            >
-              Export chapter (Markdown)
-            </a>
-            <div className={styles.titleRule} />
-            <div className={styles.editor}>
-              <EditorContent editor={editor} />
-            </div>
-            <SaveStateFooter
-              error={state.error}
-              dirty={state.dirty}
-              aiChecking={aiChecking}
-            />
-          </div>
-        </div>
+        <Manuscript
+          chapterNumber={chapterNumber}
+          chapterTitle={chapterTitle}
+          activeBookId={activeBookId}
+          editor={editor}
+          onRename={handleRename}
+          error={state.error}
+          dirty={state.dirty}
+          aiChecking={aiChecking}
+          openMark={openMark}
+          noteHost={noteHost}
+          busy={busy}
+          onAction={handleAction}
+          aiEnabled={aiEnabled}
+          aiBusyKey={aiBusyKey}
+          aiAdvice={aiAdvice}
+          onExplain={handleExplain}
+          onApplyRewrite={applyRewrite}
+        />
 
-        <OutstandingRail
+        <Outstanding
           marks={state.marks}
           openMarkKey={state.openMarkKey}
           onSelect={selectMark}
@@ -694,7 +681,7 @@ export function Manuscript({
       ) : null}
 
       {pendingDeleteNumber !== null ? (
-        <ChapterDeleteDialog
+        <ChapterDelete
           number={pendingDeleteNumber}
           title={chapters.find((c) => c.number === pendingDeleteNumber)?.title ?? ''}
           busy={deleteBusy}
@@ -702,27 +689,6 @@ export function Manuscript({
           onCancel={() => setPendingDeleteNumber(null)}
         />
       ) : null}
-
-      {/* Portal the note into the plugin's widget host under the open paragraph. */}
-      {openMark && noteHost
-        ? createPortal(
-            <InlineNote
-              mark={openMark}
-              busy={busy}
-              onAction={handleAction}
-              ai={{
-                enabled: aiEnabled,
-                busy: aiBusyKey === openMark.markKey,
-                explanation: aiAdvice[openMark.markKey]?.explanation,
-                rewrite: aiAdvice[openMark.markKey]?.rewrite,
-                error: aiAdvice[openMark.markKey]?.error,
-                onExplain: () => handleExplain(openMark),
-                onApplyRewrite: (rewrite) => applyRewrite(openMark, rewrite),
-              }}
-            />,
-            noteHost,
-          )
-        : null}
     </div>
   );
 }
@@ -742,15 +708,6 @@ function writeMarkTarget(mark: Mark): ResolvedTarget {
       fact: { key: mark.quote, value: mark.noteText },
     }
   );
-}
-
-/** Spell small chapter numbers for the eyebrow ("Chapter seven"). */
-function numberWord(n: number): string {
-  const words = [
-    'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
-    'nine', 'ten', 'eleven', 'twelve',
-  ];
-  return words[n] ?? String(n);
 }
 
 /**

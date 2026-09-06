@@ -13,7 +13,7 @@
 // LAST chapter (the writer's working edge). A left index lists every chapter.
 // =============================================================================
 
-import { Manuscript } from '@/components/write/Manuscript';
+import Write from '@/features/write/Write';
 import {
   getChapter,
   getCategories,
@@ -84,7 +84,7 @@ export default async function WritePage({
   );
 
   return (
-    <Manuscript
+    <Write
       key={chapterNumber}
       chapterNumber={chapterNumber}
       chapterTitle={title}

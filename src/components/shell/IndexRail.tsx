@@ -108,7 +108,7 @@ export interface IndexRailProps {
  * Owns all the chrome (head, optional filter + "/" hotkey, scroll containment,
  * the <=1200px fold behind a disclosure, ARIA wiring, viewport width steps) so a
  * surface supplies only its own list. Name is `IndexRail`, never `Rail`: this repo
- * already uses "rail" for the RIGHT signal panels (OutstandingRail, Kept,
+ * already uses "rail" for the RIGHT signal panels (Outstanding, Kept,
  * Suggestions) and for the `Mark.rail` string field.
  */
 export default function IndexRail({

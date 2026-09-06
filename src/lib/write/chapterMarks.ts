@@ -179,7 +179,7 @@ export async function loadChapterMarks(
   const cacheRowFor = (n: number) => cacheByNumber.get(n) ?? null;
 
   // The open chapter renders no dot — the writer already sees its marks in the
-  // signal rail, so a dot would be redundant. (WriteIndex's shouldShowChapterDot
+  // signal rail, so a dot would be redundant. (Chapters' shouldShowChapterDot
   // is the second, independent guard on the render side.)
   const severityByNumber = new Map<number, ChapterSeverity>();
   for (const c of bookChapters) {

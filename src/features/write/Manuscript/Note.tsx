@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * InlineNote — the note that opens under a paragraph when a
+ * Note — the note that opens under a paragraph when a
  * mark is selected. Rendered via React `createPortal` into the ProseMirror
  * widget host the decoration plugin places at the end of the paragraph, so it
  * sits in document flow rather than floating.
@@ -35,7 +35,7 @@ function isAiAction(action: MarkAction): boolean {
   return action.id === 'text' || action.id === 'edit';
 }
 
-export interface InlineNoteAi {
+export interface NoteAi {
   /** AI gateway configured; when false the AI affordance is hidden entirely. */
   enabled: boolean;
   /** Advice fetch in flight. */
@@ -52,16 +52,16 @@ export interface InlineNoteAi {
   onApplyRewrite?: (rewrite: string) => void;
 }
 
-export interface InlineNoteProps {
+export interface NoteProps {
   mark: Mark;
   /** Disable actions while a resolve is in flight. */
   busy?: boolean;
   onAction: (mark: Mark, action: MarkAction) => void;
   /** Optional AI advice affordance. Omitted or `enabled:false` → no AI UI. */
-  ai?: InlineNoteAi;
+  ai?: NoteAi;
 }
 
-export function InlineNote({ mark, busy, onAction, ai }: InlineNoteProps) {
+export default function Note({ mark, busy, onAction, ai }: NoteProps) {
   const conflict = mark.kind === 'conflict';
   const showAi = ai?.enabled;
   const hasAdvice = Boolean(ai?.explanation || ai?.error);

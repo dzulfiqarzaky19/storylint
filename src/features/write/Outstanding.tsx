@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * OutstandingRail — the 300px right rail:
+ * Outstanding — the 300px right signal panel:
  *   - An "Outstanding · N" head (desktop) over the two-signals legend (two
  *     swatches, never merged).
  *   - The outstanding-marks list (one row per live mark). Clicking a row is the
@@ -18,19 +18,19 @@ import { useId, useState } from 'react';
 import type { Mark } from '@/lib/check';
 import { railLabel, importanceRank } from '@/lib/check';
 import { Chevron } from '@/components/shell/RowIcons';
-import styles from './Manuscript.module.css';
+import styles from './Outstanding.module.css';
 
-export interface OutstandingRailProps {
+export interface OutstandingProps {
   marks: Mark[];
   openMarkKey: string | null;
   onSelect: (markKey: string) => void;
 }
 
-export function OutstandingRail({
+export default function Outstanding({
   marks,
   openMarkKey,
   onSelect,
-}: OutstandingRailProps) {
+}: OutstandingProps) {
   const allClear = marks.length === 0;
   // Rank by importance (a phrase the author leans on sorts first), preserving
   // document order within a rank via a stable sort. Importance is a RANKING

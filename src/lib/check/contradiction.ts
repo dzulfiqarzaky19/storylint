@@ -14,7 +14,7 @@ import { sha1 } from './hash';
 import { splitSentences, occurrenceIndexOf } from './text';
 
 // A contradiction's note actions. The `text` button is the merged AI button:
-// InlineNote relabels it "Ask AI" and hides it when AI is off (it selects the
+// Note relabels it "Ask AI" and hides it when AI is off (it selects the
 // flagged run AND fetches a grounded rewrite). A contradiction has no dismiss —
 // it must be resolved, never permanently suppressed — so there is no `leave`.
 const CONFLICT_ACTIONS: MarkAction[] = [

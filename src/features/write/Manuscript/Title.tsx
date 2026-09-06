@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 
-interface EditableChapterTitleProps {
+interface TitleProps {
   /** The chapter number this title belongs to (passed back to onRename). */
   number: number;
   /** The saved title (server source of truth). */
@@ -15,7 +15,7 @@ interface EditableChapterTitleProps {
 
 /**
  * The MAIN manuscript title, rendered click-to-edit — the same affordance the
- * sidebar row title has (WriteIndex/EditableTitle), so a writer can rename from
+ * sidebar row title has (Chapters/EditableTitle), so a writer can rename from
  * either place. Enter commits and blurs; Escape reverts to the saved title; blur
  * commits (a click-away is an implicit confirm). An empty/whitespace title is
  * refused (reverts) so a chapter never loses its name. The saved `title` prop is
@@ -23,12 +23,12 @@ interface EditableChapterTitleProps {
  * render after the sidebar renames the same chapter) the DOM text resyncs, which
  * is what kept the old plain <h1> stale after a sidebar rename.
  */
-export default function EditableChapterTitle({
+export default function Title({
   number,
   title,
   onRename,
   className,
-}: EditableChapterTitleProps) {
+}: TitleProps) {
   const ref = useRef<HTMLHeadingElement | null>(null);
 
   useEffect(() => {

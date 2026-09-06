@@ -1,0 +1,350 @@
+/* Outstanding — right signal panel of live marks. */
+
+/* ---- Rail --------------------------------------------------------------- */
+
+.rail {
+  width: 300px;
+  flex: none;
+  border-left: var(--rule-major);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Desktop head — mono label + count, the mirror of the left IndexRail's head.
+   Hidden on the stacked tier, where .railToggle takes over (see the media
+   query); the toggle's own copy is "Two signals", which is what the mobile
+   fold-out is named. */
+.boardHead {
+  display: flex;
+  align-items: center;
+  padding: 15px 16px 6px;
+}
+
+.boardTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.boardCount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-2);
+  color: var(--muted);
+}
+
+/* Collapsible toggle: hidden on desktop, shown in the stacked layout. */
+.railToggle {
+  display: none;
+}
+
+/* On desktop the rail is always open, so the body is always shown. The
+   stacked media queries below make .railBody a flex column that follows the
+   .railExpanded state instead. */
+.railBody {
+  display: contents;
+}
+
+.legend {
+  padding: 4px 16px 12px;
+  border-bottom: 1px solid var(--line2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The legend's own title is redundant beside .boardHead on desktop, but it is
+   the only heading the stacked fold-out has, so it is hidden here and revealed
+   in the <=1200px block. */
+.legendTitle {
+  display: none;
+}
+
+.legendRow {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+/* Zero-height swatches: the whole cue IS the border, so each swatch is exactly
+   the underline the writer sees in the prose, at the same 2px weight. */
+.swatchConflict {
+  width: 22px;
+  height: 0;
+  flex: none;
+  border-bottom: 2px solid var(--danger);
+}
+
+.swatchUnrecorded {
+  width: 22px;
+  height: 0;
+  flex: none;
+  border-bottom: 2px dotted var(--warning);
+}
+
+.legendLabel {
+  font-size: var(--text-2);
+  color: var(--muted);
+}
+
+.railList {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 10px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Each mark is a CARD, not a ruled row — the rail is a stack of things to act
+   on, and a card carries the click affordance a hairline rule does not. */
+.railRow {
+  padding: 10px 11px;
+  cursor: pointer;
+  background: var(--ground);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  min-height: 40px;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  display: block;
+  transition: border-color var(--dur-short) var(--ease-out);
+}
+
+.railRow:hover {
+  border-color: var(--accent);
+}
+
+.railRowOpen {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: var(--shadow-lift);
+}
+
+/* A phrase the manuscript leans on (recurs, or the AI judged it pivotal). Marked
+   by a small accent square set against the kind label, NOT by a thick leading
+   edge on the card — an asymmetric coloured stripe is the side-stripe tell, and
+   it also collided with .railRowOpen's own border treatment. */
+.railRowImportant .railKind::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  vertical-align: baseline;
+  background: var(--accent);
+}
+
+.railKind {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-0);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.railKindConflict {
+  color: var(--danger);
+}
+
+.railKindUnrecorded {
+  color: var(--warning);
+}
+
+/* Italic serif: the quote is the writer's OWN prose lifted out of the page, so
+   it is set in the reading face, not the UI face. */
+.railQuote {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--text-4);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.3;
+  margin: 3px 0 2px;
+}
+
+.railReason {
+  display: block;
+  font-size: var(--text-2);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.railEmpty {
+  font-size: var(--text-2);
+  line-height: 1.6;
+  color: var(--muted);
+  padding: 14px 6px;
+}
+
+/* ---- Promise block (pinned bottom) -------------------------------------- */
+
+/* A quiet accent-soft footer, not an accent-filled slab: it is a standing
+   promise about how the app behaves, not a call to action, so it must not
+   out-shout the marks above it. */
+.promise {
+  flex: none;
+  margin-top: auto;
+  border-top: 1px solid var(--line2);
+  background: var(--accent-soft);
+  color: var(--ink);
+  padding: 14px 16px 16px;
+}
+
+.promiseHead {
+  font-family: var(--font-serif);
+  font-size: var(--text-5);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.promiseSub {
+  font-size: var(--text-2);
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.railRow:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1200px) {
+  .rail {
+    width: 100%;
+    flex: none;
+    border-left: none;
+    border-top: var(--rule-major, 2px solid var(--ink));
+    /* Pin the toggle bar to the bottom edge of the viewport. Collapsed this is
+       just the ~52px bar; expanded, the body renders above it (capped by
+       .railList max-height) so both the manuscript and the signals stay
+       reachable. */
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background: var(--ground);
+  }
+
+  /* Stacked layout: the rail becomes a collapsible panel under the
+     manuscript. The toggle appears; the body only renders when expanded. */
+  /* The fold-out's own toggle is the heading here, so the desktop head goes. */
+  .boardHead {
+    display: none;
+  }
+
+  .legendTitle {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .railToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-4) var(--space-7);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    min-height: 44px;
+  }
+
+  .railToggleLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--text-3);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .railToggleCount {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: var(--text-2);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  /* The shared Chevron SVG at a 1em box, rotated open — the same glyph and the
+     same gesture the left IndexRail uses. It used to be a literal "+" / en-dash
+     pair, which matched neither the icon set nor the other rail. */
+  .railToggleChevron {
+    display: inline-flex;
+    font-size: var(--text-7);
+    line-height: 1;
+    color: var(--muted);
+  }
+
+  .railToggleChevron svg {
+    display: block;
+    transition: transform var(--dur-short) var(--ease-out);
+  }
+
+  .chevronOpen svg {
+    transform: rotate(90deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .railToggleChevron svg {
+      transition: none;
+    }
+  }
+
+  .railBody {
+    display: none;
+  }
+
+  .railExpanded .railBody {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .railExpanded .legend {
+    border-top: var(--rule-major);
+    padding: var(--space-4) var(--space-7) 14px;
+  }
+
+  .railList {
+    /* Below the manuscript the rail no longer competes for vertical space;
+       let it grow with its content rather than trapping rows in a scroller. */
+    flex: none;
+    max-height: 60vh;
+  }
+}
+@media (max-width: 560px) {
+  .rail { width: 100%; }
+  .railToggle { padding: 14px var(--gutter); }
+  .legend { padding: var(--space-4) var(--gutter) 14px; }
+  .railList { padding: var(--space-1) var(--gutter) var(--space-4); max-height: none; }
+  .promise { padding: var(--space-4) var(--gutter); }
+  .promiseHead { font-size: var(--text-8); }
+
+  .railRow { padding: var(--space-4) 0; }
+}

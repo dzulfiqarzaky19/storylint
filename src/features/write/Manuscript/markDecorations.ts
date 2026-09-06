@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * ProseMirror decoration plugin for the Write screen.
+ * ProseMirror decoration plugin for Manuscript.
  *
  * Turns the check engine's `Mark[]` into ProseMirror decorations over the live
  * document:
@@ -10,7 +10,7 @@
  *       `.write-underline-unrecorded`→ 3px dotted #7d7979         (unrecorded)
  *     The two are NEVER merged (product rule 2).
  *   - `Decoration.widget` at the END of the paragraph containing the OPEN mark
- *     (`side: 1`), an empty host <div> the editor React-portals the InlineNote
+ *     (`side: 1`), an empty host <div> the editor React-portals the Note
  *     into, so the note sits in document flow under its paragraph.
  *
  * Marks arrive with a stable `{ paragraphIndex, occurrenceIndex } + quote`
