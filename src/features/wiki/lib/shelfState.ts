@@ -12,7 +12,7 @@ export function isEmptyCategory(entryCount: number): boolean {
 
 /** TCK-018 — the outcome of committing a category-header rename draft. Pure so
  *  the reset-vs-rename-vs-noop decision is unit-testable in the node test env;
- *  Sidebar.tsx's commitRename calls THIS and dispatches the matching callback,
+ *  Sidebar.tsx's onCommit calls THIS and dispatches the matching callback,
  *  so a regression here moves the UI. Mirrors the reducer/backend trim ruling:
  *  a BLANK draft resets to the built-in default, a changed draft renames (with
  *  the RAW, untrimmed label — the backend trims), and an unchanged draft is a

@@ -1,5 +1,5 @@
 // Server component: load the wiki snapshot + the seeded Chapter 7 manuscript,
-// run the consistency-check engine to DERIVE the poster-band suggestions and the entries carrying an unresolved
+// run the consistency-check engine to DERIVE the Suggestions and the entries carrying an unresolved
 // contradiction, and hand everything to the interactive client screen.
 //
 // TCK-017 (W-5 UI cut-over): the wiki header now presents exactly Universe +
@@ -29,7 +29,7 @@ export default async function WikiPage({
   const [snapshot, chapters, dismissedSuggestionKeys, resolvedMarkKeys] =
     await Promise.all([
       loadWorldSnapshot(scope.worldId, scope.bookId),
-      // Poster band derives from the ACTIVE book's chapters (every chapter), so a
+      // Suggestions derives from the ACTIVE book's chapters (every chapter), so a
       // not-recorded detail the writer mentioned in ANY chapter surfaces here.
       // Replaces the DUMMY single-chapter-7-of-default-book read.
       getChaptersForBook(scope.bookId),

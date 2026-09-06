@@ -138,7 +138,7 @@ function WikiInner({
     [commit, ai],
   );
 
-  // Poster-band "Write it in" / "Leave it".
+  // Suggestions "Write it in" / "Leave it".
   const writeSuggestion = useCallback(
     (s: WikiSuggestion) => commit({ type: "suggestion.write", suggestion: s }),
     [commit],

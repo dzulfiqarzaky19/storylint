@@ -11,7 +11,7 @@ import type {
 
 // ---- State ----------------------------------------------------------------
 
-/** A poster-band suggestion projected from the check engine's `missing` marks. */
+/** A Suggestions item projected from the check engine's `missing` marks. */
 export interface WikiSuggestion {
   suggestionKey: string;
   entryId: string;
@@ -26,9 +26,9 @@ export interface WikiState {
   byId: Record<string, EntryWithDetails>;
   /** Ordered entry ids per shelf — the draggable arrangement. */
   order: Record<Shelf, string[]>;
-  /** The focused entry shown in the entry band, or null. */
+  /** The focused entry shown in Profile, or null. */
   selectedEntryId: string | null;
-  /** Live poster-band suggestions (dismissed ones removed). */
+  /** Live Suggestions items (dismissed ones removed). */
   suggestions: WikiSuggestion[];
   /** Per-kind category-header label overrides (F6-S5). Empty when none set. */
   overrides: CategoryLabelOverrides;

@@ -5,7 +5,7 @@ interface WorldProps {
   entryCount: number;
 }
 
-// World band — 2px ink rule then "The world" + derived meta (README Screen 1).
+// World — 2px ink rule then "The world" + derived meta (README Screen 1).
 export default function World({ entryCount }: WorldProps) {
   return (
     <section className={styles.band} aria-label="The world">

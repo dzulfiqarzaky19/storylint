@@ -84,7 +84,7 @@ export type WikiIntent =
   | { type: "tie.link"; toEntryId: string; rel?: string }
   | { type: "tie.untie"; tieId: string }
   | { type: "tie.createEntry"; name: string; rel?: string }
-  // ---- Poster-band suggestions ----
+  // ---- Suggestions ----
   | { type: "suggestion.write"; suggestion: WikiSuggestion }
   | { type: "suggestion.dismiss"; suggestionKey: string }
   // ---- Categories ----
@@ -359,7 +359,7 @@ export function useWikiCommit(args: {
           );
         }
 
-        // ---- Poster-band suggestions ------------------------------------
+        // ---- Suggestions ------------------------------------
         case "suggestion.write": {
           const sug = intent.suggestion;
           const entry =

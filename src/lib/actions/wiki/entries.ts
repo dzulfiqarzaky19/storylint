@@ -187,7 +187,7 @@ export async function moveFact(input: {
 // ---- WIKI WRITE (confirmation-gated) --------------------------------------
 
 /**
- * WIKI WRITE (product rule 1). Turn a poster-band suggestion into a recorded
+ * WIKI WRITE (product rule 1). Turn a Suggestions item into a recorded
  * fact on an entry. One of the two only paths that write new wiki knowledge, so
  * it REQUIRES an explicit confirmation. The new fact is `fresh` (drives the
  * --fresh row background). Returns the generated fact id.
@@ -227,7 +227,7 @@ export async function addSuggestionAsFact(input: {
 }
 
 /**
- * Record that a poster suggestion was dismissed ("Leave it"). Never writes a
+ * Record that a Suggestions item was dismissed ("Leave it"). Never writes a
  * fact. Mirrors reducer `DISMISS_SUGGESTION`.
  */
 export async function dismissSuggestion(

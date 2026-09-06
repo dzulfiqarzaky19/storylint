@@ -1,10 +1,10 @@
 "use client";
 
-// Small inline editor used across the Wiki entry band for manual authoring
+// Small inline editor used across Wiki Profile for manual authoring
 // (Track A). Click the text to edit; Enter (or blur) commits, Escape cancels.
 // The commit fires the paired reducer action + server action in the parent, so
 // a manual edit is an EXPLICIT confirmation (product rule 1). Rendering stays
-// visually identical to the static text when not editing, so the band does not
+// visually identical to the static text when not editing, so the surface does not
 // jump around.
 
 import { useEffect, useRef, useState } from "react";

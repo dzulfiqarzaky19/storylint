@@ -12,7 +12,7 @@ export function worldLine(entryCount: number): string {
 }
 
 /**
- * Poster-band headline. The band now derives across the whole active book (not a
+ * Suggestions headline. The panel now derives across the whole active book (not a
  * single hardcoded chapter), so the headline drops the old "Chapter 7" prefix and
  * counts across the book: `${n} things the gazetteer has never written down.`
  */
