@@ -14,7 +14,7 @@
 //   {"type":"done","turns":[youTurn, themTurn]}       exactly once on success
 //   {"type":"error","error":"..."}                    on failure before persist
 //
-// The client (ResearchScreen) dispatches APPEND_STREAMING_TURN up front, one
+// The client (Research) dispatches APPEND_STREAMING_TURN up front, one
 // STREAM_DELTA per `delta`, and RECONCILE_TURN on `done`. On `error` (or a
 // dropped connection) it rolls the placeholder back — nothing was persisted.
 //

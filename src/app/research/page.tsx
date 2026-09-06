@@ -7,7 +7,7 @@ import { getWorldEntries, getCategories } from "@/lib/db/gazetteer";
 import { getWorldTree } from "@/lib/db/queries";
 import { getWorldKeptCards } from "@/lib/db/research-queries";
 import { resolveActiveScope } from "@/lib/scope/activeScope";
-import ResearchScreen from "@/components/research/ResearchScreen";
+import Research from "@/features/research/Research";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +54,7 @@ export default async function ResearchPage({
   // /wiki) AND into the composer so a first-message auto-create (T-RESEARCH-1)
   // lands the default thread in the world the writer is viewing.
   return (
-    <ResearchScreen
+    <Research
       key={snapshot.threadId}
       snapshot={snapshot}
       entries={entries}

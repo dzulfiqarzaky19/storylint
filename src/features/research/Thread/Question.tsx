@@ -1,11 +1,11 @@
-import styles from "./ResearchScreen.module.css";
+import styles from "./Thread.module.css";
 
 /**
  * The thread head — the question the writer is turning over, over a mono meta
  * line ("8 TURNS · ASHKELD WORLD"). Fixed above the scrolling chat, so a long
  * thread never pushes the question out of view.
  */
-export default function QuestionBlock({
+export default function Question({
   question,
   turnCount,
   worldName,

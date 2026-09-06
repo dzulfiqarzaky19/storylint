@@ -2,9 +2,9 @@
 
 import type { DragEvent } from "react";
 import type { ResearchProposition } from "@/lib/domain/types";
-import styles from "./ResearchScreen.module.css";
+import styles from "./Thread.module.css";
 
-export interface PropositionCardProps {
+export interface PropositionProps {
   card: ResearchProposition;
   kept: boolean;
   inWiki: boolean;
@@ -23,7 +23,7 @@ export interface PropositionCardProps {
  * reveals the confirmation strip and reads "In the wiki" once written.
  * README §Screen 2.3 / behavior table.
  */
-export default function PropositionCard({
+export default function Proposition({
   card,
   kept,
   inWiki,
@@ -32,7 +32,7 @@ export default function PropositionCard({
   onPropose,
   onDragStart,
   onDragEnd,
-}: PropositionCardProps) {
+}: PropositionProps) {
   const handleDragStart = (ev: DragEvent<HTMLDivElement>) => {
     try {
       ev.dataTransfer.effectAllowed = "copy";

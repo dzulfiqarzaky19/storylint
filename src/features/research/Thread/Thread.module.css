@@ -1,21 +1,4 @@
-/* Research screen — cockpit skin over the app's real research logic. All color,
-   font, radius, and rule values come from globals.css tokens (never a literal),
-   so the whole surface re-skins when the theme's :root changes. */
-
-/* Three-column shell: threads rail (ResearchIndex) · thread chat · Kept board.
-   On <=1200px both rails stack and the Kept board becomes a bottom sheet. */
-.screen {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.layout {
-  flex: 1;
-  display: flex;
-  min-height: 0;
-}
+/* Thread — question head, scrolling chat, composer. */
 
 /* Fixed head + scrolling chat + fixed composer, so neither the question nor the
    ask box can be scrolled off the screen by a long thread. */
@@ -157,7 +140,6 @@
     50% { opacity: 0.9; }
   }
 }
-
 /* Indented to start under the turn TEXT column (120px `who` + 16px gap), so a
    card reads as belonging to the collaborator's answer rather than to the row. */
 .cards {
@@ -513,194 +495,7 @@
   color: var(--accent);
 }
 
-/* Kept rail (300px right column, mirrors the Write Outstanding rail): the panel
-   fill + left hairline live on this full-width wrap so the rail reads as one
-   joined column. On desktop the collapsible toggle is hidden. */
-.boardWrap {
-  width: 300px;
-  flex: none;
-  min-height: 0;
-  background: var(--panel);
-  border-left: var(--rule-major);
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Toggle bar is a mobile-only affordance (shown in the <=1200px block). */
-.boardToggle {
-  display: none;
-}
-
-.boardBody {
-  display: contents;
-}
-
-.board {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 10px 12px 16px;
-}
-
-/* Drag-over state. A dashed ring reads as "drop here" the way a leading stripe
-   never did — and the stripe was the same 3px inset the mark cards used for an
-   unrelated meaning, so the two signals collided. */
-.boardActive {
-  outline: 2px dashed var(--accent);
-  outline-offset: -2px;
-  background: var(--drop);
-}
-
-.boardHead {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px 16px 6px;
-}
-
-.boardTitle {
-  font-family: var(--font-mono);
-  font-size: var(--text-1);
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.boardSpacer {
-  flex: 1;
-}
-
-.boardCount {
-  font-family: var(--font-mono);
-  font-size: var(--text-2);
-  color: var(--muted);
-}
-
-.boardEmpty {
-  font-size: var(--text-2);
-  line-height: 1.5;
-  color: var(--muted);
-  padding: 14px 6px;
-}
-
-.keptItem {
-  border: 1px solid var(--rule);
-  background: var(--ground);
-  border-radius: var(--radius-md);
-  padding: 10px 11px;
-  margin-top: 8px;
-  cursor: pointer;
-  transition: border-color var(--dur-short) var(--ease-out);
-}
-
-.keptItem:hover {
-  border-color: var(--accent);
-}
-
-/* The row is a real button (world-wide board: clicking routes to its source
-   thread + focuses the origin card), so strip the native button chrome and let
-   it carry the bordered card look. */
-button.keptItem {
-  display: block;
-  width: 100%;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-}
-
-.keptKind {
-  font-family: var(--font-mono);
-  font-size: var(--text-0);
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.keptTitle {
-  font-family: var(--font-serif);
-  font-size: var(--text-4);
-  font-weight: 600;
-  line-height: 1.25;
-  margin: 2px 0;
-}
-
-/* "from <thread>" source-thread attribution — the board aggregates every thread
-   in the world, so each row names its origin. */
-.keptFrom {
-  font-size: var(--text-1);
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.keptState {
-  font-family: var(--font-mono);
-  font-size: var(--text-0);
-  letter-spacing: 0.06em;
-  margin-top: 6px;
-}
-
-.keptStateBoard {
-  color: var(--muted);
-}
-
-/* Kept filter tabs (Wiki / Plot / Write). Wiki is the populated surface; the
-   other two are built-but-empty. A thin underline row under the board head. */
-.boardTabs {
-  display: flex;
-  gap: var(--space-1);
-  padding: 2px 12px 10px;
-  border-bottom: 1px solid var(--line2);
-}
-
-.boardTab {
-  appearance: none;
-  background: none;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 6px 10px;
-  font: inherit;
-  font-family: var(--font-mono);
-  font-size: var(--text-1);
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.boardTab:hover {
-  color: var(--ink);
-}
-
-.boardTabActive {
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 600;
-}
-
-
-/* ---- Responsive: rail stacks below at <=1200px (parity with Write) ------ */
-/* The KEPT rail becomes a collapsible panel pinned to the bottom of the
-   viewport, opened/closed by the "KEPT" toggle. The header is a sticky ~74px
-   bar in normal flow, so a 100vh .screen would overflow and push the toggle
-   below the fold; instead the page scrolls as one document and the rail is
-   sticky to the viewport bottom, so its toggle is always visible. */
 @media (max-width: 1200px) {
-  .screen {
-    /* Mobile/tablet: body is normal block flow (the desktop flex column is
-       gated to >=1201px), so the page scrolls as one document. Auto height with
-       min-height:100dvh keeps the sticky-bottom KEPT rail pinned to the fold. */
-    flex: none;
-    height: auto;
-    min-height: 100dvh;
-  }
-
-  .layout {
-    flex-direction: column;
-  }
-
   .body {
     overflow-y: visible;
   }
@@ -711,101 +506,6 @@ button.keptItem {
     position: sticky;
     bottom: 54px;
     z-index: 2;
-  }
-
-  .boardWrap {
-    width: 100%;
-    flex: none;
-    border-left: none;
-    border-top: var(--rule-major);
-    padding: 0;
-    /* Pin the toggle bar to the bottom edge of the viewport. Collapsed this is
-       just the toggle; expanded, the body renders above it (capped height) so
-       the thread and the kept list both stay reachable. */
-    position: sticky;
-    bottom: 0;
-    z-index: 3;
-    background: var(--ground);
-  }
-
-  .boardToggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: var(--space-4) var(--gutter);
-    text-align: left;
-    min-height: 44px;
-  }
-
-  .boardToggleLabel {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: var(--text-3);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .boardToggleCount {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 6px;
-    border-radius: var(--radius-pill);
-    background: var(--accent);
-    color: var(--on-accent);
-    font-size: var(--text-2);
-    font-weight: 700;
-    letter-spacing: 0;
-  }
-
-  /* The shared Chevron SVG at a 1em box, rotated open — one disclosure glyph
-     across both rails and the left index. */
-  .boardToggleChevron {
-    display: inline-flex;
-    font-size: var(--text-7);
-    line-height: 1;
-    color: var(--muted);
-  }
-
-  .boardToggleChevron svg {
-    display: block;
-    transition: transform var(--dur-short) var(--ease-out);
-  }
-
-  .chevronOpen svg {
-    transform: rotate(90deg);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .boardToggleChevron svg {
-      transition: none;
-    }
-  }
-
-  .boardBody {
-    display: none;
-  }
-
-  .boardExpanded .boardBody {
-    display: block;
-    max-height: 60vh;
-    overflow-y: auto;
-    border-top: var(--rule-major);
-  }
-
-  /* The toggle already shows "KEPT" + count, so drop the inner board heading
-     on this tier to avoid a doubled title. */
-  .boardExpanded .boardHead {
-    display: none;
-  }
-
-  .board {
-    padding-top: var(--space-1);
   }
 
   /* Stack the speaker label above the message the moment the page goes
@@ -838,7 +538,6 @@ button.keptItem {
     margin-left: 0;
   }
 }
-
 /* ---- Phone tier (<=560px) ------------------------------------------------ */
 @media (max-width: 560px) {
   .question { max-width: none; }

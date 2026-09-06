@@ -38,7 +38,7 @@ import {
   planResearchWrite,
   type ResearchIntent,
   type ResearchPersist,
-} from "./researchWrite";
+} from "../lib/researchWrite";
 
 export type { ResearchIntent };
 /** The whole write-through, as one call. Fire-and-forget; failures surface. */

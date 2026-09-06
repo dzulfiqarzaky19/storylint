@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./ResearchScreen.module.css";
+import styles from "../Thread.module.css";
 
 export interface PromptChipProps {
   label: string;

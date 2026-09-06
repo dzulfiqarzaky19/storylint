@@ -3,7 +3,7 @@
 import { useMemo, useReducer, useState, useTransition } from "react";
 import type { DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Shelf, ResearchProposition } from "@/lib/domain/types";
+import type { ResearchProposition } from "@/lib/domain/types";
 import {
   researchReducer,
   initResearchState,
@@ -14,37 +14,16 @@ import {
   deleteThread,
   renameThread,
 } from "@/lib/actions/research";
-import ResearchIndex from "./ResearchIndex";
-import QuestionBlock from "./QuestionBlock";
-import Turn from "./Turn";
-import PropositionCard from "./PropositionCard";
-import WikiTargetPicker from "@/components/WikiTargetPicker";
+import Threads from "./Threads";
+import Thread from "./Thread/Thread";
 import type { PickerResult } from "@/lib/wiki/pickedTarget";
-import { useResearchAsk } from "./useResearchAsk";
-import { useResearchCommit } from "./useResearchCommit";
+import { useResearchAsk } from "./hooks/useResearchAsk";
+import { useResearchCommit } from "./hooks/useResearchCommit";
 import { synthesizeResolvedTarget } from "@/lib/research/synthesizeResolvedTarget";
 import { routeEnrichTarget } from "@/lib/research/resolveForEntry";
-import Composer from "./Composer";
-import PromptChip from "./PromptChip";
-import KeptBoard from "./KeptBoard";
-import type { KeptEntry } from "./KeptBoard";
-import styles from "./ResearchScreen.module.css";
-
-// Prompt chips. Each chip's label is sent verbatim as a REAL question to the
-// AI (same path as the ask box) — no pre-written seed turns. Curly apostrophe
-// on the last one.
-const CHIPS = [
-  "Give me a scene",
-  "I’m stuck — ask me something",
-];
-
-// Empty-state guidance shown when a thread has no turns yet (a brand-new thread,
-// or the whole screen when there are no threads at all). Replaces the old
-// pre-written seed conversation: research now starts empty and every turn is a
-// real AI exchange. The AI always draws on the ENTIRE wiki — no scope to pick.
-const EMPTY_GUIDANCE =
-  "Ask me anything about your story. I draw on your entire wiki to answer, " +
-  "so just start typing a question.";
+import Kept from "./Kept/Kept";
+import type { KeptEntry } from "./Kept/Kept";
+import styles from "./Research.module.css";
 
 /** Minimal live-entry shape the enrich recommender + picker consume (F6). */
 export interface EnrichEntry {
@@ -54,7 +33,7 @@ export interface EnrichEntry {
   deletedAt: number | null;
 }
 
-export default function ResearchScreen({
+export default function Research({
   snapshot,
   entries = [],
   categories = [],
@@ -274,7 +253,7 @@ export default function ResearchScreen({
   // Hard-delete a thread. When the ACTIVE thread is deleted we jump to the
   // nearest remaining thread (prefer the next one, else the previous).
   // Deleting a non-active thread just refreshes the list in place.
-  // Confirmation happens in ResearchIndex. The last-thread floor lives in
+  // Confirmation happens in Threads. The last-thread floor lives in
   // deleteLastThreadGuarded — a world's only thread is refused, so this
   // handler never reopens via createThread (that branch was dead).
   const removeThread = (id: string) => {
@@ -341,7 +320,7 @@ export default function ResearchScreen({
   return (
     <div className={styles.screen}>
       <div className={styles.layout}>
-        <ResearchIndex
+        <Threads
           threads={snapshot.threads}
           selectedId={snapshot.threadId}
           onSelect={selectThread}
@@ -349,95 +328,36 @@ export default function ResearchScreen({
           onDelete={removeThread}
           onRename={renameThreadTitle}
         />
-        <main className={styles.body}>
-          {/* The head is FIXED and the turns scroll under it: a long thread must
-              never push the question the writer is working on off the top. */}
-          {visibleTurns.length > 0 && (
-            <QuestionBlock
-              question={state.question}
-              turnCount={visibleTurns.length}
-              worldName={activeWorldName}
-            />
-          )}
-          <div className={styles.chatScroll}>
-          {visibleTurns.length === 0 ? (
-            <section className={styles.thread}>
-              <p className={styles.guidance}>{EMPTY_GUIDANCE}</p>
-            </section>
-          ) : (
-            <>
-              <section className={styles.thread}>
-                {visibleTurns.map((turn) => (
-              <Turn
-                key={turn.id}
-                turn={turn}
-                renderCard={(card) => (
-                  <PropositionCard
-                    key={card.id}
-                    card={card}
-                    kept={keptSet.has(card.id)}
-                    inWiki={inWikiSet.has(card.id)}
-                    focused={card.id === focusPropositionId}
-                    onKeep={handleKeep}
-                    onPropose={handlePropose}
-                    onDragStart={setDraggingId}
-                    onDragEnd={() => {
-                      setDraggingId(null);
-                      setBoardActive(false);
-                    }}
-                  />
-                )}
-              />
-                ))}
-              </section>
-            </>
-          )}
-          </div>
+        <Thread
+          question={state.question}
+          worldName={activeWorldName}
+          visibleTurns={visibleTurns}
+          keptSet={keptSet}
+          inWikiSet={inWikiSet}
+          focusPropositionId={focusPropositionId}
+          pendingCard={pendingCard}
+          resolvedTarget={resolvedTarget}
+          categories={categories}
+          entries={entries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
+          error={state.error}
+          draft={draft}
+          asking={asking}
+          onKeep={handleKeep}
+          onPropose={handlePropose}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+          onDismissError={() => dispatch({ type: "SET_ERROR", error: null })}
+          onDraftChange={setDraft}
+          onAsk={handleAsk}
+          onChip={handleChip}
+          onDragStart={setDraggingId}
+          onDragEnd={() => {
+            setDraggingId(null);
+            setBoardActive(false);
+          }}
+        />
 
-          {pendingCard && resolvedTarget && (
-            <WikiTargetPicker
-              resolvedTarget={resolvedTarget}
-              categories={categories}
-              entries={entries.map((e) => ({ id: e.id, name: e.name, kind: e.kind }))}
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-            />
-          )}
-
-          <section className={styles.footer}>
-            {state.error && (
-              <div className={styles.errorBar} role="alert" aria-live="assertive">
-                <span className={styles.errorText}>{state.error}</span>
-                <button
-                  type="button"
-                  className={styles.errorDismiss}
-                  onClick={() => dispatch({ type: "SET_ERROR", error: null })}
-                >
-                  Dismiss
-                </button>
-              </div>
-            )}
-            <Composer
-              ai={{
-                value: draft,
-                onChange: setDraft,
-                onSubmit: handleAsk,
-                busy: asking,
-              }}
-            >
-              {CHIPS.map((label) => (
-                <PromptChip
-                  key={label}
-                  label={label}
-                  onClick={() => handleChip(label)}
-                />
-              ))}
-            </Composer>
-          </section>
-
-        </main>
-
-        <KeptBoard
+        <Kept
           items={keptItems}
           active={boardActive}
           onDragOver={onBoardDragOver}

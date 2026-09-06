@@ -1,0 +1,42 @@
+/* Research — three-column shell: Threads · Thread · Kept. */
+
+/* Research — cockpit skin over the app's real research logic. All color,
+   font, radius, and rule values come from globals.css tokens (never a literal),
+   so the whole surface re-skins when the theme's :root changes. */
+
+/* Three-column shell: threads rail (Threads) · thread chat · Kept.
+   On <=1200px both rails stack and the Kept board becomes a bottom sheet. */
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---- Responsive: rail stacks below at <=1200px (parity with Write) ------ */
+/* The KEPT rail becomes a collapsible panel pinned to the bottom of the
+   viewport, opened/closed by the "KEPT" toggle. The header is a sticky ~74px
+   bar in normal flow, so a 100vh .screen would overflow and push the toggle
+   below the fold; instead the page scrolls as one document and the rail is
+   sticky to the viewport bottom, so its toggle is always visible. */
+@media (max-width: 1200px) {
+  .screen {
+    /* Mobile/tablet: body is normal block flow (the desktop flex column is
+       gated to >=1201px), so the page scrolls as one document. Auto height with
+       min-height:100dvh keeps the sticky-bottom KEPT rail pinned to the fold. */
+    flex: none;
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+}

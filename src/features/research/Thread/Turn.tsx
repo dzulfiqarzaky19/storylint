@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import type { ResearchTurnWithCards } from "@/lib/domain/types";
 import { voiceLabel } from "@/lib/research/voice";
-import styles from "./ResearchScreen.module.css";
+import styles from "./Thread.module.css";
 
 export interface TurnProps {
   turn: ResearchTurnWithCards;

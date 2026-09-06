@@ -21,7 +21,7 @@ export interface ResearchAskApi {
 }
 
 /**
- * The /research streaming ask engine, lifted out of ResearchScreen (T-ARCH-14).
+ * The /research streaming ask engine, lifted out of Research (T-ARCH-14).
  * It owns the ask-box draft, the in-flight guard, and the whole POST→stream→
  * reconcile / rollback lifecycle. The reducer stays the sole owner of turns; this
  * hook only DISPATCHES the streaming actions in order, so the behaviour

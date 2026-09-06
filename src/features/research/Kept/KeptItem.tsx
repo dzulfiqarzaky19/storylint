@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./ResearchScreen.module.css";
+import styles from "./Kept.module.css";
 
 export interface KeptItemProps {
   kind: string;

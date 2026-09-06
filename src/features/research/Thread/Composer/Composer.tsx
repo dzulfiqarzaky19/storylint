@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import styles from "./ResearchScreen.module.css";
+import styles from "../Thread.module.css";
 
 export interface ComposerProps {
   /** The prompt chip row (rendered by the screen so chips carry handlers). */

@@ -58,7 +58,7 @@ agent could plausibly misread it. Discipline that maintains this file lives in
   reducer action fired ALONGSIDE its persist, both carrying the SAME client-minted
   id so the session row and the persisted row are one row. `commit(intent)` is the
   only write-through — wiki (`features/wiki/hooks/useWikiCommit.ts`) and research cards
-  (`components/research/useResearchCommit.ts`). A screen states intent and never
+  (`features/research/hooks/useResearchCommit.ts`). A screen states intent and never
   learns ids, append positions, the confirmation flag, or the pairing.
 - **confirmed picker write** — what the "Add to the wiki" modal's confirm does:
   ENRICH a live entry (fold a fact onto it, CORRECTING the contradicted fact when
@@ -135,7 +135,7 @@ in `src/lib/check/index.ts` already warns about one of the collisions. Never say
   drill-down `drawer` instead, so plot is deliberately outside this seam.
   The component is `IndexRail`, never `Rail`, because of the collisions below.
 - **signal rail** — the RIGHT panel that surfaces findings: `OutstandingRail` on
-  /write, `KeptBoard` on /research, `Suggestions` on /wiki. Unrelated to the index
+  /write, `Kept` on /research, `Suggestions` on /wiki. Unrelated to the index
   rail; shares none of its chrome.
 - **`Mark.rail`** — neither of the above. A *string field* on `Mark` holding the
   short reason shown beside a mark. Distinct again from `railLabel`, which is the

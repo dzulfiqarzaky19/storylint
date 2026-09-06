@@ -2,7 +2,7 @@
 //
 // The route emits one JSON object per line (newline-delimited): `delta` frames
 // carrying prose, then exactly one `done` (with the persisted turns) or an
-// `error`. This reader owns the transport-level concerns so ResearchScreen only
+// `error`. This reader owns the transport-level concerns so Research only
 // deals with typed callbacks:
 //   - decode incrementally and split on "\n" (a frame may span network chunks,
 //     so a trailing partial line is held until its newline arrives);
@@ -10,7 +10,7 @@
 //   - a blank line or an unparseable line is skipped (never throws mid-read).
 //
 // It is pure over an injected reader, so it is unit-testable with a fake stream
-// (no fetch, no route). ResearchScreen passes `response.body.getReader()`.
+// (no fetch, no route). Research passes `response.body.getReader()`.
 
 import type { ResearchTurnWithCards } from "../domain/types";
 

@@ -54,7 +54,7 @@ export function resolveForEntry(
 
 // -----------------------------------------------------------------------------
 // routeEnrichTarget (TCK-021) — the PRECEDENCE rule, extracted pure so it is
-// unit-testable in node (the ResearchScreen useMemo that consumes it lives in a
+// unit-testable in node (the Research useMemo that consumes it lives in a
 // .tsx the node test env can't load). The AI's EXPLICIT pick wins: if `forEntry`
 // resolves to a live entry, route there; otherwise fall back to the
 // title-guessing recommender. Both branches yield the same EnrichRecommendation

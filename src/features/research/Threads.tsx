@@ -5,10 +5,10 @@ import type { ResearchThreadRow } from "@/lib/domain/types";
 import IndexRail from "@/components/shell/IndexRail";
 import { PencilIcon, TrashIcon } from "@/components/shell/RowIcons";
 import { useInlineRename } from "@/components/hooks/useInlineRename";
-import ConfirmModal from "../ui/ConfirmModal";
-import styles from "./ResearchIndex.module.css";
+import ConfirmModal from "@/components/ui/ConfirmModal";
+import styles from "./Threads.module.css";
 
-export interface ResearchIndexProps {
+export interface ThreadsProps {
   threads: ResearchThreadRow[];
   selectedId: string;
   /** Navigate to a thread (URL-driven; the screen pushes ?thread=<id>). */
@@ -127,14 +127,14 @@ function ThreadRow({
  * widths) belongs to the shared `IndexRail`; this module owns only the thread
  * rows and the "+ New thread" tail. See CONTEXT.md → Chrome → index rail.
  */
-export default function ResearchIndex({
+export default function Threads({
   threads,
   selectedId,
   onSelect,
   onCreate,
   onDelete,
   onRename,
-}: ResearchIndexProps) {
+}: ThreadsProps) {
   // Optimistic rename overrides {threadId: newTitle}. The rendered title comes
   // from the server `threads` prop, refreshed via router.refresh() after the
   // rename persists — but that refresh is a round-trip that lags (and under

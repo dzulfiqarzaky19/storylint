@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import type { DragEvent } from "react";
 import KeptItem from "./KeptItem";
 import { Chevron } from "@/components/shell/RowIcons";
-import styles from "./ResearchScreen.module.css";
+import styles from "./Kept.module.css";
 
 export interface KeptEntry {
   id: string;
@@ -16,7 +16,7 @@ export interface KeptEntry {
   threadTitle: string;
 }
 
-export interface KeptBoardProps {
+export interface KeptProps {
   items: KeptEntry[];
   /** True while a card is dragged over the board (accent border + drop fill). */
   active: boolean;
@@ -47,14 +47,14 @@ type KeptTab = (typeof KEPT_TABS)[number];
  * opened/closed by the "KEPT" toggle bar. The toggle is hidden on desktop (the
  * body always shows) — see .boardToggle / .boardBody in the CSS.
  */
-export default function KeptBoard({
+export default function Kept({
   items,
   active,
   onDragOver,
   onDragLeave,
   onDrop,
   onOpenItem,
-}: KeptBoardProps) {
+}: KeptProps) {
   // Collapsible only matters in the stacked (mobile/tablet) layout. Default
   // closed so the phone opens on the thread, not the kept list (parity with
   // Write's rail). On desktop the toggle is hidden and the body always shows.
