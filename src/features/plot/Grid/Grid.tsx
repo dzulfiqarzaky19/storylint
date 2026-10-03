@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { PlotProgression, PlotLane } from "@/lib/db/plot";
+import { useState } from "react";
+import type { PlotProgression, PlotLane } from "@/domain/plot";
 import type { PlotEdit } from "../hooks/usePlotEdit";
-import { LANE_COLORS, laneColor, statusLabel, longGapChapters, type Projection } from "../lib/plotModel";
+import { laneColor, statusLabel, longGapChapters } from "../lib/plotModel";
 import { Beat } from "./Beat";
 import { BeatEditor } from "../components/BeatEditor";
 import styles from "./Grid.module.css";
@@ -14,79 +14,46 @@ export function Grid({
   latestChapter,
   onOpen,
   edit,
-  projection,
 }: {
   lanes: PlotLane[];
   chapters: PlotProgression["chapters"];
   latestChapter: number;
   onOpen: (laneId: string) => void;
   edit: PlotEdit;
-  projection: Projection;
 }) {
-  // The beat being dragged, keyed by lane + source chapter. A drag is HORIZONTAL
-  // and lane-local: a card can only be dropped on an empty cell of its OWN lane
-  // (feature 1), so the drop target checks laneId matches before accepting.
   const [drag, setDrag] = useState<{ laneId: string; from: number } | null>(null);
-  // The empty cell currently being edited into a new beat (feature 2).
   const [adding, setAdding] = useState<{ laneId: string; chapter: number } | null>(null);
 
-  // Fixed track widths (not 1fr) so the board scrolls horizontally past ~12
-  // chapters instead of crushing beat cards below tap size on a long book.
   const cols = `var(--lane-col) repeat(${chapters.length}, var(--beat-col))`;
-
-  // In chronology mode the column header carries the story-time label of the
-  // earliest-ranked beat in that chapter (the same beat the reorder sorts on), so
-  // a reader sees WHY a late chapter sits early. Keyed by chapter number.
-  const chronoMode = projection === "arc";
-  const chronoLabel = useMemo(() => {
-    const label = new Map<number, string>();
-    if (!chronoMode) return label;
-    const rank = new Map<number, number>();
-    for (const lane of lanes) {
-      for (const beat of lane.beats) {
-        if (beat.chronoOrder === 0 || beat.chronology === "") continue;
-        const prev = rank.get(beat.chapterNumber);
-        if (prev === undefined || beat.chronoOrder < prev) {
-          rank.set(beat.chapterNumber, beat.chronoOrder);
-          label.set(beat.chapterNumber, beat.chronology);
-        }
-      }
-    }
-    return label;
-  }, [lanes, chronoMode]);
 
   return (
     <div
       className={styles.grid}
       style={{ gridTemplateColumns: cols }}
       role="grid"
-      aria-label={chronoMode ? "Plot progression by story chronology" : "Plot progression by chapter"}
+      aria-label="Plot progression by chapter"
     >
       <div className={`${styles.corner} ${styles.headCell}`} role="columnheader">
-        plotline &darr;&nbsp; {chronoMode ? "story-time" : "chapter"} &rarr;
+        plotline &darr;&nbsp; chapter &rarr;
       </div>
-      {chapters.map((c) => {
-        const chrono = chronoLabel.get(c.number);
-        return (
-          <div
-            key={c.id}
-            className={`${styles.chapHead} ${styles.headCell} ${
-              c.number === latestChapter ? styles.here : ""
-            }`}
-            role="columnheader"
-            title={chrono ? `${c.title} \u2014 ${chrono}` : c.title}
-          >
-            <span className={styles.chapNum}>Ch.{c.number}</span>
-            <span className={styles.chapTitle}>{chrono ?? c.title}</span>
-          </div>
-        );
-      })}
+      {chapters.map((c) => (
+        <div
+          key={c.id}
+          className={`${styles.chapHead} ${styles.headCell} ${
+            c.number === latestChapter ? styles.here : ""
+          }`}
+          role="columnheader"
+          title={c.title}
+        >
+          <span className={styles.chapNum}>Ch.{c.number}</span>
+          <span className={styles.chapTitle}>{c.title}</span>
+        </div>
+      ))}
 
       {lanes.map((lane) => {
         const gaps = longGapChapters(lane);
         const status = statusLabel(lane, latestChapter);
         const byChapter = new Map(lane.beats.map((b) => [b.chapterNumber, b]));
-        // Cells after a closed arc's cap are the greyed "past" tail (done, not quiet).
         const cap =
           lane.state === "resolved" || lane.state === "abandoned"
             ? lane.resolvedAt
@@ -182,8 +149,6 @@ export function Grid({
                   />
                 );
               }
-              // An empty cell is a drop target for THIS lane's dragged card, and
-              // a click-to-add slot when idle. A pending write freezes both.
               const isGap = gaps.has(c.number);
               const dropTarget = draggingHere && drag.from !== c.number;
               return (

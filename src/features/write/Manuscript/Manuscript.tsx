@@ -1,13 +1,8 @@
 'use client';
 
-/**
- * Manuscript — the chapter page: title, editor, inline note, save state.
- * Former manuscript column of the Write screen.
- */
-
 import { createPortal } from 'react-dom';
 import { EditorContent, type Editor } from '@tiptap/react';
-import type { Mark, MarkAction } from '@/lib/check';
+import type { Mark, MarkAction } from '@/domain/check';
 import Note from './Note';
 import SaveState from './SaveState';
 import Title from './Title';
@@ -33,7 +28,6 @@ export interface ManuscriptProps {
   onApplyRewrite: (mark: Mark, rewrite: string) => void;
 }
 
-/** Spell small chapter numbers for the eyebrow ("Chapter seven"). */
 function numberWord(n: number): string {
   const words = [
     'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
@@ -91,7 +85,6 @@ export default function Manuscript({
         </div>
       </div>
 
-      {/* Portal the note into the plugin's widget host under the open paragraph. */}
       {openMark && noteHost
         ? createPortal(
             <Note

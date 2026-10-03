@@ -1,15 +1,10 @@
 "use client";
 
-import type { FactRow } from "@/lib/domain/types";
-import { useDrag } from "@/components/dnd/DragContext";
+import type { FactRow } from "@/domain/types";
+import { useDrag } from "@/features/wiki/dnd/DragContext";
 import InlineText from "../components/InlineText";
 import styles from "./Facts.module.css";
 
-// TCK-HF2W-A1: replace the two text glyphs (U+2726 sparkle, U+2715 x) with inline
-// SVGs in the same register as Sidebar's Chevron (viewBox 0 0 16 16, 1em box,
-// stroke=currentColor, aria-hidden + focusable=false so they inherit colour and
-// stay decorative — the visible label / aria-label carries the meaning). Crisp at
-// any size, unlike font glyphs whose shape/baseline vary by platform font.
 function SparkleIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -74,20 +69,15 @@ function DeleteIcon({ className }: { className?: string }) {
 interface FactsProps {
   entryId: string;
   facts: FactRow[];
-  /** Drop a suggestion card here → add it as a fresh fact on this entry. */
   onDropSuggestion: (suggestionKey: string) => void;
-  /** Edit a fact's key/value in place (manual authoring, Track A). */
   onEditFactField: (
     entryId: string,
     factId: string,
     field: "key" | "value",
     value: string,
   ) => void;
-  /** Add a new blank fact to this entry. */
   onAddFact: (entryId: string) => void;
-  /** Delete a fact from this entry. */
   onDeleteFact: (entryId: string, factId: string) => void;
-  /** AI "suggest details" (optional). Writes nothing until the writer adds one. */
   ai?: {
     suggestions: { key: string; value: string }[];
     busy: boolean;
@@ -97,11 +87,6 @@ interface FactsProps {
   };
 }
 
-// Details column (flex:1): fact rows with 104px key cell. A fresh fact gets the
-// --fresh background. Native HTML5 DnD: each fact row is a draggable SOURCE (move
-// it onto a tile to reassign the fact) and the whole column is a drop TARGET for
-// suggestion cards (add-as-fresh-fact). Card-drop active → --drop background.
-// Key and value are inline-editable (Track A); "+ Add detail" appends a fact.
 export default function Facts({
   entryId,
   facts,

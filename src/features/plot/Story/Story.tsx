@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { PlotProgression, PlotLane } from "@/lib/db/plot";
-import { useInlineRename } from "@/components/hooks/useInlineRename";
+import type { PlotProgression, PlotLane } from "@/domain/plot";
+import { useInlineRename } from "@/hooks/useInlineRename";
 import type { PlotEdit } from "../hooks/usePlotEdit";
 import { laneColor, statusLabel, buildStoryRows } from "../lib/plotModel";
 import { BeatEditor } from "../components/BeatEditor";
@@ -22,9 +22,6 @@ export function Story({
   edit: PlotEdit;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
-  // T-ARCH-7: shared useInlineRename hook. Plot keeps its OWN commit
-  // decision, unchanged from before: a blank or unchanged trimmed draft is a
-  // no-op (no onReset — this site has no reset-to-default affordance at all).
   const rename = useInlineRename(lane.name, {
     onCommit: (draft) => {
       const trimmed = draft.trim();
@@ -36,7 +33,6 @@ export function Story({
   useEffect(() => {
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      // Escape closes the drawer only when no inline editor is capturing it.
       if (e.key === "Escape" && !rename.editing && editingBeat === null) onClose();
     };
     document.addEventListener("keydown", onKey);

@@ -9,9 +9,7 @@ export type TabKey = "overview" | "timeline" | "details" | "ties";
 interface TabSpec {
   key: TabKey;
   label: string;
-  /** A count pill next to the label (e.g. fact count, active-tie count). Omit for none. */
   count?: number;
-  /** A dot flagging unresolved state (e.g. a contradiction in the Timeline). */
   warn?: boolean;
   panel: ReactNode;
 }
@@ -20,11 +18,6 @@ interface TabsProps {
   tabs: TabSpec[];
 }
 
-/**
- * Tab shell for the focused-entry workspace (T-WIKI-COCKPIT-1). Pure UI state:
- * one tab "on" at a time, its panel rendered, the rest unmounted — mirrors the
- * prototype's `.tab`/`.panel` on-class toggle (wiki-c-cockpit.html).
- */
 export default function Tabs({ tabs }: TabsProps) {
   const [active, setActive] = useState<TabKey>(tabs[0]?.key ?? "overview");
   const activeTab = tabs.find((t) => t.key === active) ?? tabs[0];

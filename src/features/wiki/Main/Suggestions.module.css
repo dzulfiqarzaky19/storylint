@@ -1,5 +1,3 @@
-/* Suggestions — README Screen 1 "Poster band". Full-bleed accent block. */
-
 .band {
   background: var(--accent);
   color: var(--on-accent);
@@ -43,7 +41,6 @@
   margin: 6px 0 var(--space-3);
 }
 
-/* Card actions (ref: primary dark fill / secondary 2px ink outline). */
 .actions {
   display: flex;
   gap: var(--space-2);
@@ -68,21 +65,15 @@
   cursor: pointer;
 }
 
-/* Toggle bar — hidden on desktop; the collapsible control on phones. */
 .toggle {
   display: none;
 }
 
-/* On desktop the body is transparent to layout: headline + cards flow exactly
-   as they did before the collapsible wrapper existed. */
 .bandBody {
   display: contents;
 }
 
 @media (max-width: 560px) {
-  /* Mirror the Write rail / Research KEPT affordance: a collapsible bar pinned
-     to the bottom of the viewport. Collapsed shows only the toggle; expanding
-     reveals the cards above it, scrollable if tall. */
   .band {
     position: sticky;
     bottom: 0;
@@ -118,7 +109,6 @@
     line-height: 1;
   }
 
-  /* Collapsed: hide the body. Expanded: show it above the toggle bar. */
   .bandBody {
     display: none;
   }
@@ -132,7 +122,6 @@
     padding: 20px var(--gutter) var(--space-5);
   }
 
-  /* The headline already lives in the toggle bar on this tier. */
   .bandOpen .headline {
     display: none;
   }

@@ -1,41 +1,15 @@
 'use client';
 
-/**
- * ProseMirror decoration plugin for Manuscript.
- *
- * Turns the check engine's `Mark[]` into ProseMirror decorations over the live
- * document:
- *   - `Decoration.inline` on each mark's run, carrying ONE of two classes:
- *       `.write-underline-conflict`  → 3px solid  var(--accent)   (contradiction)
- *       `.write-underline-unrecorded`→ 3px dotted #7d7979         (unrecorded)
- *     The two are NEVER merged (product rule 2).
- *   - `Decoration.widget` at the END of the paragraph containing the OPEN mark
- *     (`side: 1`), an empty host <div> the editor React-portals the Note
- *     into, so the note sits in document flow under its paragraph.
- *
- * Marks arrive with a stable `{ paragraphIndex, occurrenceIndex } + quote`
- * anchor (never an absolute offset), so this module recomputes absolute doc
- * positions on every doc/marks change — a mark survives its paragraph moving.
- *
- * Decoration / DecorationSet / Plugin come from Tiptap v3's ProseMirror
- * re-exports (`@tiptap/pm/*`), NOT a separately-installed prosemirror-*; this is
- * the documented way to reach ProseMirror primitives in Tiptap v3.
- * Source: node_modules/@tiptap/pm/view/index.ts (`export * from 'prosemirror-view'`),
- *         node_modules/@tiptap/pm/state/index.ts (`export * from 'prosemirror-state'`).
- */
-
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import type { EditorState } from '@tiptap/pm/state';
 import type { Node as PmNode } from '@tiptap/pm/model';
-import type { Mark } from '@/lib/check';
+import type { Mark } from '@/domain/check';
 
 export interface MarkDecorationData {
   marks: Mark[];
   openMarkKey: string | null;
-  /** DOM host for the open note; the editor portals React into it. */
   noteHost: HTMLElement | null;
-  /** Fired when an underline is clicked (same action as a rail-row click). */
   onUnderlineClick: (markKey: string) => void;
 }
 
@@ -43,14 +17,8 @@ export const markDecorationKey = new PluginKey<MarkDecorationData>(
   'write-mark-decorations',
 );
 
-/**
- * Absolute {from,to} of a mark's quote within its paragraph, or null.
- *
- * Shared by the decoration plugin here and the editor's "select the run"
- * action in Manuscript.tsx — both need to turn a stable
- * `{paragraphIndex, occurrenceIndex} + quote` anchor into live doc positions,
- * so the logic lives in one place.
- */
+// A mark's anchor is paragraph + occurrence + quote, never an absolute offset,
+// so positions are recomputed against the live doc and survive a moved paragraph.
 export function resolveMarkRange(
   doc: PmNode,
   mark: Mark,
@@ -64,7 +32,6 @@ export function resolveMarkRange(
     if (blockIndex !== paragraphIndex || found) return;
 
     const text = node.textContent;
-    // Locate the occurrenceIndex-th occurrence of the quote in this paragraph.
     let searchFrom = 0;
     let charIndex = -1;
     for (let i = 0; i <= occurrenceIndex; i += 1) {
@@ -74,7 +41,7 @@ export function resolveMarkRange(
     }
     if (charIndex === -1) return;
 
-    // +1 to step inside the paragraph's opening token.
+    // +1 steps inside the paragraph's opening token.
     const from = offset + 1 + charIndex;
     const to = from + mark.quote.length;
     found = { from, to };
@@ -83,13 +50,6 @@ export function resolveMarkRange(
   return found;
 }
 
-/**
- * Pure sentence-bounds finder: given a paragraph's plain `text` and the
- * [runStart, runEnd) character offsets of a flagged run inside it, return the
- * [start, end) offsets of the sentence containing that run. Sentence edges are
- * the nearest `. ! ?` terminators; the terminator is included, and leading
- * whitespace from the previous sentence is trimmed. Exported for unit tests.
- */
 export function sentenceBounds(
   text: string,
   runStart: number,
@@ -101,20 +61,10 @@ export function sentenceBounds(
   while (s < runStart && text[s] === ' ') s += 1;
   let e = Math.max(0, Math.min(runEnd, text.length));
   while (e < text.length && !isEnd(text[e]!)) e += 1;
-  if (e < text.length) e += 1; // include the terminator itself
+  if (e < text.length) e += 1;
   return { start: s, end: e };
 }
 
-/**
- * Absolute {from,to} of the SENTENCE that contains a mark's flagged run, plus the
- * sentence's plain text. Used by the "Change the sentence" AI rewrite: replacing
- * the whole sentence (rather than the sub-run) guarantees the spliced result is
- * grammatical, since the model rewrites a self-contained unit.
- *
- * Sentence bounds are the nearest sentence terminators (. ! ?) around the run,
- * within the run's paragraph. Falls back to the whole paragraph when no
- * terminator is found. Returns null when the run itself cannot be located.
- */
 export function resolveSentenceRange(
   doc: PmNode,
   mark: Mark,
@@ -130,11 +80,10 @@ export function resolveSentenceRange(
     if (blockIndex !== paragraphIndex || result) return;
 
     const text = node.textContent;
-    const paraStart = offset + 1; // step inside the paragraph's opening token
+    const paraStart = offset + 1;
     const runStart = run.from - paraStart;
     const runEnd = run.to - paraStart;
     if (runStart < 0 || runEnd > text.length) {
-      // Anchor mismatch; fall back to the whole paragraph.
       result = { from: paraStart, to: paraStart + text.length, text };
       return;
     }
@@ -172,7 +121,6 @@ function buildDecorations(
       }),
     );
 
-    // Widget host for the open mark, at the end of its paragraph.
     if (mark.markKey === data.openMarkKey && data.noteHost) {
       const $to = state.doc.resolve(range.to);
       const paragraphEnd = $to.end($to.depth);
@@ -180,7 +128,7 @@ function buildDecorations(
       decos.push(
         Decoration.widget(paragraphEnd, () => host, {
           side: 1,
-          // Keying by markKey forces the widget to re-place when the open mark changes.
+          // Keyed by markKey so the widget re-places when the open mark changes.
           key: `note-${mark.markKey}`,
         }),
       );
@@ -190,11 +138,6 @@ function buildDecorations(
   return DecorationSet.create(state.doc, decos);
 }
 
-/**
- * Create the plugin. `getData` returns the current marks/open state/host each
- * time the plugin recomputes (the editor keeps this in a ref so React state
- * changes are picked up on the next transaction/dispatch).
- */
 export function createMarkDecorationPlugin(
   getData: () => MarkDecorationData,
 ): Plugin<MarkDecorationData> {

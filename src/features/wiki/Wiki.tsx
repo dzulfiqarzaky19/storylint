@@ -1,24 +1,17 @@
 "use client";
 
-// Wiki screen. The reducer store (wikiStore) is the SESSION source
-// of truth so drag feedback is instant; each reducer action is fired ALONGSIDE
-// its matching Server Action (actions/wiki.ts), per-mutation, and a failed write
-// is SURFACED (not swallowed) via an error banner. Native HTML5 DnD; drag
-// session state lives in DragContext so dragover can read the payload.
-
 import { useReducer, useCallback, useState } from "react";
 import { useAiSuggest } from "./hooks/useAiSuggest";
 import { useTrashPanel } from "./Sidebar/hooks/useTrashPanel";
-import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind } from "@/lib/domain/types";
-import { KIND_SHELF } from "@/lib/domain/types";
+import type { WikiSnapshot, Shelf as ShelfKey, EntryWithDetails, Kind, WikiSuggestion } from "@/domain/types";
+import { KIND_SHELF } from "@/domain/types";
 import {
   initWikiState,
   wikiReducer,
-  type WikiSuggestion,
-} from "@/lib/state/wikiStore";
-import { DragProvider, useDrag } from "@/components/dnd/DragContext";
+} from "@/features/wiki/state";
+import { DragProvider, useDrag } from "@/features/wiki/dnd/DragContext";
 import { useWikiCommit } from "./hooks/useWikiCommit";
-import { categoryLabelById } from "@/lib/wiki/categoryLabels";
+import { categoryLabelById } from "@/domain/wiki/categoryLabels";
 import Sidebar from "./Sidebar/Sidebar";
 import TrashPanel from "./Sidebar/TrashPanel";
 import Main from "./Main/Main";
@@ -30,9 +23,7 @@ interface WikiProps {
   snapshot: WikiSnapshot;
   suggestions: WikiSuggestion[];
   contradictionEntryIds: string[];
-  /** TCK-023 (W-4b): every world across universes — the entry share-target pool. */
   worlds: { id: string; title: string }[];
-  /** TCK-023 (W-4b): the world currently being viewed (the unlink target). */
   activeWorldId: string;
 }
 
@@ -56,7 +47,6 @@ function WikiInner({
     { snapshot, suggestions },
     ({ snapshot, suggestions }) => {
       const s = initWikiState(snapshot, suggestions);
-      // Default to the lowest global sortOrder entry (the gazetteer's first, Maren).
       const first = snapshot.entries.reduce<EntryWithDetails | undefined>(
         (lo, e) => (!lo || e.sortOrder < lo.sortOrder ? e : lo),
         undefined,
@@ -72,24 +62,17 @@ function WikiInner({
     [],
   );
 
-  // Surface a failed server action instead of letting the write vanish (§8).
   const surfaceError = useCallback(
     (error: string) => dispatch({ type: "SET_ERROR", error }),
     [],
   );
 
-  // THE write-through. Every gazetteer mutation on this screen is one `commit`
-  // of an intent; ids, append positions, the product-rule-1 confirmation, the
-  // active world, the error label, and the optimistic/persist pairing all live
-  // inside it. This screen no longer knows any of them.
   const commit = useWikiCommit({ state, dispatch, worldId: activeWorldId });
 
   const selected = state.selectedEntryId
     ? state.byId[state.selectedEntryId]
     : undefined;
 
-  // ---- Drops. The screen owns only the DRAG SESSION: read the payload, decide
-  // which intent it means, and commit it. ------------------------------------
   const dropEntry = useCallback(
     (toShelf: ShelfKey, beforeId: string | null) => {
       const item = drag.dragging;
@@ -125,11 +108,8 @@ function WikiInner({
     [drag.dragging, state.suggestions, commit],
   );
 
-  // ---- AI: suggest details for the focused entry (read-only until Add) ------
   const ai = useAiSuggest(surfaceError);
 
-  // Accepting an AI suggestion is the SAME confirmed fact write as manual
-  // authoring (product rule 1 intact); the only extra is clearing the panel row.
   const addSuggestedFact = useCallback(
     (entryId: string, key: string, value: string) => {
       commit({ type: "fact.create", entryId, key, value });
@@ -138,7 +118,6 @@ function WikiInner({
     [commit, ai],
   );
 
-  // Suggestions "Write it in" / "Leave it".
   const writeSuggestion = useCallback(
     (s: WikiSuggestion) => commit({ type: "suggestion.write", suggestion: s }),
     [commit],
@@ -148,8 +127,6 @@ function WikiInner({
     [commit],
   );
 
-  // ---- Child prop adapters. Each is ONE intent; the children keep their own
-  // callback shapes, and nothing about ids/ordering/confirmation leaks into them.
   const createEntryOnShelf = useCallback(
     (shelf: ShelfKey, categoryId?: string) =>
       commit({ type: "entry.create", shelf, categoryId }),
@@ -203,17 +180,10 @@ function WikiInner({
     [commit],
   );
 
-  // The category id whose whole-category delete awaits confirmation (null = none).
   const [confirmDeleteKind, setConfirmDeleteKind] = useState<string | null>(null);
 
-  // ---- Trash: recently-deleted panel (F6-S6b) --------------------------------
-  // Panel-local server state + restore/purge live in useTrashPanel. Restore
-  // awaits the live row then dispatches RESTORE_ENTRY inside the panel, so this
-  // screen never learns that action.
   const trash = useTrashPanel(dispatch);
 
-  // Entries grouped per shelf, in the reducer's live order (Sidebar still
-  // groups by the fixed 4 shelves).
   const byShelf = new Map<ShelfKey, EntryWithDetails[]>();
   for (const key of SHELF_ORDER) {
     byShelf.set(
@@ -224,11 +194,6 @@ function WikiInner({
     );
   }
 
-  // F9-B S3: entries grouped by CATEGORY id (entry.kind), preserving each
-  // shelf's live order. Built-ins keep their Kind-string id; user categories
-  // are UUIDs. Every category in state.categories renders its own group (in the
-  // reducer's already-sorted category order), so a category with zero live
-  // entries still shows an (empty) shelf header that can be renamed/deleted.
   const byCategory = new Map<string, EntryWithDetails[]>();
   for (const cat of state.categories) byCategory.set(cat.id, []);
   for (const key of SHELF_ORDER) {
@@ -239,30 +204,18 @@ function WikiInner({
     }
   }
 
-  // The set of LIVE entry ids (soft-deleted entries were filtered out of the
-  // snapshot at load, so byId holds only live entries). A tie pointing at
-  // anything NOT in this set is dangling and renders as a "removed" tombstone.
   const liveEntryIds = new Set(Object.keys(state.byId));
 
-  // Resolved header label for the category pending whole-category delete (F9-B
-  // S3): from the live category list, so a user category (no built-in default)
-  // shows its own label in the danger confirm rather than a raw UUID.
   const confirmDeleteLabel = confirmDeleteKind
     ? categoryLabelById(state.categories, confirmDeleteKind)
     : "";
 
-  // Every OTHER live entry is a candidate to tie the focused entry to. Computed
-  // from the same live byId map so a just-created/soft-deleted entry appears or
-  // disappears from the add-tie picker immediately.
   const tieCandidates = selected
     ? Object.values(state.byId)
         .filter((e) => e.id !== selected.id)
         .map((e) => ({ id: e.id, name: e.name, kind: e.kind as string }))
     : [];
 
-  // TCK-005: sidebar category-header helpers, matching the main shelf's
-  // per-category rename/label rules so both columns resolve labels and the
-  // Reset affordance identically (built-in override vs user category).
   const sidebarLabelFor = (id: string) =>
     categoryLabelById(state.categories, id);
   const sidebarIsRenamed = (id: string) =>

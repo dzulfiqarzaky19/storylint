@@ -1,14 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ResolvedTie } from "@/lib/domain/types";
+import type { ResolvedTie } from "@/domain/types";
 import { resolveDanglingTies } from "./lib/danglingTies";
-import { roleVocabFor, ROLE_VOCAB } from "./lib/tieRoleVocab";
-import { useDrag } from "@/components/dnd/DragContext";
+import { roleVocabFor } from "./lib/tieRoleVocab";
+import { useDrag } from "@/features/wiki/dnd/DragContext";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import styles from "./Ties.module.css";
 
-/** A candidate the writer can tie the focused entry to (every OTHER live entry). */
 export interface TieCandidate {
   id: string;
   name: string;
@@ -17,30 +16,15 @@ export interface TieCandidate {
 
 interface TiesBlockProps {
   ties: ResolvedTie[];
-  /** Ids of every LIVE (non-deleted) entry — a tie to anything else is dangling. */
   liveEntryIds: Set<string>;
-  /** Every OTHER live entry (excludes the focused one) — the add-tie search pool. */
   tieCandidates: TieCandidate[];
   onSelect: (id: string) => void;
-  /** Drop a tile from a shelf here → tie it to the selected entry. */
   onDropOnTies: () => void;
-  /**
-   * Remove a tie (HARD-delete). Fired ONLY after the writer confirms the danger
-   * dialog — the guard lives here in the caller, the modal stays presentational.
-   */
   onUntie: (tieId: string) => void;
-  /** Tie the focused entry to an EXISTING entry with a writer-set relationship. */
   onTieExisting: (toEntryId: string, rel: string) => void;
-  /** Create a NEW entry and tie it to the focused entry, with a writer-set rel. */
   onCreateTied: (name: string, rel: string) => void;
 }
 
-// Ties block — clickable rows select that entry. Native HTML5 drop TARGET: drag
-// a tile from a shelf onto this column to create a `linked` tie. Active drop gets
-// a 2px accent border + --drop background (README Interactions). Each live tie
-// carries an untie (×) affordance gated behind a danger confirm (untie is a HARD,
-// non-reversible delete). The "+ add tie" control opens an inline picker to tie
-// an existing entry OR create a brand-new one, each with a writer-set rel label.
 export default function TiesBlock({
   ties,
   liveEntryIds,
@@ -54,8 +38,6 @@ export default function TiesBlock({
   const drag = useDrag();
   const dragging = drag.dragging;
 
-  // A tie whose target is no longer live (soft-deleted or purged) renders as a
-  // RED "removed — needs replacement" tombstone instead of a clickable link.
   const resolved = resolveDanglingTies(liveEntryIds, ties);
 
   const isDropActive =
@@ -63,13 +45,8 @@ export default function TiesBlock({
     drag.dropZone?.type === "ties" &&
     drag.dropZone.id === "ties";
 
-  // The tie pending the danger confirm (null = no dialog open). Untie is a HARD
-  // delete, so it only fires from the modal's Confirm — Cancel/Escape/backdrop
-  // leave the tie untouched (ConfirmModal wires those to onCancel).
   const [pendingUntie, setPendingUntie] = useState<ResolvedTie | null>(null);
-  const [replacingTie, setReplacingTie] = useState<ResolvedTie | null>(null);
 
-  // Inline add-tie authoring state.
   const [adding, setAdding] = useState(false);
   const [queryText, setQueryText] = useState("");
   const [rel, setRel] = useState("");
@@ -83,7 +60,6 @@ export default function TiesBlock({
   }, [tieCandidates, queryText]);
 
   function openReplace(t: ResolvedTie) {
-    setReplacingTie(t);
     setAdding(true);
     setRel(t.rel || "");
     setQueryText(t.toName || "");
@@ -93,7 +69,6 @@ export default function TiesBlock({
     setAdding(false);
     setQueryText("");
     setRel("");
-    setReplacingTie(null);
     setPickedKind(null);
     setPickedId(null);
   }
@@ -129,7 +104,6 @@ export default function TiesBlock({
       </div>
       <ul className={styles.list}>
         {(() => {
-          // a) Group by kind — group header + rows per group.
           const groups = new Map<string, typeof resolved>();
           for (const item of resolved) {
             const kind = item.tie.toKind || "lore";
@@ -326,7 +300,6 @@ export default function TiesBlock({
         />
       )}
 
-      {/* T-WIKI-COCKPIT-4 STUB: AI-suggested ties (UI only; real action lands in lib/actions) */}
       <section className={styles.suggestedTies} aria-label="AI-suggested ties">
         <h3 className={styles.suggestedTitle}>Suggest ties</h3>
         <div className={styles.suggestedList}>
@@ -337,7 +310,7 @@ export default function TiesBlock({
               <button
                 type="button"
                 className={styles.suggestedAccept}
-                onClick={() => { /* stub: calls onTieExisting / createTied later */ }}
+                onClick={() => {  }}
                 aria-label="Accept suggested tie to A returning ally"
               >
                 Add
@@ -345,7 +318,7 @@ export default function TiesBlock({
               <button
                 type="button"
                 className={styles.suggestedDismiss}
-                onClick={() => { /* stub: dismisses suggestion */ }}
+                onClick={() => {  }}
                 aria-label="Dismiss suggested tie"
               >
                 Dismiss

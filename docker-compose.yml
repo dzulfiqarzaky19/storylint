@@ -1,52 +1,45 @@
 services:
   db:
     image: postgres:17-alpine
-    container_name: ashkeld_db
+    container_name: storylint-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ashkeld
-      POSTGRES_PASSWORD: ashkeld
-      POSTGRES_DB: ashkeld
+      POSTGRES_USER: storylint
+      POSTGRES_PASSWORD: storylint
+      POSTGRES_DB: storylint
     ports:
       - "5434:5432"
     volumes:
-      - ashkeld_pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ashkeld -d ashkeld"]
+      test: ["CMD-SHELL", "pg_isready -U storylint -d storylint"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  # Isolated Postgres for the e2e suite. SEPARATE database, SEPARATE port, and
-  # SEPARATE volume from `db` above, so `playwright test` (which resets+seeds the
-  # DB every run) can NEVER touch the live dev data in `ashkeld`. The e2e runner
-  # points DATABASE_URL at this via .env.test; nothing else uses it. Brought up
-  # by the same `docker compose up` — one command, zero manual setup.
+  # Separate database, port and volume, so tests can reset and seed freely
+  # without touching the dev data in `db`.
   db_test:
     image: postgres:17-alpine
-    container_name: ashkeld_db_test
+    container_name: storylint-db-test
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ashkeld
-      POSTGRES_PASSWORD: ashkeld
-      POSTGRES_DB: ashkeld_test
+      POSTGRES_USER: storylint
+      POSTGRES_PASSWORD: storylint
+      POSTGRES_DB: storylint_test
     ports:
       - "5435:5432"
     volumes:
-      - ashkeld_test_pgdata:/var/lib/postgresql/data
+      - pgdata_test:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ashkeld -d ashkeld_test"]
+      test: ["CMD-SHELL", "pg_isready -U storylint -d storylint_test"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  # Web-search backend for the research chat (F10). Brought up by the same
-  # `docker compose up` as the db, JSON API enabled via the mounted settings so
-  # it is ready to use with zero manual steps. The app points at it via
-  # WEBSEARCH_SEARXNG_URL=http://localhost:8888 (committed in .env).
+  # Web-search backend for the research chat (WEBSEARCH_SEARXNG_URL in .env).
   searxng:
-    # Pinned to the exact image verified live (JSON API returns real results).
-    # Update the digest deliberately, not implicitly, so builds stay reproducible.
+    # Pinned by digest; update deliberately.
     image: searxng/searxng@sha256:cd22dbf7fac8b25d5e39e65af53a4b47009df5ad3162e270c477fd5b30ce03f2
     container_name: storylint-searxng
     restart: unless-stopped
@@ -64,5 +57,5 @@ services:
       start_period: 20s
 
 volumes:
-  ashkeld_pgdata:
-  ashkeld_test_pgdata:
+  pgdata:
+  pgdata_test:

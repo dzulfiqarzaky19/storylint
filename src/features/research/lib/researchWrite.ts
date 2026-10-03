@@ -1,20 +1,5 @@
-// =============================================================================
-// Research card write-through — the pairing a caller used to hand-write.
-//
-// Pure. Given an intent + the world a minted entry links into, returns the
-// optimistic reducer action AND the persist envelope as one plan. The hook
-// (`useResearchCommit`) is the only runtime caller; tests exercise THIS so they
-// never need React, a server action, or a database.
-//
-// What leaves the caller's required knowledge:
-// - KEEP_CARD ↔ keepCard, PROPOSE_CARD ↔ proposeCard, CANCEL_PENDING ↔
-//   cancelPending, CONFIRM_CARD ↔ writeConfirmedTarget
-// - `confirmed: true`, `{ from: "card", propositionId }`, and `worldId` on the
-//   wiki-write envelope
-// =============================================================================
-
-import type { ResearchAction } from "@/lib/state/researchStore";
-import type { PickerOrigin, PickerResult } from "@/lib/wiki/pickedTarget";
+import type { ResearchAction } from "@/features/research/state/researchStore";
+import type { PickerOrigin, PickerResult } from "@/domain/wiki/pickedTarget";
 
 export type ResearchIntent =
   | { type: "card.keep"; propositionId: string; kept: boolean }

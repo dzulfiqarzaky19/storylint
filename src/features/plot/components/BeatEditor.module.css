@@ -1,6 +1,3 @@
-/* BeatEditor — inline beat text editor (Grid create + Story edit). */
-
-/* inline beat text editor (create in a cell / edit in the drawer) */
 .beatEditor {
   display: flex;
   flex-direction: column;

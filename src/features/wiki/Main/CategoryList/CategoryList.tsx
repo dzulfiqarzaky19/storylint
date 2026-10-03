@@ -1,6 +1,6 @@
 "use client";
 
-import type { CategoryRow, EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
+import type { CategoryRow, EntryWithDetails, Shelf as ShelfKey } from "@/domain/types";
 import NewCategory from "../../components/NewCategory";
 import World from "./World";
 import Category from "./Category/Category";

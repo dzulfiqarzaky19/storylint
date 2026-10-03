@@ -1,6 +1,3 @@
-/* World — README Screen 1 "World band". Separated above by a 2px rule
-   with 38px margin (HANDOFF §4). */
-
 .band {
   border-top: var(--rule-major);
   margin-top: 38px;

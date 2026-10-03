@@ -1,8 +1,3 @@
-/* ScopePill — design 3a: the scope switcher folded into the header wordmark.
-   On-system Ashkeld tokens only (globals.css owns hex), border-radius 0. The
-   pill sits where the static wordmark used to; the dropdown itself reuses
-   SwitcherMenu.module.css (.menu and below), so only the pill face lives here. */
-
 .root {
   position: relative;
   display: inline-flex;
@@ -10,9 +5,6 @@
   gap: 10px;
 }
 
-/* Visible header action next to the pill: exports the active book as Markdown.
-   Understated text affordance (not an ink fill) so it reads as secondary to the
-   brand pill. Hallmark: no hex (vars only), border-radius 0. */
 .export {
   font: inherit;
   font-size: var(--text-2);
@@ -43,9 +35,6 @@
   cursor: not-allowed;
 }
 
-/* The clickable breadcrumb face: ASHKELD · <world> ▾. Ink fill + on-ink text,
-   matching design 3a's .scopePill. The -10px inset pulls the fill to the layout
-   gutter edge so the wordmark still reads as the brand anchor. */
 .pill {
   display: inline-flex;
   align-items: baseline;
@@ -73,9 +62,6 @@
   cursor: not-allowed;
 }
 
-/* Universe kicker: a small mono label ABOVE/before the world name, not a second
-   copy of it at the same weight. Universe and world are 1:1 today, so rendering
-   both at display weight reads as the same name printed twice. */
 .wordmark {
   font-family: var(--font-mono);
   font-size: var(--text-0);
@@ -98,7 +84,6 @@
   color: var(--accent);
 }
 
-/* Phone tier: keep the pill a 44px WCAG tap target (matches Header's nav). */
 @media (max-width: 560px) {
   .pill {
     min-height: 44px;

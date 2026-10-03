@@ -1,18 +1,3 @@
-/**
- * RowIcons — the app's shared inline-SVG glyph set for index-rail rows.
- *
- * One register, everywhere: viewBox "0 0 16 16", a 1em box so the glyph tracks
- * its button's font-size, `stroke="currentColor"` so it inherits whatever colour
- * token the row is painting with, and `aria-hidden` + `focusable="false"` so it
- * stays decorative — the BUTTON's aria-label carries the meaning, never the icon.
- *
- * These live here rather than beside any one surface because /wiki, /write and
- * /research all draw the same rename/delete/disclosure affordances on their rail
- * rows; three private copies had already drifted apart once.
- */
-
-/** Disclosure chevron. A right-pointing glyph; direction is driven by CSS (an
- *  "open" modifier rotates it 90deg). State lives on aria-expanded, not here. */
 export function Chevron({ className }: { className?: string }) {
   return (
     <svg
@@ -33,8 +18,6 @@ export function Chevron({ className }: { className?: string }) {
   );
 }
 
-/** Rename. A visible affordance because double-click is undiscoverable and a
- *  touch device has no double-click at all. */
 export function PencilIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -56,10 +39,6 @@ export function PencilIcon({ className }: { className?: string }) {
   );
 }
 
-/** Filter/search. Replaced a U+1F50E magnifier EMOJI in the IndexRail's filter
- *  field — the same reason the trash glyph below stopped being one: an emoji is
- *  painted by the platform, so it can neither take the field's --muted token nor
- *  match the stroke weight of the chevron sitting a few pixels away. */
 export function SearchIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -81,9 +60,6 @@ export function SearchIcon({ className }: { className?: string }) {
   );
 }
 
-// TCK-HF2W-A2: this replaced a U+1F5D1 trash EMOJI. An emoji renders in the
-// platform's own colour and shape, so it could neither inherit the row's colour
-// token nor stay crisp at the sizes these buttons use.
 export function TrashIcon({ className }: { className?: string }) {
   return (
     <svg

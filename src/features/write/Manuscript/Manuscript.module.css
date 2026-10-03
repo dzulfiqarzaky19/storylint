@@ -1,10 +1,3 @@
-/* Manuscript — chapter page, underlines, inline note, save state. */
-
-/* ---- Manuscript column -------------------------------------------------- */
-
-/* The manuscript is a CENTRED measure, not a left-hung column: the prototype
-   sets the reading column in the middle of the work area so the chapter reads
-   like a page rather than a form field pinned to the rail. */
 .manuscriptScroll {
   flex: 1;
   min-width: 0;
@@ -38,8 +31,6 @@
   overflow-wrap: anywhere;
 }
 
-/* The chapter title is click-to-edit; the caret box takes the small shape rung,
-   not the chrome --radius. */
 .title:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--accent);
@@ -48,8 +39,6 @@
   margin-left: -3px;
 }
 
-/* A short ink rule, not a full-measure divider — it reads as a printer's mark
-   under the title block rather than a section break. */
 .titleRule {
   height: 2px;
   width: 64px;
@@ -57,7 +46,6 @@
   margin: 0 0 26px;
 }
 
-/* The Tiptap editor content: the reading face, not the UI face. */
 .editor :global(.ProseMirror) {
   font-family: var(--font-serif);
   font-size: var(--text-10);
@@ -85,16 +73,11 @@
   color: var(--danger);
 }
 
-/* ---- Underlines (never merged) ------------------------------------------ */
-
 .underline {
   cursor: pointer;
   padding-bottom: 1px;
 }
 
-/* Contradiction = a SOLID red rule under the phrase, filling on hover. Red,
-   not accent: a contradiction is a fault, and it must not read as the same
-   thing as an ordinary accent-coloured affordance. */
 .editor :global(.write-underline-conflict) {
   cursor: pointer;
   padding: 0 1px;
@@ -108,9 +91,6 @@
   background-size: 100% 100%;
 }
 
-/* Unrecorded = a DOTTED amber rule. Kept a distinct rule from the conflict one
-   — line style AND hue both differ — so the two signals can never collapse
-   into one (product rule 2). */
 .editor :global(.write-underline-unrecorded) {
   cursor: pointer;
   padding: 0 1px;
@@ -130,12 +110,7 @@
     transition: none;
   }
 }
-/* ---- Inline note (widget under the paragraph) --------------------------- */
 
-/* A card that LIFTS off the page, ringed in the signal's own colour, rather than
-   a full-width band ruled off the top. The ring is a full hairline, not a thick
-   leading stripe: an asymmetric coloured edge on a card is the side-stripe tell,
-   and the signal reads just as clearly all the way round. */
 .note {
   margin: 14px 0 var(--space-5);
   padding: 15px 16px;
@@ -201,8 +176,6 @@
   color: var(--accent);
 }
 
-/* Slate, not ink: writing a mark into the wiki is the confirm path, and the app
-   already reserves slate for it (see --slate in globals.css). */
 .actionPrimary {
   font-weight: 600;
   background: var(--slate);
@@ -224,8 +197,6 @@
   opacity: 0.5;
   cursor: default;
 }
-
-/* ---- AI advice (inline note; additive, read-only) ---------------------- */
 
 .aiAdvice {
   margin-top: 14px;
@@ -270,8 +241,6 @@
   color: var(--ink);
 }
 
-/* ---- Focus states (keyboard) -------------------------------------------- */
-/* Interactive elements get a visible focus ring in the accent colour. */
 .action:focus-visible,
 .underline:focus-visible,
 .editor :global(.write-underline-conflict):focus-visible,
@@ -286,7 +255,6 @@
     padding: 28px var(--space-7) var(--space-6);
   }
 }
-/* ---- Phone tier (<=560px) ------------------------------------------------ */
 @media (max-width: 560px) {
   .manuscriptScroll { padding: 22px var(--gutter) 28px; }
   .manuscript { max-width: 100%; }
@@ -296,8 +264,6 @@
   .noteActions { gap: var(--space-2); }
   .action { flex: 1 1 auto; text-align: center; min-height: 44px; }
 }
-/* F8 - Export-chapter (Markdown) affordance under the title. Quiet mono meta,
-   underlined only on hover, so it never competes with the chapter name. */
 .exportLink {
   display: inline-block;
   margin: 0 0 16px;

@@ -1,55 +1,24 @@
-// F2b — streaming research answer route (App Router, POST, SSE).
-//
-// This is the runtime wiring over the proven pure helpers:
-//   - streamComplete()        — SSE transport to the gateway (slice 1)
-//   - visibleProsePrefix()    — mid-stream forwarding guard (never leaks the
-//                               sentinel / cards JSON to the writer)
-//   - finalizeStreamedAnswer()— the HARD GATE: persist ONCE on clean completion
-//                               with a non-empty reply, persist NOTHING on abort
-//                               / error / empty (no half-pair ever)
-//   - insertResearchTurnPair()— F2a's atomic you+them(+cards) transaction
-//
-// Wire protocol (newline-delimited JSON frames, one JSON object per line):
-//   {"type":"delta","text":"..."}                     zero+ times, prose only
-//   {"type":"done","turns":[youTurn, themTurn]}       exactly once on success
-//   {"type":"error","error":"..."}                    on failure before persist
-//
-// The client (Research) dispatches APPEND_STREAMING_TURN up front, one
-// STREAM_DELTA per `delta`, and RECONCILE_TURN on `done`. On `error` (or a
-// dropped connection) it rolls the placeholder back — nothing was persisted.
-//
-// ABORT SAFETY: if the client disconnects, req.signal fires; we pass it into
-// streamComplete so the upstream gateway fetch is torn down, mark the stream as
-// NOT completed, and finalize with completed:false => persist nothing.
-
 import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 
-import { streamComplete, aiEnabled } from "@/lib/ai/saarouters";
-import {
-  loadWikiSnapshot,
-  loadWorldSnapshot,
-  getResearchThreadWorldId,
-  getResearchThread,
-} from "@/lib/db/queries";
-import { insertResearchTurnPair } from "@/lib/db/mutations";
-import { deriveThreadTitle } from "@/lib/research/title";
-import { visibleProsePrefix } from "@/lib/research/streamParse";
-import { finalizeStreamedAnswer } from "@/lib/research/finalizeStream";
-import { renderGrounding } from "@/lib/ai/groundedAsk";
-import { buildResearchPrompt } from "@/lib/research/buildResearchPrompt";
-import { loadWebSearchConfig } from "@/lib/websearch/search/config";
-import { retrieve, buildSearchImpl } from "@/lib/websearch/retrieve";
-import { enforceCitations } from "@/lib/websearch/ground/enforceCitations";
+import { streamComplete, aiEnabled } from "@/server/ai/saarouters";
+import { loadWorldSnapshot } from "@/server/db/gazetteer/snapshots";
+import { getResearchThreadWorldId, getResearchThread } from "@/server/db/research/queries";
+import { insertResearchTurnPair } from "@/server/db/research/mutations";
+import { deriveThreadTitle } from "@/server/research/title";
+import { visibleProsePrefix } from "@/domain/research/streamParse";
+import { finalizeStreamedAnswer } from "@/server/research/finalizeStream";
+import { renderGrounding } from "@/server/ai/groundedAsk";
+import { buildResearchPrompt } from "@/server/research/buildResearchPrompt";
+import { loadWebSearchConfig } from "@/server/websearch/search/config";
+import { retrieve, buildSearchImpl } from "@/server/websearch/retrieve";
+import { enforceCitations } from "@/server/websearch/ground/enforceCitations";
 import {
   renderWebContext,
   collectAllowedUrls,
-} from "@/lib/research/webSearchAdapter";
+} from "@/server/research/webSearchAdapter";
 
-// Never statically optimize: this route always runs on request and streams.
 export const dynamic = "force-dynamic";
-// The web-search engine (safeFetch: node:net BlockList, undici Agent, linkedom)
-// requires the Node.js runtime — it cannot run on the Edge runtime.
 export const runtime = "nodejs";
 
 interface StreamRequestBody {
@@ -77,51 +46,25 @@ export async function POST(req: NextRequest) {
   const threadId = (body.threadId ?? "").trim();
   const threadTitle = body.threadTitle?.trim() || undefined;
 
-  // Same guards as the blocking action, returned as plain JSON errors (the
-  // client hasn't opened the stream yet).
   if (!question) return jsonError("Type a question first.", 400);
   if (!threadId) return jsonError("No active thread to write to.", 400);
   if (!aiEnabled()) {
     return jsonError("AI is not configured. Add SAAROUTERS_API_KEY to .env.local.", 400);
   }
 
-  // T-RESEARCH-2 (LOAD-BEARING, live path): ground the streamed answer on the
-  // thread's OWN world, not the whole universe. This is the route the UI actually
-  // hits, so it is the one that makes a Blackspade thread stop seeing Ashkeld
-  // canon. loadWorldSnapshot(threadWorldId) returns only that world's entities;
-  // renderGrounding then renders exactly that world. Falls back to the whole-wiki
-  // snapshot only when the thread has no world (legacy), which the NOT NULL
-  // migration makes impossible for new rows.
   const threadWorldId = await getResearchThreadWorldId(threadId);
-  const wiki = threadWorldId
-    ? await loadWorldSnapshot(threadWorldId)
-    : await loadWikiSnapshot();
+  if (!threadWorldId) return jsonError("That thread no longer exists.", 404);
+  const wiki = await loadWorldSnapshot(threadWorldId);
   const gazetteer = renderGrounding(wiki.entries);
-  // MEMORY: load the thread's prior turns so the Collaborator REMEMBERS the
-  // conversation instead of answering statelessly. The current turn is NOT
-  // persisted yet (finalizeStreamedAnswer writes on clean completion), so this
-  // returns exactly the earlier turns. buildResearchPrompt caps to the most
-  // recent 15 and only feeds side+text.
   const priorTurns = await getResearchThread(threadId);
   const history = priorTurns.map((t) => ({ side: t.side, text: t.text }));
   const { system, user } = buildResearchPrompt(question, threadTitle, gazetteer, false, history);
 
-  // F10: real web search. Retrieve + read full-body pages for this question, then
-  // append them as grounded prompt context and hold the answer's citations to
-  // exactly the URLs we read. Fail-soft: any engine error yields no web context
-  // (empty read set) and the answer falls back to wiki-only grounding — the chat
-  // never breaks because search is down or unconfigured.
   let webSystem = system;
   let webUser = user;
   let allowedUrls: string[] = [];
   try {
     const cfg = loadWebSearchConfig(process.env);
-    // Opt-in ACTIVATION (deliberate safe default, not a bug): only run live
-    // retrieval when web search is CONFIGURED (a real SearXNG base URL present),
-    // so a fresh clone boots green with zero surprise network egress. The
-    // Wikipedia floor stays standalone-CAPABLE (buildProviders always appends it)
-    // — a future explicit opt-in can flip activation here without touching the
-    // engine. Unconfigured => wiki-only, no network.
     if (cfg.enabled) {
       const retrieval = await retrieve(question, {
         searchImpl: buildSearchImpl(cfg),
@@ -131,16 +74,11 @@ export async function POST(req: NextRequest) {
       const context = renderWebContext(retrieval);
       allowedUrls = collectAllowedUrls(retrieval);
       if (context) {
-        // Append the web context to the user message AND re-frame the system
-        // prompt (hasWeb=true) so the model is told web sources are a legitimate,
-        // citable grounding source — without this the gazetteer-only line makes
-        // it refuse ("I can't search the web"). No context => system unchanged.
         webUser = `${user}\n\n${context}`;
         webSystem = buildResearchPrompt(question, threadTitle, gazetteer, true, history).system;
       }
     }
   } catch {
-    // Fail-soft: keep wiki-only prompt, no allowed citations.
     webSystem = system;
     webUser = user;
     allowedUrls = [];
@@ -153,22 +91,11 @@ export async function POST(req: NextRequest) {
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      // The assembled buffer (prose + sentinel + cards JSON). Parsing runs on
-      // THIS, at completion, never mid-stream.
       let buffer = "";
-      // How many chars of the visible prose we have already forwarded, so we
-      // emit only the new tail each tick.
       let forwarded = 0;
-      // Only a clean message_stop flips this true; an abort / thrown error
-      // leaves it false so finalize persists nothing.
       let completed = false;
 
       try {
-        // NB: deliberately DO NOT pass `temperature` here. The SaaRouters
-        // gateway returns an empty 200 then ECONNRESET when a temperature is
-        // sent alongside a larger prompt, and F5 made this prompt big (the full
-        // wiki gazetteer). The blocking path omits temperature for the same
-        // reason (saarouters.ts) — the route wants gateway-default sampling.
         for await (const delta of streamComplete({
           system: webSystem,
           messages: [{ role: "user", content: webUser }],
@@ -176,19 +103,14 @@ export async function POST(req: NextRequest) {
           signal: req.signal,
         })) {
           buffer += delta;
-          // Forward only the safe-to-show prose tail (never the sentinel/JSON).
           const visible = visibleProsePrefix(buffer);
           if (visible.length > forwarded) {
             controller.enqueue(frame({ type: "delta", text: visible.slice(forwarded) }));
             forwarded = visible.length;
           }
         }
-        // streamComplete returns (does not throw) on a clean message_stop.
         completed = true;
       } catch (err) {
-        // Mid-stream failure or client abort: fall through to finalize with
-        // completed:false, which persists nothing. Report the error unless the
-        // client already went away.
         if (!req.signal.aborted) {
           controller.enqueue(frame({ type: "error", error: errText(err) }));
         }
@@ -209,8 +131,6 @@ export async function POST(req: NextRequest) {
               themId: args.themId,
               who: { you: "You", them: "Collaborator" },
               question: args.question,
-              // F10 grounding gate: strip any citation to a URL we did NOT read,
-              // so a stored answer never links a fabricated source.
               reply: enforceCitations(args.reply, allowedUrls),
               cards: args.cards,
               autoTitle: deriveThreadTitle(args.question),
@@ -222,8 +142,6 @@ export async function POST(req: NextRequest) {
           );
         }
       } catch (err) {
-        // A persist failure after a clean stream: nothing was committed (the txn
-        // rolled back), so the placeholder must roll back too.
         if (!req.signal.aborted) {
           controller.enqueue(frame({ type: "error", error: errText(err) }));
         }

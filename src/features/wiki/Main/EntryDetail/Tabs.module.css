@@ -1,5 +1,3 @@
-/* Tab shell — prototype's `.tabs`/`.tab`/`.panel` on-class pattern. */
-
 .shell {
   margin-top: var(--space-4);
 }

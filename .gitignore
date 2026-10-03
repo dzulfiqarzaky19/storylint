@@ -1,54 +1,12 @@
 node_modules
-# Next.js build output: default `.next` plus isolated build dirs used by
-# parallel dev/e2e servers (.next-e2e, .next-verify) and stale snapshots
-# (.next.stale-*). None of these are ever pushed.
 .next*
 out
 build
 
-data/*.db
-data/*.db-journal
-data/*.db-wal
-data/*.db-shm
-
-# Secrets stay local (.env.local, .env.production.local, ...). The committed
-# .env holds only non-secret local-dev defaults (e.g. the compose SearXNG URL),
-# so `docker compose up` + `npm run dev` works with zero manual env setup.
 .env*.local
 
 *.tsbuildinfo
 next-env.d.ts
 
-test-results
-playwright-report
-
-# db:reset-research writes timestamped JSON dumps here before wiping the four
-# research tables. Local recovery artifacts, never source, never pushed.
+# db:reset-research writes JSON dumps here before wiping the research tables.
 backups/
-
-# local-only, not pushed to dev2
-.claude/
-# Agent operating contract + swarm routing config: local-only per-clone setup,
-# same zone as .claude/. Kept out of git so a branch switch can't lose them and
-# an un-scoped `git add` can't sweep them into a commit.
-/AGENTS.md
-/.jcode/
-docs/
-/Fiction writing app redesign/
-*.log
-tasks/
-prototypes/
-# Scratch/probe files at repo root (agent throwaways: _dump.cjs, _engine.mts,
-# _srv2.log, verification output). Never source, never pushed.
-/_*
-
-# local-only test corpus (measured from copyrighted epub, never committed)
-dummy_novel/
-
-# codescratch local code-graph (SQLite under .codescratch/). Host-owned index,
-# never source, never pushed.
-.codescratch/
-.pi/
-# agent skill config + local-markdown issue tracker (generated, host-owned)
-docs/agents/
-.scratch/

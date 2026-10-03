@@ -1,19 +1,7 @@
-// F8-S3 — book Markdown export route (App Router, GET).
-//
-// GET /api/export/[book] streams the whole book as a single Markdown document:
-//   getBook(bookId) + getChaptersForBook(bookId) -> novelToMarkdown(...)
-// returned as `text/markdown; charset=utf-8` with a
-// `Content-Disposition: attachment; filename="<slug>.md"` so the browser
-// downloads it. R3: "whole novel" = one book's chapters ordered by number. R5: a
-// 0-chapter book is a valid 200 whose body is just `# {title}\n`, not a 404.
-//
-// The book param is the book id (e.g. the seeded DEFAULT_BOOK_ID "book-1"). An
-// unknown id (no such book) is a 404 — the only not-found path.
+import { getBook } from "@/server/db/structure/queries";
+import { getChaptersForBook } from "@/server/db/chapters/queries";
+import { novelToMarkdown, slugifyTitle } from '@/domain/export/exportMarkdown';
 
-import { getBook, getChaptersForBook } from '@/lib/db/queries';
-import { novelToMarkdown, slugifyTitle } from '@/lib/export/exportMarkdown';
-
-// Always run on request: the export reflects live DB state each call.
 export const dynamic = 'force-dynamic';
 
 export async function GET(

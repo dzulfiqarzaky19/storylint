@@ -1,10 +1,3 @@
-/* Wiki index rail CONTENTS — one collapsible group per category (built-in +
-   user, including empty ones), in parity with the main shelf.
-
-   All rail CHROME (head, filter, scroll containment, the <=1200px fold, viewport
-   widths) now lives in components/shell/IndexRail and is NOT duplicated here.
-   See CONTEXT.md -> Chrome -> index rail. */
-
 .groupChevron svg {
   display: block;
   transition: transform var(--dur-short) var(--ease-out);
@@ -83,13 +76,6 @@
   color: var(--muted);
 }
 
-/* Hidden until the group head is hovered or something inside it takes focus —
-   the same reveal the write and research rails use, and for the same reason (a
-   long category list reads as calm running text).
-   It must be OPACITY, never `display: none`: display removes the buttons from
-   the tab order, so renaming or deleting a category was unreachable by keyboard
-   entirely. `pointer-events` is what keeps the invisible buttons from swallowing
-   clicks meant for the row behind them. */
 .groupTools {
   margin-left: auto;
   display: flex;
@@ -105,9 +91,6 @@
   pointer-events: auto;
 }
 
-/* No hover on touch, so the tools could never be revealed by pointing — they go
-   permanently visible there. Without this the category rename/delete had no
-   touch path at all. */
 @media (hover: none) {
   .groupTools {
     opacity: 1;
@@ -121,9 +104,6 @@
   }
 }
 
-/* The same 40px height floor the write/research row actions carry. These used to
-   be `padding: 0` around a 13px glyph — a ~13px tap target in a rail whose
-   siblings guarantee 40px. */
 .groupTools button {
   display: inline-flex;
   align-items: center;
@@ -208,9 +188,6 @@
   flex-direction: column;
 }
 
-/* min-height is the app's 40px touch-target floor (TCK-HF4), the same one the
-   write and research rails enforce on their rows. The wiki rail sat at ~23px
-   until the three rails were reconciled. */
 .item {
   display: flex;
   align-items: baseline;
@@ -233,17 +210,6 @@
 
 .itemActive {
   background: var(--accent-soft);
-}
-
-.itemFlag::after {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--danger);
-  position: absolute;
-  right: 6px;
-  top: 8px;
 }
 
 .itemNumber {
@@ -338,7 +304,6 @@
   color: var(--accent);
 }
 
-/* Trash panel (rendered via footer prop) */
 .trash {
   margin: 12px 6px 0;
   border-top: 1px solid var(--line2);

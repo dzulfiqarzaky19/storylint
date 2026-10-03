@@ -1,18 +1,8 @@
 "use client";
 
-// The /plot timeline: chapters (X) x plotlines (Y). Each cell is a beat CARD (the
-// beat prose + arc kind), not a dot — the grid is meant to be READ, so a neglected
-// arc's silence and a resolved arc's payoff are both visible at a glance. The grid
-// is also EDITABLE: rename a lane, set its arc state, create/edit/delete/move a
-// beat, and create/delete a lane, each via a /plot server action that revalidates
-// the page. Feature parity with prototypes/plot.{html,js} (the design source).
-//
-// T-ARCH-11: this file is now composition only. The grid, drawer, beat card/editor,
-// new-plotline button, completion meter, the usePlotEdit hook, and the pure grid
-// model (lib/plotModel.ts) each live in their own sibling module.
-import { useMemo, useState } from "react";
-import type { PlotProgression } from "@/lib/db/plot";
-import { LANE_COLORS, type Projection } from "./lib/plotModel";
+import { useState } from "react";
+import type { PlotProgression } from "@/domain/plot";
+import { LANE_COLORS } from "./lib/plotModel";
 import { usePlotEdit } from "./hooks/usePlotEdit";
 import { NewPlotline } from "./NewPlotline";
 import { Meter } from "./Meter";
@@ -30,30 +20,8 @@ export default function Plot({
   bookId: string;
 }) {
   const { chapters, lanes, latestChapter, completion } = progression;
-  const [projection, setProjection] = useState<Projection>("chapter");
   const [openLaneId, setOpenLaneId] = useState<string | null>(null);
   const edit = usePlotEdit(worldId, bookId);
-
-  // "chapter" is reading order (the seeded chapter axis). "chronology" re-lays the
-  // X axis in STORY-TIME: columns sort by each chapter's chrono rank, so a fragment
-  // that reads late but happens early (a flashback, an origin loop) slides left. The
-  // rank is the min chronoOrder of any beat in that chapter; a chapter with no
-  // chrono data (rank 0) falls back to its chapter number so it stays put.
-  const orderedChapters = useMemo(() => {
-    if (projection === "chapter") return chapters;
-    const rankByChapter = new Map<number, number>();
-    for (const lane of lanes) {
-      for (const beat of lane.beats) {
-        if (beat.chronoOrder === 0) continue;
-        const prev = rankByChapter.get(beat.chapterNumber);
-        if (prev === undefined || beat.chronoOrder < prev) {
-          rankByChapter.set(beat.chapterNumber, beat.chronoOrder);
-        }
-      }
-    }
-    const rankOf = (n: number) => rankByChapter.get(n) ?? n;
-    return [...chapters].sort((a, b) => rankOf(a.number) - rankOf(b.number));
-  }, [chapters, lanes, projection]);
 
   const openLane = lanes.find((l) => l.id === openLaneId) ?? null;
 
@@ -81,26 +49,6 @@ export default function Plot({
   return (
     <main className={styles.screen}>
       <div className={styles.toolbar}>
-        <div className={styles.proj}>
-          <span className={styles.projLabel}>timeline by</span>
-          <div className={styles.seg} role="group" aria-label="Projection">
-            <button
-              type="button"
-              aria-pressed={projection === "chapter"}
-              onClick={() => setProjection("chapter")}
-            >
-              chapter
-            </button>
-            <button
-              type="button"
-              aria-pressed={projection === "arc"}
-              onClick={() => setProjection("arc")}
-            >
-              chronology
-            </button>
-          </div>
-        </div>
-
         <Meter completion={completion} />
 
         <div className={styles.legend}>
@@ -130,11 +78,10 @@ export default function Plot({
       <section className={styles.board} aria-label="Plot timeline">
         <Grid
           lanes={lanes}
-          chapters={orderedChapters}
+          chapters={chapters}
           latestChapter={latestChapter}
           onOpen={setOpenLaneId}
           edit={edit}
-          projection={projection}
         />
       </section>
 

@@ -1,15 +1,13 @@
 "use client";
 
 import type { DragEvent } from "react";
-import type { ResearchProposition } from "@/lib/domain/types";
+import type { ResearchProposition } from "@/domain/types";
 import styles from "./Thread.module.css";
 
 export interface PropositionProps {
   card: ResearchProposition;
   kept: boolean;
   inWiki: boolean;
-  /** True when a Kept-board click-through targeted this card — marks it so the
-   *  opened thread visibly focuses the origin proposition. */
   focused?: boolean;
   onKeep: (id: string, next: boolean) => void;
   onPropose: (id: string) => void;
@@ -17,12 +15,6 @@ export interface PropositionProps {
   onDragEnd: () => void;
 }
 
-/**
- * A research proposition (300px card). Body uses flex:1 so every card in a row
- * aligns its action row. Keep inverts to a filled "Kept"; "Make it an entry"
- * reveals the confirmation strip and reads "In the wiki" once written.
- * README §Screen 2.3 / behavior table.
- */
 export default function Proposition({
   card,
   kept,
@@ -38,8 +30,6 @@ export default function Proposition({
       ev.dataTransfer.effectAllowed = "copy";
       ev.dataTransfer.setData("text/plain", card.id);
     } catch {
-      // dataTransfer can be unavailable in some environments; the DragContext
-      // carries the real payload, so this is best-effort only.
     }
     onDragStart(card.id);
   };
@@ -60,10 +50,6 @@ export default function Proposition({
           type="button"
           className={`${styles.keep}${kept ? ` ${styles.keepActive}` : ""}`}
           aria-pressed={kept}
-          // A card already written into the wiki is permanently kept: un-keeping
-          // it would try to delete the row that records the wiki write (the
-          // mutation now refuses, but the affordance must not be offered either,
-          // or the button would appear to do nothing).
           disabled={inWiki}
           onClick={() => onKeep(card.id, !kept)}
         >

@@ -1,6 +1,6 @@
 "use client";
 
-import type { PlotBeat } from "@/lib/db/plot";
+import type { PlotBeat } from "@/domain/plot";
 import styles from "./Beat.module.css";
 
 export function Beat({
@@ -31,8 +31,6 @@ export function Beat({
       onClick={onOpen}
       draggable={draggable}
       onDragStart={(e) => {
-        // A payload is required for Firefox to start a drag; the real move data
-        // lives in React state, this is just the enabling handshake.
         e.dataTransfer.setData("text/plain", "beat");
         e.dataTransfer.effectAllowed = "move";
         onDragStart?.();

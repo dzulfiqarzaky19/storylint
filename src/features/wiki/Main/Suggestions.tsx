@@ -1,31 +1,17 @@
 "use client";
 
 import { useId, useState } from "react";
-import { sugHeadline } from "@/lib/domain/derive";
-import { useDrag } from "@/components/dnd/DragContext";
-import type { WikiSuggestion } from "@/lib/state/wikiStore";
+import { sugHeadline } from "@/features/wiki/lib/derive";
+import { useDrag } from "@/features/wiki/dnd/DragContext";
+import type { WikiSuggestion } from "@/domain/types";
 import styles from "./Suggestions.module.css";
 
 interface SuggestionsProps {
   suggestions: WikiSuggestion[];
-  /** "Write it in" — add the suggestion as a fresh fact (confirmation-gated). */
   onWriteIn: (s: WikiSuggestion) => void;
-  /** "Leave it" — dismiss the suggestion without writing anything. */
   onLeave: (s: WikiSuggestion) => void;
 }
 
-// Full-bleed accent poster. Renders ONLY when suggestions exist.
-// Each card is a draggable SOURCE ("card" item): drop it on the Details column to
-// add-as-fresh-fact. The buttons are the explicit alternative: "Write it in"
-// routes through the confirmation-gated Server Action (PRODUCT RULE 1), "Leave
-// it" only dismisses.
-//
-// On desktop the band is the page-footer poster it has always been. On phones
-// (<=560px) it becomes a collapsible bar pinned to the bottom of the viewport,
-// mirroring the Write "Two signals" rail and Research KEPT board so the three
-// screens share ONE standing-panel affordance. The toggle is hidden on desktop
-// (CSS) and the body renders via display:contents so desktop layout is
-// unchanged.
 export default function Suggestions({
   suggestions,
   onWriteIn,

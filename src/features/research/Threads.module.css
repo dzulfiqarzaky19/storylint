@@ -1,20 +1,9 @@
-/* Research LEFT index — thread list CONTENTS only. The rail chrome (head, fold,
-   scroll, widths) is the shared components/shell/IndexRail. Skinned from
-   prototypes/research-c-cockpit.html (.thr / .thrSel / .row2 / .newThread).
-
-   The row/button radii here are SHAPE radii on a tile, so they stay literal
-   against --radius exactly as globals.css prescribes. */
-
 .list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-/* Row wrapper: the select button and the hover-revealed rename/delete cluster sit
-   side by side in ONE flex row (the prototype's .thr). The actions keep their
-   space whether shown or hidden, so the title's ellipsis point never shifts on
-   hover and nothing floats over the name on a touch tier. */
 .itemRow {
   display: flex;
   align-items: flex-start;
@@ -73,9 +62,6 @@
   color: var(--muted);
 }
 
-/* Inline rename input: occupies the same box as the select button while editing
-   a thread name, so the row does not jump. Inherits the app font/colour tokens
-   rather than the browser default input chrome. */
 .rename {
   flex: 1;
   min-width: 0;
@@ -96,13 +82,6 @@
   outline-offset: -2px;
 }
 
-/* Rename + delete. Hidden until the row is hovered or a button inside it takes
-   focus, so the list reads as calm running text; always shown where there is no
-   hover (touch). They are narrower than the 40px floor but taller than it — the
-   HF4 gate measures HEIGHT, and a 40px-wide pair would eat a sixth of the rail. */
-/* pointer-events is not decoration here: at opacity 0 the delete button still
-   took clicks across its whole 30x40 box, so a click near the row's right edge
-   could open the delete dialog with nothing visible under the cursor. */
 .rowActions {
   display: flex;
   align-items: center;

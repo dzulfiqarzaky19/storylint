@@ -1,8 +1,8 @@
 "use client";
 
-import type { ResearchProposition, ResearchTurnWithCards } from "@/lib/domain/types";
-import type { ResolvedTarget } from "@/lib/check";
-import type { PickerResult } from "@/lib/wiki/pickedTarget";
+import type { ResearchProposition, ResearchTurnWithCards } from "@/domain/types";
+import type { ResolvedTarget } from "@/domain/check";
+import type { PickerResult } from "@/domain/wiki/pickedTarget";
 import WikiTargetPicker from "@/components/WikiTargetPicker";
 import Question from "./Question";
 import Turn from "./Turn";
@@ -11,18 +11,11 @@ import Composer from "./Composer/Composer";
 import PromptChip from "./Composer/PromptChip";
 import styles from "./Thread.module.css";
 
-// Prompt chips. Each chip's label is sent verbatim as a REAL question to the
-// AI (same path as the ask box) — no pre-written seed turns. Curly apostrophe
-// on the last one.
 const CHIPS = [
   "Give me a scene",
   "I’m stuck — ask me something",
 ];
 
-// Empty-state guidance shown when a thread has no turns yet (a brand-new thread,
-// or the whole screen when there are no threads at all). Replaces the old
-// pre-written seed conversation: research now starts empty and every turn is a
-// real AI exchange. The AI always draws on the ENTIRE wiki — no scope to pick.
 const EMPTY_GUIDANCE =
   "Ask me anything about your story. I draw on your entire wiki to answer, " +
   "so just start typing a question.";
@@ -53,10 +46,6 @@ export interface ThreadProps {
   onDragEnd: () => void;
 }
 
-/**
- * The open research thread — question head, scrolling turns, composer.
- * Former chat column of ResearchScreen.
- */
 export default function Thread({
   question,
   worldName,
@@ -84,8 +73,6 @@ export default function Thread({
 }: ThreadProps) {
   return (
     <main className={styles.body}>
-      {/* The head is FIXED and the turns scroll under it: a long thread must
-          never push the question the writer is working on off the top. */}
       {visibleTurns.length > 0 && (
         <Question
           question={question}

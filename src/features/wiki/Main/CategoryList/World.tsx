@@ -1,11 +1,10 @@
-import { worldLine } from "@/lib/domain/derive";
+import { worldLine } from "@/features/wiki/lib/derive";
 import styles from "./World.module.css";
 
 interface WorldProps {
   entryCount: number;
 }
 
-// World — 2px ink rule then "The world" + derived meta (README Screen 1).
 export default function World({ entryCount }: WorldProps) {
   return (
     <section className={styles.band} aria-label="The world">

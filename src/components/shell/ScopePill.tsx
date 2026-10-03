@@ -1,24 +1,5 @@
 "use client";
 
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 */
-
-// T-SCOPE-1 — design 3a: the scope switcher folded INTO the header wordmark.
-// The old standalone <WorldSwitcher> band is gone; the wordmark ASHKELD now
-// reads as a breadcrumb pill (ASHKELD · <active world> ▾) that opens the SAME
-// universe/world dropdown the band used to own (universe groups, world radios,
-// + New world / + New universe, Manage link).
-//
-// Wiring (path a): the surface layout supplies the `tree` (loaded server-side by
-// getWorldTree). The ACTIVE scope is still URL-driven, so this client component
-// reads ?u/?w itself via useSearchParams and resolves it with the SAME pure
-// resolveActiveScope every surface uses — one resolver, no drift. Picking a
-// world navigates to /wiki?u=&w= (server re-renders loadWorldSnapshot), which is
-// why Vosk Reach + Halen City are now reachable from the menu, not only by URL.
-//
-// The pure model (flattenSwitcher) and the label (breadcrumbLabel) stay in
-// switcherMenu.ts (unit-tested); the interactive open/close + create flow is
-// proven by the Firefox / playwright drive.
-
 import {
   useEffect,
   useRef,
@@ -27,27 +8,19 @@ import {
 } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { WorldUniverseNode } from "@/lib/db/queries";
-import { editWorldStructure } from "@/lib/actions/wiki";
-import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
-import Modal from "../ui/Modal";
-import { canSubmitName } from "@/lib/nameGate";
+import type { WorldUniverseNode } from "@/domain/structure";
+import { editWorldStructure } from "@/server/actions/wiki/worldStructure";
+import { resolveActiveScope, scopedHref } from "@/domain/scope/activeScope";
 import { flattenSwitcher, breadcrumbLabel } from "./switcherMenu";
+import NamePrompt from "./NamePrompt";
 import styles from "./SwitcherMenu.module.css";
 import pill from "./ScopePill.module.css";
 
 interface ScopePillProps {
   tree: WorldUniverseNode[];
-  /**
-   * T-RESEARCH-2: the surface this pill navigates. Defaults to "/wiki" so the
-   * existing /wiki usage is unchanged; /research passes "/research" so a world
-   * switch re-scopes /research instead of jumping to /wiki. The ?u=/?w= scope
-   * contract is identical on both surfaces.
-   */
   basePath?: string;
 }
 
-/** An open naming dialog: its heading and the callback that runs on submit. */
 type NamePromptState = {
   title: string;
   onSubmit: (name: string) => void;
@@ -63,19 +36,14 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
 
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Active scope is URL-driven; resolve it with the ONE resolver every surface
-  // uses so the pill and the page never disagree on which world is active (a
-  // layout can't read searchParams, so we read them here).
   const { universeId: activeUniverseId, worldId: activeWorldId } = resolveActiveScope(tree, {
     u: searchParams.get("u") ?? undefined,
     w: searchParams.get("w") ?? undefined,
   });
 
-  // Pure model (unit-tested in switcherMenu.test.ts).
   const items = flattenSwitcher(tree, activeUniverseId, activeWorldId);
   const crumb = breadcrumbLabel(tree, activeUniverseId, activeWorldId);
 
-  // ---- Menu dismissal: outside-click + Escape ------------------------------
   useEffect(() => {
     if (!open) return;
     const onDocPointer = (e: PointerEvent) => {
@@ -94,10 +62,6 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
     };
   }, [open]);
 
-  // Scope navigation + new-* affordances. These are plain functions: the React
-  // Compiler auto-memoizes them, and manual useCallback here can't be preserved
-  // (activeUniverseId is a compiler-derived local, not a stable prop) — which
-  // trips react-hooks/preserve-manual-memoization. Let the compiler own it.
   const go = (u: string, w?: string) => {
     setOpen(false);
     startTransition(() => router.push(scopedHref(basePath, { universeId: u, worldId: w })));
@@ -143,8 +107,6 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
               name,
               universeId: activeUniverseId,
             }),
-          // TCK-E02: land ON the new (empty) world via ?w=, not the universe's
-          // first world (a bare refresh snaps back to worlds[0]).
           ({ worldId }) =>
             startTransition(() => {
               router.push(scopedHref(basePath, { universeId: activeUniverseId, worldId }));
@@ -171,7 +133,7 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
           </>
         ) : (
           <>
-            <span className={pill.wordmark}>ASHKELD</span>
+            <span className={pill.wordmark}>STORYLINT</span>
             <span className={pill.world}>No worlds</span>
           </>
         )}
@@ -261,70 +223,5 @@ export default function ScopePill({ tree, basePath = "/wiki" }: ScopePillProps) 
         />
       ) : null}
     </div>
-  );
-}
-
-/**
- * On-system inline naming dialog (unchanged from the old band). Built on the base
- * <Modal>; supplies title, the name field (first focusable), and actions. Enter
- * submits; Create is gated by canSubmitName, and submit() re-checks the SAME gate
- * so an empty/whitespace name can never be created even via Enter. A synchronous
- * re-entrancy guard makes a same-tick Enter+click create only one.
- */
-function NamePrompt({
-  title,
-  onSubmit,
-  onCancel,
-}: {
-  title: string;
-  onSubmit: (name: string) => void;
-  onCancel: () => void;
-}) {
-  const [value, setValue] = useState("");
-  const submittable = canSubmitName(value);
-  const submittingRef = useRef(false);
-
-  const submit = () => {
-    if (submittingRef.current) return;
-    if (!canSubmitName(value)) return;
-    submittingRef.current = true;
-    onSubmit(value.trim());
-  };
-
-  return (
-    <Modal open onClose={onCancel} ariaLabel={title}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
-        <h2 className={styles.promptTitle}>{title}</h2>
-        <input
-          className={styles.promptInput}
-          type="text"
-          aria-label={title}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          autoFocus
-        />
-        <div className={styles.promptActions}>
-          <button
-            type="button"
-            className={styles.promptCancel}
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className={styles.promptConfirm}
-            disabled={!submittable}
-          >
-            Create
-          </button>
-        </div>
-      </form>
-    </Modal>
   );
 }

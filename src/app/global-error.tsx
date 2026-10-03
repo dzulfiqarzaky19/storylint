@@ -1,14 +1,5 @@
 "use client";
 
-// TCK-E07: last-resort boundary for errors thrown in the ROOT layout itself
-// (src/app/layout.tsx) — the one place the segment error.tsx cannot catch,
-// because error.tsx renders INSIDE the layout it would need to replace. Next
-// mounts global-error in place of the whole document, so it must render its own
-// <html>/<body>. Kept intentionally minimal and dependency-free (no CSS module,
-// no app chrome): if the layout is broken we cannot assume anything above it
-// loaded. Inline styles use the Ashkeld token values directly since globals.css
-// may not have applied.
-
 import { useEffect } from "react";
 
 export default function GlobalError({

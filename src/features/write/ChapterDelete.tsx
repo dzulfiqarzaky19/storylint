@@ -4,23 +4,13 @@ import { useEffect, useRef } from "react";
 import styles from "./ChapterDelete.module.css";
 
 export interface ChapterDeleteProps {
-  /** The chapter number being deleted (drives the confirm copy). */
   number: number;
-  /** The chapter title, shown so the writer confirms the right one. */
   title: string;
-  /** Whether a delete request is in flight (disables the buttons). */
   busy: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
-/**
- * A focused confirm gate for a destructive, irreversible delete: removing a
- * chapter drops its body and marks. The writer must name the exact chapter
- * ("chapter N: title") before it goes, so a mis-click on the sidebar icon can't
- * silently erase a chapter. Escape and the Cancel button both back out writing
- * nothing; only the explicit Delete confirms.
- */
 export default function ChapterDelete({
   number,
   title,
@@ -30,8 +20,6 @@ export default function ChapterDelete({
 }: ChapterDeleteProps) {
   const confirmRef = useRef<HTMLButtonElement | null>(null);
 
-  // Land focus on the confirm so a keyboard user can act without hunting, and
-  // so Escape is captured by the dialog rather than the manuscript behind it.
   useEffect(() => {
     confirmRef.current?.focus();
   }, []);

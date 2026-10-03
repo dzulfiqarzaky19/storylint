@@ -1,19 +1,13 @@
-/* Shelf group — README Screen 1 "Shelves". */
-
 .shelf {
   padding: 18px var(--gutter) 30px;
 }
 
-/* Heading row: title, count, then a flex:1 1px rule line filling the row. */
 .heading {
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
 
-/* TCK-007: the title is now a <button> (click-to-edit), so it carries a full
-   button reset and inherits the heading typography. It reads as plain text
-   until hover, when a faint background signals it is editable. */
 .title {
   font-size: var(--text-2);
   font-weight: 700;
@@ -45,7 +39,6 @@
   border-top: var(--rule-row);
 }
 
-/* Tiles wrap in a 10px-gap flex row. */
 .tiles {
   display: flex;
   flex-wrap: wrap;
@@ -53,28 +46,20 @@
   margin-top: 14px;
 }
 
-/* Empty category: the title reads lighter so a 0-entry shelf recedes, but the
-   edit / reset / delete controls stay full-strength (they live in
-   .headerActions, not affected here) so the user can still remove it. */
 .headingEmpty .title {
   color: var(--muted);
 }
 
-/* Real-text hint shown in the tiles area when the category has no entries.
-   Uses --faint, which meets AA (4.5:1) on --ground, so it is legible copy, not
-   a color-only cue. */
 .emptyHint {
   font-size: var(--text-3);
   font-style: italic;
   color: var(--muted);
 }
 
-/* Active shelf drop zone: append + regroup (Direction B: background #eae7e7 = --hover). */
 .zoneActive {
   background: var(--hover);
 }
 
-/* Inline rename input, sized to sit in the heading row like the title. */
 .titleInput {
   font-size: var(--text-2);
   font-weight: 700;
@@ -87,7 +72,6 @@
   min-width: 8ch;
 }
 
-/* Reset button + trash icon live here (TCK-007 dropped the popover menu). */
 .headerActions {
   position: relative;
   display: flex;
@@ -110,8 +94,6 @@
   color: inherit;
 }
 
-/* TCK-007: direct trash icon (replaces the ⋯ menu's Delete). Danger-colored on
-   hover so the destructive action reads without relying on the glyph alone. */
 .deleteIcon {
   font-size: var(--text-3);
   line-height: 1;
@@ -128,8 +110,6 @@
   color: var(--accent);
 }
 
-/* TCK-006: main-shelf add-entry affordance, mirroring the sidebar's "+ New".
-   Sits in the tiles row after the tiles, reads as a quiet action until hover. */
 .addEntry {
   font-size: var(--text-3);
   color: var(--muted);

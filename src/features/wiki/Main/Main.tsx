@@ -1,10 +1,10 @@
 "use client";
 
 import type { Dispatch } from "react";
-import type { CategoryRow, EntryWithDetails, Kind, Shelf as ShelfKey } from "@/lib/domain/types";
-import { KIND_SHELF } from "@/lib/domain/types";
-import type { WikiAction, WikiSuggestion } from "@/lib/state/wikiStore";
-import { categoryLabelById } from "@/lib/wiki/categoryLabels";
+import type { CategoryRow, EntryWithDetails, Kind, Shelf as ShelfKey, WikiSuggestion } from "@/domain/types";
+import { KIND_SHELF } from "@/domain/types";
+import type { WikiAction } from "@/features/wiki/state";
+import { categoryLabelById } from "@/domain/wiki/categoryLabels";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { WikiCommit } from "../hooks/useWikiCommit";
 import type { TieCandidate } from "./EntryDetail/Ties";

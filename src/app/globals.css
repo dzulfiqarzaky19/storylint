@@ -1,13 +1,4 @@
-/* ===========================================================================
-   storylint — design tokens (HANDOFF §3). Single source of truth for color and
-   geometry. Do not write a hex literal anywhere outside this file.
-   =========================================================================== */
-
 :root {
-  /* Color — cockpit paper (the prototypes/*-c-cockpit.html design language, now
-     the app's one look). Warm cream ground, amber accent, slate for the wiki-
-     write confirm path. --panel is the warm off-white rail/card fill, distinct
-     from the pure-white --surface used for text fields. */
   --ground: #f3efe6;
   --panel: #fbf9f4;
   --ink: #20211d;
@@ -17,10 +8,6 @@
   --slate: #3f5a6b;
   --muted: #6f6b60;
   --muted-2: #a49e90;
-  /* --faint is a HAIRLINE tone, never a text colour: at 2.53:1 on --panel it
-     fails the WCAG AA 4.5:1 floor, and every quiet-meta line that used to read
-     in it (kickers, counts, rail notes) now reads in --muted at 5.09:1. Keep it
-     for borders and dividers that want to sit under --rule. */
   --faint: #a49e90;
   --rule: #ddd6c6;
   --line2: #e8e2d4;
@@ -31,36 +18,19 @@
   --drop: #f7f0e2;
   --on-ink: #f3f2f2;
   --on-accent: #ffffff;
-  /* Destructive action (delete). Distinct from --accent so a normal accent and
-     a danger action never read as the same thing. */
   --danger: #a8322a;
   --danger-deep: #83271f;
-  /* Wash tints for the two write signals. A mark's underline is the SIGNAL; the
-     wash is only the hover/open fill behind it, so it must stay light enough
-     that body text over it keeps its contrast. */
   --danger-soft: #f2dcd7;
   --body-ink: #2d2b26;
   --card-body: #4a4640;
-  /* Unrecorded-chapter severity dot (amber). Distinct from --danger (red dot)
-     so "has unrecorded objects" never reads as "has a contradiction". */
   --warning: #8a6a1a;
   --warning-soft: #f2e6c6;
-  /* Muted text on an --ink (dark) surface: e.g. the secondary note under an
-     active rail item. A warm light tint kept above the WCAG AA 4.5:1 contrast
-     floor against --ink. */
   --on-ink-muted: #bcb8ad;
-  /* Modal backdrop scrim (dims the page behind a confirm dialog). */
   --scrim: rgba(28, 26, 20, 0.5);
 
-  /* Elevation. Two rungs only, both tinted with the ink hue rather than neutral
-     black so a lifted surface still reads as paper. A raw rgba() at a call site
-     is the same violation as a raw hex — it belongs here. */
   --shadow-card: 0 8px 26px rgba(28, 26, 20, 0.09);
   --shadow-lift: 0 4px 14px rgba(28, 26, 20, 0.07);
 
-  /* Plot lane hues, cycled by lane.colorIndex. Six low-chroma arc colors kept
-     inside the palette so the plot grid never turns into a rainbow. Tokenized so
-     a theme can restate them; Plot reads var(--lane-1..6), never a hex. */
   --lane-1: #2f6d5f;
   --lane-2: #b5561f;
   --lane-3: #3f5a6b;
@@ -68,15 +38,9 @@
   --lane-5: #5b3a6a;
   --lane-6: #2f5a8a;
 
-  /* Rules */
   --rule-major: 1px solid var(--rule);
   --rule-row: 1px solid var(--rule);
 
-  /* Spacing. --gutter is the page edge inset (horizontal page rhythm). The
-     --space-* ramp is the vertical/inner rhythm on a 4px base, so a theme can
-     restate density in one place. Only genuine rhythm steps map to the ramp;
-     optical one-offs (a -10px overlap, an 11px pill radius, a 9px nudge) stay
-     literal at their call site because they are layout math, not a theme step. */
   --gutter: 40px;
   --space-1: 4px;
   --space-2: 8px;
@@ -86,52 +50,19 @@
   --space-6: 32px;
   --space-7: 40px;
 
-  /* Geometry. --radius is the chrome corner radius (panels, cards, inputs,
-     buttons). 0 is the house design (HANDOFF §3); tokenized so a theme can
-     restate it in one place instead of overriding ~40 hardcoded zeros. Shape
-     radii that are not chrome (a round status dot at 50%, a stadium count pill)
-     stay literal at their call site and do not track this token. */
   --radius: 0;
 
-  /* Shape radii. The "0 is the house design" rule above governs CHROME (the
-     panels, rails and page furniture that carry the paper ground). Tiles inside
-     that chrome — rows, cards, fields, icon buttons, pills — are shapes, and
-     they round. They used to round to nine different literals; these four rungs
-     are the whole vocabulary now, and a literal radius is a bug.
-       sm   : icon buttons, key caps, caret boxes, chips inside a row
-       md   : list rows, inputs, buttons, kept/mark cards
-       lg   : a card that LIFTS off the page (the inline note)
-       pill : stadium shapes — filter chips, count badges */
   --radius-sm: 6px;
   --radius-md: 9px;
   --radius-lg: 12px;
   --radius-pill: 999px;
 
-  /* Motion. Durations and easings are tokens for the same reason colours are:
-     the bare `ease` keyword is the browser default and reads as the generic
-     transition every generated UI ships. --ease-out is the house curve (fast
-     departure, soft arrival); --ease-in-out is for loops that return to rest.
-     Focus rings are NEVER transitioned — they appear instantly. */
   --dur-short: 120ms;
   --dur-base: 200ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* Type scale. A theme restates reading density in one place, the same way
-     --space-* restates spatial rhythm. Rungs 1-7 are the original body cluster
-     (11-16px) plus the 20px subhead the app already adopted; 8-12 fill the
-     reading/subhead sizes that used to strand as literals (17/18/19/22/24px),
-     so every reading and UI size now lands on a rung. Rungs are size-labelled,
-     not strictly size-ordered: 1-7 keep their adopted meaning so no existing
-     call site shifts, and the fill sizes are appended rather than renumbered.
-     True DISPLAY sizes (a 44px entry name, a 76px 404, band headings at
-     28-32px) and optical half-steps (12.5px) are art direction, not a reading
-     step, so they stay literal at their call site, exactly as an 11px pill
-     radius stays literal against --radius. */
-  /* Rung 0 is the floor. Mono kickers and counts used to strand at literal 9px
-     and 10px; 9px uppercase at 0.14em tracking was under-set for a reading UI,
-     so the two collapsed into one 10px rung rather than being tokenized apart. */
   --text-0: 10px;
   --text-1: 11px;
   --text-2: 12px;
@@ -145,28 +76,12 @@
   --text-10: 19px;
   --text-11: 22px;
   --text-12: 24px;
-  /* The screen H1 — a chapter's title on /write, a thread's question on
-     /research. It is one rung because it is one ROLE: the two used to sit at
-     34px and 22px, and the phone tier moved them in opposite directions. The
-     phone step is restated once at the bottom of this file, the way --gutter is,
-     so no surface carries its own display breakpoint. Band headings inside a
-     screen (26-40px) are art direction and stay literal at their call site. */
   --text-display: 34px;
 
-  /* Type roles. Faces are wired via next/font in layout.tsx and exposed as the
-     --font-* CSS vars below; components read the ROLE (serif/sans/mono), never a
-     face name, so the typeface swaps in one place.
-       --font-serif : Fraunces      — display + reading (titles, turns, entry names)
-       --font-sans  : IBM Plex Sans — body / UI (the default on <body>)
-       --font-mono  : IBM Plex Mono — kickers, labels, nav, meta, counts */
   --font-serif: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-plex-sans), system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
-
-/* ---------------------------------------------------------------------------
-   Reset
-   --------------------------------------------------------------------------- */
 
 *,
 *::before,
@@ -174,8 +89,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border-radius: var(--radius); /* HANDOFF §3: 0 by default; --radius lets a theme restate chrome corners in one place */
-}
+  border-radius: var(--radius);}
 
 html,
 body {
@@ -191,9 +105,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Scroll works, scrollbar hidden everywhere — the cockpit prototypes' house
-   rule. Panels and rails carry their own rules and counts as the depth cue, so
-   a platform scrollbar only adds a grey gutter that breaks the paper ground. */
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -205,11 +116,6 @@ body {
   display: none;
 }
 
-/* Header + screen share one column so a full-height (100vh) screen does not
-   overflow the viewport by the sticky header's height, which added a stray
-   document scrollbar and clipped the right rails on desktop. This applies only
-   above the stacking breakpoint: at <=1200px the screens switch to a
-   page-scroll model with a sticky-bottom rail, which wants normal block flow. */
 @media (min-width: 1201px) {
   body {
     min-height: 100dvh;
@@ -217,10 +123,6 @@ body {
     flex-direction: column;
   }
 
-  /* #main is body's flex child that holds the screen. It must grow to fill the
-     remaining height under the header and pass a real height down, or the
-     screen's own `flex: 1` has nothing to fill against and collapses to content
-     height (~3/4 viewport on wide screens). */
   body > #main {
     flex: 1;
     min-height: 0;
@@ -253,39 +155,20 @@ svg {
   max-width: 100%;
 }
 
-/* ---------------------------------------------------------------------------
-   Focus ring — always accent, never the browser default (HANDOFF §3)
-   --------------------------------------------------------------------------- */
-
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* TCK-HF6: guard against horizontal overflow at ALL widths, not just the phone
-   tier. The wide fixed-width desktop columns can overflow at any viewport, so
-   the clamp is global. `overflow-x: clip` (not `hidden`) clips without creating
-   a scroll container or scroll port, so it never hijacks focus-scroll and does
-   not force an `overflow-y` change. */
 html,
 body {
   max-width: 100%;
   overflow-x: clip;
 }
 
-/* ---------------------------------------------------------------------------
-   Phone tier (<=560px). The desktop layout is untouched; here we only shrink
-   the shared gutter (every screen reads var(--gutter)). Per-screen type scaling
-   and column stacking live in each module's own @media block. The horizontal-
-   overflow guard is now global (see above), no longer phone-scoped.
-   --------------------------------------------------------------------------- */
-
 @media (max-width: 560px) {
   :root {
     --gutter: 18px;
-    /* The screen H1 steps DOWN on a phone, on every surface. Restating it here
-       rather than per-module is what keeps /write and /research from drifting
-       apart again. */
     --text-display: 32px;
   }
 }

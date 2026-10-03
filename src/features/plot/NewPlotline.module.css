@@ -1,6 +1,3 @@
-/* NewPlotline — + new plotline affordance. */
-
-/* new-plotline: collapsed to a single button, expands to an inline form */
 .newLane {
   padding: 7px 15px;
   font-size: var(--text-3);

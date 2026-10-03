@@ -1,11 +1,8 @@
 import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 
-// Tests live NEXT TO the code they cover: `src/**/*.test.ts`, no separate tests
-// tree. `npm test` is DB-free and network-free by construction — a module that
-// needs a database or a gateway takes it as an injected port (see
-// `lib/write/chapterMarksReader.ts`), so a test passes a fake instead of the
-// suite needing a live Postgres.
+// Tests sit next to the code they cover and need no database or network.
+// Logic tests (`*.test.ts`) run in node; component tests (`*.test.tsx`) run in jsdom.
 export default defineConfig({
   resolve: {
     alias: {
@@ -13,8 +10,39 @@ export default defineConfig({
     },
   },
   test: {
-    name: 'unit',
-    environment: 'node',
-    include: ['src/**/*.test.ts'],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.test.ts'],
+          exclude: ['src/**/*.db.test.ts'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'components',
+          environment: 'jsdom',
+          include: ['src/**/*.test.tsx'],
+          setupFiles: ['src/testing/setupComponents.ts'],
+        },
+      },
+    ],
+    // Report only (`npm run test:coverage`): no thresholds, never fails a run.
+    // Scoped to the pure logic unit tests can reach without a database or a DOM.
+    coverage: {
+      provider: 'v8',
+      reporter: ['text'],
+      include: [
+        'src/domain/**/*.ts',
+        'src/features/**/state/**/*.ts',
+        'src/features/**/lib/**/*.ts',
+        'src/features/write/Manuscript/markDecorations.ts',
+        'src/server/websearch/read/safeFetch.ts',
+      ],
+      exclude: ['**/*.test.ts', '**/testing/**'],
+    },
   },
 });

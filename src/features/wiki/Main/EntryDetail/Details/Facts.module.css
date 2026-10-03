@@ -1,5 +1,3 @@
-/* Details column — README Screen 1 "Details". */
-
 .details {
   flex: 1;
   min-width: 0;
@@ -22,7 +20,6 @@
   display: block;
 }
 
-/* Each fact row: flex, 12px gap, baseline, padding 10px 4px, 1px rule, grab. */
 .row {
   display: flex;
   gap: var(--space-3);
@@ -36,7 +33,6 @@
   background: var(--fresh);
 }
 
-/* Key cell 104px, 12px/700/0.04em uppercase muted-2. */
 .key {
   flex: 0 0 104px;
   font-size: var(--text-2);
@@ -52,13 +48,11 @@
   font-size: var(--text-5);
 }
 
-/* Suggestion card drop target (Direction B: border:2px solid #ec3013 over --drop tint). */
 .cardDrop {
   border: 2px solid var(--accent);
   background: var(--drop);
 }
 
-/* "+ Add detail" — manual authoring (Track A). Quiet until hovered. */
 .addFact {
   all: unset;
   display: inline-block;
@@ -81,7 +75,6 @@
   outline-offset: 2px;
 }
 
-/* AI suggest-details block (additive). Sits under the + Add detail button. */
 .aiBlock {
   margin-top: 14px;
 }
@@ -142,7 +135,6 @@
   cursor: pointer;
 }
 
-/* Per-fact delete button (mirror TiesBlock untie × affordance). */
 .actions {
   flex: 0 0 auto;
   display: flex;

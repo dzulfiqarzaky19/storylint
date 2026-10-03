@@ -1,33 +1,13 @@
 "use client";
 
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 */
-
-// T-SCOPE-2 — the /write scope pill. Same design-3a pattern as /wiki's ScopePill,
-// but its axis is the BOOK: the pill reads <ACTIVE WORLD> · <ACTIVE BOOK> ▾ and
-// the dropdown lists the ACTIVE WORLD's books (radio switch) plus footer actions
-// (+ New book / Rename book / Delete book). Switching a book navigates to
-// /write?u=&w=&book= so the server page re-renders listChapters(activeBookId) and
-// the left index shows exactly that book's chapters (killing the six colliding
-// "CHAPTER ONE" from the old un-filtered 42-chapter list).
-//
-// Wiring: the layout supplies the `tree` (getWorldTree, server-side). The active
-// scope is URL-driven — this client reads ?u/?w/?book itself and resolves it with
-// the SAME resolveActiveScope every surface uses (one resolver, no
-// drift). Create/rename/delete are all one `editWorldStructure` intent. Delete
-// goes through the shared danger ConfirmModal in its type-the-name variant, and
-// the LAST book in a world can't be deleted (a world must keep a home for
-// chapters) — the SERVER refuses that, and lastChildHint disables the affordance
-// in the server's own words.
-
 import { useEffect, useRef, useState, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { WorldUniverseNode } from "@/lib/db/queries";
-import { editWorldStructure, previewStructureDelete } from "@/lib/actions/wiki";
-import { lastChildHint } from "@/lib/wiki/structureEdit";
-import { resolveActiveScope, scopedHref } from "@/lib/scope/activeScope";
-import Modal from "../ui/Modal";
+import type { WorldUniverseNode } from "@/domain/structure";
+import { editWorldStructure, previewStructureDelete } from "@/server/actions/wiki/worldStructure";
+import { lastChildHint } from "@/domain/wiki/structureEdit";
+import { resolveActiveScope, scopedHref } from "@/domain/scope/activeScope";
 import ConfirmModal from "../ui/ConfirmModal";
-import { canSubmitName } from "@/lib/nameGate";
+import NamePrompt from "./NamePrompt";
 import switcher from "./SwitcherMenu.module.css";
 import pill from "./ScopePill.module.css";
 
@@ -35,8 +15,6 @@ interface BookPillProps {
   tree: WorldUniverseNode[];
 }
 
-/** An open naming dialog (create or rename): heading, initial value, confirm
- *  label, and the callback that runs with the trimmed name. */
 type NamePromptState = {
   title: string;
   initial: string;
@@ -44,7 +22,6 @@ type NamePromptState = {
   onSubmit: (name: string) => void;
 };
 
-/** The target of an open book-delete flow (id + exact name to retype). */
 type DeleteTarget = { id: string; name: string };
 
 export default function BookPill({ tree }: BookPillProps) {
@@ -59,8 +36,6 @@ export default function BookPill({ tree }: BookPillProps) {
 
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Active scope is URL-driven; resolve it with the ONE resolver every surface
-  // uses so the pill and the page never disagree on the active book.
   const scope = resolveActiveScope(tree, {
     u: searchParams.get("u") ?? undefined,
     w: searchParams.get("w") ?? undefined,
@@ -72,11 +47,8 @@ export default function BookPill({ tree }: BookPillProps) {
   const world = universe?.worlds.find((w) => w.id === activeWorldId);
   const books = world?.books ?? [];
   const activeBook = books.find((b) => b.id === activeBookId) ?? null;
-  // Last-book guard: a world must keep at least one book (a home for chapters).
-  // The SERVER refuses that delete; this is the advisory hint, in its own words.
   const bookBlock = lastChildHint("book", books.length);
 
-  // ---- Menu dismissal: outside-click + Escape ------------------------------
   useEffect(() => {
     if (!open) return;
     const onDocPointer = (e: PointerEvent) => {
@@ -95,15 +67,11 @@ export default function BookPill({ tree }: BookPillProps) {
     };
   }, [open]);
 
-  // Navigate to a book within the active world. The server re-renders
-  // listChapters(activeBookId), so the left index re-scopes to that book.
   const goBook = (bookId: string) => {
     setOpen(false);
     startTransition(() => router.push(scopedHref("/write", { ...scope, bookId })));
   };
 
-  // Shared runner for create/rename/delete: busy + error handling, then re-render
-  // from the server so the pill + chapter list reflect the DB truth.
   const run = async (
     fn: () => Promise<{ ok: true } | { ok: false; error: string }>,
     after?: () => void,
@@ -136,7 +104,6 @@ export default function BookPill({ tree }: BookPillProps) {
               worldId: activeWorldId,
             });
             if (!res.ok) return res;
-            // Land ON the new book so the writer sees its (empty) chapter set.
             startTransition(() => {
               router.push(scopedHref("/write", { ...scope, bookId: res.data.bookId! }));
               router.refresh();
@@ -176,7 +143,6 @@ export default function BookPill({ tree }: BookPillProps) {
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     const target = deleteTarget;
-    // Where to land after delete: the first SURVIVING book of this world.
     const nextBook = books.find((b) => b.id !== target.id);
     setDeleteTarget(null);
     setPendingCount(null);
@@ -184,7 +150,6 @@ export default function BookPill({ tree }: BookPillProps) {
       () => editWorldStructure({ op: "delete", level: "book", id: target.id, confirmed: true }),
       () => {
         startTransition(() => {
-          // No surviving book means no book axis to carry, so /write resolves one.
           router.push(scopedHref("/write", { ...scope, bookId: nextBook?.id }));
           router.refresh();
         });
@@ -207,7 +172,7 @@ export default function BookPill({ tree }: BookPillProps) {
         disabled={busy}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className={pill.wordmark}>{world?.title ?? "ASHKELD"}</span>
+        <span className={pill.wordmark}>{world?.title ?? "STORYLINT"}</span>
         <span className={pill.world}>{activeBook?.name ?? "No book"}</span>
         <span className={pill.caret} aria-hidden="true">
           ▾
@@ -333,65 +298,5 @@ export default function BookPill({ tree }: BookPillProps) {
         />
       ) : null}
     </div>
-  );
-}
-
-/**
- * On-system inline naming dialog for create AND rename (same base <Modal> +
- * canSubmitName gate as ScopePill/WikiManage). Enter submits; Confirm is disabled
- * until the name is submittable, and submit() re-checks the SAME gate so a blank
- * can't be created via Enter. Seeds with the current name for rename.
- */
-function NamePrompt({
-  title,
-  initial,
-  confirmLabel,
-  onSubmit,
-  onCancel,
-}: {
-  title: string;
-  initial: string;
-  confirmLabel: string;
-  onSubmit: (name: string) => void;
-  onCancel: () => void;
-}) {
-  const [value, setValue] = useState(initial);
-  const submittable = canSubmitName(value);
-  const submittingRef = useRef(false);
-
-  const submit = () => {
-    if (submittingRef.current) return;
-    if (!canSubmitName(value)) return;
-    submittingRef.current = true;
-    onSubmit(value.trim());
-  };
-
-  return (
-    <Modal open onClose={onCancel} ariaLabel={title}>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
-        <h2 className={switcher.promptTitle}>{title}</h2>
-        <input
-          className={switcher.promptInput}
-          type="text"
-          aria-label={title}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          autoFocus
-        />
-        <div className={switcher.promptActions}>
-          <button type="button" className={switcher.promptCancel} onClick={onCancel}>
-            Cancel
-          </button>
-          <button type="submit" className={switcher.promptConfirm} disabled={!submittable}>
-            {confirmLabel}
-          </button>
-        </div>
-      </form>
-    </Modal>
   );
 }

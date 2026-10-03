@@ -1,7 +1,7 @@
 "use client";
 
-import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
-import { useDrag } from "@/components/dnd/DragContext";
+import type { EntryWithDetails, Shelf as ShelfKey } from "@/domain/types";
+import { useDrag } from "@/features/wiki/dnd/DragContext";
 import styles from "./EntryTile.module.css";
 
 interface EntryTileProps {
@@ -9,17 +9,10 @@ interface EntryTileProps {
   selected: boolean;
   hasContradiction: boolean;
   onSelect: (id: string) => void;
-  /** Reorder: drop a tile before this one (insert-before). */
   onDropEntry: (toShelf: ShelfKey, beforeId: string | null) => void;
-  /** Move a dragged fact row onto this entry. */
   onDropFactOnEntry: (toEntryId: string) => void;
 }
 
-// Entry tile — 172px, 2px ink border, selected = ink fill. Native HTML5 DnD:
-// draggable source (an "entry" item) AND a drop target for other tiles
-// (insert-before) and for fact rows (move fact here). Drop feedback is driven by
-// the shared drag context: `dropTarget` = a tile another tile will insert before;
-// `factTarget` = this tile will receive a dragged fact.
 export default function EntryTile({
   entry,
   selected,

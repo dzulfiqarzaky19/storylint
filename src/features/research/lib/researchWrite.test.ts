@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { planResearchWrite } from './researchWrite';
-import type { PickerResult } from '@/lib/wiki/pickedTarget';
+import type { PickerResult } from '@/domain/wiki/pickedTarget';
 
 const RESULT: PickerResult = {
   categoryId: 'character',

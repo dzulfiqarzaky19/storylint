@@ -1,8 +1,3 @@
-/* Inline authoring editor (Track A). The static button is visually transparent
-   so the text looks the same as before; a subtle affordance appears on hover so
-   the writer knows it is editable. The editor input inherits the type of the
-   text it replaces (font passed via className) and gets a light field frame. */
-
 .static {
   all: unset;
   cursor: text;

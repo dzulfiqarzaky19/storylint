@@ -1,45 +1,31 @@
 "use client";
 
-import type { EntryWithDetails, Shelf as ShelfKey } from "@/lib/domain/types";
-import { useDrag } from "@/components/dnd/DragContext";
-import { categorySingular } from "@/lib/wiki/categoryLabels";
-import { useInlineRename } from "@/components/hooks/useInlineRename";
+import type { EntryWithDetails, Shelf as ShelfKey } from "@/domain/types";
+import { useDrag } from "@/features/wiki/dnd/DragContext";
+import { categorySingular } from "@/domain/wiki/categoryLabels";
+import { useInlineRename } from "@/hooks/useInlineRename";
 import { isEmptyCategory } from "../../../lib/shelfState";
 import EntryTile from "./EntryTile";
 import styles from "./Category.module.css";
 
 interface CategoryProps {
   shelf: ShelfKey;
-  /** F9-B S3: the id of the category this group renders (built-in Kind string
-   *  or a user UUID). Header rename/reset/delete act on THIS id, not the shelf. */
   categoryId: string;
   title: string;
   entries: EntryWithDetails[];
   selectedId: string;
-  /** Entry ids the check engine flags with an unresolved contradiction. */
   contradictions: Set<string>;
   onSelect: (id: string) => void;
-  /** Reorder within/across shelves; beforeId=null means append to this shelf. */
   onDropEntry: (toShelf: ShelfKey, beforeId: string | null) => void;
   onDropFactOnEntry: (toEntryId: string) => void;
-  /** Rename this category's header to a custom label (F6-S5; F9-B S3: any id). */
   onRenameCategory: (categoryId: string, label: string) => void;
-  /** Clear the custom label, restoring the shelf default (F6-S5; built-ins only). */
   onResetCategory: (categoryId: string) => void;
-  /** Ask to delete the whole category (opens the danger confirm in the caller). */
   onRequestDeleteCategory: (categoryId: string) => void;
-  /** Start authoring a new entry on this shelf (TCK-006; same path as sidebar). */
   onCreate?: (shelf: ShelfKey, categoryId: string) => void;
-  /** True when a custom label is set, so the "Reset" affordance is offered. */
   isRenamed: boolean;
-  /** True for the 4 seeded categories, which cannot be deleted (TCK-007): the
-   *  trash icon is hidden so the is_builtin invariant is honored in the UI. */
   isBuiltin: boolean;
 }
 
-// One shelf group — heading row then wrapping tiles (README Screen 1 "Shelves").
-// The shelf itself is a drop zone: dropping a tile on the empty space APPENDS it
-// here and REGROUPS it (changes its kind/shelf). Zone fills --hover while active.
 export default function Category({
   shelf,
   categoryId,
@@ -60,10 +46,6 @@ export default function Category({
   const drag = useDrag();
   const dragging = drag.dragging;
 
-  // Inline rename draft (T-ARCH-7: shared useInlineRename hook — see its
-  // header for the dedup boundary). Shelf keeps its OWN commit decision: a
-  // blank draft resets to the built-in default (matches the reducer/backend
-  // trim ruling), a changed draft renames, an unchanged draft is a no-op.
   const rename = useInlineRename(title, {
     onCommit: (draft) => {
       if (draft.trim() === "") onResetCategory(categoryId);
@@ -76,9 +58,6 @@ export default function Category({
     drag.dropZone?.type === "shelf" &&
     drag.dropZone.id === shelf;
 
-  // A category with no entries reads lighter (dimmed heading + a real-text
-  // hint) but keeps its edit/reset/delete controls so the user can still remove
-  // it. Same predicate the unit test exercises, so a regression moves the UI too.
   const isEmpty = isEmptyCategory(entries.length);
 
   return (
@@ -92,7 +71,6 @@ export default function Category({
         drag.setZone({ type: "shelf", id: shelf });
       }}
       onDragLeave={(e) => {
-        // Only clear when the pointer truly leaves the shelf, not a child tile.
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
           if (drag.dropZone?.type === "shelf" && drag.dropZone.id === shelf) {
             drag.setZone(null);
@@ -100,8 +78,6 @@ export default function Category({
         }
       }}
       onDrop={(e) => {
-        // A tile dropped on a tile is handled by the tile (insert-before); this
-        // fires only for the shelf's empty space → append + regroup.
         e.preventDefault();
         if (dragging?.type === "entry") onDropEntry(shelf, null);
         drag.endDrag();
@@ -119,9 +95,6 @@ export default function Category({
             onKeyDown={rename.onKeyDown}
           />
         ) : (
-          // TCK-007: the title itself is the rename affordance — click it to edit
-          // inline (the separate "Rename" button is gone). A real <button> keeps
-          // it keyboard-focusable and screen-reader-announced as an action.
           <button
             type="button"
             className={styles.title}
@@ -133,8 +106,6 @@ export default function Category({
         )}
         <span className={styles.count}>{entries.length}</span>
         <div className={styles.headerActions}>
-          {/* Reset-to-default stays reachable for a renamed built-in (TCK-007
-              folded it out of the dropped ⋯ menu into the icon row). */}
           {isRenamed ? (
             <button
               type="button"
@@ -144,9 +115,6 @@ export default function Category({
               Reset to default
             </button>
           ) : null}
-          {/* TCK-007: a direct trash icon replaces the ⋯ menu's "Delete category".
-              It still opens the danger ConfirmModal in the caller. Built-ins are
-              not deletable (is_builtin invariant), so the icon is hidden for them. */}
           {isBuiltin ? null : (
             <button
               type="button"
@@ -179,10 +147,6 @@ export default function Category({
             />
           ))
         )}
-        {/* TCK-006: add-entry affordance on the MAIN shelf, mirroring the
-            sidebar's "+ New <singular>" (Sidebar). Same create path via
-            onCreate(shelf); the singular label routes through the shared
-            categorySingular seam so both surfaces agree. */}
         {onCreate ? (
           <button
             type="button"

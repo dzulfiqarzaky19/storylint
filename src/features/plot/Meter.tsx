@@ -1,6 +1,6 @@
 "use client";
 
-import type { PlotProgression } from "@/lib/db/plot";
+import type { PlotProgression } from "@/domain/plot";
 import styles from "./Meter.module.css";
 
 export function Meter({

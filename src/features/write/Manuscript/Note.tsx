@@ -1,63 +1,33 @@
 'use client';
 
-/**
- * Note — the note that opens under a paragraph when a
- * mark is selected. Rendered via React `createPortal` into the ProseMirror
- * widget host the decoration plugin places at the end of the paragraph, so it
- * sits in document flow rather than floating.
- *
- * Presentational only: it renders the engine's own `noteText` + `actions`
- * verbatim and calls back on click. The three actions are visually
- * differentiated (primary vs secondary) but their DIFFERENT behaviour lives in
- * the parent's `onAction` (leave / text / wiki).
- */
-
-import type { Mark, MarkAction } from '@/lib/check';
-import { railLabel } from '@/lib/check';
+import type { Mark, MarkAction } from '@/domain/check';
+import { railLabel } from '@/domain/check';
 import styles from './Manuscript.module.css';
 
-/**
- * The note's kind label uses the gazetteer voice from the Direction B
- * reference, derived from `mark.kind` (never hardcoded per mark).
- */
 function noteKindLabel(mark: Mark): string {
   return mark.kind === 'conflict'
     ? 'Contradicts the gazetteer'
     : 'Not written down yet';
 }
 
-/**
- * The merged "Ask AI" button is the engine's `text` (contradiction) / `edit`
- * (unrecorded) action: clicking it selects the flagged run AND fetches a grounded
- * rewrite. Naming the ids here keeps the busy-label + AI-gate in one place.
- */
 function isAiAction(action: MarkAction): boolean {
   return action.id === 'text' || action.id === 'edit';
 }
 
 export interface NoteAi {
-  /** AI gateway configured; when false the AI affordance is hidden entirely. */
   enabled: boolean;
-  /** Advice fetch in flight. */
   busy?: boolean;
-  /** The grounded explanation, once fetched. */
   explanation?: string;
-  /** An optional suggested rewrite of the flagged run. */
   rewrite?: string;
-  /** Error from the last explain attempt, if any. */
   error?: string;
-  /** Ask the AI to explain this mark. */
   onExplain: () => void;
-  /** Replace the flagged run in the editor with the suggested rewrite. */
   onApplyRewrite?: (rewrite: string) => void;
 }
 
 export interface NoteProps {
   mark: Mark;
-  /** Disable actions while a resolve is in flight. */
   busy?: boolean;
   onAction: (mark: Mark, action: MarkAction) => void;
-  /** Optional AI advice affordance. Omitted or `enabled:false` → no AI UI. */
   ai?: NoteAi;
 }
 
@@ -69,7 +39,6 @@ export default function Note({ mark, busy, onAction, ai }: NoteProps) {
     <div
       className={`${styles.note} ${conflict ? styles.noteConflict : styles.noteUnrecorded}`}
       data-testid="write-inline-note"
-      // Keep clicks inside the note from bubbling to the editor's mark-click handler.
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div
@@ -80,9 +49,6 @@ export default function Note({ mark, busy, onAction, ai }: NoteProps) {
       <div className={styles.noteText}>{mark.noteText}</div>
       <div className={styles.noteActions}>
         {mark.actions
-          // `text`/`edit` is the merged "Ask AI" button (select the run + fetch a
-          // grounded rewrite). It only makes sense when AI is configured, so it
-          // drops out entirely when AI is off — leaving red=1, gray=2 non-AI buttons.
           .filter((action) => showAi || (action.id !== 'text' && action.id !== 'edit'))
           .map((action, i) => (
             <button
@@ -124,7 +90,6 @@ export default function Note({ mark, busy, onAction, ai }: NoteProps) {
           )}
         </div>
       ) : null}
-      {/* Screen-reader kind label as the mark's rail-label taxonomy. */}
       <span className="sr-only" aria-hidden>
         {railLabel(mark.kind)}
       </span>

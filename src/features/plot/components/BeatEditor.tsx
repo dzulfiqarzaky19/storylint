@@ -3,9 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./BeatEditor.module.css";
 
-/** Inline beat text editor (feature 2 create + edit). A small textarea with
- *  save/cancel; Enter (no shift) saves, Escape cancels. Blank text can't save.
- *  Used both in an empty grid cell (create) and in the drawer (edit). */
 export function BeatEditor({
   initial,
   pending,

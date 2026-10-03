@@ -1,5 +1,5 @@
 {
-  "name": "ashkeld",
+  "name": "storylint",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,19 +11,19 @@
     "test": "vitest run",
     "verify": "npm run lint && npm run typecheck && npm test",
     "test:watch": "vitest",
-    "db:reset": "tsx src/lib/db/reset.ts",
-    "db:seed": "tsx src/lib/db/seed.ts",
-    "db:reset-research": "tsx src/lib/db/reset-research.ts",
-    "db:setup": "npm run db:reset && npm run db:seed"
+    "test:coverage": "vitest run --coverage",
+    "db:reset": "tsx src/server/db/reset.ts",
+    "db:seed": "tsx src/server/db/seed.ts",
+    "db:reset-research": "tsx src/server/db/reset-research.ts",
+    "db:setup": "npm run db:reset && npm run db:seed",
+    "test:db": "vitest run --config vitest.db.config.mts"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.4",
     "@tiptap/core": "^3.29.2",
     "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
     "defuddle": "^0.19.2",
-    "drizzle-orm": "^0.45.2",
     "linkedom": "^0.18.13",
     "next": "^16.3.0",
     "pg": "^8.22.0",
@@ -32,22 +32,19 @@
     "undici": "^8.10.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.0.5",
-    "drizzle-kit": "^0.31.10",
+    "@vitest/coverage-v8": "4.1.10",
     "eslint": "^9",
     "eslint-config-next": "^16.3.0",
-    "jsdom": "^30.0.1",
+    "jsdom": "^30.1.1",
     "tsx": "^4",
     "typescript": "^5.9",
-    "vitest": "^4.1.10",
-    "vitest-axe": "^0.1.0"
+    "vitest": "^4.1.10"
   }
 }

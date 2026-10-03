@@ -2,23 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useServerAction } from "@/components/hooks/useServerAction";
-import {
-  renamePlotlineAction,
-  setPlotlineStateAction,
-  upsertBeatAction,
-  deleteBeatAction,
-  moveBeatAction,
-  createPlotlineAction,
-  deletePlotlineAction,
-} from "@/lib/actions/plot";
-import { type ActionResult } from "@/lib/actions/confirmation";
+import { useServerAction } from "@/hooks/useServerAction";
+import { renamePlotlineAction, setPlotlineStateAction, createPlotlineAction, deletePlotlineAction } from "@/server/actions/plot/plotlines";
+import { upsertBeatAction, deleteBeatAction, moveBeatAction } from "@/server/actions/plot/beats";
+import { type ActionResult } from "@/domain/result";
 
-/** The edit surface handed down to the grid + drawer. Each method fires a /plot
- *  server action inside a transition, then refreshes the route so the server-
- *  rendered grid reflects the write; `pending` disables controls mid-flight and
- *  `error` surfaces a failed write (the store never swallows it). Scope
- *  (worldId/bookId) is captured here so callers pass only the row-level ids. */
 export interface PlotEdit {
   pending: boolean;
   error: string | null;
@@ -37,8 +25,6 @@ export function usePlotEdit(worldId: string, bookId: string): PlotEdit {
   const [error, setError] = useState<string | null>(null);
   const { pending, run: runOne } = useServerAction(setError);
 
-  // Run one action, surface its error, and refresh on success so the server
-  // re-reads the grid. Kept generic so every method below is a one-liner.
   const run = (fn: () => Promise<ActionResult<unknown>>) => {
     setError(null);
     runOne(fn(), { onSuccess: () => router.refresh() });

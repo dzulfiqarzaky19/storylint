@@ -1,8 +1,3 @@
-/* World switcher — design 3a (wordmark breadcrumb + dropdown). On-system with
-   the Ashkeld tokens: no hex literals (globals.css owns those), border-radius 0
-   everywhere, rule tokens for borders, 2px ink rule under the band to match the
-   gazetteer's editorial header. */
-
 .switcher {
   position: relative;
   padding: 10px var(--gutter);
@@ -10,9 +5,6 @@
   margin-bottom: var(--space-4);
 }
 
-/* The breadcrumb + its anchored dropdown share this positioned wrapper so the
-   menu drops directly under the crumb (and outside-click detection has one
-   root). */
 .bar {
   position: relative;
   display: inline-block;
@@ -66,7 +58,6 @@
   color: var(--muted);
 }
 
-/* ---- Dropdown ------------------------------------------------------------ */
 .menu {
   position: absolute;
   top: calc(100% + 4px);
@@ -185,10 +176,6 @@
   margin: 6px 0 0;
 }
 
-/* Inline-input dialog for naming a new universe/series/book. Replaces the raw
-   window.prompt so naming reads as part of the app, not the browser. The scrim +
-   centered panel (square corners, Ashkeld tokens) now come from the base
-   <Modal>; only the panel-content styles below are dialog-specific. */
 .promptTitle {
   font-size: var(--text-7);
   font-weight: 700;

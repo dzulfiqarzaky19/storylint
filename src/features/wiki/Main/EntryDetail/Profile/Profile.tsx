@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { EntryWithDetails } from "@/lib/domain/types";
-import { kindLabelOf } from "@/lib/domain/types";
+import type { EntryWithDetails } from "@/domain/types";
+import { kindLabelOf } from "@/domain/types";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import InlineText from "../components/InlineText";
 import PortraitPlaceholder from "./PortraitPlaceholder";
@@ -43,11 +43,6 @@ export default function Profile({
 
   return (
     <>
-      {/* Kicker is a flex CLUSTER (spans + ShareControls' <div>/<label> + a
-          button), not prose. It MUST be a <div>: a <div>/<label> inside a <p>
-          is invalid HTML, so the browser auto-closes the <p> and the SSR DOM
-          diverges from the client React tree -> React #418 hydration mismatch
-          on a clean /wiki load. TCK-E04. */}
       <div className={styles.kicker}>
         <span className={styles.kind}>{kindLabel}</span>
         <span className={styles.catalogueNo}>{catalogueLine}</span>

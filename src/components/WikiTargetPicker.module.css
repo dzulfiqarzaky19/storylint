@@ -1,10 +1,3 @@
-/* Hallmark · component: modal · genre: editorial · theme: project (Archivo · #fff paper · vermilion accent)
- * states: default · hover · focus · active · disabled
- * The shared "Add to the wiki" drill-down. Locked to global tokens (no inline
- * colours/fonts). Overlay + centered panel; drills category -> entry -> detail.
- * contrast: pass
- */
-
 .overlay {
   position: fixed;
   inset: 0;
@@ -190,7 +183,6 @@
   outline-offset: 2px;
 }
 
-/* Phone tier: stack the key/value pair, tighten the panel padding. */
 @media (max-width: 560px) {
   .panel {
     padding: 20px 18px 18px;

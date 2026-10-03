@@ -1,36 +1,15 @@
-// =============================================================================
-// Write screen — server component.
-//
-// Runs the SAME pure engine at load that the client re-runs on every keystroke,
-// so the proof is marked from first paint. `force-dynamic` because the page
-// reads live DB state (chapter body, wiki snapshot, resolved marks) each request.
-//
-// The engine runs LIVE over the manuscript text + wiki snapshot — never a
-// fixture. Suggestions are computed with the real chapter `source` so the Wiki
-// poster and the Write rail agree on where a mark came from.
-//
-// Track C: the chapter is selected by the URL (?chapter=<n>), defaulting to the
-// LAST chapter (the writer's working edge). A left index lists every chapter.
-// =============================================================================
-
 import Write from '@/features/write/Write';
-import {
-  getChapter,
-  getCategories,
-  getWorldEntries,
-  getWorldTree,
-  listChapters,
-} from '@/lib/db/queries';
-import { resolveActiveScope } from '@/lib/scope/activeScope';
-import { paragraphsToDoc } from '@/lib/write/adapters';
-import { loadChapterMarks } from '@/lib/write/chapterMarks';
-import { dbChapterMarksReader } from '@/lib/write/chapterMarksReader';
-import { aiEnabled } from '@/lib/ai/saarouters';
+import { getChapter, listChapters } from "@/server/db/chapters/queries";
+import { getCategories, getWorldEntries } from "@/server/db/gazetteer/reads";
+import { getWorldTree } from "@/server/db/structure/queries";
+import { resolveActiveScope } from '@/domain/scope/activeScope';
+import { paragraphsToDoc } from '@/domain/write/adapters';
+import { loadChapterMarks } from '@/domain/write/chapterMarks';
+import { dbChapterMarksReader } from '@/server/write/chapterMarksReader';
+import { aiEnabled } from '@/server/ai/saarouters';
 
 export const dynamic = 'force-dynamic';
 
-// Fallback body if the chapter row is missing (e.g. an un-seeded DB), so the
-// screen still renders rather than 500-ing.
 const EMPTY_BODY = paragraphsToDoc(['']);
 
 export default async function WritePage({
@@ -40,16 +19,10 @@ export default async function WritePage({
 }) {
   const { chapter: chapterParam, u: uParam, w: wParam, book: bookParam } = await searchParams;
 
-  // The active scope, resolved by the ONE resolver every surface and pill uses,
-  // so the header and the chapter list never disagree on which book is active.
-  // listChapters is SCOPED to that book, so the left index shows exactly the
-  // active book's chapters (not all 42 across six books).
   const tree = await getWorldTree();
   const scope = resolveActiveScope(tree, { u: uParam, w: wParam, book: bookParam });
 
   const chapters = await listChapters(scope.bookId);
-  // Default to the last chapter (the working edge); an unknown/absent param also
-  // falls back to it so a stale URL never lands on nothing.
   const lastNumber = chapters.length > 0 ? chapters[chapters.length - 1]!.number : 1;
   const requested = chapterParam ? Number(chapterParam) : NaN;
   const chapterNumber =
@@ -59,20 +32,11 @@ export default async function WritePage({
   const body = chapter?.body ?? EMPTY_BODY;
   const title = chapter?.title ?? 'Low Water';
 
-  // Wiki-target picker (T-WRITE-WIKI-MODAL slice A): the "Add to the wiki"
-  // modal on an open mark needs the live entry list (world-scoped, same
-  // membership /wiki + /research show) and the category pills. getWorldEntries
-  // is soft-delete-filtered and bounded to the active world, so the modal never
-  // offers a sibling world's entry.
   const [pickerEntries, pickerCategories] = await Promise.all([
     getWorldEntries(scope.worldId),
     getCategories(),
   ]);
 
-  // Every mark this screen renders — the open chapter's deterministic run, its
-  // fresh cached AI marks, and each sibling chapter's left-index dot — resolved
-  // together against one wiki snapshot and one freshness gate, so a dot and the
-  // rail it opens onto can never disagree.
   const marks = await loadChapterMarks(
     {
       universeId: scope.universeId,

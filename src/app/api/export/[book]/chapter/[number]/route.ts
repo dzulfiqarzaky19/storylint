@@ -1,20 +1,6 @@
-// Chapter Markdown export route (App Router, GET).
-//
-// GET /api/export/[book]/chapter/[number] streams ONE chapter as a Markdown
-// document: getChapter(number, bookId) -> chapterToMarkdown(...), returned as
-// `text/markdown; charset=utf-8` with a
-// `Content-Disposition: attachment; filename="<book-slug>-chapter-<n>.md"` so
-// the browser downloads it.
-//
-// Sibling of /api/export/[book] (whole book). The book param is the book id and
-// number is the chapter number WITHIN that book (chapter numbers restart per
-// book, so both are required). An unknown book OR a chapter absent from that
-// book is a 404 — the only not-found paths.
+import { getChapter } from "@/server/db/chapters/queries";
+import { chapterToMarkdown, slugifyTitle } from '@/domain/export/exportMarkdown';
 
-import { getChapter } from '@/lib/db/queries';
-import { chapterToMarkdown, slugifyTitle } from '@/lib/export/exportMarkdown';
-
-// Always run on request: the export reflects live DB state each call.
 export const dynamic = 'force-dynamic';
 
 export async function GET(

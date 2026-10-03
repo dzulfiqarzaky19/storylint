@@ -1,6 +1,3 @@
-/* TCK-E07 error boundary — Ashkeld tokens (globals.css). No hex literals here;
-   border-radius 0 per HANDOFF §3. */
-
 .wrap {
   min-height: 60dvh;
   display: flex;

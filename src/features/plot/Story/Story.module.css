@@ -1,12 +1,9 @@
-/* Story — lane drawer over the Grid. */
-
 .broken {
   border-left-color: var(--accent);
 }
 .glyph {
   font-weight: 700;
 }
-/* ---- drawer: one arc's chapter-ordered "story so far" ----------------- */
 
 .scrim {
   position: fixed;
@@ -133,7 +130,6 @@
     border-left: none;
   }
 }
-/* inline error banner for any failed edit action */
 .editError {
   margin: var(--space-2) 0 0;
   padding: var(--space-2) var(--space-3);
@@ -143,7 +139,6 @@
   border: var(--rule-major);
 }
 
-/* drawer: rename input + inline "rename" trigger */
 .dtitleInput {
   flex: 1;
   padding: 6px 10px;
@@ -174,7 +169,6 @@
   color: var(--ink);
 }
 
-/* drawer: arc-state + delete controls */
 .dactions {
   display: flex;
   align-items: center;
@@ -209,7 +203,6 @@
   cursor: default;
 }
 
-/* drawer: per-beat edit/delete row */
 .rowActions {
   display: flex;
   gap: var(--space-2);

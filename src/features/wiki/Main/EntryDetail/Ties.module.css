@@ -1,10 +1,7 @@
-/* Ties block — README Screen 1 right column "Ties". */
-
 .block {
   margin-top: var(--space-5);
   padding: 10px;
-  border: 2px solid transparent; /* becomes accent + --drop on valid drag (Phase 4) */
-}
+  border: 2px solid transparent;}
 
 .heading {
   display: flex;
@@ -30,14 +27,12 @@
   display: block;
 }
 
-/* Row wrapper: the clickable tie (or tombstone) plus its untie (×) affordance. */
 .rowItem {
   display: flex;
   align-items: baseline;
   gap: 6px;
 }
 
-/* Tie row: padding 10px 0, 1px rule, clickable, name left + rel right. */
 .row {
   display: flex;
   align-items: baseline;
@@ -48,7 +43,6 @@
   text-align: left;
 }
 
-/* Untie (×): removes the relationship (HARD delete, behind a danger confirm). */
 .untie {
   flex: 0 0 auto;
   align-self: center;
@@ -80,14 +74,11 @@
   color: var(--muted-2);
 }
 
-/* Active tie drop (Direction B: border:2px solid #ec3013; background #fff2ef = --drop). */
 .dropActive {
   border: 2px solid var(--accent);
   background: var(--drop);
 }
 
-/* Dangling tie: the target entry was removed (soft-deleted or purged). Renders
-   as a NON-clickable RED marker instead of a link — "removed, needs replacement". */
 .tombstone {
   display: flex;
   align-items: baseline;
@@ -112,7 +103,6 @@
   letter-spacing: 0.04em;
 }
 
-/* "+ Add tie" trigger — opens the inline picker below the tie list. */
 .addTie {
   margin-top: 10px;
   padding: var(--space-1) 0;
@@ -123,7 +113,6 @@
   text-align: left;
 }
 
-/* Inline add-tie authoring panel (rel input + entry picker + cancel). */
 .addPanel {
   display: flex;
   flex-direction: column;
@@ -211,7 +200,6 @@
   display: block;
 }
 
-/* Replace-tie affordance (on tombstoned rows only). */
 .replaceTie {
   flex: 0 0 auto;
   align-self: center;
@@ -229,7 +217,6 @@
   color: var(--accent-deep);
 }
 
-/* Role section: appears after an entry is picked. */
 .pickedBanner {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 10px; border: 1px solid var(--rule-row); border-radius: var(--radius-sm);
@@ -250,7 +237,6 @@
   color: var(--muted-2);
 }
 
-/* Role chip picker (inside add-panel). */
 .roleChips {
   display: flex;
   flex-wrap: wrap;

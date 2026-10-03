@@ -8,7 +8,6 @@
   color: var(--muted);
 }
 
-/* Persistence error banner — a failed Server Action is surfaced, never swallowed. */
 .errorBar {
   display: flex;
   align-items: center;

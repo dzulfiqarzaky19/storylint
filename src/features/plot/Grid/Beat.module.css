@@ -1,5 +1,3 @@
-/* Beat — one cell card on the Grid. */
-
 .beatcard {
   width: 100%;
   height: 100%;
@@ -31,9 +29,6 @@
   font-size: 13.5px;
   color: var(--body-ink);
   line-height: 1.4;
-  /* The card is a fixed square, so long beat prose is clamped to a few lines
-     with an ellipsis instead of stretching the row. The clamp is min-height:0
-     safe inside the flex column so the meta/cap row below stays visible. */
   flex: 0 1 auto;
   min-height: 0;
   overflow: hidden;

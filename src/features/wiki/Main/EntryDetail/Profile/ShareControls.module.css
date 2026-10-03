@@ -1,7 +1,3 @@
-/* ShareControls (TCK-023, W-4b) — the entry's world-membership controls, sat in
-   the kicker row next to Delete. Mirrors the .deleteEntry affordance's compact,
-   uppercase, bordered look but in the accent (not danger) palette. */
-
 .share {
   margin-left: auto;
   display: flex;
@@ -41,8 +37,6 @@
   border-color: var(--accent);
 }
 
-/* TCK-HF2W-C3 (net-new): keyboard-focus parity with :hover — Tabbing to the
-   unlink control must show the same accent fill a pointer hover gives. */
 .unlink:focus-visible {
   color: var(--accent);
   border-color: var(--accent);
@@ -58,7 +52,6 @@
   align-items: center;
 }
 
-/* Visually-hidden label text (kept for the select's accessible name). */
 .srOnly {
   position: absolute;
   width: 1px;

@@ -1,26 +1,16 @@
 "use client";
 
 import { useCallback, useState, startTransition } from "react";
-import { suggestEntryFacts } from "@/lib/actions/wiki";
-import { clientErr } from "@/components/hooks/useServerAction";
+import { suggestEntryFacts } from "@/server/actions/wiki/aiSuggest";
+import { clientErr } from "@/hooks/useServerAction";
 
 export interface AiSuggestApi {
-  /** Suggested facts per entry id, awaiting accept/dismiss. */
   suggestions: Record<string, { key: string; value: string }[]>;
-  /** True while a suggest call is in flight (one at a time). */
   busy: boolean;
-  /** Ask the model for candidate facts on this entry (read-only). */
   suggest: (entryId: string) => void;
-  /** Drop one suggestion from the panel (after it is accepted elsewhere). */
   remove: (entryId: string, key: string) => void;
 }
 
-/**
- * AI fact-suggestion side-feature for /wiki, lifted out of Wiki (T-ARCH-13).
- * READ-ONLY: it only fetches candidate facts and holds them panel-local; turning
- * a suggestion into a real fact is the CALLER's job (via the confirmation-gated
- * createFact path), so this hook never writes. `onError` surfaces a failed fetch.
- */
 export function useAiSuggest(onError: (message: string) => void): AiSuggestApi {
   const [suggestions, setSuggestions] = useState<
     Record<string, { key: string; value: string }[]>

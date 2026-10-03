@@ -1,30 +1,15 @@
 "use client";
 
-// F6-S6b — the "Recently deleted" trash panel. Purely presentational: it renders
-// the soft-deleted entries the caller fetched, and wires each Restore button +
-// the single "Empty trash" purge button to callbacks the caller owns. It holds
-// NO server-action or reducer logic — restore/purge/refetch all live in
-// useTrashPanel. The one decision it consumes is trashCountdown (pure,
-// unit-locked in trashCountdown.test.ts).
-//
-// The whole panel is HIDDEN when the trash is empty (no empty-state chrome): the
-// caller renders <TrashPanel> only when entries.length > 0.
-
-import type { EntryRow } from "@/lib/domain/types";
-import { kindLabelOf } from "@/lib/domain/types";
+import type { EntryRow } from "@/domain/types";
+import { kindLabelOf } from "@/domain/types";
 import { trashCountdown } from "./lib/trashCountdown";
 import styles from "./TrashPanel.module.css";
 
 export interface TrashPanelProps {
-  /** Soft-deleted entries, newest-deletion-first (from getDeletedEntries). */
   entries: EntryRow[];
-  /** Clock for the countdown (injected so the label is deterministic/testable). */
   nowMs: number;
-  /** True while a restore/purge server action is in flight (disables buttons). */
   busy?: boolean;
-  /** Restore one entry into the live wiki (non-destructive; no confirm needed). */
   onRestore: (id: string) => void;
-  /** Ask to purge every expired entry (opens the danger confirm in the caller). */
   onRequestPurge: () => void;
 }
 
@@ -36,12 +21,6 @@ function formatDeletedAt(ms: number): string {
   });
 }
 
-/**
- * "Recently deleted (N)" panel. Lists each soft-deleted entry with its name,
- * kind, deletion date, and a countdown ("purges in N days" / "ready to purge"),
- * a per-row Restore button, and a footer "Empty trash" button that routes
- * through the caller's danger confirm.
- */
 export default function TrashPanel({
   entries,
   nowMs,

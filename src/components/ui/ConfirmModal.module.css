@@ -1,7 +1,3 @@
-/* Reusable confirm dialog (ConfirmModal). The scrim + centered panel are now
-   owned by the base <Modal> primitive (Modal.module.css); this module only
-   styles the slot content: heading, body copy, and the two action buttons. */
-
 .title {
   font-size: var(--text-7);
   font-weight: 700;
@@ -50,8 +46,6 @@
 
 .actions {
   display: flex;
-  /* Confirm is first in the DOM (so Modal focuses it on open); row-reverse puts
-     it back on the RIGHT and Cancel on the LEFT, preserving the visual order. */
   flex-direction: row-reverse;
   justify-content: flex-start;
   gap: var(--space-3);
@@ -94,9 +88,6 @@
   transform: translateY(1px);
 }
 
-/* Busy/spent confirm: after the first click (or while the caller is pending)
-   the button is disabled so a double-click cannot re-fire. Dim it and swap to a
-   not-allowed cursor so the busy state reads; :active lift is suppressed. */
 .confirm:disabled,
 .confirmDanger:disabled {
   opacity: 0.6;
@@ -104,7 +95,6 @@
   transform: none;
 }
 
-/* Destructive confirm: red, for deletes and other irreversible actions. */
 .confirmDanger {
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-3);
